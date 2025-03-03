@@ -1,5 +1,5 @@
 import T20250302EnvSetupMac from "../content/vtmp-2025/2025-03-02-env-setup-mac.md";
-import T20250302EnvSetupWin from "../content/vtmp-2025/2025-03-02-env-setup-win.md";
+import T20250302EnvSetupWindows from "../content/vtmp-2025/2025-03-02-env-setup-windows.md";
 import T20241207Summary2024 from "../content/vtmp-2024/2024-12-07-summary-2024.md";
 import T20241202IWishIKnew from "../content/vtmp-2024/2024-12-02-i-wish-i-knew.md";
 import T20241123ReviewVtmpExperience from "../content/vtmp-2024/2024-11-23-review-vtmp-experience.md";
@@ -15,7 +15,7 @@ import T20230430UsingGit from "../content/vtmp-2023/2023-04-30-using-git.md";
 
 export const allBlogsFilepaths = [
   T20250302EnvSetupMac,
-  T20250302EnvSetupWin,
+  T20250302EnvSetupWindows,
   T20241207Summary2024,
   T20241202IWishIKnew,
   T20241123ReviewVtmpExperience,

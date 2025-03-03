@@ -122,10 +122,10 @@ export const allBlogsMetadata: BlogMetadata[] = [
     tags: ["setup","tools"]
   },
   {
-    name: "2025-03-02-env-setup-win",
-    title: "Environment Setup for Window",
+    name: "2025-03-02-env-setup-windows",
+    title: "Environment Setup for Windows",
     contributors: "Hoang Nguyen",
-    description: "Guide to setup environment that is ready for group project for Window (Git, Github, VSCode, Node.js, React.js, MongoDB).",
+    description: "Guide to setup environment that is ready for group project for Windows (Git, Github, VSCode, Node.js, React.js, MongoDB).",
     banner: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Unofficial_Windows_logo_variant_-_2002%E2%80%932012_%28Multicolored%29.svg/170px-Unofficial_Windows_logo_variant_-_2002%E2%80%932012_%28Multicolored%29.svg.png",
     date: "2025-03-02T05:00:00.000Z",
     authors: ["Phuc Khang"],
