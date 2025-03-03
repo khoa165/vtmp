@@ -94,6 +94,16 @@ export const allBlogsMetadata: BlogMetadata[] = [
     tags: ["reflection","advice"]
   },
   {
+    name: "2024-11-21-advanced-group-project",
+    title: "How did we go beyond CRUD in a personal project?",
+    contributors: "Ha Linh, Khanh Linh, Huu Khang",
+    description: "Hello everyone, I’m Hoang, a mentee of the Viet Tech Mentorship Program (cohort 2024). This past summer, my team worked on a project called Cupid. Initially, we struggled to figure out how to make Cupid more than just a basic web app. Thanks to the dedicated guidance from our project advisors — Khoa Le and Nick Doan — we were able to elevate Cupid to the next level.",
+    banner: "https://res.cloudinary.com/khoa165/image/upload/v1740992775/viettech/cupid.jpg",
+    date: "2024-11-21T05:00:00.000Z",
+    authors: ["Hoang Nguyen"],
+    tags: ["reflection","technical"]
+  },
+  {
     name: "2024-11-23-review-vtmp-experience",
     title: "Trải Nghiệm Tham Gia Viet Tech Mentorship Program",
     description: "Mình là Thanh Vân, mentee của Viet Tech Mentorship Program (VTMP) mùa hai. Mình viết bài này để chia sẻ trải nghiệm tham gia mentorship trong gần một năm vừa qua, hy vọng sẽ mang đến cho các bạn cái nhìn chân thật, đặc biệt là những ai đang muốn nộp đơn vào VTMP mùa ba!",
