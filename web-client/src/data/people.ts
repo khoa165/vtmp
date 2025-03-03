@@ -235,7 +235,7 @@ export const mentorshipPeople: {
             name: CompanyName.AMAZON,
             type: OfferType.NEW_GRAD,
             channel: OfferChannel.RETURN_OFFER,
-            date: '2025-03-02',
+            date: '2025-03-01',
           },
           {
             name: CompanyName.LINKEDIN,
