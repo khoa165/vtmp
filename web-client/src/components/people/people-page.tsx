@@ -1,0 +1,166 @@
+import React, { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import 'styles/scss/people.scss';
+import { getFilterRoles, getRoleDisplayName } from 'utils/data';
+import {
+  MentorshipRole,
+  MentorshipYear,
+  PeopleSortColumn,
+  yearDisplay,
+} from 'utils/constants';
+import { PeopleGrid } from './people-grid';
+import { Autocomplete, Button, Checkbox, TextField } from '@mui/material';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import { useMentorshipPeople } from 'hooks/useMentorshipPeople';
+import { useOffersData } from 'hooks/useOffersData';
+import { peopleSortColumnDisplayName } from 'utils/displayName';
+import { FaArrowUpWideShort, FaArrowDownWideShort } from 'react-icons/fa6';
+import { useNavigatePreserveQueryParams } from 'hooks/useNavigatePreserveQueryParams';
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
+interface PeoplePageProps {
+  year: number;
+}
+
+export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
+  const navigate = useNavigatePreserveQueryParams();
+
+  const defaultRoles = [
+    MentorshipRole.PROGRAM_ADVISOR,
+    MentorshipRole.PROGRAM_LEAD,
+    MentorshipRole.LEAD,
+    MentorshipRole.MENTOR,
+    MentorshipRole.MENTEE,
+  ];
+
+  const getSortColumn = (sort: string | null): PeopleSortColumn => {
+    if (sort?.toLowerCase() === PeopleSortColumn.NAME.toLowerCase()) {
+      return PeopleSortColumn.NAME;
+    }
+    if (sort?.toLowerCase() === PeopleSortColumn.OFFERS_COUNT.toLowerCase()) {
+      return PeopleSortColumn.OFFERS_COUNT;
+    }
+    return PeopleSortColumn.ROLE;
+  };
+
+  const [filterParams, setFilterParams] = useSearchParams();
+  const [sortColumn, setSortColumn] = useState(
+    getSortColumn(filterParams.get('sort'))
+  );
+  const [sortDescending, setSortDescending] = useState(
+    filterParams.get('direction')?.toLowerCase() === 'desc'
+  );
+
+  const onChangeSort = (_event, value) => {
+    setFilterParams((params) => {
+      params.set('sort', value);
+      return params;
+    });
+    setSortColumn(getSortColumn(value));
+  };
+  const onToggleSortDirection = () => {
+    const isDescendingNew = !sortDescending;
+    setFilterParams((params) => {
+      params.set('direction', isDescendingNew ? 'DESC' : 'ASC');
+      return params;
+    });
+    setSortDescending(isDescendingNew);
+  };
+
+  const { people, setSelectedRoles } = useMentorshipPeople(
+    year,
+    sortColumn,
+    sortDescending
+  );
+  const companiesMetadata = useOffersData();
+
+  const totalOffers = useMemo(
+    () =>
+      people.reduce((p, c) => {
+        const currentTerm = c.terms.find((t) => t.year === year);
+        return p + (currentTerm?.offers?.length ?? 0);
+      }, 0),
+    [people, year]
+  );
+
+  const onChangeYear = (_event, value) => navigate(`/people/${value}`);
+
+  const onChangeGroup = (_event, value) => setSelectedRoles(value);
+
+  const mentorshipYears = useMemo(
+    () => Object.keys(MentorshipYear).map((y) => yearDisplay[y] as number),
+    []
+  );
+
+  return (
+    <div id="people-page">
+      <div className="people-page-controls">
+        <Autocomplete
+          className="role-control flex-fill"
+          multiple
+          options={getFilterRoles()}
+          getOptionLabel={(option) =>
+            getRoleDisplayName(option as MentorshipRole)
+          }
+          renderInput={(params) => <TextField {...params} label="Role" />}
+          renderOption={(props, option, { selected }) => {
+            const { key, ...optionProps } = props;
+            return (
+              <li key={key} {...optionProps}>
+                <Checkbox
+                  icon={icon}
+                  checkedIcon={checkedIcon}
+                  style={{ marginRight: 8 }}
+                  checked={selected}
+                />
+                {getRoleDisplayName(option as MentorshipRole)}
+              </li>
+            );
+          }}
+          defaultValue={defaultRoles}
+          onChange={onChangeGroup}
+        />
+        <div className="break d-block d-xl-none"></div>
+        <Autocomplete
+          className="year-control"
+          sx={{ width: 90 }}
+          options={mentorshipYears}
+          getOptionLabel={(option) => option.toString()}
+          renderInput={(params) => <TextField {...params} label="Year" />}
+          defaultValue={year}
+          onChange={onChangeYear}
+          disableClearable
+        />
+        <Autocomplete
+          className="sort-control"
+          sx={{ width: 140 }}
+          options={Object.keys(PeopleSortColumn)}
+          getOptionLabel={(option) => peopleSortColumnDisplayName[option]}
+          renderInput={(params) => <TextField {...params} label="Sort" />}
+          defaultValue={sortColumn}
+          onChange={onChangeSort}
+          disableClearable
+        />
+        <div className="direction-control">
+          <Button variant="outlined" onClick={onToggleSortDirection}>
+            {sortDescending ? <FaArrowDownWideShort /> : <FaArrowUpWideShort />}
+          </Button>
+        </div>
+      </div>
+      {totalOffers >= 10 && (
+        <h3 className="achievement-text mt-3 text-center text-green">
+          {year} cohort achievements so far: {totalOffers} offers
+        </h3>
+      )}
+      <PeopleGrid
+        people={people}
+        year={year}
+        companiesMetadata={companiesMetadata}
+        sortColumn={sortColumn}
+      />
+    </div>
+  );
+};

@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
+
+@property --bg-angle {
+  inherits: false;
+  initial-value: 0deg;
+  syntax: '<angle>';
+}
+
+@keyframes spin {
+  to {
+    --bg-angle: 360deg;
+  }
+}
+
+.about-us-btn {
+  width: fit-content;
+  padding: 20px 35px;
+  text-decoration: none;
+  font-size: 1.5rem;
+  border-radius: 15px;
+  transition: transform 1s;
+  font-family: 'Sour Gummy', serif;
+
+  &:hover {
+    transform: scale(1.05);
+    transition: transform 1s;
+  }
+
+  &.simple {
+    border: 2px solid $viettech-green;
+  }
+
+  &.rainbow {
+    color: rgb(243, 209, 215);
+
+    animation: spin 2.5s infinite linear running;
+    background: linear-gradient(
+          to bottom,
+          $brand-primary-background-color,
+          $brand-primary-background-color
+        )
+        padding-box,
+      conic-gradient(
+          from var(--bg-angle) in oklch longer hue,
+          oklch(0.5 0.1 0) 0 0
+        )
+        border-box;
+
+    border: 3px solid transparent;
+  }
+
+  &.emeralds {
+    color: $viettech-green;
+
+    &:hover {
+      // background-color: $brand-banner-element-color;
+      // border-color: $brand-banner-element-color;
+      // color: $brand-primary-background-color;
+      background-image: linear-gradient(
+        to bottom right,
+        $brand-stats-first-gradient-color,
+        $brand-stats-second-gradient-color
+      );
+      border: 0;
+      color: $brand-light-color;
+    }
+  }
+
+  &.light {
+    border-color: $brand-banner-element-color;
+    color: $brand-banner-element-color;
+
+    &:hover {
+      background-color: $brand-banner-element-color;
+      color: $brand-primary-background-color;
+    }
+  }
+
+  &.gradient {
+    border-image-slice: 1;
+    border-image-source: linear-gradient(
+      to left,
+      $brand-first-gradient-color,
+      $brand-second-gradient-color
+    );
+    color: $brand-banner-element-color;
+
+    &:hover {
+      background-image: linear-gradient(
+        to bottom right,
+        $brand-first-gradient-color,
+        $brand-second-gradient-color
+      );
+      color: $brand-light-color;
+      border-image: none;
+      border-color: $brand-light-color;
+    }
+  }
+}

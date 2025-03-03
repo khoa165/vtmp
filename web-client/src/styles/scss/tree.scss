@@ -1,0 +1,161 @@
+@import 'utils';
+@import 'variables';
+
+#tree-container {
+  ul {
+    margin: 0 100px;
+
+    @include resize(null, $bootstrap-md-max) {
+      margin: 0;
+    }
+
+    &.aos-init.aos-animate {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    li {
+      position: relative;
+      width: 6px;
+      padding-top: 50px;
+      padding-bottom: 10px;
+      margin: 0 auto;
+      background: linear-gradient(
+        to top,
+        $brand-first-gradient-color,
+        $brand-second-gradient-color
+      );
+      list-style: none;
+      @include resize(null, $bootstrap-md-max) {
+        margin-left: 0;
+      }
+
+      &:nth-child(odd) .blog-card {
+        text-align: left;
+        left: 40px;
+        -webkit-transform: translate(200px, 0);
+        -ms-transform: translate(200px, 0);
+        transform: translate(200px, 0);
+        -webkit-transition: all 0.4s linear;
+        -o-transition: all 0.4s linear;
+        transition: all 0.4s linear;
+
+        .badge {
+          margin-right: 10px;
+        }
+
+        @include resize($bootstrap-lg-min, 1060px) {
+          width: 375px;
+          margin-left: -10px;
+        }
+      }
+      &:nth-child(even) .blog-card {
+        text-align: right;
+        left: -484px;
+        -webkit-transform: translate(-200px, 0);
+        -ms-transform: translate(-200px, 0);
+        transform: translate(-200px, 0);
+        -webkit-transition: all 0.4s linear;
+        -o-transition: all 0.4s linear;
+        transition: all 0.4s linear;
+
+        @include resize(null, $bootstrap-md-max) {
+          left: 40px;
+        }
+
+        @include resize($bootstrap-lg-min, 1060px) {
+          width: 375px;
+          margin-left: 35px;
+        }
+
+        .badge {
+          margin-left: 10px;
+        }
+      }
+
+      &:after {
+        content: '';
+        background: $brand-timeline-dot-color;
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        -webkit-transform: translateX(-50%);
+        -ms-transform: translateX(-50%);
+        transform: translateX(-50%);
+        -webkit-transition: background 0.5s ease-in-out;
+        -o-transition: background 0.5s ease-in-out;
+        transition: background 0.5s ease-in-out;
+      }
+
+      .blog-card {
+        background: $brand-primary-background-color;
+        color: $brand-light-color;
+        position: relative;
+
+        border: 5px solid;
+        border-image-slice: 1;
+        border-image-source: linear-gradient(
+          to left,
+          $brand-first-gradient-color,
+          $brand-second-gradient-color
+        );
+        bottom: 0;
+        width: 450px;
+        padding: 1rem;
+        -webkit-transition: all 0.3s ease-in-out;
+        -o-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+        border-radius: 5px;
+
+        @include resize(null, $bootstrap-md-max) {
+          width: calc(100vw - 90px);
+        }
+
+        &:hover {
+          bottom: 10px;
+          box-shadow: 0px 0px 10px 3px $brand-first-gradient-color;
+        }
+
+        .card-title {
+          color: $brand-timeline-dot-color;
+        }
+
+        .card-subtitle {
+          color: $mentorship-primary-grey !important;
+          font-size: 12px;
+        }
+
+        .badge {
+          background-color: $brand-first-gradient-color !important;
+        }
+
+        a {
+          text-decoration: none;
+          color: $brand-timeline-dot-color;
+          font-weight: 500;
+
+          &:hover i {
+            left: 20px;
+          }
+
+          i {
+            position: relative;
+            left: 0;
+            transition: left ease 0.5s;
+          }
+        }
+      }
+
+      &.show .blog-card {
+        -webkit-transform: none;
+        -ms-transform: none;
+        transform: none;
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+  }
+}

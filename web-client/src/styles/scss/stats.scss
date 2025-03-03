@@ -1,0 +1,109 @@
+@import 'variables';
+
+#stats-container {
+  div[role='tabpanel'] > div:first-child {
+    padding-top: 15px;
+  }
+  .chart-title {
+    color: $brand-chart-title-color;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
+  }
+
+  .recharts-tooltip-item {
+    color: $brand-light-color !important;
+    padding: 0 !important;
+  }
+
+  .recharts-rectangle.recharts-tooltip-cursor {
+    fill: $brand-banner-background-color !important;
+  }
+
+  .tooltip-box {
+    background-color: $brand-banner-background-color !important;
+    color: $viettech-green;
+  }
+
+  .interviews-legend {
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  #companies-logo-canvas {
+    padding: 30px;
+
+    h1 {
+      color: #a7c7e7;
+      text-align: center;
+      margin-bottom: 40px;
+      font-weight: bold;
+    }
+
+    .company-logo-card {
+      border: 3px solid;
+      border-image-slice: 1;
+      border-image-source: linear-gradient(
+        to left,
+        $brand-stats-first-gradient-color,
+        $brand-stats-second-gradient-color
+      );
+      padding: 3px;
+      position: relative;
+
+      .company-logo-wrapper {
+        background-color: $brand-stats-background-color;
+        // background-color: pink;
+        min-height: 104px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .offers-count-wrapper {
+        position: absolute;
+        top: -16px;
+        left: -16px;
+        text-align: center;
+
+        .offers-count {
+          position: relative;
+
+          .offers-count-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(
+              $brand-stats-first-gradient-color,
+              $brand-stats-second-gradient-color
+            );
+
+            .offers-count-background-separate-layer {
+              background-color: $brand-primary-background-color;
+              width: 26px;
+              height: 26px;
+              border-radius: 50%;
+            }
+          }
+
+          .offers-count-value {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: $brand-stats-background-color;
+            color: $mentorship-tertiary-pink;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
+    .company-logo {
+      object-fit: contain;
+    }
+  }
+}

@@ -1,0 +1,93 @@
+@import 'blogs';
+@import 'button';
+@import 'landing';
+@import 'layout';
+@import 'summary';
+@import 'people';
+@import 'stats';
+@import 'tree';
+@import 'utils';
+@import 'variables';
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: $brand-scrollbar-background-color;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $brand-scrollbar-color;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: $brand-scrollbar-color;
+}
+
+hr {
+  border-color: $brand-light-color;
+}
+
+#mentorship-website {
+  .navbar {
+    background-color: $brand-primary-background-color !important;
+    border-bottom: 1px solid $brand-light-color;
+  }
+
+  .navbar-brand,
+  .nav-item,
+  .nav-link {
+    color: $brand-light-color;
+  }
+}
+
+.text-green {
+  color: $mentorship-primary-green;
+}
+
+.app-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  &.af-right {
+    justify-content: end;
+  }
+
+  &.col {
+    flex-direction: column;
+    display: flex;
+
+    &.af-left {
+      align-items: flex-start;
+    }
+  }
+
+  &.medium-gap {
+    gap: 4px;
+  }
+  &.small-gap {
+    gap: 2px;
+  }
+
+  &.stretch {
+    align-items: stretch;
+  }
+}

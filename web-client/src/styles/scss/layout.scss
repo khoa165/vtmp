@@ -1,0 +1,59 @@
+@import 'utils';
+@import 'variables';
+
+#mentorship-banner {
+  padding: 0 15vw;
+  display: flex;
+  align-items: center;
+  padding-bottom: 5vh;
+
+  .overlay {
+    color: $brand-light-color;
+    align-items: center;
+
+    .left-section {
+      h1 {
+        color: $brand-light-color;
+        font-size: 3rem;
+        margin-bottom: 20px;
+      }
+
+      p {
+        color: $brand-banner-element-color;
+        font-size: 1.5rem;
+      }
+    }
+
+    .viettech-logo-wrapper {
+      width: fit-content;
+      border-radius: 50%;
+      padding: 5px;
+      background: linear-gradient(
+        to top left,
+        $brand-first-gradient-color,
+        $brand-second-gradient-color
+      );
+
+      img {
+        max-height: 280px;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+
+.mentorship-avatar {
+  img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 2px solid $brand-light-color;
+    padding: 5px;
+
+    &.size-tiny {
+      width: 25px;
+      height: 25px;
+      padding: 0;
+    }
+  }
+}

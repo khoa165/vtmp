@@ -1,0 +1,132 @@
+export enum CompanyName {
+  SERVICE_NOW = 'SERVICE_NOW',
+  LILLY = 'LILLY',
+  MICROSOFT = 'MICROSOFT',
+  MONGODB = 'MONGODB',
+  BANK_OF_AMERICA = 'BANK_OF_AMERICA',
+  META = 'META',
+  NIANTIC = 'NIANTIC',
+  ROBINHOOD = 'ROBINHOOD',
+  DOORDASH = 'DOORDASH',
+  LINKEDIN = 'LINKEDIN',
+  PROOFPOINT = 'PROOFPOINT',
+  ADOBE = 'ADOBE',
+  AMAZON = 'AMAZON',
+  PLAID = 'PLAID',
+  WAYFAIR = 'WAYFAIR',
+  GODADDY = 'GODADDY',
+  MATSON_MONEY = 'MATSON_MONEY',
+  SAP = 'SAP',
+  HEROKU = 'HEROKU',
+  MORGAN_STANLEY = 'MORGAN_STANLEY',
+  SHOPIFY = 'SHOPIFY',
+  MASTERCARD = 'MASTERCARD',
+  SLACK = 'SLACK',
+  LIBERTY_MUTUAL_INSURANCE = 'LIBERTY_MUTUAL_INSURANCE',
+  HELMERICH_PAYNE = 'HELMERICH_PAYNE',
+  GRAMMARLY = 'GRAMMARLY',
+  BNY_MELLON = 'BNY_MELLON',
+  PAYPAL = 'PAYPAL',
+  GOLDMAN_SACHS = 'GOLDMAN_SACHS',
+  EBAY = 'EBAY',
+  VERISK = 'VERISK',
+  HUBSPOT = 'HUBSPOT',
+  EXPEDIA = 'EXPEDIA',
+  ORACLE = 'ORACLE',
+  EXPERIAN = 'EXPERIAN',
+  WAYMO = 'WAYMO',
+  ASANA = 'ASANA',
+  MCDONALDS = 'MCDONALDS',
+  BUBBLE_IO = 'BUBBLE_IO',
+  KENCO_GROUP = 'KENCO_GROUP',
+  COINBASE = 'COINBASE',
+  FOREFLIGHT = 'FOREFLIGHT',
+  QUALCOMM = 'QUALCOMM',
+  PALANTIR = 'PALANTIR',
+  BLOOMBERG = 'BLOOMBERG',
+  GOOGLE = 'GOOGLE',
+  UKG = 'UKG',
+  SENTRY = 'SENTRY',
+  PLAYSTATION = 'PLAYSTATION',
+  RYCO = 'RYCO',
+}
+
+export enum OfferType {
+  INTERNSHIP = 'INTERNSHIP',
+  NEW_GRAD = 'NEW_GRAD',
+}
+
+export enum OfferChannel {
+  EXTERNAL = 'EXTERNAL',
+  RETURN_OFFER = 'RETURN_OFFER',
+}
+
+export enum MentorshipRole {
+  PROGRAM_MANAGER = 'PROGRAM_MANAGER',
+  PROGRAM_FOUNDER = 'PROGRAM_FOUNDER',
+  PROGRAM_ADVISOR = 'PROGRAM_ADVISOR',
+  PROGRAM_LEAD = 'PROGRAM_LEAD',
+  LEAD = 'LEAD',
+  MENTOR = 'MENTOR',
+  EXMENTEE_MENTOR = 'EXMENTEE_MENTOR',
+  MENTEE = 'MENTEE',
+}
+
+export enum MentorshipGroup {
+  ORGANIZER = 'ORGANIZER',
+  PARTICIPANT = 'PARTICIPANT',
+}
+
+export const rolePriority: {
+  [key in MentorshipRole]: number;
+} = {
+  [MentorshipRole.PROGRAM_LEAD]: 1.0,
+  [MentorshipRole.PROGRAM_MANAGER]: 1.1,
+  [MentorshipRole.PROGRAM_FOUNDER]: 1.2,
+  [MentorshipRole.PROGRAM_ADVISOR]: 1.3,
+  [MentorshipRole.LEAD]: 2,
+  [MentorshipRole.MENTOR]: 3,
+  [MentorshipRole.EXMENTEE_MENTOR]: 3.5,
+  [MentorshipRole.MENTEE]: 4,
+};
+
+export enum MentorshipYear {
+  YEAR_2023 = 'YEAR_2023',
+  YEAR_2024 = 'YEAR_2024',
+  YEAR_2025 = 'YEAR_2025',
+}
+
+export const yearDisplay: {
+  [key in MentorshipYear]: number;
+} = {
+  [MentorshipYear.YEAR_2023]: 2023,
+  [MentorshipYear.YEAR_2024]: 2024,
+  [MentorshipYear.YEAR_2025]: 2025,
+};
+
+export enum StatsType {
+  OFFERS = 'offers',
+  INTERVIEWS = 'interviews',
+  TIMELINE = 'timeline',
+  LOGOS = 'logos',
+}
+
+export enum InterviewType {
+  TECHNICAL_LC_CODING = 'T',
+  OVERALL_BEHAVIORAL = 'B',
+  PROJECT_WALKTHROUGH = 'W',
+  SYSTEM_DESIGN = 'S',
+  RECRUITER_SCREEN = 'R',
+  HIRING_MANAGER = 'H',
+  TRIVIA_CONCEPT = 'V',
+  PRACTICAL_CODING = 'P',
+  DEBUGGING = 'D',
+  CRITICAL_THINKING = 'C',
+  CODE_REVIEW = 'O',
+}
+
+export enum PeopleSortColumn {
+  NAME = 'NAME',
+  OFFERS_COUNT = 'OFFERS_COUNT',
+  ROLE = 'ROLE',
+}

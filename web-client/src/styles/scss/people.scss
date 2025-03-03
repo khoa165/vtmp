@@ -1,0 +1,105 @@
+@import 'utils';
+@import 'variables';
+
+#people-page {
+  padding: 20px 10vw;
+
+  .people-page-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+
+    @include resize(null, $bootstrap-md-max) {
+      gap: 5px;
+    }
+
+    .role-control {
+      flex-grow: 1;
+    }
+
+    @include resize(null, $bootstrap-lg-max) {
+      .year-control,
+      .sort-control {
+        flex-grow: 1;
+      }
+      .year-control,
+      .sort-control,
+      .direction-control {
+        order: 2;
+      }
+    }
+
+    .break {
+      flex-basis: 100%;
+      height: 0;
+    }
+
+    .direction-control {
+      display: block;
+      width: 52px;
+
+      button {
+        width: 100%;
+        height: 52px;
+        min-width: 52px !important;
+      }
+    }
+  }
+
+  .achievement-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+  }
+
+  .mentorship-people-card {
+    position: relative;
+
+    .info-offers {
+      position: absolute;
+      top: 10px;
+      left: 5px;
+      text-align: left;
+
+      .offers-row-wrapper {
+        display: flex;
+        gap: 4px;
+      }
+
+      .mentorship-avatar img {
+        background-color: $brand-stats-background-color;
+        object-fit: contain;
+        border: 2px solid $mentorship-tertiary-blue;
+      }
+    }
+
+    .info-assignment {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      text-align: right;
+    }
+
+    padding-top: 30px;
+    margin-bottom: 30px;
+
+    text-align: center;
+
+    background: $brand-primary-background-color;
+    color: $brand-light-color;
+    position: relative;
+
+    border: 5px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(
+      to left,
+      $brand-first-gradient-color,
+      $brand-second-gradient-color
+    );
+
+    .people-title {
+      color: $brand-timeline-dot-color;
+    }
+  }
+}

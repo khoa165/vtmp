@@ -1,0 +1,167 @@
+@import 'utils';
+@import 'variables';
+
+$arrows-color: rgba(0, 0, 0, 0);
+$arrows-color-mid: rgba(98, 238, 208, 0.4);
+$arrows-color-peak: #00ffaa;
+
+@keyframes arrows {
+  0% {
+    border-left: 16px solid $arrows-color;
+    border-bottom: 16px solid $arrows-color;
+    transform: translate(-8px, -44px) rotate(-45deg);
+  }
+  25%,
+  75% {
+    border-left: 15px solid $arrows-color-mid;
+    border-bottom: 15px solid $arrows-color-mid;
+  }
+  50% {
+    border-left: 15px solid $arrows-color-peak;
+    border-bottom: 15px solid $arrows-color-peak;
+    transform: translate(-8px, 0px) rotate(-45deg);
+  }
+  100% {
+    border-left: 15px solid $arrows-color;
+    border-bottom: 15px solid $arrows-color;
+    transform: translate(-8px, 44px) rotate(-45deg);
+  }
+}
+
+#landing-page {
+  scroll-behavior: smooth;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
+  height: 100vh;
+
+  .arrows-wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    cursor: pointer;
+
+    .arrows {
+      transform: translate(-50%, -50px);
+      position: relative;
+      width: max(4.5vmax, 60px);
+      height: max(4.5vmax, 60px);
+
+      &:before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-left: 15px solid $arrows-color-peak;
+        border-bottom: 15px solid $arrows-color-peak;
+        transform: translate(16px, 64px) rotate(-45deg);
+        animation: arrows 6s linear infinite;
+      }
+
+      &:after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-left: 15px solid $arrows-color-peak;
+        border-bottom: 15px solid $arrows-color-peak;
+        transform: translate(32px, 0) rotate(-45deg);
+        animation: arrows 6s linear infinite -3s;
+      }
+    }
+  }
+
+  #banner-page {
+    background-color: $brand-primary-background-color;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+
+    #banner-wrapper {
+      height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+
+      .value-page-heading {
+        text-align: center;
+        margin-bottom: 10rem;
+        font-size: 1.8rem;
+        color: $viettech-green;
+      }
+
+      #mentorship-banner {
+        flex-grow: 1;
+      }
+    }
+  }
+
+  .value-page-wrapper {
+    height: 100vh;
+    scroll-snap-align: start;
+    position: relative;
+
+    .row {
+      height: 100%;
+      padding-bottom: 100px;
+    }
+
+    .visual-stack-wrapper {
+      position: relative;
+    }
+
+    .program-value-wrapper {
+      max-width: 400px;
+      padding: 0 50px;
+      flex-grow: 1;
+
+      @include resize($bootstrap-md-min, null) {
+        align-self: center;
+      }
+    }
+
+    $lower-bound: 150px;
+    $upper-bound: 290px;
+    $mid: 40vw;
+    $ratio: 0.075;
+    $gap: clamp($lower-bound * $ratio, $mid * $ratio, $upper-bound * $ratio);
+
+    .tiles {
+      position: absolute;
+      right: 40px;
+      bottom: 50%;
+      width: clamp($lower-bound, $mid, $upper-bound);
+      display: flex;
+      flex-direction: column-reverse;
+    }
+    .tile {
+      height: $gap;
+      position: relative;
+    }
+    .tile::after,
+    .tile::before {
+      content: '';
+      background-image: url(https://assets.codepen.io/605876/translucent-panel.png);
+      position: absolute;
+      width: 100%;
+      aspect-ratio: 1160 / 521;
+      background-size: cover;
+      color: #000;
+    }
+    .tile::after {
+      opacity: 0;
+      background-image: url(https://assets.codepen.io/605876/color-panel.png);
+      filter: hue-rotate(var(--r, 0deg));
+    }
+
+    .tile.active::after {
+      opacity: 1;
+    }
+
+    .program-value-section {
+      p {
+        font-size: 18px;
+      }
+    }
+  }
+}
