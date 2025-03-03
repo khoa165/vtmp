@@ -73,7 +73,11 @@ export const mentorshipPeople: {
       {
         year: 2025,
         title: 'Software Engineer @ Netflix',
-        roles: [MentorshipRole.PROGRAM_FOUNDER, MentorshipRole.LEAD],
+        roles: [
+          MentorshipRole.PROGRAM_FOUNDER,
+          MentorshipRole.LEAD,
+          MentorshipRole.MENTOR,
+        ],
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
@@ -120,7 +124,7 @@ export const mentorshipPeople: {
       {
         year: 2025,
         title: 'Software Engineer @ Mastercard',
-        roles: [MentorshipRole.LEAD],
+        roles: [MentorshipRole.INACTIVE_LEAD],
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
@@ -172,7 +176,7 @@ export const mentorshipPeople: {
       {
         year: 2025,
         title: 'Software Engineer II @ Anyscale',
-        roles: [MentorshipRole.LEAD],
+        roles: [MentorshipRole.INACTIVE_LEAD],
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
@@ -227,6 +231,12 @@ export const mentorshipPeople: {
         title: 'SWE Intern @ LinkedIn + Amazon',
         roles: [MentorshipRole.LEAD, MentorshipRole.EXMENTEE_MENTOR],
         offers: [
+          {
+            name: CompanyName.AMAZON,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.RETURN_OFFER,
+            date: '2025-03-02',
+          },
           {
             name: CompanyName.LINKEDIN,
             type: OfferType.NEW_GRAD,
@@ -1308,6 +1318,12 @@ export const mentorshipPeople: {
         roles: [MentorshipRole.MENTEE],
         offers: [
           {
+            name: CompanyName.META,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-02-21',
+          },
+          {
             name: CompanyName.SENTRY,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
@@ -1479,7 +1495,7 @@ export const mentorshipPeople: {
       {
         year: 2025,
         title: 'SWE Intern @ Shopify + Robinhood',
-        roles: [MentorshipRole.LEAD, MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.RISING_LEAD, MentorshipRole.EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1847,7 +1863,7 @@ export const mentorshipPeople: {
       {
         year: 2025,
         title: 'SWE Intern @ Microsoft',
-        roles: [MentorshipRole.LEAD, MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.RISING_LEAD, MentorshipRole.EXMENTEE_MENTOR],
       },
     ],
   },
