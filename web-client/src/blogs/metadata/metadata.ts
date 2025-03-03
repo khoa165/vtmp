@@ -85,6 +85,15 @@ export const allBlogsMetadata: BlogMetadata[] = [
     tags: ["resources"]
   },
   {
+    name: "M2-2024-11-23-review-vtmp-experience",
+    title: "Trải Nghiệm Tham Gia Viet Tech Mentorship Program",
+    author: "Van Nguyen",
+    description: "Mình là Thanh Vân, mentee của Viet Tech Mentorship Program (VTMP) mùa hai. Mình viết bài này để chia sẻ trải nghiệm tham gia mentorship trong gần một năm vừa qua, hy vọng sẽ mang đến cho các bạn cái nhìn chân thật, đặc biệt là những ai đang muốn nộp đơn vào VTMP mùa ba!",
+    banner: "https://res.cloudinary.com/khoa165/image/upload/v1718192551/viettech/VTMP_logo.png",
+    date: "2024-11-23T05:00:00.000Z",
+    tags: ["reflection"]
+  },
+  {
     name: "M3-2025-03-02-env-setup-mac",
     title: "Environment Setup for MacOS",
     author: "Hoang Nguyen, Phuc Khang",

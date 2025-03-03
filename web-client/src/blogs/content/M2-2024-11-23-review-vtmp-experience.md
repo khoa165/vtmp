@@ -1,0 +1,68 @@
+---
+title: Trải Nghiệm Tham Gia Viet Tech Mentorship Program
+author: Van Nguyen
+description: Mình là Thanh Vân, mentee của Viet Tech Mentorship Program (VTMP) mùa hai. Mình viết bài này để chia sẻ trải nghiệm tham gia mentorship trong gần một năm vừa qua, hy vọng sẽ mang đến cho các bạn cái nhìn chân thật, đặc biệt là những ai đang muốn nộp đơn vào VTMP mùa ba!
+date: 11-23-2024
+tags: reflection
+banner: https://res.cloudinary.com/khoa165/image/upload/v1718192551/viettech/VTMP_logo.png
+---
+
+Về bản thân trước khi tham gia program: Mình major in Economics và ban đầu định hướng theo research, nhưng sau khi tiếp xúc với coding, mình nhận ra mình thích tech hơn. Giữa năm 2, mình quyết định chuyển qua CS, nhưng vì trường không có ngành nên mình self-study. Tháng 12/2023, mình học Data Structure & Algorithm thông qua khoá Green và Blue của Big-O Coding (học 1-1) và tháng 3/2024 học React thông qua lớp WebDev của CodePath. Kinh nghiệm full-stack của mình là bằng 0 và mình chỉ mới làm 20 bài trên nền tảng LeetCode.
+
+Vì bắt đầu từ một xuất phát điểm chưa có nhiều kinh nghiệm làm dự án, LeetCode, chưa có chiến lược rõ ràng, và cũng không có cộng đồng hustle cùng apply ở trường, mình đã đặt ra ba mục tiêu trước khi vào program:
+
+- Phát triển kỹ năng full-stack thông qua group project và workshops.
+- Break into ngành tech và land internship SWE hè 2025.
+- Có cộng đồng để cùng hustle và học hỏi lẫn nhau.
+
+Mình sẽ đi qua một vài khía cạnh quan trọng dưới đây (timeline trong dấu ngoặc, ngoại trừ group project, là timeline cá nhân của mình):
+
+## 1. Group project (3/2024 → 6/2024)
+
+Vấn đề của một beginner như mình là dù có xem bao nhiêu tutorials hay tự làm project thì hiệu quả không thể nào sánh được với việc tham gia một hackathon dài hạn mà ở đó, mình vừa có advisor hướng dẫn, vừa chịu áp lực phải hoàn thành project, lại có những người bạn siêu giỏi để học hỏi cùng. Vậy nên đây là phần mình biết ơn nhất khi tham gia program ❤.
+
+Khi program bắt đầu, mentees được chia thành các nhóm nhỏ 4 người làm group project trong 3 tháng và có presentation ở cuối. Sau hai tuần nghiên cứu và thảo luận, nhóm mình (Tourific) làm mobile app về group travel planning bằng React Native/TypeScript và MERN. Vì 2/4 thành viên có ít kinh nghiệm, cả nhóm đã cùng nhau design database schema và build một số API endpoint quan trọng, sau đó mới phân chia vài CRUD user stories để pair programming ở tháng đầu tiên. Nhờ đó, mình vừa làm quen với mobile app development, vừa học hỏi được rất nhiều từ Trang Vũ, một người bạn trong nhóm đã có nhiều kinh nghiệm về web development.
+
+Ban đầu, mình đã cảm thấy tự ti kinh khủng vì gần như không biết gì, cũng sợ bị mọi người đánh giá. Nhưng anh Khoa, anh Nick và các bạn trong nhóm luôn sẵn sàng lắng nghe và không bao giờ nghĩ câu hỏi của mình là ngớ ngẩn. Điều này đã giúp mình tự tin hơn, và mình bắt đầu đảm nhận các user stories tiếp theo như navigations, UI các screens, data validation, tích hợp Google Map API, Unsplash API, và xây dựng hệ thống in-app và push notification. Project advisor của mình, anh Nick Doan, là một người cực kỳ giỏi và luôn thử thách tụi mình research và tự tìm câu trả lời trước khi đưa ra gợi ý. Anh lúc nào cũng hỏi “What do you think?” trước khi giúp tụi mình, và cũng push nhóm rất nhiều ở chặng cuối để launch app trên store luôn (mà tụi mình vẫn chưa kịp làm). Nhờ anh, mình học được cách sử dụng Git chuẩn chỉnh (sau n lần merge conflicts), cách đọc documentation hiệu quả, và good practices khi debug.
+
+Dù bạn đang ở level nào, group project cũng sẽ là một cơ hội học hỏi lớn. Ngay từ tháng đầu tiên, program đã tổ chức các workshop về HTML/CSS/React, cách set up tools, Git, MERN, và cũng có workshop chia sẻ kinh nghiệm từ những group projects năm ngoái. Mình siêu thích workshop giải một đề bài frontend của anh Sơn vì nó đã dạy mình cách debug và revisit những concept quan trọng trong React. Mình biết có team leader còn mở lớp dạy webdev cho member. Còn advanced hơn thì có nhóm Cupid của Hoàng Nguyễn đã xây dựng một architecture khủng với cloud services, hay nhóm Flavorie của Minh Hưng và PickMeFood của Thục Anh tích hợp AI/ML.
+
+## 2. LeetCode (4/2024 → 9/2024)
+
+Bài giải LeetCode trên internet có khá nhiều, nhưng quan trọng là kiên trì làm đều đặn và phát triển cách tư duy đối với các bài cùng dạng.
+
+Hàng tuần, program có hoạt động LeetCode contest. Sau khi weekly contest trên LeetCode kết thúc, anh Khoa sẽ livestream chữa bài và review cách giải của mọi người. Lúc mới bắt đầu, mình chỉ giải được 2/4 câu, viết code messy, và không biết bao giờ mới khá hơn. Nhưng qua từng tuần tham gia, quan sát bài làm của mọi người, mình học được các cách giải khác nhau, cách viết clean code, và làm quen với áp lực thời gian. Đặc biệt, mình học cách tư duy và walk through từng bước để tìm ra observation đặc biệt cho mỗi bài, nhờ đó có những lần hiếm hoi mình giải được 3/4 hay thậm chí 4/4 câu.
+
+Program cũng ghép cặp theo số lượng câu LeetCode đã giải, và mình được ghép với Phan Anh. Bạn tận tình giảng giải khi mình chưa hiểu rõ. Hồi tháng 7 tụi mình dù vẫn đang đi làm internship, mỗi tuần tụi mình giải khoảng 15 bài ^^. Program còn có một cái Discord channel tên là code-dump. Mỗi sáng thức dậy mình đã thấy các bạn paste code từ sớm nên mình có động lực mở máy ra Leetcode luôn.
+
+Sau mấy tháng như vậy, mình đã tự tin hơn khi bước vào các buổi phỏng vấn technical LeetCode. Mình nhận thấy bản thân nhận ra patterns tốt hơn và có thể giải thích thought process một cách tuần tự. (Về sau, mình nhận ra LeetCode contest có nhiều dạng bài ít gặp trong phỏng vấn, nên mình tập trung vào các câu high frequency và không làm contest nữa, nhưng thỉnh thoảng tham gia giúp mình rèn luyện critical thinking cho những câu mới.)
+
+## 3. Mock interview (7/2024 → 9/2024)
+
+Sau khi group project kết thúc, program tổ chức các workshop về behavioral, technical interview, system design và cả một buổi live mock interview. Mình đặc biệt ấn tượng khi xem chị Nguyên mock technical cho anh Huy Anh, một người đã interview quá nhiều rồi. Mình học được cách tiếp cận khi gặp một bài chưa từng làm trước đây, cách giao tiếp liên tục để đảm bảo mình hiểu đúng yêu cầu của bài, và cách nói về thought process khi cần thêm thời gian.
+
+Từ tháng 7, mình bắt đầu mock behavioral và LeetCode interview hàng tuần. Hẹn mock với mentor hay mentee nào cũng rất dễ dàng. Có khoảng 4 bạn mentees mình hay mock cùng còn trước interview quan trọng thì mình mock với mentors như chị Ngọc, anh Cường, anh Khoa, anh Nick. Vì mình làm behavioral interview khá tốt nên các bạn cũng hay nhờ mình mock. Điều mình đặc biệt thích ở program là không chỉ dừng lại ở mối quan hệ 1-1 giữa direct mentor và mentee mà còn có rất nhiều mối quan hệ n-to-n khác, miễn là bạn sẵn sàng mở lòng kết nối với mọi người.
+
+Mình vẫn nhớ lần đầu mock system design với anh Nick, mình đã siêu run vì không biết nên nói những gì, dù trước đó đã tham gia workshop về basic system design của anh Khoa. Nhưng anh Nick rất kiên nhẫn, hỏi mình từng concern, knowledge gap và giải thích chi tiết từng cái trước khi mock. Anh Khoa cũng mock cho mình thêm một lần nữa, nên mình đã tự tin hơn cho interview. Sau này, program có mời anh Tuấn Vũ, Staff Engineer ở Quora, chạy một workshop về system design ở mức advanced hơn, và mình đã học được siêu nhiều thứ mới về database. It’s all about learning.
+
+## 4. Interview process (9/2024 → 11/2024)
+
+Điều quan trọng trong mùa apply là stay informed và keep the morale up. Mọi người trong program chia sẻ các job link liên tục, nên mình có thói quen apply ngay lập tức. Mình cũng biết ai có interview ở công ty nào, từ đó biết nên nhắm target cold email cho bên nào hoặc bỏ qua công ty nào nếu đã đầy headcount. Tham gia các buổi AMAs, mình được nghe các mentors chia sẻ về trải nghiệm apply như là Phước và anh Quân đến mùa xuân mới có interview và nhận offer. Nhờ vậy, mình đã chuẩn bị tinh thần cho một hành trình dài, kể cả trường hợp xấu nhất.
+
+Ban đầu mình ko đặt mục tiêu quá cao cho bản thân, chỉ cần có việc là được. Sau khi có offers với Liberty Mutual, Bank of America, Grammarly và trải qua burnout, mình đã định skip một vài interview, nhưng anh Khoa, anh Huy Anh và một số bạn khác đã giải thích cho mình về các yếu tố quan trọng khác như return offer của new grad, company’s long-term growth, tier/prestige, H1B, PERM, GC day 1, nên mình đã hustle tiếp cho mùa hè thực tập cuối. Sau này mình có thêm offers với Goldman Sachs, Expedia, HubSpot và Microsoft.
+
+Mình đã khóc trong Discord của program một vài lần vì áp lực về interview và nghĩ rằng mình ko đủ giỏi để interview với một vài bên, cũng có lúc mình khóc vì tạch interview, nhưng lúc nào cũng có các bạn động viên mình và ngồi với mình trên Discord mấy tiếng luôn =)). Mình nghe được quá trời lời khen ngợi và động viên, nên dần dần bắt đầu tin vào chính mình hơn. Sáng thứ 2 nào direct mentor của mình, anh Sơn, cũng catch up và boost morale cho mình. Có thể nói, mình đã tìm thấy một support system vững chắc và những người bạn mà mình nghĩ sẽ last for a lifetime.
+
+## 5. The genuine connections
+
+4 tháng đầu tiên, mình chỉ nói chuyện với các bạn trong nhóm project và advisor/mentor của mình. Mọi người thường học trên Discord chung, nhưng lúc đó mình vẫn còn ngại nên ít tham gia. Mãi đến sau khi group project kết thúc, mình xung phong làm MC cho một buổi AMA và cũng bắt đầu mở lòng hơn. Mình lên Discord nhiều hơn, và thông qua hoạt động boardgame mỗi cuối tuần, mình quen thêm rất nhiều bạn mentees mà sau này trở thành bạn bè thân thiết và người mock interview cùng mình. Dạo gần đây, mọi người thường chơi boardgame tầm 3 tiếng mỗi tuần, và sắp tới còn có hoạt động Secret Santa nữa :>.
+
+Cho đến cuối tháng 10 vừa qua, mình đã nói chuyện với tất cả mentors, gần hết mentees, và là người gặp gỡ nhiều người trong program in-person nhất, nhiều hơn cả anh Khoa nữa 😊. Một trong những khoảnh khắc tuyệt vời nhất của mình trong năm 2024 là chuyến đi Bay Area vào mùa hè. Mình đến tại có anh Khoa và chị Nguyên, nhưng không ngờ lại được gặp gần hết dàn mentors của program, ở lại nhà mọi người nhiều ngày, được dẫn đi thăm headquarters của LinkedIn, Meta, ServiceNow, một xíu Netflix, hát hò, nấu ăn, hiking, và tìm thấy sự tự tin cho những tháng apply tiếp theo. Sau đó, mình đi conferences nên đã gặp thêm rất nhiều bạn mentees, ai cũng dễ thương :>.
+
+Đi đâu cũng có người sẵn sàng host và dẫn mình đi chơi – điều mà mình nghĩ không dễ tìm thấy ở bất kỳ nơi nào khác và mình luôn vô cùng biết ơn khi nghĩ về nó. Cái group chat lớn lúc nào cũng đầy ắp tin nhắn. Dạo gần đây, mọi người hay chúc mừng nhau về các offers mới, siêu supportive.
+
+## Kết luận:
+
+Kết quả của đợt apply này vượt 100% mong đợi của mình trước khi bước vào nó. Mình đạt được cả 3 mục tiêu đặt ra ở đầu, và constant feedback loop giúp mình grow nhanh và thay đổi chiến lược khi cần. Điều quan trọng nhất là mọi người đã giúp mình vượt qua giới hạn mình đặt ra cho bản thân, và luôn cho mình những lời khuyên chân thành mà không bó buộc. Mình rất yêu quý những người bạn mình gặp gỡ ở đây và tin rằng VTMP was among the best thing that happened to me in my 20s :>.
+
+Mình rất hạnh phúc khi được trở lại là mentor mùa 3, và mong là đã giúp các bạn có hứng thú với program thêm một góc nhìn mới. Nếu bạn có ý định nộp và có bất cứ câu hỏi gì thì hãy cho mình biết bên dưới nhé!

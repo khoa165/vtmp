@@ -43,7 +43,7 @@ export const BlogContainer: React.FC<BlogContainerProps> = ({ metadata }) => {
       <div className={`blog-header ${banner && 'with-separator'}`}>
         <h1>{title}</h1>
         <p className="fst-italic mb-0">Author: {author}</p>
-        {contributors !== null && (
+        {contributors != null && contributors.length > 0 && (
           <p className="fst-italic">Contributors: {contributors}</p>
         )}
         <p className="mt-2">𓆝 𓆟 𓆞 𓆝 𓆟 𓆝 𓆟 𓆞 𓆝 𓆟</p>
