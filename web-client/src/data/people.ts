@@ -150,7 +150,7 @@ export const mentorshipPeople: {
       {
         year: 2025,
         title: 'Software Engineer II @ Mastercard',
-        roles: [MentorshipRole.LEAD],
+        roles: [MentorshipRole.LEAD, MentorshipRole.MENTOR],
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
