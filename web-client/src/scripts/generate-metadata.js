@@ -51,7 +51,9 @@ const buildFilePathsFileOutput = (metadata) => {
   const importPart = metadata
     .map(
       ({ name, filepath }, index) =>
-        `import T${generateImportName(name)} from "../content/${filepath}";`
+        `import T${generateImportName(name)} from "../content/${
+          filepath.split('content/')[1]
+        }";`
     )
     .join('\n');
 
