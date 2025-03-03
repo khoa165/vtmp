@@ -765,11 +765,6 @@ export const mentorshipPeople: {
           },
         ],
       },
-      {
-        year: 2025,
-        title: 'Software Engineer @ Meta',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
-      },
     ],
   },
   trangvu: {
@@ -813,7 +808,7 @@ export const mentorshipPeople: {
       {
         year: 2025,
         title: 'SWE Intern @ Shopify',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.EXMENTEE_LOGISTICS_SUPPORT],
       },
     ],
   },
@@ -909,6 +904,11 @@ export const mentorshipPeople: {
         teammates: ['ngocanh', 'vynguyen', 'viennguyen'],
         mentors: ['nickdoan'],
         projectAdvisors: ['jennyquach', 'phuongcao', 'khoale'],
+      },
+      {
+        year: 2025,
+        title: 'SWE Intern @ PlayStation',
+        roles: [MentorshipRole.EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1012,6 +1012,11 @@ export const mentorshipPeople: {
         mentors: ['sonmac'],
         projectAdvisors: ['jennyquach', 'phuongcao', 'khoale'],
       },
+      {
+        year: 2025,
+        title: 'SWE Intern @ ServiceNow',
+        roles: [MentorshipRole.EXMENTEE_MENTOR],
+      },
     ],
   },
   allyhoang: {
@@ -1098,6 +1103,11 @@ export const mentorshipPeople: {
         teammates: ['allyhoang', 'phananh', 'quynguyen'],
         mentors: ['thuanh', 'robinhoang', 'khoale'],
         projectAdvisors: ['sonmac', 'khoale'],
+      },
+      {
+        year: 2025,
+        title: 'Software Engineer @ Amazon',
+        roles: [MentorshipRole.EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1302,6 +1312,11 @@ export const mentorshipPeople: {
         mentors: ['phuocong'],
         projectAdvisors: ['quanle', 'khoale'],
       },
+      {
+        year: 2025,
+        title: 'SWE Intern @ Ryco.io',
+        roles: [MentorshipRole.EXMENTEE_LOGISTICS_SUPPORT],
+      },
     ],
   },
   vytran: {
@@ -1342,6 +1357,11 @@ export const mentorshipPeople: {
         teammates: ['linhtran', 'jimmynguyen', 'longdau'],
         mentors: ['nguyenvu', 'khoale'],
         projectAdvisors: ['phuocong', 'khoale'],
+      },
+      {
+        year: 2025,
+        title: 'Data Engineer Intern @ Meta',
+        roles: [MentorshipRole.EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1611,6 +1631,11 @@ export const mentorshipPeople: {
         teammates: ['hoangnguyen', 'linhnguyen', 'linhhoang'],
         mentors: ['phuocong'],
         projectAdvisors: ['dangpham', 'khoale'],
+      },
+      {
+        year: 2025,
+        title: 'SWE Intern @ Amazon',
+        roles: [MentorshipRole.EXMENTEE_LOGISTICS_SUPPORT],
       },
     ],
   },

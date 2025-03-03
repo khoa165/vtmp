@@ -70,6 +70,7 @@ export enum MentorshipRole {
   LEAD = 'LEAD',
   INACTIVE_LEAD = 'INACTIVE_LEAD',
   MENTOR = 'MENTOR',
+  EXMENTEE_LOGISTICS_SUPPORT = 'EXMENTEE_LOGISTICS_SUPPORT',
   EXMENTEE_MENTOR = 'EXMENTEE_MENTOR',
   MENTEE = 'MENTEE',
 }
@@ -90,7 +91,8 @@ export const rolePriority: {
   [MentorshipRole.LEAD]: 2.1,
   [MentorshipRole.INACTIVE_LEAD]: 2.2,
   [MentorshipRole.MENTOR]: 3,
-  [MentorshipRole.EXMENTEE_MENTOR]: 3.5,
+  [MentorshipRole.EXMENTEE_MENTOR]: 3.1,
+  [MentorshipRole.EXMENTEE_LOGISTICS_SUPPORT]: 3.2,
   [MentorshipRole.MENTEE]: 4,
 };
 

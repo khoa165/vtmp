@@ -19,6 +19,7 @@ export const roleDisplayName: {
   [MentorshipRole.INACTIVE_LEAD]: 'Lead',
   [MentorshipRole.MENTOR]: 'Mentor',
   [MentorshipRole.EXMENTEE_MENTOR]: 'Mentor (Ex-Mentee)',
+  [MentorshipRole.EXMENTEE_LOGISTICS_SUPPORT]: 'Logistics Support (Ex-Mentee)',
   [MentorshipRole.MENTEE]: 'Mentee',
 };
 
