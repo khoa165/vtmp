@@ -16,7 +16,7 @@ interface TreeCardProps {
 }
 
 export const TreeCard: React.FC<TreeCardProps> = ({
-  blog: { name, title, author, description, date, tags },
+  blog: { name, title, authors, description, date, tags },
 }) => {
   return (
     <Card className="blog-card">
@@ -25,7 +25,7 @@ export const TreeCard: React.FC<TreeCardProps> = ({
         <CardSubtitle className="mb-3 text-muted" tag="h6">
           <span>{moment(date).format('MMMM Do YYYY')}</span>
           <span className="mx-2">|</span>
-          <span>{author}</span>
+          <span>{authors.join(', ')}</span>
         </CardSubtitle>
         <CardText className="mb-1">{description} </CardText>
         <div className="mb-3">

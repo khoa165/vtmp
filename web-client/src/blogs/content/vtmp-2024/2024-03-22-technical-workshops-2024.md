@@ -1,6 +1,6 @@
 ---
 title: Technical workshops 2024
-author: Khoa Le
+authors: Khoa Le
 description: Recordings from 2024 workshops - Git, HTML/CSS, Productivity, MERN
 date: 3-22-2024
 tags: resources

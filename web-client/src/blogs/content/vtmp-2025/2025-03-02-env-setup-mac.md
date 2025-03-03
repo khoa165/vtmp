@@ -1,6 +1,6 @@
 ---
 title: Environment Setup for MacOS
-author: Hoang Nguyen
+authors: Hoang Nguyen
 contributors: Phuc Khang
 description: Guide to setup environment that is ready for group project for MacOS (Git, Github, VSCode, Node.js, React.js, MongoDB).
 date: 03-02-2025
@@ -118,6 +118,7 @@ Set up git config
    Link: https://nodejs.org/en/download
 
 2. **Checking to see if Node is installed:**
+
    1. Go to your command prompt.
    2. Use the command: `node -v`.
 
@@ -157,6 +158,7 @@ Set up git config
 ## MongoDB Backend Setup
 
 1. **Downloading and setup MongoDB**
+
    1. Create an account and log in through: https://www.mongodb.com/cloud/atlas/register
    2. Click on “Build a Database” and create a cluster using the free tier.
    3. Set up a username and a password for our connection.
@@ -178,7 +180,9 @@ Set up git config
       ![](https://res.cloudinary.com/dnbjqryir/image/upload/v1740978797/mongo5_nkfkog.png)
 
       Copy the URL and follow the next few steps!
+
 2. **Setting up working directory for application’s backend:**
+
    1. Create a folder for the backend: `mkdir backend`
    2. Navigate to backend folder: `cd backend`
    3. Create configure file: `npm init -y`
@@ -187,6 +191,7 @@ Set up git config
       `npm install dotenv express mongoose mongodb`
 
    5. Create an index.js file in your backend directory.
+
 3. **Setting up the server:**
 
    Within your `index.js` file, input the following code:

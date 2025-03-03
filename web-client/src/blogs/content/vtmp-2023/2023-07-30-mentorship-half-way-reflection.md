@@ -1,6 +1,6 @@
 ---
 title: Mentorship half-way look back
-author: Khoa Le
+authors: Khoa Le
 description: Reflection on the past 4-5 months running this mentorship program
 date: 07-30-2023
 tags: reflection

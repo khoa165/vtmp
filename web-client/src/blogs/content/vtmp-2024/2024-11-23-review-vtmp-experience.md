@@ -1,6 +1,6 @@
 ---
 title: Trải Nghiệm Tham Gia Viet Tech Mentorship Program
-author: Van Nguyen
+authors: Van Nguyen
 description: Mình là Thanh Vân, mentee của Viet Tech Mentorship Program (VTMP) mùa hai. Mình viết bài này để chia sẻ trải nghiệm tham gia mentorship trong gần một năm vừa qua, hy vọng sẽ mang đến cho các bạn cái nhìn chân thật, đặc biệt là những ai đang muốn nộp đơn vào VTMP mùa ba!
 date: 11-23-2024
 tags: reflection

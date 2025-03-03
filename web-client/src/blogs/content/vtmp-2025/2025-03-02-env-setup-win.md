@@ -1,6 +1,6 @@
 ---
 title: Environment Setup for Window
-author: Phuc Khang
+authors: Phuc Khang
 contributors: Hoang Nguyen
 description: Guide to setup environment that is ready for group project for Window (Git, Github, VSCode, Node.js, React.js, MongoDB).
 date: 03-02-2025
@@ -17,9 +17,11 @@ banner: https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Unofficial_Win
    Link: https://git-scm.com/downloads
 
 2. **Checking to see if Git is installed:**
+
    1. Go to your command prompt.
    2. Use the command: `git -v` or `git version`.
    3. On your display:
+
       1. If the currently installed version of Git is displayed, Git is installed!
 
          ![Git is installed!](https://res.cloudinary.com/dnbjqryir/image/upload/v1740981788/gitwin1_nl3etp.png)
@@ -31,7 +33,9 @@ banner: https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Unofficial_Win
          ![Error, go to step 3!](https://res.cloudinary.com/dnbjqryir/image/upload/v1740981788/gitwin2_opvjp3.png)
 
          Error, go to step 3!
+
 3. **Setting up system environment variables for git**
+
    1. In the Start Menu or taskbar search, search for "environment variable".
    2. Select "Edit the system environment variables".
 
@@ -58,6 +62,7 @@ You can find GitHub at https://github.com/
 
 1. **Create an account and sign in**
 2. **Creating basic repository:**
+
    1. Click on the “New” button on the top left corner of the screen.
    2. Provide a name and description to your repository, and you could either make it public or private.
    3. In your newly created repository, click on the green “Code” button to retrieve the repository’s URL.
@@ -65,7 +70,9 @@ You can find GitHub at https://github.com/
       ![Copy this HTTPS URL](https://res.cloudinary.com/dnbjqryir/image/upload/v1740981788/gitwin5_lspi3d.png)
 
       Copy this HTTPS URL
+
 3. **Setting up your repository on your local device:**
+
    1. Go into your preferred IDE (VSCode, Eclipse,...)
    2. Launch a terminal, preferably Git Bash
    3. Use the command `git-credential-manager.exe github login` to connect your git to GitHub.
@@ -114,6 +121,7 @@ Use the command `cd [your working directory]` (example: “cd Bondscape” if yo
    Link: https://nodejs.org/en/download
 
 2. **Checking to see if Node is installed:**
+
    1. Go to your command prompt.
    2. Use the command: `node -v`.
 
@@ -153,6 +161,7 @@ Use the command `cd [your working directory]` (example: “cd Bondscape” if yo
 ## MongoDB Backend Setup
 
 1. **Downloading and setup MongoDB**
+
    1. Create an account and log in through: https://www.mongodb.com/cloud/atlas/register
    2. Click on “Build a Database” and create a cluster using the free tier.
    3. Set up a username and a password for our connection.
@@ -174,7 +183,9 @@ Use the command `cd [your working directory]` (example: “cd Bondscape” if yo
       ![](https://res.cloudinary.com/dnbjqryir/image/upload/v1740978797/mongo5_nkfkog.png)
 
       Copy the URL and follow the next few steps!
+
 2. **Setting up working directory for application’s backend:**
+
    1. Create a folder for the backend: `mkdir backend`
    2. Navigate to backend folder: `cd backend`
    3. Create configure file: `npm init -y`
@@ -183,6 +194,7 @@ Use the command `cd [your working directory]` (example: “cd Bondscape” if yo
       `npm install dotenv express mongoose mongodb`
 
    5. Create an index.js file in your backend directory.
+
 3. **Setting up the server:**
 
    Within your `index.js` file, input the following code:

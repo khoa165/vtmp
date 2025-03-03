@@ -16,7 +16,10 @@ const extractMetadata = (text) => {
       const colonIndex = keyValue.indexOf(':');
       if (colonIndex > 0) {
         const key = keyValue.substring(0, colonIndex).trim();
-        const value = keyValue.substring(colonIndex + 1).trim();
+        let value = keyValue.substring(colonIndex + 1).trim();
+        if (key === 'authors') {
+          value = value.split(',').map((s) => s.trim());
+        }
         metadata[key] = value;
       }
     });

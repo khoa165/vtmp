@@ -31,7 +31,7 @@ export const BlogContainer: React.FC<BlogContainerProps> = ({ metadata }) => {
     return <h1>Loading...</h1>;
   }
 
-  const { title, author, contributors, banner } = metadata[filename];
+  const { title, authors, contributors, banner } = metadata[filename];
 
   return (
     <Container id="blog-page">
@@ -42,7 +42,11 @@ export const BlogContainer: React.FC<BlogContainerProps> = ({ metadata }) => {
       )}
       <div className={`blog-header ${banner && 'with-separator'}`}>
         <h1>{title}</h1>
-        <p className="fst-italic mb-0">Author: {author}</p>
+        {authors.length > 1 ? (
+          <p className="fst-italic mb-0">Authors: {authors.join(', ')}</p>
+        ) : (
+          <p className="fst-italic mb-0">Author: {authors[0]}</p>
+        )}
         {contributors != null && contributors.length > 0 && (
           <p className="fst-italic">Contributors: {contributors}</p>
         )}

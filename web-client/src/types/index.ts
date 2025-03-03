@@ -9,7 +9,7 @@ import {
 export interface BlogMetadata {
   name: string;
   title: string;
-  author: string;
+  authors: string[];
   contributors?: string;
   description: string;
   banner?: string;

@@ -1,6 +1,6 @@
 ---
 title: Mấy điều nhỏ nhặt em ước mình biết sớm hơn khi apply internship
-author: Trang Do, Ngoc Anh
+authors: Trang Do, Ngoc Anh
 description: Thời điểm này cũng đã cuối năm nên em muốn post một bài nho nhỏ share về những gì em học được qua cả mùa lầy lội apply internship năm nay. Bài post này em viết cùng với Ngọc Anh, cũng là mentee trong VTMP. Một số điều tụi em sắp chia sẻ dưới đây có thể hơi personal và là đúc kết của riêng tụi em, nhưng hy vọng cho mọi người một insight mới và phần nào động viên những bạn chưa gặp may mắn trong thời gian vừa rồi tiếp tục cố gắng.
 date: 12-02-2024
 tags: reflection

@@ -1,6 +1,6 @@
 ---
 title: Short title here
-author: Your name here
+authors: Your name here
 description: Short description here
 date: MM-DD-YYYY
 ---

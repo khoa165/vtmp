@@ -1,6 +1,6 @@
 ---
 title: Tools for team
-author: Khoa Le
+authors: Khoa Le
 description: Basic tools and tips for collaboration with your team
 date: 04-30-2023
 tags: technical
