@@ -2,6 +2,7 @@
 
 ### Development mode
 
+- Navigate inside web-client `cd web-client`
 - Run `yarn install` to install dependencies
 - Run `yarn start` to start development
 
@@ -11,12 +12,12 @@
 
 - Create a file inside `web-client/src/blogs/content`
 - Replace placeholder with thoughtful blog content
-- Run the command `cd web-client; yarn run generate-data` in terminal
+- Run the command `yarn run generate-data` in terminal
 - Commit your change and also generated changes
 
 ---
 
 ### When modifying metadata of an existing blog
 
-- Run the command `cd web-client; yarn run generate-data` in terminal
+- Run the command `yarn run generate-data` in terminal
 - Commit your change and also generated changes
