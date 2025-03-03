@@ -41,12 +41,6 @@ export const App = () => {
       <div id="mentorship-website">
         <Router>
           <Routes>
-            {metadata != null && (
-              <Route
-                path="blogs/:filename"
-                element={<BlogContainer metadata={metadata} />}
-              />
-            )}
             <Route path="apply" element={<Mentorship2025Apply />} />
             <Route path="apply-pd" element={<Mentorship2025Apply />} />
             <Route path="proposal" element={<Mentorship2025Proposal />} />
@@ -57,6 +51,12 @@ export const App = () => {
                 path="/resources"
                 element={<TreeContainer metadata={metadata} />}
               />
+              {metadata != null && (
+                <Route
+                  path="resources/:filename"
+                  element={<BlogContainer metadata={metadata} />}
+                />
+              )}
               <Route path="/projects" element={<ProjectsContainer />} />
               <Route path="/stats/*" element={<StatsContainer />} />
             </Route>

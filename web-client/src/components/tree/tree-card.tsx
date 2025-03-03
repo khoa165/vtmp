@@ -33,7 +33,7 @@ export const TreeCard: React.FC<TreeCardProps> = ({
             <Badge>{tag}</Badge>
           ))}
         </div>
-        <Link to={`/blogs/${name}`}>
+        <Link to={`/resources/${name}`}>
           Learn more
           <i className="bi bi-arrow-right ms-2" />
         </Link>
