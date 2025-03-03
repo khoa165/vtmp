@@ -4,7 +4,7 @@ authors: Phuc Khang
 contributors: Hoang Nguyen
 description: Guide to setup environment that is ready for group project for Window (Git, Github, VSCode, Node.js, React.js, MongoDB).
 date: 03-02-2025
-tags: technical
+tags: setup, tools
 banner: https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Unofficial_Windows_logo_variant_-_2002%E2%80%932012_%28Multicolored%29.svg/170px-Unofficial_Windows_logo_variant_-_2002%E2%80%932012_%28Multicolored%29.svg.png
 ---
 

@@ -4,7 +4,7 @@ authors: Hoang Nguyen
 contributors: Phuc Khang
 description: Guide to setup environment that is ready for group project for MacOS (Git, Github, VSCode, Node.js, React.js, MongoDB).
 date: 03-02-2025
-tags: technical
+tags: setup, tools
 banner: https://d1csarkz8obe9u.cloudfront.net/posterpreviews/mac-logo-design-template-8fe7b3dedb88be5575e790e208c17b25_screen.jpg?ts=1662442689
 ---
 

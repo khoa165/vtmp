@@ -17,9 +17,6 @@ const extractMetadata = (text) => {
       if (colonIndex > 0) {
         const key = keyValue.substring(0, colonIndex).trim();
         let value = keyValue.substring(colonIndex + 1).trim();
-        if (key === 'authors') {
-          value = value.split(',').map((s) => s.trim());
-        }
         metadata[key] = value;
       }
     });
@@ -95,11 +92,13 @@ async function generatedMetadata() {
     );
 
     const mdMetadata = contents.map(({ content, filepath }, index) => {
-      const { date, tags, ...remainingMetadata } = extractMetadata(content);
+      const { date, authors, tags, ...remainingMetadata } =
+        extractMetadata(content);
       return {
         name: mdFiles[index].split('/')[1].split('.')[0],
         ...remainingMetadata,
         date: new Date(date),
+        authors: authors.split(',').map((s) => s.trim()),
         tags: tags.split(',').map((s) => s.trim()),
         filepath,
       };
