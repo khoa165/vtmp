@@ -84,4 +84,22 @@ export const allBlogsMetadata: BlogMetadata[] = [
     date: "2024-03-22T04:00:00.000Z",
     tags: ["resources"]
   },
+  {
+    name: "M3-2025-03-02-env-setup-mac",
+    title: "Environment Setup for MacOS",
+    author: "Hoang Nguyen, Phuc Khang",
+    description: "Guide to setup environment that is ready for group project for MacOS (Git, Github, VSCode, Node.js, React.js, MongoDB).",
+    banner: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/mac-logo-design-template-8fe7b3dedb88be5575e790e208c17b25_screen.jpg?ts=1662442689",
+    date: "2025-03-02T05:00:00.000Z",
+    tags: ["technical"]
+  },
+  {
+    name: "M3-2025-03-02-env-setup-win",
+    title: "Environment Setup for Window",
+    author: "Phuc Khang",
+    description: "Guide to setup environment that is ready for group project for Window (Git, Github, VSCode, Node.js, React.js, MongoDB).",
+    banner: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Unofficial_Windows_logo_variant_-_2002%E2%80%932012_%28Multicolored%29.svg/170px-Unofficial_Windows_logo_variant_-_2002%E2%80%932012_%28Multicolored%29.svg.png",
+    date: "2025-03-02T05:00:00.000Z",
+    tags: ["technical"]
+  },
 ];
