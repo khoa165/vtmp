@@ -94,9 +94,19 @@ export const allBlogsMetadata: BlogMetadata[] = [
     tags: ["reflection"]
   },
   {
+    name: "M2-2024-12-02-i-wish-i-knew",
+    title: "Mấy điều nhỏ nhặt em ước mình biết sớm hơn khi apply internship",
+    author: "Trang Do, Ngoc Anh",
+    description: "Thời điểm này cũng đã cuối năm nên em muốn post một bài nho nhỏ share về những gì em học được qua cả mùa lầy lội apply internship năm nay. Bài post này em viết cùng với Ngọc Anh, cũng là mentee trong VTMP. Một số điều tụi em sắp chia sẻ dưới đây có thể hơi personal và là đúc kết của riêng tụi em, nhưng hy vọng cho mọi người một insight mới và phần nào động viên những bạn chưa gặp may mắn trong thời gian vừa rồi tiếp tục cố gắng.",
+    banner: "https://res.cloudinary.com/khoa165/image/upload/v1718192551/viettech/VTMP_logo.png",
+    date: "2024-12-02T05:00:00.000Z",
+    tags: ["reflection"]
+  },
+  {
     name: "M3-2025-03-02-env-setup-mac",
     title: "Environment Setup for MacOS",
-    author: "Hoang Nguyen, Phuc Khang",
+    author: "Hoang Nguyen",
+    contributors: "Phuc Khang",
     description: "Guide to setup environment that is ready for group project for MacOS (Git, Github, VSCode, Node.js, React.js, MongoDB).",
     banner: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/mac-logo-design-template-8fe7b3dedb88be5575e790e208c17b25_screen.jpg?ts=1662442689",
     date: "2025-03-02T05:00:00.000Z",
@@ -106,6 +116,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     name: "M3-2025-03-02-env-setup-win",
     title: "Environment Setup for Window",
     author: "Phuc Khang",
+    contributors: "Hoang Nguyen",
     description: "Guide to setup environment that is ready for group project for Window (Git, Github, VSCode, Node.js, React.js, MongoDB).",
     banner: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Unofficial_Windows_logo_variant_-_2002%E2%80%932012_%28Multicolored%29.svg/170px-Unofficial_Windows_logo_variant_-_2002%E2%80%932012_%28Multicolored%29.svg.png",
     date: "2025-03-02T05:00:00.000Z",
