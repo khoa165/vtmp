@@ -548,6 +548,11 @@ export const mentorshipPeople: {
           },
         ],
       },
+      {
+        year: 2025,
+        title: 'Software Engineer @ LinkedIn',
+        roles: [MentorshipRole.EXMENTEE_INACTIVE_MENTOR],
+      },
     ],
   },
   phuongcao: {
@@ -1640,7 +1645,7 @@ export const mentorshipPeople: {
       {
         year: 2025,
         title: 'SWE Intern @ Amazon',
-        roles: [MentorshipRole.EXMENTEE_LOGISTICS_SUPPORT],
+        roles: [MentorshipRole.EXMENTEE_MENTOR],
       },
     ],
   },

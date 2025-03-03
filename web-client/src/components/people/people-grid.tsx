@@ -24,7 +24,8 @@ export const PeopleGrid: React.FC<PeopleGridProps> = ({
   ) {
     return (
       <h3 className="mt-3 text-center text-green">
-        Stay tuned! We will soon recruit for our {year} season
+        Adjust your filters to see results! Otherwise, check back later for
+        updates once we recruit.
       </h3>
     );
   }

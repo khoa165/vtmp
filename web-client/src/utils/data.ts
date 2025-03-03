@@ -54,10 +54,23 @@ export const isPersonInCorrectGroup = (
 export const getTerm = (person: MentorshipPerson, year: number) =>
   person.terms.find((t) => t.year === year);
 
-const isMentorUsedToBeMentee = (person: MentorshipPerson, year: number) =>
+const isMentorSubsetRole = (person: MentorshipPerson, year: number) =>
   Boolean(
     getTerm(person, year)?.roles?.includes(MentorshipRole.EXMENTEE_MENTOR)
+  ) ||
+  Boolean(
+    getTerm(person, year)?.roles?.includes(
+      MentorshipRole.EXMENTEE_LOGISTICS_SUPPORT
+    )
+  ) ||
+  Boolean(
+    getTerm(person, year)?.roles?.includes(
+      MentorshipRole.EXMENTEE_INACTIVE_MENTOR
+    )
   );
+const isLeadSubsetRole = (person: MentorshipPerson, year: number) =>
+  Boolean(getTerm(person, year)?.roles?.includes(MentorshipRole.RISING_LEAD)) ||
+  Boolean(getTerm(person, year)?.roles?.includes(MentorshipRole.INACTIVE_LEAD));
 
 const isProgramManager = (person: MentorshipPerson, year: number) =>
   Boolean(
@@ -70,7 +83,8 @@ export const doesPersonHaveRoleInYear = (
   year: number
 ) =>
   Boolean(getTerm(person, year)?.roles?.includes(role)) ||
-  (role === MentorshipRole.MENTOR && isMentorUsedToBeMentee(person, year)) ||
+  (role === MentorshipRole.MENTOR && isMentorSubsetRole(person, year)) ||
+  (role === MentorshipRole.LEAD && isLeadSubsetRole(person, year)) ||
   (role === MentorshipRole.PROGRAM_LEAD && isProgramManager(person, year));
 
 export const doesPersonHaveAtLeastOneRoleInYear = (
