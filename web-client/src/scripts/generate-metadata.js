@@ -30,6 +30,7 @@ const buildMetadataFileOutput = (metadata) =>
       (m) =>
         '  {\n    ' +
         Object.entries(m)
+          .filter(([key]) => key !== 'filepath')
           .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
           .join(',\n    ') +
         '\n  },'
@@ -45,18 +46,17 @@ const generateImportName = (filename) =>
     .join('');
 
 const buildFilePathsFileOutput = (metadata) => {
-  const fileNames = metadata.map((m) => m.name);
   metadata.sort((a, b) => b.date - a.date);
 
-  const importPart = fileNames
+  const importPart = metadata
     .map(
-      (name) =>
-        `import ${generateImportName(name)} from "../content/${name}.md";`
+      ({ name, filepath }, index) =>
+        `import T${generateImportName(name)} from "../content/${filepath}";`
     )
     .join('\n');
 
   const arrayPart = `export const allBlogsFilepaths = [\n${metadata
-    .map(({ name }) => '  ' + generateImportName(name))
+    .map(({ name }) => '  T' + generateImportName(name))
     .join(',\n')}\n];\n`;
 
   return importPart + '\n\n' + arrayPart;
@@ -70,21 +70,33 @@ async function generatedMetadata() {
   try {
     // const __filename = fileURLToPath(require("meta").url);
     const directoryPath = path.join(__dirname, '../blogs/content');
-    const files = await readdir(directoryPath);
-
-    const filepaths = files.map((filename) =>
+    const directoryContent = await readdir(directoryPath, {
+      recursive: true,
+    });
+    const mdFiles = directoryContent.filter((directoryChild) =>
+      directoryChild.endsWith('.md')
+    );
+    const filepaths = mdFiles.map((filename) =>
       path.join(__dirname, '../blogs/content', filename)
     );
+
     const contents = await Promise.all(
-      filepaths.map((filepath) => readfile(filepath, 'utf-8'))
+      filepaths.map(async (filepath) => {
+        return {
+          content: await readfile(filepath, 'utf-8'),
+          filepath,
+        };
+      })
     );
-    const mdMetadata = contents.map((content, index) => {
+
+    const mdMetadata = contents.map(({ content, filepath }, index) => {
       const { date, tags, ...remainingMetadata } = extractMetadata(content);
       return {
-        name: files[index].split('.')[0],
+        name: mdFiles[index].split('/')[1].split('.')[0],
         ...remainingMetadata,
         date: new Date(date),
         tags: tags.split(',').map((s) => s.trim()),
+        filepath,
       };
     });
     blogsMetadata.push(...mdMetadata);
