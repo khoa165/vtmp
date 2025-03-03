@@ -286,6 +286,11 @@ export const mentorshipPeople: {
         title: 'Software Engineer @ Palantir',
         roles: [MentorshipRole.MENTOR],
       },
+      {
+        year: 2025,
+        title: 'Software Engineer @ Palantir',
+        roles: [MentorshipRole.MENTOR],
+      },
     ],
     hasNeverBeenMenteeOfProgram: true,
   },
