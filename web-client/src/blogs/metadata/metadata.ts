@@ -74,7 +74,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     banner: "https://res.cloudinary.com/khoa165/image/upload/v1711094075/viettech/offers2023.png",
     date: "2023-12-15T05:00:00.000Z",
     authors: ["Khoa Le"],
-    tags: ["reflection"]
+    tags: ["reflection","announcement"]
   },
   {
     name: "2024-03-22-technical-workshops-2024",
@@ -83,6 +83,15 @@ export const allBlogsMetadata: BlogMetadata[] = [
     date: "2024-03-22T04:00:00.000Z",
     authors: ["Khoa Le"],
     tags: ["resources"]
+  },
+  {
+    name: "2024-11-08-conference-tips",
+    title: "Kinh nghiệm để có 3 interviews tại GHC",
+    description: "Em là Như Quỳnh, mentee của Viet Tech Mentorship Program năm nay. Trước khi đi GHC, em đã đọc nhiều bài chia sẻ kinh nghiệm từ các anh chị trong group nhờ vậy mà trải nghiệm GHC của em khá tốt. Em đã may mắn có được 3 onsite interviews và muốn chia sẻ lại kinh nghiệm của mình cho những bạn sắp đi conference nói chung và GHC nói riêng ạ.",
+    banner: "https://res.cloudinary.com/khoa165/image/upload/v1718192551/viettech/VTMP_logo.png",
+    date: "2024-11-08T05:00:00.000Z",
+    authors: ["Quynh Tran"],
+    tags: ["reflection","advice"]
   },
   {
     name: "2024-11-23-review-vtmp-experience",
@@ -100,7 +109,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     banner: "https://res.cloudinary.com/khoa165/image/upload/v1718192551/viettech/VTMP_logo.png",
     date: "2024-12-02T05:00:00.000Z",
     authors: ["Trang Do","Ngoc Anh"],
-    tags: ["reflection"]
+    tags: ["reflection","advice"]
   },
   {
     name: "2024-12-07-summary-2024",
