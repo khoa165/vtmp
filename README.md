@@ -1,4 +1,4 @@
-# VTMP
+# Viet Tech Mentorship Program
 
 ## Project Description
 
@@ -14,28 +14,53 @@ This project is a monorepo consisting of two main components:
 ## Setup Instructions
 
 1.  **Install Node.js:** Make sure you have Node.js (version 16 or higher) installed on your system. You can download it from [nodejs.org](https://nodejs.org/).
+
 2.  **Install Yarn:** This project uses Yarn as the package manager. You can install it globally using the following command
 
-    ```bash
-    npm install -g yarn
-    ```
+```bash
+npm install -g yarn
+```
 
 3.  **Clone the repository:** Clone this repository to your local machine using Git
 
-    ```bash
-    git clone git@github.com:khoa165/vtmp.git
-    ```
+```bash
+git clone git@github.com:khoa165/vtmp.git
+```
 
 4.  **Install dependencies:** Navigate to the project directory and install the dependencies for both the web and web-client components
 
-    ```bash
-    cd vtmp
-    yarn pp
-    ```
+```bash
+cd vtmp
+yarn pp
+```
 
 5.  **Configure environment variables:**
-    - For the web application, create a `.env` file in the `web` directory and configure the necessary environment variables, such as database connection details and API keys. You can refer to `.env.example` in the `web` directory.
-    - For the web-client application, create a `.env` file in the `web-client` directory and configure the necessary environment variables, such as API endpoints and authentication settings. You can refer to `.env.example` in the `web-client` directory.
+
+- For the web application, create a `.env` file in the `web` directory and configure the necessary environment variables, such as database connection details and API keys. You can refer to `.env.example` in the `web` directory.
+- For the web-client application, create a `.env` file in the `web-client` directory and configure the necessary environment variables, such as API endpoints and authentication settings. You can refer to `.env.example` in the `web-client` directory.
+
+6.  **(Optional) Configure Git default push**: For convenient Git usage, do the following steps
+
+    6.1. Open .git/config file
+
+    ```
+    code .git/config
+    ```
+
+    6.2. Add the following config at file's root level (don't touch anything else)
+
+    ```
+    [push]
+        default = current
+    ```
+
+    6.3. After git add and git commit, simply run
+
+    ```
+    git push
+    ```
+
+    This will push your local branch to a remote branch with the same name
 
 ## Running the Application
 
