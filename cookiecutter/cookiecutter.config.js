@@ -1,7 +1,7 @@
 module.exports = [
   {
     name: 'Blog Post',
-    templatePath: 'cookiecutter/templates/BLOG_TEMPLATE.md',
+    templatePath: 'cookiecutter/templates/YYYY_MM_DD-BLOG_TITLE.md',
     outputPath: 'web-client/src/blogs/content/vtmp-2025/',
     fields: [
       {

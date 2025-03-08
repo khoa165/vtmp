@@ -1,0 +1,11 @@
+.github/ @khoa165
+.vscode/ @khoa165
+cookiecutter/ @khoa165
+scripts/ @khoa165
+web/ @khoa165
+web-client/ @khoa165
+web-client/src/blogs/content/ @khoa165 @hoangr1010
+
+.gitignore @khoa165
+.prettierrc @khoa165
+package.json @khoa165
