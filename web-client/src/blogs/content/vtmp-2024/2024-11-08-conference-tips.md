@@ -2,7 +2,7 @@
 title: Kinh nghiệm để có 3 interviews tại GHC
 authors: Quynh Tran
 description: Em là Như Quỳnh, mentee của Viet Tech Mentorship Program năm nay. Trước khi đi GHC, em đã đọc nhiều bài chia sẻ kinh nghiệm từ các anh chị trong group nhờ vậy mà trải nghiệm GHC của em khá tốt. Em đã may mắn có được 3 onsite interviews và muốn chia sẻ lại kinh nghiệm của mình cho những bạn sắp đi conference nói chung và GHC nói riêng ạ.
-date: 11-08-2024
+date: 2024-11-08
 tags: reflection, advice
 banner: https://res.cloudinary.com/khoa165/image/upload/v1718192551/viettech/VTMP_logo.png
 ---

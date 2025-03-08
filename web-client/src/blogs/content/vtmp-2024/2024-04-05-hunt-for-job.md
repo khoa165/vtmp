@@ -2,7 +2,7 @@
 title: How to hunt for job - A beginner's view
 authors: Quan Le
 description: Mình rất may mắn khi tìm được internship tại Meta và mình viết bài này để chia sẻ về interview process from a beginner perspective, và những bài học mình học được từ Viet Tech Mentorship Program (VTMP). Mình mong là có thể giúp mấy bạn có background như mình và mong là mình có thể đóng góp 1 phần nhỏ trong hành trình này của bạn.
-date: 04-05-2024
+date: 2024-04-05
 tags: reflection, advice
 banner: https://res.cloudinary.com/khoa165/image/upload/v1718192551/viettech/VTMP_logo.png
 ---

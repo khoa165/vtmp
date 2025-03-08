@@ -3,7 +3,7 @@ title: How did we go beyond CRUD in a personal project?
 authors: Hoang Nguyen
 contributors: Ha Linh, Khanh Linh, Huu Khang
 description: Hello everyone, I’m Hoang, a mentee of the Viet Tech Mentorship Program (cohort 2024). This past summer, my team worked on a project called Cupid. Initially, we struggled to figure out how to make Cupid more than just a basic web app. Thanks to the dedicated guidance from our project advisors — Khoa Le and Nick Doan — we were able to elevate Cupid to the next level.
-date: 11-21-2024
+date: 2024-11-21
 tags: reflection, technical
 banner: https://res.cloudinary.com/khoa165/image/upload/v1740992775/viettech/cupid.jpg
 ---

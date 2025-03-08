@@ -2,7 +2,7 @@
 title: Developer productivity hacks
 authors: Khoa Le
 description: Bootstrap your productivity with terminal setup and command usages
-date: 04-30-2023
+date: 2023-04-30
 tags: technical
 banner: https://i.ytimg.com/vi/ulEr4zSHL-c/maxresdefault.jpg
 ---

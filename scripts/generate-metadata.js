@@ -70,8 +70,10 @@ const readfile = promisify(fs.readFile);
 async function generatedMetadata() {
   const blogsMetadata = [];
   try {
-    // const __filename = fileURLToPath(require("meta").url);
-    const directoryPath = path.join(__dirname, '../blogs/content');
+    const directoryPath = path.join(
+      __dirname,
+      '../web-client/src/blogs/content'
+    );
     const directoryContent = await readdir(directoryPath, {
       recursive: true,
     });
@@ -79,7 +81,7 @@ async function generatedMetadata() {
       directoryChild.endsWith('.md')
     );
     const filepaths = mdFiles.map((filename) =>
-      path.join(__dirname, '../blogs/content', filename)
+      path.join(__dirname, '../web-client/src/blogs/content', filename)
     );
 
     const contents = await Promise.all(
@@ -106,12 +108,12 @@ async function generatedMetadata() {
     blogsMetadata.push(...mdMetadata);
 
     fs.writeFileSync(
-      path.join(__dirname, '../blogs/metadata/metadata.ts'),
+      path.join(__dirname, '../web-client/src/blogs/metadata/metadata.ts'),
       buildMetadataFileOutput(blogsMetadata)
     );
 
     fs.writeFileSync(
-      path.join(__dirname, '../blogs/metadata/filepaths.ts'),
+      path.join(__dirname, '../web-client/src/blogs/metadata/filepaths.ts'),
       buildFilePathsFileOutput(blogsMetadata)
     );
   } catch (err) {

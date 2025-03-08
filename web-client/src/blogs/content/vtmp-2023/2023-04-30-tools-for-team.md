@@ -2,7 +2,7 @@
 title: Tools for team
 authors: Khoa Le
 description: Basic tools and tips for collaboration with your team
-date: 04-30-2023
+date: 2023-04-30
 tags: tools
 banner: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP6f1aZz5SvNRRPfLMN9bspCSsHUlDtLUDSQ&usqp=CAU
 ---

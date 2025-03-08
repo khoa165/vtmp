@@ -6,9 +6,13 @@
   "scripts": {
     "client": "cd web-client && yarn run start",
     "server": "cd web && yarn run dev",
-    "dev": "concurrently \"yarn run server\" \"yarn run client\""
+    "dev": "concurrently \"yarn run server\" \"yarn run client\"",
+    "pp": "cd web && yarn install; cd .. && yarn install; cd .. && yarn install",
+    "cc": "cookiecutter -c=cookiecutter/cookiecutter.config.js",
+    "blog": "node ./scripts/generate-metadata.js"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "cookiecutter": "^1.3.0"
   }
 }

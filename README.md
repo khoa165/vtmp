@@ -1,23 +1,76 @@
-# Instructions
+# VTMP
 
-### Development mode
+## Project Description
 
-- Navigate inside web-client `cd web-client`
-- Run `yarn install` to install dependencies
-- Run `yarn start` to start development
+Viet Tech Mentorship Program (VTMP) is initiative that seeks to build a sustainable pipeline of early career talent and empower Vietnamese students to break into the tech industry. This codebase serves as a platform that provides resources, tools, and a supportive community to facilitate effective mentorship and professional development.
 
----
+## Architecture
 
-### How to add a new blog
+This project is a monorepo consisting of two main components:
 
-- Create a file inside `web-client/src/blogs/content`
-- Replace placeholder with thoughtful blog content
-- Run the command `yarn run generate-data` in terminal
-- Commit your change and also generated changes
+- **web:** A backend server built with Node.js, TypeScript, and Express. It provides APIs for user authentication, data management, and other server-side functionalities.
+- **web-client:** A frontend application built with React. It provides a user interface for accessing the platform's features, including browsing mentors, scheduling sessions, and accessing learning resources.
 
----
+## Setup Instructions
 
-### When modifying metadata of an existing blog
+1.  **Install Node.js:** Make sure you have Node.js (version 16 or higher) installed on your system. You can download it from [nodejs.org](https://nodejs.org/).
+2.  **Install Yarn:** This project uses Yarn as the package manager. You can install it globally using the following command
 
-- Run the command `yarn run generate-data` in terminal
-- Commit your change and also generated changes
+    ```bash
+    npm install -g yarn
+    ```
+
+3.  **Clone the repository:** Clone this repository to your local machine using Git
+
+    ```bash
+    git clone git@github.com:khoa165/vtmp.git
+    ```
+
+4.  **Install dependencies:** Navigate to the project directory and install the dependencies for both the web and web-client components
+
+    ```bash
+    cd vtmp
+    yarn pp
+    ```
+
+5.  **Configure environment variables:**
+    - For the web application, create a `.env` file in the `web` directory and configure the necessary environment variables, such as database connection details and API keys. You can refer to `.env.example` in the `web` directory.
+    - For the web-client application, create a `.env` file in the `web-client` directory and configure the necessary environment variables, such as API endpoints and authentication settings. You can refer to `.env.example` in the `web-client` directory.
+
+## Running the Application
+
+```
+yarn run dev
+```
+
+This will start the application on `http://localhost:3000` and the server on `http://localhost:8000`.
+
+## Contributing
+
+We welcome contributions to the VTMP project! To contribute, please follow these guidelines:
+
+1. **Find an issue**: check with Khoa or browse [here](https://github.com/khoa165/vtmp/issues)
+2. **Create a branch:** Create a new branch for your feature or bug fix.
+3. **Make changes:** Make your changes and commit them with clear, concise commit messages.
+4. **Test your changes:** Make sure your changes are working correctly and that you have added appropriate tests.
+5. **Submit a pull request:** Submit a pull request to the `main` branch of this repository.
+
+Please adhere to the project's coding standards and follow the pull request process.
+
+## Blog
+
+1. **Create a new blog**: Use the following command to generate a boilerplate for your new blog
+
+```
+yarn cc
+```
+
+2. **Enter title and date**: You will be prompted to input title and date for blog
+
+3. **Add blog content**: Once the file is generated, add blog content and modify the metadata header
+
+4. **Update metadata**: Run the following command when you first create a blog or whenever you make change to the metadata header of an existing blog
+
+```
+yarn run generate-data
+```

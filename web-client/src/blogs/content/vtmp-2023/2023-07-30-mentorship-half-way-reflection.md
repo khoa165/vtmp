@@ -2,7 +2,7 @@
 title: Mentorship half-way look back
 authors: Khoa Le
 description: Reflection on the past 4-5 months running this mentorship program
-date: 07-30-2023
+date: 2023-07-30
 tags: reflection
 banner: https://res.cloudinary.com/khoa165/image/upload/v1691083734/portfolio/VietTechBanner.png
 ---
