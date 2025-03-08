@@ -12,5 +12,10 @@ export default tseslint.config(
       globals: { ...globals.node, ...globals.browser },
     },
   },
+  {
+    rules: {
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+    },
+  },
   { ignores: ['cookiecutter/', 'scripts/'] }
 );

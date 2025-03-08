@@ -1,27 +1,23 @@
 import User from '@/models/user.model';
 
-class UserRepository {
-  static async create(userData: {
+const UserRepository = {
+  create: async (userData: {
     name: string;
     email: string;
     password: string;
-  }) {
+  }) => {
     const user = new User(userData);
     await user.save();
     return user;
-  }
+  },
 
-  static async findByEmail(email: string) {
-    return User.findOne({ email });
-  }
+  findByEmail: async (email: string) => {
+    return User.findOne({ email }).lean();
+  },
 
-  static async findById(id: string) {
-    return User.findById(id);
-  }
-
-  static async updatePassword(id: string, password: string) {
-    return User.findByIdAndUpdate(id, { password }, { new: true });
-  }
-}
+  findById: async (id: string) => {
+    return User.findById(id).lean();
+  },
+};
 
 export default UserRepository;
