@@ -55,10 +55,10 @@ export const BlogContainer: React.FC<BlogContainerProps> = ({ metadata }) => {
       <div className="blog-content">
         <ReactMarkdown
           children={markdown}
-          //@ts-ignore
+          // @ts-expect-error third-party library typing is incompatible
           rehypePlugins={[rehypeRaw]}
           components={{
-            code({ node, inline, className, children, ...props }) {
+            code({ inline, className, children, ...props }) {
               const match = /language-(\w+)/.exec(className || '');
               return !inline && match ? (
                 <SyntaxHighlighter
