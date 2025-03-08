@@ -6,18 +6,21 @@ export const groupDisplayName: Record<MentorshipGroup, string> = {
 };
 
 export const roleDisplayName: Record<MentorshipRole, string> = {
-  [MentorshipRole.PROGRAM_LEAD]: 'Program Lead',
+  [MentorshipRole.SWE_PROGRAM_LEAD]: 'SWE Program Lead',
   [MentorshipRole.PROGRAM_MANAGER]: 'Program Manager',
   [MentorshipRole.PROGRAM_FOUNDER]: 'Program Founder',
   [MentorshipRole.PROGRAM_ADVISOR]: 'Program Advisor',
-  [MentorshipRole.RISING_LEAD]: 'Lead',
-  [MentorshipRole.LEAD]: 'Lead',
-  [MentorshipRole.INACTIVE_LEAD]: 'Lead',
-  [MentorshipRole.MENTOR]: 'Mentor',
-  [MentorshipRole.EXMENTEE_MENTOR]: 'Mentor (Ex-Mentee)',
-  [MentorshipRole.EXMENTEE_INACTIVE_MENTOR]: 'Mentor (Ex-Mentee)',
-  [MentorshipRole.EXMENTEE_LOGISTICS_SUPPORT]: 'Logistics Support (Ex-Mentee)',
-  [MentorshipRole.MENTEE]: 'Mentee',
+  [MentorshipRole.SWE_RISING_LEAD]: 'SWE Lead',
+  [MentorshipRole.SWE_LEAD]: 'SWE Lead',
+  [MentorshipRole.SWE_INACTIVE_LEAD]: 'SWE Lead',
+  [MentorshipRole.SWE_MENTOR]: 'SWE Mentor',
+  [MentorshipRole.PD_MENTOR]: 'PD Mentor',
+  [MentorshipRole.SWE_EXMENTEE_MENTOR]: 'SWE Mentor (Ex-Mentee)',
+  [MentorshipRole.SWE_EXMENTEE_INACTIVE_MENTOR]: 'SWE Mentor (Ex-Mentee)',
+  [MentorshipRole.SWE_EXMENTEE_LOGISTICS_SUPPORT]:
+    'SWE Logistics Support (Ex-Mentee)',
+  [MentorshipRole.SWE_MENTEE]: 'SWE Mentee',
+  [MentorshipRole.PD_MENTEE]: 'PD Mentee',
 };
 
 export const peopleSortColumnDisplayName: Record<PeopleSortColumn, string> = {

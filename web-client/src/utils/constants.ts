@@ -65,15 +65,17 @@ export enum MentorshipRole {
   PROGRAM_MANAGER = 'PROGRAM_MANAGER',
   PROGRAM_FOUNDER = 'PROGRAM_FOUNDER',
   PROGRAM_ADVISOR = 'PROGRAM_ADVISOR',
-  PROGRAM_LEAD = 'PROGRAM_LEAD',
-  RISING_LEAD = 'RISING_LEAD',
-  LEAD = 'LEAD',
-  INACTIVE_LEAD = 'INACTIVE_LEAD',
-  MENTOR = 'MENTOR',
-  EXMENTEE_INACTIVE_MENTOR = 'EXMENTEE_INACTIVE_MENTOR',
-  EXMENTEE_MENTOR = 'EXMENTEE_MENTOR',
-  EXMENTEE_LOGISTICS_SUPPORT = 'EXMENTEE_LOGISTICS_SUPPORT',
-  MENTEE = 'MENTEE',
+  SWE_PROGRAM_LEAD = 'PROGRAM_LEAD',
+  SWE_RISING_LEAD = 'RISING_LEAD',
+  SWE_LEAD = 'LEAD',
+  SWE_INACTIVE_LEAD = 'INACTIVE_LEAD',
+  SWE_MENTOR = 'MENTOR',
+  PD_MENTOR = 'PD_MENTOR',
+  SWE_EXMENTEE_INACTIVE_MENTOR = 'EXMENTEE_INACTIVE_MENTOR',
+  SWE_EXMENTEE_MENTOR = 'EXMENTEE_MENTOR',
+  SWE_EXMENTEE_LOGISTICS_SUPPORT = 'EXMENTEE_LOGISTICS_SUPPORT',
+  SWE_MENTEE = 'MENTEE',
+  PD_MENTEE = 'PD_MENTEE',
 }
 
 export enum MentorshipGroup {
@@ -82,18 +84,20 @@ export enum MentorshipGroup {
 }
 
 export const rolePriority: Record<MentorshipRole, number> = {
-  [MentorshipRole.PROGRAM_LEAD]: 1.0,
+  [MentorshipRole.SWE_PROGRAM_LEAD]: 1.0,
   [MentorshipRole.PROGRAM_MANAGER]: 1.1,
   [MentorshipRole.PROGRAM_FOUNDER]: 1.2,
   [MentorshipRole.PROGRAM_ADVISOR]: 1.3,
-  [MentorshipRole.RISING_LEAD]: 2,
-  [MentorshipRole.LEAD]: 2.1,
-  [MentorshipRole.INACTIVE_LEAD]: 2.2,
-  [MentorshipRole.MENTOR]: 3,
-  [MentorshipRole.EXMENTEE_MENTOR]: 3.1,
-  [MentorshipRole.EXMENTEE_INACTIVE_MENTOR]: 3.2,
-  [MentorshipRole.EXMENTEE_LOGISTICS_SUPPORT]: 3.3,
-  [MentorshipRole.MENTEE]: 4,
+  [MentorshipRole.SWE_RISING_LEAD]: 2,
+  [MentorshipRole.SWE_LEAD]: 2.1,
+  [MentorshipRole.SWE_INACTIVE_LEAD]: 2.2,
+  [MentorshipRole.SWE_MENTOR]: 3,
+  [MentorshipRole.PD_MENTOR]: 3,
+  [MentorshipRole.SWE_EXMENTEE_MENTOR]: 3.1,
+  [MentorshipRole.SWE_EXMENTEE_INACTIVE_MENTOR]: 3.2,
+  [MentorshipRole.SWE_EXMENTEE_LOGISTICS_SUPPORT]: 3.3,
+  [MentorshipRole.SWE_MENTEE]: 4,
+  [MentorshipRole.PD_MENTEE]: 4,
 };
 
 export enum MentorshipYear {

@@ -20,8 +20,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Software Engineer @ Vanta',
         roles: [
           MentorshipRole.PROGRAM_FOUNDER,
-          MentorshipRole.PROGRAM_LEAD,
-          MentorshipRole.MENTOR,
+          MentorshipRole.SWE_PROGRAM_LEAD,
+          MentorshipRole.SWE_MENTOR,
         ],
       },
       {
@@ -29,8 +29,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Software Engineer II @ Vanta',
         roles: [
           MentorshipRole.PROGRAM_FOUNDER,
-          MentorshipRole.PROGRAM_LEAD,
-          MentorshipRole.MENTOR,
+          MentorshipRole.SWE_PROGRAM_LEAD,
+          MentorshipRole.SWE_MENTOR,
         ],
       },
       {
@@ -39,8 +39,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [
           MentorshipRole.PROGRAM_FOUNDER,
           MentorshipRole.PROGRAM_MANAGER,
-          MentorshipRole.LEAD,
-          MentorshipRole.MENTOR,
+          MentorshipRole.SWE_LEAD,
+          MentorshipRole.SWE_MENTOR,
         ],
       },
     ],
@@ -57,15 +57,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Software Engineer Intern @ Netflix',
-        roles: [MentorshipRole.PROGRAM_FOUNDER, MentorshipRole.MENTOR],
+        roles: [MentorshipRole.PROGRAM_FOUNDER, MentorshipRole.SWE_MENTOR],
       },
       {
         year: 2024,
         title: 'Software Engineer @ Netflix',
         roles: [
           MentorshipRole.PROGRAM_FOUNDER,
-          MentorshipRole.LEAD,
-          MentorshipRole.MENTOR,
+          MentorshipRole.SWE_LEAD,
+          MentorshipRole.SWE_MENTOR,
         ],
       },
       {
@@ -73,8 +73,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Software Engineer @ Netflix',
         roles: [
           MentorshipRole.PROGRAM_FOUNDER,
-          MentorshipRole.LEAD,
-          MentorshipRole.MENTOR,
+          MentorshipRole.SWE_LEAD,
+          MentorshipRole.SWE_MENTOR,
         ],
       },
     ],
@@ -91,7 +91,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Viet Tech Founder',
-        roles: [MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_MENTOR],
       },
       {
         year: 2024,
@@ -112,17 +112,17 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Software Engineer Intern @ LinkedIn',
-        roles: [MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_MENTOR],
       },
       {
         year: 2024,
         title: 'Software Engineer @ Mastercard',
-        roles: [MentorshipRole.LEAD, MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_LEAD, MentorshipRole.SWE_MENTOR],
       },
       {
         year: 2025,
         title: 'Software Engineer @ Mastercard',
-        roles: [MentorshipRole.INACTIVE_LEAD],
+        roles: [MentorshipRole.SWE_INACTIVE_LEAD],
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
@@ -138,17 +138,17 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Software Engineer @ Mastercard',
-        roles: [MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_MENTOR],
       },
       {
         year: 2024,
         title: 'Software Engineer II @ Mastercard',
-        roles: [MentorshipRole.LEAD, MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_LEAD, MentorshipRole.SWE_MENTOR],
       },
       {
         year: 2025,
         title: 'Software Engineer II @ Mastercard',
-        roles: [MentorshipRole.LEAD, MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_LEAD, MentorshipRole.SWE_MENTOR],
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
@@ -164,17 +164,17 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Software Engineer @ Gantry',
-        roles: [MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_MENTOR],
       },
       {
         year: 2024,
         title: 'Software Engineer @ Anyscale',
-        roles: [MentorshipRole.LEAD, MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_LEAD, MentorshipRole.SWE_MENTOR],
       },
       {
         year: 2025,
         title: 'Software Engineer II @ Anyscale',
-        roles: [MentorshipRole.INACTIVE_LEAD],
+        roles: [MentorshipRole.SWE_INACTIVE_LEAD],
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
@@ -190,7 +190,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Student @ UCSD',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.LINKEDIN,
@@ -227,7 +227,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'SWE Intern @ LinkedIn + Amazon',
-        roles: [MentorshipRole.LEAD, MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_LEAD, MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
             name: CompanyName.AMAZON,
@@ -246,7 +246,10 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'Software Engineer @ LinkedIn',
-        roles: [MentorshipRole.PROGRAM_LEAD, MentorshipRole.EXMENTEE_MENTOR],
+        roles: [
+          MentorshipRole.SWE_PROGRAM_LEAD,
+          MentorshipRole.SWE_EXMENTEE_MENTOR,
+        ],
       },
     ],
   },
@@ -261,12 +264,12 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Software Engineer @ Vanta',
-        roles: [MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_MENTOR],
       },
       {
         year: 2025,
         title: 'Software Engineer @ Vanta',
-        roles: [MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_MENTOR],
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
@@ -282,12 +285,12 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Software Engineer @ Palantir',
-        roles: [MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_MENTOR],
       },
       {
         year: 2025,
         title: 'Software Engineer @ Palantir',
-        roles: [MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_MENTOR],
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
@@ -303,7 +306,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'Software Engineer @ Amazon',
-        roles: [MentorshipRole.MENTOR],
+        roles: [MentorshipRole.SWE_MENTOR],
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
@@ -319,7 +322,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Student @ USF',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.SERVICE_NOW,
@@ -344,7 +347,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'SWE Intern @ ServiceNow',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
             name: CompanyName.META,
@@ -373,7 +376,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Student @ Colby',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.MONGODB,
@@ -404,7 +407,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'SWE Intern @ Microsoft',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
             name: CompanyName.MICROSOFT,
@@ -427,7 +430,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Student @ DePauw',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.NIANTIC,
@@ -458,7 +461,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'SWE Intern @ Meta',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
             name: CompanyName.WAYMO,
@@ -511,7 +514,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Student @ Providence',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.LINKEDIN,
@@ -536,7 +539,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'SWE Intern @ LinkedIn',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
             name: CompanyName.LINKEDIN,
@@ -549,7 +552,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'Software Engineer @ LinkedIn',
-        roles: [MentorshipRole.EXMENTEE_INACTIVE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_INACTIVE_MENTOR],
       },
     ],
   },
@@ -564,7 +567,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Student @ Bucknell',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.AMAZON,
@@ -589,7 +592,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'SWE Intern @ Adobe',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
             name: CompanyName.BUBBLE_IO,
@@ -618,7 +621,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Student @ Soka',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.DOORDASH,
@@ -643,7 +646,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'SWE Intern @ DoorDash',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
             name: CompanyName.DOORDASH,
@@ -666,7 +669,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Student @ Amherst',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.WAYFAIR,
@@ -691,7 +694,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'SWE Intern @ GoDaddy',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
             name: CompanyName.GOOGLE,
@@ -732,7 +735,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Student @ Cincinnati',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.META,
@@ -763,7 +766,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'SWE Intern @ Meta',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
             name: CompanyName.META,
@@ -786,7 +789,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Student @ York',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         teamName: 'Financial app',
         teamNumber: 1,
         teamRanking: 3,
@@ -797,7 +800,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ York',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.SHOPIFY,
@@ -816,7 +819,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Shopify',
-        roles: [MentorshipRole.EXMENTEE_LOGISTICS_SUPPORT],
+        roles: [MentorshipRole.SWE_EXMENTEE_LOGISTICS_SUPPORT],
       },
     ],
   },
@@ -831,7 +834,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Student @ Victoria',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.SAP,
@@ -850,7 +853,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'SWE Intern @ SAP',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -865,7 +868,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2023,
         title: 'Student @ UBC',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         teamName: 'Financial app',
         teamNumber: 1,
         teamRanking: 3,
@@ -876,7 +879,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ UBC',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         teamName: 'Peace Pod',
         teamNumber: 6,
         teamRanking: 6,
@@ -897,7 +900,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ UMass. Amherst',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.PLAYSTATION,
@@ -916,7 +919,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ PlayStation',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -931,7 +934,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Mount Holyoke',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.ROBINHOOD,
@@ -962,7 +965,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Robinhood',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -977,7 +980,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Catholic',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         teamName: 'Flavorie',
         teamNumber: 1,
         teamRanking: 1,
@@ -998,7 +1001,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ USF',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.AMAZON,
@@ -1023,7 +1026,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ ServiceNow',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1038,7 +1041,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Lehigh',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.MICROSOFT,
@@ -1081,7 +1084,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Palantir',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1096,7 +1099,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Colby',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.AMAZON,
@@ -1115,7 +1118,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'Software Engineer @ Amazon',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1130,7 +1133,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ DePauw',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.PAYPAL,
@@ -1155,7 +1158,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Robinhood',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1170,7 +1173,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Windsor',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         teamName: 'Pick Me Food',
         teamNumber: 2,
         teamRanking: 2,
@@ -1191,7 +1194,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Toronto Metropolitan',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         teamName: 'Gathering Globe',
         teamNumber: 3,
         teamRanking: 3,
@@ -1212,7 +1215,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ DePauw',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.KENCO_GROUP,
@@ -1249,7 +1252,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Microsoft',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1264,7 +1267,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Denison',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.QUALCOMM,
@@ -1289,7 +1292,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Wayfair',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1304,7 +1307,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ USF',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.RYCO,
@@ -1323,7 +1326,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Ryco.io',
-        roles: [MentorshipRole.EXMENTEE_LOGISTICS_SUPPORT],
+        roles: [MentorshipRole.SWE_EXMENTEE_LOGISTICS_SUPPORT],
       },
     ],
   },
@@ -1338,7 +1341,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Bucknell',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.META,
@@ -1369,7 +1372,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'Data Engineer Intern @ Meta',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1384,7 +1387,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Hobart & William Smith',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.MICROSOFT,
@@ -1409,7 +1412,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Microsoft',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1424,7 +1427,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ York',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.SHOPIFY,
@@ -1443,7 +1446,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Shopify',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1458,7 +1461,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Texas Christian',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.SERVICE_NOW,
@@ -1483,7 +1486,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ ServiceNow',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1498,7 +1501,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Alberta',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.ROBINHOOD,
@@ -1523,7 +1526,10 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Shopify + Robinhood',
-        roles: [MentorshipRole.RISING_LEAD, MentorshipRole.EXMENTEE_MENTOR],
+        roles: [
+          MentorshipRole.SWE_RISING_LEAD,
+          MentorshipRole.SWE_EXMENTEE_MENTOR,
+        ],
       },
     ],
   },
@@ -1538,7 +1544,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Tufts',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.ADOBE,
@@ -1557,7 +1563,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Adobe',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1572,7 +1578,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Dickinson',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.AMAZON,
@@ -1603,7 +1609,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Amazon',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1618,7 +1624,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ UMass. Amherst',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.AMAZON,
@@ -1643,7 +1649,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Amazon',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1658,7 +1664,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Northeastern',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.ASANA,
@@ -1695,7 +1701,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Asana',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1710,7 +1716,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Fordham',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.SLACK,
@@ -1729,7 +1735,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Slack',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1744,7 +1750,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ MSU',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         teamName: 'Peace Pod',
         teamNumber: 6,
         teamRanking: 6,
@@ -1765,7 +1771,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Rice',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.COINBASE,
@@ -1808,7 +1814,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Meta',
-        roles: [MentorshipRole.EXMENTEE_MENTOR],
+        roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
   },
@@ -1823,7 +1829,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Soka',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
             name: CompanyName.ROBINHOOD,
@@ -1896,7 +1902,10 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Microsoft',
-        roles: [MentorshipRole.RISING_LEAD, MentorshipRole.EXMENTEE_MENTOR],
+        roles: [
+          MentorshipRole.SWE_RISING_LEAD,
+          MentorshipRole.SWE_EXMENTEE_MENTOR,
+        ],
       },
     ],
   },
@@ -1911,7 +1920,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'Student @ Manitoba',
-        roles: [MentorshipRole.MENTEE],
+        roles: [MentorshipRole.SWE_MENTEE],
         teamName: 'Tourific',
         teamNumber: 7,
         teamRanking: 7,
