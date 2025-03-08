@@ -10,28 +10,28 @@ interface TreeContainerProps {
 }
 
 export const TreeContainer: React.FC<TreeContainerProps> = ({ metadata }) => {
-  const run = () => {
-    const items = document.querySelectorAll('#tree-container li');
-    items.forEach((item) => {
-      if (isInView(item)) {
-        item.classList.add('show');
-      }
-    });
-  };
-
-  const attachEventListeners = () => {
-    window.addEventListener('scroll', run);
-    window.addEventListener('load', run);
-    window.addEventListener('resize', run);
-  };
-
-  const removeEventListeners = () => {
-    window.removeEventListener('scroll', run);
-    window.removeEventListener('load', run);
-    window.removeEventListener('resize', run);
-  };
-
   useEffect(() => {
+    const run = () => {
+      const items = document.querySelectorAll('#tree-container li');
+      items.forEach((item) => {
+        if (isInView(item)) {
+          item.classList.add('show');
+        }
+      });
+    };
+
+    const attachEventListeners = () => {
+      window.addEventListener('scroll', run);
+      window.addEventListener('load', run);
+      window.addEventListener('resize', run);
+    };
+
+    const removeEventListeners = () => {
+      window.removeEventListener('scroll', run);
+      window.removeEventListener('load', run);
+      window.removeEventListener('resize', run);
+    };
+
     attachEventListeners();
     return removeEventListeners;
   }, []);

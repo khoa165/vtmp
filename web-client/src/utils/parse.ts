@@ -10,7 +10,6 @@ import {
 import { isSome } from 'utils/maybe';
 import { InterviewType, MentorshipYear } from './constants';
 import { mentorshipPeople } from 'data/people';
-import { on } from 'events';
 
 interface InterviewCell {
   date: string;

@@ -36,5 +36,5 @@ export const useOffersData = () => {
     //   ) ?? [];
     // console.log(sortBy(offers, (o) => new Date(o.date)));
     return data;
-  }, [mentorshipPeople, offerCompanies]);
+  }, []);
 };
