@@ -27,9 +27,7 @@ export const useInterviewData = () => {
         datesWithCount: [] as MergedDateWithCount[],
       };
       const unmergedDatesWithCount = [] as DateWithCount[][];
-      const dataRecords: {
-        [key in MentorshipYear]?: InterviewRecordsPerCompany[];
-      } = {};
+      const dataRecords: Partial<Record<MentorshipYear, InterviewRecordsPerCompany[]>> = {};
       if (process.env.REACT_APP_VTMP_2023_INTERVIEWS_CSV) {
         const res = await axios.get(
           process.env.REACT_APP_VTMP_2023_INTERVIEWS_CSV

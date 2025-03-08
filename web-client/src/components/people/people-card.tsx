@@ -28,7 +28,7 @@ import { useSearchParams } from 'react-router-dom';
 interface PeopleCardProps extends React.HTMLAttributes<HTMLDivElement> {
   year: number;
   person: MentorshipPerson;
-  companiesMetadata: { [key: string]: CompanyMetadataWithOffers };
+  companiesMetadata: Record<string, CompanyMetadataWithOffers>;
   sortColumn: PeopleSortColumn;
 }
 

@@ -8,7 +8,7 @@ import { max } from 'lodash';
 interface PeopleGridProps {
   year: number;
   people: MentorshipPerson[];
-  companiesMetadata: { [key: string]: CompanyMetadataWithOffers };
+  companiesMetadata: Record<string, CompanyMetadataWithOffers>;
   sortColumn: PeopleSortColumn;
 }
 

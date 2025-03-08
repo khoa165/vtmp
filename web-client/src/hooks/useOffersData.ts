@@ -6,7 +6,7 @@ import { CompanyMetadataWithOffers } from 'types';
 
 export const useOffersData = () => {
   return useMemo(() => {
-    const data: { [key: string]: CompanyMetadataWithOffers } = {};
+    const data: Record<string, CompanyMetadataWithOffers> = {};
     Object.keys(offerCompanies).forEach((company) => {
       data[company] = {
         ...offerCompanies[company],
