@@ -22,17 +22,17 @@ export const getRolePriority = (role: MentorshipRole): number =>
   rolePriority[role];
 
 export const isMenteeRole = (roles: MentorshipRole[]): boolean =>
-  roles.includes(MentorshipRole.MENTEE);
+  roles.includes(MentorshipRole.SWE_MENTEE);
 
 export const isOrganizerRole = (roles: MentorshipRole[]): boolean =>
-  !roles.includes(MentorshipRole.MENTEE);
+  !roles.includes(MentorshipRole.SWE_MENTEE);
 
 export const isHiddenRole = (
   role: MentorshipRole,
   roles: MentorshipRole[]
 ): boolean =>
   role === MentorshipRole.PROGRAM_FOUNDER ||
-  (role === MentorshipRole.LEAD &&
+  (role === MentorshipRole.SWE_LEAD &&
     roles.includes(MentorshipRole.PROGRAM_MANAGER));
 
 export const getGroupDisplayName = (group: MentorshipGroup): string =>
@@ -56,21 +56,25 @@ export const getTerm = (person: MentorshipPerson, year: number) =>
 
 const isMentorSubsetRole = (person: MentorshipPerson, year: number) =>
   Boolean(
-    getTerm(person, year)?.roles?.includes(MentorshipRole.EXMENTEE_MENTOR)
+    getTerm(person, year)?.roles?.includes(MentorshipRole.SWE_EXMENTEE_MENTOR)
   ) ||
   Boolean(
     getTerm(person, year)?.roles?.includes(
-      MentorshipRole.EXMENTEE_LOGISTICS_SUPPORT
+      MentorshipRole.SWE_EXMENTEE_LOGISTICS_SUPPORT
     )
   ) ||
   Boolean(
     getTerm(person, year)?.roles?.includes(
-      MentorshipRole.EXMENTEE_INACTIVE_MENTOR
+      MentorshipRole.SWE_EXMENTEE_INACTIVE_MENTOR
     )
   );
 const isLeadSubsetRole = (person: MentorshipPerson, year: number) =>
-  Boolean(getTerm(person, year)?.roles?.includes(MentorshipRole.RISING_LEAD)) ||
-  Boolean(getTerm(person, year)?.roles?.includes(MentorshipRole.INACTIVE_LEAD));
+  Boolean(
+    getTerm(person, year)?.roles?.includes(MentorshipRole.SWE_RISING_LEAD)
+  ) ||
+  Boolean(
+    getTerm(person, year)?.roles?.includes(MentorshipRole.SWE_INACTIVE_LEAD)
+  );
 
 const isProgramManager = (person: MentorshipPerson, year: number) =>
   Boolean(
@@ -83,9 +87,9 @@ export const doesPersonHaveRoleInYear = (
   year: number
 ) =>
   Boolean(getTerm(person, year)?.roles?.includes(role)) ||
-  (role === MentorshipRole.MENTOR && isMentorSubsetRole(person, year)) ||
-  (role === MentorshipRole.LEAD && isLeadSubsetRole(person, year)) ||
-  (role === MentorshipRole.PROGRAM_LEAD && isProgramManager(person, year));
+  (role === MentorshipRole.SWE_MENTOR && isMentorSubsetRole(person, year)) ||
+  (role === MentorshipRole.SWE_LEAD && isLeadSubsetRole(person, year)) ||
+  (role === MentorshipRole.SWE_PROGRAM_LEAD && isProgramManager(person, year));
 
 export const doesPersonHaveAtLeastOneRoleInYear = (
   person: MentorshipPerson,
@@ -111,9 +115,9 @@ export const getPersonPriorityInYear = (
 ) => min(getTerm(person, year)?.roles.map(getRolePriority)) ?? 5;
 
 export const getFilterRoles = () => [
-  MentorshipRole.PROGRAM_LEAD,
+  MentorshipRole.SWE_PROGRAM_LEAD,
   MentorshipRole.PROGRAM_ADVISOR,
-  MentorshipRole.LEAD,
-  MentorshipRole.MENTOR,
-  MentorshipRole.MENTEE,
+  MentorshipRole.SWE_LEAD,
+  MentorshipRole.SWE_MENTOR,
+  MentorshipRole.SWE_MENTEE,
 ];

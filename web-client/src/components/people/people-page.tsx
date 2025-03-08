@@ -30,10 +30,10 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
 
   const defaultRoles = [
     MentorshipRole.PROGRAM_ADVISOR,
-    MentorshipRole.PROGRAM_LEAD,
-    MentorshipRole.LEAD,
-    MentorshipRole.MENTOR,
-    MentorshipRole.MENTEE,
+    MentorshipRole.SWE_PROGRAM_LEAD,
+    MentorshipRole.SWE_LEAD,
+    MentorshipRole.SWE_MENTOR,
+    MentorshipRole.SWE_MENTEE,
   ];
 
   const getSortColumn = (sort: string | null): PeopleSortColumn => {
