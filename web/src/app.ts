@@ -2,7 +2,6 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import connectDB from '@/config/database';
 import routes from '@/routes/index';
@@ -27,6 +26,6 @@ app.get('/health', (_req: Request, res: Response) => {
 });
 
 // Routes
-// app.use('/api', routes);
+app.use('/api', routes);
 
 export default app;
