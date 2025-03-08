@@ -1,0 +1,14 @@
+{
+  "name": "vtmp",
+  "version": "1.0.0",
+  "repository": "git@github.com:khoa165/vtmp.git",
+  "author": "Khoa Le <khoatle165@gmail.com>",
+  "scripts": {
+    "client": "cd web-client && yarn run start",
+    "server": "cd web && yarn run dev",
+    "dev": "concurrently \"yarn run server\" \"yarn run client\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
