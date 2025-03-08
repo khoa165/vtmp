@@ -81,9 +81,7 @@ export enum MentorshipGroup {
   PARTICIPANT = 'PARTICIPANT',
 }
 
-export const rolePriority: {
-  [key in MentorshipRole]: number;
-} = {
+export const rolePriority: Record<MentorshipRole, number> = {
   [MentorshipRole.PROGRAM_LEAD]: 1.0,
   [MentorshipRole.PROGRAM_MANAGER]: 1.1,
   [MentorshipRole.PROGRAM_FOUNDER]: 1.2,
@@ -104,9 +102,7 @@ export enum MentorshipYear {
   YEAR_2025 = 'YEAR_2025',
 }
 
-export const yearDisplay: {
-  [key in MentorshipYear]: number;
-} = {
+export const yearDisplay: Record<MentorshipYear, number> = {
   [MentorshipYear.YEAR_2023]: 2023,
   [MentorshipYear.YEAR_2024]: 2024,
   [MentorshipYear.YEAR_2025]: 2025,

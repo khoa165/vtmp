@@ -12,7 +12,7 @@ import {
 interface MiniCompaniesListProps {
   offersList: MentorshipOffer[];
   prefix: string;
-  companiesMetadata: { [key: string]: CompanyMetadataWithOffers };
+  companiesMetadata: Record<string, CompanyMetadataWithOffers>;
 }
 export const MiniCompaniesList: React.FC<MiniCompaniesListProps> = ({
   offersList,
@@ -21,7 +21,7 @@ export const MiniCompaniesList: React.FC<MiniCompaniesListProps> = ({
 }) => {
   const getOfferDisplay = (
     offer: MentorshipOffer,
-    companiesMetadata: { [key: string]: CompanyMetadataWithOffers }
+    companiesMetadata: Record<string, CompanyMetadataWithOffers>
   ) => {
     const name = companiesMetadata[offer.name].displayName;
     if (isReturnOfferForNewGrad(offer)) {

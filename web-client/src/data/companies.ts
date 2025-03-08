@@ -1,9 +1,7 @@
 import { CompanyMetadata } from 'types';
 import { CompanyName } from 'utils/constants';
 
-export const offerCompanies: {
-  [key in CompanyName]: CompanyMetadata;
-} = {
+export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   [CompanyName.MICROSOFT]: {
     displayName: 'Microsoft',
     logoFilename: 'microsoft.png',

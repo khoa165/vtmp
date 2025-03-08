@@ -6,9 +6,7 @@ import {
   OfferType,
 } from 'utils/constants';
 
-export const mentorshipPeople: {
-  [key: string]: MentorshipPerson;
-} = {
+export const mentorshipPeople: Record<string, MentorshipPerson> = {
   khoale: {
     name: 'Khoa Le',
     alias: 'khoale',

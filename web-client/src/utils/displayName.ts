@@ -1,15 +1,11 @@
 import { MentorshipGroup, MentorshipRole, PeopleSortColumn } from './constants';
 
-export const groupDisplayName: {
-  [key in MentorshipGroup]: string;
-} = {
+export const groupDisplayName: Record<MentorshipGroup, string> = {
   [MentorshipGroup.ORGANIZER]: 'Organizers',
   [MentorshipGroup.PARTICIPANT]: 'Participants',
 };
 
-export const roleDisplayName: {
-  [key in MentorshipRole]: string;
-} = {
+export const roleDisplayName: Record<MentorshipRole, string> = {
   [MentorshipRole.PROGRAM_LEAD]: 'Program Lead',
   [MentorshipRole.PROGRAM_MANAGER]: 'Program Manager',
   [MentorshipRole.PROGRAM_FOUNDER]: 'Program Founder',
@@ -24,9 +20,7 @@ export const roleDisplayName: {
   [MentorshipRole.MENTEE]: 'Mentee',
 };
 
-export const peopleSortColumnDisplayName: {
-  [key in PeopleSortColumn]: string;
-} = {
+export const peopleSortColumnDisplayName: Record<PeopleSortColumn, string> = {
   [PeopleSortColumn.NAME]: 'Name',
   [PeopleSortColumn.OFFERS_COUNT]: 'Offers Count',
   [PeopleSortColumn.ROLE]: 'Role',

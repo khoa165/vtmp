@@ -21,18 +21,16 @@ interface BlogFileMetadata extends BlogMetadata {
   path: string;
 }
 
-export interface BlogFileMapping {
-  [key: string]: BlogFileMetadata;
-}
+export type BlogFileMapping = Record<string, BlogFileMetadata>;
 
-export type MentorshipOffer = {
+export interface MentorshipOffer {
   name: CompanyName;
   type: OfferType;
   channel: OfferChannel;
   date: string;
-};
+}
 
-export type MentorshipTerm = {
+export interface MentorshipTerm {
   year: number;
   title?: string;
   roles: MentorshipRole[];
@@ -43,9 +41,9 @@ export type MentorshipTerm = {
   teammates?: string[];
   mentors?: string[];
   projectAdvisors?: string[];
-};
+}
 
-export type MentorshipPerson = {
+export interface MentorshipPerson {
   name: string;
   alias: string;
   trackingName: string;
@@ -53,9 +51,9 @@ export type MentorshipPerson = {
   avatar: string;
   terms: MentorshipTerm[];
   hasNeverBeenMenteeOfProgram?: boolean;
-};
+}
 
-export type InterviewRecordsPerCompany = {
+export interface InterviewRecordsPerCompany {
   invitationsCount: number;
   interviewsCount: number;
   mixedCount: number;
@@ -68,10 +66,9 @@ export type InterviewRecordsPerCompany = {
     person: string;
   }[];
   company: string;
-};
+}
 
-export type MergedInterviewRecordsPerCompany = {
-  [key in MentorshipYear]?: {
+export type MergedInterviewRecordsPerCompany = Partial<Record<MentorshipYear, {
     invitationsCount: number;
     interviewsCount: number;
     mixedCount: number;
@@ -83,8 +80,7 @@ export type MergedInterviewRecordsPerCompany = {
       type: string;
       person: string;
     }[];
-  };
-} & {
+  }>> & {
   company: string;
 };
 
@@ -93,13 +89,11 @@ export interface DateWithCount {
   count: number;
 }
 
-export type MergedDateWithCount = {
-  [key in MentorshipYear]?: number;
-} & {
+export type MergedDateWithCount = Partial<Record<MentorshipYear, number>> & {
   date: string;
 };
 
-export type InterviewData = {
+export interface InterviewData {
   totalInvitationsCount: number;
   totalInterviewsCount: number;
   totalMixedCount: number;
@@ -108,10 +102,9 @@ export type InterviewData = {
   totalPracticalCount: number;
   datesWithCount: DateWithCount[];
   data: InterviewRecordsPerCompany[];
-};
+}
 
-export type MergedInterviewData = {
-  [key in MentorshipYear]?: {
+export type MergedInterviewData = Partial<Record<MentorshipYear, {
     totalInvitationsCount: number;
     totalInterviewsCount: number;
     totalMixedCount: number;
@@ -119,25 +112,22 @@ export type MergedInterviewData = {
     totalBehavioralCount: number;
     totalPracticalCount: number;
     datesWithCount: DateWithCount[];
-  };
-} & {
+  }>> & {
   data: MergedInterviewRecordsPerCompany[];
   totalInvitationsCount: number;
   totalInterviewsCount: number;
   datesWithCount: MergedDateWithCount[];
 };
 
-export type CompanyMetadata = {
+export interface CompanyMetadata {
   displayName: string;
   logoFilename: string;
   maxLogoSize: number;
   isPartTimeOffer?: boolean;
-};
+}
 
 export type CompanyMetadataWithOffers = CompanyMetadata & {
   logoUrl: string;
   offersCountTotal: number;
-  offersCountByYear: {
-    [key: number]: number;
-  };
+  offersCountByYear: Record<number, number>;
 };
