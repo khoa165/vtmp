@@ -1,10 +1,10 @@
 ## Changes
 
-- Describe the changes in this PR
+<!-- Describe the changes in this PR -->
 
 ## Motivation
 
-- Context/motivation for this PR, include any relevant docs/links
+<!-- Context/motivation for this PR, include any relevant docs/links -->
 
 ## Screenshots
 
