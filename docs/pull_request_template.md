@@ -8,7 +8,7 @@
 
 ## Screenshots
 
-<!-- For UI changes, include screenshots / recordings and describe the expected user flow -->
+<!-- For UI changes, include screenshots/recordings -->
 
 ## Test
 
