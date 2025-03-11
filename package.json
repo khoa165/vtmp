@@ -10,7 +10,7 @@
     "client": "cd web-client && yarn run start",
     "server": "cd web && yarn run dev",
     "dev": "concurrently \"yarn run server\" \"yarn run client\"",
-    "pp": "cd web && yarn install; cd .. && yarn install; cd .. && yarn install",
+    "pp": "cd web && yarn install; cd ../web-client && yarn install; cd .. && yarn install",
     "cc": "cookiecutter -c=cookiecutter/cookiecutter.config.js",
     "blog": "node ./scripts/generate-metadata.js",
     "lint": "yarn eslint .",
