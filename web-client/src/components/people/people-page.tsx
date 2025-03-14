@@ -29,10 +29,12 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
   const navigate = useNavigatePreserveQueryParams();
   const [filterParams, setFilterParams] = useSearchParams();
 
-  const defaultRoles = useMemo(() => {
+  const filteredRoles = useMemo(() => {
     const selectedRoles = filterParams.get('roles');
     return selectedRoles != null
-      ? selectedRoles.split(',').filter((r) => r in MentorshipRole)
+      ? (selectedRoles
+          .split(',')
+          .filter((r) => r in MentorshipRole) as MentorshipRole[])
       : DEFAULT_ROLES;
   }, [filterParams]);
 
@@ -69,10 +71,11 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
     setSortDescending(isDescendingNew);
   };
 
-  const { people, setSelectedRoles } = useMentorshipPeople(
+  const people = useMentorshipPeople(
     year,
     sortColumn,
-    sortDescending
+    sortDescending,
+    filteredRoles
   );
   const companiesMetadata = useOffersData();
 
@@ -93,14 +96,12 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
         params.delete('roles');
         return params;
       });
-      setSelectedRoles(DEFAULT_ROLES);
       return;
     }
     setFilterParams((params) => {
       params.set('roles', value.join(','));
       return params;
     });
-    setSelectedRoles(value);
   };
 
   const mentorshipYears = useMemo(
@@ -133,7 +134,7 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
               </li>
             );
           }}
-          defaultValue={defaultRoles}
+          defaultValue={filteredRoles}
           onChange={onChangeGroup}
         />
         <div className="break d-block d-xl-none"></div>
