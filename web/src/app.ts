@@ -21,11 +21,18 @@ app.use(cors()); // Enable CORS
 app.use(helmet()); // Secure HTTP headers
 app.use(morgan('dev')); // Logging HTTP requests
 
-app.get('/health', (_req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
   res.status(200).send('Server is running');
+});
+
+app.get('/health', (_req: Request, res: Response) => {
+  res.status(200).send('Server is healthy');
 });
 
 // Routes
 app.use('/api', routes);
+app.use('*', (_req: Request, res: Response) => {
+  res.status(404).send('Not found');
+});
 
 export default app;

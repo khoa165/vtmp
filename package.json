@@ -14,7 +14,9 @@
     "cc": "cookiecutter -c=cookiecutter/cookiecutter.config.js",
     "blog": "node ./scripts/generate-metadata.js",
     "lint": "yarn eslint .",
-    "test": "cd web && yarn run test"
+    "test": "cd web && yarn run test",
+    "tslint": "tslint --project tsconfig.json --config tslint.json",
+    "tslint-fix": "tslint --project tsconfig.json --config tslint.json --fix"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
