@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import chaiSubset from 'chai-subset';
 
 import UserRepository from '@/repositories/user.repository.ts';
-import { useMongoDB } from '@/config/mongodb.test.ts';
+import { useMongoDB } from '@/config/mongodb.testutils.ts';
 
 chai.use(chaiSubset);
 const { expect } = chai;
