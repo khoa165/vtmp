@@ -114,10 +114,12 @@ export const getPersonPriorityInYear = (
   year: number
 ) => min(getTerm(person, year)?.roles.map(getRolePriority)) ?? 5;
 
-export const getFilterRoles = () => [
+export const DEFAULT_ROLES = [
   MentorshipRole.SWE_PROGRAM_LEAD,
   MentorshipRole.PROGRAM_ADVISOR,
   MentorshipRole.SWE_LEAD,
   MentorshipRole.SWE_MENTOR,
   MentorshipRole.SWE_MENTEE,
+  MentorshipRole.PD_MENTOR,
+  MentorshipRole.PD_MENTEE,
 ];

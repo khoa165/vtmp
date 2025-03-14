@@ -1948,4 +1948,49 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
+  huequan: {
+    name: 'Hue Quan',
+    alias: 'huequan',
+    trackingName: 'Huệ Quân',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711083621/viettech/placeholder.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Product Design Intern @ Meta',
+        roles: [MentorshipRole.PD_MENTOR],
+      },
+    ],
+  },
+  tranvo: {
+    name: 'Tran Vo',
+    alias: 'tranvo',
+    trackingName: 'Trân',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711083621/viettech/placeholder.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'UX Designer',
+        roles: [MentorshipRole.PD_MENTOR],
+      },
+    ],
+  },
+  diepnguyen: {
+    name: 'Diep Nguyen',
+    alias: 'diepnguyen',
+    trackingName: 'Diệp',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711083621/viettech/placeholder.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Product Design Intern @ Microsoft',
+        roles: [MentorshipRole.PD_MENTOR],
+      },
+    ],
+  },
 };

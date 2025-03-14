@@ -21,6 +21,8 @@ export const useMentorshipPeople = (
         MentorshipRole.SWE_LEAD,
         MentorshipRole.SWE_MENTOR,
         MentorshipRole.SWE_MENTEE,
+        MentorshipRole.PD_MENTOR,
+        MentorshipRole.PD_MENTEE,
       ];
       return filteredRoles;
     }
