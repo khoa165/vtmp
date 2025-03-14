@@ -5,8 +5,9 @@
   "author": "Viet Tech Mentorship Program <viettechmentorshipprogram@gmail.com>",
   "license": "MIT",
   "private": true,
-  "type": "module",
+  "main": "dist/server.js",
   "dependencies": {
+    "@types/module-alias": "^2.0.4",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -14,6 +15,7 @@
     "express-validator": "^7.2.1",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
     "mongoose": "^8.12.0",
     "mongoose-lean-virtuals": "^1.1.0",
     "morgan": "^1.10.0",
@@ -48,5 +50,8 @@
     "build": "tsc",
     "dev": "tsx watch src/server.ts",
     "test": "mocha ./**/*.test.ts --recursive --exit --timeout 60000"
+  },
+  "_moduleAliases": {
+    "@/": "dist"
   }
 }
