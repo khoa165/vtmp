@@ -20,12 +20,7 @@ describe('Config', () => {
     process.env = env;
   });
 
-  it('emptyEnvThrows', () => {
-    Object.keys(MOCK_ENV).forEach((key) => {
-      delete process.env[key];
-    });
-    expect(getConfig).to.throw();
-  });
+  it('emptyEnvThrows', () => expect(getConfig).to.throw());
 
   it('allEnvPresentPasses', () => {
     Object.entries(MOCK_ENV).forEach(([key, value]) => {
