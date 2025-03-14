@@ -5,7 +5,7 @@ services:
     build:
       context: ./web
     ports:
-      - '8000:3000'
+      - '8000:8000'
     environment:
       - MONGODB_URI=mongodb://mongo:27017/vtmp
     depends_on:
@@ -15,7 +15,7 @@ services:
     build:
       context: ./web-client
     ports:
-      - '3000:80'
+      - '3000:3000'
     depends_on:
       - web
 

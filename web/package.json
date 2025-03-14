@@ -6,6 +6,7 @@
   "license": "MIT",
   "private": true,
   "type": "module",
+  "main": "dist/server.js",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
@@ -38,6 +39,7 @@
     "nodemon": "^3.1.9",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.11",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
     "webpack": "^5.98.0",
@@ -45,7 +47,7 @@
   },
   "scripts": {
     "start": "tsx src/server.ts",
-    "build": "tsc",
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "dev": "tsx watch src/server.ts",
     "test": "mocha ./**/*.test.ts --recursive --exit --timeout 60000"
   }
