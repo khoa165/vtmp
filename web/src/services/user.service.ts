@@ -1,4 +1,4 @@
-import UserRepository from '@/repositories/user.repository';
+import UserRepository from '@/repositories/user.repository.ts';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 

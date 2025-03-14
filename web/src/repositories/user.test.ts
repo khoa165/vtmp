@@ -1,8 +1,8 @@
 import * as chai from 'chai';
 import chaiSubset from 'chai-subset';
 
-import UserRepository from '@/repositories/user.repository';
-import { useMongoDB } from '@/config/mongodb.test';
+import UserRepository from '@/repositories/user.repository.ts';
+import { useMongoDB } from '@/config/mongodb.test.ts';
 
 chai.use(chaiSubset);
 const { expect } = chai;

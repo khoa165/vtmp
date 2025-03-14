@@ -3,8 +3,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import connectDB from '@/config/database';
-import routes from '@/routes/index';
+import connectDB from '@/config/database.ts';
+import routes from '@/routes/index.ts';
 
 dotenv.config();
 
@@ -21,11 +21,18 @@ app.use(cors()); // Enable CORS
 app.use(helmet()); // Secure HTTP headers
 app.use(morgan('dev')); // Logging HTTP requests
 
-app.get('/health', (_req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
   res.status(200).send('Server is running');
+});
+
+app.get('/health', (_req: Request, res: Response) => {
+  res.status(200).send('Server is healthy');
 });
 
 // Routes
 app.use('/api', routes);
+app.use('*', (_req: Request, res: Response) => {
+  res.status(404).send('Not found');
+});
 
 export default app;
