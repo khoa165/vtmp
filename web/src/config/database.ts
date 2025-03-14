@@ -1,13 +1,7 @@
 import mongoose from 'mongoose';
-import { z } from 'zod';
+import { CONFIG } from './config';
 
-const envSchema = z.object({
-  MONGO_URI: z.string().url(),
-});
-
-const env = envSchema.parse(process.env);
-
-const MONGO_URI = env.MONGO_URI;
+const MONGO_URI = CONFIG.MONGO_URI;
 
 const connectDB = async () => {
   if (!MONGO_URI) {
