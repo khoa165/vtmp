@@ -1973,7 +1973,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     terms: [
       {
         year: 2025,
-        title: 'UX Designer',
+        title: 'UX Designer @ Vanguard',
         roles: [MentorshipRole.PD_MENTOR],
       },
     ],
