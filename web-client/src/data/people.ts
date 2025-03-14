@@ -1954,7 +1954,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     trackingName: 'Huệ Quân',
     hobbies: '',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1711083621/viettech/placeholder.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1741948450/viettech/huequan.jpg',
     terms: [
       {
         year: 2025,
@@ -1969,7 +1969,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     trackingName: 'Trân',
     hobbies: '',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1711083621/viettech/placeholder.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1741948386/viettech/tran.jpg',
     terms: [
       {
         year: 2025,
@@ -1984,7 +1984,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     trackingName: 'Diệp',
     hobbies: '',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1711083621/viettech/placeholder.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1741948346/viettech/diep.jpg',
     terms: [
       {
         year: 2025,
