@@ -7,4 +7,6 @@ const configSchema = z.object({
   MONGO_URI: z.string().url(),
 });
 
-export const CONFIG = configSchema.parse(process.env);
+export const getConfig = () => {
+  return configSchema.parse(process.env);
+};
