@@ -45,7 +45,7 @@
   },
   "scripts": {
     "start": "tsx src/server.ts",
-    "build": "webpack --config ./webpack.config.js",
+    "build": "tsc",
     "dev": "tsx watch src/server.ts",
     "test": "mocha ./**/*.test.ts --recursive --exit --timeout 60000"
   }

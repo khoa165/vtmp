@@ -1,4 +1,4 @@
-import app from '@/app.ts';
+import app from '@/app';
 
 const PORT: string | number = process.env.PORT || 8000;
 

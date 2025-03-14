@@ -1,4 +1,4 @@
-import User from '@/models/user.model.ts';
+import User from '@/models/user.model';
 
 const UserRepository = {
   create: async (userData: {
