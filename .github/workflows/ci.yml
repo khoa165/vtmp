@@ -19,6 +19,9 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Change directory to web
+        run: cd web
+
       - name: Run test
         run: yarn test
         env:

@@ -46,6 +46,6 @@
     "start": "tsx src/server.ts",
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "dev": "tsx watch src/server.ts",
-    "test": "mocha ./web/**/*.test.ts --recursive --exit --timeout 60000"
+    "test": "mocha ./**/*.test.ts --recursive --exit --timeout 60000"
   }
 }
