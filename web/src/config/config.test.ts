@@ -6,7 +6,10 @@ describe('Config', () => {
   let env: NodeJS.ProcessEnv;
 
   const MOCK_ENV = {
-    MONGO_URI: 'https://google.com',
+    MONGO_URI:
+      'mongodb+srv://hongantran3804:Tranan3804%40@vtmp-2025.nrrjj.mongodb.net/',
+    PORT: '8000',
+    JWT_SECRET: 'some-random-secret-here',
   };
 
   before(() => {

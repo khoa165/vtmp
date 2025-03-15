@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
-import { CONFIG } from './config';
+import { getConfig } from './config';
+
+const CONFIG = getConfig();
 
 const MONGO_URI = CONFIG.MONGO_URI;
 
