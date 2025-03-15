@@ -1,14 +1,8 @@
 name: CI
 on:
   pull_request:
-    types: [unassigned, assigned, synchronize]
-    paths:
-      - 'web/**'
-
-defaults:
-  run:
-    shell: bash
-    working-directory: './web/src'
+    branches:
+      - main
 
 jobs:
   build:
@@ -23,7 +17,7 @@ jobs:
           node-version: 20.x
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn pp
 
       - name: Change directory to web
         run: cd web
