@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   web:
+    container_name: server
     build:
       context: ./web
     ports:
@@ -10,8 +11,11 @@ services:
       - MONGODB_URI=mongodb://mongo:27017/vtmp
     depends_on:
       - mongo
+    volumes:
+      - ./web/src:/usr/app/src
 
   web-client:
+    container_name: client
     build:
       context: ./web-client
     ports:
@@ -20,6 +24,7 @@ services:
       - web
 
   mongo:
+    container_name: mongo
     image: mongo:latest
     ports:
       - '27017:27017'
