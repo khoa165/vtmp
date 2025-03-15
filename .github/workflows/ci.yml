@@ -1,11 +1,14 @@
 name: CI
 on:
   pull_request:
-    branches:
-      - main
     types: [unassigned, assigned, synchronize]
     paths:
       - 'web/**'
+
+defaults:
+  run:
+    shell: bash
+    working-directory: './web/src'
 
 jobs:
   build:
