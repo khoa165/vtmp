@@ -5,10 +5,7 @@ dotenv.config();
 
 const configSchema = z.object({
   MONGO_URI: z.string().url(),
-  PORT: z
-    .string()
-    .transform((val) => Number(val))
-    .refine((num) => !isNaN(num), { message: 'PORT must be a valid number' }),
+PORT: z.preprocess(Number, z.number().positive().finite())
   JWT_SECRET: z.string(),
 });
 
