@@ -253,4 +253,14 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
     logoFilename: 'ryco.png',
     maxLogoSize: 100,
   },
+  [CompanyName.NVIDIA]: {
+    displayName: 'Nvidia',
+    logoFilename: 'nvidia.png',
+    maxLogoSize: 80,
+  },
+  [CompanyName.HIGHMARK_HEALTH]: {
+    displayName: 'Highmark Health',
+    logoFilename: 'highmarkhealth.png',
+    maxLogoSize: 100,
+  },
 };

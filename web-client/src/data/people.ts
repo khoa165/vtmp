@@ -595,6 +595,12 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
+            name: CompanyName.NVIDIA,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-03-14',
+          },
+          {
             name: CompanyName.BUBBLE_IO,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
@@ -1291,7 +1297,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
       {
         year: 2025,
-        title: 'SWE Intern @ Wayfair',
+        title: 'SWE Intern @ TBD',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
@@ -1343,6 +1349,12 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Student @ Bucknell',
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
+          {
+            name: CompanyName.WAYFAIR,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-03-12',
+          },
           {
             name: CompanyName.META,
             type: OfferType.INTERNSHIP,
@@ -1627,6 +1639,12 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
+            name: CompanyName.HIGHMARK_HEALTH,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-03-14',
+          },
+          {
             name: CompanyName.AMAZON,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
@@ -1773,6 +1791,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Student @ Rice',
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
+          {
+            name: CompanyName.AMAZON,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-03-13',
+          },
+          {
+            name: CompanyName.BLOOMBERG,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-03-12',
+          },
           {
             name: CompanyName.COINBASE,
             type: OfferType.INTERNSHIP,
@@ -1927,6 +1957,51 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         teammates: ['trihoang', 'trangvu', 'vannguyen'],
         mentors: ['khuetang'],
         projectAdvisors: ['nickdoan', 'khoale'],
+      },
+    ],
+  },
+  huequan: {
+    name: 'Hue Quan',
+    alias: 'huequan',
+    trackingName: 'Huệ Quân',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1741948450/viettech/huequan.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Product Design Intern @ Meta',
+        roles: [MentorshipRole.PD_MENTOR],
+      },
+    ],
+  },
+  tranvo: {
+    name: 'Tran Vo',
+    alias: 'tranvo',
+    trackingName: 'Trân',
+    hobbies: 'museums, cafe-hopping, Disneyland',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1741948386/viettech/tran.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'UX Designer @ Vanguard',
+        roles: [MentorshipRole.PD_MENTOR],
+      },
+    ],
+  },
+  diepnguyen: {
+    name: 'Diep Nguyen',
+    alias: 'diepnguyen',
+    trackingName: 'Diệp',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1741948346/viettech/diep.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Product Design Intern @ Microsoft',
+        roles: [MentorshipRole.PD_MENTOR],
       },
     ],
   },

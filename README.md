@@ -27,34 +27,27 @@ npm install -g yarn
 git clone git@github.com:khoa165/vtmp.git
 ```
 
-4.  **Install dependencies:** Navigate to the project directory and install the dependencies for both the web and web-client components
-
-```bash
-cd vtmp
-yarn pp
-```
-
-5.  **Configure environment variables:**
+4.  **Configure environment variables:**
 
 - For the web application, create a `.env` file in the `web` directory and configure the necessary environment variables, such as database connection details and API keys. You can refer to `.env.example` in the `web` directory.
 - For the web-client application, create a `.env` file in the `web-client` directory and configure the necessary environment variables, such as API endpoints and authentication settings. You can refer to `.env.example` in the `web-client` directory.
 
-6.  **(Optional) Configure Git default push**: For convenient Git usage, do the following steps
+5.  **(Optional) Configure Git default push**: For convenient Git usage, do the following steps
 
-    6.1. Open .git/config file
+    5.1. Open .git/config file
 
     ```
     code .git/config
     ```
 
-    6.2. Add the following config at file's root level (don't touch anything else)
+    5.2. Add the following config at file's root level (don't touch anything else)
 
     ```
     [push]
         default = current
     ```
 
-    6.3. After git add and git commit, simply run
+    5.3. After git add and git commit, simply run
 
     ```
     git push
@@ -64,8 +57,17 @@ yarn pp
 
 ## Running the Application
 
+Without Docker
+
+```bash
+yarn pp
+yarn dev
 ```
-yarn run dev
+
+With Docker
+
+```
+docker compose up --build
 ```
 
 This will start the application on `http://localhost:3000` and the server on `http://localhost:8000`.
