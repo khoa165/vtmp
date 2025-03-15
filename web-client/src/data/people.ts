@@ -1639,6 +1639,12 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
+            name: CompanyName.HIGHMARK_HEALTH,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-03-14',
+          },
+          {
             name: CompanyName.AMAZON,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,

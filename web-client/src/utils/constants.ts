@@ -50,6 +50,7 @@ export enum CompanyName {
   PLAYSTATION = 'PLAYSTATION',
   RYCO = 'RYCO',
   NVIDIA = 'NVIDIA',
+  HIGHMARK_HEALTH = 'HIGHMARK_HEALTH',
 }
 
 export enum OfferType {
