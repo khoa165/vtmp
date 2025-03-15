@@ -1,6 +1,8 @@
 name: CI
 on:
   pull_request:
+    branches:
+      - main
     paths:
       - 'web/src/**'
       - 'web-client/src/**'
