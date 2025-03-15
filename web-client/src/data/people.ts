@@ -595,6 +595,12 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
+            name: CompanyName.NVIDIA,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-03-14',
+          },
+          {
             name: CompanyName.BUBBLE_IO,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
@@ -1967,7 +1973,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     name: 'Tran Vo',
     alias: 'tranvo',
     trackingName: 'Trân',
-    hobbies: '',
+    hobbies: 'museums, cafe-hopping, Disneyland',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1741948386/viettech/tran.jpg',
     terms: [

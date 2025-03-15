@@ -49,6 +49,7 @@ export enum CompanyName {
   SENTRY = 'SENTRY',
   PLAYSTATION = 'PLAYSTATION',
   RYCO = 'RYCO',
+  NVIDIA = 'NVIDIA',
 }
 
 export enum OfferType {
