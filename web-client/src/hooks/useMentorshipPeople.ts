@@ -10,22 +10,24 @@ import { sortBy } from 'lodash';
 export const useMentorshipPeople = (
   year: number,
   sortColumn: PeopleSortColumn,
-  sortDescending: boolean
+  sortDescending: boolean,
+  filteredRoles: MentorshipRole[]
 ) => {
-  const [selectedRoles, setSelectedRoles] = useState<MentorshipRole[]>([]);
   const roles = useMemo(() => {
-    if (selectedRoles.length === 0) {
+    if (filteredRoles.length === 0) {
       const filteredRoles = [
         MentorshipRole.PROGRAM_ADVISOR,
         MentorshipRole.SWE_PROGRAM_LEAD,
         MentorshipRole.SWE_LEAD,
         MentorshipRole.SWE_MENTOR,
         MentorshipRole.SWE_MENTEE,
+        MentorshipRole.PD_MENTOR,
+        MentorshipRole.PD_MENTEE,
       ];
       return filteredRoles;
     }
-    return selectedRoles;
-  }, [selectedRoles]);
+    return filteredRoles;
+  }, [filteredRoles]);
 
   const people = useMemo(() => {
     const filteredPeople = Object.values(mentorshipPeople).filter((p) =>
@@ -54,5 +56,5 @@ export const useMentorshipPeople = (
     return sortDescending ? sortedPeople.reverse() : sortedPeople;
   }, [roles, year, sortColumn, sortDescending]);
 
-  return { people, setSelectedRoles };
+  return people;
 };

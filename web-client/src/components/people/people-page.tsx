@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import 'styles/scss/people.scss';
-import { getFilterRoles, getRoleDisplayName } from 'utils/data';
+import { DEFAULT_ROLES, getRoleDisplayName } from 'utils/data';
 import {
   MentorshipRole,
   MentorshipYear,
@@ -27,14 +27,16 @@ interface PeoplePageProps {
 
 export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
   const navigate = useNavigatePreserveQueryParams();
+  const [filterParams, setFilterParams] = useSearchParams();
 
-  const defaultRoles = [
-    MentorshipRole.PROGRAM_ADVISOR,
-    MentorshipRole.SWE_PROGRAM_LEAD,
-    MentorshipRole.SWE_LEAD,
-    MentorshipRole.SWE_MENTOR,
-    MentorshipRole.SWE_MENTEE,
-  ];
+  const filteredRoles = useMemo(() => {
+    const selectedRoles = filterParams.get('roles');
+    return selectedRoles != null
+      ? (selectedRoles
+          .split(',')
+          .filter((r) => r in MentorshipRole) as MentorshipRole[])
+      : DEFAULT_ROLES;
+  }, [filterParams]);
 
   const getSortColumn = (sort: string | null): PeopleSortColumn => {
     if (sort?.toLowerCase() === PeopleSortColumn.NAME.toLowerCase()) {
@@ -46,7 +48,6 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
     return PeopleSortColumn.ROLE;
   };
 
-  const [filterParams, setFilterParams] = useSearchParams();
   const [sortColumn, setSortColumn] = useState(
     getSortColumn(filterParams.get('sort'))
   );
@@ -70,10 +71,11 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
     setSortDescending(isDescendingNew);
   };
 
-  const { people, setSelectedRoles } = useMentorshipPeople(
+  const people = useMentorshipPeople(
     year,
     sortColumn,
-    sortDescending
+    sortDescending,
+    filteredRoles
   );
   const companiesMetadata = useOffersData();
 
@@ -88,7 +90,19 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
 
   const onChangeYear = (_event, value) => navigate(`/people/${value}`);
 
-  const onChangeGroup = (_event, value) => setSelectedRoles(value);
+  const onChangeGroup = (_event, value) => {
+    if (value.length === 0) {
+      setFilterParams((params) => {
+        params.delete('roles');
+        return params;
+      });
+      return;
+    }
+    setFilterParams((params) => {
+      params.set('roles', value.join(','));
+      return params;
+    });
+  };
 
   const mentorshipYears = useMemo(
     () => Object.keys(MentorshipYear).map((y) => yearDisplay[y] as number),
@@ -101,7 +115,7 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
         <Autocomplete
           className="role-control flex-fill"
           multiple
-          options={getFilterRoles()}
+          options={DEFAULT_ROLES}
           getOptionLabel={(option) =>
             getRoleDisplayName(option as MentorshipRole)
           }
@@ -120,7 +134,7 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
               </li>
             );
           }}
-          defaultValue={defaultRoles}
+          defaultValue={filteredRoles}
           onChange={onChangeGroup}
         />
         <div className="break d-block d-xl-none"></div>

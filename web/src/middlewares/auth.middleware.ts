@@ -21,7 +21,9 @@ export const authenticate = (
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'vtmp');
     const parsed = DecodedJWTSchema.safeParse(decoded);
-    req.user = parsed.data;
+    if (parsed.success) {
+      req.user = parsed.data;
+    }
     next();
   } catch {
     res.status(403).json({ message: 'Forbidden' });
