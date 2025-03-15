@@ -24,6 +24,7 @@
     "cookiecutter": "^1.3.0",
     "eslint": "^9.22.0",
     "mocha": "^11.1.0",
+    "tsx": "^4.19.3",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.0"
   }
