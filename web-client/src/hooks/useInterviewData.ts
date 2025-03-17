@@ -27,7 +27,9 @@ export const useInterviewData = () => {
         datesWithCount: [] as MergedDateWithCount[],
       };
       const unmergedDatesWithCount = [] as DateWithCount[][];
-      const dataRecords: Partial<Record<MentorshipYear, InterviewRecordsPerCompany[]>> = {};
+      const dataRecords: Partial<
+        Record<MentorshipYear, InterviewRecordsPerCompany[]>
+      > = {};
       if (process.env.REACT_APP_VTMP_2023_INTERVIEWS_CSV) {
         const res = await axios.get(
           process.env.REACT_APP_VTMP_2023_INTERVIEWS_CSV
@@ -82,12 +84,17 @@ export const useInterviewData = () => {
         }
       );
       dataObj.data = sortBy(dataObj.data, (d) => d.company);
-      for (let i = 0; i < unmergedDatesWithCount[0].length; i++) {
-        dataObj.datesWithCount.push({
-          date: unmergedDatesWithCount[0][i].date,
-          [MentorshipYear.YEAR_2023]: unmergedDatesWithCount[0][i]?.count ?? 0,
-          [MentorshipYear.YEAR_2024]: unmergedDatesWithCount[1][i]?.count ?? 0,
-        });
+      // Condition to ensure nmergedDatesWithCount[0] is not accessed if the array is empty
+      if (unmergedDatesWithCount.length > 0) {
+        for (let i = 0; i < unmergedDatesWithCount[0].length; i++) {
+          dataObj.datesWithCount.push({
+            date: unmergedDatesWithCount[0][i].date,
+            [MentorshipYear.YEAR_2023]:
+              unmergedDatesWithCount[0][i]?.count ?? 0,
+            [MentorshipYear.YEAR_2024]:
+              unmergedDatesWithCount[1][i]?.count ?? 0,
+          });
+        }
       }
       setData(dataObj);
     };
