@@ -1,13 +1,11 @@
 import mongoose from 'mongoose';
+import { getConfig } from './config';
 
-const MONGO_URI = process.env.MONGO_URI;
+const CONFIG = getConfig();
 
 const connectDB = async () => {
-  if (!MONGO_URI) {
-    return;
-  }
   try {
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(CONFIG.MONGO_URI);
     console.log('✅ MongoDB Connected');
   } catch (error) {
     console.error('❌ MongoDB Connection Failed:', error);
