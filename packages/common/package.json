@@ -1,0 +1,23 @@
+{
+  "name": "@vtmp/common",
+  "version": "1.0.0",
+  "exports": {
+    "./validation": {
+      "default": "./dist/validation/index.js",
+      "types": "./dist/validation/index.d.ts"
+    },
+    "./math": {
+      "default": "./dist/math/index.js",
+      "types": "./dist/math/index.d.ts"
+    }
+  },
+  "types": "dist/types",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}
