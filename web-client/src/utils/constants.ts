@@ -51,6 +51,7 @@ export enum CompanyName {
   RYCO = 'RYCO',
   NVIDIA = 'NVIDIA',
   HIGHMARK_HEALTH = 'HIGHMARK_HEALTH',
+  HEALTH_ENHANCEMENT_SYSTEMS = 'HEALTH_ENHANCEMENT_SYSTEMS',
 }
 
 export enum OfferType {

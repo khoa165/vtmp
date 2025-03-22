@@ -1516,6 +1516,12 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
+            name: CompanyName.AMAZON,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-03-21',
+          },
+          {
             name: CompanyName.ROBINHOOD,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
@@ -1769,6 +1775,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2024,
         title: 'Student @ MSU',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.HEALTH_ENHANCEMENT_SYSTEMS,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-03-20',
+          },
+        ],
         teamName: 'Peace Pod',
         teamNumber: 6,
         teamRanking: 6,
