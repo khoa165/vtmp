@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const appRecordSchema = new mongoose.Schema({
+const AppRecordSchema = new mongoose.Schema({
   jobPosting: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'JobPosting',
@@ -22,4 +22,4 @@ const appRecordSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model('AppRecord', appRecordSchema);
+export default mongoose.model('AppRecord', AppRecordSchema);
