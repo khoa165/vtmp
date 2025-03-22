@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import connectDB from '@/config/database';
 import routes from '@/routes/index';
+import { isString } from '@vtmp/common/validation';
+import { add } from '@vtmp/common/math';
 
 dotenv.config();
 
@@ -22,6 +24,8 @@ app.use(helmet()); // Secure HTTP headers
 app.use(morgan('dev')); // Logging HTTP requests
 
 app.get('/', (_req: Request, res: Response) => {
+  console.log(isString('hello'));
+  console.log(add(1, 3));
   res.status(200).send('Server is running');
 });
 
