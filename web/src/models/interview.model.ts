@@ -9,6 +9,8 @@ enum InterviewType {
   SYSTEM_DESIGN = 'system_design',
   TRIVIA = 'trivia',
   PROJECT_WALKTHROUGH = 'project_walkthrough',
+  PRACTICAL = 'practical',
+  HIRING_MANAGER = 'hiring_manager',
 }
 
 enum InterviewStatus {
