@@ -1,25 +1,54 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
-const InterviewSchema = new mongoose.Schema({
-  appRecord: { ref: 'AppRecord' },
+enum InterviewType {
+  OA = 'online_assessment',
+  BEHAVIORIAL = 'behaviorial',
+  TECHNICAL = 'technical',
+  RECRUITER_SCREEN = 'recruiter_screen',
+  DEBUG = 'debug',
+  SYSTEM_DESIGN = 'system_design',
+  TRIVIA = 'trivia',
+  PROJECT_WALKTHROUGH = 'project_walkthrough',
+}
+
+enum InterviewStatus {
+  PASSED = 'passed',
+  FAILED = 'failed',
+  WITHDRAW = 'withdraw',
+  UPCOMING = 'upcoming',
+}
+
+interface IInterview extends Document {
+  applicationId: mongoose.Schema.Types.ObjectId;
+  interviewType: [string];
+  status: string;
+  interviewOnDate: Date;
+  note?: string;
+}
+
+const InterviewSchema = new mongoose.Schema<IInterview>({
+  applicationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Application',
+    required: true,
+  },
   interviewType: {
-    type: String,
-    enum: [
-      'Online Assessment',
-      'Phone Screen',
-      'Behavior',
-      'Technical',
-      'Other',
-    ],
+    type: [String],
+    enum: Object.values(InterviewType),
     required: true,
   },
   status: {
     type: String,
-    enum: ['Incoming', 'Waiting', 'Declined', 'Passed'],
+    enum: Object.values(InterviewStatus),
+    default: InterviewStatus.UPCOMING,
+  },
+  interviewOnDate: {
+    type: Date,
     required: true,
   },
-  interviewDate: { type: Date },
-  interviewNote: { type: String },
+  note: {
+    type: String,
+  },
 });
 
-export default mongoose.model('Interview', InterviewSchema);
+export default mongoose.model<IInterview>('Interview', InterviewSchema);
