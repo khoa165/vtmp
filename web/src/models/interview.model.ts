@@ -1,28 +1,31 @@
 import mongoose, { Document } from 'mongoose';
 
 enum InterviewType {
-  OA = 'online_assessment',
-  BEHAVIORIAL = 'behaviorial',
-  TECHNICAL = 'technical',
-  RECRUITER_SCREEN = 'recruiter_screen',
-  DEBUG = 'debug',
-  SYSTEM_DESIGN = 'system_design',
-  TRIVIA = 'trivia',
-  PROJECT_WALKTHROUGH = 'project_walkthrough',
-  PRACTICAL = 'practical',
-  HIRING_MANAGER = 'hiring_manager',
+  ONLINE_ASSESSMENT = 'ONLINE_ASSESSMENT',
+  CRITICAL_THINKING = 'CRITICAL_THINKING',
+  CODE_REVIEW = 'CODE_REVIEW',
+  BEHAVIORIAL = 'BEHAVIORIAL',
+  TECHNICAL = 'TECHNICAL',
+  RECRUITER_SCREEN = 'RECRUITER_SCREEN',
+  DEBUG = 'DEBUG',
+  SYSTEM_DESIGN = 'SYSTEM_DESIGN',
+  TRIVIA = 'TRIVIA',
+  PROJECT_WALKTHROUGH = 'PROJECT_WALKTHROUGH',
+  PRACTICAL = 'PRACTICAL',
+  HIRING_MANAGER = 'HIRING_MANAGER',
 }
 
 enum InterviewStatus {
-  PASSED = 'passed',
-  FAILED = 'failed',
-  WITHDRAW = 'withdraw',
-  UPCOMING = 'upcoming',
+  PASSED = 'PASSED',
+  FAILED = 'FAILED',
+  WITHDRAW = 'WITHDRAW',
+  UPCOMING = 'UPCOMING',
+  PENDING = 'PENDING',
 }
 
 interface IInterview extends Document {
   applicationId: mongoose.Schema.Types.ObjectId;
-  interviewType: InterviewStatus[];
+  type: InterviewStatus[];
   status: string;
   interviewOnDate: Date;
   note?: string;
@@ -32,9 +35,8 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
   applicationId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Application',
-    required: true,
   },
-  interviewType: {
+  type: {
     type: [String],
     enum: Object.values(InterviewType),
     required: true,
@@ -42,7 +44,7 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
   status: {
     type: String,
     enum: Object.values(InterviewStatus),
-    default: InterviewStatus.UPCOMING,
+    default: InterviewStatus.PENDING,
   },
   interviewOnDate: {
     type: Date,

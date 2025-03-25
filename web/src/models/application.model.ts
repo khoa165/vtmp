@@ -1,16 +1,16 @@
 import mongoose, { Document } from 'mongoose';
 
 enum ApplicationStatus {
-  SUBMITTED = 'submitted',
-  INTERVIEW = 'interview',
-  OFFER_RECEIVED = 'offer_received',
-  REJECTED = 'rejected',
+  SUBMITTED = 'SUBMITTED',
+  INTERVIEW = 'INTERVIEW',
+  OFFER = 'OFFER',
+  REJECTED = 'REJECTED',
 }
 
 interface IApplication extends Document {
   jobPostingId: mongoose.Schema.Types.ObjectId;
   userId: mongoose.Schema.Types.ObjectId;
-  isApplied: boolean;
+  hasApplied: boolean;
   status: ApplicationStatus;
   appliedOnDate: Date;
   note?: string;
@@ -28,7 +28,7 @@ const ApplicationSchema = new mongoose.Schema<IApplication>(
       ref: 'User',
       required: true,
     },
-    isApplied: {
+    hasApplied: {
       type: Boolean,
       default: true,
       // false: when user must have saved/favorited this posting but didn't apply yet (extended)
