@@ -37,7 +37,6 @@ const InvitationSchema = new mongoose.Schema<IInvitation>(
     status: {
       type: String,
       enum: Object.values(InvitationStatus),
-      required: true,
       default: InvitationStatus.PENDING,
     },
   },
