@@ -1,7 +1,6 @@
 import mongoose, { Document } from 'mongoose';
 
 enum InterviewType {
-  ONLINE_ASSESSMENT = 'ONLINE_ASSESSMENT',
   CRITICAL_THINKING = 'CRITICAL_THINKING',
   CODE_REVIEW = 'CODE_REVIEW',
   BEHAVIORIAL = 'BEHAVIORIAL',
@@ -18,15 +17,15 @@ enum InterviewType {
 enum InterviewStatus {
   PASSED = 'PASSED',
   FAILED = 'FAILED',
-  WITHDRAW = 'WITHDRAW',
+  WITHDRAWN = 'WITHDRAWN',
   UPCOMING = 'UPCOMING',
   PENDING = 'PENDING',
 }
 
 interface IInterview extends Document {
   applicationId: mongoose.Schema.Types.ObjectId;
-  type: InterviewStatus[];
-  status: string;
+  type: InterviewType[];
+  status: InterviewStatus;
   interviewOnDate: Date;
   note?: string;
 }
