@@ -1,9 +1,9 @@
 import mongoose, { Document } from 'mongoose';
 
-enum Roles {
-  USER = 'USER',
+enum Role {
   ADMIN = 'ADMIN',
   MODERATOR = 'MODERATOR',
+  USER = 'USER',
 }
 
 interface IUser extends Document {
@@ -12,7 +12,7 @@ interface IUser extends Document {
   dateOfBirth?: Date;
   email: string;
   encryptedPassword: string;
-  role: Roles;
+  role: Role;
 }
 
 const UserSchema = new mongoose.Schema<IUser>(
@@ -40,8 +40,8 @@ const UserSchema = new mongoose.Schema<IUser>(
     },
     role: {
       type: String,
-      enum: Object.values(Roles),
-      default: Roles.USER,
+      enum: Object.values(Role),
+      default: Role.USER,
     },
   },
   { timestamps: true }
