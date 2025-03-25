@@ -5,6 +5,8 @@ enum ApplicationStatus {
   INTERVIEW = 'INTERVIEW',
   OFFER = 'OFFER',
   REJECTED = 'REJECTED',
+  OA_RECEIVED = 'OA_RECEIVED',
+  WITHDRAWN = 'WITHDRAWN',
 }
 
 interface IApplication extends Document {
