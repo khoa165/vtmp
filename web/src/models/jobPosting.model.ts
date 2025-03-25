@@ -1,31 +1,67 @@
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document } from 'mongoose';
 
+enum Location {
+  US = 'UNITED STATES',
+  CANADA = 'CANADA',
+}
 
 interface JobPosting extends Document {
-    linkId: mongoose.Schema.Types.ObjectId;
-    url: string;
-    jobTitle: string;
-    companyName: string;
-    location: string;
-    datePosted: Date;
-    jobDesc: string;
-    adminNote?: string;
-    submittedBy: mongoose.Schema.Types.ObjectId;
+  linkId: mongoose.Schema.Types.ObjectId;
+  externalPostingId?: string;
+  url: string;
+  jobTitle: string;
+  companyName: string;
+  location?: Location;
+  datePosted: Date;
+  jobDescription?: string;
+  adminNote?: string;
+  submittedBy: mongoose.Schema.Types.ObjectId;
 }
 
 const JobPostingSchema = new mongoose.Schema<JobPosting>(
-    {
-        linkId: {type: mongoose.Schema.Types.ObjectId, ref: "Link", required: true},
-        url: {type: String, required: true},
-        jobTitle: {type: String, required: true},
-        companyName: {type: String, required: true},
-        location: {type: String, required: true},
-        datePosted: {type: Date, required: true},
-        jobDesc: {type: String, required: true},
-        adminNote: {type: String},
-        submittedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+  {
+    linkId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Link',
+      required: true,
     },
-    {timestamps : true}
+    externalPostingId: {
+      type: String,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+    jobTitle: {
+      type: String,
+      required: true,
+    },
+    companyName: {
+      type: String,
+      required: true,
+    },
+    location: {
+      type: String,
+      enum: Object.values(Location),
+      default: Location.US,
+    },
+    datePosted: {
+      type: Date,
+      required: true,
+    },
+    jobDescription: {
+      type: String,
+    },
+    adminNote: {
+      type: String,
+    },
+    submittedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+  },
+  { timestamps: true }
 );
 
 export default mongoose.model<JobPosting>('JobPosting', JobPostingSchema);
