@@ -1,7 +1,7 @@
 import mongoose, { Document } from 'mongoose';
 
 enum Location {
-  US = 'UNITED STATES',
+  US = 'US',
   CANADA = 'CANADA',
 }
 
@@ -12,7 +12,7 @@ interface JobPosting extends Document {
   jobTitle: string;
   companyName: string;
   location?: Location;
-  datePosted: Date;
+  datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
   submittedBy: mongoose.Schema.Types.ObjectId;
@@ -47,7 +47,6 @@ const JobPostingSchema = new mongoose.Schema<JobPosting>(
     },
     datePosted: {
       type: Date,
-      required: true,
     },
     jobDescription: {
       type: String,
