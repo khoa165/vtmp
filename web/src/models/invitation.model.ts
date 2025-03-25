@@ -1,9 +1,9 @@
 import mongoose, { Document } from 'mongoose';
 
 enum InvitationStatus {
-  PENDING = 'PENDING',
   ACCEPTED = 'ACCEPTED',
   EXPIRED = 'EXPIRED',
+  PENDING = 'PENDING',
   REVOKED = 'REVOKED',
 }
 
