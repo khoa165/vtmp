@@ -33,7 +33,6 @@ const InvitationSchema = new mongoose.Schema<IInvitation>(
     expiryDate: {
       type: Date,
       required: true,
-      default: new Date(Date.now() + 24 * 60 * 60),
     },
     status: {
       type: String,
