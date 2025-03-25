@@ -263,4 +263,9 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
     logoFilename: 'highmarkhealth.png',
     maxLogoSize: 100,
   },
+  [CompanyName.HEALTH_ENHANCEMENT_SYSTEMS]: {
+    displayName: 'Health Enhancement Systems',
+    logoFilename: 'healthenhancementsystems.png',
+    maxLogoSize: 100,
+  },
 };
