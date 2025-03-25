@@ -9,7 +9,6 @@ enum Role {
 interface IUser extends Document {
   firstName: string;
   lastName: string;
-  dateOfBirth?: Date;
   email: string;
   encryptedPassword: string;
   role: Role;
@@ -24,10 +23,6 @@ const UserSchema = new mongoose.Schema<IUser>(
     lastName: {
       type: String,
       required: true,
-    },
-    dateOfBirth: {
-      type: Date,
-      required: false,
     },
     email: {
       type: String,
