@@ -22,7 +22,7 @@ enum InterviewStatus {
 
 interface IInterview extends Document {
   applicationId: mongoose.Schema.Types.ObjectId;
-  interviewType: [string];
+  interviewType: InterviewStatus[];
   status: string;
   interviewOnDate: Date;
   note?: string;

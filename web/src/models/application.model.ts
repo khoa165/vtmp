@@ -11,7 +11,7 @@ interface IApplication extends Document {
   jobPostingId: mongoose.Schema.Types.ObjectId;
   userId: mongoose.Schema.Types.ObjectId;
   isApplied: boolean;
-  status: string;
+  status: ApplicationStatus;
   appliedOnDate: Date;
   note?: string;
 }
