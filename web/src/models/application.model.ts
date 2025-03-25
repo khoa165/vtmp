@@ -2,7 +2,7 @@ import mongoose, { Document } from 'mongoose';
 
 enum ApplicationStatus {
   SUBMITTED = 'SUBMITTED',
-  INTERVIEW = 'INTERVIEW',
+  IN_PROGRESS = 'IN_PROGRESS',
   OFFER = 'OFFER',
   REJECTED = 'REJECTED',
   OA_RECEIVED = 'OA_RECEIVED',
@@ -33,7 +33,6 @@ const ApplicationSchema = new mongoose.Schema<IApplication>(
     hasApplied: {
       type: Boolean,
       default: true,
-      // false: when user must have saved/favorited this posting but didn't apply yet (extended)
     },
     status: {
       type: String,
