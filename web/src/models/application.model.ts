@@ -18,38 +18,33 @@ interface IApplication extends Document {
   note?: string;
 }
 
-const ApplicationSchema = new mongoose.Schema<IApplication>(
-  {
-    jobPostingId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'JobPosting',
-      required: true,
-    },
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
-    hasApplied: {
-      type: Boolean,
-      default: true,
-    },
-    status: {
-      type: String,
-      enum: Object.values(ApplicationStatus),
-      default: ApplicationStatus.SUBMITTED,
-    },
-    appliedOnDate: {
-      type: Date,
-      default: Date.now,
-    },
-    note: {
-      type: String,
-    },
+const ApplicationSchema = new mongoose.Schema<IApplication>({
+  jobPostingId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'JobPosting',
+    required: true,
   },
-  {
-    timestamps: true,
-  }
-);
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  hasApplied: {
+    type: Boolean,
+    default: true,
+  },
+  status: {
+    type: String,
+    enum: Object.values(ApplicationStatus),
+    default: ApplicationStatus.SUBMITTED,
+  },
+  appliedOnDate: {
+    type: Date,
+    default: Date.now,
+  },
+  note: {
+    type: String,
+  },
+});
 
 export default mongoose.model<IApplication>('Application', ApplicationSchema);
