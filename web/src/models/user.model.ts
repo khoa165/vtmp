@@ -1,10 +1,48 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
-const UserSchema = new mongoose.Schema(
+enum Roles {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+  MODERATOR = 'MODERATOR',
+}
+
+interface IUser extends Document {
+  firstName: string;
+  lastName: string;
+  dateOfBirth?: Date;
+  email: string;
+  encryptedPassword: string;
+  role: Roles;
+}
+
+const UserSchema = new mongoose.Schema<IUser>(
   {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    dateOfBirth: {
+      type: Date,
+      required: false,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    encryptedPassword: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: Object.values(Roles),
+      default: Roles.USER,
+    },
   },
   { timestamps: true }
 );
