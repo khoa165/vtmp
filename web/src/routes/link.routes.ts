@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import LinkController from '@/controllers/link.controller';
 
-const router = Router();
+const LinkRoutes = Router();
 
-export default router;
+export default LinkRoutes;

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import InterviewController from '@/controllers/interview.controller';
 
-const router = Router();
+const InterviewRoutes = Router();
 
-export default router;
+export default InterviewRoutes;

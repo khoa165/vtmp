@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import InvitationController from '@/controllers/invitation.controller';
 
-const router = Router();
+const InvitationRoutes = Router();
 
-export default router;
+export default InvitationRoutes;

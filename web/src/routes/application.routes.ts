@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import ApplicationController from '@/controllers/application.controller';
 
-const router = Router();
+const ApplicationRoutes = Router();
 
-export default router;
+export default ApplicationRoutes;
