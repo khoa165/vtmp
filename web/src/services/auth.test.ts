@@ -1,17 +1,32 @@
 import { useMongoDB } from '@/config/mongodb.testutils';
-import { describe } from 'mocha';
+import { beforeEach, describe } from 'mocha';
 import AuthService from './auth.service';
 import { expect } from 'chai';
 import UserRepository from '@/repositories/user.repository';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { getConfig } from '@/config/config';
 
 describe('Auth Service', () => {
   useMongoDB();
+  const config = getConfig();
+
+  beforeEach(async () => {
+    const encryptedPassword = await bcrypt.hash('test password', 10);
+    const mockUser = {
+      firstName: 'admin',
+      lastName: 'viettech',
+      email: 'test@gmail.com',
+      encryptedPassword,
+    };
+    await UserRepository.create(mockUser);
+  });
 
   describe('Login', () => {
     it('should throw error user not found', async () => {
       const userData = {
-        email: 'testexample@gmail.com',
-        password: 'test',
+        email: 'testnotfound@gmail.com',
+        password: 'test password',
       };
       try {
         await AuthService.login(userData);
@@ -21,27 +36,50 @@ describe('Auth Service', () => {
     });
 
     it('should throw error wrong password', async () => {
-      const mockUser = {
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'testexample@gmail.com',
-        encryptedPassword: 'enrypted-password-later',
-      };
-      await UserRepository.create(mockUser);
       const userData = {
-        email: 'testexample@gmail.com',
-        password: 'encrypted-password-later',
+        email: 'test@gmail.com',
+        password: 'wrong password',
       };
 
       try {
         await AuthService.login(userData);
       } catch (error: any) {
-        expect(error.message).to.equal('User not found');
+        expect(error.message).to.equal('Wrong password');
       }
     });
 
-    it('should login successfully and return valid jwt token', () => {});
+    it('should login successfully and return valid jwt token', async () => {
+      const userData = {
+        email: 'test@gmail.com',
+        password: 'test password',
+      };
 
-    it('should login successfully and return token with correct user information', () => {});
+      try {
+        const token = await AuthService.login(userData);
+        jwt.verify(token, config.JWT_SECRET);
+      } catch (error: any) {
+        throw new Error('log in successfully but invalid jwt token');
+      }
+    });
+
+    it('should login successfully and return token with correct user information', async () => {
+      const userData = {
+        email: 'test@gmail.com',
+        password: 'test password',
+      };
+
+      try {
+        const token = await AuthService.login(userData);
+        const { id, email } = jwt.verify(token, config.JWT_SECRET) as {
+          id: string;
+          email: string;
+        };
+        let user = await UserRepository.findById(id);
+        expect(user).to.not.be.null;
+        expect(user?.email).to.eq(email);
+      } catch (error: any) {
+        throw new Error('log in successfully but wrong user information');
+      }
+    });
   });
 });

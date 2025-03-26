@@ -11,6 +11,7 @@ const AuthService = {
     if (!user) {
       throw new Error('User not found');
     }
+
     const passwordMatched = await bcrypt.compare(
       password,
       user.encryptedPassword ?? ''
