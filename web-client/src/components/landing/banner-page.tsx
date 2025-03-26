@@ -3,14 +3,11 @@ import React from 'react';
 import { Navbar } from 'components/layout/navigation-bar';
 
 interface BannerPageProps {
-  contentRef: React.RefObject<HTMLDivElement>;
+  contentRef: React.RefObject<HTMLDivElement | null>;
 }
 export const BannerPage: React.FC<BannerPageProps> = ({ contentRef }) => {
-  const onScrollClick = () => {
-    if (contentRef.current) {
-      contentRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const onScrollClick = () =>
+    contentRef.current?.scrollIntoView({ behavior: 'smooth' });
 
   return (
     <div id="banner-page">
