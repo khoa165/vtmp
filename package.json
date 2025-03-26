@@ -7,7 +7,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "client": "yarn workspace vtmp-web-client run start",
+    "client": "yarn workspace @vtmp/web-client run start",
     "server": "yarn workspace @vtmp/web run dev",
     "common": "yarn workspace @vtmp/common run dev",
     "dev": "concurrently \"yarn run server\" \"yarn run client\" \"yarn run common\"",
@@ -24,7 +24,7 @@
     "concurrently": "^9.1.2",
     "cookiecutter": "^1.3.0",
     "eslint": "^9.22.0",
-    "typescript": "^5.8.2",
+    "typescript": "^5.4.5",
     "typescript-eslint": "^8.26.0"
   },
   "workspaces": [
