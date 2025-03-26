@@ -7,9 +7,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "client": "yarn workspace @vtmp/web-client run start",
+    "client": "yarn workspace vtmp-web-client run start",
     "server": "yarn workspace @vtmp/web run dev",
-    "dev": "concurrently \"yarn run server\" \"yarn run client\"",
+    "common": "yarn workspace @vtmp/common run dev",
+    "dev": "concurrently \"yarn run server\" \"yarn run client\" \"yarn run common\"",
     "cc": "cookiecutter -c=cookiecutter/cookiecutter.config.js",
     "blog": "node ./scripts/generate-metadata.js",
     "lint": "yarn eslint .",

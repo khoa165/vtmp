@@ -1,5 +1,5 @@
 {
-  "name": "@vtmp/web-client",
+  "name": "vtmp-web-client",
   "version": "1.0.0",
   "repository": "git@github.com:khoa165/vtmp.git",
   "author": "Viet Tech Mentorship Program <viettechmentorshipprogram@gmail.com>",
