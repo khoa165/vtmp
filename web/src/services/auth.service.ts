@@ -3,7 +3,7 @@ import UserRepository from '@/repositories/user.repository';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const config = getConfig();
+// const config = getConfig();
 
 const AuthService = {
   login: async ({ email, password }: { email: string; password: string }) => {
@@ -20,9 +20,13 @@ const AuthService = {
       throw new Error('Wrong password');
     }
 
-    const token = jwt.sign({ id: user._id.toString() }, config.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const token = jwt.sign(
+      { id: user._id.toString() },
+      process.env.JWT_SECRET ?? 'vtmp-secret',
+      {
+        expiresIn: '1h',
+      }
+    );
     return token;
   },
 };

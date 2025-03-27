@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { getConfig } from './config';
 
-const CONFIG = getConfig();
+// const CONFIG = getConfig();
 
 const connectDB = async () => {
   if (process.env.NODE_ENV === 'test') {
@@ -9,7 +9,7 @@ const connectDB = async () => {
     return;
   }
   try {
-    await mongoose.connect(CONFIG.MONGO_URI);
+    await mongoose.connect(process.env.MONGO_URI ?? 'mongodb://google.com');
     console.log('✅ MongoDB Connected');
   } catch (error) {
     console.error('❌ MongoDB Connection Failed:', error);

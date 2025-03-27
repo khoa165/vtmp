@@ -9,7 +9,7 @@ import { getConfig } from '@/config/config';
 
 describe('Auth Service', () => {
   useMongoDB();
-  const config = getConfig();
+  // const config = getConfig();
 
   beforeEach(async () => {
     const encryptedPassword = await bcrypt.hash('test password', 10);
@@ -56,7 +56,7 @@ describe('Auth Service', () => {
 
       try {
         const token = await AuthService.login(userData);
-        jwt.verify(token, config.JWT_SECRET);
+        jwt.verify(token, process.env.JWT_SECRET ?? 'vtmp-secret');
       } catch (error: any) {
         throw new Error('log in successfully but invalid jwt token');
       }
@@ -70,7 +70,10 @@ describe('Auth Service', () => {
 
       try {
         const token = await AuthService.login(userData);
-        const { id } = jwt.verify(token, config.JWT_SECRET) as {
+        const { id } = jwt.verify(
+          token,
+          process.env.JWT_SECRET ?? 'vtmp-secret'
+        ) as {
           id: string;
         };
         let user = await UserRepository.findById(id);
