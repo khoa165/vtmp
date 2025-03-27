@@ -9,27 +9,25 @@ const ApplicationService = {
     jobPostingId: string;
     userId: string;
   }) => {
-    // Step 1: extract userId and postingId
-
-    // Step 2: call UserRepository.findById(id) to see if userId exists in database, otherwise throw error  ⇒ could be extracted to middleware
-
-    // Step 3: call PostingRepository.findById(id) to see if postingId exists in database, otherwise throw error
+    // Check if postingId exists in database
     const jobPosting = await JobPostingRepository.findById(jobPostingId);
     if (!jobPosting) {
       throw new Error('Job posting not found');
     }
 
-    // Step 4: call ApplicationRepository.alreadyExist({userId, postingId})
+    // Check if an application associated with this job posting and user already exist
     const alreadyExists = await ApplicationRepository.alreadyExist({
       jobPostingId,
       userId,
     });
     if (alreadyExists) {
-      throw new Error('Application already exists');
+      throw new Error(
+        'Application associated with this job posting and user already exists'
+      );
     }
 
-    // Step 5: If all check above passes, return ApplicationRepository.createApplication(applicationData)
-    return ApplicationRepository.createApplication({
+    // If all checks passes, return by calling ApplicationRepository.createApplication
+    return await ApplicationRepository.createApplication({
       jobPostingId,
       userId,
     });
