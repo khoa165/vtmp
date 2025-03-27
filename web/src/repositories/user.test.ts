@@ -9,6 +9,24 @@ const { expect } = chai;
 describe('UserRepository', () => {
   useMongoDB();
 
+  it('should create an user', async () => {
+    const mockUser = {
+      firstName: 'admin',
+      lastName: 'viettech',
+      email: 'test@example.com',
+      encryptedPassword: 'ecnrypted-password-later',
+    };
+
+    const newUser = await UserRepository.create(mockUser);
+    const user = await UserRepository.findById(newUser.id);
+
+    expect(user).to.not.be.null;
+    expect(user).to.containSubset(mockUser);
+    expect(user?.firstName).to.eq(mockUser.firstName);
+    expect(user?.lastName).to.eq(mockUser.lastName);
+    expect(user?.email).to.eq(mockUser.email);
+  });
+
   it('should be able to find user by id', async () => {
     const mockUser = {
       firstName: 'admin',
@@ -20,6 +38,9 @@ describe('UserRepository', () => {
     const user = await UserRepository.findById(newlyCreatedRecord.id);
 
     expect(user).to.containSubset(mockUser);
+    expect(user?.firstName).to.eq(mockUser.firstName);
+    expect(user?.lastName).to.eq(mockUser.lastName);
+    expect(user?.email).to.eq(mockUser.email);
   });
 
   it('should be able to find user by email', async () => {
@@ -33,5 +54,8 @@ describe('UserRepository', () => {
     const user = await UserRepository.findByEmail('test@example.com');
 
     expect(user).to.containSubset(mockUser);
+    expect(user?.firstName).to.eq(mockUser.firstName);
+    expect(user?.lastName).to.eq(mockUser.lastName);
+    expect(user?.email).to.eq(mockUser.email);
   });
 });
