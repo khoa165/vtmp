@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import connectDB from '@/config/database';
+// import connectDB from '@/config/database';
 import routes from '@/routes/index';
 
 dotenv.config();
@@ -11,7 +11,7 @@ dotenv.config();
 const app: Express = express();
 
 // Connect to database
-connectDB();
+// connectDB();
 
 // Global middlewares
 app.use(cors());
