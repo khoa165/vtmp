@@ -20,11 +20,9 @@ const AuthService = {
       throw new Error('Wrong password');
     }
 
-    const token = jwt.sign(
-      { id: user._id.toString(), email: user.email },
-      config.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+    const token = jwt.sign({ id: user._id.toString() }, config.JWT_SECRET, {
+      expiresIn: '1h',
+    });
     return token;
   },
 };

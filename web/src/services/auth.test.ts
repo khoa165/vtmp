@@ -62,7 +62,7 @@ describe('Auth Service', () => {
       }
     });
 
-    it('should login successfully and return token with correct user information', async () => {
+    it('should login successfully and return token with user information', async () => {
       const userData = {
         email: 'test@gmail.com',
         password: 'test password',
@@ -70,15 +70,15 @@ describe('Auth Service', () => {
 
       try {
         const token = await AuthService.login(userData);
-        const { id, email } = jwt.verify(token, config.JWT_SECRET) as {
+        const { id } = jwt.verify(token, config.JWT_SECRET) as {
           id: string;
-          email: string;
         };
         let user = await UserRepository.findById(id);
         expect(user).to.not.be.null;
-        expect(user?.email).to.eq(email);
       } catch (error: any) {
-        throw new Error('log in successfully but wrong user information');
+        throw new Error(
+          'log in successfully but token not containing user information'
+        );
       }
     });
   });
