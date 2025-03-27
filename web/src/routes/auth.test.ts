@@ -1,0 +1,97 @@
+import { useMongoDB } from '@/config/mongodb.testutils';
+import { beforeEach, describe } from 'mocha';
+import bcrypt from 'bcryptjs';
+import UserRepository from '@/repositories/user.repository';
+import app from '@/app';
+import request from 'supertest';
+import { expect } from 'chai';
+
+describe('POST /auth/login', () => {
+  useMongoDB();
+
+  // Later when /auth/signup works, replace this with a call
+  // to /auth/signup to create a mock user in DB
+  beforeEach(async () => {
+    const encryptedPassword = await bcrypt.hash('test password', 10);
+    const mockUser = {
+      firstName: 'admin',
+      lastName: 'viettech',
+      email: 'test@gmail.com',
+      encryptedPassword,
+    };
+    await UserRepository.create(mockUser);
+  });
+
+  it('should return error messages for missing email', (done) => {
+    request(app)
+      .post('/api/auth/login')
+      .send({ password: 'test' })
+      .set('Accept', 'application/json')
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.statusCode).to.eq(400);
+        expect(res.body).to.have.property('message');
+        expect(res.body.message).to.eq('Email is required');
+        done();
+      });
+  });
+  it('should return error messages for missing password', (done) => {
+    request(app)
+      .post('/api/auth/login')
+      .send({ email: 'test@gmail.com' })
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.statusCode).to.eq(400);
+        expect(res.body).to.have.property('message');
+        expect(res.body.message).to.eq('Password is required');
+
+        done();
+      });
+  });
+
+  it('should return error messages for user not found', (done) => {
+    request(app)
+      .post('/api/auth/login')
+      .send({ email: 'notfound@gmail.com', password: 'test password' })
+      .end((err, res) => {
+        if (err) done(err);
+
+        expect(res.statusCode).to.eq(401);
+        expect(res.body).to.have.property('message');
+        expect(res.body.message).to.eq('User not found');
+
+        done();
+      });
+  });
+
+  it('should return error message for valid user but wrong password', (done) => {
+    request(app)
+      .post('/api/auth/login')
+      .send({ email: 'test@gmail.com', password: 'wrong password' })
+      .end((err, res) => {
+        if (err) done(err);
+
+        expect(res.statusCode).to.eq(401);
+        expect(res.body).to.have.property('message');
+        expect(res.body.message).to.eq('Wrong password');
+
+        done();
+      });
+  });
+
+  it('should return token for valid email and password', (done) => {
+    request(app)
+      .post('/api/auth/login')
+      .send({ email: 'test@gmail.com', password: 'test password' })
+      .end((err, res) => {
+        if (err) done(err);
+
+        expect(res.statusCode).to.eq(200);
+        expect(res.body).to.have.property('token');
+
+        done();
+      });
+  });
+});
