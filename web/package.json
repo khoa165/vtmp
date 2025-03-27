@@ -34,6 +34,7 @@
     "@types/node": "^22.13.9",
     "chai": "^5.2.0",
     "chai-subset": "^1.6.0",
+    "cross-env": "^7.0.3",
     "mocha": "^11.1.0",
     "mongodb-memory-server": "^10.1.4",
     "ts-loader": "^9.5.2",
@@ -46,6 +47,6 @@
     "start": "tsx src/server.ts",
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "dev": "tsx watch src/server.ts",
-    "test": "mocha ./**/*.test.ts --recursive --exit --timeout 60000"
+    "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 60000"
   }
 }
