@@ -18,6 +18,10 @@ const ApplicationController = {
       // Extract jobPostingId from the validated data
       const { jobPostingId } = parsed.data;
 
+      if (!req.user) {
+        throw new Error('Unauthorized user');
+      }
+
       // Extract req.user to get userId (authenticated)
       const userId = req.user.id;
 
