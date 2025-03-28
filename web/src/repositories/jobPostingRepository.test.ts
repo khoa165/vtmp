@@ -5,6 +5,7 @@ import JobPostingRepository from './jobPosting.repository';
 import JobPosting from '@/models/jobPosting.model';
 import { useMongoDB } from '@/config/mongodb.testutils';
 import mongoose from 'mongoose';
+import { ObjectId } from 'mongoose';
 
 chai.use(chaiSubset);
 const { expect } = chai;
@@ -35,9 +36,9 @@ describe('JobPostingRepository', () => {
     it('should be able to find a job post by id', async () => {
       const newJobPosting = await JobPosting.create(mockJobPosting);
 
-      const jobId = newJobPosting._id as string;
+      const jobId: string = (newJobPosting._id as ObjectId).toString();
       const foundJobPosting = await JobPostingRepository.findById(
-        jobId.toString()
+        jobId
       );
 
       expect(foundJobPosting).to.not.be.null;
@@ -55,7 +56,7 @@ describe('JobPostingRepository', () => {
         jobDescription: 'This is an updated job description.', // Updated job description
       };
 
-      const jobId = newJobPosting._id as string;
+      const jobId: string = (newJobPosting._id as ObjectId).toString();
       const updatedJobPosting = await JobPostingRepository.updateById(
         jobId,
         newUpdate
@@ -75,9 +76,9 @@ describe('JobPostingRepository', () => {
         deletedAt: dateDeleted,
       };
 
-      const jobId = newJobPosting._id as string;
+      const jobId: string = (newJobPosting._id as ObjectId).toString();
       const deletedJobPosting = await JobPostingRepository.deleteById(
-        jobId.toString()
+        jobId
       );
 
       expect(deletedJobPosting).to.containSubset(updateDelete);
