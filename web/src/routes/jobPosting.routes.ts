@@ -3,11 +3,11 @@ import JobPostingController from '@/controllers/jobPosting.controller';
 const JobPostingRoutes = Router();
 
 JobPostingRoutes.put(
-  '/job-postings/:id',
+  '/job-postings/:jobId',
   JobPostingController.updateJobPosting
 );
 JobPostingRoutes.delete(
-  '/job-postings/:id',
+  '/job-postings/:jobId',
   JobPostingController.deleteJobPosting
 );
 
