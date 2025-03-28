@@ -15,6 +15,6 @@ router.use('/applications', ApplicationRoutes); // Application module
 router.use('/interviews', InterviewRoutes); // Interview module
 router.use('/job-postings', JobPostingRoutes); // Job Posting module
 router.use('/links', LinkRoutes); // Link module
-router.use('/accounts', AuthenticationRoutes); // Authentication module
+router.use('/auth', AuthenticationRoutes); // Authentication module
 
 export default router;

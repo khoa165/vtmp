@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import AuthenticationController from '@/controllers/auth.controller';
+import AuthController from '@/controllers/auth.controller';
 
-const AuthenticationRoutes = Router();
+const AuthRoutes = Router();
 
-AuthenticationRoutes.post('/signup', AuthenticationController.signup); // sign up
+AuthRoutes.post('/signup', AuthController.signup); // sign up
 
-export default AuthenticationRoutes;
+export default AuthRoutes;

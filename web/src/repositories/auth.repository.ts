@@ -1,5 +1,5 @@
 import User from '@/models/user.model';
 
-const AuthenticationRepository = {};
+const AuthRepository = {};
 
-export default AuthenticationRepository;
+export default AuthRepository;

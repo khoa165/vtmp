@@ -1,10 +1,10 @@
-import AuthenticationRepository from '@/repositories/auth.repository';
+import AuthRepository from '@/repositories/auth.repository';
 import UserRepository from '@/repositories/user.repository';
 import { Role, IUser } from '@/types/interface';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const AuthenticationService = {
+const AuthService = {
   signup: async (accounts: IUser) => {
     const newUser = await UserRepository.create(accounts);
 
@@ -16,4 +16,4 @@ const AuthenticationService = {
   },
 };
 
-export default AuthenticationService;
+export default AuthService;

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import AuthenticationService from '@/services/auth.service';
 
-const AuthenticationController = {
+const AuthController = {
   signup: async (req: Request, res: Response) => {
     try {
       // Call the authentication service - signup
@@ -17,4 +17,4 @@ const AuthenticationController = {
   },
 };
 
-export default AuthenticationController;
+export default AuthController;
