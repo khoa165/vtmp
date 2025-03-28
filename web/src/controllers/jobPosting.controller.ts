@@ -4,14 +4,15 @@ import ResouceNotFoundError from '../utils/errors';
 const JobPostingController = {
   updateJobPosting: async (req: Request, res: Response) => {
     try {
-      const { id }: { id?: string } = req.params;
+      const { id } = req.params;
       if (!id) {
         res.status(400).json({ message: 'ID is required' });
         return;
       }
+      const newUpdate = req.body;
       const updatedJobPosting = await JobPostingService.updateById(
         id,
-        req.body
+        newUpdate
       );
       res.status(200).json({
         data: updatedJobPosting,
@@ -26,7 +27,7 @@ const JobPostingController = {
   },
   deleteJobPosting: async (req: Request, res: Response) => {
     try {
-      const { id }: { id?: string } = req.params;
+      const { id } = req.params;
       if (!id) {
         res.status(400).json({ message: 'ID is required' });
         return;
