@@ -24,8 +24,8 @@ const ApplicationRepository = {
     userId: string;
   }): Promise<boolean> => {
     const idIfExist = await Application.exists({
-      jobPostingId: new mongoose.Types.ObjectId(jobPostingId),
-      userId: new mongoose.Types.ObjectId(userId),
+      jobPostingId: jobPostingId,
+      userId: userId,
     });
     return idIfExist ? true : false;
   },
