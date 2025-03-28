@@ -16,7 +16,7 @@ const ApplicationController = {
 
       const { jobPostingId } = parsed.data;
       if (!req.user) {
-        throw new Error('Unauthorized user');
+        throw new Error('Unauthorized');
       }
 
       const userId = req.user.id;

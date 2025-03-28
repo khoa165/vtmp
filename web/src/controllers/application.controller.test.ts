@@ -12,6 +12,14 @@ import UserService from '@/services/user.service';
 describe('POST /applications', () => {
   useMongoDB();
 
+  let newJobPostingId: string;
+
+  let newUserId: string;
+
+  let encryptedPassword: string;
+
+  let token: string;
+
   let mockJobPosting: {
     linkId: string;
     url: string;
@@ -20,20 +28,12 @@ describe('POST /applications', () => {
     submittedBy: string;
   };
 
-  let newJobPostingId: string;
-
   let mockUser: {
     firstName: string;
     lastName: string;
     email: string;
     encryptedPassword: string;
   };
-
-  let newUserId: string;
-
-  let encryptedPassword: string;
-
-  let token: string;
 
   beforeEach(async () => {
     // Create job posting and save to database
@@ -79,18 +79,18 @@ describe('POST /applications', () => {
       });
   });
 
-  it.skip('should return error message if user is not authenticated (req.user is null)', (done) => {
+  it('should return error message if user is not authenticated (req.user is null)', (done) => {
     request(app)
       .post('/api/applications/create')
       .send({ jobPostingId: newJobPostingId })
       .set('Accept', 'application/json')
-      .set('Authorization', `Bearer ${token}`)
+      // .set('Authorization', `Bearer ${token}`)
       .end((err, res) => {
         if (err) return done(err);
 
         expect(res.statusCode).to.equal(401);
         expect(res.body).to.have.property('message');
-        expect(res.body.message).to.equal('Unauthorized user');
+        expect(res.body.message).to.equal('Unauthorized');
         done();
       });
   });

@@ -9,6 +9,24 @@ import mongoose from 'mongoose';
 describe('ApplicationService', () => {
   useMongoDB();
 
+  let mockJobPosting: {
+    linkId: string;
+    url: string;
+    jobTitle: string;
+    companyName: string;
+    submittedBy: string;
+  };
+
+  beforeEach(() => {
+    mockJobPosting = {
+      linkId: new mongoose.Types.ObjectId().toString(),
+      url: 'vtmp.com',
+      jobTitle: 'SWE',
+      companyName: 'Apple',
+      submittedBy: new mongoose.Types.ObjectId().toString(),
+    };
+  });
+
   describe('createApplication', () => {
     it('should throw error if job posting does not exist', async () => {
       const mockApplication = {
@@ -24,15 +42,6 @@ describe('ApplicationService', () => {
     });
 
     it('should throw error if an application associated with this job posting and user already exist', async () => {
-      // Create mock job posting
-      const mockJobPosting = {
-        linkId: new mongoose.Types.ObjectId().toString(),
-        url: 'vtmp.com',
-        jobTitle: 'SWE',
-        companyName: 'Apple',
-        submittedBy: new mongoose.Types.ObjectId().toString(),
-      };
-
       // Save the mock job posting to JobPosting collection
       const newJobPosting = await JobPosting.create(mockJobPosting);
 
@@ -54,15 +63,6 @@ describe('ApplicationService', () => {
     });
 
     it('should create an application successfully', async () => {
-      // Create mock job posting
-      const mockJobPosting = {
-        linkId: new mongoose.Types.ObjectId().toString(),
-        url: 'vtmp.com',
-        jobTitle: 'SWE',
-        companyName: 'Apple',
-        submittedBy: new mongoose.Types.ObjectId().toString(),
-      };
-
       // Save the job posting to JobPosting collection
       const newJobPosting = await JobPosting.create(mockJobPosting);
 
