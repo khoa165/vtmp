@@ -10,8 +10,8 @@ const ApplicationRepository = {
     userId: string;
   }) => {
     const newApplication = new Application({
-      jobPostingId: new mongoose.Types.ObjectId(jobPostingId),
-      userId: new mongoose.Types.ObjectId(userId),
+      jobPostingId,
+      userId,
     });
     await newApplication.save();
     return newApplication;
