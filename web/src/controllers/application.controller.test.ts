@@ -22,16 +22,16 @@ describe('POST /applications', () => {
 
   let newJobPostingId: string;
 
-  let newUserId: string;
-
-  let encryptedPassword: string;
-
   let mockUser: {
     firstName: string;
     lastName: string;
     email: string;
     encryptedPassword: string;
   };
+
+  let newUserId: string;
+
+  let encryptedPassword: string;
 
   let token: string;
 
@@ -61,18 +61,39 @@ describe('POST /applications', () => {
       email: mockUser.email,
       password: 'test password',
     });
-
-    // Mock middleware dynamically
-    // app.use((req, res, next) => {
-    //   req.user = { id: newUserId, email: 'some-email' };
-    //   console.log('Mock auth middleware runs with userId', newUserId);
-    //   next();
-    // });
   });
 
-  it.skip('should return error message if request body schema is invalid', (done) => {});
+  it('should return error message if request body schema is invalid', (done) => {
+    request(app)
+      .post('/api/applications/create')
+      .send({ invalidIdSchema: newJobPostingId })
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
+      .end((err, res) => {
+        if (err) return done(err);
 
-  it.skip('should return error message if user is not authenticated (req.user is null)', (done) => {});
+        expect(res.statusCode).to.equal(401);
+        expect(res.body).to.have.property('message');
+        expect(res.body.message).to.equal('Invalid application request schema');
+        done();
+      });
+  });
+
+  it.skip('should return error message if user is not authenticated (req.user is null)', (done) => {
+    request(app)
+      .post('/api/applications/create')
+      .send({ jobPostingId: newJobPostingId })
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${token}`)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.statusCode).to.equal(401);
+        expect(res.body).to.have.property('message');
+        expect(res.body.message).to.equal('Unauthorized user');
+        done();
+      });
+  });
 
   it('should return application object if an application is created successfully', (done) => {
     request(app)

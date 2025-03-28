@@ -11,7 +11,7 @@ const ApplicationController = {
     try {
       const parsed = ApplicationRequestSchema.safeParse(req.body);
       if (!parsed.success) {
-        throw new Error('Invalid application request body');
+        throw new Error('Invalid application request schema');
       }
 
       const { jobPostingId } = parsed.data;
