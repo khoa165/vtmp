@@ -22,12 +22,12 @@ const ApplicationRepository = {
   }: {
     jobPostingId: string;
     userId: string;
-  }): Promise<boolean> => {
+  }) => {
     const idIfExist = await Application.exists({
       jobPostingId,
       userId,
     });
-    return idIfExist ? true : false;
+    return !!idIfExist;
   },
 };
 
