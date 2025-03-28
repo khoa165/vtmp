@@ -25,8 +25,23 @@ describe('JobPostingRepository', () => {
       const newJobPosting = await JobPostingRepository.createJobPost(
         mockJobPosting
       );
-
+      
+      expect(newJobPosting).to.not.be.null;
       expect(newJobPosting).to.containSubset(mockJobPosting);
+    });
+  });
+
+  describe('FindbyId for JobPostingRepository', () => {
+    it('should be able to find a job post by id', async () => {
+      const newJobPosting = await JobPosting.create(mockJobPosting);
+
+      const jobId = newJobPosting._id as string;
+      const foundJobPosting = await JobPostingRepository.findById(
+        jobId.toString()
+      );
+
+      expect(foundJobPosting).to.not.be.null;
+      expect(foundJobPosting).to.containSubset(mockJobPosting);
     });
   });
 

@@ -7,8 +7,11 @@ const JobPostingRepository = {
   createJobPost: async (jobPostingData: object) => {
     const newJobPosting = new JobPosting(jobPostingData);
     await newJobPosting.save();
-    
+
     return newJobPosting;
+  },
+  findById: async (jobId: string) => {
+    return JobPosting.findById(new ObjectId(jobId)).lean();
   },
   updateById: async (jobId: string, newUpdate: object) => {
     const updatedJobPosting = await JobPosting.findByIdAndUpdate(
