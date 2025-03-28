@@ -76,7 +76,7 @@ describe('Auth Service', () => {
         ) as {
           id: string;
         };
-        let user = await UserRepository.findById(id);
+        const user = await UserRepository.findById(id);
         expect(user).to.not.be.null;
       } catch (error: any) {
         throw new Error(
