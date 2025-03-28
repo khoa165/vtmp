@@ -1,5 +1,4 @@
 import Application from '@/models/application.model';
-import mongoose from 'mongoose';
 
 const ApplicationRepository = {
   createApplication: async ({
@@ -10,8 +9,8 @@ const ApplicationRepository = {
     userId: string;
   }) => {
     const newApplication = new Application({
-      jobPostingId: new mongoose.Types.ObjectId(jobPostingId),
-      userId: new mongoose.Types.ObjectId(userId),
+      jobPostingId,
+      userId,
     });
     await newApplication.save();
     return newApplication;
@@ -25,8 +24,8 @@ const ApplicationRepository = {
     userId: string;
   }): Promise<boolean> => {
     const idIfExist = await Application.exists({
-      jobPostingId: new mongoose.Types.ObjectId(jobPostingId),
-      userId: new mongoose.Types.ObjectId(userId),
+      jobPostingId,
+      userId,
     });
     return idIfExist ? true : false;
   },

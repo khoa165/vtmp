@@ -12,7 +12,7 @@ const ApplicationService = {
     // Check if postingId exists in database
     const jobPosting = await JobPostingRepository.findById(jobPostingId);
     if (!jobPosting) {
-      throw new Error('Job posting not found');
+      throw new Error('Job posting does not exist');
     }
 
     // Check if an application associated with this job posting and user already exist
