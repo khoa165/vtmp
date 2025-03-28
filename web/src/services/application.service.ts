@@ -34,6 +34,31 @@ const ApplicationService = {
       userId,
     });
   },
+
+  getAllApplications: async ({ userId }: { userId: string }) => {
+    return ApplicationRepository.findApplicationsByUserId({ userId });
+  },
+
+  getOneApplication: async ({
+    applicationId,
+    userId,
+  }: {
+    applicationId: string;
+    userId: string;
+  }) => {
+    // Retrieve application from repository
+    const application = ApplicationRepository.findApplicationByIdAndUserId({
+      applicationId,
+      userId,
+    });
+
+    // Check if application is found and belongs authenticated user
+    if (!application) {
+      throw new Error('Application not found or access denied.');
+    }
+
+    return application;
+  },
 };
 
 export default ApplicationService;
