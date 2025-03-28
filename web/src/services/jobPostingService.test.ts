@@ -41,8 +41,7 @@ describe('JobPostingService', () => {
       };
       const jobId: string = (newJobPosting._id as ObjectId).toString();
 
-      expect(JobPostingService.updateById(jobId, newUpdate)).to.not
-        .throw;
+      expect(JobPostingService.updateById(jobId, newUpdate)).to.not.throw;
     });
   });
 
@@ -53,10 +52,11 @@ describe('JobPostingService', () => {
 
       expect(JobPostingService.deleteById(randomId.toString())).to.throw;
     });
+
     it('should not throw an error', async () => {
       const newJobPosting = await JobPosting.create(mockJobPosting);
       const jobId: string = (newJobPosting._id as ObjectId).toString();
-      
+
       expect(JobPostingService.deleteById(jobId)).to.not.throw;
     });
   });
