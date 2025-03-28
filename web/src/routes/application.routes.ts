@@ -5,6 +5,6 @@ import { authenticate } from '@/middlewares/auth.middleware';
 const ApplicationRoutes = Router();
 
 ApplicationRoutes.use(authenticate);
-ApplicationRoutes.post('create', ApplicationController.createApplication);
+ApplicationRoutes.post('/create', ApplicationController.createApplication);
 
 export default ApplicationRoutes;

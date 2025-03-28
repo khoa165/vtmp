@@ -1,13 +1,9 @@
-import * as chai from 'chai';
-import chaiSubset from 'chai-subset';
+import { expect } from 'chai';
 import mongoose from 'mongoose';
 
 import ApplicationRepository from './application.repository';
 import Application from '@/models/application.model';
 import { useMongoDB } from '@/config/mongodb.testutils';
-
-chai.use(chaiSubset);
-const { expect } = chai;
 
 describe('ApplicationRepository', () => {
   useMongoDB();
