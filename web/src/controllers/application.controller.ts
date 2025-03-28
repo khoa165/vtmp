@@ -9,35 +9,31 @@ const ApplicationRequestSchema = z.object({
 const ApplicationController = {
   createApplication: async (req: Request, res: Response) => {
     try {
-      // Validate req object with Zod
       const parsed = ApplicationRequestSchema.safeParse(req.body);
       if (!parsed.success) {
         throw new Error('Invalid application request body');
       }
 
-      // Extract jobPostingId from the validated data
       const { jobPostingId } = parsed.data;
-
       if (!req.user) {
         throw new Error('Unauthorized user');
       }
 
-      // Extract req.user to get userId (authenticated)
       const userId = req.user.id;
 
-      // Call ApplicationService.createApplication({userId: userId, …req.body})
       const application = await ApplicationService.createApplication({
         jobPostingId,
         userId,
       });
 
-      // Prepare res object to send back
       res.status(201).json({
         message: 'Application created successfully',
         data: application,
       });
     } catch (error) {
-      res.status(401).json(error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'An error occured';
+      res.status(401).json({ message: errorMessage });
     }
   },
 };
