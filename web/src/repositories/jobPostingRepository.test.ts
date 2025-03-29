@@ -20,9 +20,9 @@ describe('JobPostingRepository', () => {
     submittedBy: new mongoose.Types.ObjectId(), // This should be a valid ObjectId from a User document in your test database
   };
 
-  describe('CreateJobPost for JobPostingRepository', () => {
+  describe('createJobPosting', () => {
     it('should be able to create a new job posting', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPost(
+      const newJobPosting = await JobPostingRepository.createJobPosting(
         mockJobPosting
       );
 
@@ -30,7 +30,21 @@ describe('JobPostingRepository', () => {
     });
   });
 
-  describe('UpdateById for JobPostingRepository', () => {
+  describe('getJobPostingById', () => {
+    it('should be able to find a job post by id', async () => {
+      const newJobPosting = await JobPosting.create(mockJobPosting);
+
+      const jobId = newJobPosting.id;
+      const foundJobPosting = await JobPostingRepository.getJobPostingById(
+        jobId
+      );
+
+      expect(foundJobPosting).to.not.be.null;
+      expect(foundJobPosting).to.containSubset(mockJobPosting);
+    });
+  });
+
+  describe('updateJobPostingById', () => {
     it('should be able to update detail of a job post by id', async () => {
       const newJobPosting = await JobPosting.create(mockJobPosting);
 
@@ -40,8 +54,8 @@ describe('JobPostingRepository', () => {
         jobDescription: 'This is an updated job description.', // Updated job description
       };
 
-      const jobId = newJobPosting._id as string;
-      const updatedJobPosting = await JobPostingRepository.updateById(
+      const jobId = newJobPosting.id;
+      const updatedJobPosting = await JobPostingRepository.updateJobPostingById(
         jobId,
         newUpdate
       );
@@ -50,7 +64,7 @@ describe('JobPostingRepository', () => {
     });
   });
 
-  describe('DeleteById for JobPostingRepository', () => {
+  describe('deleteJobPostingById', () => {
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
       const newJobPosting = await JobPosting.create(mockJobPosting);
 
@@ -60,9 +74,9 @@ describe('JobPostingRepository', () => {
         deletedAt: dateDeleted,
       };
 
-      const jobId = newJobPosting._id as string;
-      const deletedJobPosting = await JobPostingRepository.deleteById(
-        jobId.toString()
+      const jobId = newJobPosting.id;
+      const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
+        jobId
       );
 
       expect(deletedJobPosting).to.containSubset(updateDelete);
