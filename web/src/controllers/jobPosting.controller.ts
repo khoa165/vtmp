@@ -21,7 +21,6 @@ const JobIdSchema = z.object({
 const JobPostingController = {
   updateJobPosting: async (req: Request, res: Response): Promise<any> => {
     try {
-
       const resultId = JobIdSchema.safeParse(req.params);
       const resultNewUpdate = NewUpdateSchema.safeParse(req.body);
 
