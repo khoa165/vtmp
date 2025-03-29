@@ -1,15 +1,20 @@
 ## Changes
 
-<!-- Describe the changes in this PR -->
+- Replace this with description of changes in this PR
 
 ## Motivation
 
-<!-- Context/motivation for this PR, include any relevant docs/links -->
+- Replace this with context/motivation for this PR, include any relevant docs/links
 
 ## Screenshots
 
-<!-- For UI changes, include screenshots/recordings -->
+- Replace this with screenshots/recordings for UI changes, otherwise N/A -->
 
-## Test
+## Testing
 
-<!-- Describe how you tested your code -->
+Mark the type of testing you have done
+
+- [ ] Unit tests
+- [ ] Integration tests
+- [ ] Test with Postman
+- [ ] Test on UI
