@@ -1,35 +1,29 @@
-import JobPosting from '@/models/jobPosting.model';
-import mongoose from 'mongoose';
-
-const { ObjectId } = mongoose.Types;
+import JobPostingModel from '@/models/jobPosting.model';
 
 const JobPostingRepository = {
-  createJobPost: async (jobPostingData: object) => {
-    const newJobPosting = new JobPosting(jobPostingData);
-    await newJobPosting.save();
-
-    return newJobPosting;
+  createJobPosting: async (jobPostingData: object) => {
+    return JobPostingModel.create(jobPostingData);
   },
-  findById: async (jobId: string) => {
-    return JobPosting.findById(new ObjectId(jobId)).lean();
+  getJobPostingById: async (jobId: string) => {
+    return JobPostingModel.findById(jobId).lean();
   },
-  updateById: async (jobId: string, newUpdate: object) => {
-    const updatedJobPosting = await JobPosting.findByIdAndUpdate(
-      new ObjectId(jobId),
+  updateJobPostingById: async (jobId: string, newUpdate: object) => {
+    const updatedJobPosting = await JobPostingModel.findByIdAndUpdate(
+      jobId,
       { $set: newUpdate },
-      { new: true, runValidators: true }
+      { new: true }
     );
 
     return updatedJobPosting;
   },
-  deleteById: async (jobId: string) => {
+  deleteJobPostingById: async (jobId: string) => {
     const currentDate: Date = new Date();
     const dateDeleted: Date = new Date(currentDate.getDate() + 7);
 
-    const deletedJobPosting = await JobPosting.findByIdAndUpdate(
-      new ObjectId(jobId),
+    const deletedJobPosting = await JobPostingModel.findByIdAndUpdate(
+      jobId,
       { $set: { deletedAt: dateDeleted } },
-      { new: true, runValidators: true }
+      { new: true }
     );
 
     return deletedJobPosting;
