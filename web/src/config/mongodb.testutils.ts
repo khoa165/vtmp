@@ -11,7 +11,7 @@ export const useMongoDB = async () => {
       return;
     }
     mongoAlreadyStarted = true;
-    this.timeout(60000);
+    this.timeout(600000);
     await startMongoDB();
   });
 

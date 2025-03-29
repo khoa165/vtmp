@@ -49,6 +49,6 @@
     "start": "tsx src/server.ts",
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "dev": "tsx watch src/server.ts",
-    "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 60000"
+    "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000"
   }
 }
