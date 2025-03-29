@@ -1,6 +1,78 @@
 import { Request, Response } from 'express';
+import { z } from 'zod';
 import JobPostingService from '@/services/jobPosting.service';
+import { ResourceNotFoundError } from '../utils/errors';
 
-const JobPostingController = {};
+const NewUpdateSchema = z.object({
+  externalPostingId: z.string().optional(),
+  url: z.string().url().optional(),
+  jobTitle: z.string().optional(),
+  companyName: z.string().optional(),
+  location: z.enum(['US', 'CANADA']).optional(),
+  datePosted: z.coerce.date().optional(),
+  jobDescription: z.string().optional(),
+  adminNote: z.string().optional(),
+  deletedAt: z.coerce.date().optional(),
+});
+const JobIdSchema = z.object({
+  jobId: z.string(),
+});
+
+const JobPostingController = {
+  updateJobPosting: async (req: Request, res: Response): Promise<any> => {
+    try {
+
+      const resultId = JobIdSchema.safeParse(req.params);
+      const resultNewUpdate = NewUpdateSchema.safeParse(req.body);
+
+      if (!resultId.success || !resultNewUpdate.success) {
+        res.status(400).json({ message: 'Invalid request' });
+      }
+
+      const jobId = resultId.data?.jobId as string;
+      const newUpdate = resultNewUpdate.data as object;
+
+      const updatedJobPosting = await JobPostingService.updateById(
+        jobId,
+        newUpdate
+      );
+
+      return res.status(200).json({
+        data: updatedJobPosting,
+        message: 'Job posting updated successfully',
+      });
+    } catch (error) {
+      if (error instanceof ResourceNotFoundError) {
+        return res
+          .status(error.metadata.status)
+          .json({ message: error.message });
+      }
+      return res.status(500).json({ message: 'An error occurred' });
+    }
+  },
+  deleteJobPosting: async (req: Request, res: Response): Promise<any> => {
+    try {
+      const resultId = JobIdSchema.safeParse(req.params);
+
+      if (!resultId.success) {
+        return res.status(400).json({ message: 'Invalid request' });
+      }
+
+      const jobId = resultId.data?.jobId as string;
+      const deletedJobPosting = await JobPostingService.deleteById(jobId);
+      return res.status(200).json({
+        data: deletedJobPosting,
+        message: 'Job posting deleted successfully',
+      });
+    } catch (error) {
+      if (error instanceof ResourceNotFoundError) {
+        return res
+          .status(error.metadata.status)
+          .json({ message: error.message });
+      }
+      return res.status(500).json({ message: 'An error occurred' });
+    }
+  },
+};
 
 export default JobPostingController;
