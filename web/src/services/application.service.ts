@@ -16,11 +16,11 @@ const ApplicationService = {
     }
 
     // Check if an application associated with this job posting and user already exist
-    const alreadyExists = await ApplicationRepository.alreadyExist({
+    const applicationExists = await ApplicationRepository.doesApplicationExist({
       jobPostingId,
       userId,
     });
-    if (alreadyExists) {
+    if (applicationExists) {
       throw new Error(
         'Application associated with this job posting and user already exists'
       );

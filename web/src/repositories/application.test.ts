@@ -34,13 +34,17 @@ describe('ApplicationRepository', () => {
   describe('alreadyExist', () => {
     it('should evaluate to true if an application already exists', async () => {
       await Application.create(mockApplication);
-      const result = await ApplicationRepository.alreadyExist(mockApplication);
+      const result = await ApplicationRepository.doesApplicationExist(
+        mockApplication
+      );
 
       expect(result).to.equal(true);
     });
 
     it('should evaluate to false if an application does not exists', async () => {
-      const result = await ApplicationRepository.alreadyExist(mockApplication);
+      const result = await ApplicationRepository.doesApplicationExist(
+        mockApplication
+      );
       expect(result).to.equal(false);
     });
   });
