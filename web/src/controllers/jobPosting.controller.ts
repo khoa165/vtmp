@@ -44,7 +44,7 @@ const JobPostingController = {
       if (error instanceof ResourceNotFoundError) {
         return res.status(error.statusCode).json({ message: error.message });
       }
-      
+
       return res.status(500).json({ message: 'An error occurred' });
     }
   },
