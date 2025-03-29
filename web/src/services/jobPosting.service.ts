@@ -2,10 +2,10 @@ import JobPostingRepository from '@/repositories/jobPosting.repository';
 import { ResourceNotFoundError } from '../utils/errors';
 
 const JobPostingService = {
-  updateById: async (id: string, newUpdate: object) => {
+  updateJobPostingById: async (jobId: string, newUpdate: object) => {
     try {
-      const updatedJobPosting = await JobPostingRepository.updateById(
-        id,
+      const updatedJobPosting = await JobPostingRepository.updateJobPostingById(
+        jobId,
         newUpdate
       );
       if (!updatedJobPosting) {
@@ -19,9 +19,11 @@ const JobPostingService = {
       throw error;
     }
   },
-  deleteById: async (id: string) => {
+  deleteJobPostingById: async (jobId: string) => {
     try {
-      const deletedJobPosting = await JobPostingRepository.deleteById(id);
+      const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
+        jobId
+      );
       if (!deletedJobPosting) {
         throw new ResourceNotFoundError('Job posting not found', {
           status: 404,
