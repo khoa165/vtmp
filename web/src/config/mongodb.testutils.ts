@@ -3,10 +3,16 @@ import mongoose from 'mongoose';
 import { MongoMemoryReplSet } from 'mongodb-memory-server';
 
 const writtenCollections = new Set<string>();
+let mongoAlreadyStarted = false;
+
 export const useMongoDB = async () => {
   before(async function () {
+    if (mongoAlreadyStarted) {
+      return;
+    }
+    mongoAlreadyStarted = true;
     this.timeout(60000);
-    startMongoDB();
+    await startMongoDB();
   });
 
   beforeEach(async function () {
