@@ -6,8 +6,7 @@ import chaiSubset from 'chai-subset';
 
 import { useMongoDB } from '@/config/mongodb.testutils';
 import mongoose from 'mongoose';
-import JobPosting from '@/models/jobPosting.model';
-import { ObjectId } from 'mongoose';
+import JobPostingModel from '@/models/jobPosting.model';
 
 chai.use(chaiSubset);
 describe('JobPostingController', () => {
@@ -22,11 +21,11 @@ describe('JobPostingController', () => {
   };
   let jobId: string;
   beforeEach(async () => {
-    const newJobPosting = await JobPosting.create(mockJobPosting);
+    const newJobPosting = await JobPostingModel.create(mockJobPosting);
 
-    jobId = (newJobPosting._id as ObjectId).toString();
+    jobId = newJobPosting.id;
   });
-  describe('UpdateJobPosting for JobPostingController', () => {
+  describe('updateJobPosting', () => {
     it('should return 404 if job posting does not exist', async () => {
       const randomId = new mongoose.Types.ObjectId().toString();
       const response = await request(app)
@@ -55,7 +54,7 @@ describe('JobPostingController', () => {
     });
   });
 
-  describe('DeleteJobPosting for JobPostingController', () => {
+  describe('deleteJobPosting', () => {
     it('should return 404 if job posting does not exist', async () => {
       const randomId = new mongoose.Types.ObjectId().toString();
       const response = await request(app).delete(
@@ -66,9 +65,9 @@ describe('JobPostingController', () => {
     });
 
     it('should return 200 if job posting is deleted successfully', async () => {
-      const newJobPosting = await JobPosting.create(mockJobPosting);
+      const newJobPosting = await JobPostingModel.create(mockJobPosting);
 
-      const jobId = (newJobPosting._id as ObjectId).toString();
+      const jobId = newJobPosting.id;
 
       const response = await request(app).delete(`/api/job-postings/${jobId}`);
 

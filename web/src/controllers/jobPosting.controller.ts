@@ -25,13 +25,13 @@ const JobPostingController = {
       const resultNewUpdate = NewUpdateSchema.safeParse(req.body);
 
       if (!resultId.success || !resultNewUpdate.success) {
-        res.status(400).json({ message: 'Invalid request' });
+        return res.status(400).json({ message: 'Invalid request' });
       }
 
       const jobId = resultId.data?.jobId as string;
       const newUpdate = resultNewUpdate.data as object;
 
-      const updatedJobPosting = await JobPostingService.updateById(
+      const updatedJobPosting = await JobPostingService.updateJobPostingById(
         jobId,
         newUpdate
       );
@@ -42,10 +42,9 @@ const JobPostingController = {
       });
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {
-        return res
-          .status(error.metadata.status)
-          .json({ message: error.message });
+        return res.status(error.statusCode).json({ message: error.message });
       }
+      
       return res.status(500).json({ message: 'An error occurred' });
     }
   },
@@ -58,17 +57,18 @@ const JobPostingController = {
       }
 
       const jobId = resultId.data?.jobId as string;
-      const deletedJobPosting = await JobPostingService.deleteById(jobId);
+      const deletedJobPosting = await JobPostingService.deleteJobPostingById(
+        jobId
+      );
       return res.status(200).json({
         data: deletedJobPosting,
         message: 'Job posting deleted successfully',
       });
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {
-        return res
-          .status(error.metadata.status)
-          .json({ message: error.message });
+        return res.status(error.statusCode).json({ message: error.message });
       }
+
       return res.status(500).json({ message: 'An error occurred' });
     }
   },
