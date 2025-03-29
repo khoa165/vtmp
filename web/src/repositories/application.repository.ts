@@ -30,7 +30,7 @@ const ApplicationRepository = {
     return idIfExist ? true : false;
   },
 
-  findApplicationsByUserId: async ({ userId }: { userId: string }) => {
+  findApplicationsByUserId: async (userId: string) => {
     const applications = await Application.find({
       userId: userId,
     });
@@ -44,7 +44,7 @@ const ApplicationRepository = {
     applicationId: string;
     userId: string;
   }) => {
-    return Application.findOne({
+    return await Application.findOne({
       _id: applicationId,
       userId: userId,
     });

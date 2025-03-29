@@ -44,4 +44,115 @@ describe('ApplicationRepository', () => {
       expect(result).to.equal(false);
     });
   });
+
+  describe('findApplicationsByUserId', () => {
+    it('should return only applications associated with given userId', async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const otherUserId = new mongoose.Types.ObjectId().toString();
+
+      // Create multiple mock applications for that user
+      const mockApplications = [
+        {
+          jobPostingId: new mongoose.Types.ObjectId().toString(),
+          userId: userId,
+        },
+        {
+          jobPostingId: new mongoose.Types.ObjectId().toString(),
+          userId: userId,
+        },
+        {
+          jobPostingId: new mongoose.Types.ObjectId().toString(),
+          userId: otherUserId,
+        },
+      ];
+      await Application.insertMany(mockApplications);
+
+      const applications = await ApplicationRepository.findApplicationsByUserId(
+        userId
+      );
+
+      expect(applications).to.have.lengthOf(2);
+      expect(applications[0]?.userId.toString()).to.equal(userId);
+      expect(applications[1]?.userId.toString()).to.equal(userId);
+    });
+
+    it('should return an empty array if no applications found for userId', async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const otherUserId = new mongoose.Types.ObjectId().toString();
+
+      // Create multiple mock applications for that user
+      const mockApplications = [
+        {
+          jobPostingId: new mongoose.Types.ObjectId().toString(),
+          userId: otherUserId,
+        },
+        {
+          jobPostingId: new mongoose.Types.ObjectId().toString(),
+          userId: otherUserId,
+        },
+        {
+          jobPostingId: new mongoose.Types.ObjectId().toString(),
+          userId: otherUserId,
+        },
+      ];
+      await Application.insertMany(mockApplications);
+
+      const applications = await ApplicationRepository.findApplicationsByUserId(
+        userId
+      );
+      expect(applications).to.be.an('array').that.is.empty;
+    });
+  });
+
+  describe('findApplicationsByIdAndUserId', () => {
+    it('should return no application if the application is not belong to the authenticated user', async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const otherUserId = new mongoose.Types.ObjectId().toString();
+
+      // Create multiple mock applications
+      const mockApplication1 = {
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: otherUserId,
+      };
+      const mockApplicationId1 = (await Application.create(mockApplication1))
+        .id;
+
+      const application =
+        await ApplicationRepository.findApplicationByIdAndUserId({
+          applicationId: mockApplicationId1,
+          userId: userId,
+        });
+
+      expect(application).to.be.null;
+    });
+
+    it('should return an application if there exists an application for authenticated user', async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const otherUserId = new mongoose.Types.ObjectId().toString();
+
+      // Create multiple mock applications for that user
+      const mockApplication1 = {
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: otherUserId,
+      };
+      const mockApplicationId1 = (await Application.create(mockApplication1))
+        .id;
+      const mockApplication2 = {
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: userId,
+      };
+      const mockApplicationId2 = (await Application.create(mockApplication2))
+        .id;
+
+      const application =
+        await ApplicationRepository.findApplicationByIdAndUserId({
+          applicationId: mockApplicationId2,
+          userId: userId,
+        });
+      expect(application).to.not.be.null;
+      expect(application?.userId.toString()).to.equal(userId);
+      expect(application?.id.toString()).to.equal(mockApplicationId2);
+      expect(application?.id.toString()).not.to.equal(mockApplicationId1);
+    });
+  });
 });

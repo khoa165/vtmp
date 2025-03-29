@@ -45,9 +45,7 @@ const ApplicationController = {
       const userId = req.user.id;
 
       // Call ApplicationService.getAllApplications({userId: userId})
-      const applications = await ApplicationService.getAllApplications({
-        userId,
-      });
+      const applications = await ApplicationService.getAllApplications(userId);
 
       // Prepare res object to send back
       res.status(200).json({

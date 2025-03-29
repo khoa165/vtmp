@@ -87,4 +87,135 @@ describe('ApplicationService', () => {
       }
     });
   });
+
+  describe('getAllApplications', () => {
+    it('should only return applications associated with a userId', async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const otherUserId = new mongoose.Types.ObjectId().toString();
+
+      // Create mock applications
+      const mockApplication1 = {
+        jobPostingId: new mongoose.Types.ObjectId(),
+        userId: userId,
+        hasApplied: true,
+        status: 'Pending',
+        appliedOnDate: new Date(),
+        note: '',
+      };
+      const mockApplication2 = {
+        jobPostingId: new mongoose.Types.ObjectId(),
+        userId: userId,
+        hasApplied: true,
+        status: 'Pending',
+        appliedOnDate: new Date(),
+        note: '',
+      };
+      const mockApplication3 = {
+        jobPostingId: new mongoose.Types.ObjectId(),
+        userId: otherUserId,
+        hasApplied: true,
+        status: 'Rejected',
+        appliedOnDate: new Date(),
+        note: '',
+      };
+
+      const applicationId1 = (await Application.create(mockApplication1)).id;
+      const applicationId2 = (await Application.create(mockApplication2)).id;
+      const applicationId3 = (await Application.create(mockApplication3)).id;
+
+      const applications = await ApplicationService.getAllApplications(userId);
+
+      expect(applications).to.include.members([applicationId1, applicationId2]);
+      expect(applications).to.not.include.members([applicationId3]);
+      expect(applications).to.have.lengthOf(2);
+      applications.forEach((app: any) => {
+        expect(app.userId.toString()).to.equal(userId);
+      });
+    });
+
+    it('should return no application if authenticated user has no application', async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+
+      const applications = await ApplicationService.getAllApplications(userId);
+
+      expect(applications).to.be.an('array').that.is.empty;
+    });
+  });
+
+  describe('getOneApplication', () => {
+    useMongoDB();
+
+    it('should only return application associated with an applicationId and a userId', async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const otherUserId = new mongoose.Types.ObjectId().toString();
+
+      // Create mock applications
+      const mockApplication1 = await Application.create({
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: userId,
+        hasApplied: true,
+        status: 'Pending',
+        appliedOnDate: new Date(),
+        note: '',
+      });
+
+      await Application.create({
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: userId,
+        hasApplied: true,
+        status: 'Pending',
+        appliedOnDate: new Date(),
+        note: '',
+      });
+
+      await Application.create({
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: otherUserId,
+        hasApplied: true,
+        status: 'Rejected',
+        appliedOnDate: new Date(),
+        note: '',
+      });
+
+      const application = await ApplicationService.getOneApplication({
+        applicationId: mockApplication1.id.toString(),
+        userId,
+      });
+
+      expect(application).to.not.be.null;
+      expect(application?.userId.toString()).to.equal(userId);
+      expect(application?.id.toString()).to.equal(
+        mockApplication1.id.toString()
+      );
+    });
+
+    it('should throw an error if no application is associated with the authenticated user', async () => {
+      const userId = new mongoose.Types.ObjectId().toString();
+      const otherUserId = new mongoose.Types.ObjectId().toString();
+
+      // Create an application for another user
+      const otherApp = {
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: otherUserId,
+        hasApplied: true,
+        status: 'Rejected',
+        appliedOnDate: new Date(),
+        note: '',
+      };
+      const otherAppId = (await Application.create(otherApp)).id;
+
+      try {
+        await ApplicationService.getOneApplication({
+          applicationId: otherAppId,
+          userId,
+        });
+        throw new Error('Expected error was not thrown');
+      } catch (err: any) {
+        expect(err).to.exist;
+        expect(err.message).to.match(
+          /Application not found or access denied./i
+        );
+      }
+    });
+  });
 });

@@ -33,8 +33,8 @@ const ApplicationService = {
     });
   },
 
-  getAllApplications: async ({ userId }: { userId: string }) => {
-    return ApplicationRepository.findApplicationsByUserId({ userId });
+  getAllApplications: async (userId: string) => {
+    return await ApplicationRepository.findApplicationsByUserId(userId);
   },
 
   getOneApplication: async ({
@@ -45,10 +45,11 @@ const ApplicationService = {
     userId: string;
   }) => {
     // Retrieve application from repository
-    const application = ApplicationRepository.findApplicationByIdAndUserId({
-      applicationId,
-      userId,
-    });
+    const application =
+      await ApplicationRepository.findApplicationByIdAndUserId({
+        applicationId,
+        userId,
+      });
 
     // Check if application is found and belongs authenticated user
     if (!application) {
