@@ -1,5 +1,6 @@
 import { getConfig } from '@/config/config';
 import UserRepository from '@/repositories/user.repository';
+import { ResourceNotFoundError, UnauthorizedError } from '@/utils/errors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -9,7 +10,7 @@ const AuthService = {
   login: async ({ email, password }: { email: string; password: string }) => {
     const user = await UserRepository.findByEmail(email);
     if (!user) {
-      throw new Error('User not found');
+      throw new ResourceNotFoundError('User not found', {});
     }
 
     const passwordMatched = await bcrypt.compare(
@@ -17,7 +18,7 @@ const AuthService = {
       user.encryptedPassword ?? ''
     );
     if (!passwordMatched) {
-      throw new Error('Wrong password');
+      throw new UnauthorizedError('Wrong password', {});
     }
 
     const token = jwt.sign(
