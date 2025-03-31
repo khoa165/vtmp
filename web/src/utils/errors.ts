@@ -1,34 +1,35 @@
-export class ResourceNotFoundError extends Error {
-  public metadata;
-  public statusCode;
+export abstract class ApplicationSpecificError extends Error {
+  public metadata: object;
+  public statusCode: number;
 
-  constructor(message: string, metadata: object) {
+  constructor(message: string, metadata: object, statusCode: number) {
     super(message);
-    this.name = 'ResourceNotFoundError';
+    this.name = this.constructor.name;
     this.metadata = metadata;
-    this.statusCode = 404;
+    this.statusCode = statusCode;
   }
 }
 
-export class UnauthorizedError extends Error {
-  public metadata;
-  public statusCode;
-
+export class ResourceNotFoundError extends ApplicationSpecificError {
   constructor(message: string, metadata: object) {
-    super(message);
-    this.name = 'UnauthorizedError';
-    this.metadata = metadata;
-    this.statusCode = 401;
+    super(message, metadata, 404);
   }
 }
-export class ForbiddenError extends Error {
-  public metadata;
-  public statusCode;
 
+export class UnauthorizedError extends ApplicationSpecificError {
   constructor(message: string, metadata: object) {
-    super(message);
-    this.name = 'ForbiddenError';
-    this.metadata = metadata;
-    this.statusCode = 403;
+    super(message, metadata, 401);
+  }
+}
+
+export class ForbiddenError extends ApplicationSpecificError {
+  constructor(message: string, metadata: object) {
+    super(message, metadata, 403);
+  }
+}
+
+export class DuplicateResourceError extends ApplicationSpecificError {
+  constructor(message: string, metadata: object) {
+    super(message, metadata, 409);
   }
 }
