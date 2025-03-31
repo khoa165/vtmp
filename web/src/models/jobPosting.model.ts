@@ -5,7 +5,7 @@ enum Location {
   CANADA = 'CANADA',
 }
 
-interface JobPosting extends Document {
+interface IJobPosting extends Document {
   linkId: mongoose.Schema.Types.ObjectId;
   externalPostingId?: string;
   url: string;
@@ -16,9 +16,10 @@ interface JobPosting extends Document {
   jobDescription?: string;
   adminNote?: string;
   submittedBy: mongoose.Schema.Types.ObjectId;
+  deletedAt?: Date
 }
 
-const JobPostingSchema = new mongoose.Schema<JobPosting>(
+const JobPostingSchema = new mongoose.Schema<IJobPosting>(
   {
     linkId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -59,8 +60,11 @@ const JobPostingSchema = new mongoose.Schema<JobPosting>(
       ref: 'User',
       required: true,
     },
+    deletedAt: {
+      type: Date,
+    }
   },
   { timestamps: true }
 );
 
-export default mongoose.model<JobPosting>('JobPosting', JobPostingSchema);
+export default mongoose.model<IJobPosting>('JobPosting', JobPostingSchema);
