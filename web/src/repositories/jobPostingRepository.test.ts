@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import chaiSubset from 'chai-subset';
 import assert from 'assert';
-
 import JobPostingRepository from './jobPosting.repository';
 import JobPosting from '@/models/jobPosting.model';
 import { useMongoDB } from '@/config/mongodb.testutils';
