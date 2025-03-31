@@ -1,0 +1,25 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+labels: [feature]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      placeholder: Describe the feature you would like to see added or improved.
+    validations:
+      required: true
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use Case
+      placeholder: Explain the use case for this feature. How would it benefit users?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed Solution
+      placeholder: Describe a possible solution to implement this feature.
+    validations:
+      required: false

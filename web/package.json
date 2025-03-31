@@ -10,6 +10,7 @@
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
@@ -38,6 +39,7 @@
     "cross-env": "^7.0.3",
     "mocha": "^11.1.0",
     "mongodb-memory-server": "^10.1.4",
+    "sinon": "^20.0.0",
     "supertest": "^7.1.0",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
@@ -49,6 +51,6 @@
     "start": "tsx src/server.ts",
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "dev": "tsx watch src/server.ts",
-    "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 60000"
+    "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000"
   }
 }

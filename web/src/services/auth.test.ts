@@ -1,17 +1,15 @@
-import { useMongoDB } from '@/config/mongodb.testutils';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { beforeEach, describe } from 'mocha';
 import AuthService from './auth.service';
 import { expect } from 'chai';
 import UserRepository from '@/repositories/user.repository';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { getConfig } from '@/config/config';
 import { IUser, Role } from '@/types/interface';
 import { hash } from 'crypto';
 
 describe('Auth Service', () => {
   useMongoDB();
-  const config = getConfig();
 
   beforeEach(async () => {
     const mockUser: IUser = {
