@@ -1,6 +1,6 @@
 import mongoose, { Document } from 'mongoose';
 
-enum ApplicationStatus {
+export enum ApplicationStatus {
   SUBMITTED = 'SUBMITTED',
   IN_PROGRESS = 'IN_PROGRESS',
   OFFER = 'OFFER',
