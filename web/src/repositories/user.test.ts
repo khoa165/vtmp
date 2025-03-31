@@ -22,9 +22,6 @@ describe('UserRepository', () => {
 
     expect(user).to.not.be.null;
     expect(user).to.containSubset(mockUser);
-    expect(user?.firstName).to.eq(mockUser.firstName);
-    expect(user?.lastName).to.eq(mockUser.lastName);
-    expect(user?.email).to.eq(mockUser.email);
   });
 
   it('should be able to find user by id', async () => {
@@ -38,9 +35,6 @@ describe('UserRepository', () => {
     const user = await UserRepository.findById(newlyCreatedRecord.id);
 
     expect(user).to.containSubset(mockUser);
-    expect(user?.firstName).to.eq(mockUser.firstName);
-    expect(user?.lastName).to.eq(mockUser.lastName);
-    expect(user?.email).to.eq(mockUser.email);
   });
 
   it('should be able to find user by email', async () => {
@@ -54,8 +48,5 @@ describe('UserRepository', () => {
     const user = await UserRepository.findByEmail('test@example.com');
 
     expect(user).to.containSubset(mockUser);
-    expect(user?.firstName).to.eq(mockUser.firstName);
-    expect(user?.lastName).to.eq(mockUser.lastName);
-    expect(user?.email).to.eq(mockUser.email);
   });
 });
