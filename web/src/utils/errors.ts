@@ -39,14 +39,17 @@ export class DuplicateResourceError extends ApplicationSpecificError {
 export const handleError = (error: unknown) => {
   if (error instanceof ZodError) {
     return {
-      status: 400,
+      statusCode: 400,
       errors: error.issues.map((issue) => ({
         message: issue.message,
       })),
     };
   } else if (error instanceof ApplicationSpecificError) {
-    return { status: error.statusCode, errors: [{ message: error.message }] };
+    return {
+      statusCode: error.statusCode,
+      errors: [{ message: error.message }],
+    };
   } else {
-    return { status: 500, errors: [{ message: 'Unknown server error' }] };
+    return { statusCode: 500, errors: [{ message: 'Unknown server error' }] };
   }
 };
