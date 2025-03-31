@@ -1,3 +1,5 @@
+import { ZodError } from 'zod';
+
 export abstract class ApplicationSpecificError extends Error {
   public metadata: object;
   public statusCode: number;
@@ -33,3 +35,18 @@ export class DuplicateResourceError extends ApplicationSpecificError {
     super(message, metadata, 409);
   }
 }
+
+export const handleError = (error: unknown) => {
+  if (error instanceof ZodError) {
+    return {
+      status: 400,
+      errors: error.issues.map((issue) => ({
+        message: issue.message,
+      })),
+    };
+  } else if (error instanceof ApplicationSpecificError) {
+    return { status: error.statusCode, errors: [{ message: error.message }] };
+  } else {
+    return { status: 500, errors: [{ message: 'Unknown server error' }] };
+  }
+};
