@@ -16,15 +16,17 @@ const AuthController = {
       const validatedBody = loginSchema.safeParse(req.body);
       if (validatedBody.success) {
         const token = await AuthService.login(validatedBody.data);
-        return res.status(200).json({ token });
+        return res.status(200).json({ data: { token } });
       } else {
-        return res
-          .status(400)
-          .json({ message: validatedBody.error.issues[0]?.message });
+        const errors = validatedBody.error.issues.map((issue) => ({
+          message: issue.message,
+        }));
+
+        return res.status(400).json({ errors });
       }
     } catch (error: any) {
       const errorMessage = error?.message ?? 'An error occurred';
-      return res.status(401).json({ message: errorMessage });
+      return res.status(401).json({ errors: [{ message: errorMessage }] });
     }
   },
 };

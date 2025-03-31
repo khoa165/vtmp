@@ -22,6 +22,25 @@ describe('POST /auth/login', () => {
     await UserRepository.create(mockUser);
   });
 
+  it('should return error messages for missing email and password', (done) => {
+    request(app)
+      .post('/api/auth/login')
+      .send({})
+      .set('Accept', 'application/json')
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.statusCode).to.eq(400);
+        expect(res.body).to.have.property('errors');
+        expect(res.body.errors).to.be.an('array');
+
+        const errors = res.body.errors;
+        expect(errors[0]?.message).to.eq('Email is required');
+        expect(errors[1]?.message).to.eq('Password is required');
+        done();
+      });
+  });
+
   it('should return error messages for missing email', (done) => {
     request(app)
       .post('/api/auth/login')
@@ -31,11 +50,15 @@ describe('POST /auth/login', () => {
         if (err) return done(err);
 
         expect(res.statusCode).to.eq(400);
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.eq('Email is required');
+        expect(res.body).to.have.property('errors');
+        expect(res.body.errors).to.be.an('array');
+
+        const errors = res.body.errors;
+        expect(errors[0]?.message).to.eq('Email is required');
         done();
       });
   });
+
   it('should return error messages for missing password', (done) => {
     request(app)
       .post('/api/auth/login')
@@ -44,9 +67,11 @@ describe('POST /auth/login', () => {
         if (err) return done(err);
 
         expect(res.statusCode).to.eq(400);
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.eq('Password is required');
+        expect(res.body).to.have.property('errors');
+        expect(res.body.errors).to.be.an('array');
 
+        const errors = res.body.errors;
+        expect(errors[0]?.message).to.eq('Password is required');
         done();
       });
   });
@@ -59,8 +84,11 @@ describe('POST /auth/login', () => {
         if (err) done(err);
 
         expect(res.statusCode).to.eq(401);
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.eq('User not found');
+        expect(res.body).to.have.property('errors');
+        expect(res.body.errors).to.be.an('array');
+
+        const errors = res.body.errors;
+        expect(errors[0]?.message).to.eq('User not found');
 
         done();
       });
@@ -74,8 +102,11 @@ describe('POST /auth/login', () => {
         if (err) done(err);
 
         expect(res.statusCode).to.eq(401);
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.eq('Wrong password');
+        expect(res.body).to.have.property('errors');
+        expect(res.body.errors).to.be.an('array');
+
+        const errors = res.body.errors;
+        expect(errors[0]?.message).to.eq('Wrong password');
 
         done();
       });
@@ -89,7 +120,8 @@ describe('POST /auth/login', () => {
         if (err) done(err);
 
         expect(res.statusCode).to.eq(200);
-        expect(res.body).to.have.property('token');
+        expect(res.body).to.have.property('data');
+        expect(res.body.data).to.have.property('token');
 
         done();
       });

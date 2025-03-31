@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { getConfig } from './config';
 
-// const CONFIG = getConfig();
+const CONFIG = getConfig();
 
 const connectDB = async () => {
   if (process.env.NODE_ENV === 'test') {
