@@ -1,0 +1,30 @@
+name: API Endpoint
+description: Request to add a new API endpoint
+title: '[API]: '
+labels: [api]
+body:
+  - type: input
+    id: path
+    attributes:
+      label: API Endpoint Path
+      placeholder: /api/example
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: A brief description of the API endpoint
+    validations:
+      required: true
+  - type: dropdown
+    id: visibility
+    attributes:
+      label: Visibility
+      options:
+        - public
+        - private
+        - admin/moderator
+        - admin-only
+    validations:
+      required: true
