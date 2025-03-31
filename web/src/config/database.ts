@@ -1,9 +1,13 @@
 import mongoose from 'mongoose';
-import { getConfig } from './config';
+import { EnvConfig } from '@/config/env';
 
-const CONFIG = getConfig();
+const CONFIG = EnvConfig.get();
 
 const connectDB = async () => {
+  if (process.env.NODE_ENV === 'test') {
+    console.log('Test environment');
+    return;
+  }
   try {
     await mongoose.connect(CONFIG.MONGO_URI);
     console.log('✅ MongoDB Connected');

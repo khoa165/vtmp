@@ -2,9 +2,10 @@ import User from '@/models/user.model';
 
 const UserRepository = {
   create: async (userData: {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
-    password: string;
+    encryptedPassword: string;
   }) => {
     const user = new User(userData);
     await user.save();

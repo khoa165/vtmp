@@ -6,7 +6,7 @@ import { Col, Row } from 'reactstrap';
 import { BannerPage } from './banner-page';
 
 export const LandingContainer = () => {
-  const contentRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const onScrollClick = (keyword) => {
     const element = document.getElementById(`value-${keyword.toLowerCase()}`);
     element?.scrollIntoView({
