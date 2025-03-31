@@ -26,7 +26,7 @@ describe('POST /auth/signup', () => {
 
   it('should return new user', (done) => {
     request(app)
-      .post('/api/auth/signup')
+      .post('/signup')
       .send({
         firstName: 'admin',
         lastName: 'viettech',
@@ -46,7 +46,7 @@ describe('POST /auth/signup', () => {
   //   Testing error message when missing a field
   it('should return error messages for missing firstName', (done) => {
     request(app)
-      .post('/api/auth/signup')
+      .post('/signup')
       .send({
         lastName: 'viettech',
         encryptedPassword: 'test',
@@ -66,7 +66,7 @@ describe('POST /auth/signup', () => {
 
   it('should return error messages for missing password', (done) => {
     request(app)
-      .post('/api/auth/signup')
+      .post('/signup')
       .send({
         firstName: 'admin',
         lastName: 'viettech',
@@ -85,7 +85,7 @@ describe('POST /auth/signup', () => {
 
   it('should return error messages for missing lastName', (done) => {
     request(app)
-      .post('/api/auth/signup')
+      .post('/signup')
       .send({
         firstName: 'admin',
         encryptedPassword: 'test',
@@ -105,7 +105,7 @@ describe('POST /auth/signup', () => {
 
   it('should return error messages for missing role', (done) => {
     request(app)
-      .post('/api/auth/signup')
+      .post('/signup')
       .send({
         firstName: 'admin',
         lastName: 'viettech',
@@ -125,7 +125,7 @@ describe('POST /auth/signup', () => {
 
   it('should return error messages for missing email', (done) => {
     request(app)
-      .post('/api/auth/signup')
+      .post('/signup')
       .send({
         firstName: 'admin',
         lastName: 'viettech',
@@ -146,7 +146,7 @@ describe('POST /auth/signup', () => {
   //   Testing duplicate email
   it('should return error messages for duplicate email', (done) => {
     request(app)
-      .post('/api/auth/signup')
+      .post('/signup')
       .send({
         firstName: 'admin',
         lastName: 'viettech',
