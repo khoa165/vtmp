@@ -1,4 +1,4 @@
-export class ApplicationSpecificError extends Error {
+export abstract class ApplicationSpecificError extends Error {
   public metadata: object;
   public statusCode: number;
 
