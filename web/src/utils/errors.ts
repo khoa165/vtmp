@@ -1,4 +1,4 @@
-class CustomError extends Error {
+export class CustomError extends Error {
   public metadata: object;
   public statusCode: number;
 
@@ -10,34 +10,26 @@ class CustomError extends Error {
   }
 }
 
-class ResourceNotFoundError extends CustomError {
+export class ResourceNotFoundError extends CustomError {
   constructor(message: string, metadata: object) {
     super(message, metadata, 404);
   }
 }
 
-class UnauthorizedError extends CustomError {
+export class UnauthorizedError extends CustomError {
   constructor(message: string, metadata: object) {
     super(message, metadata, 401);
   }
 }
 
-class ForbiddenError extends CustomError {
+export class ForbiddenError extends CustomError {
   constructor(message: string, metadata: object) {
     super(message, metadata, 403);
   }
 }
 
-class DuplicateResourceError extends CustomError {
+export class DuplicateResourceError extends CustomError {
   constructor(message: string, metadata: object) {
     super(message, metadata, 409);
   }
 }
-
-export {
-  CustomError,
-  ResourceNotFoundError,
-  UnauthorizedError,
-  ForbiddenError,
-  DuplicateResourceError,
-};
