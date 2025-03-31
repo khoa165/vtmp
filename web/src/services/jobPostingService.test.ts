@@ -10,56 +10,60 @@ describe('JobPostingService', () => {
   useMongoDB();
 
   const mockJobPosting = {
-    linkId: new mongoose.Types.ObjectId(), // This should be a valid ObjectId from a Link document in your test database
-    url: 'http://example.com/job-posting', // Example URL
-    jobTitle: 'Software Engineer', // Example job title
-    companyName: 'Example Company', // Example company name
-    submittedBy: new mongoose.Types.ObjectId(), // This should be a valid ObjectId from a User document in your test database
+    linkId: new mongoose.Types.ObjectId(),
+    url: 'http://example.com/job-posting',
+    jobTitle: 'Software Engineer',
+    companyName: 'Example Company',
+    submittedBy: new mongoose.Types.ObjectId(),
   };
 
   describe('updateJobPostingById', () => {
     it('should throw an error when no job posting is found', async () => {
       await JobPostingModel.create(mockJobPosting);
       const newUpdate = {
-        jobTitle: 'Senior Software Engineer', // Updated job title
-        companyName: 'Updated Company', // Updated company name
-        jobDescription: 'This is an updated job description.', // Updated job description
+        jobTitle: 'Senior Software Engineer',
+        companyName: 'Updated Company',
+        jobDescription: 'This is an updated job description.',
       };
-      const randomId = new mongoose.Types.ObjectId();
 
       expect(
-        JobPostingService.updateJobPostingById(randomId.toString(), newUpdate)
+        JobPostingService.updateJobPostingById(
+          new mongoose.Types.ObjectId().toString(),
+          newUpdate
+        )
       ).to.throw;
     });
 
     it('should not throw an error when a job posting is found', async () => {
       const newJobPosting = await JobPostingModel.create(mockJobPosting);
       const newUpdate = {
-        jobTitle: 'Senior Software Engineer', // Updated job title
-        companyName: 'Updated Company', // Updated company name
-        jobDescription: 'This is an updated job description.', // Updated job description
+        jobTitle: 'Senior Software Engineer',
+        companyName: 'Updated Company',
+        jobDescription: 'This is an updated job description.',
       };
-      const jobId = newJobPosting.id;
 
-      expect(JobPostingService.updateJobPostingById(jobId, newUpdate)).to.not
-        .throw;
+      expect(
+        JobPostingService.updateJobPostingById(newJobPosting.id, newUpdate)
+      ).to.not.throw;
     });
   });
 
   describe('deleteJobPostingById', () => {
     it('should throw an error when no job posting is found', async () => {
       await JobPostingModel.create(mockJobPosting);
-      const randomId = new mongoose.Types.ObjectId();
 
-      expect(JobPostingService.deleteJobPostingById(randomId.toString())).to
-        .throw;
+      expect(
+        JobPostingService.deleteJobPostingById(
+          new mongoose.Types.ObjectId().toString()
+        )
+      ).to.throw;
     });
 
     it('should not throw an error when a job posting is found', async () => {
       const newJobPosting = await JobPostingModel.create(mockJobPosting);
-      const jobId = newJobPosting.id;
 
-      expect(JobPostingService.deleteJobPostingById(jobId)).to.not.throw;
+      expect(JobPostingService.deleteJobPostingById(newJobPosting.id)).to.not
+        .throw;
     });
   });
 });
