@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import mongoose from 'mongoose';
 
 import ApplicationRepository from './application.repository';
-import Application from '@/models/application.model';
+import ApplicationModel from '@/models/application.model';
 import { useMongoDB } from '@/config/mongodb.testutils';
 
 describe('ApplicationRepository', () => {
@@ -22,7 +22,7 @@ describe('ApplicationRepository', () => {
       const newApplication = await ApplicationRepository.createApplication(
         mockApplication
       );
-      const application = await Application.findById(newApplication.id);
+      const application = await ApplicationModel.findById(newApplication.id);
 
       expect(application?.jobPostingId.toString()).to.equal(
         mockApplication.jobPostingId
@@ -31,9 +31,9 @@ describe('ApplicationRepository', () => {
     });
   });
 
-  describe('alreadyExist', () => {
+  describe('doesApplicationExist', () => {
     it('should evaluate to true if an application already exists', async () => {
-      await Application.create(mockApplication);
+      await ApplicationModel.create(mockApplication);
       const result = await ApplicationRepository.doesApplicationExist(
         mockApplication
       );
