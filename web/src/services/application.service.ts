@@ -1,5 +1,6 @@
 import ApplicationRepository from '@/repositories/application.repository';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
+import { ResourceNotFoundError } from '@/utils/errors';
 
 const ApplicationService = {
   createApplication: async ({
@@ -13,7 +14,9 @@ const ApplicationService = {
       jobPostingId
     );
     if (!jobPosting) {
-      throw new Error('Job posting does not exist');
+      throw new ResourceNotFoundError('Job posting not found', {
+        resource: 'JobPosting',
+      });
     }
 
     const applicationExists = await ApplicationRepository.doesApplicationExist({
