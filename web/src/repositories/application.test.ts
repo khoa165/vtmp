@@ -1,8 +1,11 @@
 import { expect } from 'chai';
 import mongoose from 'mongoose';
+import { differenceInSeconds } from 'date-fns';
 
 import ApplicationRepository from './application.repository';
-import ApplicationModel from '@/models/application.model';
+import ApplicationModel, {
+  ApplicationStatus,
+} from '@/models/application.model';
 import { useMongoDB } from '@/config/mongodb.testutils';
 
 describe('ApplicationRepository', () => {
@@ -22,12 +25,18 @@ describe('ApplicationRepository', () => {
       const newApplication = await ApplicationRepository.createApplication(
         mockApplication
       );
-      const application = await ApplicationModel.findById(newApplication.id);
+      const timeDiff = differenceInSeconds(
+        new Date(),
+        newApplication.appliedOnDate
+      );
 
-      expect(application?.jobPostingId.toString()).to.equal(
+      expect(newApplication.jobPostingId.toString()).to.equal(
         mockApplication.jobPostingId
       );
-      expect(application?.userId.toString()).to.equal(mockApplication.userId);
+      expect(newApplication.userId.toString()).to.equal(mockApplication.userId);
+      expect(newApplication.hasApplied).to.equal(true);
+      expect(newApplication.status).to.equal(ApplicationStatus.SUBMITTED);
+      expect(timeDiff).to.lessThan(3);
     });
   });
 
@@ -41,7 +50,7 @@ describe('ApplicationRepository', () => {
       expect(result).to.equal(true);
     });
 
-    it('should evaluate to false if an application does not exists', async () => {
+    it('should evaluate to false if an application does not exist', async () => {
       const result = await ApplicationRepository.doesApplicationExist(
         mockApplication
       );
