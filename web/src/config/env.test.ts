@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { getConfig } from './config';
+import { EnvConfig } from '@/config/env';
 import { before } from 'mocha';
 
 describe('Config', () => {
@@ -22,12 +22,20 @@ describe('Config', () => {
     process.env = env;
   });
 
-  it('emptyEnvThrows', () => expect(getConfig).to.throw());
+  it('should throw when env is empty', () =>
+    expect(EnvConfig.get()).to.throw());
 
-  it('allEnvPresentPasses', () => {
+  it('should pass when env are present', () => {
     Object.entries(MOCK_ENV).forEach(([key, value]) => {
       process.env[key] = value;
     });
-    expect(getConfig).to.not.throw();
+    expect(EnvConfig.get()).to.not.throw();
+  });
+
+  it('should pass when env are present', () => {
+    Object.entries(MOCK_ENV).forEach(([key, value]) => {
+      process.env[key] = value;
+    });
+    expect(EnvConfig.get()).to.not.throw();
   });
 });
