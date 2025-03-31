@@ -3,7 +3,7 @@ import { useSandbox } from '@/testutils/sandbox.testutil';
 import { helloPort } from './demo-mock-func';
 import { EnvConfig } from '@/config/env';
 
-describe.only('helloPort', () => {
+describe('helloPort', () => {
   const sandbox = useSandbox();
 
   const fakeEnvs = {

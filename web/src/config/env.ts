@@ -12,18 +12,11 @@ const configSchema = z.object({
 export const EnvConfig = {
   get: () => {
     const envs = configSchema.safeParse(process.env);
-    envs.success
-      ? console.log('✅ Environment variables loaded successfully')
-      : console.error(
-          '❌ Environment variables loading failed:',
-          envs.error.flatten()
-        );
-    return (
-      envs.data ?? {
-        MONGO_URI: '',
-        PORT: 5000,
-        JWT_SECRET: '',
-      }
-    );
+    if (!envs.success) {
+      throw new Error(
+        'Environment variables are not set correctly. Please check your .env file.'
+      );
+    }
+    return envs.data;
   },
 };
