@@ -3,7 +3,7 @@ import chaiSubset from 'chai-subset';
 import assert from 'assert';
 import JobPostingRepository from './jobPosting.repository';
 import JobPosting from '@/models/jobPosting.model';
-import { useMongoDB } from '@/config/mongodb.testutils';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import mongoose from 'mongoose';
 import { differenceInSeconds } from 'date-fns';
 
