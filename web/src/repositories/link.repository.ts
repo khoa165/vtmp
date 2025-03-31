@@ -12,7 +12,7 @@ const LinkRepository = {
     return LinkModel.findById(id);
   },
 
-  updateStatus: async ({
+  updateLinkStatus: async ({
     id,
     status,
     session,
