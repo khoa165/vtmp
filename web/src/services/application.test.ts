@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import ApplicationService from './application.service';
-import Application from '@/models/application.model';
+import ApplicationModel from '@/models/application.model';
 import JobPosting from '@/models/jobPosting.model';
 import { useMongoDB } from '@/config/mongodb.testutils';
 import mongoose from 'mongoose';
@@ -42,16 +42,14 @@ describe('ApplicationService', () => {
     });
 
     it('should throw error if an application associated with this job posting and user already exist', async () => {
-      // Save the mock job posting to JobPosting collection
       const newJobPosting = await JobPosting.create(mockJobPosting);
 
-      // Create mock application associated with the above job posting
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: new mongoose.Types.ObjectId().toString(),
       };
 
-      await Application.create(mockApplication);
+      await ApplicationModel.create(mockApplication);
 
       try {
         await ApplicationService.createApplication(mockApplication);
@@ -63,10 +61,8 @@ describe('ApplicationService', () => {
     });
 
     it('should create an application successfully', async () => {
-      // Save the job posting to JobPosting collection
       const newJobPosting = await JobPosting.create(mockJobPosting);
 
-      // Create mock application associated with the above job posting
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: new mongoose.Types.ObjectId().toString(),
@@ -76,7 +72,7 @@ describe('ApplicationService', () => {
         const newApplication = await ApplicationService.createApplication(
           mockApplication
         );
-        const application = await Application.findById(newApplication.id);
+        const application = await ApplicationModel.findById(newApplication.id);
 
         expect(application?.jobPostingId.toString()).to.equal(
           mockApplication.jobPostingId
