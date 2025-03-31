@@ -5,6 +5,7 @@ import JobPostingRepository from './jobPosting.repository';
 import JobPosting from '@/models/jobPosting.model';
 import { useMongoDB } from '@/config/mongodb.testutils';
 import mongoose from 'mongoose';
+import { differenceInSeconds } from 'date-fns';
 
 chai.use(chaiSubset);
 const { expect } = chai;
@@ -13,11 +14,11 @@ describe('JobPostingRepository', () => {
   useMongoDB();
 
   const mockJobPosting = {
-    linkId: new mongoose.Types.ObjectId(), // This should be a valid ObjectId from a Link document in your test database
-    url: 'http://example.com/job-posting', // Example URL
-    jobTitle: 'Software Engineer', // Example job title
-    companyName: 'Example Company', // Example company name
-    submittedBy: new mongoose.Types.ObjectId(), // This should be a valid ObjectId from a User document in your test database
+    linkId: new mongoose.Types.ObjectId(),
+    url: 'http://example.com/job-posting',
+    jobTitle: 'Software Engineer',
+    companyName: 'Example Company',
+    submittedBy: new mongoose.Types.ObjectId(),
   };
 
   describe('createJobPosting', () => {
@@ -34,9 +35,8 @@ describe('JobPostingRepository', () => {
     it('should be able to find a job post by id', async () => {
       const newJobPosting = await JobPosting.create(mockJobPosting);
 
-      const jobId = newJobPosting.id;
       const foundJobPosting = await JobPostingRepository.getJobPostingById(
-        jobId
+        newJobPosting.id
       );
 
       expect(foundJobPosting).to.not.be.null;
@@ -49,14 +49,13 @@ describe('JobPostingRepository', () => {
       const newJobPosting = await JobPosting.create(mockJobPosting);
 
       const newUpdate = {
-        jobTitle: 'Senior Software Engineer', // Updated job title
-        companyName: 'Updated Company', // Updated company name
-        jobDescription: 'This is an updated job description.', // Updated job description
+        jobTitle: 'Senior Software Engineer',
+        companyName: 'Updated Company',
+        jobDescription: 'This is an updated job description.',
       };
 
-      const jobId = newJobPosting.id;
       const updatedJobPosting = await JobPostingRepository.updateJobPostingById(
-        jobId,
+        newJobPosting.id,
         newUpdate
       );
 
@@ -67,19 +66,16 @@ describe('JobPostingRepository', () => {
   describe('deleteJobPostingById', () => {
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
       const newJobPosting = await JobPosting.create(mockJobPosting);
-
-      const currentDate: Date = new Date();
-      const dateDeleted: Date = new Date(currentDate.getDate() + 7);
-      const updateDelete = {
-        deletedAt: dateDeleted,
-      };
-
-      const jobId = newJobPosting.id;
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
-        jobId
+        newJobPosting.id
+      );
+      const timeDiff = differenceInSeconds(
+        new Date(),
+        deletedJobPosting?.deletedAt as Date
       );
 
-      expect(deletedJobPosting).to.containSubset(updateDelete);
+      expect(deletedJobPosting).to.not.be.null;
+      expect(timeDiff).to.lessThan(3);
     });
   });
 });
