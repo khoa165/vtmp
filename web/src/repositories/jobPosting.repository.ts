@@ -8,25 +8,18 @@ const JobPostingRepository = {
     return JobPostingModel.findById(jobId).lean();
   },
   updateJobPostingById: async (jobId: string, newUpdate: object) => {
-    const updatedJobPosting = await JobPostingModel.findByIdAndUpdate(
+    return JobPostingModel.findByIdAndUpdate(
       jobId,
       { $set: newUpdate },
       { new: true }
     );
-
-    return updatedJobPosting;
   },
   deleteJobPostingById: async (jobId: string) => {
-    const currentDate: Date = new Date();
-    const dateDeleted: Date = new Date(currentDate.getDate() + 7);
-
-    const deletedJobPosting = await JobPostingModel.findByIdAndUpdate(
+    return JobPostingModel.findByIdAndUpdate(
       jobId,
-      { $set: { deletedAt: dateDeleted } },
+      { $set: { deletedAt: new Date() } },
       { new: true }
     );
-
-    return deletedJobPosting;
   },
 };
 

@@ -5,7 +5,6 @@
   "author": "Viet Tech Mentorship Program <viettechmentorshipprogram@gmail.com>",
   "license": "MIT",
   "private": true,
-  "type": "module",
   "scripts": {
     "client": "cd web-client && yarn run start",
     "server": "cd web && yarn run dev",

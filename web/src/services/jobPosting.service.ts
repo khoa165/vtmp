@@ -10,7 +10,9 @@ const JobPostingService = {
       );
       if (!updatedJobPosting) {
         throw new ResourceNotFoundError('Job posting not found', {
-          status: 404,
+          resource: 'JobPosting',
+          jobId: jobId,
+          path: '/job-postings/:jobId',
         });
       }
 
@@ -26,7 +28,9 @@ const JobPostingService = {
       );
       if (!deletedJobPosting) {
         throw new ResourceNotFoundError('Job posting not found', {
-          status: 404,
+          resource: 'JobPosting',
+          jobId: jobId,
+          path: '/job-postings/:jobId',
         });
       }
 
