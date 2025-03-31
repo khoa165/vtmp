@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-enum LinkStatus {
+export enum LinkStatus {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',
   REJECTED = 'REJECTED',
@@ -9,7 +9,7 @@ enum LinkStatus {
 interface ILink extends Document {
   url: String;
   status?: LinkStatus;
-  submittedOn?: Date;
+  submittedOn: Date;
   companyName?: String;
   userNote?: string;
 }
