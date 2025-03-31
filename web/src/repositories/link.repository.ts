@@ -1,5 +1,5 @@
 import LinkModel, { LinkStatus } from '@/models/link.model';
-import mongoose from 'mongoose';
+import mongoose, { ClientSession } from 'mongoose';
 
 const { ObjectId } = mongoose.Types;
 
@@ -12,16 +12,24 @@ const LinkRepository = {
     return LinkModel.findById(id);
   },
 
-  updateStatus: async (id: string, status: LinkStatus) => {
+  updateStatus: async ({
+    id,
+    status,
+    session,
+  }: {
+    id: string;
+    status: LinkStatus;
+    session?: ClientSession;
+  }) => {
     return LinkModel.findByIdAndUpdate(
       new ObjectId(id),
       { $set: { status } },
-      { new: true }
+      { new: true, session: session ?? null }
     );
   },
 
   getLinksByStatus: async (status: LinkStatus) => {
-    return LinkModel.find({ status })
+    return LinkModel.find({ status });
   },
 };
 

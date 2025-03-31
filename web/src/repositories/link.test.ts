@@ -30,10 +30,10 @@ describe.only('LinkRepository', () => {
 
   it('updateStatus should be able to update link status', async () => {
     const googleLink = await LinkRepository.createLink('google.com');
-    const link = await LinkRepository.updateStatus(
-      googleLink.id,
-      LinkStatus.APPROVED
-    );
+    const link = await LinkRepository.updateStatus({
+      id: googleLink.id,
+      status: LinkStatus.APPROVED,
+    });
 
     expect(link).to.not.be.null;
     expect(link?.status).to.equal(LinkStatus.APPROVED);
@@ -64,7 +64,10 @@ describe.only('LinkRepository', () => {
     );
     expect(beforeUpdateLink).to.have.lengthOf(3);
 
-    await LinkRepository.updateStatus(googleLink.id, LinkStatus.APPROVED);
+    await LinkRepository.updateStatus({
+      id: googleLink.id,
+      status: LinkStatus.APPROVED,
+    });
     const afterUpdateLink = await LinkRepository.getLinksByStatus(
       LinkStatus.PENDING
     );
