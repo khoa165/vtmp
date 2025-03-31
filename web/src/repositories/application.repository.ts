@@ -1,4 +1,4 @@
-import Application from '@/models/application.model';
+import ApplicationModel from '@/models/application.model';
 
 const ApplicationRepository = {
   createApplication: async ({
@@ -8,26 +8,23 @@ const ApplicationRepository = {
     jobPostingId: string;
     userId: string;
   }) => {
-    const newApplication = new Application({
+    return await ApplicationModel.create({
       jobPostingId,
       userId,
     });
-    await newApplication.save();
-    return newApplication;
   },
 
-  alreadyExist: async ({
+  doesApplicationExist: async ({
     jobPostingId,
     userId,
   }: {
     jobPostingId: string;
     userId: string;
   }) => {
-    const idIfExist = await Application.exists({
-      jobPostingId: jobPostingId,
-      userId: userId,
-    });
-    return !!idIfExist;
+    return !!(await ApplicationModel.exists({
+      jobPostingId,
+      userId,
+    }));
   },
 
   findApplicationsByUserId: async (userId: string) => {

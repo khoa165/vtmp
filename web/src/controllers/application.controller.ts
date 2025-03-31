@@ -11,7 +11,7 @@ const ApplicationController = {
     try {
       const parsed = ApplicationRequestSchema.safeParse(req.body);
       if (!parsed.success) {
-        throw new Error('Invalid application request schema');
+        return res.status(400).json({ message: 'invalid request body' });
       }
 
       const { jobPostingId } = parsed.data;
@@ -26,14 +26,14 @@ const ApplicationController = {
         userId,
       });
 
-      res.status(201).json({
+      return res.status(201).json({
         message: 'Application created successfully',
         data: application,
       });
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An error occured';
-      res.status(401).json({ message: errorMessage });
+      return res.status(401).json({ message: errorMessage });
     }
   },
   getAllApplications: async (req: Request, res: Response) => {
