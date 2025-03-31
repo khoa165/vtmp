@@ -1,5 +1,6 @@
 import * as chai from 'chai';
 import chaiSubset from 'chai-subset';
+import assert from 'assert';
 
 import JobPostingRepository from './jobPosting.repository';
 import JobPosting from '@/models/jobPosting.model';
@@ -69,9 +70,19 @@ describe('JobPostingRepository', () => {
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
         newJobPosting.id
       );
+
+      assert(
+        deletedJobPosting !== null,
+        'Deleted job posting must not be null'
+      );
+      assert(
+        'deletedAt' in deletedJobPosting,
+        'Deleted job posting must have a deletedAt property'
+      );
+
       const timeDiff = differenceInSeconds(
         new Date(),
-        deletedJobPosting?.deletedAt as Date
+        deletedJobPosting.deletedAt
       );
 
       expect(deletedJobPosting).to.not.be.null;
