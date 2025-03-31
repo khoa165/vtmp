@@ -3,6 +3,7 @@ import chaiSubset from 'chai-subset';
 
 import UserRepository from '@/repositories/user.repository';
 import { useMongoDB } from '@/config/mongodb.testutils';
+import { Role } from '@/models/user.model';
 
 chai.use(chaiSubset);
 const { expect } = chai;
@@ -22,6 +23,7 @@ describe('UserRepository', () => {
 
     expect(user).to.not.be.null;
     expect(user).to.containSubset(mockUser);
+    expect(user?.role).to.be.eq(Role.USER);
   });
 
   it('should be able to find user by id', async () => {
@@ -35,6 +37,7 @@ describe('UserRepository', () => {
     const user = await UserRepository.findById(newlyCreatedRecord.id);
 
     expect(user).to.containSubset(mockUser);
+    expect(user?.role).to.be.eq(Role.USER);
   });
 
   it('should be able to find user by email', async () => {
@@ -48,5 +51,6 @@ describe('UserRepository', () => {
     const user = await UserRepository.findByEmail('test@example.com');
 
     expect(user).to.containSubset(mockUser);
+    expect(user?.role).to.be.eq(Role.USER);
   });
 });
