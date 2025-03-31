@@ -12,7 +12,7 @@ const LinkService = {
     const session: ClientSession = await mongoose.startSession();
     session.startTransaction();
     try {
-      const updatedLink = await LinkRepository.updateStatus({
+      const updatedLink = await LinkRepository.updateLinkStatus({
         id: linkId,
         status: LinkStatus.APPROVED,
         session,
@@ -33,7 +33,7 @@ const LinkService = {
   },
 
   rejectLink: async (linkId: string) => {
-    const updatedLink = await LinkRepository.updateStatus({
+    const updatedLink = await LinkRepository.updateLinkStatus({
       id: linkId,
       status: LinkStatus.REJECTED,
     });
