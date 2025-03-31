@@ -12,7 +12,7 @@ const LinkRepository = {
     return LinkModel.findById(id);
   },
 
-  updateStatus: async (id: string, status: LinkStatus) => {
+  updateLinkStatus: async (id: string, status: LinkStatus) => {
     return LinkModel.findByIdAndUpdate(
       new ObjectId(id),
       { $set: { status } },
@@ -21,7 +21,7 @@ const LinkRepository = {
   },
 
   getLinksByStatus: async (status: LinkStatus) => {
-    return LinkModel.find({ status })
+    return LinkModel.find({ status });
   },
 };
 
