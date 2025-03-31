@@ -30,7 +30,7 @@ const JobPostingService = {
         throw new ResourceNotFoundError('Job posting not found', {
           resource: 'JobPosting',
           jobId: jobId,
-          path: "/job-postings/:jobId",
+          path: '/job-postings/:jobId',
         });
       }
 
