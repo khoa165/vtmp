@@ -92,7 +92,7 @@ describe('POST /auth/login', () => {
       .end((err, res) => {
         if (err) done(err);
 
-        expect(res.statusCode).to.eq(401);
+        expect(res.statusCode).to.eq(404);
         expect(res.body).to.have.property('errors');
         expect(res.body.errors).to.be.an('array');
 

@@ -1,4 +1,5 @@
 import AuthService from '@/services/auth.service';
+import { handleError } from '@/utils/errors';
 import { Request, Response } from 'express';
 import { z } from 'zod';
 
@@ -18,15 +19,12 @@ const AuthController = {
         const token = await AuthService.login(validatedBody.data);
         return res.status(200).json({ data: { token } });
       } else {
-        const errors = validatedBody.error.issues.map((issue) => ({
-          message: issue.message,
-        }));
-
-        return res.status(400).json({ errors });
+        const { statusCode, errors } = handleError(validatedBody.error);
+        return res.status(statusCode).json({ errors });
       }
     } catch (error: any) {
-      const errorMessage = error?.message ?? 'An error occurred';
-      return res.status(401).json({ errors: [{ message: errorMessage }] });
+      const { statusCode, errors } = handleError(error);
+      return res.status(statusCode).json({ errors });
     }
   },
 };
