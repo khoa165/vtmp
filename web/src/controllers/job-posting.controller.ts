@@ -54,7 +54,7 @@ export const JobPostingController = {
       return;
     }
   },
-  
+
   deleteJobPosting: async (req: Request, res: Response) => {
     try {
       const { jobId } = JobIdSchema.parse(req.params);
