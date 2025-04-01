@@ -1,7 +1,7 @@
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { beforeEach, describe } from 'mocha';
 import { AuthService } from './auth.service';
-import { expect } from 'chai';
+// import { expect } from 'chai';
 import { UserRepository } from '@/repositories/user.repository';
 import bcrypt from 'bcryptjs';
 import { useSandbox } from '@/testutils/sandbox.testutil';
@@ -9,6 +9,11 @@ import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { ResourceNotFoundError, UnauthorizedError } from '@/utils/errors';
 import { assert } from 'console';
+
+import * as chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+chai.use(chaiAsPromised);
+const { expect } = chai;
 
 describe('AuthService', () => {
   useMongoDB();
