@@ -1,39 +1,39 @@
 import { Request, Response } from 'express';
 import ApplicationService from '@/services/application.service';
 import { z } from 'zod';
+import { handleError } from '@/utils/errors';
 
 const ApplicationRequestSchema = z.object({
   jobPostingId: z.string(),
 });
 
+interface AuthenticatedRequest extends Request {
+  user: {
+    id: string;
+  };
+}
+
 const ApplicationController = {
   createApplication: async (req: Request, res: Response) => {
     try {
-      const parsed = ApplicationRequestSchema.safeParse(req.body);
-      if (!parsed.success) {
-        return res.status(400).json({ message: 'invalid request body' });
-      }
+      const { jobPostingId } = ApplicationRequestSchema.parse(req.body);
 
-      const { jobPostingId } = parsed.data;
-      if (!req.user) {
-        throw new Error('Unauthorized');
-      }
+      const userId = (req as AuthenticatedRequest).user.id;
 
-      const userId = req.user.id;
-
-      const application = await ApplicationService.createApplication({
+      const newApplication = await ApplicationService.createApplication({
         jobPostingId,
         userId,
       });
 
-      return res.status(201).json({
+      res.status(201).json({
         message: 'Application created successfully',
-        data: application,
+        data: newApplication,
       });
+      return;
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'An error occured';
-      return res.status(401).json({ message: errorMessage });
+      const handledError = handleError(error);
+      res.status(handledError.statusCode).json(handledError.errors);
+      return;
     }
   },
 };
