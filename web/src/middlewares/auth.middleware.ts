@@ -20,7 +20,6 @@ export const authenticate = (
 
   try {
     const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
-    console.log(decoded);
     const parsed = DecodedJWTSchema.safeParse(decoded);
     if (parsed.success) {
       req.user = parsed.data;
