@@ -30,9 +30,9 @@ const ApplicationController = {
         data: newApplication,
       });
       return;
-    } catch (error) {
-      const handledError = handleError(error);
-      res.status(handledError.statusCode).json(handledError.errors);
+    } catch (error: unknown) {
+      const { statusCode, errors } = handleError(error);
+      res.status(statusCode).json({ errors });
       return;
     }
   },

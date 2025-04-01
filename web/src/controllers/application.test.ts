@@ -5,6 +5,8 @@ import bcrypt from 'bcryptjs';
 
 import app from '@/app';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import { EnvConfig } from '@/config/env';
 import UserModel from '@/models/user.model';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
 import ApplicationRepository from '@/repositories/application.repository';
@@ -13,8 +15,15 @@ import UserService from '@/services/user.service';
 describe('POST /applications', () => {
   useMongoDB();
 
+  const sandbox = useSandbox();
+  const mockEnvs = {
+    PORT: 8000,
+    MONGO_URI: 'mongodb://username:password@localhost:27017/database_name',
+    JWT_SECRET: 'vtmp-secret',
+  };
+
   let savedUserId: string;
-  let encryptedPassword: string;
+  // let encryptedPassword: string;
   let mockToken: string;
 
   const mockJobPosting = {
@@ -29,7 +38,7 @@ describe('POST /applications', () => {
     // Before each test, since we need to send a token,
     // we need to build a mockUser, save to database
     // and then generate the token using UserService.login
-    encryptedPassword = await bcrypt.hash('test password', 10);
+    const encryptedPassword = await bcrypt.hash('test password', 10);
     const mockUser = {
       firstName: 'admin',
       lastName: 'viettech',
@@ -37,6 +46,7 @@ describe('POST /applications', () => {
       encryptedPassword,
     };
     savedUserId = (await UserModel.create(mockUser)).id;
+    sandbox.stub(EnvConfig, 'get').returns(mockEnvs);
 
     mockToken = await UserService.login({
       email: mockUser.email,
@@ -52,7 +62,8 @@ describe('POST /applications', () => {
       .set('Authorization', `Bearer ${mockToken}`);
 
     expect(res.statusCode).to.equal(400);
-    expect(res.body[0]).to.have.property('message', 'Required');
+    expect(res.body).to.have.property('errors');
+    expect(res.body.errors[0]).to.have.property('message', 'Required');
   });
 
   it('it should return error message with status code 404 if job posting does not exist', async () => {
@@ -63,7 +74,11 @@ describe('POST /applications', () => {
       .set('Authorization', `Bearer ${mockToken}`);
 
     expect(res.statusCode).to.equal(404);
-    expect(res.body[0]).to.have.property('message', 'Job posting not found');
+    expect(res.body).to.have.property('errors');
+    expect(res.body.errors[0]).to.have.property(
+      'message',
+      'Job posting not found'
+    );
   });
 
   it('it should return error message with status code 409 if duplicate application exists', async () => {
@@ -84,7 +99,8 @@ describe('POST /applications', () => {
       .set('Authorization', `Bearer ${mockToken}`);
 
     expect(res.statusCode).to.equal(409);
-    expect(res.body[0]).to.have.property(
+    expect(res.body).to.have.property('errors');
+    expect(res.body.errors[0]).to.have.property(
       'message',
       'Application already exists'
     );
