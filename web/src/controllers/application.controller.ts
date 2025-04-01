@@ -38,50 +38,46 @@ const ApplicationController = {
   },
   getAllApplications: async (req: Request, res: Response) => {
     try {
-      // Extract req.user to get userId (authenticated)
       if (!req.user) {
         throw new Error('Unauthorized user');
       }
       const userId = req.user.id;
 
-      // Call ApplicationService.getAllApplications({userId: userId})
       const applications = await ApplicationService.getAllApplications(userId);
 
-      // Prepare res object to send back
-      res.status(200).json({
+      return res.status(200).json({
         message: 'Get Applications Successfully',
         data: applications,
       });
     } catch (error) {
-      res.status(500).json(error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'an error occured';
+      return res.status(500).json({ message: errorMessage });
     }
   },
   getOneApplication: async (req: Request, res: Response) => {
     try {
-      // Extract req.user to get userId (authenticated)
       if (!req.user) {
         throw new Error('Unauthorized user');
       }
       const userId = req.user.id;
 
-      // Check if parameter is passed to request and extract applicationId
       if (!req.params.applicationId) {
         throw new Error('Application ID parameter is required.');
       }
       const applicationId = req.params.applicationId;
 
-      // Call ApplicationService.getOneApplication({applicationId: userId})
       const application = await ApplicationService.getOneApplication({
         applicationId,
         userId,
       });
 
-      res.status(200).json({
+      return res.status(200).json({
         message: 'Get Application Successfully',
         data: application,
       });
     } catch (error) {
-      res.status(500).json(error);
+      return res.status(500).json(error);
     }
   },
 };

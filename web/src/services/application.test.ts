@@ -104,44 +104,35 @@ describe('ApplicationService', () => {
       const userId = new mongoose.Types.ObjectId().toString();
       const otherUserId = new mongoose.Types.ObjectId().toString();
 
-      // Create mock applications
       const mockApplication1 = {
         jobPostingId: new mongoose.Types.ObjectId(),
         userId: userId,
-        hasApplied: true,
-        status: 'Pending',
-        appliedOnDate: new Date(),
-        note: '',
       };
       const mockApplication2 = {
         jobPostingId: new mongoose.Types.ObjectId(),
         userId: userId,
-        hasApplied: true,
-        status: 'Pending',
-        appliedOnDate: new Date(),
-        note: '',
       };
       const mockApplication3 = {
         jobPostingId: new mongoose.Types.ObjectId(),
         userId: otherUserId,
-        hasApplied: true,
-        status: 'Rejected',
-        appliedOnDate: new Date(),
-        note: '',
       };
 
-      const applicationId1 = (await Application.create(mockApplication1)).id;
-      const applicationId2 = (await Application.create(mockApplication2)).id;
-      const applicationId3 = (await Application.create(mockApplication3)).id;
+      const application1 = await ApplicationModel.create(mockApplication1);
+      const application2 = await ApplicationModel.create(mockApplication2);
+      const application3 = await ApplicationModel.create(mockApplication3);
 
       const applications = await ApplicationService.getAllApplications(userId);
 
-      expect(applications).to.include.members([applicationId1, applicationId2]);
-      expect(applications).to.not.include.members([applicationId3]);
+      const applicationsId = applications.map((x) => x.id.toString());
+
+      expect(applicationsId).to.include.members([
+        application1.id.toString(),
+        application2.id.toString(),
+      ]);
+      expect(applicationsId).to.not.include.members([
+        application3.id.toString(),
+      ]);
       expect(applications).to.have.lengthOf(2);
-      applications.forEach((app: any) => {
-        expect(app.userId.toString()).to.equal(userId);
-      });
     });
 
     it('should return no application if authenticated user has no application', async () => {
@@ -160,44 +151,33 @@ describe('ApplicationService', () => {
       const userId = new mongoose.Types.ObjectId().toString();
       const otherUserId = new mongoose.Types.ObjectId().toString();
 
-      // Create mock applications
-      const mockApplication1 = await Application.create({
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
+      const mockApplication1 = {
+        jobPostingId: new mongoose.Types.ObjectId(),
         userId: userId,
-        hasApplied: true,
-        status: 'Pending',
-        appliedOnDate: new Date(),
-        note: '',
-      });
-
-      await Application.create({
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
-        userId: userId,
-        hasApplied: true,
-        status: 'Pending',
-        appliedOnDate: new Date(),
-        note: '',
-      });
-
-      await Application.create({
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
+      };
+      const mockApplication2 = {
+        jobPostingId: new mongoose.Types.ObjectId(),
         userId: otherUserId,
-        hasApplied: true,
-        status: 'Rejected',
-        appliedOnDate: new Date(),
-        note: '',
-      });
+      };
+      const mockApplication3 = {
+        jobPostingId: new mongoose.Types.ObjectId(),
+        userId: otherUserId,
+      };
+
+      const mockApplicationId1 = (
+        await ApplicationModel.create(mockApplication1)
+      ).id;
+      await ApplicationModel.create(mockApplication2);
+      await ApplicationModel.create(mockApplication3);
 
       const application = await ApplicationService.getOneApplication({
-        applicationId: mockApplication1.id.toString(),
+        applicationId: mockApplicationId1,
         userId,
       });
 
       expect(application).to.not.be.null;
       expect(application?.userId.toString()).to.equal(userId);
-      expect(application?.id.toString()).to.equal(
-        mockApplication1.id.toString()
-      );
+      expect(application?.id.toString()).to.equal(mockApplicationId1);
     });
 
     it('should throw an error if no application is associated with the authenticated user', async () => {
@@ -208,12 +188,8 @@ describe('ApplicationService', () => {
       const otherApp = {
         jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: otherUserId,
-        hasApplied: true,
-        status: 'Rejected',
-        appliedOnDate: new Date(),
-        note: '',
       };
-      const otherAppId = (await Application.create(otherApp)).id;
+      const otherAppId = (await ApplicationModel.create(otherApp)).id;
 
       try {
         await ApplicationService.getOneApplication({

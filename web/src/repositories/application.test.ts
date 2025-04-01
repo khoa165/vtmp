@@ -1,12 +1,12 @@
 import { expect } from 'chai';
-import mongoose from 'mongoose';
 import { differenceInSeconds } from 'date-fns';
+import mongoose from 'mongoose';
 
-import ApplicationRepository from './application.repository';
+import { useMongoDB } from '@/config/mongodb.testutils';
 import ApplicationModel, {
   ApplicationStatus,
 } from '@/models/application.model';
-import { useMongoDB } from '@/config/mongodb.testutils';
+import ApplicationRepository from './application.repository';
 
 describe('ApplicationRepository', () => {
   useMongoDB();
@@ -63,22 +63,21 @@ describe('ApplicationRepository', () => {
       const userId = new mongoose.Types.ObjectId().toString();
       const otherUserId = new mongoose.Types.ObjectId().toString();
 
-      // Create multiple mock applications for that user
-      const mockApplications = [
-        {
-          jobPostingId: new mongoose.Types.ObjectId().toString(),
-          userId: userId,
-        },
-        {
-          jobPostingId: new mongoose.Types.ObjectId().toString(),
-          userId: userId,
-        },
-        {
-          jobPostingId: new mongoose.Types.ObjectId().toString(),
-          userId: otherUserId,
-        },
-      ];
-      await Application.insertMany(mockApplications);
+      const mockApplication1 = {
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: userId,
+      };
+      const mockApplication2 = {
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: userId,
+      };
+      const mockApplication3 = {
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: otherUserId,
+      };
+      await ApplicationModel.create(mockApplication1);
+      await ApplicationModel.create(mockApplication2);
+      await ApplicationModel.create(mockApplication3);
 
       const applications = await ApplicationRepository.findApplicationsByUserId(
         userId
@@ -93,22 +92,21 @@ describe('ApplicationRepository', () => {
       const userId = new mongoose.Types.ObjectId().toString();
       const otherUserId = new mongoose.Types.ObjectId().toString();
 
-      // Create multiple mock applications for that user
-      const mockApplications = [
-        {
-          jobPostingId: new mongoose.Types.ObjectId().toString(),
-          userId: otherUserId,
-        },
-        {
-          jobPostingId: new mongoose.Types.ObjectId().toString(),
-          userId: otherUserId,
-        },
-        {
-          jobPostingId: new mongoose.Types.ObjectId().toString(),
-          userId: otherUserId,
-        },
-      ];
-      await Application.insertMany(mockApplications);
+      const mockApplication1 = {
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: otherUserId,
+      };
+      const mockApplication2 = {
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: otherUserId,
+      };
+      const mockApplication3 = {
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        userId: otherUserId,
+      };
+      await ApplicationRepository.createApplication(mockApplication1);
+      await ApplicationRepository.createApplication(mockApplication2);
+      await ApplicationRepository.createApplication(mockApplication3);
 
       const applications = await ApplicationRepository.findApplicationsByUserId(
         userId
@@ -122,13 +120,13 @@ describe('ApplicationRepository', () => {
       const userId = new mongoose.Types.ObjectId().toString();
       const otherUserId = new mongoose.Types.ObjectId().toString();
 
-      // Create multiple mock applications
       const mockApplication1 = {
         jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: otherUserId,
       };
-      const mockApplicationId1 = (await Application.create(mockApplication1))
-        .id;
+      const mockApplicationId1 = (
+        await ApplicationRepository.createApplication(mockApplication1)
+      ).id;
 
       const application =
         await ApplicationRepository.findApplicationByIdAndUserId({
@@ -143,25 +141,27 @@ describe('ApplicationRepository', () => {
       const userId = new mongoose.Types.ObjectId().toString();
       const otherUserId = new mongoose.Types.ObjectId().toString();
 
-      // Create multiple mock applications for that user
       const mockApplication1 = {
         jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: otherUserId,
       };
-      const mockApplicationId1 = (await Application.create(mockApplication1))
-        .id;
       const mockApplication2 = {
         jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: userId,
       };
-      const mockApplicationId2 = (await Application.create(mockApplication2))
-        .id;
+      const mockApplicationId1 = (
+        await ApplicationRepository.createApplication(mockApplication1)
+      ).id;
+      const mockApplicationId2 = (
+        await ApplicationRepository.createApplication(mockApplication2)
+      ).id;
 
       const application =
         await ApplicationRepository.findApplicationByIdAndUserId({
           applicationId: mockApplicationId2,
           userId: userId,
         });
+
       expect(application).to.not.be.null;
       expect(application?.userId.toString()).to.equal(userId);
       expect(application?.id.toString()).to.equal(mockApplicationId2);
