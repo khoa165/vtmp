@@ -1,4 +1,4 @@
-import { useMongoDB } from '@/config/mongodb.testutils';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { beforeEach, describe } from 'mocha';
 import AuthService from './auth.service';
 import { expect } from 'chai';

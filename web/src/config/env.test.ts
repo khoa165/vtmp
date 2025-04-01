@@ -6,7 +6,7 @@ describe('Config', () => {
   let env: NodeJS.ProcessEnv;
 
   const MOCK_ENV = {
-    MONGODB_URI: 'mongodb://username:password@localhost:27017/database_name',
+    MONGO_URI: 'mongodb://username:password@localhost:27017/database_name',
     PORT: '8000',
     JWT_SECRET: 'some-random-secret-here',
   };
