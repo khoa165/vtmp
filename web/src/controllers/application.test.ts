@@ -5,8 +5,8 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-import JobPostingModel from '@/models/jobPosting.model';
-import ApplicationModel from '@/models/application.model';
+import JobPostingRepository from '@/repositories/jobPosting.repository';
+import ApplicationRepository from '@/repositories/application.repository';
 import UserModel from '@/models/user.model';
 import UserService from '@/services/user.service';
 
@@ -44,7 +44,9 @@ describe('POST /applications', () => {
       companyName: 'Apple',
       submittedBy: new mongoose.Types.ObjectId().toString(),
     };
-    savedJobPostingId = (await JobPostingModel.create(mockJobPosting)).id;
+    savedJobPostingId = (
+      await JobPostingRepository.createJobPosting(mockJobPosting)
+    ).id;
 
     encryptedPassword = await bcrypt.hash('test password', 10);
     mockUser = {
@@ -84,7 +86,7 @@ describe('POST /applications', () => {
   });
 
   it('it should return error message with status code 409 if duplicate application exists', async () => {
-    await ApplicationModel.create({
+    await ApplicationRepository.createApplication({
       jobPostingId: savedJobPostingId,
       userId: savedUserId,
     });

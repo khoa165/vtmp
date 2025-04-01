@@ -2,8 +2,8 @@ import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
 import mongoose from 'mongoose';
 
-import ApplicationModel from '@/models/application.model';
-import JobPostingModel from '@/models/jobPosting.model';
+import ApplicationRepository from '@/repositories/application.repository';
+import JobPostingRepository from '@/repositories/jobPosting.repository';
 import ApplicationService from '@/services/application.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
@@ -39,14 +39,16 @@ describe('ApplicationService', () => {
     });
 
     it('should throw error if an application associated with this job posting and user already exist', async () => {
-      const newJobPosting = await JobPostingModel.create(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting(
+        mockJobPosting
+      );
 
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: new mongoose.Types.ObjectId().toString(),
       };
 
-      await ApplicationModel.create(mockApplication);
+      await ApplicationRepository.createApplication(mockApplication);
 
       try {
         await ApplicationService.createApplication(mockApplication);
@@ -60,7 +62,9 @@ describe('ApplicationService', () => {
     });
 
     it('should create an application successfully', async () => {
-      const newJobPosting = await JobPostingModel.create(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting(
+        mockJobPosting
+      );
 
       const mockApplication = {
         jobPostingId: newJobPosting.id,

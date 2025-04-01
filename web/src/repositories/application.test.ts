@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import { differenceInSeconds } from 'date-fns';
 
 import ApplicationRepository from './application.repository';
-import ApplicationModel from '@/models/application.model';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ApplicationStatus } from '@/types/enums';
 
@@ -37,7 +36,7 @@ describe('ApplicationRepository', () => {
 
   describe('doesApplicationExist', () => {
     it('should evaluate to true if an application already exists', async () => {
-      await ApplicationModel.create(mockApplication);
+      await ApplicationRepository.createApplication(mockApplication);
       const result = await ApplicationRepository.doesApplicationExist(
         mockApplication
       );
