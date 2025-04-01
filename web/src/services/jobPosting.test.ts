@@ -21,7 +21,7 @@ describe('JobPostingService', () => {
     submittedBy: new mongoose.Types.ObjectId(),
   };
 
-  describe.only('updateJobPostingById', () => {
+  describe('updateJobPostingById', () => {
     it('should throw an error when no job posting is found', async () => {
       const newUpdate = {
         jobTitle: 'Senior Software Engineer',
@@ -47,7 +47,7 @@ describe('JobPostingService', () => {
         jobDescription: 'This is an updated job description.',
       };
 
-      expect(
+      await expect(
         JobPostingService.updateJobPostingById(newJobPosting.id, newUpdate)
       ).eventually.fulfilled;
     });
@@ -72,9 +72,9 @@ describe('JobPostingService', () => {
     });
   });
 
-  describe.only('deleteJobPostingById', () => {
+  describe('deleteJobPostingById', () => {
     it('should throw an error when no job posting is found', async () => {
-      expect(
+      await expect(
         JobPostingService.deleteJobPostingById(
           new mongoose.Types.ObjectId().toString()
         )
@@ -86,7 +86,7 @@ describe('JobPostingService', () => {
         mockJobPosting
       );
 
-      expect(JobPostingService.deleteJobPostingById(newJobPosting.id)).eventually.fulfilled;
+      await expect(JobPostingService.deleteJobPostingById(newJobPosting.id)).eventually.fulfilled;
     });
 
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
@@ -97,21 +97,14 @@ describe('JobPostingService', () => {
         newJobPosting.id
       );
 
-      assert(
-        deletedJobPosting !== null,
-        'Deleted job posting must not be null'
-      );
-      assert(
-        'deletedAt' in deletedJobPosting,
-        'Deleted job posting must have a deletedAt property'
-      );
+      assert(deletedJobPosting)
+      assert(deletedJobPosting.deletedAt)
 
       const timeDiff = differenceInSeconds(
         new Date(),
         deletedJobPosting.deletedAt
       );
 
-      expect(deletedJobPosting).to.not.be.null;
       expect(timeDiff).to.lessThan(3);
     });
   });
