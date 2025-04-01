@@ -8,7 +8,7 @@ const AuthService = {
   login: async ({ email, password }: { email: string; password: string }) => {
     const user = await UserRepository.findByEmail(email);
     if (!user) {
-      throw new ResourceNotFoundError('User not found', {});
+      throw new ResourceNotFoundError('User not found', { email });
     }
 
     const passwordMatched = await bcrypt.compare(
@@ -16,7 +16,10 @@ const AuthService = {
       user.encryptedPassword ?? ''
     );
     if (!passwordMatched) {
-      throw new UnauthorizedError('Wrong password', {});
+      throw new UnauthorizedError('Wrong password', {
+        email,
+        password,
+      });
     }
 
     const token = jwt.sign(
