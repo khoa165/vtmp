@@ -11,7 +11,7 @@ import { ResourceNotFoundError } from '@/utils/errors';
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
-describe.only('LinkService', () => {
+describe('LinkService', () => {
   useMongoDB();
 
   describe('submitLink', () => {
@@ -54,7 +54,7 @@ describe.only('LinkService', () => {
 
       const pendingLinks = await LinkService.getPendingLinks();
 
-      const urls = pendingLinks.map(link => link.url);
+      const urls = pendingLinks.map((link) => link.url);
       expect(urls).to.have.members([googleLink.url, nvidia.url]);
     });
 
@@ -79,7 +79,7 @@ describe.only('LinkService', () => {
 
       const pendingLinks = await LinkService.getPendingLinks();
 
-      const urls = pendingLinks.map(link => link.url);
+      const urls = pendingLinks.map((link) => link.url);
       expect(urls).to.have.members([googleLink.url, nvidia.url]);
     });
 
@@ -96,6 +96,4 @@ describe.only('LinkService', () => {
       expect(afterUpdateLinks).to.have.lengthOf(2);
     });
   });
-
-
 });
