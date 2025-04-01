@@ -1,7 +1,11 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import JobPostingService from '@/services/jobPosting.service';
-import { ResourceNotFoundError } from '../utils/errors';
+import {
+  ResourceNotFoundError,
+  UnauthorizedError,
+  ForbiddenError,
+} from '../utils/errors';
 
 const NewUpdateSchema = z.object({
   externalPostingId: z.string().optional(),
@@ -25,7 +29,9 @@ const JobPostingController = {
       const resultNewUpdate = NewUpdateSchema.safeParse(req.body);
 
       if (!resultId.success || !resultNewUpdate.success) {
-        return res.status(400).json({ message: 'Invalid request' });
+        return res
+          .status(400)
+          .json({ errors: [{ message: 'Invalid request' }] });
       }
 
       const jobId = resultId.data?.jobId as string;
@@ -38,14 +44,19 @@ const JobPostingController = {
 
       return res.status(200).json({
         data: updatedJobPosting,
-        message: 'Job posting updated successfully',
       });
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {
-        return res.status(error.statusCode).json({ message: error.message });
+        return res.status(error.statusCode);
+      } else if (error instanceof UnauthorizedError) {
+        return res.status(error.statusCode);
+      } else if (error instanceof ForbiddenError) {
+        return res.status(error.statusCode);
+      } else {
+        res.status(500);
       }
 
-      return res.status(500).json({ message: 'An error occurred' });
+      return res.json({ errors: [{ message: 'An error occurred' }] });
     }
   },
   deleteJobPosting: async (req: Request, res: Response): Promise<any> => {
@@ -53,23 +64,31 @@ const JobPostingController = {
       const resultId = JobIdSchema.safeParse(req.params);
 
       if (!resultId.success) {
-        return res.status(400).json({ message: 'Invalid request' });
+        return res
+          .status(400)
+          .json({ errors: [{ message: 'Invalid request' }] });
       }
 
       const jobId = resultId.data?.jobId as string;
       const deletedJobPosting = await JobPostingService.deleteJobPostingById(
         jobId
       );
+
       return res.status(200).json({
         data: deletedJobPosting,
-        message: 'Job posting deleted successfully',
       });
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {
-        return res.status(error.statusCode).json({ message: error.message });
+        return res.status(error.statusCode);
+      } else if (error instanceof UnauthorizedError) {
+        return res.status(error.statusCode);
+      } else if (error instanceof ForbiddenError) {
+        return res.status(error.statusCode);
+      } else if (error instanceof Error) {
+        res.status(500);
       }
 
-      return res.status(500).json({ message: 'An error occurred' });
+      return res.json({ errors: [{ message: 'An error occurred' }] });
     }
   },
 };
