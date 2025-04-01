@@ -18,3 +18,11 @@ Mark the type of testing you have done
 - [ ] Integration tests
 - [ ] Test with Postman
 - [ ] Test on UI
+
+## Checklist
+
+Make sure you complete as many of these items as possible
+
+- [ ] Your PR has descriptive title/description/motivation
+- [ ] You have linked a GitHub issue to this PR
+- [ ] You have done at least 1 or more form of testing to ensure the correctness of this PR
