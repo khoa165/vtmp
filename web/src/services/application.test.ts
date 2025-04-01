@@ -1,14 +1,14 @@
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
+import mongoose from 'mongoose';
 
-import ApplicationService from './application.service';
 import ApplicationModel, {
   ApplicationStatus,
 } from '@/models/application.model';
-import JobPosting from '@/models/jobPosting.model';
-import { useMongoDB } from '@/config/mongodb.testutils';
-import mongoose from 'mongoose';
-import { ResourceNotFoundError } from '@/utils/errors';
+import JobPostingModel from '@/models/jobPosting.model';
+import ApplicationService from '@/services/application.service';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
 
 describe('ApplicationService', () => {
   useMongoDB();
@@ -42,6 +42,7 @@ describe('ApplicationService', () => {
         await ApplicationService.createApplication(mockApplication);
       } catch (error) {
         expect(error instanceof ResourceNotFoundError).to.equal(true);
+        expect((error as ResourceNotFoundError).statusCode).to.equal(404);
         expect((error as ResourceNotFoundError).message).to.equal(
           'Job posting not found'
         );
@@ -49,7 +50,7 @@ describe('ApplicationService', () => {
     });
 
     it('should throw error if an application associated with this job posting and user already exist', async () => {
-      const newJobPosting = await JobPosting.create(mockJobPosting);
+      const newJobPosting = await JobPostingModel.create(mockJobPosting);
 
       const mockApplication = {
         jobPostingId: newJobPosting.id,
@@ -61,14 +62,16 @@ describe('ApplicationService', () => {
       try {
         await ApplicationService.createApplication(mockApplication);
       } catch (error) {
-        expect((error as Error).message).to.equal(
-          'Application associated with this job posting and user already exists'
+        expect(error instanceof DuplicateResourceError).to.equal(true);
+        expect((error as DuplicateResourceError).statusCode).to.equal(409);
+        expect((error as DuplicateResourceError).message).to.equal(
+          'Application already exists'
         );
       }
     });
 
     it('should create an application successfully', async () => {
-      const newJobPosting = await JobPosting.create(mockJobPosting);
+      const newJobPosting = await JobPostingModel.create(mockJobPosting);
 
       const mockApplication = {
         jobPostingId: newJobPosting.id,

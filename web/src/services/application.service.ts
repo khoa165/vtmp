@@ -1,6 +1,6 @@
 import ApplicationRepository from '@/repositories/application.repository';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
-import { ResourceNotFoundError } from '@/utils/errors';
+import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
 const ApplicationService = {
   createApplication: async ({
@@ -24,12 +24,11 @@ const ApplicationService = {
       userId,
     });
     if (applicationExists) {
-      throw new Error(
-        'Application associated with this job posting and user already exists'
-      );
+      throw new DuplicateResourceError('Application already exists', {
+        resource: 'Application',
+      });
     }
 
-    // If all checks passes, return by calling ApplicationRepository.createApplication
     return await ApplicationRepository.createApplication({
       jobPostingId,
       userId,
