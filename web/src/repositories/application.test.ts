@@ -6,7 +6,7 @@ import ApplicationRepository from './application.repository';
 import ApplicationModel, {
   ApplicationStatus,
 } from '@/models/application.model';
-import { useMongoDB } from '@/config/mongodb.testutils';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 
 describe('ApplicationRepository', () => {
   useMongoDB();
