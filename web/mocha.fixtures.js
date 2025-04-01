@@ -1,4 +1,4 @@
-import { stopMongoDB } from '@/config/mongo.testutils';
+import { stopMongoDB } from '@/config/mongo.testutil';
 
 export const mochaGlobalTeardown = async () => {
   try {

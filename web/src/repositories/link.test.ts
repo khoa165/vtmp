@@ -3,7 +3,7 @@ import chaiSubset from 'chai-subset';
 import { LinkStatus } from '@/models/link.model';
 import { differenceInSeconds } from 'date-fns';
 import LinkRepository from '@/repositories/link.repository';
-import { useMongoDB } from '@/config/mongodb.testutils';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 
 chai.use(chaiSubset);
 const { expect } = chai;
