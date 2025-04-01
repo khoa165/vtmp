@@ -4,8 +4,11 @@ import { authenticate } from '@/middlewares/auth.middleware';
 
 const ApplicationRoutes = Router();
 
-ApplicationRoutes.use(authenticate);
-ApplicationRoutes.post('/create', ApplicationController.createApplication);
+ApplicationRoutes.post(
+  '/create',
+  authenticate,
+  ApplicationController.createApplication
+);
 
 // Route to get all applications for the authenticated user
 ApplicationRoutes.get('/', ApplicationController.getAllApplications);

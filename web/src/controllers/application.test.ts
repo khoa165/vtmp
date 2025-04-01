@@ -1,120 +1,130 @@
-import app from '@/app';
 import request from 'supertest';
 import { expect } from 'chai';
-import { useMongoDB } from '@/config/mongodb.testutils';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-import JobPosting from '@/models/jobPosting.model';
-import User from '@/models/user.model';
+import app from '@/app';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import { EnvConfig } from '@/config/env';
+import UserModel from '@/models/user.model';
+import JobPostingRepository from '@/repositories/jobPosting.repository';
+import ApplicationRepository from '@/repositories/application.repository';
 import UserService from '@/services/user.service';
 import Application from '@/models/application.model';
 
 describe('POST /applications', () => {
   useMongoDB();
 
-  let newJobPostingId: string;
-
-  let newUserId: string;
-
-  let encryptedPassword: string;
-
-  let token: string;
-
-  let mockJobPosting: {
-    linkId: string;
-    url: string;
-    jobTitle: string;
-    companyName: string;
-    submittedBy: string;
+  const sandbox = useSandbox();
+  const mockEnvs = {
+    PORT: 8000,
+    MONGO_URI: 'mongodb://username:password@localhost:27017/database_name',
+    JWT_SECRET: 'vtmp-secret',
   };
 
-  let mockUser: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    encryptedPassword: string;
+  let savedUserId: string;
+  let mockToken: string;
+
+  const mockJobPosting = {
+    linkId: new mongoose.Types.ObjectId(),
+    url: 'vtmp.com',
+    jobTitle: 'SWE',
+    companyName: 'Apple',
+    submittedBy: new mongoose.Types.ObjectId(),
   };
 
   beforeEach(async () => {
-    // Create job posting and save to database
-    mockJobPosting = {
-      linkId: new mongoose.Types.ObjectId().toString(),
-      url: 'vtmp.com',
-      jobTitle: 'SWE',
-      companyName: 'Apple',
-      submittedBy: new mongoose.Types.ObjectId().toString(),
-    };
-    newJobPostingId = (await JobPosting.create(mockJobPosting)).id;
-
-    // Create user and save to database
-    encryptedPassword = await bcrypt.hash('test password', 10);
-    mockUser = {
+    // Before each test, since we need to send a token,
+    // we need to build a mockUser, save to database
+    // and then generate the token using UserService.login
+    const encryptedPassword = await bcrypt.hash('test password', 10);
+    const mockUser = {
       firstName: 'admin',
       lastName: 'viettech',
       email: 'test@gmail.com',
       encryptedPassword,
     };
-    newUserId = (await User.create(mockUser)).id;
+    savedUserId = (await UserModel.create(mockUser)).id;
+    sandbox.stub(EnvConfig, 'get').returns(mockEnvs);
 
-    // Mock create token
-    token = await UserService.login({
+    mockToken = await UserService.login({
       email: mockUser.email,
       password: 'test password',
     });
   });
 
-  it('should return error message if request body schema is invalid', (done) => {
-    request(app)
+  it('should return error message with 400 status code if request body schema is invalid', async () => {
+    const res = await request(app)
       .post('/api/applications/create')
-      .send({ invalidIdSchema: newJobPostingId })
+      .send({ invalidIdSchema: new mongoose.Types.ObjectId().toString() })
       .set('Accept', 'application/json')
-      .set('Authorization', `Bearer ${token}`)
-      .end((err, res) => {
-        if (err) return done(err);
+      .set('Authorization', `Bearer ${mockToken}`);
 
-        expect(res.statusCode).to.equal(401);
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.equal('Invalid application request schema');
-        done();
-      });
+    expect(res.statusCode).to.equal(400);
+    expect(res.body).to.have.property('errors');
+    expect(res.body.errors[0]).to.have.property('message', 'Required');
   });
 
-  it('should return error message if user is not authenticated (req.user is null)', (done) => {
-    request(app)
+  it('it should return error message with status code 404 if job posting does not exist', async () => {
+    const res = await request(app)
       .post('/api/applications/create')
-      .send({ jobPostingId: newJobPostingId })
+      .send({ jobPostingId: new mongoose.Types.ObjectId().toString() })
       .set('Accept', 'application/json')
-      // .set('Authorization', `Bearer ${token}`)
-      .end((err, res) => {
-        if (err) return done(err);
+      .set('Authorization', `Bearer ${mockToken}`);
 
-        expect(res.statusCode).to.equal(401);
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.equal('Unauthorized');
-        done();
-      });
+    expect(res.statusCode).to.equal(404);
+    expect(res.body).to.have.property('errors');
+    expect(res.body.errors[0]).to.have.property(
+      'message',
+      'Job posting not found'
+    );
   });
 
-  it('should return application object if an application is created successfully', (done) => {
-    request(app)
-      .post('/api/applications/create')
-      .send({ jobPostingId: newJobPostingId })
-      .set('Accept', 'application/json')
-      .set('Authorization', `Bearer ${token}`)
-      .end((err, res) => {
-        if (err) return done(err);
+  it('it should return error message with status code 409 if duplicate application exists', async () => {
+    // Save mockJobPosting to database to simulate a duplicate
+    const savedJobPostingId = (
+      await JobPostingRepository.createJobPosting(mockJobPosting)
+    ).id;
 
-        expect(res.statusCode).to.equal(201);
-        expect(res.body).to.have.property(
-          'message',
-          'Application created successfully'
-        );
-        expect(res.body).to.have.property('data');
-        expect(res.body.data).to.have.property('jobPostingId', newJobPostingId);
-        expect(res.body.data).to.have.property('userId', newUserId);
-        done();
-      });
+    await ApplicationRepository.createApplication({
+      jobPostingId: savedJobPostingId,
+      userId: savedUserId,
+    });
+
+    const res = await request(app)
+      .post('/api/applications/create')
+      .send({ jobPostingId: savedJobPostingId })
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${mockToken}`);
+
+    expect(res.statusCode).to.equal(409);
+    expect(res.body).to.have.property('errors');
+    expect(res.body.errors[0]).to.have.property(
+      'message',
+      'Application already exists'
+    );
+  });
+
+  it('should return application object if an application is created successfully', async () => {
+    const savedJobPostingId = (
+      await JobPostingRepository.createJobPosting(mockJobPosting)
+    ).id;
+
+    const res = await request(app)
+      .post('/api/applications/create')
+      .send({ jobPostingId: savedJobPostingId })
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${mockToken}`);
+
+    expect(res.statusCode).to.equal(201);
+    expect(res.body).to.have.property(
+      'message',
+      'Application created successfully'
+    );
+    expect(res.body).to.have.property('data');
+    expect(res.body.data).to.have.property('jobPostingId', savedJobPostingId);
+    expect(res.body.data).to.have.property('userId', savedUserId);
   });
 });
 

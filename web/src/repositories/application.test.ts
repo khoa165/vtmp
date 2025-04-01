@@ -1,24 +1,21 @@
-import { expect } from 'chai';
-import { differenceInSeconds } from 'date-fns';
+import * as chai from 'chai';
+import assert from 'assert';
 import mongoose from 'mongoose';
+import { differenceInSeconds } from 'date-fns';
 
-import { useMongoDB } from '@/config/mongodb.testutils';
-import ApplicationModel, {
-  ApplicationStatus,
-} from '@/models/application.model';
 import ApplicationRepository from './application.repository';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { ApplicationStatus } from '@/types/enums';
+
+const { expect } = chai;
 
 describe('ApplicationRepository', () => {
   useMongoDB();
 
-  let mockApplication: { jobPostingId: string; userId: string };
-
-  beforeEach(() => {
-    mockApplication = {
-      jobPostingId: new mongoose.Types.ObjectId().toString(),
-      userId: new mongoose.Types.ObjectId().toString(),
-    };
-  });
+  const mockApplication = {
+    jobPostingId: new mongoose.Types.ObjectId().toString(),
+    userId: new mongoose.Types.ObjectId().toString(),
+  };
 
   describe('createApplication', () => {
     it('should create a new application successfully', async () => {
@@ -30,6 +27,7 @@ describe('ApplicationRepository', () => {
         newApplication.appliedOnDate
       );
 
+      assert(newApplication);
       expect(newApplication.jobPostingId.toString()).to.equal(
         mockApplication.jobPostingId
       );
@@ -42,7 +40,7 @@ describe('ApplicationRepository', () => {
 
   describe('doesApplicationExist', () => {
     it('should evaluate to true if an application already exists', async () => {
-      await ApplicationModel.create(mockApplication);
+      await ApplicationRepository.createApplication(mockApplication);
       const result = await ApplicationRepository.doesApplicationExist(
         mockApplication
       );
@@ -54,6 +52,7 @@ describe('ApplicationRepository', () => {
       const result = await ApplicationRepository.doesApplicationExist(
         mockApplication
       );
+
       expect(result).to.equal(false);
     });
   });

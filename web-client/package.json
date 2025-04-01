@@ -10,6 +10,8 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.4",
     "@mui/material": "^6.1.4",
+    "@tanstack/react-query": "^5.69.0",
+    "@tanstack/react-query-devtools": "^5.69.0",
     "@visx/visx": "^3.10.2",
     "aos": "^2.3.4",
     "axios": "^1.7.7",
