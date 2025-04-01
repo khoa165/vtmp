@@ -16,7 +16,7 @@ interface IJobPosting extends Document {
   jobDescription?: string;
   adminNote?: string;
   submittedBy: mongoose.Schema.Types.ObjectId;
-  deletedAt?: Date
+  deletedAt?: Date;
 }
 
 const JobPostingSchema = new mongoose.Schema<IJobPosting>(
@@ -62,9 +62,12 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
     },
     deletedAt: {
       type: Date,
-    }
+    },
   },
   { timestamps: true }
 );
 
-export default mongoose.model<IJobPosting>('JobPosting', JobPostingSchema);
+export const JobPostingModel = mongoose.model<IJobPosting>(
+  'JobPosting',
+  JobPostingSchema
+);

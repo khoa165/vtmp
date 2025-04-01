@@ -1,10 +1,8 @@
 import * as chai from 'chai';
 import chaiSubset from 'chai-subset';
 import assert from 'assert';
-
-import JobPostingRepository from './jobPosting.repository';
-import JobPosting from '@/models/jobPosting.model';
-import { useMongoDB } from '@/config/mongodb.testutils';
+import JobPostingRepository from '@/repositories/jobPosting.repository';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import mongoose from 'mongoose';
 import { differenceInSeconds } from 'date-fns';
 
@@ -34,8 +32,7 @@ describe('JobPostingRepository', () => {
 
   describe('getJobPostingById', () => {
     it('should be able to find a job post by id', async () => {
-      const newJobPosting = await JobPosting.create(mockJobPosting);
-
+      const newJobPosting = await JobPostingRepository.createJobPosting(mockJobPosting);
       const foundJobPosting = await JobPostingRepository.getJobPostingById(
         newJobPosting.id
       );
@@ -47,7 +44,7 @@ describe('JobPostingRepository', () => {
 
   describe('updateJobPostingById', () => {
     it('should be able to update detail of a job post by id', async () => {
-      const newJobPosting = await JobPosting.create(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting(mockJobPosting);
 
       const newUpdate = {
         jobTitle: 'Senior Software Engineer',
@@ -66,7 +63,7 @@ describe('JobPostingRepository', () => {
 
   describe('deleteJobPostingById', () => {
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
-      const newJobPosting = await JobPosting.create(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting(mockJobPosting);
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
         newJobPosting.id
       );

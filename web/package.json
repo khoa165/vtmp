@@ -39,6 +39,7 @@
     "cross-env": "^7.0.3",
     "mocha": "^11.1.0",
     "mongodb-memory-server": "^10.1.4",
+    "sinon": "^20.0.0",
     "supertest": "^7.1.0",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",

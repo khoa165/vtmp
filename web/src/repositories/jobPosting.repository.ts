@@ -1,4 +1,4 @@
-import JobPostingModel from '@/models/jobPosting.model';
+import { JobPostingModel } from '@/models/jobPosting.model';
 
 const JobPostingRepository = {
   createJobPosting: async (jobPostingData: object) => {
