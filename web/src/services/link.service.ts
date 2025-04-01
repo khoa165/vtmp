@@ -42,6 +42,7 @@ const LinkService = {
         linkId,
       });
     }
+    return updatedLink;
   },
 
   getPendingLinks: async () => {

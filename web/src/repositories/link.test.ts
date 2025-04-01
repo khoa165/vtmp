@@ -4,6 +4,7 @@ import { LinkStatus } from '@/models/link.model';
 import { differenceInSeconds } from 'date-fns';
 import LinkRepository from '@/repositories/link.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import assert from 'assert';
 
 chai.use(chaiSubset);
 const { expect } = chai;
@@ -40,8 +41,8 @@ describe('LinkRepository', () => {
         status: LinkStatus.APPROVED,
       });
 
-      expect(link).to.not.be.null;
-      expect(link?.status).to.equal(LinkStatus.APPROVED);
+      assert(link);
+      expect(link.status).to.equal(LinkStatus.APPROVED);
     });
   });
 
@@ -66,19 +67,19 @@ describe('LinkRepository', () => {
       await LinkRepository.createLink('nvidia.com');
       await LinkRepository.createLink('microsoft.com');
 
-      const beforeUpdateLink = await LinkRepository.getLinksByStatus(
+      const beforeUpdateLinks = await LinkRepository.getLinksByStatus(
         LinkStatus.PENDING
       );
-      expect(beforeUpdateLink).to.have.lengthOf(3);
+      expect(beforeUpdateLinks).to.have.lengthOf(3);
 
       await LinkRepository.updateLinkStatus({
         id: googleLink.id,
         status: LinkStatus.APPROVED,
       });
-      const afterUpdateLink = await LinkRepository.getLinksByStatus(
+      const afterUpdateLinks = await LinkRepository.getLinksByStatus(
         LinkStatus.PENDING
       );
-      expect(afterUpdateLink).to.have.lengthOf(2);
+      expect(afterUpdateLinks).to.have.lengthOf(2);
     });
   });
 });
