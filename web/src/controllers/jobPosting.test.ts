@@ -4,12 +4,14 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import chaiSubset from 'chai-subset';
 
-import { useMongoDB } from '@/config/mongodb.testutils';
+
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import mongoose from 'mongoose';
-import JobPostingModel from '@/models/jobPosting.model';
+import JobPostingRepository from '@/repositories/jobPosting.repository';
+
 
 chai.use(chaiSubset);
-describe('JobPostingController', () => {
+describe.only('JobPostingController', () => {
   useMongoDB();
 
   const mockJobPosting = {
@@ -21,22 +23,21 @@ describe('JobPostingController', () => {
   };
   let jobId: string;
   beforeEach(async () => {
-    const newJobPosting = await JobPostingModel.create(mockJobPosting);
+    const newJobPosting = await JobPostingRepository.createJobPosting(
+      mockJobPosting
+    );
     jobId = newJobPosting.id;
   });
 
-
   describe('updateJobPosting', () => {
     it('should return 404 if job posting does not exist', async () => {
-      const randomId = new mongoose.Types.ObjectId().toString()
       const response = await request(app)
-        .put(`/api/job-postings/${randomId}`)
+        .put(`/api/job-postings/${new mongoose.Types.ObjectId().toString()}`)
         .send({
           jobTitle: 'Senior Software Engineer',
           companyName: 'Updated Company',
           jobDescription: 'This is an updated job description.',
         });
-      console.log(response)
       expect(response.status).to.equal(404);
     });
 
@@ -56,18 +57,15 @@ describe('JobPostingController', () => {
 
   describe('deleteJobPosting', () => {
     it('should return 404 if job posting does not exist', async () => {
-      const randomId = new mongoose.Types.ObjectId().toString()
       const response = await request(app).delete(
-        `/api/job-postings/${randomId}`
+        `/api/job-postings/${new mongoose.Types.ObjectId().toString()}`
       );
 
       expect(response.status).to.equal(404);
     });
 
     it('should return 200 if job posting is deleted successfully', async () => {
-      const response = await request(app).delete(
-        `/api/job-postings/${jobId}`
-      );
+      const response = await request(app).delete(`/api/job-postings/${jobId}`);
 
       expect(response.status).to.equal(200);
     });

@@ -5,6 +5,7 @@ import {
   ResourceNotFoundError,
   UnauthorizedError,
   ForbiddenError,
+  handleError,
 } from '../utils/errors';
 
 const NewUpdateSchema = z.object({
@@ -23,72 +24,61 @@ const JobIdSchema = z.object({
 });
 
 const JobPostingController = {
-  updateJobPosting: async (req: Request, res: Response): Promise<any> => {
+  updateJobPosting: async (req: Request, res: Response) => {
     try {
-      const resultId = JobIdSchema.safeParse(req.params);
-      const resultNewUpdate = NewUpdateSchema.safeParse(req.body);
-
-      if (!resultId.success || !resultNewUpdate.success) {
-        return res
-          .status(400)
-          .json({ errors: [{ message: 'Invalid request' }] });
-      }
-
-      const jobId = resultId.data?.jobId as string;
-      const newUpdate = resultNewUpdate.data as object;
+      const { jobId } = JobIdSchema.parse(req.params);
+      const newUpdate = NewUpdateSchema.parse(req.body);
 
       const updatedJobPosting = await JobPostingService.updateJobPostingById(
         jobId,
         newUpdate
       );
 
-      return res.status(200).json({
+      res.status(200).json({
         data: updatedJobPosting,
       });
+      return;
     } catch (error) {
-      if (error instanceof ResourceNotFoundError) {
-        return res.status(error.statusCode);
-      } else if (error instanceof UnauthorizedError) {
-        return res.status(error.statusCode);
-      } else if (error instanceof ForbiddenError) {
-        return res.status(error.statusCode);
-      } else {
-        res.status(500);
+      if (
+        error instanceof ResourceNotFoundError ||
+        error instanceof UnauthorizedError ||
+        error instanceof ForbiddenError
+      ) {
+        res
+          .status(error.statusCode)
+          .json({ errors: [{ message: error.message }] });
+        return;
       }
-
-      return res.json({ errors: [{ message: 'An error occurred' }] });
+      const unknownError = handleError(error);
+      res.status(unknownError.statusCode).json({ errors: unknownError.errors });
+      return;
     }
   },
-  deleteJobPosting: async (req: Request, res: Response): Promise<any> => {
+  deleteJobPosting: async (req: Request, res: Response) => {
     try {
-      const resultId = JobIdSchema.safeParse(req.params);
-
-      if (!resultId.success) {
-        return res
-          .status(400)
-          .json({ errors: [{ message: 'Invalid request' }] });
-      }
-
-      const jobId = resultId.data?.jobId as string;
+      const { jobId } = JobIdSchema.parse(req.params);
       const deletedJobPosting = await JobPostingService.deleteJobPostingById(
         jobId
       );
 
-      return res.status(200).json({
+      res.status(200).json({
         data: deletedJobPosting,
       });
+      return;
     } catch (error) {
-      if (error instanceof ResourceNotFoundError) {
-        return res.status(error.statusCode);
-      } else if (error instanceof UnauthorizedError) {
-        return res.status(error.statusCode);
-      } else if (error instanceof ForbiddenError) {
-        return res.status(error.statusCode);
-      } else if (error instanceof Error) {
-        res.status(500);
+      if (
+        error instanceof ResourceNotFoundError ||
+        error instanceof UnauthorizedError ||
+        error instanceof ForbiddenError
+      ) {
+        res
+          .status(error.statusCode)
+          .json({ errors: [{ message: error.message }] });
+        return;
       }
-
-      return res.json({ errors: [{ message: 'An error occurred' }] });
+      const unknownError = handleError(error);
+      res.status(unknownError.statusCode).json({ errors: unknownError.errors });
+      return;
     }
   },
 };
