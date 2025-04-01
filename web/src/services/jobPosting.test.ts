@@ -1,14 +1,11 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import assert from 'assert';
-
 import JobPostingService from './jobPosting.service';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import mongoose from 'mongoose';
 import { ResourceNotFoundError } from '@/utils/errors';
 import { differenceInSeconds } from 'date-fns';
-
-const { expect } = chai;
 
 describe('JobPostingService', () => {
   useMongoDB();
@@ -86,7 +83,8 @@ describe('JobPostingService', () => {
         mockJobPosting
       );
 
-      await expect(JobPostingService.deleteJobPostingById(newJobPosting.id)).eventually.fulfilled;
+      await expect(JobPostingService.deleteJobPostingById(newJobPosting.id))
+        .eventually.fulfilled;
     });
 
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
@@ -97,8 +95,8 @@ describe('JobPostingService', () => {
         newJobPosting.id
       );
 
-      assert(deletedJobPosting)
-      assert(deletedJobPosting.deletedAt)
+      assert(deletedJobPosting);
+      assert(deletedJobPosting.deletedAt);
 
       const timeDiff = differenceInSeconds(
         new Date(),

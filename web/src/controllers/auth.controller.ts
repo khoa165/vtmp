@@ -1,4 +1,4 @@
-import AuthService from '@/services/auth.service';
+import { AuthService } from '@/services/auth.service';
 import { handleError } from '@/utils/errors';
 import { Request, Response } from 'express';
 import { z } from 'zod';
@@ -10,23 +10,22 @@ const loginSchema = z.object({
   password: z.string({ required_error: 'Password is required' }),
 });
 
-const AuthController = {
-  /// PARSING, VALIDATING, RESPONSE
+export const AuthController = {
   login: async (req: Request, res: Response) => {
     try {
       const validatedBody = loginSchema.safeParse(req.body);
-      if (validatedBody.success) {
-        const token = await AuthService.login(validatedBody.data);
-        return res.status(200).json({ data: { token } });
-      } else {
-        const { statusCode, errors } = handleError(validatedBody.error);
-        return res.status(statusCode).json({ errors });
+
+      if (!validatedBody.success) {
+        throw validatedBody.error;
       }
-    } catch (error: any) {
+
+      const token = await AuthService.login(validatedBody.data);
+      res.status(200).json({ data: { token } });
+      return;
+    } catch (error: unknown) {
       const { statusCode, errors } = handleError(error);
-      return res.status(statusCode).json({ errors });
+      res.status(statusCode).json({ errors });
+      return;
     }
   },
 };
-
-export default AuthController;

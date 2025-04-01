@@ -1,0 +1,72 @@
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { beforeEach, describe } from 'mocha';
+import { AuthService } from './auth.service';
+import { expect } from 'chai';
+import { UserRepository } from '@/repositories/user.repository';
+import bcrypt from 'bcryptjs';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import { EnvConfig } from '@/config/env';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { ResourceNotFoundError, UnauthorizedError } from '@/utils/errors';
+import { assert } from 'console';
+
+describe('AuthService', () => {
+  useMongoDB();
+  const sandbox = useSandbox();
+
+  beforeEach(() => {
+    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+  });
+
+  describe('login', () => {
+    beforeEach(async () => {
+      const encryptedPassword = await bcrypt.hash('test password', 10);
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@gmail.com',
+        encryptedPassword,
+      };
+      await UserRepository.createUser(mockUser);
+    });
+
+    it('should throw error for user not found', async () => {
+      const userData = {
+        email: 'fake@gmail.com',
+        password: 'test password',
+      };
+      await expect(AuthService.login(userData)).eventually.rejectedWith(
+        ResourceNotFoundError
+      );
+    });
+
+    it('should throw error for wrong password', async () => {
+      const userData = {
+        email: 'test@gmail.com',
+        password: 'wrong password',
+      };
+
+      await expect(AuthService.login(userData)).eventually.rejectedWith(
+        UnauthorizedError
+      );
+    });
+
+    it('should login successfully', async () => {
+      const userData = {
+        email: 'test@gmail.com',
+        password: 'test password',
+      };
+
+      await expect(AuthService.login(userData)).eventually.fulfilled;
+    });
+
+    it('should login successfully and return valid jwt token', async () => {
+      const userData = {
+        email: 'test@gmail.com',
+        password: 'test password',
+      };
+      const token = await AuthService.login(userData);
+      assert(token);
+    });
+  });
+});

@@ -1,25 +1,22 @@
 import { EnvConfig } from '@/config/env';
-import UserRepository from '@/repositories/user.repository';
+import { UserRepository } from '@/repositories/user.repository';
 import { ResourceNotFoundError, UnauthorizedError } from '@/utils/errors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const AuthService = {
+export const AuthService = {
   login: async ({ email, password }: { email: string; password: string }) => {
-    const user = await UserRepository.findByEmail(email);
+    const user = await UserRepository.findUserByEmail(email);
     if (!user) {
       throw new ResourceNotFoundError('User not found', { email });
     }
 
     const passwordMatched = await bcrypt.compare(
       password,
-      user.encryptedPassword ?? ''
+      user.encryptedPassword
     );
     if (!passwordMatched) {
-      throw new UnauthorizedError('Wrong password', {
-        email,
-        password,
-      });
+      throw new UnauthorizedError('Wrong password', { email });
     }
 
     const token = jwt.sign(
@@ -32,5 +29,3 @@ const AuthService = {
     return token;
   },
 };
-
-export default AuthService;
