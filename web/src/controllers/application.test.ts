@@ -7,21 +7,16 @@ import app from '@/app';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
-import UserModel from '@/models/user.model';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { UserRepository } from '@/repositories/user.repository';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
 import ApplicationRepository from '@/repositories/application.repository';
-import UserService from '@/services/user.service';
+import { AuthService } from '@/services/auth.service';
 
 describe('POST /applications', () => {
   useMongoDB();
 
   const sandbox = useSandbox();
-  const mockEnvs = {
-    PORT: 8000,
-    MONGO_URI: 'mongodb://username:password@localhost:27017/database_name',
-    JWT_SECRET: 'vtmp-secret',
-  };
-
   let savedUserId: string;
   let mockToken: string;
 
@@ -34,9 +29,7 @@ describe('POST /applications', () => {
   };
 
   beforeEach(async () => {
-    // Before each test, since we need to send a token,
-    // we need to build a mockUser, save to database
-    // and then generate the token using UserService.login
+    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
     const encryptedPassword = await bcrypt.hash('test password', 10);
     const mockUser = {
       firstName: 'admin',
@@ -44,10 +37,9 @@ describe('POST /applications', () => {
       email: 'test@gmail.com',
       encryptedPassword,
     };
-    savedUserId = (await UserModel.create(mockUser)).id;
-    sandbox.stub(EnvConfig, 'get').returns(mockEnvs);
+    savedUserId = (await UserRepository.createUser(mockUser)).id;
 
-    mockToken = await UserService.login({
+    mockToken = await AuthService.login({
       email: mockUser.email,
       password: 'test password',
     });
