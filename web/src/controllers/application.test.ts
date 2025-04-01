@@ -13,21 +13,9 @@ import UserService from '@/services/user.service';
 describe('POST /applications', () => {
   useMongoDB();
 
-  let savedJobPostingId: string;
-
   let savedUserId: string;
-
   let encryptedPassword: string;
-
   let mockToken: string;
-
-  let mockJobPosting: {
-    linkId: string;
-    url: string;
-    jobTitle: string;
-    companyName: string;
-    submittedBy: string;
-  };
 
   let mockUser: {
     firstName: string;
@@ -36,18 +24,17 @@ describe('POST /applications', () => {
     encryptedPassword: string;
   };
 
-  beforeEach(async () => {
-    mockJobPosting = {
-      linkId: new mongoose.Types.ObjectId().toString(),
-      url: 'vtmp.com',
-      jobTitle: 'SWE',
-      companyName: 'Apple',
-      submittedBy: new mongoose.Types.ObjectId().toString(),
-    };
-    savedJobPostingId = (
-      await JobPostingRepository.createJobPosting(mockJobPosting)
-    ).id;
+  const mockJobPosting = {
+    linkId: new mongoose.Types.ObjectId().toString(),
+    url: 'vtmp.com',
+    jobTitle: 'SWE',
+    companyName: 'Apple',
+    submittedBy: new mongoose.Types.ObjectId().toString(),
+  };
 
+  beforeEach(async () => {
+    // Before each test, since we need to send a token, we need to build a mockUser, save to database
+    // and then generate the token using UserService.login
     encryptedPassword = await bcrypt.hash('test password', 10);
     mockUser = {
       firstName: 'admin',
@@ -66,7 +53,7 @@ describe('POST /applications', () => {
   it('should return error message with 400 status code if request body schema is invalid', async () => {
     const res = await request(app)
       .post('/api/applications/create')
-      .send({ invalidIdSchema: savedJobPostingId })
+      .send({ invalidIdSchema: new mongoose.Types.ObjectId().toString() })
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${mockToken}`);
 
@@ -86,6 +73,11 @@ describe('POST /applications', () => {
   });
 
   it('it should return error message with status code 409 if duplicate application exists', async () => {
+    // Save mockJobPosting to database to simulate a duplicate
+    const savedJobPostingId = (
+      await JobPostingRepository.createJobPosting(mockJobPosting)
+    ).id;
+
     await ApplicationRepository.createApplication({
       jobPostingId: savedJobPostingId,
       userId: savedUserId,
@@ -105,6 +97,10 @@ describe('POST /applications', () => {
   });
 
   it('should return application object if an application is created successfully', async () => {
+    const savedJobPostingId = (
+      await JobPostingRepository.createJobPosting(mockJobPosting)
+    ).id;
+
     const res = await request(app)
       .post('/api/applications/create')
       .send({ jobPostingId: savedJobPostingId })
