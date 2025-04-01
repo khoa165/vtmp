@@ -1,8 +1,8 @@
 import * as chai from 'chai';
 
 import JobPostingService from './jobPosting.service';
-import JobPostingModel from '@/models/jobPosting.model';
-import { useMongoDB } from '@/config/mongodb.testutils';
+import JobPostingRepository from '@/repositories/jobPosting.repository';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import mongoose from 'mongoose';
 const { expect } = chai;
 
@@ -19,7 +19,7 @@ describe('JobPostingService', () => {
 
   describe('updateJobPostingById', () => {
     it('should throw an error when no job posting is found', async () => {
-      await JobPostingModel.create(mockJobPosting);
+      await JobPostingRepository.createJobPosting(mockJobPosting);
       const newUpdate = {
         jobTitle: 'Senior Software Engineer',
         companyName: 'Updated Company',
@@ -35,7 +35,9 @@ describe('JobPostingService', () => {
     });
 
     it('should not throw an error when a job posting is found', async () => {
-      const newJobPosting = await JobPostingModel.create(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting(
+        mockJobPosting
+      );
       const newUpdate = {
         jobTitle: 'Senior Software Engineer',
         companyName: 'Updated Company',
@@ -50,7 +52,7 @@ describe('JobPostingService', () => {
 
   describe('deleteJobPostingById', () => {
     it('should throw an error when no job posting is found', async () => {
-      await JobPostingModel.create(mockJobPosting);
+      await JobPostingRepository.createJobPosting(mockJobPosting);
 
       expect(
         JobPostingService.deleteJobPostingById(
@@ -60,7 +62,9 @@ describe('JobPostingService', () => {
     });
 
     it('should not throw an error when a job posting is found', async () => {
-      const newJobPosting = await JobPostingModel.create(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting(
+        mockJobPosting
+      );
 
       expect(JobPostingService.deleteJobPostingById(newJobPosting.id)).to.not
         .throw;
