@@ -26,7 +26,7 @@ describe('POST /auth/signup', () => {
 
   it('should return new user', (done) => {
     request(app)
-      .post('/signup')
+      .post('/api/auth/signup')
       .send({
         firstName: 'admin',
         lastName: 'viettech',
@@ -46,7 +46,7 @@ describe('POST /auth/signup', () => {
   //   Testing error message when missing a field
   it('should return error messages for missing firstName', (done) => {
     request(app)
-      .post('/signup')
+      .post('/api/auth/signup')
       .send({
         lastName: 'viettech',
         encryptedPassword: 'test',
@@ -58,15 +58,14 @@ describe('POST /auth/signup', () => {
         if (err) return done(err);
 
         expect(res.statusCode).to.eq(400);
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.eq('Firstname is required');
+        expect(res.body.errors[0].message).to.eq('Firstname is required');
         done();
       });
   });
 
   it('should return error messages for missing password', (done) => {
     request(app)
-      .post('/signup')
+      .post('/api/auth/signup')
       .send({
         firstName: 'admin',
         lastName: 'viettech',
@@ -77,15 +76,14 @@ describe('POST /auth/signup', () => {
         if (err) done(err);
 
         expect(res.statusCode).to.eq(400);
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.eq('Password is required');
+        expect(res.body.errors[0].message).to.eq('Password is required');
         done();
       });
   });
 
   it('should return error messages for missing lastName', (done) => {
     request(app)
-      .post('/signup')
+      .post('/api/auth/signup')
       .send({
         firstName: 'admin',
         encryptedPassword: 'test',
@@ -97,15 +95,15 @@ describe('POST /auth/signup', () => {
         if (err) return done(err);
 
         expect(res.statusCode).to.eq(400);
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.eq('Lastname is required');
+
+        expect(res.body.errors[0].message).to.eq('Lastname is required');
         done();
       });
   });
 
   it('should return error messages for missing role', (done) => {
     request(app)
-      .post('/signup')
+      .post('/api/auth/signup')
       .send({
         firstName: 'admin',
         lastName: 'viettech',
@@ -117,15 +115,15 @@ describe('POST /auth/signup', () => {
         if (err) return done(err);
 
         expect(res.statusCode).to.eq(400);
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.eq('Role is required');
+
+        expect(res.body.errors[0].message).to.eq('Role is required');
         done();
       });
   });
 
   it('should return error messages for missing email', (done) => {
     request(app)
-      .post('/signup')
+      .post('/api/auth/signup')
       .send({
         firstName: 'admin',
         lastName: 'viettech',
@@ -137,8 +135,8 @@ describe('POST /auth/signup', () => {
         if (err) return done(err);
 
         expect(res.statusCode).to.eq(400);
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.eq('Email is required');
+
+        expect(res.body.errors[0].message).to.eq('Email is required');
         done();
       });
   });
@@ -146,7 +144,7 @@ describe('POST /auth/signup', () => {
   //   Testing duplicate email
   it('should return error messages for duplicate email', (done) => {
     request(app)
-      .post('/signup')
+      .post('/api/auth/signup')
       .send({
         firstName: 'admin',
         lastName: 'viettech',
@@ -159,7 +157,7 @@ describe('POST /auth/signup', () => {
         if (err) return done(err);
 
         expect(res.statusCode).to.eq(401);
-        expect(res.body).to.have.property('message');
+
         expect(res.body.message).to.eq('Duplicate Email');
         done();
       });

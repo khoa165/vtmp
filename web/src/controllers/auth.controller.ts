@@ -6,9 +6,7 @@ import { z } from 'zod';
 const signupSchema = z.object({
   firstName: z.string({ required_error: 'Firstname is required' }),
   lastName: z.string({ required_error: 'Lastname is required' }),
-  email: z
-    .string({ required_error: 'Email is required' })
-    .email({ message: 'Invalid email address' }),
+  email: z.string({ required_error: 'Email is required' }).email(),
   encryptedPassword: z.string({ required_error: 'Password is required' }),
   role: z.nativeEnum(Role, { required_error: 'Role is required' }),
 });
@@ -32,6 +30,12 @@ const AuthController = {
 
         // Return the response
         res.status(200).json({ token });
+      } else {
+        const errors = validatedBody.error.issues.map((issue) => ({
+          message: issue.message,
+        }));
+
+        return res.status(400).json({ errors });
       }
     } catch (error) {
       const errorMessage =
