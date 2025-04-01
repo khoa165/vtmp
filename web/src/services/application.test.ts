@@ -1,4 +1,5 @@
 import * as chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
 import mongoose from 'mongoose';
@@ -10,6 +11,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
 import { ApplicationStatus } from '@/types/enums';
 
+chai.use(chaiAsPromised);
 const { expect } = chai;
 
 describe('ApplicationService', () => {

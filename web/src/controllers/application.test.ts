@@ -26,7 +26,8 @@ describe('POST /applications', () => {
   };
 
   beforeEach(async () => {
-    // Before each test, since we need to send a token, we need to build a mockUser, save to database
+    // Before each test, since we need to send a token,
+    // we need to build a mockUser, save to database
     // and then generate the token using UserService.login
     encryptedPassword = await bcrypt.hash('test password', 10);
     const mockUser = {
