@@ -1,10 +1,10 @@
+import { EnvConfig } from '@/config/env';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 
 const DecodedJWTSchema = z.object({
   id: z.string(),
-  email: z.string().email(),
 });
 
 export const authenticate = (
@@ -19,11 +19,13 @@ export const authenticate = (
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'vtmp');
+    const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
+    console.log(decoded);
     const parsed = DecodedJWTSchema.safeParse(decoded);
     if (parsed.success) {
       req.user = parsed.data;
     }
+
     next();
   } catch {
     res.status(403).json({ message: 'Forbidden' });
