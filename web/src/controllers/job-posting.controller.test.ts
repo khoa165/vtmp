@@ -9,7 +9,7 @@ import mongoose from 'mongoose';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 
 chai.use(chaiSubset);
-describe.only('JobPostingController', () => {
+describe('JobPostingController', () => {
   useMongoDB();
 
   const mockJobPosting = {
