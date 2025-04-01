@@ -1,6 +1,6 @@
-import JobPostingModel from '@/models/jobPosting.model';
+import { JobPostingModel } from '@/models/job-posting.model';
 
-const JobPostingRepository = {
+export const JobPostingRepository = {
   createJobPosting: async (jobPostingData: object) => {
     return JobPostingModel.create(jobPostingData);
   },
@@ -25,5 +25,3 @@ const JobPostingRepository = {
     );
   },
 };
-
-export default JobPostingRepository;

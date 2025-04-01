@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import assert from 'assert';
-import JobPostingService from './jobPosting.service';
-import JobPostingRepository from '@/repositories/jobPosting.repository';
+import { JobPostingService } from './job-posting.service';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import mongoose from 'mongoose';
 import { ResourceNotFoundError } from '@/utils/errors';

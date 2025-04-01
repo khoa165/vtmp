@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import JobPostingService from '@/services/jobPosting.service';
+import { JobPostingService } from '@/services/job-posting.service';
 import {
   ResourceNotFoundError,
   UnauthorizedError,
   ForbiddenError,
   handleError,
-} from '../utils/errors';
+} from '@/utils/errors';
 
 const NewUpdateSchema = z.object({
   externalPostingId: z.string().optional(),
@@ -23,7 +23,7 @@ const JobIdSchema = z.object({
   jobId: z.string(),
 });
 
-const JobPostingController = {
+export const JobPostingController = {
   updateJobPosting: async (req: Request, res: Response) => {
     try {
       const { jobId } = JobIdSchema.parse(req.params);
@@ -54,6 +54,7 @@ const JobPostingController = {
       return;
     }
   },
+  
   deleteJobPosting: async (req: Request, res: Response) => {
     try {
       const { jobId } = JobIdSchema.parse(req.params);
@@ -82,5 +83,3 @@ const JobPostingController = {
     }
   },
 };
-
-export default JobPostingController;

@@ -67,4 +67,7 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
   { timestamps: true }
 );
 
-export default mongoose.model<IJobPosting>('JobPosting', JobPostingSchema);
+export const JobPostingModel = mongoose.model<IJobPosting>(
+  'JobPosting',
+  JobPostingSchema
+);

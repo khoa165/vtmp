@@ -4,11 +4,9 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import chaiSubset from 'chai-subset';
 
-
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import mongoose from 'mongoose';
-import JobPostingRepository from '@/repositories/jobPosting.repository';
-
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 
 chai.use(chaiSubset);
 describe.only('JobPostingController', () => {
