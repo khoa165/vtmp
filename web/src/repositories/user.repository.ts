@@ -1,24 +1,20 @@
-import User from '@/models/user.model';
+import { IUser, UserModel } from '@/models/user.model';
 
-const UserRepository = {
-  create: async (userData: {
+export const UserRepository = {
+  createUser: async (userData: {
     firstName: string;
     lastName: string;
     email: string;
     encryptedPassword: string;
-  }) => {
-    const user = new User(userData);
-    await user.save();
-    return user;
+  }): Promise<IUser> => {
+    return UserModel.create(userData);
   },
 
-  findByEmail: async (email: string) => {
-    return User.findOne({ email }).lean();
+  findUserByEmail: async (email: string): Promise<IUser | null> => {
+    return UserModel.findOne({ email });
   },
 
-  findById: async (id: string) => {
-    return User.findById(id).lean();
+  findUserById: async (id: string): Promise<IUser | null> => {
+    return UserModel.findById(id);
   },
 };
-
-export default UserRepository;
