@@ -23,7 +23,6 @@ describe('POST /applications', () => {
   };
 
   let savedUserId: string;
-  // let encryptedPassword: string;
   let mockToken: string;
 
   const mockJobPosting = {
