@@ -56,7 +56,9 @@ const ApplicationService = {
 
     // Check if application is found and belongs authenticated user
     if (!application) {
-      throw new Error('Application not found or access denied.');
+      throw new ResourceNotFoundError('Application not found.', {
+        resource: 'Application',
+      });
     }
 
     return application;

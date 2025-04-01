@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import ApplicationService from '@/services/application.service';
 import { z } from 'zod';
+import { UnauthorizedError } from '@/utils/errors';
 
 const ApplicationRequestSchema = z.object({
   jobPostingId: z.string(),
@@ -39,7 +40,7 @@ const ApplicationController = {
   getAllApplications: async (req: Request, res: Response) => {
     try {
       if (!req.user) {
-        throw new Error('Unauthorized user');
+        throw new UnauthorizedError('Unauthorized user', { resource: 'User' });
       }
       const userId = req.user.id;
 

@@ -149,6 +149,7 @@ describe('ApplicationRepository', () => {
         jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: userId,
       };
+
       const mockApplicationId1 = (
         await ApplicationRepository.createApplication(mockApplication1)
       ).id;

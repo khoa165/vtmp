@@ -184,7 +184,6 @@ describe('ApplicationService', () => {
       const userId = new mongoose.Types.ObjectId().toString();
       const otherUserId = new mongoose.Types.ObjectId().toString();
 
-      // Create an application for another user
       const otherApp = {
         jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: otherUserId,
@@ -199,9 +198,7 @@ describe('ApplicationService', () => {
         throw new Error('Expected error was not thrown');
       } catch (err: any) {
         expect(err).to.exist;
-        expect(err.message).to.match(
-          /Application not found or access denied./i
-        );
+        expect(err.message).to.match(/Application not found./i);
       }
     });
   });
