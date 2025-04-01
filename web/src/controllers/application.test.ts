@@ -17,13 +17,6 @@ describe('POST /applications', () => {
   let encryptedPassword: string;
   let mockToken: string;
 
-  let mockUser: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    encryptedPassword: string;
-  };
-
   const mockJobPosting = {
     linkId: new mongoose.Types.ObjectId().toString(),
     url: 'vtmp.com',
@@ -36,7 +29,7 @@ describe('POST /applications', () => {
     // Before each test, since we need to send a token, we need to build a mockUser, save to database
     // and then generate the token using UserService.login
     encryptedPassword = await bcrypt.hash('test password', 10);
-    mockUser = {
+    const mockUser = {
       firstName: 'admin',
       lastName: 'viettech',
       email: 'test@gmail.com',
