@@ -5,9 +5,17 @@ import UserRepository from '@/repositories/user.repository';
 import app from '@/app';
 import request from 'supertest';
 import { expect } from 'chai';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import { EnvConfig } from '@/config/env';
 
 describe('POST /auth/login', () => {
   useMongoDB();
+  const sandbox = useSandbox();
+  const mockEnvs = {
+    PORT: 8000,
+    MONGO_URI: 'mongodb://username:password@localhost:27017/database_name',
+    JWT_SECRET: 'vtmp-secret',
+  };
 
   // Later when /auth/signup works, replace this with a call
   // to /auth/signup to create a mock user in DB
@@ -20,6 +28,7 @@ describe('POST /auth/login', () => {
       encryptedPassword,
     };
     await UserRepository.create(mockUser);
+    sandbox.stub(EnvConfig, 'get').returns(mockEnvs);
   });
 
   it('should return error messages for missing email and password', (done) => {

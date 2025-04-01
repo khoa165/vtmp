@@ -5,11 +5,18 @@ import { expect } from 'chai';
 import UserRepository from '@/repositories/user.repository';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { getConfig } from '@/config/config';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import { EnvConfig } from '@/config/env';
 
 describe('Auth Service', () => {
   useMongoDB();
-  // const config = getConfig();
+
+  const sandbox = useSandbox();
+  const mockEnvs = {
+    PORT: 8000,
+    MONGO_URI: 'mongodb://username:password@localhost:27017/database_name',
+    JWT_SECRET: 'vtmp-secret',
+  };
 
   beforeEach(async () => {
     const encryptedPassword = await bcrypt.hash('test password', 10);
@@ -20,6 +27,7 @@ describe('Auth Service', () => {
       encryptedPassword,
     };
     await UserRepository.create(mockUser);
+    sandbox.stub(EnvConfig, 'get').returns(mockEnvs);
   });
 
   describe('Login', () => {
@@ -56,7 +64,7 @@ describe('Auth Service', () => {
 
       try {
         const token = await AuthService.login(userData);
-        jwt.verify(token, process.env.JWT_SECRET ?? 'vtmp-secret');
+        jwt.verify(token, EnvConfig.get().JWT_SECRET);
       } catch (error: any) {
         throw new Error('log in successfully but invalid jwt token');
       }
@@ -70,10 +78,7 @@ describe('Auth Service', () => {
 
       try {
         const token = await AuthService.login(userData);
-        const { id } = jwt.verify(
-          token,
-          process.env.JWT_SECRET ?? 'vtmp-secret'
-        ) as {
+        const { id } = jwt.verify(token, EnvConfig.get().JWT_SECRET) as {
           id: string;
         };
         const user = await UserRepository.findById(id);

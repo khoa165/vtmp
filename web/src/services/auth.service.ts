@@ -1,10 +1,8 @@
-import { getConfig } from '@/config/config';
+import { EnvConfig } from '@/config/env';
 import UserRepository from '@/repositories/user.repository';
 import { ResourceNotFoundError, UnauthorizedError } from '@/utils/errors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-
-// const config = getConfig();
 
 const AuthService = {
   login: async ({ email, password }: { email: string; password: string }) => {
@@ -23,7 +21,7 @@ const AuthService = {
 
     const token = jwt.sign(
       { id: user._id.toString() },
-      process.env.JWT_SECRET ?? 'vtmp-secret',
+      EnvConfig.get().JWT_SECRET,
       {
         expiresIn: '1h',
       }
