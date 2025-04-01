@@ -3,22 +3,17 @@ import mongoose from 'mongoose';
 import { differenceInSeconds } from 'date-fns';
 
 import ApplicationRepository from './application.repository';
-import ApplicationModel, {
-  ApplicationStatus,
-} from '@/models/application.model';
+import ApplicationModel from '@/models/application.model';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { ApplicationStatus } from '@/types/enums';
 
 describe('ApplicationRepository', () => {
   useMongoDB();
 
-  let mockApplication: { jobPostingId: string; userId: string };
-
-  beforeEach(() => {
-    mockApplication = {
-      jobPostingId: new mongoose.Types.ObjectId().toString(),
-      userId: new mongoose.Types.ObjectId().toString(),
-    };
-  });
+  const mockApplication = {
+    jobPostingId: new mongoose.Types.ObjectId().toString(),
+    userId: new mongoose.Types.ObjectId().toString(),
+  };
 
   describe('createApplication', () => {
     it('should create a new application successfully', async () => {

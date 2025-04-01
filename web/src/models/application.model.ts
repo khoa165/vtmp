@@ -1,13 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-
-export enum ApplicationStatus {
-  SUBMITTED = 'SUBMITTED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  OFFER = 'OFFER',
-  REJECTED = 'REJECTED',
-  OA_RECEIVED = 'OA_RECEIVED',
-  WITHDRAWN = 'WITHDRAWN',
-}
+import { ApplicationStatus } from '@/types/enums';
 
 interface IApplication extends Document {
   jobPostingId: mongoose.Schema.Types.ObjectId;

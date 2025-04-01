@@ -2,34 +2,23 @@ import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
 import mongoose from 'mongoose';
 
-import ApplicationModel, {
-  ApplicationStatus,
-} from '@/models/application.model';
+import ApplicationModel from '@/models/application.model';
 import JobPostingModel from '@/models/jobPosting.model';
 import ApplicationService from '@/services/application.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
+import { ApplicationStatus } from '@/types/enums';
 
 describe('ApplicationService', () => {
   useMongoDB();
 
-  let mockJobPosting: {
-    linkId: string;
-    url: string;
-    jobTitle: string;
-    companyName: string;
-    submittedBy: string;
+  const mockJobPosting = {
+    linkId: new mongoose.Types.ObjectId().toString(),
+    url: 'vtmp.com',
+    jobTitle: 'SWE',
+    companyName: 'Apple',
+    submittedBy: new mongoose.Types.ObjectId().toString(),
   };
-
-  beforeEach(() => {
-    mockJobPosting = {
-      linkId: new mongoose.Types.ObjectId().toString(),
-      url: 'vtmp.com',
-      jobTitle: 'SWE',
-      companyName: 'Apple',
-      submittedBy: new mongoose.Types.ObjectId().toString(),
-    };
-  });
 
   describe('createApplication', () => {
     it('should throw error if job posting does not exist', async () => {

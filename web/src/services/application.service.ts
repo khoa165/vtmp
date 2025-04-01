@@ -29,7 +29,7 @@ const ApplicationService = {
       });
     }
 
-    return await ApplicationRepository.createApplication({
+    return ApplicationRepository.createApplication({
       jobPostingId,
       userId,
     });

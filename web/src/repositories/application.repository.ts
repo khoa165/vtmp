@@ -8,7 +8,7 @@ const ApplicationRepository = {
     jobPostingId: string;
     userId: string;
   }) => {
-    return await ApplicationModel.create({
+    return ApplicationModel.create({
       jobPostingId,
       userId,
     });
