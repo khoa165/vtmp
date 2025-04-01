@@ -1,13 +1,13 @@
-import app from '@/app';
 import request from 'supertest';
 import { expect } from 'chai';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+import app from '@/app';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import UserModel from '@/models/user.model';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
 import ApplicationRepository from '@/repositories/application.repository';
-import UserModel from '@/models/user.model';
 import UserService from '@/services/user.service';
 
 describe('POST /applications', () => {
@@ -18,11 +18,11 @@ describe('POST /applications', () => {
   let mockToken: string;
 
   const mockJobPosting = {
-    linkId: new mongoose.Types.ObjectId().toString(),
+    linkId: new mongoose.Types.ObjectId(),
     url: 'vtmp.com',
     jobTitle: 'SWE',
     companyName: 'Apple',
-    submittedBy: new mongoose.Types.ObjectId().toString(),
+    submittedBy: new mongoose.Types.ObjectId(),
   };
 
   beforeEach(async () => {

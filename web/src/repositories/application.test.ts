@@ -1,10 +1,13 @@
-import { expect } from 'chai';
+import * as chai from 'chai';
+import assert from 'assert';
 import mongoose from 'mongoose';
 import { differenceInSeconds } from 'date-fns';
 
 import ApplicationRepository from './application.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ApplicationStatus } from '@/types/enums';
+
+const { expect } = chai;
 
 describe('ApplicationRepository', () => {
   useMongoDB();
@@ -24,6 +27,7 @@ describe('ApplicationRepository', () => {
         newApplication.appliedOnDate
       );
 
+      assert(newApplication);
       expect(newApplication.jobPostingId.toString()).to.equal(
         mockApplication.jobPostingId
       );
@@ -48,6 +52,7 @@ describe('ApplicationRepository', () => {
       const result = await ApplicationRepository.doesApplicationExist(
         mockApplication
       );
+
       expect(result).to.equal(false);
     });
   });
