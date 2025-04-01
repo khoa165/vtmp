@@ -11,7 +11,7 @@ import { ResourceNotFoundError } from '@/utils/errors';
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
-describe.only('LinkService', () => {
+describe('LinkService', () => {
   useMongoDB();
 
   describe('submitLink', () => {
@@ -96,6 +96,4 @@ describe.only('LinkService', () => {
       expect(afterUpdateLinks).to.have.lengthOf(2);
     });
   });
-
-
 });
