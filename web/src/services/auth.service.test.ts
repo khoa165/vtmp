@@ -33,7 +33,7 @@ describe('AuthService', () => {
         firstName: 'admin',
         lastName: 'viettech',
         email: 'test@gmail.com',
-        encryptedPassword: 'test password',
+        encryptedPassword,
       };
       await UserRepository.createUser(mockUser);
     });

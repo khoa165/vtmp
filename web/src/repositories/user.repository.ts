@@ -8,14 +8,6 @@ export const UserRepository = {
     email: string;
     encryptedPassword: string;
   }): Promise<IUser> => {
-    const saltRounds = 10; // The number of rounds to use for salt generation
-
-    // Encrypt password
-    userData.encryptedPassword = await bcrypt.hash(
-      userData.encryptedPassword,
-      saltRounds
-    );
-
     return UserModel.create(userData);
   },
 

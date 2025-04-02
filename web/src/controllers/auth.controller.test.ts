@@ -29,7 +29,7 @@ describe('AuthController', () => {
         firstName: 'admin',
         lastName: 'viettech',
         email: 'test@gmail.com',
-        encryptedPassword: 'test password',
+        encryptedPassword,
       };
       await UserRepository.createUser(mockUser);
     });
@@ -123,8 +123,6 @@ describe('AuthController', () => {
   describe('POST /auth/signup', () => {
     useMongoDB();
 
-    // Later when /auth/signup works, replace this with a call
-    // to /auth/signup to create a mock user in DB
     beforeEach(async () => {
       const mockUser = {
         firstName: 'admin',
@@ -150,7 +148,7 @@ describe('AuthController', () => {
           if (err) done(err);
 
           expect(res.statusCode).to.eq(200);
-          expect(res.body).to.have.property('data');
+          expect(res.body.data).to.have.property('token');
           done();
         });
     });

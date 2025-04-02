@@ -20,6 +20,14 @@ export const AuthService = {
       throw new Error('Duplicate Email');
     }
 
+    const saltRounds = 10; // The number of rounds to use for salt generation
+
+    // Encrypt password
+    accounts.encryptedPassword = await bcrypt.hash(
+      accounts.encryptedPassword,
+      saltRounds
+    );
+
     // Create new user
     const newUser = await UserRepository.createUser(accounts);
 
