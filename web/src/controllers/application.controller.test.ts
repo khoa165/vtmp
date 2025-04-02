@@ -12,6 +12,10 @@ import { UserRepository } from '@/repositories/user.repository';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
 import ApplicationRepository from '@/repositories/application.repository';
 import { AuthService } from '@/services/auth.service';
+import {
+  expectErrorsArray,
+  expectSuccessfulResponse,
+} from '@/testutils/response-assertion.testutil';
 
 describe('POST /applications', () => {
   useMongoDB();
@@ -30,6 +34,7 @@ describe('POST /applications', () => {
 
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+
     const encryptedPassword = await bcrypt.hash('test password', 10);
     const mockUser = {
       firstName: 'admin',
@@ -37,8 +42,8 @@ describe('POST /applications', () => {
       email: 'test@gmail.com',
       encryptedPassword,
     };
-    savedUserId = (await UserRepository.createUser(mockUser)).id;
 
+    savedUserId = (await UserRepository.createUser(mockUser)).id;
     mockToken = await AuthService.login({
       email: mockUser.email,
       password: 'test password',
@@ -52,9 +57,21 @@ describe('POST /applications', () => {
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${mockToken}`);
 
-    expect(res.statusCode).to.equal(400);
-    expect(res.body).to.have.property('errors');
-    expect(res.body.errors[0]).to.have.property('message', 'Required');
+    expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+    const errors = res.body.errors;
+    expect(errors[0].message).to.equal('Job posting ID is required');
+  });
+
+  it('should return error message with 400 status code if jobPostingId format is invalid', async () => {
+    const res = await request(app)
+      .post('/api/applications/create')
+      .send({ jobPostingId: '123456789' })
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${mockToken}`);
+
+    expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+    const errors = res.body.errors;
+    expect(errors[0].message).to.equal('Invalid job posting ID format');
   });
 
   it('it should return error message with status code 404 if job posting does not exist', async () => {
@@ -64,16 +81,12 @@ describe('POST /applications', () => {
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${mockToken}`);
 
-    expect(res.statusCode).to.equal(404);
-    expect(res.body).to.have.property('errors');
-    expect(res.body.errors[0]).to.have.property(
-      'message',
-      'Job posting not found'
-    );
+    expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+    const errors = res.body.errors;
+    expect(errors[0].message).to.equal('Job posting not found');
   });
 
   it('it should return error message with status code 409 if duplicate application exists', async () => {
-    // Save mockJobPosting to database to simulate a duplicate
     const savedJobPostingId = (
       await JobPostingRepository.createJobPosting(mockJobPosting)
     ).id;
@@ -89,12 +102,9 @@ describe('POST /applications', () => {
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${mockToken}`);
 
-    expect(res.statusCode).to.equal(409);
-    expect(res.body).to.have.property('errors');
-    expect(res.body.errors[0]).to.have.property(
-      'message',
-      'Application already exists'
-    );
+    expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
+    const errors = res.body.errors;
+    expect(errors[0].message).to.equal('Application already exists');
   });
 
   it('should return application object if an application is created successfully', async () => {
@@ -108,12 +118,7 @@ describe('POST /applications', () => {
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${mockToken}`);
 
-    expect(res.statusCode).to.equal(201);
-    expect(res.body).to.have.property(
-      'message',
-      'Application created successfully'
-    );
-    expect(res.body).to.have.property('data');
+    expectSuccessfulResponse({ res, statusCode: 201 });
     expect(res.body.data).to.have.property('jobPostingId', savedJobPostingId);
     expect(res.body.data).to.have.property('userId', savedUserId);
   });

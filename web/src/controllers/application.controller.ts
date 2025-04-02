@@ -2,9 +2,14 @@ import { Request, Response } from 'express';
 import ApplicationService from '@/services/application.service';
 import { z } from 'zod';
 import { handleError } from '@/utils/errors';
+import mongoose from 'mongoose';
 
 const ApplicationRequestSchema = z.object({
-  jobPostingId: z.string(),
+  jobPostingId: z
+    .string({ required_error: 'Job posting ID is required' })
+    .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: 'Invalid job posting ID format',
+    }),
 });
 
 interface AuthenticatedRequest extends Request {
