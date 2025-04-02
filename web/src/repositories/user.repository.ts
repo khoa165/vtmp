@@ -1,9 +1,13 @@
-import User from '@/models/user.model';
-import { Role, IUser } from '@/types/interface';
+import { IUser, UserModel } from '@/models/user.model';
 import bcrypt from 'bcryptjs';
 
-const UserRepository = {
-  create: async (userData: IUser) => {
+export const UserRepository = {
+  createUser: async (userData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    encryptedPassword: string;
+  }): Promise<IUser> => {
     const saltRounds = 10; // The number of rounds to use for salt generation
 
     // Encrypt password
@@ -12,18 +16,14 @@ const UserRepository = {
       saltRounds
     );
 
-    const user = new User(userData);
-    await user.save();
-    return user;
+    return UserModel.create(userData);
   },
 
-  findByEmail: async (email: string) => {
-    return User.findOne({ email }).lean();
+  findUserByEmail: async (email: string): Promise<IUser | null> => {
+    return UserModel.findOne({ email });
   },
 
-  findById: async (id: string) => {
-    return User.findById(id).lean();
+  findUserById: async (id: string): Promise<IUser | null> => {
+    return UserModel.findById(id);
   },
 };
-
-export default UserRepository;

@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import chaiSubset from 'chai-subset';
 
-import UserRepository from '@/repositories/user.repository';
+import { UserRepository } from '@/repositories/user.repository';
 import { IUser, Role } from '@/types/interface';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 
@@ -18,8 +18,8 @@ describe('UserRepository', () => {
       encryptedPassword: 'ecnrypted-password-later',
       role: Role.ADMIN,
     };
-    const newlyCreatedRecord = await UserRepository.create(mockUser);
-    const user = await UserRepository.findById(newlyCreatedRecord.id);
+    const newlyCreatedRecord = await UserRepository.createUser(mockUser);
+    const user = await UserRepository.findUserById(newlyCreatedRecord.id);
 
     expect(user).to.containSubset(mockUser);
   });
@@ -32,8 +32,8 @@ describe('UserRepository', () => {
       encryptedPassword: 'ecnrypted-password-later',
       role: Role.ADMIN,
     };
-    await UserRepository.create(mockUser);
-    const user = await UserRepository.findByEmail('test@example.com');
+    await UserRepository.createUser(mockUser);
+    const user = await UserRepository.findUserByEmail('test@example.com');
 
     expect(user).to.containSubset(mockUser);
   });

@@ -1,8 +1,8 @@
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { beforeEach, describe } from 'mocha';
-import AuthService from './auth.service';
+import { AuthService } from './auth.service';
 import { expect } from 'chai';
-import UserRepository from '@/repositories/user.repository';
+import { UserRepository } from '@/repositories/user.repository';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { IUser, Role } from '@/types/interface';
@@ -19,7 +19,7 @@ describe('Auth Service', () => {
       encryptedPassword: 'test password',
       role: Role.ADMIN,
     };
-    await UserRepository.create(mockUser);
+    await UserRepository.createUser(mockUser);
   });
 
   describe('Signup', () => {

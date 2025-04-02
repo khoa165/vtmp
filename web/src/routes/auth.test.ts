@@ -1,7 +1,7 @@
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { beforeEach, describe } from 'mocha';
 import bcrypt from 'bcryptjs';
-import UserRepository from '@/repositories/user.repository';
+import { UserRepository } from '@/repositories/user.repository';
 import app from '@/app';
 import request from 'supertest';
 import { expect } from 'chai';
@@ -21,7 +21,7 @@ describe('POST /auth/signup', () => {
       encryptedPassword,
       role: Role.ADMIN,
     };
-    await UserRepository.create(mockUser);
+    await UserRepository.createUser(mockUser);
   });
 
   it('should return new user', (done) => {
@@ -95,7 +95,6 @@ describe('POST /auth/signup', () => {
         if (err) return done(err);
 
         expect(res.statusCode).to.eq(400);
-
         expect(res.body.errors[0].message).to.eq('Lastname is required');
         done();
       });

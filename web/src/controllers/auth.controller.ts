@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import AuthService from '@/services/auth.service';
+import { AuthService } from '@/services/auth.service';
+import { handleError } from '@/utils/errors';
 import { Role } from '@/types/interface';
 import { z } from 'zod';
 
@@ -11,7 +12,14 @@ const signupSchema = z.object({
   role: z.nativeEnum(Role, { required_error: 'Role is required' }),
 });
 
-const AuthController = {
+const loginSchema = z.object({
+  email: z
+    .string({ required_error: 'Email is required' })
+    .email({ message: 'Invalid email address' }),
+  password: z.string({ required_error: 'Password is required' }),
+});
+
+export const AuthController = {
   signup: async (req: Request, res: Response) => {
     try {
       const { firstName, lastName, email, encryptedPassword, role } = req.body;
@@ -29,7 +37,7 @@ const AuthController = {
         });
 
         // Return the response
-        res.status(200).json({ token });
+        res.status(200).json({ data: { token } });
       } else {
         const errors = validatedBody.error.issues.map((issue) => ({
           message: issue.message,
@@ -43,6 +51,22 @@ const AuthController = {
       res.status(401).json({ message: errorMessage });
     }
   },
-};
 
-export default AuthController;
+  login: async (req: Request, res: Response) => {
+    try {
+      const validatedBody = loginSchema.safeParse(req.body);
+
+      if (!validatedBody.success) {
+        throw validatedBody.error;
+      }
+
+      const token = await AuthService.login(validatedBody.data);
+      res.status(200).json({ data: { token } });
+      return;
+    } catch (error: unknown) {
+      const { statusCode, errors } = handleError(error);
+      res.status(statusCode).json({ errors });
+      return;
+    }
+  },
+};
