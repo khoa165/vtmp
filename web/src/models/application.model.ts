@@ -16,6 +16,7 @@ interface IApplication extends Document {
   status: ApplicationStatus;
   appliedOnDate: Date;
   note?: string;
+  deletedAt?: Date;
 }
 
 const ApplicationSchema = new mongoose.Schema<IApplication>({
@@ -44,6 +45,9 @@ const ApplicationSchema = new mongoose.Schema<IApplication>({
   },
   note: {
     type: String,
+  },
+  deletedAt: {
+    type: Date,
   },
 });
 
