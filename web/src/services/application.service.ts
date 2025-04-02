@@ -46,14 +46,12 @@ const ApplicationService = {
     applicationId: string;
     userId: string;
   }) => {
-    // Retrieve application from repository
     const application =
       await ApplicationRepository.findApplicationByIdAndUserId({
         applicationId,
         userId,
       });
 
-    // Check if application is found and belongs authenticated user
     if (!application) {
       throw new ResourceNotFoundError('Application not found.', {
         resource: 'Application',

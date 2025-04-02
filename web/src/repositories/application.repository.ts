@@ -28,10 +28,9 @@ const ApplicationRepository = {
   },
 
   findApplicationsByUserId: async (userId: string) => {
-    const applications = await ApplicationModel.find({
+    return await ApplicationModel.find({
       userId: userId,
     });
-    return applications;
   },
 
   findApplicationByIdAndUserId: async ({

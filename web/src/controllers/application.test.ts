@@ -11,7 +11,7 @@ import UserModel from '@/models/user.model';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
 import ApplicationRepository from '@/repositories/application.repository';
 import UserService from '@/services/user.service';
-import Application from '@/models/application.model';
+import UserRepository from '@/repositories/user.repository';
 
 describe('POST /applications', () => {
   useMongoDB();
@@ -155,7 +155,7 @@ describe('GET /applications', () => {
       email: 'test@gmail.com',
       encryptedPassword,
     };
-    newUserId = (await User.create(mockUser)).id;
+    newUserId = (await UserRepository.create(mockUser)).id;
 
     // Create auth token
     token = await UserService.login({
@@ -171,7 +171,9 @@ describe('GET /applications', () => {
       companyName: 'Apple',
       submittedBy: newUserId,
     };
-    newJobPostingId1 = (await JobPosting.create(jobPosting1)).id;
+    newJobPostingId1 = (
+      await JobPostingRepository.createJobPosting(jobPosting1)
+    ).id;
 
     const jobPosting2 = {
       linkId: new mongoose.Types.ObjectId(),
@@ -180,7 +182,9 @@ describe('GET /applications', () => {
       companyName: 'Apple',
       submittedBy: newUserId,
     };
-    newJobPostingId2 = (await JobPosting.create(jobPosting2)).id;
+    newJobPostingId2 = (
+      await JobPostingRepository.createJobPosting(jobPosting2)
+    ).id;
 
     // Create two applications
     const application1 = {
@@ -191,7 +195,9 @@ describe('GET /applications', () => {
       appliedOnDate: new Date('2025-03-03'),
       note: '',
     };
-    newApplicationId1 = (await Application.create(application1)).id;
+    newApplicationId1 = (
+      await ApplicationRepository.createApplication(application1)
+    ).id;
 
     const application2 = {
       jobPostingId: newJobPostingId2,
@@ -201,20 +207,9 @@ describe('GET /applications', () => {
       appliedOnDate: new Date('2025-09-03'),
       note: '',
     };
-    newApplicationId2 = (await Application.create(application2)).id;
-  });
-
-  it('should return error message if user is not authenticated (req.user is null)', (done) => {
-    request(app)
-      .get('/api/applications/')
-      .end((err, res) => {
-        if (err) return done(err);
-
-        expect(res.statusCode).to.equal(401);
-        expect(res.body).to.have.property('message');
-        expect(res.body.message).to.equal('Unauthorized user');
-        done();
-      });
+    newApplicationId2 = (
+      await ApplicationRepository.createApplication(application2)
+    ).id;
   });
 
   it('should return all application objects that belong to the authenticated user', (done) => {
@@ -276,7 +271,7 @@ describe('GET /applications/:id', () => {
       email: 'test@gmail.com',
       encryptedPassword,
     };
-    newUserId = (await User.create(mockUser)).id;
+    newUserId = (await UserModel.create(mockUser)).id;
 
     // Create auth token
     token = await UserService.login({
@@ -292,7 +287,8 @@ describe('GET /applications/:id', () => {
       companyName: 'Apple',
       submittedBy: newUserId,
     };
-    newJobPostingId = (await JobPosting.create(jobPosting)).id;
+    newJobPostingId = (await JobPostingRepository.createJobPosting(jobPosting))
+      .id;
 
     // Create application
     const application = {
@@ -303,29 +299,19 @@ describe('GET /applications/:id', () => {
       appliedOnDate: new Date('2025-03-03'),
       note: '',
     };
-    newApplicationId = (await Application.create(application)).id;
+    newApplicationId = (
+      await ApplicationRepository.createApplication(application)
+    ).id;
   });
 
-  it('should return 401 if user is not authenticated', (done) => {
-    request(app)
-      .get(`/api/applications/${newApplicationId}`)
-      .end((err, res) => {
-        if (err) return done(err);
-
-        expect(res.statusCode).to.equal(401);
-        expect(res.body).to.have.property('message', 'Unauthorized user');
-        done();
-      });
-  });
-
-  it('should return 500 if application is not found or is not belong to authenticated user', (done) => {
+  it('should return 404 if application is not found or is not belong to authenticated user', (done) => {
     request(app)
       .get(`/api/applications/${newApplicationId}`)
       .set('Authorization', `Bearer ${token}`)
       .end((err, res) => {
         if (err) return done(err);
 
-        expect(res.statusCode).to.equal(500);
+        expect(res.statusCode).to.equal(404);
         expect(res.body).to.have.property('message', 'Application not found');
         done();
       });

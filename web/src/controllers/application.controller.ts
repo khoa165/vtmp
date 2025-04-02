@@ -71,7 +71,7 @@ const ApplicationController = {
       });
 
       res.status(200).json({
-        message: 'Application created successfully',
+        message: 'Get One Application successfully',
         data: application,
       });
       return;

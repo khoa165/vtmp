@@ -10,7 +10,6 @@ import ApplicationService from '@/services/application.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
 import { ApplicationStatus } from '@/types/enums';
-import ApplicationModel from '@/models/application.model';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -86,21 +85,27 @@ describe('ApplicationService', () => {
       const otherUserId = new mongoose.Types.ObjectId().toString();
 
       const mockApplication1 = {
-        jobPostingId: new mongoose.Types.ObjectId(),
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: userId,
       };
       const mockApplication2 = {
-        jobPostingId: new mongoose.Types.ObjectId(),
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: userId,
       };
       const mockApplication3 = {
-        jobPostingId: new mongoose.Types.ObjectId(),
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: otherUserId,
       };
 
-      const application1 = await ApplicationModel.create(mockApplication1);
-      const application2 = await ApplicationModel.create(mockApplication2);
-      const application3 = await ApplicationModel.create(mockApplication3);
+      const application1 = await ApplicationRepository.createApplication(
+        mockApplication1
+      );
+      const application2 = await ApplicationRepository.createApplication(
+        mockApplication2
+      );
+      const application3 = await ApplicationRepository.createApplication(
+        mockApplication3
+      );
 
       const applications = await ApplicationService.getAllApplications(userId);
 
@@ -133,23 +138,23 @@ describe('ApplicationService', () => {
       const otherUserId = new mongoose.Types.ObjectId().toString();
 
       const mockApplication1 = {
-        jobPostingId: new mongoose.Types.ObjectId(),
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: userId,
       };
       const mockApplication2 = {
-        jobPostingId: new mongoose.Types.ObjectId(),
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: otherUserId,
       };
       const mockApplication3 = {
-        jobPostingId: new mongoose.Types.ObjectId(),
+        jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: otherUserId,
       };
 
       const mockApplicationId1 = (
-        await ApplicationModel.create(mockApplication1)
+        await ApplicationRepository.createApplication(mockApplication1)
       ).id;
-      await ApplicationModel.create(mockApplication2);
-      await ApplicationModel.create(mockApplication3);
+      await ApplicationRepository.createApplication(mockApplication2);
+      await ApplicationRepository.createApplication(mockApplication3);
 
       const application = await ApplicationService.getOneApplication({
         applicationId: mockApplicationId1,
@@ -169,7 +174,9 @@ describe('ApplicationService', () => {
         jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: otherUserId,
       };
-      const otherAppId = (await ApplicationModel.create(otherApp)).id;
+      const otherAppId = (
+        await ApplicationRepository.createApplication(otherApp)
+      ).id;
 
       await expect(
         ApplicationService.getOneApplication({
