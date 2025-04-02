@@ -38,7 +38,7 @@ describe('POST /auth/signup', () => {
         if (err) done(err);
 
         expect(res.statusCode).to.eq(200);
-        expect(res.body).to.have.property('token');
+        expect(res.body).to.have.property('data');
         done();
       });
   });
