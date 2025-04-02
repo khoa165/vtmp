@@ -7,10 +7,10 @@ export enum LinkStatus {
 }
 
 interface ILink extends Document {
-  url: String;
+  url: string;
   status?: LinkStatus;
   submittedOn: Date;
-  companyName?: String;
+  companyName?: string;
   userNote?: string;
 }
 
