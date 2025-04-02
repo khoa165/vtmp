@@ -3,10 +3,16 @@ import { UserRepository } from '@/repositories/user.repository';
 import { ResourceNotFoundError, UnauthorizedError } from '@/utils/errors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { IUser } from '@/types/interface';
+import { Role } from '@/models/user.model';
 
 export const AuthService = {
-  signup: async (accounts: IUser) => {
+  signup: async (accounts: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    encryptedPassword: string;
+    role: Role;
+  }) => {
     // Check duplicate email
     const userByEmail = await UserRepository.findUserByEmail(accounts.email);
 

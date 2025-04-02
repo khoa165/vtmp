@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { AuthService } from '@/services/auth.service';
 import { handleError } from '@/utils/errors';
-import { Role } from '@/types/interface';
+import { Role } from '@/models/user.model';
 import { z } from 'zod';
 
 const signupSchema = z.object({

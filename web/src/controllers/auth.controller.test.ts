@@ -13,6 +13,8 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 
+import { Role } from '@/models/user.model';
+
 describe('AuthController', () => {
   useMongoDB();
   const sandbox = useSandbox();
@@ -27,7 +29,7 @@ describe('AuthController', () => {
         firstName: 'admin',
         lastName: 'viettech',
         email: 'test@gmail.com',
-        encryptedPassword,
+        encryptedPassword: 'test password',
       };
       await UserRepository.createUser(mockUser);
     });
@@ -113,6 +115,161 @@ describe('AuthController', () => {
           if (err) done(err);
           expectSuccessfulResponse({ res, statusCode: 200 });
           expect(res.body.data).to.have.property('token');
+          done();
+        });
+    });
+  });
+
+  describe('POST /auth/signup', () => {
+    useMongoDB();
+
+    // Later when /auth/signup works, replace this with a call
+    // to /auth/signup to create a mock user in DB
+    beforeEach(async () => {
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@gmail.com',
+        encryptedPassword: 'test password',
+        role: Role.ADMIN,
+      };
+      await UserRepository.createUser(mockUser);
+    });
+
+    it('should return new user', (done) => {
+      request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          encryptedPassword: 'test',
+          email: 'test123@gmail.com',
+          role: Role.ADMIN,
+        })
+        .end((err, res) => {
+          if (err) done(err);
+
+          expect(res.statusCode).to.eq(200);
+          expect(res.body).to.have.property('data');
+          done();
+        });
+    });
+
+    //   Testing error message when missing a field
+    it('should return error messages for missing firstName', (done) => {
+      request(app)
+        .post('/api/auth/signup')
+        .send({
+          lastName: 'viettech',
+          encryptedPassword: 'test',
+          email: 'test@gmail.com',
+          role: Role.ADMIN,
+        })
+        .set('Accept', 'application/json')
+        .end((err, res) => {
+          if (err) return done(err);
+
+          expect(res.statusCode).to.eq(400);
+          expect(res.body.errors[0].message).to.eq('Firstname is required');
+          done();
+        });
+    });
+
+    it('should return error messages for missing password', (done) => {
+      request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          email: 'test123@gmail.com',
+          role: Role.ADMIN,
+        })
+        .end((err, res) => {
+          if (err) done(err);
+
+          expect(res.statusCode).to.eq(400);
+          expect(res.body.errors[0].message).to.eq('Password is required');
+          done();
+        });
+    });
+
+    it('should return error messages for missing lastName', (done) => {
+      request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          encryptedPassword: 'test',
+          email: 'test123@gmail.com',
+          role: Role.ADMIN,
+        })
+        .set('Accept', 'application/json')
+        .end((err, res) => {
+          if (err) return done(err);
+
+          expect(res.statusCode).to.eq(400);
+          expect(res.body.errors[0].message).to.eq('Lastname is required');
+          done();
+        });
+    });
+
+    it('should return error messages for missing role', (done) => {
+      request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          encryptedPassword: 'test',
+          email: 'test123@gmail.com',
+        })
+        .set('Accept', 'application/json')
+        .end((err, res) => {
+          if (err) return done(err);
+
+          expect(res.statusCode).to.eq(400);
+
+          expect(res.body.errors[0].message).to.eq('Role is required');
+          done();
+        });
+    });
+
+    it('should return error messages for missing email', (done) => {
+      request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          encryptedPassword: 'test',
+          role: Role.ADMIN,
+        })
+        .set('Accept', 'application/json')
+        .end((err, res) => {
+          if (err) return done(err);
+
+          expect(res.statusCode).to.eq(400);
+
+          expect(res.body.errors[0].message).to.eq('Email is required');
+          done();
+        });
+    });
+
+    //   Testing duplicate email
+    it('should return error messages for duplicate email', (done) => {
+      request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          email: 'test@gmail.com',
+          encryptedPassword: 'test',
+          role: Role.ADMIN,
+        })
+        .set('Accept', 'application/json')
+        .end((err, res) => {
+          if (err) return done(err);
+
+          expect(res.statusCode).to.eq(401);
+
+          expect(res.body.message).to.eq('Duplicate Email');
           done();
         });
     });
