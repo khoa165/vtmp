@@ -10,6 +10,7 @@ import ApplicationService from '@/services/application.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
 import { ApplicationStatus } from '@/types/enums';
+import ApplicationModel from '@/models/application.model';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -170,16 +171,12 @@ describe('ApplicationService', () => {
       };
       const otherAppId = (await ApplicationModel.create(otherApp)).id;
 
-      try {
-        await ApplicationService.getOneApplication({
+      await expect(
+        ApplicationService.getOneApplication({
           applicationId: otherAppId,
           userId,
-        });
-        throw new Error('Expected error was not thrown');
-      } catch (err: any) {
-        expect(err).to.exist;
-        expect(err.message).to.match(/Application not found./i);
-      }
+        })
+      ).eventually.rejectedWith(ResourceNotFoundError);
     });
   });
 });

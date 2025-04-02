@@ -38,32 +38,30 @@ const ApplicationController = {
   },
   getAllApplications: async (req: Request, res: Response) => {
     try {
-      if (!req.user) {
-        throw new UnauthorizedError('Unauthorized user', { resource: 'User' });
-      }
-      const userId = req.user.id;
+      const userId = (req as AuthenticatedRequest).user.id;
 
       const applications = await ApplicationService.getAllApplications(userId);
 
-      return res.status(200).json({
+      res.status(200).json({
         message: 'Get Applications Successfully',
         data: applications,
       });
+      return;
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'an error occured';
-      return res.status(500).json({ message: errorMessage });
+      const { statusCode, errors } = handleError(error);
+      res.status(statusCode).json({ errors });
+      return;
     }
   },
   getOneApplication: async (req: Request, res: Response) => {
     try {
-      if (!req.user) {
-        throw new Error('Unauthorized user');
-      }
-      const userId = req.user.id;
+      const userId = (req as AuthenticatedRequest).user.id;
 
       if (!req.params.applicationId) {
-        throw new Error('Application ID parameter is required.');
+        res.status(400).json({
+          message: 'Missing Application ID Parameter',
+        });
+        return;
       }
       const applicationId = req.params.applicationId;
 
@@ -72,12 +70,15 @@ const ApplicationController = {
         userId,
       });
 
-      return res.status(200).json({
-        message: 'Get Application Successfully',
+      res.status(200).json({
+        message: 'Application created successfully',
         data: application,
       });
+      return;
     } catch (error) {
-      return res.status(500).json(error);
+      const { statusCode, errors } = handleError(error);
+      res.status(statusCode).json({ errors });
+      return;
     }
   },
 };

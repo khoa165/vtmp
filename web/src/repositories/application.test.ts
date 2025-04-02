@@ -6,6 +6,7 @@ import { differenceInSeconds } from 'date-fns';
 import ApplicationRepository from './application.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ApplicationStatus } from '@/types/enums';
+import ApplicationModel from '@/models/application.model';
 
 const { expect } = chai;
 
@@ -103,9 +104,9 @@ describe('ApplicationRepository', () => {
         jobPostingId: new mongoose.Types.ObjectId().toString(),
         userId: otherUserId,
       };
-      await ApplicationRepository.createApplication(mockApplication1);
-      await ApplicationRepository.createApplication(mockApplication2);
-      await ApplicationRepository.createApplication(mockApplication3);
+      await ApplicationModel.create(mockApplication1);
+      await ApplicationModel.create(mockApplication2);
+      await ApplicationModel.create(mockApplication3);
 
       const applications = await ApplicationRepository.findApplicationsByUserId(
         userId
@@ -124,7 +125,7 @@ describe('ApplicationRepository', () => {
         userId: otherUserId,
       };
       const mockApplicationId1 = (
-        await ApplicationRepository.createApplication(mockApplication1)
+        await ApplicationModel.create(mockApplication1)
       ).id;
 
       const application =
@@ -150,10 +151,10 @@ describe('ApplicationRepository', () => {
       };
 
       const mockApplicationId1 = (
-        await ApplicationRepository.createApplication(mockApplication1)
+        await ApplicationModel.create(mockApplication1)
       ).id;
       const mockApplicationId2 = (
-        await ApplicationRepository.createApplication(mockApplication2)
+        await ApplicationModel.create(mockApplication2)
       ).id;
 
       const application =
