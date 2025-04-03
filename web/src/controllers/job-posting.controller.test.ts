@@ -17,7 +17,7 @@ import mongoose from 'mongoose';
 import { differenceInSeconds } from 'date-fns';
 
 chai.use(chaiSubset);
-describe.only('JobPostingController', () => {
+describe('JobPostingController', () => {
   useMongoDB();
   const sandbox = useSandbox();
   beforeEach(() => {
