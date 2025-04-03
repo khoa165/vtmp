@@ -1,6 +1,6 @@
 import mongoose, { Document } from 'mongoose';
 
-enum Location {
+export enum Location {
   US = 'US',
   CANADA = 'CANADA',
 }

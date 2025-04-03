@@ -2,13 +2,14 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { JobPostingService } from '@/services/job-posting.service';
 import { handleError } from '@/utils/errors';
+import { Location } from '@/models/job-posting.model';
 
 const JobPostingUpdateSchema = z.object({
   externalPostingId: z.string().optional(),
   url: z.string().url().optional(),
   jobTitle: z.string().optional(),
   companyName: z.string().optional(),
-  location: z.enum(['US', 'CANADA']).optional(),
+  location: z.enum([Location.US, Location.CANADA]).optional(),
   datePosted: z.coerce.date().optional(),
   jobDescription: z.string().optional(),
   adminNote: z.string().optional(),
