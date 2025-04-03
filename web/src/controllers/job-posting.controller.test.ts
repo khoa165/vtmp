@@ -14,6 +14,7 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import mongoose from 'mongoose';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { differenceInSeconds } from 'date-fns';
 
 chai.use(chaiSubset);
@@ -47,14 +48,14 @@ describe('JobPostingController', () => {
         companyName: 'Updated Company',
         jobDescription: 'This is an updated job description.',
       };
-      const response = await request(app)
-        .put(`/api/job-postings/${new mongoose.Types.ObjectId().toString()}`)
+      const res = await request(app)
+        .put(`/api/job-postings/${getNewMongoId()}`)
         .send(newJobPostingUpdate)
         .set('Accept', 'application/json');
 
-      expectErrorsArray({ res: response, statusCode: 404, errorsCount: 1 });
+      expectErrorsArray({ res: res, statusCode: 404, errorsCount: 1 });
 
-      const errors = response.body.errors;
+      const errors = res.body.errors;
       expect(errors[0].message).to.equal('Job posting not found');
     });
 
@@ -64,35 +65,35 @@ describe('JobPostingController', () => {
         companyName: 'Updated Company',
         jobDescription: 'This is an updated job description.',
       };
-      const response = await request(app)
+      const res = await request(app)
         .put(`/api/job-postings/${jobId}`)
         .send(newJobPostingUpdate)
         .set('Accept', 'application/json');
 
-      expectSuccessfulResponse({ res: response, statusCode: 200 });
-      expect(response.body.data).to.containSubset(newJobPostingUpdate);
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.containSubset(newJobPostingUpdate);
     });
   });
 
   describe('deleteJobPosting', () => {
     it('should return an error message for no job posting found', async () => {
-      const response = await request(app).delete(
-        `/api/job-postings/${new mongoose.Types.ObjectId().toString()}`
+      const res = await request(app).delete(
+        `/api/job-postings/${getNewMongoId()}`
       );
 
-      expectErrorsArray({ res: response, statusCode: 404, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
 
-      const errors = response.body.errors;
+      const errors = res.body.errors;
       expect(errors[0].message).to.equal('Job posting not found');
     });
 
     it('should return a deleted job posting', async () => {
-      const response = await request(app).delete(`/api/job-postings/${jobId}`);
+      const res = await request(app).delete(`/api/job-postings/${jobId}`);
 
-      expectSuccessfulResponse({ res: response, statusCode: 200 });
-      expect(response.body.data).to.have.property('deletedAt');
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.have.property('deletedAt');
 
-      const deletedJobPosting = response.body.data;
+      const deletedJobPosting = res.body.data;
       const timeDiff = differenceInSeconds(
         deletedJobPosting.deletedAt,
         new Date()

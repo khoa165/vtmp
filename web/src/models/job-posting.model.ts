@@ -7,7 +7,7 @@ interface IJobPosting extends Document {
   url: string;
   jobTitle: string;
   companyName: string;
-  location?: Location;
+  location?: JobPostingLocation;
   datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
@@ -39,7 +39,7 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
     },
     location: {
       type: String,
-      enum: Object.values(Location),
+      enum: Object.values(JobPostingLocation),
       default: JobPostingLocation.US,
     },
     datePosted: {
