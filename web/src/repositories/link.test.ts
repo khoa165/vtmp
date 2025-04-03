@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import chaiSubset from 'chai-subset';
-import { LinkStatus } from '@/models/link.model';
+import { LinkStatus } from '@/types/enums';
 import { differenceInSeconds } from 'date-fns';
 import LinkRepository from '@/repositories/link.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
