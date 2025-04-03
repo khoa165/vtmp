@@ -15,6 +15,7 @@ const JobPostingService = {
 
     return updatedJobPosting;
   },
+  
   deleteJobPostingById: async (jobId: string) => {
     const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
       jobId
