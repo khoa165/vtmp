@@ -10,7 +10,7 @@ import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { UserRepository } from '@/repositories/user.repository';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
-import ApplicationRepository from '@/repositories/application.repository';
+import { ApplicationRepository } from '@/repositories/application.repository';
 import { AuthService } from '@/services/auth.service';
 import {
   expectErrorsArray,
@@ -52,7 +52,7 @@ describe('POST /applications', () => {
 
   it('should return error message with 400 status code if request body schema is invalid', async () => {
     const res = await request(app)
-      .post('/api/applications/create')
+      .post('/api/applications')
       .send({ invalidIdSchema: new mongoose.Types.ObjectId().toString() })
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${mockToken}`);
@@ -64,7 +64,7 @@ describe('POST /applications', () => {
 
   it('should return error message with 400 status code if jobPostingId format is invalid', async () => {
     const res = await request(app)
-      .post('/api/applications/create')
+      .post('/api/applications')
       .send({ jobPostingId: '123456789' })
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${mockToken}`);
@@ -76,7 +76,7 @@ describe('POST /applications', () => {
 
   it('it should return error message with status code 404 if job posting does not exist', async () => {
     const res = await request(app)
-      .post('/api/applications/create')
+      .post('/api/applications')
       .send({ jobPostingId: new mongoose.Types.ObjectId().toString() })
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${mockToken}`);
@@ -97,7 +97,7 @@ describe('POST /applications', () => {
     });
 
     const res = await request(app)
-      .post('/api/applications/create')
+      .post('/api/applications')
       .send({ jobPostingId: savedJobPostingId })
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${mockToken}`);
@@ -113,7 +113,7 @@ describe('POST /applications', () => {
     ).id;
 
     const res = await request(app)
-      .post('/api/applications/create')
+      .post('/api/applications')
       .send({ jobPostingId: savedJobPostingId })
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${mockToken}`);

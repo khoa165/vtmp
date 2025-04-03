@@ -1,8 +1,8 @@
-import ApplicationRepository from '@/repositories/application.repository';
+import { ApplicationRepository } from '@/repositories/application.repository';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
-const ApplicationService = {
+export const ApplicationService = {
   createApplication: async ({
     jobPostingId,
     userId,
@@ -35,5 +35,3 @@ const ApplicationService = {
     });
   },
 };
-
-export default ApplicationService;

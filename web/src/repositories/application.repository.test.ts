@@ -1,13 +1,11 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import assert from 'assert';
 import mongoose from 'mongoose';
 import { differenceInSeconds } from 'date-fns';
 
-import ApplicationRepository from './application.repository';
+import { ApplicationRepository } from './application.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ApplicationStatus } from '@/types/enums';
-
-const { expect } = chai;
 
 describe('ApplicationRepository', () => {
   useMongoDB();

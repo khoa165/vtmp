@@ -4,9 +4,9 @@ import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
 import mongoose from 'mongoose';
 
-import ApplicationRepository from '@/repositories/application.repository';
+import { ApplicationRepository } from '@/repositories/application.repository';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
-import ApplicationService from '@/services/application.service';
+import { ApplicationService } from '@/services/application.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
 import { ApplicationStatus } from '@/types/enums';

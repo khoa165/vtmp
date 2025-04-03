@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import ApplicationService from '@/services/application.service';
+import { ApplicationService } from '@/services/application.service';
 import { z } from 'zod';
 import { handleError } from '@/utils/errors';
 import mongoose from 'mongoose';
@@ -12,13 +12,14 @@ const ApplicationRequestSchema = z.object({
     }),
 });
 
+// TODO: need cleaning-up
 interface AuthenticatedRequest extends Request {
   user: {
     id: string;
   };
 }
 
-const ApplicationController = {
+export const ApplicationController = {
   createApplication: async (req: Request, res: Response) => {
     try {
       const { jobPostingId } = ApplicationRequestSchema.parse(req.body);
@@ -42,5 +43,3 @@ const ApplicationController = {
     }
   },
 };
-
-export default ApplicationController;

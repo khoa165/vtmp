@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import ApplicationController from '@/controllers/application.controller';
+import { ApplicationController } from '@/controllers/application.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
 
 const ApplicationRoutes = Router();
 
 ApplicationRoutes.post(
-  '/create',
+  '/',
   authenticate,
   ApplicationController.createApplication
 );
