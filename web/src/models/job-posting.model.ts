@@ -1,9 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-
-export enum Location {
-  US = 'US',
-  CANADA = 'CANADA',
-}
+import { JobPostingLocation } from '@/types/enums';
 
 interface IJobPosting extends Document {
   linkId: mongoose.Schema.Types.ObjectId;
@@ -44,7 +40,7 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
     location: {
       type: String,
       enum: Object.values(Location),
-      default: Location.US,
+      default: JobPostingLocation.US,
     },
     datePosted: {
       type: Date,
