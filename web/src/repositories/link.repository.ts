@@ -1,9 +1,9 @@
-import LinkModel, { LinkStatus } from '@/models/link.model';
+import { LinkModel, LinkStatus } from '@/models/link.model';
 import mongoose, { ClientSession } from 'mongoose';
 
 const { ObjectId } = mongoose.Types;
 
-const LinkRepository = {
+export const LinkRepository = {
   createLink: async (url: string) => {
     return LinkModel.create({ url });
   },
@@ -32,5 +32,3 @@ const LinkRepository = {
     return LinkModel.find({ status });
   },
 };
-
-export default LinkRepository;
