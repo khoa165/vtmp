@@ -61,6 +61,18 @@ describe('ApplicationService', () => {
         jobPostingId: newJobPosting.id,
         userId: getNewMongoId(),
       };
+      await expect(ApplicationService.createApplication(mockApplication))
+        .eventually.fulfilled;
+    });
+
+    it('should create an application successfully and return valid new application', async () => {
+      const newJobPosting = await JobPostingRepository.createJobPosting(
+        mockJobPosting
+      );
+      const mockApplication = {
+        jobPostingId: newJobPosting.id,
+        userId: getNewMongoId(),
+      };
       const newApplication = await ApplicationService.createApplication(
         mockApplication
       );
