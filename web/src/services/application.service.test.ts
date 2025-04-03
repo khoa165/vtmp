@@ -10,6 +10,7 @@ import { ApplicationService } from '@/services/application.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
 import { ApplicationStatus } from '@/types/enums';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -28,8 +29,8 @@ describe('ApplicationService', () => {
   describe('createApplication', () => {
     it('should throw error if job posting does not exist', async () => {
       const mockApplication = {
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
-        userId: new mongoose.Types.ObjectId().toString(),
+        jobPostingId: getNewMongoId(),
+        userId: getNewMongoId(),
       };
 
       await expect(
@@ -43,7 +44,7 @@ describe('ApplicationService', () => {
       );
       const mockApplication = {
         jobPostingId: newJobPosting.id,
-        userId: new mongoose.Types.ObjectId().toString(),
+        userId: getNewMongoId(),
       };
       await ApplicationRepository.createApplication(mockApplication);
 
@@ -58,7 +59,7 @@ describe('ApplicationService', () => {
       );
       const mockApplication = {
         jobPostingId: newJobPosting.id,
-        userId: new mongoose.Types.ObjectId().toString(),
+        userId: getNewMongoId(),
       };
       const newApplication = await ApplicationService.createApplication(
         mockApplication

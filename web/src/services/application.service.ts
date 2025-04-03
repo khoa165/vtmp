@@ -15,7 +15,8 @@ export const ApplicationService = {
     );
     if (!jobPosting) {
       throw new ResourceNotFoundError('Job posting not found', {
-        resource: 'JobPosting',
+        jobPostingId,
+        userId,
       });
     }
 
@@ -25,7 +26,8 @@ export const ApplicationService = {
     });
     if (applicationExists) {
       throw new DuplicateResourceError('Application already exists', {
-        resource: 'Application',
+        jobPostingId,
+        userId,
       });
     }
 

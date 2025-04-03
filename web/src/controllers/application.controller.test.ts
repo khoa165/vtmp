@@ -16,6 +16,7 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 describe('POST /applications', () => {
   useMongoDB();
@@ -53,7 +54,7 @@ describe('POST /applications', () => {
   it('should return error message with 400 status code if request body schema is invalid', async () => {
     const res = await request(app)
       .post('/api/applications')
-      .send({ invalidIdSchema: new mongoose.Types.ObjectId().toString() })
+      .send({ invalidIdSchema: getNewMongoId() })
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${mockToken}`);
 
@@ -77,7 +78,7 @@ describe('POST /applications', () => {
   it('it should return error message with status code 404 if job posting does not exist', async () => {
     const res = await request(app)
       .post('/api/applications')
-      .send({ jobPostingId: new mongoose.Types.ObjectId().toString() })
+      .send({ jobPostingId: getNewMongoId() })
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${mockToken}`);
 

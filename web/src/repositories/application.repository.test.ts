@@ -6,13 +6,14 @@ import { differenceInSeconds } from 'date-fns';
 import { ApplicationRepository } from './application.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ApplicationStatus } from '@/types/enums';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 describe('ApplicationRepository', () => {
   useMongoDB();
 
   const mockApplication = {
-    jobPostingId: new mongoose.Types.ObjectId().toString(),
-    userId: new mongoose.Types.ObjectId().toString(),
+    jobPostingId: getNewMongoId(),
+    userId: getNewMongoId(),
   };
 
   describe('createApplication', () => {
