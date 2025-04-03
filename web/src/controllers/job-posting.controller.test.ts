@@ -13,8 +13,7 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import mongoose from 'mongoose';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { differenceInSeconds } from 'date-fns';
 
 chai.use(chaiSubset);
@@ -29,11 +28,11 @@ describe('JobPostingController', () => {
 
   beforeEach(async () => {
     const mockJobPosting = {
-      linkId: new mongoose.Types.ObjectId(),
+      linkId: getNewObjectId(),
       url: 'http://example.com/job-posting',
       jobTitle: 'Software Engineer',
       companyName: 'Example Company',
-      submittedBy: new mongoose.Types.ObjectId(),
+      submittedBy: getNewObjectId(),
     };
     const newJobPosting = await JobPostingRepository.createJobPosting(
       mockJobPosting

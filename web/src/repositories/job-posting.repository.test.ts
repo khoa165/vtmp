@@ -3,7 +3,7 @@ import chaiSubset from 'chai-subset';
 import assert from 'assert';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import mongoose from 'mongoose';
+import { getNewObjectId } from '@/testutils/mongoID.testutil';
 import { differenceInSeconds } from 'date-fns';
 
 chai.use(chaiSubset);
@@ -13,11 +13,11 @@ describe('JobPostingRepository', () => {
   useMongoDB();
 
   const mockJobPosting = {
-    linkId: new mongoose.Types.ObjectId(),
+    linkId: getNewObjectId(),
     url: 'http://example.com/job-posting',
     jobTitle: 'Software Engineer',
     companyName: 'Example Company',
-    submittedBy: new mongoose.Types.ObjectId(),
+    submittedBy: getNewObjectId(),
   };
 
   describe('createJobPosting', () => {
