@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { LinkStatus } from '@/models/link.model';
+import { LinkStatus } from '@/types/enums';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import LinkService from './link.service';
@@ -50,7 +50,7 @@ describe('LinkService', () => {
 
       const pendingLinks = await LinkService.getPendingLinks();
 
-      const urls = pendingLinks.map(link => link.url);
+      const urls = pendingLinks.map((link) => link.url);
       expect(urls).to.have.members([googleLink.url, nvidia.url]);
     });
 
@@ -75,7 +75,7 @@ describe('LinkService', () => {
 
       const pendingLinks = await LinkService.getPendingLinks();
 
-      const urls = pendingLinks.map(link => link.url);
+      const urls = pendingLinks.map((link) => link.url);
       expect(urls).to.have.members([googleLink.url, nvidia.url]);
     });
 

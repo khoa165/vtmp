@@ -1,26 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-
-enum InterviewType {
-  CRITICAL_THINKING = 'CRITICAL_THINKING',
-  CODE_REVIEW = 'CODE_REVIEW',
-  BEHAVIORIAL = 'BEHAVIORIAL',
-  TECHNICAL = 'TECHNICAL',
-  RECRUITER_SCREEN = 'RECRUITER_SCREEN',
-  DEBUG = 'DEBUG',
-  SYSTEM_DESIGN = 'SYSTEM_DESIGN',
-  TRIVIA = 'TRIVIA',
-  PROJECT_WALKTHROUGH = 'PROJECT_WALKTHROUGH',
-  PRACTICAL = 'PRACTICAL',
-  HIRING_MANAGER = 'HIRING_MANAGER',
-}
-
-enum InterviewStatus {
-  PASSED = 'PASSED',
-  FAILED = 'FAILED',
-  WITHDRAWN = 'WITHDRAWN',
-  UPCOMING = 'UPCOMING',
-  PENDING = 'PENDING',
-}
+import { InterviewStatus, InterviewType } from '@/types/enums';
 
 interface IInterview extends Document {
   applicationId: mongoose.Schema.Types.ObjectId;
@@ -54,4 +33,7 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
   },
 });
 
-export default mongoose.model<IInterview>('Interview', InterviewSchema);
+export const InterviewModel = mongoose.model<IInterview>(
+  'Interview',
+  InterviewSchema
+);
