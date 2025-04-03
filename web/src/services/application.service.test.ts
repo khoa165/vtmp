@@ -2,7 +2,6 @@ import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
-import mongoose from 'mongoose';
 
 import { ApplicationRepository } from '@/repositories/application.repository';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
@@ -10,7 +9,7 @@ import { ApplicationService } from '@/services/application.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
 import { ApplicationStatus } from '@/types/enums';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -19,11 +18,11 @@ describe('ApplicationService', () => {
   useMongoDB();
 
   const mockJobPosting = {
-    linkId: new mongoose.Types.ObjectId(),
+    linkId: getNewObjectId(),
     url: 'vtmp.com',
     jobTitle: 'SWE',
     companyName: 'Apple',
-    submittedBy: new mongoose.Types.ObjectId(),
+    submittedBy: getNewObjectId(),
   };
 
   describe('createApplication', () => {

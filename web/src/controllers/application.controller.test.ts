@@ -1,6 +1,5 @@
 import request from 'supertest';
 import { expect } from 'chai';
-import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 import app from '@/app';
@@ -16,7 +15,7 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 
 describe('POST /applications', () => {
   useMongoDB();
@@ -26,11 +25,11 @@ describe('POST /applications', () => {
   let mockToken: string;
 
   const mockJobPosting = {
-    linkId: new mongoose.Types.ObjectId(),
+    linkId: getNewObjectId(),
     url: 'vtmp.com',
     jobTitle: 'SWE',
     companyName: 'Apple',
-    submittedBy: new mongoose.Types.ObjectId(),
+    submittedBy: getNewObjectId(),
   };
 
   beforeEach(async () => {
