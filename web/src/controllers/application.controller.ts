@@ -12,7 +12,6 @@ const ApplicationRequestSchema = z.object({
     }),
 });
 
-// TODO: need cleaning-up
 interface AuthenticatedRequest extends Request {
   user: {
     id: string;
@@ -20,11 +19,11 @@ interface AuthenticatedRequest extends Request {
 }
 
 export const ApplicationController = {
-  createApplication: async (req: Request, res: Response) => {
+  createApplication: async (req: AuthenticatedRequest, res: Response) => {
     try {
       const { jobPostingId } = ApplicationRequestSchema.parse(req.body);
 
-      const userId = (req as AuthenticatedRequest).user.id;
+      const userId = req.user.id;
 
       const newApplication = await ApplicationService.createApplication({
         jobPostingId,

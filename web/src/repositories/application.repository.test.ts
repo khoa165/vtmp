@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import assert from 'assert';
-import mongoose from 'mongoose';
 import { differenceInSeconds } from 'date-fns';
 
 import { ApplicationRepository } from './application.repository';
