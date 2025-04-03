@@ -4,9 +4,11 @@ const JobPostingRepository = {
   createJobPosting: async (jobPostingData: object) => {
     return JobPostingModel.create(jobPostingData);
   },
+
   getJobPostingById: async (jobId: string) => {
     return JobPostingModel.findById(jobId).lean();
   },
+
   updateJobPostingById: async (jobId: string, newUpdate: object) => {
     return JobPostingModel.findByIdAndUpdate(
       jobId,
@@ -14,6 +16,7 @@ const JobPostingRepository = {
       { new: true }
     );
   },
+
   deleteJobPostingById: async (jobId: string) => {
     return JobPostingModel.findByIdAndUpdate(
       jobId,

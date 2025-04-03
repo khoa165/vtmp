@@ -1,5 +1,4 @@
-import * as chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import { expect } from 'chai';
 import { LinkStatus } from '@/models/link.model';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
@@ -7,9 +6,6 @@ import LinkService from './link.service';
 import assert from 'assert';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { ResourceNotFoundError } from '@/utils/errors';
-
-chai.use(chaiAsPromised);
-const { expect } = chai;
 
 describe('LinkService', () => {
   useMongoDB();
