@@ -55,7 +55,7 @@ export const ApplicationService = {
       });
 
     if (!application) {
-      throw new ResourceNotFoundError('Application not found.', {
+      throw new ResourceNotFoundError('Application not found', {
         userId,
       });
     }

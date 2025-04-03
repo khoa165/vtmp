@@ -9,7 +9,15 @@ ApplicationRoutes.post(
   authenticate,
   ApplicationController.createApplication
 );
-ApplicationRoutes.get('/', ApplicationController.getAllApplications);
-ApplicationRoutes.get('/:id', ApplicationController.getOneApplication);
+ApplicationRoutes.get(
+  '/',
+  authenticate,
+  ApplicationController.getAllApplications
+);
+ApplicationRoutes.get(
+  '/:applicationId',
+  authenticate,
+  ApplicationController.getOneApplication
+);
 
 export default ApplicationRoutes;

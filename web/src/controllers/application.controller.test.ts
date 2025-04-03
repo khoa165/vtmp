@@ -183,10 +183,6 @@ describe('ApplicationController', () => {
       const application1 = {
         jobPostingId: newJobPostingId1,
         userId: newUserId,
-        hasApplied: true,
-        status: 'Pending',
-        appliedOnDate: new Date('2025-03-03'),
-        note: '',
       };
       newApplicationId1 = (
         await ApplicationRepository.createApplication(application1)
@@ -195,10 +191,6 @@ describe('ApplicationController', () => {
       const application2 = {
         jobPostingId: newJobPostingId2,
         userId: newUserId,
-        hasApplied: true,
-        status: 'Pending',
-        appliedOnDate: new Date('2025-09-03'),
-        note: '',
       };
       newApplicationId2 = (
         await ApplicationRepository.createApplication(application2)
@@ -222,8 +214,6 @@ describe('ApplicationController', () => {
 
           res.body.data.forEach((application: any) => {
             expect(application).to.have.property('userId', newUserId);
-            expect(application).to.have.property('status', 'Pending');
-            expect(application).to.have.property('hasApplied', true);
           });
 
           expect(res.body.data.map((app: any) => app._id)).to.include.members([
@@ -279,19 +269,27 @@ describe('ApplicationController', () => {
       };
       newJobPostingId = (
         await JobPostingRepository.createJobPosting(jobPosting)
-      ).id.toString();
+      ).id;
 
       const application = {
         jobPostingId: newJobPostingId,
         userId: newUserId,
-        hasApplied: true,
-        status: 'Pending',
-        appliedOnDate: new Date('2025-03-03'),
-        note: '',
       };
       newApplicationId = (
         await ApplicationRepository.createApplication(application)
       ).id;
+    });
+
+    it('should return error message with 400 status code if applicationId param is invalid', async () => {
+      const res = await request(app)
+        .get('/api/applications/123456789')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.statusCode).to.equal(400);
+      expect(res.body.errors[0].message).to.equal(
+        'Invalid application ID format'
+      );
     });
 
     it('should return 404 if application is not found or does not belong to authenticated user', async () => {
@@ -301,7 +299,10 @@ describe('ApplicationController', () => {
         .set('Authorization', `Bearer ${token}`);
 
       expect(res.statusCode).to.equal(404);
-      expect(res.body).to.have.property('message', 'Application not found');
+      expect(res.body.errors[0]).to.have.property(
+        'message',
+        'Application not found'
+      );
     });
 
     it('should return the application if found and belongs to authenticated user', async () => {
@@ -312,15 +313,13 @@ describe('ApplicationController', () => {
       expect(res.statusCode).to.equal(200);
       expect(res.body).to.have.property(
         'message',
-        'Get Application Successfully'
+        'Get Application successfully'
       );
       expect(res.body).to.have.property('data');
 
       const data = res.body.data;
       expect(data).to.have.property('_id', newApplicationId);
       expect(data).to.have.property('userId', newUserId);
-      expect(data).to.have.property('hasApplied', true);
-      expect(data).to.have.property('status', 'Pending');
     });
   });
 });

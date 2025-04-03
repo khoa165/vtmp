@@ -12,11 +12,11 @@ const ApplicationRequestSchema = z.object({
     }),
 });
 
-const ApplicationIdRequestSchema = z.object({
+const ApplicationIdParamsSchema = z.object({
   applicationId: z
     .string({ required_error: 'Application ID is required' })
     .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: 'Invalid job posting ID format',
+      message: 'Invalid application ID format',
     }),
 });
 
@@ -68,7 +68,7 @@ export const ApplicationController = {
   },
   getOneApplication: async (req: Request, res: Response) => {
     try {
-      const { applicationId } = ApplicationIdRequestSchema.parse(req.params);
+      const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
       const userId = (req as AuthenticatedRequest).user.id;
 
       const application = await ApplicationService.getOneApplication({
