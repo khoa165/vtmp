@@ -52,3 +52,9 @@ export enum Role {
   MODERATOR = 'MODERATOR',
   USER = 'USER',
 }
+
+export enum InterestLevel {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+}
