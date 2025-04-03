@@ -1,11 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-import { ApplicationStatus } from '@/types/enums';
-
-enum InterestLevel {
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-}
+import { ApplicationStatus, InterestLevel } from '@/types/enums';
 
 interface IApplication extends Document {
   jobPostingId: mongoose.Schema.Types.ObjectId;
