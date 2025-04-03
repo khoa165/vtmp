@@ -1,39 +1,50 @@
 import { EnvConfig } from '@/config/env';
 import { UserRepository } from '@/repositories/user.repository';
-import { ResourceNotFoundError, UnauthorizedError } from '@/utils/errors';
+import {
+  DuplicateResourceError,
+  UnauthorizedError,
+  ResourceNotFoundError,
+} from '@/utils/errors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Role } from '@/models/user.model';
 
 export const AuthService = {
-  signup: async (accounts: {
+  signup: async ({
+    firstName,
+    lastName,
+    email,
+    password,
+    role,
+  }: {
     firstName: string;
     lastName: string;
     email: string;
-    encryptedPassword: string;
+    password: string;
     role: Role;
   }) => {
     // Check duplicate email
-    const userByEmail = await UserRepository.findUserByEmail(accounts.email);
+    const userByEmail = await UserRepository.findUserByEmail(email);
 
     if (userByEmail) {
-      throw new Error('Duplicate Email');
+      throw new DuplicateResourceError('Duplicate Email', {
+        email,
+      });
     }
 
     const saltRounds = 10; // The number of rounds to use for salt generation
 
     // Encrypt password
-    accounts.encryptedPassword = await bcrypt.hash(
-      accounts.encryptedPassword,
-      saltRounds
-    );
+    const encryptedPassword = await bcrypt.hash(password, saltRounds);
 
     // Create new user
-    const newUser = await UserRepository.createUser(accounts);
-
-    if (!newUser) {
-      throw new Error('Too bad! You failed to sign up!');
-    }
+    const newUser = await UserRepository.createUser({
+      firstName,
+      lastName,
+      email,
+      encryptedPassword,
+      role,
+    });
 
     return newUser;
   },

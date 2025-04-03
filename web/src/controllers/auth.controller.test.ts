@@ -121,33 +121,20 @@ describe('AuthController', () => {
   });
 
   describe('POST /auth/signup', () => {
-    useMongoDB();
-
-    beforeEach(async () => {
-      const mockUser = {
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test@gmail.com',
-        encryptedPassword: 'test password',
-        role: Role.ADMIN,
-      };
-      await UserRepository.createUser(mockUser);
-    });
-
     it('should return new user', (done) => {
       request(app)
         .post('/api/auth/signup')
         .send({
           firstName: 'admin',
           lastName: 'viettech',
-          encryptedPassword: 'test',
+          password: 'test',
           email: 'test123@gmail.com',
           role: Role.ADMIN,
         })
         .end((err, res) => {
           if (err) done(err);
 
-          expect(res.statusCode).to.eq(200);
+          expectSuccessfulResponse({ res, statusCode: 200 });
           expect(res.body.data).to.have.property('token');
           done();
         });
@@ -159,7 +146,7 @@ describe('AuthController', () => {
         .post('/api/auth/signup')
         .send({
           lastName: 'viettech',
-          encryptedPassword: 'test',
+          password: 'test',
           email: 'test@gmail.com',
           role: Role.ADMIN,
         })
@@ -167,7 +154,7 @@ describe('AuthController', () => {
         .end((err, res) => {
           if (err) return done(err);
 
-          expect(res.statusCode).to.eq(400);
+          expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
           expect(res.body.errors[0].message).to.eq('Firstname is required');
           done();
         });
@@ -185,7 +172,7 @@ describe('AuthController', () => {
         .end((err, res) => {
           if (err) done(err);
 
-          expect(res.statusCode).to.eq(400);
+          expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
           expect(res.body.errors[0].message).to.eq('Password is required');
           done();
         });
@@ -196,7 +183,7 @@ describe('AuthController', () => {
         .post('/api/auth/signup')
         .send({
           firstName: 'admin',
-          encryptedPassword: 'test',
+          password: 'test',
           email: 'test123@gmail.com',
           role: Role.ADMIN,
         })
@@ -204,28 +191,8 @@ describe('AuthController', () => {
         .end((err, res) => {
           if (err) return done(err);
 
-          expect(res.statusCode).to.eq(400);
+          expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
           expect(res.body.errors[0].message).to.eq('Lastname is required');
-          done();
-        });
-    });
-
-    it('should return error messages for missing role', (done) => {
-      request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          encryptedPassword: 'test',
-          email: 'test123@gmail.com',
-        })
-        .set('Accept', 'application/json')
-        .end((err, res) => {
-          if (err) return done(err);
-
-          expect(res.statusCode).to.eq(400);
-
-          expect(res.body.errors[0].message).to.eq('Role is required');
           done();
         });
     });
@@ -236,15 +203,14 @@ describe('AuthController', () => {
         .send({
           firstName: 'admin',
           lastName: 'viettech',
-          encryptedPassword: 'test',
+          password: 'test',
           role: Role.ADMIN,
         })
         .set('Accept', 'application/json')
         .end((err, res) => {
           if (err) return done(err);
 
-          expect(res.statusCode).to.eq(400);
-
+          expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
           expect(res.body.errors[0].message).to.eq('Email is required');
           done();
         });
@@ -252,24 +218,33 @@ describe('AuthController', () => {
 
     //   Testing duplicate email
     it('should return error messages for duplicate email', (done) => {
-      request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          encryptedPassword: 'test',
-          role: Role.ADMIN,
-        })
-        .set('Accept', 'application/json')
-        .end((err, res) => {
-          if (err) return done(err);
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@gmail.com',
+        encryptedPassword: 'test password',
+        role: Role.ADMIN,
+      };
 
-          expect(res.statusCode).to.eq(401);
+      UserRepository.createUser(mockUser).then(() => {
+        request(app)
+          .post('/api/auth/signup')
+          .send({
+            firstName: 'admin',
+            lastName: 'viettech',
+            email: 'test@gmail.com',
+            password: 'test',
+            role: Role.ADMIN,
+          })
+          .set('Accept', 'application/json')
+          .end((err, res) => {
+            if (err) return done(err);
 
-          expect(res.body.message).to.eq('Duplicate Email');
-          done();
-        });
+            expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
+            expect(res.body.errors[0].message).to.eq('Duplicate Email');
+            done();
+          });
+      });
     });
   });
 });

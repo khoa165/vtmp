@@ -7,9 +7,11 @@ import { z } from 'zod';
 const signupSchema = z.object({
   firstName: z.string({ required_error: 'Firstname is required' }),
   lastName: z.string({ required_error: 'Lastname is required' }),
-  email: z.string({ required_error: 'Email is required' }).email(),
-  encryptedPassword: z.string({ required_error: 'Password is required' }),
-  role: z.nativeEnum(Role, { required_error: 'Role is required' }),
+  email: z
+    .string({ required_error: 'Email is required' })
+    .email({ message: 'Invalid email address' }),
+  password: z.string({ required_error: 'Password is required' }),
+  role: z.nativeEnum(Role).default(Role.USER),
 });
 
 const loginSchema = z.object({
@@ -22,33 +24,22 @@ const loginSchema = z.object({
 export const AuthController = {
   signup: async (req: Request, res: Response) => {
     try {
-      const { firstName, lastName, email, encryptedPassword, role } = req.body;
-
       // Validate all the fields are required
       const validatedBody = signupSchema.safeParse(req.body);
-      if (validatedBody.success) {
-        // Call the authentication service - signup
-        const token = await AuthService.signup({
-          firstName,
-          lastName,
-          email,
-          encryptedPassword,
-          role,
-        });
 
-        // Return the response
-        res.status(200).json({ data: { token } });
-      } else {
-        const errors = validatedBody.error.issues.map((issue) => ({
-          message: issue.message,
-        }));
-
-        return res.status(400).json({ errors });
+      if (!validatedBody.success) {
+        throw validatedBody.error;
       }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'An error occurred';
-      res.status(401).json({ message: errorMessage });
+
+      // Call the authentication service - signup
+      const token = await AuthService.signup(validatedBody.data);
+
+      // Return the response
+      res.status(200).json({ data: { token } });
+    } catch (error: unknown) {
+      const { statusCode, errors } = handleError(error);
+      res.status(statusCode).json({ errors });
+      return;
     }
   },
 

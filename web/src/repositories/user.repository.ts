@@ -1,5 +1,4 @@
-import { IUser, UserModel } from '@/models/user.model';
-import bcrypt from 'bcryptjs';
+import { IUser, Role, UserModel } from '@/models/user.model';
 
 export const UserRepository = {
   createUser: async (userData: {
@@ -7,6 +6,7 @@ export const UserRepository = {
     lastName: string;
     email: string;
     encryptedPassword: string;
+    role?: Role;
   }): Promise<IUser> => {
     return UserModel.create(userData);
   },

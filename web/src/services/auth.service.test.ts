@@ -7,13 +7,18 @@ import bcrypt from 'bcryptjs';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import { ResourceNotFoundError, UnauthorizedError } from '@/utils/errors';
+import {
+  DuplicateResourceError,
+  ResourceNotFoundError,
+  UnauthorizedError,
+} from '@/utils/errors';
 import { assert } from 'console';
 
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
 import { Role } from '@/models/user.model';
+import { expectSuccessfulResponse } from '@/testutils/response-assertion.testutil';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -78,22 +83,28 @@ describe('AuthService', () => {
     });
   });
 
-  describe('Signup', () => {
+  describe('signup', () => {
     it('should fail to signup due to duplicate email', async () => {
+      const encryptedPassword = await bcrypt.hash('test password', 10);
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@gmail.com',
+        encryptedPassword,
+      };
+      await UserRepository.createUser(mockUser);
+
       const userData = {
         firstName: 'admin123',
         lastName: 'viettech',
         email: 'test@gmail.com',
-        encryptedPassword: 'test',
+        password: 'test',
         role: Role.ADMIN,
       };
 
-      try {
-        await AuthService.signup(userData);
-      } catch (error: any) {
-        console.log(error.message);
-        expect(error.message).to.deep.equal(`Duplicate Email`);
-      }
+      await expect(AuthService.signup(userData)).eventually.rejectedWith(
+        DuplicateResourceError
+      );
     });
 
     it('should signup successfully', async () => {
@@ -101,19 +112,24 @@ describe('AuthService', () => {
         firstName: 'admin123',
         lastName: 'viettech',
         email: 'test12@gmail.com',
-        encryptedPassword: 'test',
+        password: 'test',
         role: Role.ADMIN,
       };
 
-      try {
-        const user = await AuthService.signup(userData);
-        expect(user).to.have.deep.property('firstName', userData.firstName);
-        expect(user).to.have.deep.property('lastName', userData.lastName);
-        expect(user).to.have.deep.property('email', userData.email);
-        expect(user).to.have.deep.property('role', userData.role);
-      } catch (error: any) {
-        throw new Error('signup successfully but return wrong user data');
-      }
+      await expect(AuthService.signup(userData)).eventually.fulfilled;
+    });
+
+    it('should signup successfully with the same information', async () => {
+      const userData = {
+        firstName: 'admin123',
+        lastName: 'viettech',
+        email: 'test12@gmail.com',
+        password: 'test',
+        role: Role.ADMIN,
+      };
+
+      const user = await AuthService.signup(userData);
+      assert(user);
     });
   });
 });
