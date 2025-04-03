@@ -60,6 +60,7 @@ describe('ApplicationService', () => {
         jobPostingId: newJobPosting.id,
         userId: getNewMongoId(),
       };
+
       await expect(ApplicationService.createApplication(mockApplication))
         .eventually.fulfilled;
     });
