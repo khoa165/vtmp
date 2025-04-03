@@ -144,7 +144,6 @@ describe('ApplicationController', () => {
     let newApplicationId2: string;
 
     beforeEach(async () => {
-      // Create user and save to database
       encryptedPassword = await bcrypt.hash('test password', 10);
       mockUser = {
         firstName: 'admin',
@@ -154,13 +153,11 @@ describe('ApplicationController', () => {
       };
       newUserId = (await UserRepository.createUser(mockUser)).id;
 
-      // Create auth token
       token = await AuthService.login({
         email: mockUser.email,
         password: 'test password',
       });
 
-      // Create a mock job posting
       const jobPosting1 = {
         linkId: getNewObjectId(),
         url: 'vtmp.com',
@@ -183,7 +180,6 @@ describe('ApplicationController', () => {
         await JobPostingRepository.createJobPosting(jobPosting2)
       ).id;
 
-      // Create two applications
       const application1 = {
         jobPostingId: newJobPostingId1,
         userId: newUserId,
@@ -260,7 +256,6 @@ describe('ApplicationController', () => {
     let newApplicationId: string;
 
     beforeEach(async () => {
-      // Create user and save to database
       encryptedPassword = await bcrypt.hash('test password', 10);
       mockUser = {
         firstName: 'admin',
@@ -270,13 +265,11 @@ describe('ApplicationController', () => {
       };
       newUserId = (await UserRepository.createUser(mockUser)).id;
 
-      // Create auth token
       token = await AuthService.login({
         email: mockUser.email,
         password: 'test password',
       });
 
-      // Create a mock job posting
       const jobPosting = {
         linkId: getNewObjectId(),
         url: 'vtmp.com',
@@ -286,9 +279,8 @@ describe('ApplicationController', () => {
       };
       newJobPostingId = (
         await JobPostingRepository.createJobPosting(jobPosting)
-      ).id;
+      ).id.toString();
 
-      // Create application
       const application = {
         jobPostingId: newJobPostingId,
         userId: newUserId,
@@ -302,41 +294,33 @@ describe('ApplicationController', () => {
       ).id;
     });
 
-    it('should return 404 if application is not found or is not belong to authenticated user', (done) => {
-      request(app)
-        .get(`/api/applications/${newApplicationId}`)
-        .set('Authorization', `Bearer ${token}`)
-        .end((err, res) => {
-          if (err) return done(err);
+    it('should return 404 if application is not found or does not belong to authenticated user', async () => {
+      const invalidApplicationId = getNewMongoId();
+      const res = await request(app)
+        .get(`/api/applications/${invalidApplicationId}`)
+        .set('Authorization', `Bearer ${token}`);
 
-          expect(res.statusCode).to.equal(404);
-          expect(res.body).to.have.property('message', 'Application not found');
-          done();
-        });
+      expect(res.statusCode).to.equal(404);
+      expect(res.body).to.have.property('message', 'Application not found');
     });
 
-    it('should return the application if found and belongs to authenticated user', (done) => {
-      request(app)
+    it('should return the application if found and belongs to authenticated user', async () => {
+      const res = await request(app)
         .get(`/api/applications/${newApplicationId}`)
-        .set('Authorization', `Bearer ${token}`)
-        .end((err, res) => {
-          if (err) return done(err);
+        .set('Authorization', `Bearer ${token}`);
 
-          expect(res.statusCode).to.equal(200);
-          expect(res.body).to.have.property(
-            'message',
-            'Get Application Successfully'
-          );
-          expect(res.body).to.have.property('data');
+      expect(res.statusCode).to.equal(200);
+      expect(res.body).to.have.property(
+        'message',
+        'Get Application Successfully'
+      );
+      expect(res.body).to.have.property('data');
 
-          const data = res.body.data;
-          expect(data).to.have.property('_id', newApplicationId);
-          expect(data).to.have.property('userId', newUserId);
-          expect(data).to.have.property('hasApplied', true);
-          expect(data).to.have.property('status', 'Pending');
-
-          done();
-        });
+      const data = res.body.data;
+      expect(data).to.have.property('_id', newApplicationId);
+      expect(data).to.have.property('userId', newUserId);
+      expect(data).to.have.property('hasApplied', true);
+      expect(data).to.have.property('status', 'Pending');
     });
   });
 });

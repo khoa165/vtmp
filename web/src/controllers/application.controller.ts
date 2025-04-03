@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { application, Request, Response } from 'express';
 import { ApplicationService } from '@/services/application.service';
 import { z } from 'zod';
 import { handleError } from '@/utils/errors';
@@ -7,6 +7,14 @@ import mongoose from 'mongoose';
 const ApplicationRequestSchema = z.object({
   jobPostingId: z
     .string({ required_error: 'Job posting ID is required' })
+    .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: 'Invalid job posting ID format',
+    }),
+});
+
+const ApplicationIdRequestSchema = z.object({
+  applicationId: z
+    .string({ required_error: 'Application ID is required' })
     .refine((id) => mongoose.Types.ObjectId.isValid(id), {
       message: 'Invalid job posting ID format',
     }),
@@ -60,15 +68,8 @@ export const ApplicationController = {
   },
   getOneApplication: async (req: Request, res: Response) => {
     try {
+      const { applicationId } = ApplicationIdRequestSchema.parse(req.params);
       const userId = (req as AuthenticatedRequest).user.id;
-
-      if (!req.params.applicationId) {
-        res.status(400).json({
-          message: 'Missing Application ID Parameter',
-        });
-        return;
-      }
-      const applicationId = req.params.applicationId;
 
       const application = await ApplicationService.getOneApplication({
         applicationId,
@@ -76,7 +77,7 @@ export const ApplicationController = {
       });
 
       res.status(200).json({
-        message: 'Get One Application successfully',
+        message: 'Get Application successfully',
         data: application,
       });
       return;
