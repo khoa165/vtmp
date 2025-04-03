@@ -1,13 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-
-enum ApplicationStatus {
-  SUBMITTED = 'SUBMITTED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  OFFER = 'OFFER',
-  REJECTED = 'REJECTED',
-  OA_RECEIVED = 'OA_RECEIVED',
-  WITHDRAWN = 'WITHDRAWN',
-}
+import { ApplicationStatus } from '@/types/enums';
 
 enum InterestLevel {
   LOW = 'LOW',
@@ -71,4 +63,7 @@ const ApplicationSchema = new mongoose.Schema<IApplication>({
   },
 });
 
-export default mongoose.model<IApplication>('Application', ApplicationSchema);
+export const ApplicationModel = mongoose.model<IApplication>(
+  'Application',
+  ApplicationSchema
+);

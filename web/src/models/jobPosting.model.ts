@@ -1,9 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-
-enum Location {
-  US = 'US',
-  CANADA = 'CANADA',
-}
+import { Location } from '@/types/enums';
 
 interface IJobPosting extends Document {
   linkId: mongoose.Schema.Types.ObjectId;

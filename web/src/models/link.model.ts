@@ -1,10 +1,5 @@
 import mongoose from 'mongoose';
-
-export enum LinkStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
-}
+import { LinkStatus } from '@/types/enums';
 
 interface ILink extends Document {
   url: string;
