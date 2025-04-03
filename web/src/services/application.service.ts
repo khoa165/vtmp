@@ -1,8 +1,8 @@
-import ApplicationRepository from '@/repositories/application.repository';
+import { ApplicationRepository } from '@/repositories/application.repository';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
-const ApplicationService = {
+export const ApplicationService = {
   createApplication: async ({
     jobPostingId,
     userId,
@@ -15,7 +15,8 @@ const ApplicationService = {
     );
     if (!jobPosting) {
       throw new ResourceNotFoundError('Job posting not found', {
-        resource: 'JobPosting',
+        jobPostingId,
+        userId,
       });
     }
 
@@ -25,7 +26,8 @@ const ApplicationService = {
     });
     if (applicationExists) {
       throw new DuplicateResourceError('Application already exists', {
-        resource: 'Application',
+        jobPostingId,
+        userId,
       });
     }
 
@@ -54,12 +56,10 @@ const ApplicationService = {
 
     if (!application) {
       throw new ResourceNotFoundError('Application not found.', {
-        resource: 'Application',
+        userId,
       });
     }
 
     return application;
   },
 };
-
-export default ApplicationService;

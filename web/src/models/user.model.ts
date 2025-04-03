@@ -1,10 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-
-export enum Role {
-  ADMIN = 'ADMIN',
-  MODERATOR = 'MODERATOR',
-  USER = 'USER',
-}
+import { Role } from '@/types/enums';
 
 export interface IUser extends Document {
   _id: mongoose.Schema.Types.ObjectId;

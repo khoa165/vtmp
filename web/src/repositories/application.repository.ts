@@ -1,6 +1,6 @@
-import ApplicationModel from '@/models/application.model';
+import { ApplicationModel } from '@/models/application.model';
 
-const ApplicationRepository = {
+export const ApplicationRepository = {
   createApplication: async ({
     jobPostingId,
     userId,
@@ -46,5 +46,3 @@ const ApplicationRepository = {
     });
   },
 };
-
-export default ApplicationRepository;

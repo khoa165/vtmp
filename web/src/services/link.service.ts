@@ -1,4 +1,4 @@
-import { LinkStatus } from '@/models/link.model';
+import { LinkStatus } from '@/types/enums';
 import LinkRepository from '@/repositories/link.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';

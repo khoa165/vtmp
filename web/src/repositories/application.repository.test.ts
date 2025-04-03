@@ -1,20 +1,18 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import assert from 'assert';
-import mongoose from 'mongoose';
 import { differenceInSeconds } from 'date-fns';
 
-import ApplicationRepository from './application.repository';
+import { ApplicationRepository } from './application.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ApplicationStatus } from '@/types/enums';
-
-const { expect } = chai;
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 describe('ApplicationRepository', () => {
   useMongoDB();
 
   const mockApplication = {
-    jobPostingId: new mongoose.Types.ObjectId().toString(),
-    userId: new mongoose.Types.ObjectId().toString(),
+    jobPostingId: getNewMongoId(),
+    userId: getNewMongoId(),
   };
 
   describe('createApplication', () => {
@@ -59,19 +57,19 @@ describe('ApplicationRepository', () => {
 
   describe('findApplicationsByUserId', () => {
     it('should return only applications associated with given userId', async () => {
-      const userId = new mongoose.Types.ObjectId().toString();
-      const otherUserId = new mongoose.Types.ObjectId().toString();
+      const userId = getNewMongoId();
+      const otherUserId = getNewMongoId();
 
       const mockApplication1 = {
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        jobPostingId: getNewMongoId(),
         userId: userId,
       };
       const mockApplication2 = {
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        jobPostingId: getNewMongoId(),
         userId: userId,
       };
       const mockApplication3 = {
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        jobPostingId: getNewMongoId(),
         userId: otherUserId,
       };
       await ApplicationRepository.createApplication(mockApplication1);
@@ -88,19 +86,19 @@ describe('ApplicationRepository', () => {
     });
 
     it('should return an empty array if no applications found for userId', async () => {
-      const userId = new mongoose.Types.ObjectId().toString();
-      const otherUserId = new mongoose.Types.ObjectId().toString();
+      const userId = getNewMongoId();
+      const otherUserId = getNewMongoId();
 
       const mockApplication1 = {
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        jobPostingId: getNewMongoId(),
         userId: otherUserId,
       };
       const mockApplication2 = {
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        jobPostingId: getNewMongoId(),
         userId: otherUserId,
       };
       const mockApplication3 = {
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        jobPostingId: getNewMongoId(),
         userId: otherUserId,
       };
       await ApplicationRepository.createApplication(mockApplication1);
@@ -116,11 +114,11 @@ describe('ApplicationRepository', () => {
 
   describe('findApplicationsByIdAndUserId', () => {
     it('should return no application if the application is not belong to the authenticated user', async () => {
-      const userId = new mongoose.Types.ObjectId().toString();
-      const otherUserId = new mongoose.Types.ObjectId().toString();
+      const userId = getNewMongoId();
+      const otherUserId = getNewMongoId();
 
       const mockApplication1 = {
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        jobPostingId: getNewMongoId(),
         userId: otherUserId,
       };
       const mockApplicationId1 = (
@@ -137,15 +135,15 @@ describe('ApplicationRepository', () => {
     });
 
     it('should return an application if there exists an application for authenticated user', async () => {
-      const userId = new mongoose.Types.ObjectId().toString();
-      const otherUserId = new mongoose.Types.ObjectId().toString();
+      const userId = getNewMongoId();
+      const otherUserId = getNewMongoId();
 
       const mockApplication1 = {
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        jobPostingId: getNewMongoId(),
         userId: otherUserId,
       };
       const mockApplication2 = {
-        jobPostingId: new mongoose.Types.ObjectId().toString(),
+        jobPostingId: getNewMongoId(),
         userId: userId,
       };
 
