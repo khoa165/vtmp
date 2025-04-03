@@ -11,16 +11,11 @@ import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { UserRepository } from '@/repositories/user.repository';
 import JobPostingRepository from '@/repositories/jobPosting.repository';
 import ApplicationRepository from '@/repositories/application.repository';
-<<<<<<< HEAD:web/src/controllers/application.test.ts
-import UserService from '@/services/user.service';
-import UserRepository from '@/repositories/user.repository';
-=======
 import { AuthService } from '@/services/auth.service';
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
->>>>>>> dson/feature/18-api-endpoint-post-applications:web/src/controllers/application.controller.test.ts
 
 describe('POST /applications', () => {
   useMongoDB();
@@ -156,7 +151,7 @@ describe('GET /applications', () => {
       email: 'test@gmail.com',
       encryptedPassword,
     };
-    newUserId = (await UserRepository.create(mockUser)).id;
+    newUserId = (await UserRepository.createUser(mockUser)).id;
 
     // Create auth token
     token = await UserService.login({

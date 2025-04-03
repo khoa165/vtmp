@@ -52,7 +52,7 @@ const ApplicationController = {
         data: applications,
       });
       return;
-    } catch (error) {
+    } catch (error: unknown) {
       const { statusCode, errors } = handleError(error);
       res.status(statusCode).json({ errors });
       return;
@@ -80,7 +80,7 @@ const ApplicationController = {
         data: application,
       });
       return;
-    } catch (error) {
+    } catch (error: unknown) {
       const { statusCode, errors } = handleError(error);
       res.status(statusCode).json({ errors });
       return;

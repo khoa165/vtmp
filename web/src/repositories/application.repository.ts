@@ -28,7 +28,7 @@ const ApplicationRepository = {
   },
 
   findApplicationsByUserId: async (userId: string) => {
-    return await ApplicationModel.find({
+    return ApplicationModel.find({
       userId: userId,
     });
   },
@@ -40,7 +40,7 @@ const ApplicationRepository = {
     applicationId: string;
     userId: string;
   }) => {
-    return await ApplicationModel.findOne({
+    return ApplicationModel.findOne({
       _id: applicationId,
       userId: userId,
     });
