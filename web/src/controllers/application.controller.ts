@@ -12,6 +12,7 @@ const ApplicationRequestSchema = z.object({
     }),
 });
 
+// TODO: need to figure out how to remove "as AuthenticatedRequest"
 interface AuthenticatedRequest extends Request {
   user: {
     id: string;
@@ -19,11 +20,11 @@ interface AuthenticatedRequest extends Request {
 }
 
 export const ApplicationController = {
-  createApplication: async (req: AuthenticatedRequest, res: Response) => {
+  createApplication: async (req: Request, res: Response) => {
     try {
       const { jobPostingId } = ApplicationRequestSchema.parse(req.body);
 
-      const userId = req.user.id;
+      const userId = (req as AuthenticatedRequest).user.id;
 
       const newApplication = await ApplicationService.createApplication({
         jobPostingId,
