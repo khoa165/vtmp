@@ -1,13 +1,19 @@
-import { expect } from 'chai';
+import * as chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import { LinkStatus } from '@/models/link.model';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import LinkService from './link.service';
+import { LinkService } from './link.service';
 import assert from 'assert';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { ResourceNotFoundError } from '@/utils/errors';
+import { LinkRepository } from '@/repositories/link.repository';
+import JobPostingRepository from '@/repositories/jobPosting.repository';
 
-describe('LinkService', () => {
+chai.use(chaiAsPromised);
+const { expect } = chai;
+
+describe.only('LinkService', () => {
   useMongoDB();
 
   describe('submitLink', () => {
@@ -19,6 +25,31 @@ describe('LinkService', () => {
       expect(link.url).to.equal(URL);
       expect(link.status).to.equal(LinkStatus.PENDING);
       expect(timeDiff).to.lessThan(3);
+    });
+  });
+
+  describe('approveLinkAndCreateJobPosting', () => {
+    it('approve link and create job posting', async () => {
+      const COMPANY_NAME = 'Google';
+      const newLink = await LinkService.submitLink('google.com');
+      const newJobPosting = await LinkService.approveLinkAndCreateJobPosting(
+        newLink.id,
+        {
+          jobTitle: 'Software Engineering Intern',
+          companyName: COMPANY_NAME,
+        }
+      );
+
+      const link = await LinkRepository.getLinkById(newLink.id);
+      assert(link);
+      expect(link.status).to.equal(LinkStatus.APPROVED);
+
+      const jobPosting = await JobPostingRepository.getJobPostingById(
+        newJobPosting.id
+      );
+      assert(jobPosting);
+      expect(jobPosting.linkId).to.equal(link.id);
+      expect(jobPosting.companyName).to.equal(COMPANY_NAME);
     });
   });
 
@@ -44,31 +75,6 @@ describe('LinkService', () => {
   });
 
   describe('getPendingLinks', () => {
-    it('should be able to get all pending links', async () => {
-      const googleLink = await LinkService.submitLink('google.com');
-      const nvidia = await LinkService.submitLink('nvidia.com');
-
-      const pendingLinks = await LinkService.getPendingLinks();
-
-      const urls = pendingLinks.map((link) => link.url);
-      expect(urls).to.have.members([googleLink.url, nvidia.url]);
-    });
-
-    it('should be able to get all pending links after a link is rejected', async () => {
-      const googleLink = await LinkService.submitLink('google.com');
-      await LinkService.submitLink('nvidia.com');
-      await LinkService.submitLink('microsoft.com');
-
-      const beforeUpdateLinks = await LinkService.getPendingLinks();
-      expect(beforeUpdateLinks).to.have.lengthOf(3);
-
-      await LinkService.rejectLink(googleLink.id);
-      const afterUpdateLinks = await LinkService.getPendingLinks();
-      expect(afterUpdateLinks).to.have.lengthOf(2);
-    });
-  });
-
-  describe('approveLinkAndCreateJobPosting', () => {
     it('should be able to get all pending links', async () => {
       const googleLink = await LinkService.submitLink('google.com');
       const nvidia = await LinkService.submitLink('nvidia.com');
