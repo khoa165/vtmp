@@ -52,7 +52,7 @@ describe('JobPostingController', () => {
         .send(newJobPostingUpdate)
         .set('Accept', 'application/json');
 
-      expectErrorsArray({ res: res, statusCode: 404, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
 
       const errors = res.body.errors;
       expect(errors[0].message).to.equal('Job posting not found');
