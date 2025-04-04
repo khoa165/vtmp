@@ -1,47 +1,9 @@
-import { Role } from '@/models/user.model';
-import { UserRepository } from '@/repositories/user.repository';
-import {
-  ForbiddenError,
-  handleError,
-  ResourceNotFoundError,
-  UnauthorizedError,
-} from '@/utils/errors';
-import { NextFunction, Request, Response } from 'express';
-
-enum Permission {
-  GET_ALL_PENDING_JOB_LINK = 'GET_ALL_PENDING_JOB_LINK',
-  APPROVE_JOB_LINK = 'APPROVE_JOB_LINK ',
-  REJECT_JOB_LINK = 'REJECT_JOB_LINK',
-  UPDATE_JOB_POSTING = 'UPDATE_JOB_POSTING',
-  DELETE_JOB_POSTING = 'DELETE_JOB_POSTING',
-  GET_ALL_INVITATIONS = 'GET_ALL_INVITATIONS',
-  CREATE_INVITATION = 'CREATE_INVITATION',
-  REVOKE_INVITATION = 'REVOKE_INVITATION',
-  CREATE_APPLICATION = 'CREATE_APPLICATION',
-  UPDATE_APPLICATION = 'UPDATE_APPLICATION',
-}
-
-// Mapping Role with Permission
-export const rolePermissionMapping = {
-  [Role.ADMIN]: [
-    Permission.GET_ALL_PENDING_JOB_LINK,
-    Permission.APPROVE_JOB_LINK,
-    Permission.REJECT_JOB_LINK,
-    Permission.UPDATE_JOB_POSTING,
-    Permission.DELETE_JOB_POSTING,
-    Permission.GET_ALL_INVITATIONS,
-    Permission.CREATE_INVITATION,
-    Permission.REVOKE_INVITATION,
-  ],
-  [Role.MODERATOR]: [
-    Permission.GET_ALL_PENDING_JOB_LINK,
-    Permission.APPROVE_JOB_LINK,
-    Permission.REJECT_JOB_LINK,
-    Permission.UPDATE_JOB_POSTING,
-    Permission.DELETE_JOB_POSTING,
-  ],
-  [Role.USER]: [Permission.CREATE_APPLICATION, Permission.UPDATE_APPLICATION],
-};
+import { handleError } from "@/utils/errors";
+import { Permission, Role } from "@/types/enums";
+import { Request, Response, NextFunction } from "express";
+import { UserRepository } from "@/repositories/user.repository";
+import { UnauthorizedError, ResourceNotFoundError, ForbiddenError } from "@/utils/errors";
+import { roleToPermissionMapping } from "@/constants/permissions";
 
 export const hasPermission = (permission: Permission) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -59,7 +21,7 @@ export const hasPermission = (permission: Permission) => {
       return;
     }
 
-    if (rolePermissionMapping[user.role].includes(permission)) {
+    if (user.role != Role.USER && roleToPermissionMapping[user.role].includes(permission)) {
       next();
       return;
     } else {
