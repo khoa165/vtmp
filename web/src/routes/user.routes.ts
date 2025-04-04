@@ -6,5 +6,7 @@ const router = Router();
 
 router.post('/login', UserController.login);
 router.get('/profile', authenticate, UserController.getProfile);
+router.post('/mock', UserController.createMock);
+router.get('/getSingle', UserController.getSingleUser);
 
 export default router;
