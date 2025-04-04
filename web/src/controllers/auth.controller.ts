@@ -11,7 +11,7 @@ const signupSchema = z.object({
     .string({ required_error: 'Email is required' })
     .email({ message: 'Invalid email address' }),
   password: z.string({ required_error: 'Password is required' }),
-  role: z.nativeEnum(UserRole).default(UserRole.USER),
+  role: z.nativeEnum(UserRole),
 });
 
 const loginSchema = z.object({
