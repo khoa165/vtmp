@@ -17,6 +17,7 @@ import { PageWithNavigation } from 'components/layout/page-with-navigation';
 import { TreeContainer } from 'components/tree';
 import { Mentorship2025Apply } from 'components/apply';
 import { Mentorship2025Proposal } from './proposal';
+import { ReactWorkshop } from './react-workshop/ReactWorkshop';
 
 const darkTheme = createTheme({
   palette: {
@@ -41,6 +42,7 @@ export const App = () => {
       <div id="mentorship-website">
         <Router>
           <Routes>
+            <Route path="ws" element={<ReactWorkshop />} />
             <Route path="apply" element={<Mentorship2025Apply />} />
             <Route path="apply-pd" element={<Mentorship2025Apply />} />
             <Route path="proposal" element={<Mentorship2025Proposal />} />
