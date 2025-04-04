@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import connectDB from '@/config/database';
 import routes from '@/routes/index';
 
-dotenv.config();
+dotenv.config()   ;
 
 const app: Express = express();
 
