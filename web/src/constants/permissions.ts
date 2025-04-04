@@ -1,6 +1,5 @@
 import { Role, Permission } from '@/types/enums';
 
-// Mapping Role with Permission
 export const roleToPermissionMapping = {
   [Role.ADMIN]: [
     Permission.GET_ALL_PENDING_JOB_LINKS,

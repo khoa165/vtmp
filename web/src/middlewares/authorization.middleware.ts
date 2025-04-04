@@ -1,1 +1,1 @@
-import { roleToPermissionMapping } from '@/constants/constants';
+import { roleToPermissionMapping } from '@/constants/permissions';

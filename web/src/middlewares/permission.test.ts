@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import chaiSubset from 'chai-subset';
 
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { roleToPermissionMapping } from '@/constants/constants';
+import { roleToPermissionMapping } from '@/constants/permissions';
 import { Permission, Role } from '@/types/enums';
 
 chai.use(chaiSubset);
