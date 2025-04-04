@@ -1,5 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-import { ApplicationStatus } from '@/types/enums';
+import { ApplicationStatus, InterestLevel } from '@/types/enums';
 
 interface IApplication extends Document {
   jobPostingId: mongoose.Schema.Types.ObjectId;
@@ -8,6 +8,10 @@ interface IApplication extends Document {
   status: ApplicationStatus;
   appliedOnDate: Date;
   note?: string;
+  deletedAt?: Date;
+  referrer?: string;
+  portalLink?: string;
+  interest: InterestLevel;
 }
 
 const ApplicationSchema = new mongoose.Schema<IApplication>({
@@ -36,6 +40,20 @@ const ApplicationSchema = new mongoose.Schema<IApplication>({
   },
   note: {
     type: String,
+  },
+  deletedAt: {
+    type: Date,
+  },
+  referrer: {
+    type: String,
+  },
+  portalLink: {
+    type: String,
+  },
+  interest: {
+    type: String,
+    enum: Object.values(InterestLevel),
+    default: InterestLevel.MEDIUM,
   },
 });
 

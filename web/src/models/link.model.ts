@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 import { LinkStatus } from '@/types/enums';
 
 interface ILink extends Document {
-  url: String;
+  url: string;
   status?: LinkStatus;
   submittedOn: Date;
-  companyName?: String;
+  companyName?: string;
   userNote?: string;
 }
 
