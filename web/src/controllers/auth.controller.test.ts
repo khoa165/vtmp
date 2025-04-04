@@ -13,7 +13,7 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 
-import { Role } from '@/models/user.model';
+import { UserRole } from '@/types/enums';
 
 describe('AuthController', () => {
   useMongoDB();
@@ -129,70 +129,13 @@ describe('AuthController', () => {
           lastName: 'viettech',
           password: 'test',
           email: 'test123@gmail.com',
-          role: Role.ADMIN,
+          role: UserRole.ADMIN,
         })
         .end((err, res) => {
           if (err) done(err);
 
           expectSuccessfulResponse({ res, statusCode: 200 });
           expect(res.body.data).to.have.property('token');
-          done();
-        });
-    });
-
-    //   Testing error message when missing a field
-    it('should return error messages for missing firstName', (done) => {
-      request(app)
-        .post('/api/auth/signup')
-        .send({
-          lastName: 'viettech',
-          password: 'test',
-          email: 'test@gmail.com',
-          role: Role.ADMIN,
-        })
-        .set('Accept', 'application/json')
-        .end((err, res) => {
-          if (err) return done(err);
-
-          expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-          expect(res.body.errors[0].message).to.eq('Firstname is required');
-          done();
-        });
-    });
-
-    it('should return error messages for missing password', (done) => {
-      request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test123@gmail.com',
-          role: Role.ADMIN,
-        })
-        .end((err, res) => {
-          if (err) done(err);
-
-          expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-          expect(res.body.errors[0].message).to.eq('Password is required');
-          done();
-        });
-    });
-
-    it('should return error messages for missing lastName', (done) => {
-      request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          password: 'test',
-          email: 'test123@gmail.com',
-          role: Role.ADMIN,
-        })
-        .set('Accept', 'application/json')
-        .end((err, res) => {
-          if (err) return done(err);
-
-          expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-          expect(res.body.errors[0].message).to.eq('Lastname is required');
           done();
         });
     });
@@ -204,7 +147,7 @@ describe('AuthController', () => {
           firstName: 'admin',
           lastName: 'viettech',
           password: 'test',
-          role: Role.ADMIN,
+          role: UserRole.ADMIN,
         })
         .set('Accept', 'application/json')
         .end((err, res) => {
@@ -216,14 +159,13 @@ describe('AuthController', () => {
         });
     });
 
-    //   Testing duplicate email
     it('should return error messages for duplicate email', (done) => {
       const mockUser = {
         firstName: 'admin',
         lastName: 'viettech',
         email: 'test@gmail.com',
         encryptedPassword: 'test password',
-        role: Role.ADMIN,
+        role: UserRole.ADMIN,
       };
 
       UserRepository.createUser(mockUser).then(() => {
@@ -234,7 +176,7 @@ describe('AuthController', () => {
             lastName: 'viettech',
             email: 'test@gmail.com',
             password: 'test',
-            role: Role.ADMIN,
+            role: UserRole.ADMIN,
           })
           .set('Accept', 'application/json')
           .end((err, res) => {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { AuthService } from '@/services/auth.service';
 import { handleError } from '@/utils/errors';
-import { Role } from '@/models/user.model';
+import { UserRole } from '@/types/enums';
 import { z } from 'zod';
 
 const signupSchema = z.object({
@@ -11,7 +11,7 @@ const signupSchema = z.object({
     .string({ required_error: 'Email is required' })
     .email({ message: 'Invalid email address' }),
   password: z.string({ required_error: 'Password is required' }),
-  role: z.nativeEnum(Role).default(Role.USER),
+  role: z.nativeEnum(UserRole).default(UserRole.USER),
 });
 
 const loginSchema = z.object({
@@ -24,17 +24,14 @@ const loginSchema = z.object({
 export const AuthController = {
   signup: async (req: Request, res: Response) => {
     try {
-      // Validate all the fields are required
       const validatedBody = signupSchema.safeParse(req.body);
 
       if (!validatedBody.success) {
         throw validatedBody.error;
       }
 
-      // Call the authentication service - signup
       const token = await AuthService.signup(validatedBody.data);
 
-      // Return the response
       res.status(200).json({ data: { token } });
     } catch (error: unknown) {
       const { statusCode, errors } = handleError(error);

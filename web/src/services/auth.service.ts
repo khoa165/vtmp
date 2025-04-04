@@ -7,7 +7,7 @@ import {
 } from '@/utils/errors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { Role } from '@/models/user.model';
+import { UserRole } from '@/types/enums';
 
 export const AuthService = {
   signup: async ({
@@ -21,9 +21,8 @@ export const AuthService = {
     lastName: string;
     email: string;
     password: string;
-    role: Role;
+    role: UserRole;
   }) => {
-    // Check duplicate email
     const userByEmail = await UserRepository.findUserByEmail(email);
 
     if (userByEmail) {
@@ -32,21 +31,16 @@ export const AuthService = {
       });
     }
 
-    const saltRounds = 10; // The number of rounds to use for salt generation
-
-    // Encrypt password
+    const saltRounds = 10;
     const encryptedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Create new user
-    const newUser = await UserRepository.createUser({
+    return UserRepository.createUser({
       firstName,
       lastName,
       email,
       encryptedPassword,
       role,
     });
-
-    return newUser;
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {

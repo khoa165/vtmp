@@ -17,7 +17,7 @@ import { assert } from 'console';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { Role } from '@/models/user.model';
+import { UserRole } from '@/types/enums';
 import { expectSuccessfulResponse } from '@/testutils/response-assertion.testutil';
 
 chai.use(chaiAsPromised);
@@ -85,12 +85,11 @@ describe('AuthService', () => {
 
   describe('signup', () => {
     it('should fail to signup due to duplicate email', async () => {
-      const encryptedPassword = await bcrypt.hash('test password', 10);
       const mockUser = {
         firstName: 'admin',
         lastName: 'viettech',
         email: 'test@gmail.com',
-        encryptedPassword,
+        encryptedPassword: 'password',
       };
       await UserRepository.createUser(mockUser);
 
@@ -99,7 +98,7 @@ describe('AuthService', () => {
         lastName: 'viettech',
         email: 'test@gmail.com',
         password: 'test',
-        role: Role.ADMIN,
+        role: UserRole.ADMIN,
       };
 
       await expect(AuthService.signup(userData)).eventually.rejectedWith(
@@ -113,7 +112,7 @@ describe('AuthService', () => {
         lastName: 'viettech',
         email: 'test12@gmail.com',
         password: 'test',
-        role: Role.ADMIN,
+        role: UserRole.ADMIN,
       };
 
       await expect(AuthService.signup(userData)).eventually.fulfilled;
@@ -125,7 +124,7 @@ describe('AuthService', () => {
         lastName: 'viettech',
         email: 'test12@gmail.com',
         password: 'test',
-        role: Role.ADMIN,
+        role: UserRole.ADMIN,
       };
 
       const user = await AuthService.signup(userData);
