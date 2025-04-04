@@ -16,7 +16,7 @@
     "test": "cd web && yarn run test",
     "tslint": "tslint --project tsconfig.json --config tslint.json",
     "tslint-fix": "tslint --project tsconfig.json --config tslint.json --fix",
-    "prepare": "husky"
+    "postinstall": "husky"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
@@ -31,7 +31,7 @@
     "typescript-eslint": "^8.26.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,md,html,css,scss}": [
+    "**/*.{ts,tsx,md,html,css}": [
       "prettier --write --config .prettierrc",
       "eslint --fix --config eslint.config.js"
     ]
