@@ -63,3 +63,9 @@ export enum Permission {
   REVOKE_INVITATION = 'REVOKE_INVITATION',
   UPDATE_JOB_POSTING = 'UPDATE_JOB_POSTING',
 }
+
+export enum InterestLevel {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+}
