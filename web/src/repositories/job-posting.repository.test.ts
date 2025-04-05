@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 import * as chai from 'chai';
 import chaiSubset from 'chai-subset';
 import assert from 'assert';
@@ -37,7 +36,7 @@ describe('JobPostingRepository', () => {
       const foundJobPosting = await JobPostingRepository.getJobPostingById(
         newJobPosting.id
       );
-      /* eslint-disable no-unused-expressions */
+
       expect(foundJobPosting).to.not.be.null;
       expect(foundJobPosting).to.containSubset(mockJobPosting);
     });
@@ -85,7 +84,6 @@ describe('JobPostingRepository', () => {
         deletedJobPosting.deletedAt
       );
 
-      /* eslint-disable no-unused-expressions */
       expect(deletedJobPosting).to.not.be.null;
       expect(timeDiff).to.lessThan(3);
     });
