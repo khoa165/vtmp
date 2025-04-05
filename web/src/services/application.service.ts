@@ -10,9 +10,8 @@ export const ApplicationService = {
     jobPostingId: string;
     userId: string;
   }) => {
-    const jobPosting = await JobPostingRepository.getJobPostingById(
-      jobPostingId
-    );
+    const jobPosting =
+      await JobPostingRepository.getJobPostingById(jobPostingId);
     if (!jobPosting) {
       throw new ResourceNotFoundError('Job posting not found', {
         jobPostingId,
@@ -38,7 +37,7 @@ export const ApplicationService = {
   },
 
   getAllApplications: async (userId: string) => {
-    return await ApplicationRepository.findApplicationsByUserId(userId);
+    return ApplicationRepository.findApplicationsByUserId(userId);
   },
 
   getOneApplication: async ({
