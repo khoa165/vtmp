@@ -3,7 +3,7 @@ import UserRoutes from '@/routes/user.routes';
 import InvitationRoutes from '@/routes/invitation.routes';
 import ApplicationRoutes from '@/routes/application.routes';
 import InterviewRoutes from '@/routes/interview.routes';
-import JobPostingRoutes from '@/routes/jobPosting.routes';
+import JobPostingRoutes from '@/routes/job-posting.routes';
 import LinkRoutes from '@/routes/link.routes';
 import AuthRoutes from './auth.routes';
 
