@@ -10,11 +10,27 @@ export const UserRepository = {
     return UserModel.create(userData);
   },
 
+  findAllUsers: async (): Promise<IUser[]> => {
+    return UserModel.find();
+  },
+
   findUserByEmail: async (email: string): Promise<IUser | null> => {
     return UserModel.findOne({ email });
   },
 
   findUserById: async (id: string): Promise<IUser | null> => {
     return UserModel.findById(id);
+  },
+
+  updateUserById: async (
+    id: string,
+    updatedUser: {
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+      encryptedPassword?: string;
+    }
+  ) => {
+    UserModel.findByIdAndUpdate(id, updatedUser, { new: true });
   },
 };
