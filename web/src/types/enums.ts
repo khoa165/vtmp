@@ -36,7 +36,7 @@ export enum InvitationStatus {
   REVOKED = 'REVOKED',
 }
 
-export enum Location {
+export enum JobPostingLocation {
   US = 'US',
   CANADA = 'CANADA',
 }
@@ -47,7 +47,7 @@ export enum LinkStatus {
   REJECTED = 'REJECTED',
 }
 
-export enum Role {
+export enum UserRole {
   ADMIN = 'ADMIN',
   MODERATOR = 'MODERATOR',
   USER = 'USER',
