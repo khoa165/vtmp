@@ -6,7 +6,7 @@ interface ILink extends Document {
   status?: LinkStatus;
   submittedOn: Date;
   submittedBy?: Types.ObjectId;
-  companyName?: String;
+  companyName?: string;
   userNote?: string;
 }
 

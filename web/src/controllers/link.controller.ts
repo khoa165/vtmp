@@ -3,6 +3,7 @@ import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
 import { handleError } from '../utils/errors';
 import { LinkStatus } from '@/models/link.model';
+import { url } from 'inspector';
 
 const LinkSchema = z.object({
   url: z.string().url(),
@@ -30,8 +31,8 @@ export const LinkController = {
       }
 
       const submitLink = await LinkService.submitLink(parsedLink.data.url);
-      res.status(200).json({
-        data: submitLink,
+      res.status(201).json({
+        data: { link: submitLink },
       });
       return;
     } catch (error: unknown) {
@@ -41,10 +42,11 @@ export const LinkController = {
     }
   },
 
-  getPendingLinks: async (res: Response) => {
+  getPendingLinks: async (_req: Request, res: Response) => {
     try {
+      const links = await LinkService.getPendingLinks();
       res.status(200).json({
-        data: LinkService.getPendingLinks(),
+        data: { links },
       });
       return;
     } catch (error: unknown) {
@@ -56,17 +58,14 @@ export const LinkController = {
 
   approveLink: async (req: Request, res: Response) => {
     try {
-      const parsedLink = LinkIdSchema.safeParse(req.params);
-
-      if (!parsedLink.success) {
-        throw parsedLink.error;
-      }
+      const parsedLink = LinkIdSchema.parse(req.params);
 
       const approvedLink = await LinkService.approveLinkAndCreateJobPosting(
-        parsedLink.data.linkId,
-        parsedLink.data
+        parsedLink.linkId,
+        parsedLink
       );
       res.status(200).json({
+        message: 'Link has been approved!',
         data: approvedLink,
       });
       return;
@@ -88,6 +87,7 @@ export const LinkController = {
       const rejectedLink = await LinkService.rejectLink(parsedLink.data.linkId);
       res.status(200).json({
         data: rejectedLink,
+        message: 'Link has been rejected!',
       });
       return;
     } catch (error: unknown) {

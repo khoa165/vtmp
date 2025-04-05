@@ -1,7 +1,5 @@
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { beforeEach, describe } from 'mocha';
-import bcrypt from 'bcryptjs';
-import { UserRepository } from '@/repositories/user.repository';
 import app from '@/app';
 import request from 'supertest';
 import { expect } from 'chai';
@@ -21,34 +19,16 @@ describe('LinkController', () => {
   });
 
   describe('POST /links', () => {
-  
     it('should be able to create new link with expected fields', (done) => {
       request(app)
-        .post('/api/auth/login')
-        .send({})
-        .set('Accept', 'application/json')
-        .end((err, res) => {
-          if (err) return done(err);
-          expectErrorsArray({ res, statusCode: 400, errorsCount: 2 });
-
-          const errors = res.body.errors;
-          expect(errors[0].message).to.equal('Email is required');
-          expect(errors[1].message).to.equal('Password is required');
-          done();
-        });
-    });
-
-    it('should return error message for missing email', (done) => {
-      request(app)
-        .post('/api/auth/login')
-        .send({ password: 'test' })
-        .set('Accept', 'application/json')
+        .post('/api/links')
+        .send({ url: 'google.com' })
         .end((err, res) => {
           if (err) return done(err);
           expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
 
           const errors = res.body.errors;
-          expect(errors[0].message).to.equal('Email is required');
+          expect(errors[0].message).to.equal('Url is required');
           done();
         });
     });

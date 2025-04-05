@@ -29,10 +29,13 @@ export const LinkService = {
       }
 
       jobPosting = await JobPostingRepository.createJobPosting({
-        linkId,
-        url: updatedLink.url,
-        submittedBy: updatedLink.submittedBy,
-        ...jobPostingData,
+        jobPostingData: {
+          ...jobPostingData,
+          linkId,
+          url: updatedLink.url,
+          submittedBy: updatedLink.submittedBy,
+        },
+        session,
       });
 
       await session.commitTransaction();

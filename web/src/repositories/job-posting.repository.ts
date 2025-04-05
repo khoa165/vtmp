@@ -1,12 +1,23 @@
 import { JobPostingModel } from '@/models/job-posting.model';
+import { ClientSession } from 'mongoose';
 
 export const JobPostingRepository = {
-  createJobPosting: async (jobPostingData: object) => {
-    return JobPostingModel.create(jobPostingData);
+  createJobPosting: async ({
+    jobPostingData,
+    session,
+  }: {
+    jobPostingData: object;
+    session?: ClientSession;
+  }) => {
+    const jobPostings = await JobPostingModel.create([jobPostingData], {
+      session: session ?? null,
+    });
+
+    return jobPostings[0];
   },
 
   getJobPostingById: async (jobId: string) => {
-    return JobPostingModel.findById(jobId).lean();
+    return JobPostingModel.findById(jobId);
   },
 
   updateJobPostingById: async (jobId: string, newUpdate: object) => {

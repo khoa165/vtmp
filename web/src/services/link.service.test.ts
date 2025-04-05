@@ -13,7 +13,7 @@ import { JobPostingRepository } from '@/repositories/job-posting.repository';
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
-describe.only('LinkService', () => {
+describe('LinkService', () => {
   useMongoDB();
 
   describe('submitLink', () => {
@@ -28,7 +28,7 @@ describe.only('LinkService', () => {
     });
   });
 
-  describe('approveLinkAndCreateJobPosting', () => {
+  describe.only('approveLinkAndCreateJobPosting', () => {
     it('approve link and create job posting', async () => {
       const COMPANY_NAME = 'Google';
       const newLink = await LinkService.submitLink('google.com');
@@ -39,16 +39,17 @@ describe.only('LinkService', () => {
           companyName: COMPANY_NAME,
         }
       );
+      assert(newJobPosting);
 
       const link = await LinkRepository.getLinkById(newLink.id);
       assert(link);
       expect(link.status).to.equal(LinkStatus.APPROVED);
 
       const jobPosting = await JobPostingRepository.getJobPostingById(
-        newJobPosting.id
+        newJobPosting._id.toString()
       );
       assert(jobPosting);
-      expect(jobPosting.linkId).to.equal(link.id);
+      expect(jobPosting.linkId.toString()).to.equal(link.id);
       expect(jobPosting.companyName).to.equal(COMPANY_NAME);
     });
   });
