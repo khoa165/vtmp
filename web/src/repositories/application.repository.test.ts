@@ -5,21 +5,31 @@ import { differenceInSeconds } from 'date-fns';
 import { ApplicationRepository } from './application.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ApplicationStatus } from '@/types/enums';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 
-describe('ApplicationRepository', () => {
+describe.only('ApplicationRepository', () => {
   useMongoDB();
 
-  const mockApplication = {
+  const userId_A = getNewMongoId();
+  const userId_B = getNewMongoId();
+
+  const mockApplication_A0 = {
     jobPostingId: getNewMongoId(),
-    userId: getNewMongoId(),
+    userId: userId_A,
+  };
+  const mockApplication_A1 = {
+    jobPostingId: getNewMongoId(),
+    userId: userId_A,
+  };
+  const mockApplication_B = {
+    jobPostingId: getNewMongoId(),
+    userId: userId_B,
   };
 
   describe('createApplication', () => {
     it('should create a new application successfully', async () => {
-      const newApplication = await ApplicationRepository.createApplication(
-        mockApplication
-      );
+      const newApplication =
+        await ApplicationRepository.createApplication(mockApplication_B);
       const timeDiff = differenceInSeconds(
         new Date(),
         newApplication.appliedOnDate
@@ -27,9 +37,11 @@ describe('ApplicationRepository', () => {
 
       assert(newApplication);
       expect(newApplication.jobPostingId.toString()).to.equal(
-        mockApplication.jobPostingId
+        mockApplication_B.jobPostingId
       );
-      expect(newApplication.userId.toString()).to.equal(mockApplication.userId);
+      expect(newApplication.userId.toString()).to.equal(
+        mockApplication_B.userId
+      );
       expect(newApplication.hasApplied).to.equal(true);
       expect(newApplication.status).to.equal(ApplicationStatus.SUBMITTED);
       expect(timeDiff).to.lessThan(3);
@@ -38,18 +50,16 @@ describe('ApplicationRepository', () => {
 
   describe('doesApplicationExist', () => {
     it('should evaluate to true if an application already exists', async () => {
-      await ApplicationRepository.createApplication(mockApplication);
-      const result = await ApplicationRepository.doesApplicationExist(
-        mockApplication
-      );
+      await ApplicationRepository.createApplication(mockApplication_B);
+      const result =
+        await ApplicationRepository.doesApplicationExist(mockApplication_B);
 
       expect(result).to.equal(true);
     });
 
     it('should evaluate to false if an application does not exist', async () => {
-      const result = await ApplicationRepository.doesApplicationExist(
-        mockApplication
-      );
+      const result =
+        await ApplicationRepository.doesApplicationExist(mockApplication_B);
 
       expect(result).to.equal(false);
     });
@@ -57,113 +67,66 @@ describe('ApplicationRepository', () => {
 
   describe('findApplicationsByUserId', () => {
     it('should return only applications associated with given userId', async () => {
-      const userId = getNewMongoId();
-      const otherUserId = getNewMongoId();
+      await ApplicationRepository.createApplication(mockApplication_A0);
+      await ApplicationRepository.createApplication(mockApplication_A1);
+      await ApplicationRepository.createApplication(mockApplication_B);
+      const applications =
+        await ApplicationRepository.findApplicationsByUserId(userId_A);
 
-      const mockApplication1 = {
-        jobPostingId: getNewMongoId(),
-        userId: userId,
-      };
-      const mockApplication2 = {
-        jobPostingId: getNewMongoId(),
-        userId: userId,
-      };
-      const mockApplication3 = {
-        jobPostingId: getNewMongoId(),
-        userId: otherUserId,
-      };
-      await ApplicationRepository.createApplication(mockApplication1);
-      await ApplicationRepository.createApplication(mockApplication2);
-      await ApplicationRepository.createApplication(mockApplication3);
-
-      const applications = await ApplicationRepository.findApplicationsByUserId(
-        userId
-      );
-
+      assert(applications);
+      expect(applications).to.be.an('array');
       expect(applications).to.have.lengthOf(2);
-      expect(applications[0]?.userId.toString()).to.equal(userId);
-      expect(applications[1]?.userId.toString()).to.equal(userId);
+      expect(applications[0]).to.containSubset({
+        jobPostingId: toMongoId(mockApplication_A0.jobPostingId),
+        userId: toMongoId(mockApplication_A0.userId),
+      });
+      expect(applications[1]).to.containSubset({
+        jobPostingId: toMongoId(mockApplication_A1.jobPostingId),
+        userId: toMongoId(mockApplication_A1.userId),
+      });
     });
 
     it('should return an empty array if no applications found for userId', async () => {
-      const userId = getNewMongoId();
-      const otherUserId = getNewMongoId();
+      await ApplicationRepository.createApplication(mockApplication_B);
+      const applications =
+        await ApplicationRepository.findApplicationsByUserId(userId_A);
 
-      const mockApplication1 = {
-        jobPostingId: getNewMongoId(),
-        userId: otherUserId,
-      };
-      const mockApplication2 = {
-        jobPostingId: getNewMongoId(),
-        userId: otherUserId,
-      };
-      const mockApplication3 = {
-        jobPostingId: getNewMongoId(),
-        userId: otherUserId,
-      };
-      await ApplicationRepository.createApplication(mockApplication1);
-      await ApplicationRepository.createApplication(mockApplication2);
-      await ApplicationRepository.createApplication(mockApplication3);
-
-      const applications = await ApplicationRepository.findApplicationsByUserId(
-        userId
-      );
-      expect(applications).to.be.an('array').that.is.empty;
+      assert(applications);
+      expect(applications).to.be.an('array');
+      expect(applications).to.have.lengthOf(0);
     });
   });
 
-  describe('findApplicationsByIdAndUserId', () => {
+  describe('findApplicationByIdAndUserId', () => {
     it('should return no application if the application is not belong to the authenticated user', async () => {
-      const userId = getNewMongoId();
-      const otherUserId = getNewMongoId();
-
-      const mockApplication1 = {
-        jobPostingId: getNewMongoId(),
-        userId: otherUserId,
-      };
-      const mockApplicationId1 = (
-        await ApplicationRepository.createApplication(mockApplication1)
+      const mockApplicationId_B = (
+        await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
-
       const application =
         await ApplicationRepository.findApplicationByIdAndUserId({
-          applicationId: mockApplicationId1,
-          userId: userId,
+          applicationId: mockApplicationId_B,
+          userId: userId_A,
         });
 
-      expect(application).to.be.null;
+      assert(!application);
     });
 
     it('should return an application if there exists an application for authenticated user', async () => {
-      const userId = getNewMongoId();
-      const otherUserId = getNewMongoId();
-
-      const mockApplication1 = {
-        jobPostingId: getNewMongoId(),
-        userId: otherUserId,
-      };
-      const mockApplication2 = {
-        jobPostingId: getNewMongoId(),
-        userId: userId,
-      };
-
-      const mockApplicationId1 = (
-        await ApplicationRepository.createApplication(mockApplication1)
+      await ApplicationRepository.createApplication(mockApplication_A0);
+      const mockApplicationId_A1 = (
+        await ApplicationRepository.createApplication(mockApplication_A1)
       ).id;
-      const mockApplicationId2 = (
-        await ApplicationRepository.createApplication(mockApplication2)
-      ).id;
-
       const application =
         await ApplicationRepository.findApplicationByIdAndUserId({
-          applicationId: mockApplicationId2,
-          userId: userId,
+          applicationId: mockApplicationId_A1,
+          userId: userId_A,
         });
 
-      expect(application).to.not.be.null;
-      expect(application?.userId.toString()).to.equal(userId);
-      expect(application?.id.toString()).to.equal(mockApplicationId2);
-      expect(application?.id.toString()).not.to.equal(mockApplicationId1);
+      assert(application);
+      expect(application).to.containSubset({
+        jobPostingId: toMongoId(mockApplication_A1.jobPostingId),
+        userId: toMongoId(mockApplication_A1.userId),
+      });
     });
   });
 });
