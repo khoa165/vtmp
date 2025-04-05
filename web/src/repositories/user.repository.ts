@@ -30,7 +30,11 @@ export const UserRepository = {
       email?: string;
       encryptedPassword?: string;
     }
-  ) => {
-    UserModel.findByIdAndUpdate(id, updatedUser, { new: true });
+  ): Promise<IUser | null> => {
+    return UserModel.findByIdAndUpdate(id, updatedUser, { new: true });
+  },
+
+  deleteUserById: async (id: string): Promise<IUser | null> => {
+    return UserModel.findByIdAndDelete(id);
   },
 };
