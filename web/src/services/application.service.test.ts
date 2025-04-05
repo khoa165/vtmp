@@ -38,9 +38,8 @@ describe('ApplicationService', () => {
     });
 
     it('should throw error if an application associated with this job posting and user already exist', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting(
-        mockJobPosting
-      );
+      const newJobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: getNewMongoId(),
@@ -53,9 +52,8 @@ describe('ApplicationService', () => {
     });
 
     it('should create an application successfully', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting(
-        mockJobPosting
-      );
+      const newJobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: getNewMongoId(),
@@ -66,16 +64,14 @@ describe('ApplicationService', () => {
     });
 
     it('should create an application successfully and return valid new application', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting(
-        mockJobPosting
-      );
+      const newJobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: getNewMongoId(),
       };
-      const newApplication = await ApplicationService.createApplication(
-        mockApplication
-      );
+      const newApplication =
+        await ApplicationService.createApplication(mockApplication);
       const timeDiff = differenceInSeconds(
         new Date(),
         newApplication.appliedOnDate
@@ -110,15 +106,12 @@ describe('ApplicationService', () => {
         userId: otherUserId,
       };
 
-      const application1 = await ApplicationRepository.createApplication(
-        mockApplication1
-      );
-      const application2 = await ApplicationRepository.createApplication(
-        mockApplication2
-      );
-      const application3 = await ApplicationRepository.createApplication(
-        mockApplication3
-      );
+      const application1 =
+        await ApplicationRepository.createApplication(mockApplication1);
+      const application2 =
+        await ApplicationRepository.createApplication(mockApplication2);
+      const application3 =
+        await ApplicationRepository.createApplication(mockApplication3);
 
       const applications = await ApplicationService.getAllApplications(userId);
 
@@ -183,17 +176,17 @@ describe('ApplicationService', () => {
       const userId = getNewMongoId();
       const otherUserId = getNewMongoId();
 
-      const otherApp = {
+      const otherApplication = {
         jobPostingId: getNewMongoId(),
         userId: otherUserId,
       };
-      const otherAppId = (
-        await ApplicationRepository.createApplication(otherApp)
+      const otherApplicationId = (
+        await ApplicationRepository.createApplication(otherApplication)
       ).id;
 
       await expect(
         ApplicationService.getOneApplication({
-          applicationId: otherAppId,
+          applicationId: otherApplicationId,
           userId,
         })
       ).eventually.rejectedWith(ResourceNotFoundError);
