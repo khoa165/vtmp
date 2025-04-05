@@ -5,6 +5,7 @@ import { UserRepository } from '@/repositories/user.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import assert from 'assert';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { IUser } from '@/models/user.model';
 
 chai.use(chaiSubset);
 const { expect } = chai;
@@ -81,6 +82,105 @@ describe('UserRepository', () => {
       const user = await UserRepository.findUserByEmail('fake@example.com');
 
       assert(!user);
+    });
+  });
+
+  describe('findAllUsers', () => {
+    it('should return an empty array when there are no users', async () => {
+      const users = await UserRepository.findAllUsers();
+      expect(users).to.be.an('array');
+      expect(users).to.have.lengthOf(0);
+    });
+
+    it('should return an array of all users', async () => {
+      const mockUsers = [
+        {
+          firstName: 'admin1',
+          lastName: 'viettech',
+          email: 'test1@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+        {
+          firstName: 'admin2',
+          lastName: 'viettech',
+          email: 'test2@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+      ];
+
+      for (const mockUser of mockUsers) {
+        await UserRepository.createUser(mockUser);
+      }
+
+      const users = await UserRepository.findAllUsers();
+      expect(users).to.be.an('array');
+      expect(users).to.have.lengthOf(2);
+      for (let i = 0; i < users.length; i++) {
+        expect(users[i]).to.containSubset(mockUsers[i]);
+      }
+    });
+  });
+
+  describe('updateUserById', () => {
+    let user: IUser;
+
+    beforeEach(async () => {
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      };
+      user = await UserRepository.createUser(mockUser);
+    });
+
+    it('should return null if no user found with given id', async () => {
+      const updatedUser = await UserRepository.updateUserById(
+        getNewMongoId(),
+        {}
+      );
+      assert(!updatedUser);
+    });
+
+    it('should return updated user if user found', async () => {
+      const updatedUser = await UserRepository.updateUserById(user.id, {
+        firstName: 'adminViettech',
+        email: 'testupdate@gmail.com',
+      });
+
+      assert(updatedUser);
+      expect(updatedUser.firstName).to.be.equal('adminViettech');
+      expect(updatedUser.email).to.be.equal('testupdate@gmail.com');
+    });
+  });
+
+  describe('deleteUserById', () => {
+    let user: IUser;
+
+    beforeEach(async () => {
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      };
+      user = await UserRepository.createUser(mockUser);
+    });
+
+    it('should return null if no user found with given id', async () => {
+      const deletedUser = await UserRepository.deleteUserById(getNewMongoId());
+      assert(!deletedUser);
+    });
+
+    it('should delete user if user found', async () => {
+      const deletedUser = await UserRepository.deleteUserById(user.id);
+
+      assert(deletedUser);
+
+      const userAfterDeletion = await UserRepository.findUserById(
+        deletedUser.id
+      );
+      assert(!userAfterDeletion);
     });
   });
 });
