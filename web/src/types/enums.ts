@@ -47,7 +47,7 @@ export enum LinkStatus {
   REJECTED = 'REJECTED',
 }
 
-export enum Role {
+export enum UserRole {
   ADMIN = 'ADMIN',
   MODERATOR = 'MODERATOR',
   USER = 'USER',
