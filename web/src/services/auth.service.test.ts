@@ -1,7 +1,6 @@
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { beforeEach, describe } from 'mocha';
-import { AuthService } from './auth.service';
-
+import { AuthService } from '@/services/auth.service';
 import { UserRepository } from '@/repositories/user.repository';
 import bcrypt from 'bcryptjs';
 import { useSandbox } from '@/testutils/sandbox.testutil';
@@ -13,12 +12,9 @@ import {
   UnauthorizedError,
 } from '@/utils/errors';
 import { assert } from 'console';
-
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-
 import { UserRole } from '@/types/enums';
-import { expectSuccessfulResponse } from '@/testutils/response-assertion.testutil';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -98,7 +94,6 @@ describe('AuthService', () => {
         lastName: 'viettech',
         email: 'test@gmail.com',
         password: 'test',
-        role: UserRole.ADMIN,
       };
 
       await expect(AuthService.signup(userData)).eventually.rejectedWith(
@@ -112,7 +107,6 @@ describe('AuthService', () => {
         lastName: 'viettech',
         email: 'test12@gmail.com',
         password: 'test',
-        role: UserRole.ADMIN,
       };
 
       await expect(AuthService.signup(userData)).eventually.fulfilled;
@@ -124,11 +118,11 @@ describe('AuthService', () => {
         lastName: 'viettech',
         email: 'test12@gmail.com',
         password: 'test',
-        role: UserRole.ADMIN,
       };
 
       const user = await AuthService.signup(userData);
       assert(user);
+      expect(user.role).to.equal(UserRole.USER);
     });
   });
 });

@@ -7,7 +7,6 @@ import {
 } from '@/utils/errors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { UserRole } from '@/types/enums';
 
 export const AuthService = {
   signup: async ({
@@ -15,20 +14,21 @@ export const AuthService = {
     lastName,
     email,
     password,
-    role,
   }: {
     firstName: string;
     lastName: string;
     email: string;
     password: string;
-    role: UserRole;
   }) => {
     const userByEmail = await UserRepository.findUserByEmail(email);
 
     if (userByEmail) {
-      throw new DuplicateResourceError('Duplicate Email', {
-        email,
-      });
+      throw new DuplicateResourceError(
+        'Email is already taken, please sign up with a different email',
+        {
+          email,
+        }
+      );
     }
 
     const saltRounds = 10;
@@ -39,7 +39,6 @@ export const AuthService = {
       lastName,
       email,
       encryptedPassword,
-      role,
     });
   },
 
