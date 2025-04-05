@@ -8,7 +8,11 @@
   "type": "module",
   "scripts": {
     "client": "cd web-client && yarn run start",
+    "add-client": "cd web-client && yarn add",
+    "remove-client": "cd web-client && yarn remove",
     "server": "cd web && yarn run dev",
+    "add-server": "cd web && yarn add",
+    "remove-server": "cd web && yarn remove",
     "dev": "concurrently \"yarn run server\" \"yarn run client\"",
     "pp": "cd web && yarn install --frozen-lockfile && cd ../web-client && yarn install --frozen-lockfile && cd .. && yarn install --frozen-lockfile",
     "cc": "cookiecutter -c=cookiecutter/cookiecutter.config.js",

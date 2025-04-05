@@ -7,7 +7,7 @@ import { App } from 'src/components/app';
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
   <StatsigProvider
-    sdkKey="client-TzqggOpstNL0ZDBaJ6PosFDgphBtztZJjLRcKYl7ep0"
+    sdkKey={import.meta.env.VITE_STATSIG_CLIENT_SDK_KEY}
     waitForInitialization={false}
     user={{}}
   >
