@@ -3,11 +3,11 @@ import {
   MentorshipRole,
   OfferChannel,
   OfferType,
-} from 'utils/constants';
+} from 'src/utils/constants';
 import { mentorshipPeople } from '../data/people';
 import { rolePriority } from './constants';
 import { min } from 'lodash';
-import { MentorshipOffer, MentorshipPerson } from 'types';
+import { MentorshipOffer, MentorshipPerson } from 'src/types';
 import { groupDisplayName, roleDisplayName } from './displayName';
 
 export const getName = (alias: string): string => mentorshipPeople[alias].name;

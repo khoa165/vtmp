@@ -9,7 +9,7 @@ import {
   CardBody,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { BlogMetadata } from 'types';
+import { BlogMetadata } from 'src/types';
 
 interface TreeCardProps {
   blog: BlogMetadata;

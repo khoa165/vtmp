@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import {
   doesPersonHaveAtLeastOneRoleInYear,
   getPersonPriorityInYear,
-} from 'utils/data';
-import { MentorshipRole, PeopleSortColumn } from 'utils/constants';
-import { mentorshipPeople } from 'data/people';
+} from 'src/utils/data';
+import { MentorshipRole, PeopleSortColumn } from 'src/utils/constants';
+import { mentorshipPeople } from 'src/data/people';
 import { sortBy } from 'lodash';
 
 export const useMentorshipPeople = (
