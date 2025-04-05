@@ -1,21 +1,14 @@
-import * as chai from 'chai';
+import { expect } from 'chai';
 import { roleToPermissionMapping } from '@/constants/permissions';
-import { Permission, Role } from '@/types/enums';
+import { Permission, UserRole } from '@/types/enums';
 
-const { expect } = chai;
-describe('RoleToPermissionMapping', () => {
+describe('roleToPermissionMapping', () => {
   it('should ensure every permission associated with at least a role', async () => {
-    const allPermissions = Object.values(Permission);
-    const allUserRoles = Object.values(Role);
-
-    for (const permission of allPermissions) {
-      let isAssigned = false;
-      for (const role of allUserRoles) {
-        if (roleToPermissionMapping[role].includes(permission)) {
-          isAssigned = true;
-        }
-      }
-      expect(isAssigned).to.eq(true);
-    }
+    Object.values(Permission).forEach((permission) => {
+      const isAssigned = Object.values(UserRole).some((role) =>
+        roleToPermissionMapping[role].includes(permission)
+      );
+      expect(isAssigned).to.equal(true);
+    });
   });
 });

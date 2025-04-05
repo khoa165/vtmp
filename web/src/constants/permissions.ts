@@ -1,22 +1,33 @@
-import { Role, Permission } from '@/types/enums';
+import { UserRole, Permission } from '@/types/enums';
 
-export const roleToPermissionMapping = {
-  [Role.ADMIN]: [
-    Permission.GET_ALL_PENDING_JOB_LINKS,
-    Permission.APPROVE_JOB_LINK,
-    Permission.REJECT_JOB_LINK,
-    Permission.UPDATE_JOB_POSTING,
-    Permission.DELETE_JOB_POSTING,
-    Permission.GET_ALL_INVITATIONS,
-    Permission.CREATE_INVITATION,
-    Permission.REVOKE_INVITATION,
+export const roleToPermissionMapping: Record<UserRole, Permission[]> = {
+  [UserRole.ADMIN]: [
+    Permission.VIEW_JOB_LINK,
+    Permission.CREATE_JOB_LINK,
+    Permission.MANAGE_JOB_LINK,
+
+    Permission.VIEW_JOB_POSTING,
+    Permission.MANAGE_JOB_POSTING,
+
+    Permission.VIEW_INVITATION,
+    Permission.MANAGE_INVITATION,
+
+    Permission.VIEW_APPLICATION,
   ],
-  [Role.MODERATOR]: [
-    Permission.GET_ALL_PENDING_JOB_LINKS,
-    Permission.APPROVE_JOB_LINK,
-    Permission.REJECT_JOB_LINK,
-    Permission.UPDATE_JOB_POSTING,
-    Permission.DELETE_JOB_POSTING,
+  [UserRole.MODERATOR]: [
+    Permission.VIEW_JOB_LINK,
+    Permission.CREATE_JOB_LINK,
+    Permission.MANAGE_JOB_LINK,
+
+    Permission.VIEW_JOB_POSTING,
+    Permission.MANAGE_JOB_POSTING,
   ],
-  [Role.USER]: [],
+  [UserRole.USER]: [
+    Permission.VIEW_APPLICATION,
+    Permission.MANAGE_APPLICATION,
+
+    Permission.CREATE_JOB_LINK,
+
+    Permission.VIEW_JOB_POSTING,
+  ],
 };
