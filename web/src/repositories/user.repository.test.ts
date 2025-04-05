@@ -29,6 +29,19 @@ describe('UserRepository', () => {
   });
 
   describe('findUserById', () => {
+    it('should return null if cannot find user with given id', async () => {
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      };
+      await UserRepository.createUser(mockUser);
+      const user = await UserRepository.findUserById(getNewMongoId());
+
+      assert(!user);
+    });
+
     it('should be able to find user by id', async () => {
       const mockUser = {
         firstName: 'admin',
@@ -42,22 +55,22 @@ describe('UserRepository', () => {
       assert(user);
       expect(user).to.containSubset(mockUser);
     });
+  });
 
-    it('should return null if cannot find user with given id', async () => {
+  describe('findUserByEmail', () => {
+    it('should return null if cannot find user with given email', async () => {
       const mockUser = {
         firstName: 'admin',
         lastName: 'viettech',
         email: 'test@example.com',
         encryptedPassword: 'ecnrypted-password-later',
       };
-      await UserRepository.createUser(mockUser);
-      const user = await UserRepository.findUserById(getNewMongoId());
+      UserRepository.createUser(mockUser);
+      const user = await UserRepository.findUserByEmail('fake@example.com');
 
       assert(!user);
     });
-  });
 
-  describe('findUserByEmail', () => {
     it('should be able to find user by email', async () => {
       const mockUser = {
         firstName: 'admin',
@@ -70,19 +83,6 @@ describe('UserRepository', () => {
 
       assert(user);
       expect(user).to.containSubset(mockUser);
-    });
-
-    it('should return null if cannot find user with given email', async () => {
-      const mockUser = {
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      UserRepository.createUser(mockUser);
-      const user = await UserRepository.findUserByEmail('fake@example.com');
-
-      assert(!user);
     });
   });
 
@@ -151,9 +151,9 @@ describe('UserRepository', () => {
       });
 
       assert(updatedUser);
-      expect(updatedUser.firstName).to.be.equal('adminViettech');
-      expect(updatedUser.email).to.be.equal('testupdate@gmail.com');
-      expect(updatedUser.role).to.be.equal(Role.ADMIN);
+      expect(updatedUser.firstName).to.equal('adminViettech');
+      expect(updatedUser.email).to.equal('testupdate@gmail.com');
+      expect(updatedUser.role).to.equal(Role.ADMIN);
     });
   });
 
