@@ -131,21 +131,18 @@ describe('ApplicationController', () => {
     let newUserId: string;
     let encryptedPassword: string;
     let token: string;
-    let mockUser: {
-      firstName: string;
-      lastName: string;
-      email: string;
-      encryptedPassword: string;
-    };
 
     let newJobPostingId1: string;
     let newJobPostingId2: string;
     let newApplicationId1: string;
     let newApplicationId2: string;
 
+    const sandbox = useSandbox();
+
     beforeEach(async () => {
+      sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
       encryptedPassword = await bcrypt.hash('test password', 10);
-      mockUser = {
+      const mockUser = {
         firstName: 'admin',
         lastName: 'viettech',
         email: 'test@gmail.com',
