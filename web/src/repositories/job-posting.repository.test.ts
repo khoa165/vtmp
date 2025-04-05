@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-expressions */
 import * as chai from 'chai';
 import chaiSubset from 'chai-subset';
 import assert from 'assert';
-import JobPostingRepository from '@/repositories/jobPosting.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import mongoose from 'mongoose';
+import { getNewObjectId } from '@/testutils/mongoID.testutil';
 import { differenceInSeconds } from 'date-fns';
 
 chai.use(chaiSubset);
@@ -13,18 +14,17 @@ describe('JobPostingRepository', () => {
   useMongoDB();
 
   const mockJobPosting = {
-    linkId: new mongoose.Types.ObjectId(),
+    linkId: getNewObjectId(),
     url: 'http://example.com/job-posting',
     jobTitle: 'Software Engineer',
     companyName: 'Example Company',
-    submittedBy: new mongoose.Types.ObjectId(),
+    submittedBy: getNewObjectId(),
   };
 
   describe('createJobPosting', () => {
     it('should be able to create a new job posting', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting(
-        mockJobPosting
-      );
+      const newJobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
 
       expect(newJobPosting).to.containSubset(mockJobPosting);
     });
@@ -32,11 +32,12 @@ describe('JobPostingRepository', () => {
 
   describe('getJobPostingById', () => {
     it('should be able to find a job post by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
       const foundJobPosting = await JobPostingRepository.getJobPostingById(
         newJobPosting.id
       );
-
+      /* eslint-disable no-unused-expressions */
       expect(foundJobPosting).to.not.be.null;
       expect(foundJobPosting).to.containSubset(mockJobPosting);
     });
@@ -44,7 +45,8 @@ describe('JobPostingRepository', () => {
 
   describe('updateJobPostingById', () => {
     it('should be able to update detail of a job post by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
 
       const newUpdate = {
         jobTitle: 'Senior Software Engineer',
@@ -63,7 +65,8 @@ describe('JobPostingRepository', () => {
 
   describe('deleteJobPostingById', () => {
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
         newJobPosting.id
       );
@@ -82,6 +85,7 @@ describe('JobPostingRepository', () => {
         deletedJobPosting.deletedAt
       );
 
+      /* eslint-disable no-unused-expressions */
       expect(deletedJobPosting).to.not.be.null;
       expect(timeDiff).to.lessThan(3);
     });
