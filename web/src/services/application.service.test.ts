@@ -9,13 +9,33 @@ import { ApplicationService } from '@/services/application.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
 import { ApplicationStatus } from '@/types/enums';
-import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import {
+  getNewMongoId,
+  getNewObjectId,
+  toMongoId,
+} from '@/testutils/mongoID.testutil';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
 describe('ApplicationService', () => {
   useMongoDB();
+
+  const userId_A = getNewMongoId();
+  const userId_B = getNewMongoId();
+
+  const mockApplication_A0 = {
+    jobPostingId: getNewMongoId(),
+    userId: userId_A,
+  };
+  const mockApplication_A1 = {
+    jobPostingId: getNewMongoId(),
+    userId: userId_A,
+  };
+  const mockApplication_B = {
+    jobPostingId: getNewMongoId(),
+    userId: userId_B,
+  };
 
   const mockJobPosting = {
     linkId: getNewObjectId(),
@@ -90,106 +110,78 @@ describe('ApplicationService', () => {
 
   describe('getAllApplications', () => {
     it('should only return applications associated with a userId', async () => {
-      const userId = getNewMongoId();
-      const otherUserId = getNewMongoId();
+      await ApplicationRepository.createApplication(mockApplication_A0);
+      await ApplicationRepository.createApplication(mockApplication_A1);
+      await ApplicationRepository.createApplication(mockApplication_B);
+      const applications =
+        await ApplicationService.getAllApplications(userId_A);
 
-      const mockApplication1 = {
-        jobPostingId: getNewMongoId(),
-        userId: userId,
-      };
-      const mockApplication2 = {
-        jobPostingId: getNewMongoId(),
-        userId: userId,
-      };
-      const mockApplication3 = {
-        jobPostingId: getNewMongoId(),
-        userId: otherUserId,
-      };
-
-      const application1 =
-        await ApplicationRepository.createApplication(mockApplication1);
-      const application2 =
-        await ApplicationRepository.createApplication(mockApplication2);
-      const application3 =
-        await ApplicationRepository.createApplication(mockApplication3);
-
-      const applications = await ApplicationService.getAllApplications(userId);
-
-      const applicationsId = applications.map((x) => x.id.toString());
-
-      expect(applicationsId).to.include.members([
-        application1.id.toString(),
-        application2.id.toString(),
-      ]);
-      expect(applicationsId).to.not.include.members([
-        application3.id.toString(),
-      ]);
+      assert(applications);
+      expect(applications).to.be.an('array');
       expect(applications).to.have.lengthOf(2);
+      expect(applications[0]).to.containSubset({
+        jobPostingId: toMongoId(mockApplication_A0.jobPostingId),
+        userId: toMongoId(mockApplication_A0.userId),
+      });
+      expect(applications[1]).to.containSubset({
+        jobPostingId: toMongoId(mockApplication_A1.jobPostingId),
+        userId: toMongoId(mockApplication_A1.userId),
+      });
     });
 
     it('should return no application if authenticated user has no application', async () => {
-      const userId = getNewMongoId();
+      const applications =
+        await ApplicationService.getAllApplications(userId_A);
 
-      const applications = await ApplicationService.getAllApplications(userId);
-
-      expect(applications).to.be.an('array').that.is.empty;
+      assert(applications);
+      expect(applications).to.be.an('array');
+      expect(applications).to.have.lengthOf(0);
     });
   });
 
   describe('getOneApplication', () => {
-    useMongoDB();
-
-    it('should only return application associated with an applicationId and a userId', async () => {
-      const userId = getNewMongoId();
-      const otherUserId = getNewMongoId();
-
-      const mockApplication1 = {
-        jobPostingId: getNewMongoId(),
-        userId: userId,
-      };
-      const mockApplication2 = {
-        jobPostingId: getNewMongoId(),
-        userId: otherUserId,
-      };
-      const mockApplication3 = {
-        jobPostingId: getNewMongoId(),
-        userId: otherUserId,
-      };
-
-      const mockApplicationId1 = (
-        await ApplicationRepository.createApplication(mockApplication1)
-      ).id;
-      await ApplicationRepository.createApplication(mockApplication2);
-      await ApplicationRepository.createApplication(mockApplication3);
-
-      const application = await ApplicationService.getOneApplication({
-        applicationId: mockApplicationId1,
-        userId,
-      });
-
-      expect(application).to.not.be.null;
-      expect(application?.userId.toString()).to.equal(userId);
-      expect(application?.id.toString()).to.equal(mockApplicationId1);
-    });
-
     it('should throw an error if no application is associated with the authenticated user', async () => {
-      const userId = getNewMongoId();
-      const otherUserId = getNewMongoId();
-
-      const otherApplication = {
-        jobPostingId: getNewMongoId(),
-        userId: otherUserId,
-      };
-      const otherApplicationId = (
-        await ApplicationRepository.createApplication(otherApplication)
+      const mockApplicationId_B = (
+        await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
 
       await expect(
         ApplicationService.getOneApplication({
-          applicationId: otherApplicationId,
-          userId,
+          applicationId: mockApplicationId_B,
+          userId: userId_A,
         })
       ).eventually.rejectedWith(ResourceNotFoundError);
+    });
+
+    it('should not throw an error when an application associated with the authenticated user is found', async () => {
+      const mockApplicationId_A1 = (
+        await ApplicationRepository.createApplication(mockApplication_A1)
+      ).id;
+
+      await expect(
+        ApplicationService.getOneApplication({
+          applicationId: mockApplicationId_A1,
+          userId: userId_A,
+        })
+      ).eventually.fulfilled;
+    });
+
+    it('should only return application associated with an applicationId and a userId', async () => {
+      await ApplicationRepository.createApplication(mockApplication_A0);
+      await ApplicationRepository.createApplication(mockApplication_B);
+      const mockApplicationId_A1 = (
+        await ApplicationRepository.createApplication(mockApplication_A1)
+      ).id;
+      const application = await ApplicationService.getOneApplication({
+        applicationId: mockApplicationId_A1,
+        userId: userId_A,
+      });
+
+      assert(application);
+      expect(application).to.containSubset({
+        jobPostingId: toMongoId(mockApplication_A1.jobPostingId),
+        userId: toMongoId(mockApplication_A1.userId),
+      });
     });
   });
 });

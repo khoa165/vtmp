@@ -1,4 +1,4 @@
-import { application, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { ApplicationService } from '@/services/application.service';
 import { z } from 'zod';
 import { handleError } from '@/utils/errors';
@@ -20,6 +20,7 @@ const ApplicationIdParamsSchema = z.object({
     }),
 });
 
+// TODO: dson - need to figure out how to remove "as AuthenticatedRequest"
 interface AuthenticatedRequest extends Request {
   user: {
     id: string;

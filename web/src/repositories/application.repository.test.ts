@@ -113,6 +113,7 @@ describe('ApplicationRepository', () => {
 
     it('should return an application if there exists an application for authenticated user', async () => {
       await ApplicationRepository.createApplication(mockApplication_A0);
+      await ApplicationRepository.createApplication(mockApplication_B);
       const mockApplicationId_A1 = (
         await ApplicationRepository.createApplication(mockApplication_A1)
       ).id;
