@@ -1,13 +1,13 @@
-@import 'blogs';
-@import 'button';
-@import 'landing';
-@import 'layout';
-@import 'summary';
-@import 'people';
-@import 'stats';
-@import 'tree';
-@import 'utils';
-@import 'variables';
+@use 'blogs';
+@use 'button';
+@use 'landing';
+@use 'layout';
+@use 'summary';
+@use 'people';
+@use 'stats';
+@use 'tree';
+@use 'utils';
+@use 'variables';
 
 body,
 html {
@@ -29,36 +29,36 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: $brand-scrollbar-background-color;
+  background: variables.$brand-scrollbar-background-color;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: $brand-scrollbar-color;
+  background: variables.$brand-scrollbar-color;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: $brand-scrollbar-color;
+  background: variables.$brand-scrollbar-color;
 }
 
 hr {
-  border-color: $brand-light-color;
+  border-color: variables.$brand-light-color;
 }
 
 #mentorship-website {
   .navbar {
-    background-color: $brand-primary-background-color !important;
-    border-bottom: 1px solid $brand-light-color;
+    background-color: variables.$brand-primary-background-color !important;
+    border-bottom: 1px solid variables.$brand-light-color;
   }
 
   .navbar-brand,
   .nav-item,
   .nav-link {
-    color: $brand-light-color;
+    color: variables.$brand-light-color;
   }
 }
 
 .text-green {
-  color: $mentorship-primary-green;
+  color: variables.$mentorship-primary-green;
 }
 
 .app-flex {
