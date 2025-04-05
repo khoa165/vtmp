@@ -1,8 +1,8 @@
-import { BlogFileMapping, BlogMetadata } from 'types';
+import { BlogFileMapping, BlogMetadata } from 'src/types';
 
 export const getFileName = (filepath: string): string => {
   // Example: /static/media/something-fun.7142a8c9d1daebf8832a.md
-  const fullFileName = filepath.split('/')[3];
+  const fullFileName = filepath.split('/')[5];
   const partialFileName = fullFileName.split('.')[0];
   return partialFileName;
 };
@@ -26,6 +26,7 @@ export const buildFileMetadata = (
   });
   filepaths.forEach((filepath) => {
     mapping[getFileName(filepath)].path = filepath;
+    console.log(getFileName(filepath));
   });
   return mapping;
 };

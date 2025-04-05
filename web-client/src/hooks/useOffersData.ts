@@ -1,7 +1,7 @@
-import { mentorshipPeople } from 'data/people';
-import { offerCompanies } from 'data/companies';
+import { mentorshipPeople } from 'src/data/people';
+import { offerCompanies } from 'src/data/companies';
 import { useMemo } from 'react';
-import { CompanyMetadataWithOffers } from 'types';
+import { CompanyMetadataWithOffers } from 'src/types';
 // import { sortBy } from 'lodash';
 
 export const useOffersData = () => {

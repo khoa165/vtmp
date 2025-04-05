@@ -11,9 +11,9 @@ import {
   Tooltip,
   ReferenceLine,
 } from 'recharts';
-import { MergedDateWithCount } from 'types';
-import { MentorshipYear } from 'utils/constants';
-import { getDatesWithCountOffers } from 'utils/parse';
+import { MergedDateWithCount } from 'src/types';
+import { MentorshipYear } from 'src/utils/constants';
+import { getDatesWithCountOffers } from 'src/utils/parse';
 
 interface TimelineProps {
   datesWithCount: MergedDateWithCount[];
