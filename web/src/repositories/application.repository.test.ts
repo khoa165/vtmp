@@ -7,7 +7,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ApplicationStatus } from '@/types/enums';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 
-describe.only('ApplicationRepository', () => {
+describe('ApplicationRepository', () => {
   useMongoDB();
 
   const userId_A = getNewMongoId();
