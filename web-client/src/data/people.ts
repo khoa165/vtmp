@@ -1,10 +1,10 @@
-import { MentorshipPerson } from 'types';
+import { MentorshipPerson } from 'src/types';
 import {
   CompanyName,
   MentorshipRole,
   OfferChannel,
   OfferType,
-} from 'utils/constants';
+} from 'src/utils/constants';
 
 export const mentorshipPeople: Record<string, MentorshipPerson> = {
   khoale: {

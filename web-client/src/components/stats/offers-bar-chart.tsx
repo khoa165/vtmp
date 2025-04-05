@@ -1,7 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, Legend, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { min } from 'lodash';
-import { offerCompanies } from 'data/companies';
+import { offerCompanies } from 'src/data/companies';
 
 interface OffersBarChartProps {
   count: number;

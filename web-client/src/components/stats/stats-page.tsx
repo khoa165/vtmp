@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
-import { mentorshipPeople } from 'data/people';
-import 'styles/scss/stats.scss';
+import { mentorshipPeople } from 'src/data/people';
+import 'src/styles/scss/stats.scss';
 import { OffersBarChart } from './offers-bar-chart';
-import { useInterviewData } from 'hooks/useInterviewData';
+import { useInterviewData } from 'src/hooks/useInterviewData';
 import { Container } from 'reactstrap';
 import { InterviewsBarChart } from './interviews-bar-chart';
 import { Tabs, Tab, Box } from '@mui/material';
-import { StatsType } from 'utils/constants';
+import { StatsType } from 'src/utils/constants';
 import { useNavigate } from 'react-router-dom';
 import { Timeline } from './timeline';
 import { OfferLogos } from './offers-logos';

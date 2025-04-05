@@ -4,7 +4,7 @@ import {
   OfferChannel,
   OfferType,
   MentorshipYear,
-} from 'utils/constants';
+} from 'src/utils/constants';
 
 export interface BlogMetadata {
   name: string;
@@ -68,19 +68,24 @@ export interface InterviewRecordsPerCompany {
   company: string;
 }
 
-export type MergedInterviewRecordsPerCompany = Partial<Record<MentorshipYear, {
-    invitationsCount: number;
-    interviewsCount: number;
-    mixedCount: number;
-    technicalCount: number;
-    behavioralCount: number;
-    practicalCount: number;
-    interviews: {
-      date: string;
-      type: string;
-      person: string;
-    }[];
-  }>> & {
+export type MergedInterviewRecordsPerCompany = Partial<
+  Record<
+    MentorshipYear,
+    {
+      invitationsCount: number;
+      interviewsCount: number;
+      mixedCount: number;
+      technicalCount: number;
+      behavioralCount: number;
+      practicalCount: number;
+      interviews: {
+        date: string;
+        type: string;
+        person: string;
+      }[];
+    }
+  >
+> & {
   company: string;
 };
 
@@ -104,15 +109,20 @@ export interface InterviewData {
   data: InterviewRecordsPerCompany[];
 }
 
-export type MergedInterviewData = Partial<Record<MentorshipYear, {
-    totalInvitationsCount: number;
-    totalInterviewsCount: number;
-    totalMixedCount: number;
-    totalTechnicalCount: number;
-    totalBehavioralCount: number;
-    totalPracticalCount: number;
-    datesWithCount: DateWithCount[];
-  }>> & {
+export type MergedInterviewData = Partial<
+  Record<
+    MentorshipYear,
+    {
+      totalInvitationsCount: number;
+      totalInterviewsCount: number;
+      totalMixedCount: number;
+      totalTechnicalCount: number;
+      totalBehavioralCount: number;
+      totalPracticalCount: number;
+      datesWithCount: DateWithCount[];
+    }
+  >
+> & {
   data: MergedInterviewRecordsPerCompany[];
   totalInvitationsCount: number;
   totalInterviewsCount: number;

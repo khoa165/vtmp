@@ -1,6 +1,6 @@
-import { Banner } from 'components/layout/banner';
+import { Banner } from 'src/components/layout/banner';
 import React from 'react';
-import { Navbar } from 'components/layout/navigation-bar';
+import { Navbar } from 'src/components/layout/navigation-bar';
 
 interface BannerPageProps {
   contentRef: React.RefObject<HTMLDivElement | null>;
