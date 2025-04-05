@@ -1,8 +1,12 @@
 import React from 'react';
 import { Col, Row } from 'reactstrap';
-import { PeopleCard } from 'components/people/people-card';
-import { CompanyMetadataWithOffers, MentorshipPerson } from 'types';
-import { MentorshipYear, PeopleSortColumn, yearDisplay } from 'utils/constants';
+import { PeopleCard } from 'src/components/people/people-card';
+import { CompanyMetadataWithOffers, MentorshipPerson } from 'src/types';
+import {
+  MentorshipYear,
+  PeopleSortColumn,
+  yearDisplay,
+} from 'src/utils/constants';
 import { max } from 'lodash';
 
 interface PeopleGridProps {

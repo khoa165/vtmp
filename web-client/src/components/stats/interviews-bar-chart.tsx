@@ -9,8 +9,8 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts';
-import { MergedInterviewData } from 'types';
-import { MentorshipYear } from 'utils/constants';
+import { MergedInterviewData } from 'src/types';
+import { MentorshipYear } from 'src/utils/constants';
 
 interface InterviewsBarChartProps {
   data: MergedInterviewData;

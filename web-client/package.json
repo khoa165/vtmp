@@ -5,6 +5,7 @@
   "author": "Viet Tech Mentorship Program <viettechmentorshipprogram@gmail.com>",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
