@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { LinkStatus } from '@/models/link.model';
+import { LinkStatus } from '@/types/enums';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { LinkService } from './link.service';
@@ -8,7 +8,7 @@ import assert from 'assert';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { ResourceNotFoundError } from '@/utils/errors';
 import { LinkRepository } from '@/repositories/link.repository';
-import JobPostingRepository from '@/repositories/jobPosting.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;

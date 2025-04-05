@@ -1,11 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-
-enum InvitationStatus {
-  ACCEPTED = 'ACCEPTED',
-  EXPIRED = 'EXPIRED',
-  PENDING = 'PENDING',
-  REVOKED = 'REVOKED',
-}
+import { InvitationStatus } from '@/types/enums';
 
 interface IInvitation extends Document {
   receiverEmail: string;

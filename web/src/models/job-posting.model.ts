@@ -1,9 +1,5 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-
-enum Location {
-  US = 'US',
-  CANADA = 'CANADA',
-}
+import { JobPostingLocation } from '@/types/enums';
 
 export interface IJobPosting extends Document {
   linkId: Types.ObjectId;
@@ -11,7 +7,7 @@ export interface IJobPosting extends Document {
   url: string;
   jobTitle: string;
   companyName: string;
-  location?: Location;
+  location?: JobPostingLocation;
   datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
@@ -43,8 +39,8 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
     },
     location: {
       type: String,
-      enum: Object.values(Location),
-      default: Location.US,
+      enum: Object.values(JobPostingLocation),
+      default: JobPostingLocation.US,
     },
     datePosted: {
       type: Date,
@@ -66,4 +62,7 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
   { timestamps: true }
 );
 
-export default mongoose.model<IJobPosting>('JobPosting', JobPostingSchema);
+export const JobPostingModel = mongoose.model<IJobPosting>(
+  'JobPosting',
+  JobPostingSchema
+);

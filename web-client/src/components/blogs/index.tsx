@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useParams } from 'react-router-dom';
 import { Container } from 'reactstrap';
-import { removeMetadata } from 'utils/file';
+import { removeMetadata } from 'src/utils/file';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import rehypeRaw from 'rehype-raw';
-import 'styles/scss/blogs.scss';
-import { BlogFileMapping } from 'types';
+import 'src/styles/scss/blogs.scss';
+import { BlogFileMapping } from 'src/types';
 
 interface BlogContainerProps {
   metadata: BlogFileMapping;
