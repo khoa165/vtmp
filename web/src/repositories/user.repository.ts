@@ -1,4 +1,5 @@
 import { IUser, UserModel } from '@/models/user.model';
+import { Role } from '@/types/enums';
 
 export const UserRepository = {
   createUser: async (userData: {
@@ -29,6 +30,7 @@ export const UserRepository = {
       lastName?: string;
       email?: string;
       encryptedPassword?: string;
+      role?: Role;
     }
   ): Promise<IUser | null> => {
     return UserModel.findByIdAndUpdate(id, updatedUser, { new: true });

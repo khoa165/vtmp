@@ -6,6 +6,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import assert from 'assert';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { IUser } from '@/models/user.model';
+import { Role } from '@/types/enums';
 
 chai.use(chaiSubset);
 const { expect } = chai;
@@ -146,11 +147,13 @@ describe('UserRepository', () => {
       const updatedUser = await UserRepository.updateUserById(user.id, {
         firstName: 'adminViettech',
         email: 'testupdate@gmail.com',
+        role: Role.ADMIN,
       });
 
       assert(updatedUser);
       expect(updatedUser.firstName).to.be.equal('adminViettech');
       expect(updatedUser.email).to.be.equal('testupdate@gmail.com');
+      expect(updatedUser.role).to.be.equal(Role.ADMIN);
     });
   });
 
