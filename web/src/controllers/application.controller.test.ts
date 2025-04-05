@@ -75,7 +75,7 @@ describe('ApplicationController', () => {
       expect(errors[0].message).to.equal('Invalid job posting ID format');
     });
 
-    it('it should return error message with status code 404 if job posting does not exist', async () => {
+    it('should return error message with status code 404 if job posting does not exist', async () => {
       const res = await request(app)
         .post('/api/applications')
         .send({ jobPostingId: getNewMongoId() })
@@ -232,28 +232,25 @@ describe('ApplicationController', () => {
   describe('GET /applications/:id', () => {
     useMongoDB();
 
-    let newUserId: string;
+    let savedUserId: string;
     let encryptedPassword: string;
     let token: string;
-    let mockUser: {
-      firstName: string;
-      lastName: string;
-      email: string;
-      encryptedPassword: string;
-    };
 
     let newJobPostingId: string;
     let newApplicationId: string;
 
+    const sandbox = useSandbox();
+
     beforeEach(async () => {
+      sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
       encryptedPassword = await bcrypt.hash('test password', 10);
-      mockUser = {
+      const mockUser = {
         firstName: 'admin',
         lastName: 'viettech',
         email: 'test@gmail.com',
         encryptedPassword,
       };
-      newUserId = (await UserRepository.createUser(mockUser)).id;
+      savedUserId = (await UserRepository.createUser(mockUser)).id;
 
       token = await AuthService.login({
         email: mockUser.email,
@@ -265,7 +262,7 @@ describe('ApplicationController', () => {
         url: 'vtmp.com',
         jobTitle: 'SWE',
         companyName: 'Apple',
-        submittedBy: newUserId,
+        submittedBy: savedUserId,
       };
       newJobPostingId = (
         await JobPostingRepository.createJobPosting(jobPosting)
@@ -273,7 +270,7 @@ describe('ApplicationController', () => {
 
       const application = {
         jobPostingId: newJobPostingId,
-        userId: newUserId,
+        userId: savedUserId,
       };
       newApplicationId = (
         await ApplicationRepository.createApplication(application)
@@ -319,7 +316,7 @@ describe('ApplicationController', () => {
 
       const data = res.body.data;
       expect(data).to.have.property('_id', newApplicationId);
-      expect(data).to.have.property('userId', newUserId);
+      expect(data).to.have.property('userId', savedUserId);
     });
   });
 });
