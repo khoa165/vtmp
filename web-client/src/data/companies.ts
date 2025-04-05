@@ -1,5 +1,5 @@
-import { CompanyMetadata } from 'types';
-import { CompanyName } from 'utils/constants';
+import { CompanyMetadata } from 'src/types';
+import { CompanyName } from 'src/utils/constants';
 
 export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   [CompanyName.MICROSOFT]: {

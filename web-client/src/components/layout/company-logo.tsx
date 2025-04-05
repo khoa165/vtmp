@@ -1,5 +1,5 @@
 import React from 'react';
-import { CompanyMetadataWithOffers } from 'types';
+import { CompanyMetadataWithOffers } from 'src/types';
 
 interface CompanyLogoProps {
   company: CompanyMetadataWithOffers;

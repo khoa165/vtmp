@@ -6,10 +6,10 @@ import {
   InterviewRecordsPerCompany,
   MentorshipTerm,
   MergedDateWithCount,
-} from 'types';
-import { isSome } from 'utils/maybe';
+} from 'src/types';
+import { isSome } from 'src/utils/maybe';
 import { InterviewType, MentorshipYear } from './constants';
-import { mentorshipPeople } from 'data/people';
+import { mentorshipPeople } from 'src/data/people';
 
 interface InterviewCell {
   date: string;
