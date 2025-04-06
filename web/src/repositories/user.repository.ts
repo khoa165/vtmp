@@ -1,4 +1,5 @@
 import { IUser, UserModel } from '@/models/user.model';
+import { UserRole } from '@/types/enums';
 
 export const UserRepository = {
   createUser: async (userData: {
@@ -6,6 +7,7 @@ export const UserRepository = {
     lastName: string;
     email: string;
     encryptedPassword: string;
+    role?: UserRole;
   }): Promise<IUser> => {
     return UserModel.create(userData);
   },
