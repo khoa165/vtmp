@@ -8,7 +8,7 @@ const UserRoutes = Router();
 
 UserRoutes.get(
   '/profile',
-  [authenticate, hasPermission(Permission.MANAGE_APPLICATION)],
+  [authenticate, hasPermission(Permission.MANAGE_INVITATION)],
   UserController.getProfile
 );
 
