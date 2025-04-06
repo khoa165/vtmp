@@ -8,6 +8,7 @@ export interface IUser extends Document {
   email: string;
   encryptedPassword: string;
   role: UserRole;
+  deletedAt?: Date;
 }
 
 const UserSchema = new mongoose.Schema<IUser>(
@@ -33,6 +34,9 @@ const UserSchema = new mongoose.Schema<IUser>(
       type: String,
       enum: Object.values(UserRole),
       default: UserRole.USER,
+    },
+    deletedAt: {
+      type: Date,
     },
   },
   { timestamps: true }

@@ -38,6 +38,10 @@ export const UserRepository = {
   },
 
   deleteUserById: async (id: string): Promise<IUser | null> => {
-    return UserModel.findByIdAndDelete(id);
+    return UserModel.findByIdAndUpdate(
+      id,
+      { $set: { deletedAt: new Date() } },
+      { new: true }
+    );
   },
 };

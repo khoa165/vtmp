@@ -6,6 +6,7 @@ import assert from 'assert';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { IUser } from '@/models/user.model';
 import { UserRole } from '@/types/enums';
+import { differenceInSeconds } from 'date-fns';
 
 chai.use(chaiSubset);
 const { expect } = chai;
@@ -64,9 +65,9 @@ describe('UserRepository', () => {
         email: 'test@example.com',
         encryptedPassword: 'ecnrypted-password-later',
       };
-      UserRepository.createUser(mockUser);
-      const user = await UserRepository.findUserByEmail('fake@example.com');
+      await UserRepository.createUser(mockUser);
 
+      const user = await UserRepository.findUserByEmail('fake@example.com');
       assert(!user);
     });
 
@@ -78,8 +79,8 @@ describe('UserRepository', () => {
         encryptedPassword: 'ecnrypted-password-later',
       };
       await UserRepository.createUser(mockUser);
-      const user = await UserRepository.findUserByEmail('test@example.com');
 
+      const user = await UserRepository.findUserByEmail('test@example.com');
       assert(user);
       expect(user).to.containSubset(mockUser);
     });
@@ -107,10 +108,9 @@ describe('UserRepository', () => {
           encryptedPassword: 'ecnrypted-password-later',
         },
       ];
-
-      for (const mockUser of mockUsers) {
-        await UserRepository.createUser(mockUser);
-      }
+      await Promise.all(
+        mockUsers.map((mockUser) => UserRepository.createUser(mockUser))
+      );
 
       const users = await UserRepository.findAllUsers();
       expect(users).to.be.an('array');
@@ -174,15 +174,17 @@ describe('UserRepository', () => {
       assert(!deletedUser);
     });
 
-    it('should delete user if user found', async () => {
+    it('should soft delete user and returhn deletedUser object with deletedAt field set', async () => {
       const deletedUser = await UserRepository.deleteUserById(user.id);
-
       assert(deletedUser);
+      assert(deletedUser.deletedAt);
 
-      const userAfterDeletion = await UserRepository.findUserById(
-        deletedUser.id
-      );
-      assert(!userAfterDeletion);
+      // const userAfterDeletion = await UserRepository.findUserById(
+      //   deletedUser.id
+      // );
+      // assert(!userAfterDeletion);
+      const timeDiff = differenceInSeconds(new Date(), deletedUser.deletedAt);
+      expect(timeDiff).to.lessThan(3);
     });
   });
 });
