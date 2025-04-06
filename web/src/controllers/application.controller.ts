@@ -50,6 +50,7 @@ export const ApplicationController = {
       return;
     }
   },
+
   getAllApplications: async (req: Request, res: Response) => {
     try {
       const userId = (req as AuthenticatedRequest).user.id;
@@ -57,7 +58,7 @@ export const ApplicationController = {
       const applications = await ApplicationService.getAllApplications(userId);
 
       res.status(200).json({
-        message: 'Get Applications Successfully',
+        message: 'Applications retrieved successfully',
         data: applications,
       });
       return;
@@ -67,6 +68,7 @@ export const ApplicationController = {
       return;
     }
   },
+
   getOneApplication: async (req: Request, res: Response) => {
     try {
       const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
@@ -78,7 +80,7 @@ export const ApplicationController = {
       });
 
       res.status(200).json({
-        message: 'Get Application successfully',
+        message: 'Application retrieved successfully',
         data: application,
       });
       return;
