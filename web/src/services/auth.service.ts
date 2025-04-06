@@ -1,10 +1,47 @@
 import { EnvConfig } from '@/config/env';
 import { UserRepository } from '@/repositories/user.repository';
-import { ResourceNotFoundError, UnauthorizedError } from '@/utils/errors';
+import {
+  DuplicateResourceError,
+  UnauthorizedError,
+  ResourceNotFoundError,
+} from '@/utils/errors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export const AuthService = {
+  signup: async ({
+    firstName,
+    lastName,
+    email,
+    password,
+  }: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+  }) => {
+    const userByEmail = await UserRepository.findUserByEmail(email);
+
+    if (userByEmail) {
+      throw new DuplicateResourceError(
+        'Email is already taken, please sign up with a different email',
+        {
+          email,
+        }
+      );
+    }
+
+    const saltRounds = 10;
+    const encryptedPassword = await bcrypt.hash(password, saltRounds);
+
+    return UserRepository.createUser({
+      firstName,
+      lastName,
+      email,
+      encryptedPassword,
+    });
+  },
+
   login: async ({ email, password }: { email: string; password: string }) => {
     const user = await UserRepository.findUserByEmail(email);
     if (!user) {

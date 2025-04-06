@@ -1,5 +1,5 @@
 import { ApplicationRepository } from '@/repositories/application.repository';
-import JobPostingRepository from '@/repositories/jobPosting.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
 export const ApplicationService = {

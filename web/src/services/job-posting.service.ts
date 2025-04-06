@@ -1,7 +1,7 @@
-import JobPostingRepository from '@/repositories/jobPosting.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ResourceNotFoundError } from '../utils/errors';
 
-const JobPostingService = {
+export const JobPostingService = {
   updateJobPostingById: async (jobId: string, newUpdate: object) => {
     const updatedJobPosting = await JobPostingRepository.updateJobPostingById(
       jobId,
@@ -15,7 +15,7 @@ const JobPostingService = {
 
     return updatedJobPosting;
   },
-  
+
   deleteJobPostingById: async (jobId: string) => {
     const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
       jobId
@@ -29,5 +29,3 @@ const JobPostingService = {
     return deletedJobPosting;
   },
 };
-
-export default JobPostingService;
