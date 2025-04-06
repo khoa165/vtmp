@@ -10,7 +10,7 @@ import bcrypt from 'bcryptjs';
 import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
 import { expect } from 'chai';
 
-describe.only('hasPermission', () => {
+describe('hasPermission', () => {
   useMongoDB();
   const sandbox = useSandbox();
   let token: string;
