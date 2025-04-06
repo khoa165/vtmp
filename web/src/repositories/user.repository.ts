@@ -1,5 +1,5 @@
 import { IUser, UserModel } from '@/models/user.model';
-import { Role } from '@/types/enums';
+import { UserRole } from '@/types/enums';
 
 export const UserRepository = {
   createUser: async (userData: {
@@ -7,19 +7,20 @@ export const UserRepository = {
     lastName: string;
     email: string;
     encryptedPassword: string;
+    role?: UserRole;
   }): Promise<IUser> => {
     return UserModel.create(userData);
   },
 
-  findAllUsers: async (): Promise<IUser[]> => {
+  getAllUsers: async (): Promise<IUser[]> => {
     return UserModel.find();
   },
 
-  findUserByEmail: async (email: string): Promise<IUser | null> => {
+  getUserByEmail: async (email: string): Promise<IUser | null> => {
     return UserModel.findOne({ email });
   },
 
-  findUserById: async (id: string): Promise<IUser | null> => {
+  getUserById: async (id: string): Promise<IUser | null> => {
     return UserModel.findById(id);
   },
 
@@ -30,13 +31,17 @@ export const UserRepository = {
       lastName?: string;
       email?: string;
       encryptedPassword?: string;
-      role?: Role;
+      role?: UserRole;
     }
   ): Promise<IUser | null> => {
     return UserModel.findByIdAndUpdate(id, updatedUser, { new: true });
   },
 
   deleteUserById: async (id: string): Promise<IUser | null> => {
-    return UserModel.findByIdAndDelete(id);
+    return UserModel.findByIdAndUpdate(
+      id,
+      { $set: { deletedAt: new Date() } },
+      { new: true }
+    );
   },
 };

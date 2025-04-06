@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 import assert from 'assert';
-import JobPostingService from './jobPosting.service';
-import JobPostingRepository from '@/repositories/jobPosting.repository';
+import { JobPostingService } from './job-posting.service';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import mongoose from 'mongoose';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { ResourceNotFoundError } from '@/utils/errors';
 import { differenceInSeconds } from 'date-fns';
 
@@ -11,11 +11,11 @@ describe('JobPostingService', () => {
   useMongoDB();
 
   const mockJobPosting = {
-    linkId: new mongoose.Types.ObjectId(),
+    linkId: getNewObjectId(),
     url: 'http://example.com/job-posting',
     jobTitle: 'Software Engineer',
     companyName: 'Example Company',
-    submittedBy: new mongoose.Types.ObjectId(),
+    submittedBy: getNewObjectId(),
   };
 
   describe('updateJobPostingById', () => {
@@ -27,10 +27,7 @@ describe('JobPostingService', () => {
       };
 
       await expect(
-        JobPostingService.updateJobPostingById(
-          new mongoose.Types.ObjectId().toString(),
-          newUpdate
-        )
+        JobPostingService.updateJobPostingById(getNewMongoId(), newUpdate)
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
@@ -72,9 +69,7 @@ describe('JobPostingService', () => {
   describe('deleteJobPostingById', () => {
     it('should throw an error when no job posting is found', async () => {
       await expect(
-        JobPostingService.deleteJobPostingById(
-          new mongoose.Types.ObjectId().toString()
-        )
+        JobPostingService.deleteJobPostingById(getNewMongoId())
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
