@@ -16,6 +16,7 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import { IApplication } from '@/models/application.model';
 
 describe('ApplicationController', () => {
   useMongoDB();
@@ -86,7 +87,7 @@ describe('ApplicationController', () => {
       expect(errors[0].message).to.equal('Job posting not found');
     });
 
-    it('it should return error message with status code 409 if duplicate application exists', async () => {
+    it('should return error message with status code 409 if duplicate application exists', async () => {
       const savedJobPostingId = (
         await JobPostingRepository.createJobPosting(mockJobPosting)
       ).id;
@@ -125,163 +126,90 @@ describe('ApplicationController', () => {
   });
 
   describe('GET /applications', () => {
-    // let newJobPostingId1: string;
-    // let newJobPostingId2: string;
-    // let newApplicationId1: string;
-    // let newApplicationId2: string;
-
-    beforeEach(async () => {
-      // const jobPosting1 = {
-      //   linkId: getNewObjectId(),
-      //   url: 'vtmp.com',
-      //   jobTitle: 'SWE',
-      //   companyName: 'Apple',
-      //   submittedBy: newUserId,
-      // };
-      // newJobPostingId1 = (
-      //   await JobPostingRepository.createJobPosting(jobPosting1)
-      // ).id;
-
-      // const jobPosting2 = {
-      //   linkId: getNewObjectId(),
-      //   url: 'vtmp.com',
-      //   jobTitle: 'SWE',
-      //   companyName: 'Apple',
-      //   submittedBy: newUserId,
-      // };
-      // newJobPostingId2 = (
-      //   await JobPostingRepository.createJobPosting(jobPosting2)
-      // ).id;
-
-      const application1 = {
+    it('should return all application objects that belong to the authenticated user', async () => {
+      const mockApplication1 = {
         jobPostingId: getNewMongoId(),
         userId: savedUserId,
       };
-      newApplicationId1 = (
-        await ApplicationRepository.createApplication(application1)
-      ).id;
-
-      const application2 = {
+      const mockApplication2 = {
         jobPostingId: getNewMongoId(),
         userId: savedUserId,
       };
-      newApplicationId2 = (
-        await ApplicationRepository.createApplication(application2)
+      const savedApplicationId1 = (
+        await ApplicationRepository.createApplication(mockApplication1)
       ).id;
+      const savedApplicationId2 = (
+        await ApplicationRepository.createApplication(mockApplication2)
+      ).id;
+
+      const res = await request(app)
+        .get('/api/applications')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(2);
+      expect(
+        res.body.data.map((application: IApplication) => application._id)
+      ).to.have.members([savedApplicationId1, savedApplicationId2]);
     });
 
-    it('should return all application objects that belong to the authenticated user', (done) => {
-      request(app)
-        .get('/api/applications/')
-        .set('Authorization', `Bearer ${mockToken}`)
-        .end((err, res) => {
-          if (err) return done(err);
+    it('should return an empty array of applications if user does not have any applications', async () => {
+      const res = await request(app)
+        .get('/api/applications')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
-          expect(res.statusCode).to.equal(200);
-          expect(res.body).to.have.property(
-            'message',
-            'Get Applications Successfully'
-          );
-          expect(res.body).to.have.property('data').that.is.an('array');
-          expect(res.body.data).to.have.lengthOf(2);
-
-          // res.body.data.forEach((application: any) => {
-          //   expect(application).to.have.property('userId', savedUserId);
-          // });
-
-          // expect(res.body.data.map((app: any) => app._id)).to.include.members([
-          //   newApplicationId1,
-          //   newApplicationId2,
-          // ]);
-
-          done();
-        });
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
     });
   });
 
   describe('GET /applications/:id', () => {
-    let savedUserId: string;
-    let encryptedPassword: string;
-    let token: string;
-
-    let newJobPostingId: string;
-    let newApplicationId: string;
-
-    beforeEach(async () => {
-      encryptedPassword = await bcrypt.hash('test password', 10);
-      const mockUser = {
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test@gmail.com',
-        encryptedPassword,
-      };
-      savedUserId = (await UserRepository.createUser(mockUser)).id;
-
-      token = await AuthService.login({
-        email: mockUser.email,
-        password: 'test password',
-      });
-
-      const jobPosting = {
-        linkId: getNewObjectId(),
-        url: 'vtmp.com',
-        jobTitle: 'SWE',
-        companyName: 'Apple',
-        submittedBy: savedUserId,
-      };
-      newJobPostingId = (
-        await JobPostingRepository.createJobPosting(jobPosting)
-      ).id;
-
-      const application = {
-        jobPostingId: newJobPostingId,
-        userId: savedUserId,
-      };
-      newApplicationId = (
-        await ApplicationRepository.createApplication(application)
-      ).id;
-    });
-
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
       const res = await request(app)
         .get('/api/applications/123456789')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${token}`);
+        .set('Authorization', `Bearer ${mockToken}`);
 
-      expect(res.statusCode).to.equal(400);
-      expect(res.body.errors[0].message).to.equal(
-        'Invalid application ID format'
-      );
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Invalid application ID format');
     });
 
     it('should return 404 if application is not found or does not belong to authenticated user', async () => {
       const invalidApplicationId = getNewMongoId();
       const res = await request(app)
         .get(`/api/applications/${invalidApplicationId}`)
-        .set('Authorization', `Bearer ${token}`);
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
-      expect(res.statusCode).to.equal(404);
-      expect(res.body.errors[0]).to.have.property(
-        'message',
-        'Application not found'
-      );
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Application not found');
     });
 
-    it('should return the application if found and belongs to authenticated user', async () => {
+    it('should return an application if found and belongs to authenticated user', async () => {
+      const mockApplication = {
+        jobPostingId: getNewMongoId(),
+        userId: savedUserId,
+      };
+      const savedApplicationId = (
+        await ApplicationRepository.createApplication(mockApplication)
+      ).id;
+
       const res = await request(app)
-        .get(`/api/applications/${newApplicationId}`)
-        .set('Authorization', `Bearer ${token}`);
+        .get(`/api/applications/${savedApplicationId}`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
-      expect(res.statusCode).to.equal(200);
-      expect(res.body).to.have.property(
-        'message',
-        'Get Application successfully'
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.have.property('_id', savedApplicationId);
+      expect(res.body.data).to.have.property(
+        'jobPostingId',
+        mockApplication.jobPostingId
       );
-      expect(res.body).to.have.property('data');
-
-      const data = res.body.data;
-      expect(data).to.have.property('_id', newApplicationId);
-      expect(data).to.have.property('userId', savedUserId);
+      expect(res.body.data).to.have.property('userId', savedUserId);
     });
   });
 });

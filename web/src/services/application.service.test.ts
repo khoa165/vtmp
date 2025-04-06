@@ -110,23 +110,21 @@ describe('ApplicationService', () => {
 
   describe('getAllApplications', () => {
     it('should only return applications associated with a userId', async () => {
-      await ApplicationRepository.createApplication(mockApplication_A0);
-      await ApplicationRepository.createApplication(mockApplication_A1);
+      const mockApplicationId_A0 = (
+        await ApplicationRepository.createApplication(mockApplication_A0)
+      ).id;
+      const mockApplicationId_A1 = (
+        await ApplicationRepository.createApplication(mockApplication_A1)
+      ).id;
       await ApplicationRepository.createApplication(mockApplication_B);
       const applications =
         await ApplicationService.getAllApplications(userId_A);
 
       assert(applications);
-      expect(applications).to.be.an('array');
-      expect(applications).to.have.lengthOf(2);
-      expect(applications[0]).to.containSubset({
-        jobPostingId: toMongoId(mockApplication_A0.jobPostingId),
-        userId: toMongoId(mockApplication_A0.userId),
-      });
-      expect(applications[1]).to.containSubset({
-        jobPostingId: toMongoId(mockApplication_A1.jobPostingId),
-        userId: toMongoId(mockApplication_A1.userId),
-      });
+      expect(applications).to.be.an('array').that.have.lengthOf(2);
+      expect(applications.map((application) => application.id)).to.have.members(
+        [mockApplicationId_A0, mockApplicationId_A1]
+      );
     });
 
     it('should return no application if authenticated user has no application', async () => {
@@ -134,8 +132,7 @@ describe('ApplicationService', () => {
         await ApplicationService.getAllApplications(userId_A);
 
       assert(applications);
-      expect(applications).to.be.an('array');
-      expect(applications).to.have.lengthOf(0);
+      expect(applications).to.be.an('array').that.have.lengthOf(0);
     });
   });
 

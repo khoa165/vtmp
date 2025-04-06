@@ -14,7 +14,7 @@ const ApplicationRequestSchema = z.object({
 
 const ApplicationIdParamsSchema = z.object({
   applicationId: z
-    .string({ required_error: 'Application ID is required' })
+    .string()
     .refine((id) => mongoose.Types.ObjectId.isValid(id), {
       message: 'Invalid application ID format',
     }),

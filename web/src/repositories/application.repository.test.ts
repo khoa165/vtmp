@@ -74,8 +74,7 @@ describe('ApplicationRepository', () => {
         await ApplicationRepository.findApplicationsByUserId(userId_A);
 
       assert(applications);
-      expect(applications).to.be.an('array');
-      expect(applications).to.have.lengthOf(2);
+      expect(applications).to.be.an('array').that.have.lengthOf(2);
       expect(applications[0]).to.containSubset({
         jobPostingId: toMongoId(mockApplication_A0.jobPostingId),
         userId: toMongoId(mockApplication_A0.userId),
@@ -92,8 +91,7 @@ describe('ApplicationRepository', () => {
         await ApplicationRepository.findApplicationsByUserId(userId_A);
 
       assert(applications);
-      expect(applications).to.be.an('array');
-      expect(applications).to.have.lengthOf(0);
+      expect(applications).to.be.an('array').that.have.lengthOf(0);
     });
   });
 
