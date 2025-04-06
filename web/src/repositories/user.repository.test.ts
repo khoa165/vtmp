@@ -116,7 +116,6 @@ describe('UserRepository', () => {
       expect(users).to.be.an('array');
       expect(users).to.have.lengthOf(mockUsers.length);
       for (let i = 0; i < users.length; i++) {
-        console.log('in get all ', users[i], mockUsers[i]);
         expect(users[i]).to.containSubset(mockUsers[i]);
       }
     });
