@@ -19,8 +19,18 @@ jobs:
       - name: Use latest yarn version
         run: yarn set version stable
 
-      - name: Install dependencies
-        run: yarn pp
+      - name: Install dependencies at project root level
+        run: yarn install
+
+      - name: Install dependencies at web level
+        run: |
+          cd web
+          yarn install
+
+      - name: Install dependencies at web-client level
+        run: |
+          cd web-client
+          yarn install
 
       - name: Run test
         run: yarn test
