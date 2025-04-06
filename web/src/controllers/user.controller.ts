@@ -2,7 +2,9 @@ import { Request, Response } from 'express';
 
 const UserController = {
   getProfile: async (req: Request, res: Response) => {
-    res.json(req.user);
+    console.log('Get to controller');
+    res.status(200).json({ data: '' });
+    return;
   },
 };
 
