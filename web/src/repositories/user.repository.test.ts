@@ -28,8 +28,8 @@ describe('UserRepository', () => {
     });
   });
 
-  describe('findUserById', () => {
-    it('should return null if cannot find user with given id', async () => {
+  describe('getUserById', () => {
+    it('should return null if cannot get user with given id', async () => {
       const mockUser = {
         firstName: 'admin',
         lastName: 'viettech',
@@ -37,12 +37,12 @@ describe('UserRepository', () => {
         encryptedPassword: 'ecnrypted-password-later',
       };
       await UserRepository.createUser(mockUser);
-      const user = await UserRepository.findUserById(getNewMongoId());
+      const user = await UserRepository.getUserById(getNewMongoId());
 
       assert(!user);
     });
 
-    it('should be able to find user by id', async () => {
+    it('should be able to get user by id', async () => {
       const mockUser = {
         firstName: 'admin',
         lastName: 'viettech',
@@ -50,15 +50,15 @@ describe('UserRepository', () => {
         encryptedPassword: 'ecnrypted-password-later',
       };
       const newlyCreatedRecord = await UserRepository.createUser(mockUser);
-      const user = await UserRepository.findUserById(newlyCreatedRecord.id);
+      const user = await UserRepository.getUserById(newlyCreatedRecord.id);
 
       assert(user);
       expect(user).to.containSubset(mockUser);
     });
   });
 
-  describe('findUserByEmail', () => {
-    it('should return null if cannot find user with given email', async () => {
+  describe('getUserByEmail', () => {
+    it('should return null if cannot get user with given email', async () => {
       const mockUser = {
         firstName: 'admin',
         lastName: 'viettech',
@@ -67,11 +67,11 @@ describe('UserRepository', () => {
       };
       await UserRepository.createUser(mockUser);
 
-      const user = await UserRepository.findUserByEmail('fake@example.com');
+      const user = await UserRepository.getUserByEmail('fake@example.com');
       assert(!user);
     });
 
-    it('should be able to find user by email', async () => {
+    it('should be able to get user by email', async () => {
       const mockUser = {
         firstName: 'admin',
         lastName: 'viettech',
@@ -80,15 +80,15 @@ describe('UserRepository', () => {
       };
       await UserRepository.createUser(mockUser);
 
-      const user = await UserRepository.findUserByEmail('test@example.com');
+      const user = await UserRepository.getUserByEmail('test@example.com');
       assert(user);
       expect(user).to.containSubset(mockUser);
     });
   });
 
-  describe('findAllUsers', () => {
+  describe('getAllUsers', () => {
     it('should return an empty array when there are no users', async () => {
-      const users = await UserRepository.findAllUsers();
+      const users = await UserRepository.getAllUsers();
       expect(users).to.be.an('array');
       expect(users).to.have.lengthOf(0);
     });
@@ -112,7 +112,7 @@ describe('UserRepository', () => {
         mockUsers.map((mockUser) => UserRepository.createUser(mockUser))
       );
 
-      const users = await UserRepository.findAllUsers();
+      const users = await UserRepository.getAllUsers();
       expect(users).to.be.an('array');
       expect(users).to.have.lengthOf(mockUsers.length);
       for (let i = 0; i < users.length; i++) {
@@ -179,10 +179,6 @@ describe('UserRepository', () => {
       assert(deletedUser);
       assert(deletedUser.deletedAt);
 
-      // const userAfterDeletion = await UserRepository.findUserById(
-      //   deletedUser.id
-      // );
-      // assert(!userAfterDeletion);
       const timeDiff = differenceInSeconds(new Date(), deletedUser.deletedAt);
       expect(timeDiff).to.lessThan(3);
     });

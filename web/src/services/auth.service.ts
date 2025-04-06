@@ -20,7 +20,7 @@ export const AuthService = {
     email: string;
     password: string;
   }) => {
-    const userByEmail = await UserRepository.findUserByEmail(email);
+    const userByEmail = await UserRepository.getUserByEmail(email);
 
     if (userByEmail) {
       throw new DuplicateResourceError(
@@ -43,7 +43,7 @@ export const AuthService = {
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {
-    const user = await UserRepository.findUserByEmail(email);
+    const user = await UserRepository.getUserByEmail(email);
     if (!user) {
       throw new ResourceNotFoundError('User not found', { email });
     }

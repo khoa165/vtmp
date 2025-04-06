@@ -12,15 +12,15 @@ export const UserRepository = {
     return UserModel.create(userData);
   },
 
-  findAllUsers: async (): Promise<IUser[]> => {
+  getAllUsers: async (): Promise<IUser[]> => {
     return UserModel.find();
   },
 
-  findUserByEmail: async (email: string): Promise<IUser | null> => {
+  getUserByEmail: async (email: string): Promise<IUser | null> => {
     return UserModel.findOne({ email });
   },
 
-  findUserById: async (id: string): Promise<IUser | null> => {
+  getUserById: async (id: string): Promise<IUser | null> => {
     return UserModel.findById(id);
   },
 
