@@ -1,5 +1,5 @@
 import { IUser, UserModel } from '@/models/user.model';
-import { Role } from '@/types/enums';
+import { UserRole } from '@/types/enums';
 
 export const UserRepository = {
   createUser: async (userData: {
@@ -7,6 +7,7 @@ export const UserRepository = {
     lastName: string;
     email: string;
     encryptedPassword: string;
+    role?: UserRole;
   }): Promise<IUser> => {
     return UserModel.create(userData);
   },
@@ -30,7 +31,7 @@ export const UserRepository = {
       lastName?: string;
       email?: string;
       encryptedPassword?: string;
-      role?: Role;
+      role?: UserRole;
     }
   ): Promise<IUser | null> => {
     return UserModel.findByIdAndUpdate(id, updatedUser, { new: true });

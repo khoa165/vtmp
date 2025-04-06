@@ -12,6 +12,7 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
+import { UserRole } from '@/types/enums';
 
 describe('AuthController', () => {
   useMongoDB();
@@ -32,89 +33,277 @@ describe('AuthController', () => {
       await UserRepository.createUser(mockUser);
     });
 
-    it('should return error messages for missing email and password', (done) => {
-      request(app)
+    it('should return error messages for missing email and password', async () => {
+      const res = await request(app)
         .post('/api/auth/login')
         .send({})
-        .set('Accept', 'application/json')
-        .end((err, res) => {
-          if (err) return done(err);
-          expectErrorsArray({ res, statusCode: 400, errorsCount: 2 });
+        .set('Accept', 'application/json');
 
-          const errors = res.body.errors;
-          expect(errors[0].message).to.equal('Email is required');
-          expect(errors[1].message).to.equal('Password is required');
-          done();
-        });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 2 });
+
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Email is required');
+      expect(errors[1].message).to.equal('Password is required');
     });
 
-    it('should return error message for missing email', (done) => {
-      request(app)
+    it('should return error message for missing email', async () => {
+      const res = await request(app)
         .post('/api/auth/login')
         .send({ password: 'test' })
-        .set('Accept', 'application/json')
-        .end((err, res) => {
-          if (err) return done(err);
-          expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+        .set('Accept', 'application/json');
 
-          const errors = res.body.errors;
-          expect(errors[0].message).to.equal('Email is required');
-          done();
-        });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Email is required');
     });
 
-    it('should return error message for missing password', (done) => {
-      request(app)
+    it('should return error message for missing password', async () => {
+      const res = await request(app)
         .post('/api/auth/login')
-        .send({ email: 'test@gmail.com' })
-        .end((err, res) => {
-          if (err) return done(err);
-          expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+        .send({ email: 'test@gmail.com' });
 
-          const errors = res.body.errors;
-          expect(errors[0].message).to.equal('Password is required');
-          done();
-        });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Password is required');
     });
 
-    it('should return error message for user not found', (done) => {
-      request(app)
+    it('should return error message for user not found', async () => {
+      const res = await request(app)
         .post('/api/auth/login')
-        .send({ email: 'notfound@gmail.com', password: 'test password' })
-        .end((err, res) => {
-          if (err) done(err);
-          expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+        .send({ email: 'notfound@gmail.com', password: 'test password' });
 
-          const errors = res.body.errors;
-          expect(errors[0].message).to.equal('User not found');
-          done();
-        });
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('User not found');
     });
 
-    it('should return error message for valid user but wrong password', (done) => {
-      request(app)
+    it('should return error message for valid user but wrong password', async () => {
+      const res = await request(app)
         .post('/api/auth/login')
-        .send({ email: 'test@gmail.com', password: 'wrong password' })
-        .end((err, res) => {
-          if (err) done(err);
-          expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+        .send({ email: 'test@gmail.com', password: 'wrong password' });
 
-          const errors = res.body.errors;
-          expect(errors[0].message).to.equal('Wrong password');
-          done();
-        });
+      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Wrong password');
     });
 
-    it('should return token for valid email and password', (done) => {
-      request(app)
+    it('should return token for valid email and password', async () => {
+      const res = await request(app)
         .post('/api/auth/login')
-        .send({ email: 'test@gmail.com', password: 'test password' })
-        .end((err, res) => {
-          if (err) done(err);
-          expectSuccessfulResponse({ res, statusCode: 200 });
-          expect(res.body.data).to.have.property('token');
-          done();
-        });
+        .send({ email: 'test@gmail.com', password: 'test password' });
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.have.property('token');
+    });
+  });
+
+  describe('POST /auth/signup', () => {
+    it('should return error message for unrecognized field', async () => {
+      const res = await request(app).post('/api/auth/signup').send({
+        firstName: 'admin',
+        lastName: 'viettech',
+        password: 'Test!123',
+        email: 'test123@gmail.com',
+        role: UserRole.ADMIN,
+      });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        "Unrecognized key(s) in object: 'role'"
+      );
+    });
+
+    it('should return error message for missing email', async () => {
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          password: 'Test!123',
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Email is required');
+    });
+
+    it('should return error message for password being too short', async () => {
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          email: 'test@gmail.com',
+          password: 'vT1?',
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Password must be between 8 and 20 characters'
+      );
+    });
+
+    it('should return error message for password being too long', async () => {
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          email: 'test@gmail.com',
+          password: 'Thisisasuperlongpasswordthatcouldbeshortened!123',
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Password must be between 8 and 20 characters'
+      );
+    });
+
+    it('should return error message for password having no special characters', async () => {
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          email: 'test@gmail.com',
+          password: 'Test1234',
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Password requires at least 1 special character in [!, @, #, $, %, ^, &, ?]'
+      );
+    });
+
+    it('should return error message for password having no uppercase characters', async () => {
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          email: 'test@gmail.com',
+          password: 'test123!',
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Password requires at least 1 uppercase letter'
+      );
+    });
+
+    it('should return error message for password having no lowercase characters', async () => {
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          email: 'test@gmail.com',
+          password: 'TEST!123',
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Password requires at least 1 lowercase letter'
+      );
+    });
+
+    it('should return error message for password having no digit', async () => {
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          email: 'test@gmail.com',
+          password: 'Test!!!@@',
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Password requires at least 1 digit'
+      );
+    });
+
+    it('should return error message for duplicate email', async () => {
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@gmail.com',
+        encryptedPassword: 'Test!123',
+      };
+      await UserRepository.createUser(mockUser);
+
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          email: 'test@gmail.com',
+          password: 'Test!123',
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Email is already taken, please sign up with a different email'
+      );
+    });
+
+    it('should return new user', async () => {
+      const res = await request(app).post('/api/auth/signup').send({
+        firstName: 'admin',
+        lastName: 'viettech',
+        password: 'Test!123',
+        email: 'test123@gmail.com',
+      });
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.have.property('token');
+    });
+  });
+
+  describe('POST /auth/signup + POST /auth/login', () => {
+    it('should not allow user to login after signup if wrong password', async () => {
+      const resSignup = await request(app).post('/api/auth/signup').send({
+        firstName: 'admin',
+        lastName: 'viettech',
+        password: 'Test!123',
+        email: 'test123@gmail.com',
+      });
+      expectSuccessfulResponse({ res: resSignup, statusCode: 200 });
+      expect(resSignup.body.data).to.have.property('token');
+
+      const resLogin = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'test123@gmail.com', password: 'test Password' });
+      expectErrorsArray({ res: resLogin, statusCode: 401, errorsCount: 1 });
+      const errors = resLogin.body.errors;
+      expect(errors[0].message).to.equal('Wrong password');
+    });
+
+    it('should allow user to login after signup', async () => {
+      const resSignup = await request(app).post('/api/auth/signup').send({
+        firstName: 'admin',
+        lastName: 'viettech',
+        password: 'Test!123',
+        email: 'test123@gmail.com',
+      });
+      expectSuccessfulResponse({ res: resSignup, statusCode: 200 });
+      expect(resSignup.body.data).to.have.property('token');
+
+      const resLogin = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'test123@gmail.com', password: 'Test!123' });
+
+      expectSuccessfulResponse({ res: resLogin, statusCode: 200 });
+      expect(resLogin.body.data).to.have.property('token');
     });
   });
 });

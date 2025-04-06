@@ -4,7 +4,7 @@ import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
 
 import { ApplicationRepository } from '@/repositories/application.repository';
-import JobPostingRepository from '@/repositories/jobPosting.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ApplicationService } from '@/services/application.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
