@@ -1,27 +1,27 @@
-@import 'variables';
+@use 'variables';
 
 #stats-container {
   div[role='tabpanel'] > div:first-child {
     padding-top: 15px;
   }
   .chart-title {
-    color: $brand-chart-title-color;
+    color: variables.$brand-chart-title-color;
     font-family: Georgia, 'Times New Roman', Times, serif;
     text-align: center;
   }
 
   .recharts-tooltip-item {
-    color: $brand-light-color !important;
+    color: variables.$brand-light-color !important;
     padding: 0 !important;
   }
 
   .recharts-rectangle.recharts-tooltip-cursor {
-    fill: $brand-banner-background-color !important;
+    fill: variables.$brand-banner-background-color !important;
   }
 
   .tooltip-box {
-    background-color: $brand-banner-background-color !important;
-    color: $viettech-green;
+    background-color: variables.$brand-banner-background-color !important;
+    color: variables.$viettech-green;
   }
 
   .interviews-legend {
@@ -44,14 +44,14 @@
       border-image-slice: 1;
       border-image-source: linear-gradient(
         to left,
-        $brand-stats-first-gradient-color,
-        $brand-stats-second-gradient-color
+        variables.$brand-stats-first-gradient-color,
+        variables.$brand-stats-second-gradient-color
       );
       padding: 3px;
       position: relative;
 
       .company-logo-wrapper {
-        background-color: $brand-stats-background-color;
+        background-color: variables.$brand-stats-background-color;
         // background-color: pink;
         min-height: 104px;
         display: flex;
@@ -75,12 +75,12 @@
             height: 32px;
             border-radius: 50%;
             background: linear-gradient(
-              $brand-stats-first-gradient-color,
-              $brand-stats-second-gradient-color
+              variables.$brand-stats-first-gradient-color,
+              variables.$brand-stats-second-gradient-color
             );
 
             .offers-count-background-separate-layer {
-              background-color: $brand-primary-background-color;
+              background-color: variables.$brand-primary-background-color;
               width: 26px;
               height: 26px;
               border-radius: 50%;
@@ -94,8 +94,8 @@
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            background-color: $brand-stats-background-color;
-            color: $mentorship-tertiary-pink;
+            background-color: variables.$brand-stats-background-color;
+            color: variables.$mentorship-tertiary-pink;
             font-weight: bold;
           }
         }

@@ -1,4 +1,4 @@
-@import 'variables';
+@use 'variables';
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
 #summary-container {
@@ -50,7 +50,7 @@
     }
     h4 > span,
     h5 > span {
-      color: $viettech-green;
+      color: variables.$viettech-green;
       display: inline-block;
     }
   }
@@ -60,14 +60,14 @@
     border-image-slice: 1;
     border-image-source: linear-gradient(
       to left,
-      $brand-stats-first-gradient-color,
-      $brand-stats-second-gradient-color
+      variables.$brand-stats-first-gradient-color,
+      variables.$brand-stats-second-gradient-color
     );
     padding: 3px;
     position: relative;
 
     .company-logo-wrapper {
-      background-color: $brand-stats-background-color;
+      background-color: variables.$brand-stats-background-color;
       min-height: 84px;
       max-height: 84px;
       display: flex;
@@ -91,12 +91,12 @@
           height: 30px;
           border-radius: 50%;
           background: linear-gradient(
-            $brand-stats-first-gradient-color,
-            $brand-stats-second-gradient-color
+            variables.$brand-stats-first-gradient-color,
+            variables.$brand-stats-second-gradient-color
           );
 
           .offers-count-background-separate-layer {
-            background-color: $brand-primary-background-color;
+            background-color: variables.$brand-primary-background-color;
             width: 26px;
             height: 26px;
             border-radius: 50%;
@@ -110,8 +110,8 @@
           width: 24px;
           height: 24px;
           border-radius: 50%;
-          background-color: $brand-stats-background-color;
-          color: $mentorship-tertiary-pink;
+          background-color: variables.$brand-stats-background-color;
+          color: variables.$mentorship-tertiary-pink;
           font-weight: bold;
         }
       }
