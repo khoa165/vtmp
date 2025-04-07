@@ -37,7 +37,7 @@ export const authenticate = async (
       res.status(statusCode).json({ errors });
       return;
     }
-    req.user = user;
+    req.user = { id: user.id, role: user.role };
     next();
   } catch {
     res.status(403).json({ message: 'Forbidden' });

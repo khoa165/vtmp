@@ -3,6 +3,7 @@ import { ApplicationService } from '@/services/application.service';
 import { z } from 'zod';
 import { handleError } from '@/utils/errors';
 import mongoose from 'mongoose';
+import { UserRole } from '@/types/enums';
 
 const ApplicationRequestSchema = z.object({
   jobPostingId: z
@@ -16,6 +17,7 @@ const ApplicationRequestSchema = z.object({
 interface AuthenticatedRequest extends Request {
   user: {
     id: string;
+    role: UserRole;
   };
 }
 

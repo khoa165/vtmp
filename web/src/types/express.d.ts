@@ -1,9 +1,12 @@
-import { IUser } from '@/models/user.model';
+import { UserRole } from '@/types/enums';
 
 declare global {
   namespace Express {
-    export interface Request {
-      user?: IUser;
+    interface Request {
+      user?: {
+        id: string;
+        role: UserRole;
+      };
     }
   }
 }
