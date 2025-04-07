@@ -1,3 +1,5 @@
+@use "variables";
+
 @import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
 
 @property --bg-angle {
@@ -27,17 +29,18 @@
   }
 
   &.simple {
-    border: 2px solid $viettech-green;
+    border: 2px solid variables.$viettech-green;
   }
 
   &.rainbow {
     color: rgb(243, 209, 215);
 
     animation: spin 2.5s infinite linear running;
-    background: linear-gradient(
+    background:
+      linear-gradient(
           to bottom,
-          $brand-primary-background-color,
-          $brand-primary-background-color
+          variables.$brand-primary-background-color,
+          variables.$brand-primary-background-color
         )
         padding-box,
       conic-gradient(
@@ -50,7 +53,7 @@
   }
 
   &.emeralds {
-    color: $viettech-green;
+    color: variables.$viettech-green;
 
     &:hover {
       // background-color: $brand-banner-element-color;
@@ -58,21 +61,21 @@
       // color: $brand-primary-background-color;
       background-image: linear-gradient(
         to bottom right,
-        $brand-stats-first-gradient-color,
-        $brand-stats-second-gradient-color
+        variables.$brand-stats-first-gradient-color,
+        variables.$brand-stats-second-gradient-color
       );
       border: 0;
-      color: $brand-light-color;
+      color: variables.$brand-light-color;
     }
   }
 
   &.light {
-    border-color: $brand-banner-element-color;
-    color: $brand-banner-element-color;
+    border-color: variables.$brand-banner-element-color;
+    color: variables.$brand-banner-element-color;
 
     &:hover {
-      background-color: $brand-banner-element-color;
-      color: $brand-primary-background-color;
+      background-color: variables.$brand-banner-element-color;
+      color: variables.$brand-primary-background-color;
     }
   }
 
@@ -80,20 +83,20 @@
     border-image-slice: 1;
     border-image-source: linear-gradient(
       to left,
-      $brand-first-gradient-color,
-      $brand-second-gradient-color
+      variables.$brand-first-gradient-color,
+      variables.$brand-second-gradient-color
     );
-    color: $brand-banner-element-color;
+    color: variables.$brand-banner-element-color;
 
     &:hover {
       background-image: linear-gradient(
         to bottom right,
-        $brand-first-gradient-color,
-        $brand-second-gradient-color
+        variables.$brand-first-gradient-color,
+        variables.$brand-second-gradient-color
       );
-      color: $brand-light-color;
+      color: variables.$brand-light-color;
       border-image: none;
-      border-color: $brand-light-color;
+      border-color: variables.$brand-light-color;
     }
   }
 }
