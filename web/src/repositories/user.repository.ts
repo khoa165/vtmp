@@ -13,15 +13,15 @@ export const UserRepository = {
   },
 
   getAllUsers: async (): Promise<IUser[]> => {
-    return UserModel.find();
+    return UserModel.find({ deletedAt: null });
   },
 
   getUserByEmail: async (email: string): Promise<IUser | null> => {
-    return UserModel.findOne({ email });
+    return UserModel.findOne({ email, deletedAt: null });
   },
 
   getUserById: async (id: string): Promise<IUser | null> => {
-    return UserModel.findById(id);
+    return UserModel.findOne({ _id: id, deletedAt: null });
   },
 
   updateUserById: async (
@@ -34,12 +34,18 @@ export const UserRepository = {
       role?: UserRole;
     }
   ): Promise<IUser | null> => {
-    return UserModel.findByIdAndUpdate(id, updatedUser, { new: true });
+    return UserModel.findOneAndUpdate(
+      { _id: id, deletedAt: null },
+      updatedUser,
+      {
+        new: true,
+      }
+    );
   },
 
   deleteUserById: async (id: string): Promise<IUser | null> => {
-    return UserModel.findByIdAndUpdate(
-      id,
+    return UserModel.findOneAndUpdate(
+      { _id: id, deletedAt: null },
       { $set: { deletedAt: new Date() } },
       { new: true }
     );

@@ -181,6 +181,9 @@ describe('UserRepository', () => {
 
       const timeDiff = differenceInSeconds(new Date(), deletedUser.deletedAt);
       expect(timeDiff).to.lessThan(3);
+
+      const foundUser = await UserRepository.getUserById(user.id);
+      assert(!foundUser);
     });
   });
 });
