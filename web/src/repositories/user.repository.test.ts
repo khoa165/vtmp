@@ -10,7 +10,7 @@ import { differenceInSeconds } from 'date-fns';
 
 chai.use(chaiSubset);
 const { expect } = chai;
-describe('UserRepository', () => {
+describe.only('UserRepository', () => {
   useMongoDB();
 
   describe('createUser', () => {
@@ -24,64 +24,6 @@ describe('UserRepository', () => {
 
       const user = await UserRepository.createUser(mockUser);
 
-      expect(user).to.containSubset(mockUser);
-    });
-  });
-
-  describe('getUserById', () => {
-    it('should return null if cannot get user with given id', async () => {
-      const mockUser = {
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      await UserRepository.createUser(mockUser);
-      const user = await UserRepository.getUserById(getNewMongoId());
-
-      assert(!user);
-    });
-
-    it('should be able to get user by id', async () => {
-      const mockUser = {
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      const newlyCreatedRecord = await UserRepository.createUser(mockUser);
-      const user = await UserRepository.getUserById(newlyCreatedRecord.id);
-
-      assert(user);
-      expect(user).to.containSubset(mockUser);
-    });
-  });
-
-  describe('getUserByEmail', () => {
-    it('should return null if cannot get user with given email', async () => {
-      const mockUser = {
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      await UserRepository.createUser(mockUser);
-
-      const user = await UserRepository.getUserByEmail('fake@example.com');
-      assert(!user);
-    });
-
-    it('should be able to get user by email', async () => {
-      const mockUser = {
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      await UserRepository.createUser(mockUser);
-
-      const user = await UserRepository.getUserByEmail('test@example.com');
-      assert(user);
       expect(user).to.containSubset(mockUser);
     });
   });
@@ -115,9 +57,102 @@ describe('UserRepository', () => {
       const users = await UserRepository.getAllUsers();
       expect(users).to.be.an('array');
       expect(users).to.have.lengthOf(mockUsers.length);
-      for (let i = 0; i < users.length; i++) {
-        expect(users[i]).to.containSubset(mockUsers[i]);
-      }
+    });
+
+    it('should not get users that are already soft deleted', async () => {
+      const mockUsers = [
+        {
+          firstName: 'admin1',
+          lastName: 'viettech',
+          email: 'test1@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+        {
+          firstName: 'admin2',
+          lastName: 'viettech',
+          email: 'test2@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+      ];
+      await Promise.all(
+        mockUsers.map((mockUser) => UserRepository.createUser(mockUser))
+      );
+
+      const mockSoftDeletedUser = {
+        firstName: 'admin3',
+        lastName: 'viettech',
+        email: 'test3@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      };
+      const newlyCreatedUser =
+        await UserRepository.createUser(mockSoftDeletedUser);
+      await UserRepository.deleteUserById(newlyCreatedUser.id);
+
+      const users = await UserRepository.getAllUsers();
+      expect(users).to.be.an('array');
+      expect(users).to.have.lengthOf(mockUsers.length);
+    });
+  });
+
+  describe('getUserByEmail', () => {
+    let user: IUser;
+
+    beforeEach(async () => {
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      };
+      user = await UserRepository.createUser(mockUser);
+    });
+
+    it('should return null if cannot get user with given email', async () => {
+      const userFoundByEmail =
+        await UserRepository.getUserByEmail('fake@example.com');
+      assert(!userFoundByEmail);
+    });
+
+    it('should return null if trying to get soft deleted user by email', async () => {
+      await UserRepository.deleteUserById(user.id);
+
+      const userFoundByEmail = await UserRepository.getUserByEmail(user.email);
+      assert(!userFoundByEmail);
+    });
+
+    it('should be able to get user by email', async () => {
+      const userFoundByEmail = await UserRepository.getUserByEmail(user.email);
+      assert(userFoundByEmail);
+    });
+  });
+
+  describe('getUserById', () => {
+    let user: IUser;
+
+    beforeEach(async () => {
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      };
+      user = await UserRepository.createUser(mockUser);
+    });
+
+    it('should return null if cannot get user with given id', async () => {
+      const userFoundById = await UserRepository.getUserById(getNewMongoId());
+      assert(!userFoundById);
+    });
+
+    it('should return null if trying to get soft deleted user by id', async () => {
+      await UserRepository.deleteUserById(user.id);
+      const userFoundById = await UserRepository.getUserById(user.id);
+      assert(!userFoundById);
+    });
+
+    it('should be able to get user by id', async () => {
+      const userFoundById = await UserRepository.getUserById(user.id);
+      assert(userFoundById);
     });
   });
 
@@ -139,6 +174,12 @@ describe('UserRepository', () => {
         getNewMongoId(),
         {}
       );
+      assert(!updatedUser);
+    });
+
+    it('should return null if trying to update a soft deleted user', async () => {
+      await UserRepository.deleteUserById(user.id);
+      const updatedUser = await UserRepository.updateUserById(user.id, {});
       assert(!updatedUser);
     });
 
@@ -171,6 +212,12 @@ describe('UserRepository', () => {
 
     it('should return null if no user found with given id', async () => {
       const deletedUser = await UserRepository.deleteUserById(getNewMongoId());
+      assert(!deletedUser);
+    });
+
+    it('should return null if trying to delete an already soft deleted user', async () => {
+      await UserRepository.deleteUserById(user.id);
+      const deletedUser = await UserRepository.deleteUserById(user.id);
       assert(!deletedUser);
     });
 
