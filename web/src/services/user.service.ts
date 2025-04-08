@@ -1,5 +1,4 @@
 import { UserRepository } from '@/repositories/user.repository';
-import { UserRole } from '@/types/enums';
 import { ResourceNotFoundError } from '@/utils/errors';
 import { excludePasswordFromUser } from '@/utils/transform';
 
@@ -19,16 +18,7 @@ const UserService = {
     return excludePasswordFromUser(user);
   },
 
-  updateUserById: async (
-    id: string,
-    updateData: {
-      firstName?: string;
-      lastName?: string;
-      email?: string;
-      password?: string;
-      role?: UserRole;
-    }
-  ) => {
+  updateUserById: async (id: string, updateData: object) => {
     const updatedUser = await UserRepository.updateUserById(id, updateData);
 
     if (!updatedUser) {
