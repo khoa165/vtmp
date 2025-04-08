@@ -9,5 +9,11 @@ ApplicationRoutes.post(
   '/',
   wrappedHandlers([authenticate, ApplicationController.createApplication])
 );
+ApplicationRoutes.get('/', authenticate, ApplicationController.getApplications);
+ApplicationRoutes.get(
+  '/:applicationId',
+  authenticate,
+  ApplicationController.getApplicationById
+);
 
 export default ApplicationRoutes;
