@@ -10,9 +10,8 @@ export const ApplicationService = {
     jobPostingId: string;
     userId: string;
   }) => {
-    const jobPosting = await JobPostingRepository.getJobPostingById(
-      jobPostingId
-    );
+    const jobPosting =
+      await JobPostingRepository.getJobPostingById(jobPostingId);
     if (!jobPosting) {
       throw new ResourceNotFoundError('Job posting not found', {
         jobPostingId,
@@ -35,5 +34,31 @@ export const ApplicationService = {
       jobPostingId,
       userId,
     });
+  },
+
+  getApplications: async (userId: string) => {
+    return ApplicationRepository.getApplications(userId);
+  },
+
+  getApplicationById: async ({
+    applicationId,
+    userId,
+  }: {
+    applicationId: string;
+    userId: string;
+  }) => {
+    const application = await ApplicationRepository.getApplicationById({
+      applicationId,
+      userId,
+    });
+
+    if (!application) {
+      throw new ResourceNotFoundError('Application not found', {
+        applicationId,
+        userId,
+      });
+    }
+
+    return application;
   },
 };
