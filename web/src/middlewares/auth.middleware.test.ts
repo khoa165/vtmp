@@ -6,6 +6,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { EnvConfig } from '@/config/env';
 import jwt from 'jsonwebtoken';
 import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
+import { DecodedJWTSchema } from '@/middlewares/auth.middleware';
 
 chai.use(chaiSubset);
 const { expect } = chai;
@@ -52,6 +53,7 @@ describe('UserRepository', () => {
 
       const token = resLogin.body.data.token;
       const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
+      const id = DecodedJWTSchema.parse(decoded).id;
 
       const resGetProfile = await request(app)
         .get('/api/users/profile')
@@ -60,7 +62,7 @@ describe('UserRepository', () => {
         .set('Authorization', `Bearer ${token}`);
 
       expect(resGetProfile.body).to.have.property('id');
-      expect(resGetProfile.body.id).to.equal(decoded.id);
+      expect(resGetProfile.body.id).to.equal(id);
     });
   });
 });

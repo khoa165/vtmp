@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 
-const DecodedJWTSchema = z.object({
+export const DecodedJWTSchema = z.object({
   id: z.string({ required_error: 'Id is required' }),
 });
 
@@ -27,7 +27,6 @@ export const authenticate = async (
 
     next();
   } catch (err: unknown) {
-    console.log(err);
     const { statusCode, errors } = handleError(err);
     res.status(statusCode).json({ errors });
     return;
