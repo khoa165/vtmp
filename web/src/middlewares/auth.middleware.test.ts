@@ -12,7 +12,7 @@ const { expect } = chai;
 describe('UserRepository', () => {
   useMongoDB();
 
-  describe.only('AuthMiddleware', () => {
+  describe('AuthMiddleware', () => {
     it('should throw Unauthorized for no token', async () => {
       const res = await request(app)
         .get('/api/users/profile')
@@ -57,7 +57,7 @@ describe('UserRepository', () => {
         .get('/api/users/profile')
         .send({})
         .set('Accept', 'application/json')
-        .set('Authorization', `${token}`);
+        .set('Authorization', `Bearer ${token}`);
 
       expect(resGetProfile.body).to.have.property('id');
       expect(resGetProfile.body.id).to.equal(decoded.id);
