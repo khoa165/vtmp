@@ -7,11 +7,17 @@ import { EnvConfig } from '@/config/env';
 import jwt from 'jsonwebtoken';
 import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
 import { DecodedJWTSchema } from '@/middlewares/auth.middleware';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 
 chai.use(chaiSubset);
 const { expect } = chai;
 describe('UserRepository', () => {
   useMongoDB();
+  const sandbox = useSandbox();
+  beforeEach(() => {
+    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+  });
 
   describe('AuthMiddleware', () => {
     it('should throw Unauthorized for no token', async () => {
