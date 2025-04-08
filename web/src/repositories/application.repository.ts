@@ -26,4 +26,23 @@ export const ApplicationRepository = {
       userId,
     }));
   },
+
+  getApplications: async (userId: string) => {
+    return ApplicationModel.find({
+      userId: userId,
+    });
+  },
+
+  getApplicationById: async ({
+    applicationId,
+    userId,
+  }: {
+    applicationId: string;
+    userId: string;
+  }) => {
+    return ApplicationModel.findOne({
+      _id: applicationId,
+      userId: userId,
+    });
+  },
 };
