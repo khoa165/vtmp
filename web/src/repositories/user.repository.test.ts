@@ -10,7 +10,7 @@ import { differenceInSeconds } from 'date-fns';
 
 chai.use(chaiSubset);
 const { expect } = chai;
-describe.only('UserRepository', () => {
+describe('UserRepository', () => {
   useMongoDB();
 
   describe('createUser', () => {
