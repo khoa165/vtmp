@@ -36,22 +36,21 @@ export const ApplicationService = {
     });
   },
 
-  getAllApplications: async (userId: string) => {
-    return ApplicationRepository.findApplicationsByUserId(userId);
+  getApplications: async (userId: string) => {
+    return ApplicationRepository.getApplications(userId);
   },
 
-  getOneApplication: async ({
+  getApplicationById: async ({
     applicationId,
     userId,
   }: {
     applicationId: string;
     userId: string;
   }) => {
-    const application =
-      await ApplicationRepository.findApplicationByIdAndUserId({
-        applicationId,
-        userId,
-      });
+    const application = await ApplicationRepository.getApplicationById({
+      applicationId,
+      userId,
+    });
 
     if (!application) {
       throw new ResourceNotFoundError('Application not found', {

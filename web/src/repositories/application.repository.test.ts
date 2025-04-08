@@ -65,13 +65,13 @@ describe('ApplicationRepository', () => {
     });
   });
 
-  describe('findApplicationsByUserId', () => {
+  describe('getApplications', () => {
     it('should return only applications associated with given userId', async () => {
       await ApplicationRepository.createApplication(mockApplication_A0);
       await ApplicationRepository.createApplication(mockApplication_A1);
       await ApplicationRepository.createApplication(mockApplication_B);
       const applications =
-        await ApplicationRepository.findApplicationsByUserId(userId_A);
+        await ApplicationRepository.getApplications(userId_A);
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(2);
@@ -88,23 +88,22 @@ describe('ApplicationRepository', () => {
     it('should return an empty array if no applications found for userId', async () => {
       await ApplicationRepository.createApplication(mockApplication_B);
       const applications =
-        await ApplicationRepository.findApplicationsByUserId(userId_A);
+        await ApplicationRepository.getApplications(userId_A);
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(0);
     });
   });
 
-  describe('findApplicationByIdAndUserId', () => {
+  describe('getApplicationById', () => {
     it('should return no application if the application is not belong to the authenticated user', async () => {
       const mockApplicationId_B = (
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
-      const application =
-        await ApplicationRepository.findApplicationByIdAndUserId({
-          applicationId: mockApplicationId_B,
-          userId: userId_A,
-        });
+      const application = await ApplicationRepository.getApplicationById({
+        applicationId: mockApplicationId_B,
+        userId: userId_A,
+      });
 
       assert(!application);
     });
@@ -115,11 +114,10 @@ describe('ApplicationRepository', () => {
       const mockApplicationId_A1 = (
         await ApplicationRepository.createApplication(mockApplication_A1)
       ).id;
-      const application =
-        await ApplicationRepository.findApplicationByIdAndUserId({
-          applicationId: mockApplicationId_A1,
-          userId: userId_A,
-        });
+      const application = await ApplicationRepository.getApplicationById({
+        applicationId: mockApplicationId_A1,
+        userId: userId_A,
+      });
 
       assert(application);
       expect(application).to.containSubset({

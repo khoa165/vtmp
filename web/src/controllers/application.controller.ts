@@ -51,11 +51,11 @@ export const ApplicationController = {
     }
   },
 
-  getAllApplications: async (req: Request, res: Response) => {
+  getApplications: async (req: Request, res: Response) => {
     try {
       const userId = (req as AuthenticatedRequest).user.id;
 
-      const applications = await ApplicationService.getAllApplications(userId);
+      const applications = await ApplicationService.getApplications(userId);
 
       res.status(200).json({
         message: 'Applications retrieved successfully',
@@ -69,12 +69,12 @@ export const ApplicationController = {
     }
   },
 
-  getOneApplication: async (req: Request, res: Response) => {
+  getApplicationById: async (req: Request, res: Response) => {
     try {
       const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
       const userId = (req as AuthenticatedRequest).user.id;
 
-      const application = await ApplicationService.getOneApplication({
+      const application = await ApplicationService.getApplicationById({
         applicationId,
         userId,
       });

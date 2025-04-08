@@ -108,7 +108,7 @@ describe('ApplicationService', () => {
     });
   });
 
-  describe('getAllApplications', () => {
+  describe('getApplications', () => {
     it('should only return applications associated with a userId', async () => {
       const mockApplicationId_A0 = (
         await ApplicationRepository.createApplication(mockApplication_A0)
@@ -117,8 +117,7 @@ describe('ApplicationService', () => {
         await ApplicationRepository.createApplication(mockApplication_A1)
       ).id;
       await ApplicationRepository.createApplication(mockApplication_B);
-      const applications =
-        await ApplicationService.getAllApplications(userId_A);
+      const applications = await ApplicationService.getApplications(userId_A);
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(2);
@@ -128,22 +127,21 @@ describe('ApplicationService', () => {
     });
 
     it('should return no application if authenticated user has no application', async () => {
-      const applications =
-        await ApplicationService.getAllApplications(userId_A);
+      const applications = await ApplicationService.getApplications(userId_A);
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(0);
     });
   });
 
-  describe('getOneApplication', () => {
+  describe('getApplicationById', () => {
     it('should throw an error if no application is associated with the authenticated user', async () => {
       const mockApplicationId_B = (
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
 
       await expect(
-        ApplicationService.getOneApplication({
+        ApplicationService.getApplicationById({
           applicationId: mockApplicationId_B,
           userId: userId_A,
         })
@@ -156,7 +154,7 @@ describe('ApplicationService', () => {
       ).id;
 
       await expect(
-        ApplicationService.getOneApplication({
+        ApplicationService.getApplicationById({
           applicationId: mockApplicationId_A1,
           userId: userId_A,
         })
@@ -169,7 +167,7 @@ describe('ApplicationService', () => {
       const mockApplicationId_A1 = (
         await ApplicationRepository.createApplication(mockApplication_A1)
       ).id;
-      const application = await ApplicationService.getOneApplication({
+      const application = await ApplicationService.getApplicationById({
         applicationId: mockApplicationId_A1,
         userId: userId_A,
       });

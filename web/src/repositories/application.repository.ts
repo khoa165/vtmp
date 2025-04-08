@@ -27,13 +27,13 @@ export const ApplicationRepository = {
     }));
   },
 
-  findApplicationsByUserId: async (userId: string) => {
+  getApplications: async (userId: string) => {
     return ApplicationModel.find({
       userId: userId,
     });
   },
 
-  findApplicationByIdAndUserId: async ({
+  getApplicationById: async ({
     applicationId,
     userId,
   }: {
