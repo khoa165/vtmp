@@ -22,13 +22,13 @@ describe('UserRepository', () => {
       expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
     });
 
-    it('should throw Forbidden for wrong token', async () => {
+    it('should throw Unauthorized for wrong token', async () => {
       const res = await request(app)
         .get('/api/users/profile')
         .send({})
         .set('Accept', 'application/json')
         .set('Authorization', `fake token`);
-      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
     });
 
     it('should allow user to login, return a token and get user profile', async () => {

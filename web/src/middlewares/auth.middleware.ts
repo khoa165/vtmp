@@ -1,4 +1,4 @@
-import { ForbiddenError, handleError, UnauthorizedError } from '@/utils/errors';
+import { handleError, UnauthorizedError } from '@/utils/errors';
 import { EnvConfig } from '@/config/env';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
@@ -15,23 +15,20 @@ export const authenticate = async (
 ): Promise<void> => {
   const token = req.headers.authorization?.split(' ')[1];
 
-  if (!token) {
-    const error = new UnauthorizedError('Unauthorized', {});
-    const { statusCode, errors } = handleError(error);
-    res.status(statusCode).json({ errors });
-    return;
-  }
-
   try {
+    if (!token) {
+      throw new UnauthorizedError('Unauthorized', {});
+    }
+
     const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
 
     const parsed = DecodedJWTSchema.parse(decoded);
     req.user = { id: parsed.id };
 
     next();
-  } catch {
-    const error = new ForbiddenError('Forbidden', {});
-    const { statusCode, errors } = handleError(error);
+  } catch (err: unknown) {
+    console.log(err);
+    const { statusCode, errors } = handleError(err);
     res.status(statusCode).json({ errors });
     return;
   }
