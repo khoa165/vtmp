@@ -174,7 +174,7 @@ describe('UserRepository', () => {
       assert(!deletedUser);
     });
 
-    it('should soft delete user and returhn deletedUser object with deletedAt field set', async () => {
+    it('should soft delete user and return deletedUser object with deletedAt field set', async () => {
       const deletedUser = await UserRepository.deleteUserById(user.id);
       assert(deletedUser);
       assert(deletedUser.deletedAt);
