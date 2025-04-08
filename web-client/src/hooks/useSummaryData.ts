@@ -51,18 +51,18 @@ export const useSummaryData = () => {
       let invitationsCount = 0;
       let interviewsCount = 0;
 
-      if (import.meta.env.REACT_APP_VTMP_2023_INTERVIEWS_CSV) {
+      if (import.meta.env.VITE_VTMP_2023_INTERVIEWS_CSV) {
         const res = await axios.get(
-          import.meta.env.REACT_APP_VTMP_2023_INTERVIEWS_CSV
+          import.meta.env.VITE_VTMP_2023_INTERVIEWS_CSV
         );
 
         const { invitations, interviews } = parseData(res.data);
         invitationsCount += invitations;
         interviewsCount += interviews;
       }
-      if (import.meta.env.REACT_APP_VTMP_2024_INTERVIEWS_CSV) {
+      if (import.meta.env.VITE_VTMP_2024_INTERVIEWS_CSV) {
         const res = await axios.get(
-          import.meta.env.REACT_APP_VTMP_2024_INTERVIEWS_CSV
+          import.meta.env.VITE_VTMP_2024_INTERVIEWS_CSV
         );
 
         const { invitations, interviews } = parseData(res.data);
