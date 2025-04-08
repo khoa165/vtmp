@@ -1,7 +1,7 @@
 import mongoose, { Document } from 'mongoose';
 import { ApplicationStatus, InterestLevel } from '@/types/enums';
 
-interface IApplication extends Document {
+export interface IApplication extends Document {
   jobPostingId: mongoose.Schema.Types.ObjectId;
   userId: mongoose.Schema.Types.ObjectId;
   hasApplied: boolean;
