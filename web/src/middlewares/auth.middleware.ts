@@ -1,4 +1,4 @@
-import { ForbiddenError, UnauthorizedError } from '@/utils/errors';
+import { ForbiddenError, handleError, UnauthorizedError } from '@/utils/errors';
 import { EnvConfig } from '@/config/env';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
@@ -17,35 +17,22 @@ export const authenticate = (
 
   if (!token) {
     const error = new UnauthorizedError('Unauthorized', {});
-    const { statusCode, message } = error;
-
-    res.status(statusCode).json({ message });
+    const { statusCode, errors } = handleError(error);
+    res.status(statusCode).json({ errors });
     return;
   }
 
   try {
-    const decoded = jwt.verify(
-      token,
-      EnvConfig.get().JWT_SECRET,
-      (err, decoded) => {
-        if (err) {
-          console.log('Token verification failed:', err);
-        } else {
-          console.log('Decoded token:', decoded);
-        }
-      }
-    );
-    const parsed = DecodedJWTSchema.safeParse(decoded);
+    const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
 
-    if (parsed.success) {
-      req.user = parsed.data;
-    }
+    const parsed = DecodedJWTSchema.parse(decoded);
+    req.user = { id: parsed.id };
 
     next();
   } catch {
     const error = new ForbiddenError('Forbidden', {});
-    const { statusCode, message } = error;
-
-    res.status(statusCode).json({ message });
+    const { statusCode, errors } = handleError(error);
+    res.status(statusCode).json({ errors });
+    return;
   }
 };
