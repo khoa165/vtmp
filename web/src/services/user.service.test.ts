@@ -3,10 +3,11 @@ import UserService from './user.service';
 import { expect } from 'chai';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { UserRepository } from '@/repositories/user.repository';
-import { ResourceNotFoundError } from '@/utils/errors';
+import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { assert } from 'console';
 import { UserRole } from '@/types/enums';
+import { IUser } from '@/models/user.model';
 
 describe('User Service', () => {
   useMongoDB();
@@ -69,6 +70,17 @@ describe('User Service', () => {
   });
 
   describe('getUserById', () => {
+    let user: IUser;
+    beforeEach(async () => {
+      const mockUser = {
+        firstName: 'admin1',
+        lastName: 'viettech',
+        email: 'test1@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      };
+      user = await UserRepository.createUser(mockUser);
+    });
+
     it('should throw error when user with given id not exists', async () => {
       await expect(
         UserService.getUserById(getNewMongoId())
@@ -76,94 +88,64 @@ describe('User Service', () => {
     });
 
     it('should throw error when getting an deleted user', async () => {
-      const mockUser = {
-        firstName: 'admin1',
-        lastName: 'viettech',
-        email: 'test1@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      const newUser = await UserRepository.createUser(mockUser);
-      await UserRepository.deleteUserById(newUser.id);
-
-      await expect(UserService.getUserById(newUser.id)).eventually.rejectedWith(
+      await UserRepository.deleteUserById(user.id);
+      await expect(UserService.getUserById(user.id)).eventually.rejectedWith(
         ResourceNotFoundError
       );
     });
 
     it('should successfully get the user with given id', async () => {
-      const mockUser = {
-        firstName: 'admin1',
-        lastName: 'viettech',
-        email: 'test1@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      const newUser = await UserRepository.createUser(mockUser);
-
-      await expect(UserService.getUserById(newUser.id)).eventually.fulfilled;
+      await expect(UserService.getUserById(user.id)).eventually.fulfilled;
     });
 
     it('should return user without encrypted password field', async () => {
-      const mockUser = {
-        firstName: 'admin1',
-        lastName: 'viettech',
-        email: 'test1@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      const newUser = await UserRepository.createUser(mockUser);
-
-      const user = await UserService.getUserById(newUser.id);
-      assert(user);
-      expect(user).to.not.have.property('encryptedPassword');
+      const userById = await UserService.getUserById(user.id);
+      assert(userById);
+      expect(userById).to.not.have.property('encryptedPassword');
     });
   });
 
   describe('updateUserById', () => {
+    let user: IUser;
+    beforeEach(async () => {
+      const mockUser = {
+        firstName: 'admin1',
+        lastName: 'viettech',
+        email: 'test1@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      };
+      user = await UserRepository.createUser(mockUser);
+    });
+
     it('should throw error when user with given id not exists', async () => {
       await expect(
         UserService.updateUserById(getNewMongoId(), {})
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
-    it('should throw error when updating an deleted user', async () => {
-      const mockUser = {
-        firstName: 'admin1',
-        lastName: 'viettech',
-        email: 'test1@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      const newUser = await UserRepository.createUser(mockUser);
-      await UserRepository.deleteUserById(newUser.id);
-
+    it('should throw error when updating a soft deleted user', async () => {
+      await UserRepository.deleteUserById(user.id);
       await expect(
-        UserService.updateUserById(newUser.id, {})
+        UserService.updateUserById(user.id, {})
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
-    it('should successfully update one field of user with given id', async () => {
-      const mockUser = {
-        firstName: 'admin1',
-        lastName: 'viettech',
-        email: 'test1@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      const newUser = await UserRepository.createUser(mockUser);
-
+    it('should throw error when updating email is already taken', async () => {
       await expect(
-        UserService.updateUserById(newUser.id, { role: UserRole.ADMIN })
+        UserService.updateUserById(user.id, { email: user.email })
+      ).eventually.rejectedWith(DuplicateResourceError);
+    });
+
+    it('should successfully update one field of user with given id', async () => {
+      await expect(
+        UserService.updateUserById(user.id, { role: UserRole.ADMIN })
       ).eventually.fulfilled;
     });
 
     it('should successfully update one field and return user without encrypted password field', async () => {
-      const mockUser = {
-        firstName: 'admin1',
-        lastName: 'viettech',
-        email: 'test1@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      const newUser = await UserRepository.createUser(mockUser);
-      expect(newUser.role).to.equal(UserRole.USER);
+      expect(user.role).to.equal(UserRole.USER);
 
-      const updatedUser = await UserService.updateUserById(newUser.id, {
+      const updatedUser = await UserService.updateUserById(user.id, {
         role: UserRole.ADMIN,
       });
 
@@ -173,16 +155,8 @@ describe('User Service', () => {
     });
 
     it('should successfully update multiple fields of user with given id', async () => {
-      const mockUser = {
-        firstName: 'admin1',
-        lastName: 'viettech',
-        email: 'test1@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      const newUser = await UserRepository.createUser(mockUser);
-
       await expect(
-        UserService.updateUserById(newUser.id, {
+        UserService.updateUserById(user.id, {
           firstName: 'admin2',
           role: UserRole.ADMIN,
         })
@@ -190,17 +164,10 @@ describe('User Service', () => {
     });
 
     it('should successfully update multiple fields and return user without encrypted password field', async () => {
-      const mockUser = {
-        firstName: 'admin1',
-        lastName: 'viettech',
-        email: 'test1@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      const newUser = await UserRepository.createUser(mockUser);
-      expect(newUser.firstName).to.equal('admin1');
-      expect(newUser.role).to.equal(UserRole.USER);
+      expect(user.firstName).to.equal('admin1');
+      expect(user.role).to.equal(UserRole.USER);
 
-      const updatedUser = await UserService.updateUserById(newUser.id, {
+      const updatedUser = await UserService.updateUserById(user.id, {
         firstName: 'admin2',
         role: UserRole.ADMIN,
       });
