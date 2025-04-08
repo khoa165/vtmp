@@ -12,7 +12,15 @@ const ApplicationRequestSchema = z.object({
     }),
 });
 
-// TODO: need to figure out how to remove "as AuthenticatedRequest"
+const ApplicationIdParamsSchema = z.object({
+  applicationId: z
+    .string()
+    .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: 'Invalid application ID format',
+    }),
+});
+
+// TODO: dson - need to figure out how to remove "as AuthenticatedRequest"
 interface AuthenticatedRequest extends Request {
   user: {
     id: string;
@@ -34,6 +42,46 @@ export const ApplicationController = {
       res.status(201).json({
         message: 'Application created successfully',
         data: newApplication,
+      });
+      return;
+    } catch (error: unknown) {
+      const { statusCode, errors } = handleError(error);
+      res.status(statusCode).json({ errors });
+      return;
+    }
+  },
+
+  getApplications: async (req: Request, res: Response) => {
+    try {
+      const userId = (req as AuthenticatedRequest).user.id;
+
+      const applications = await ApplicationService.getApplications(userId);
+
+      res.status(200).json({
+        message: 'Applications retrieved successfully',
+        data: applications,
+      });
+      return;
+    } catch (error: unknown) {
+      const { statusCode, errors } = handleError(error);
+      res.status(statusCode).json({ errors });
+      return;
+    }
+  },
+
+  getApplicationById: async (req: Request, res: Response) => {
+    try {
+      const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
+      const userId = (req as AuthenticatedRequest).user.id;
+
+      const application = await ApplicationService.getApplicationById({
+        applicationId,
+        userId,
+      });
+
+      res.status(200).json({
+        message: 'Application retrieved successfully',
+        data: application,
       });
       return;
     } catch (error: unknown) {
