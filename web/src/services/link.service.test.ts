@@ -28,7 +28,7 @@ describe('LinkService', () => {
     });
   });
 
-  describe.only('approveLinkAndCreateJobPosting', () => {
+  describe('approveLinkAndCreateJobPosting', () => {
     it('approve link and create job posting', async () => {
       const COMPANY_NAME = 'Google';
       const newLink = await LinkService.submitLink('google.com');

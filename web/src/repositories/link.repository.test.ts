@@ -1,10 +1,11 @@
 import * as chai from 'chai';
 import chaiSubset from 'chai-subset';
-import { LinkStatus } from '@/models/link.model';
+
 import { differenceInSeconds } from 'date-fns';
 import { LinkRepository } from '@/repositories/link.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import assert from 'assert';
+import { LinkStatus } from '@/types/enums';
 
 chai.use(chaiSubset);
 const { expect } = chai;

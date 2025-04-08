@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
 import { handleError } from '../utils/errors';
-import { LinkStatus } from '@/models/link.model';
+
 import { url } from 'inspector';
+import { LinkStatus } from '@/types/enums';
 
 const LinkSchema = z.object({
   url: z.string().url(),
@@ -13,8 +14,14 @@ const LinkSchema = z.object({
     LinkStatus.REJECTED,
   ]),
   submittedOn: z.coerce.date(),
-  companyName: z.string().optional(),
   userNote: z.string().optional(),
+});
+
+const JobPostingAdditionalSchema = z.object({
+  jobTitle: z.string(),
+  companyName: z.string(),
+  jobDescription: z.string().optional(),
+  adminNote: z.string().optional(),
 });
 
 const LinkIdSchema = z.object({
@@ -24,13 +31,9 @@ const LinkIdSchema = z.object({
 export const LinkController = {
   submitLink: async (req: Request, res: Response) => {
     try {
-      const parsedLink = LinkSchema.safeParse(req.body);
+      const parsedLink = LinkSchema.parse(req.body);
 
-      if (!parsedLink.success) {
-        throw parsedLink.error;
-      }
-
-      const submitLink = await LinkService.submitLink(parsedLink.data.url);
+      const submitLink = await LinkService.submitLink(parsedLink.url);
       res.status(201).json({
         data: { link: submitLink },
       });
@@ -59,10 +62,11 @@ export const LinkController = {
   approveLink: async (req: Request, res: Response) => {
     try {
       const parsedLink = LinkIdSchema.parse(req.params);
+      const parsedAdminAddOn = JobPostingAdditionalSchema.parse(req.body);
 
       const approvedLink = await LinkService.approveLinkAndCreateJobPosting(
         parsedLink.linkId,
-        parsedLink
+        parsedAdminAddOn
       );
       res.status(200).json({
         message: 'Link has been approved!',
@@ -78,13 +82,9 @@ export const LinkController = {
 
   rejectLink: async (req: Request, res: Response) => {
     try {
-      const parsedLink = LinkIdSchema.safeParse(req.params);
+      const parsedLink = LinkIdSchema.parse(req.params);
 
-      if (!parsedLink.success) {
-        throw parsedLink.error;
-      }
-
-      const rejectedLink = await LinkService.rejectLink(parsedLink.data.linkId);
+      const rejectedLink = await LinkService.rejectLink(parsedLink.linkId);
       res.status(200).json({
         data: rejectedLink,
         message: 'Link has been rejected!',

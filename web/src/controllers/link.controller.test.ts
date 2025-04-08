@@ -1,6 +1,7 @@
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { beforeEach, describe } from 'mocha';
 import app from '@/app';
+import * as chai from 'chai';
 import request from 'supertest';
 import { expect } from 'chai';
 import { useSandbox } from '@/testutils/sandbox.testutil';
@@ -10,81 +11,100 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
+import { LinkRepository } from '@/repositories/link.repository';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import chaiSubset from 'chai-subset';
 
-describe('LinkController', () => {
+chai.use(chaiSubset);
+
+describe.only('LinkController', () => {
   useMongoDB();
   const sandbox = useSandbox();
   beforeEach(() => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
   });
 
-  describe('POST /links', () => {
-    it('should be able to create new link with expected fields', (done) => {
-      request(app)
-        .post('/api/links')
-        .send({ url: 'google.com' })
-        .end((err, res) => {
-          if (err) return done(err);
-          expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+  let linkId: string;
+  let url: string;
 
-          const errors = res.body.errors;
-          expect(errors[0].message).to.equal('Url is required');
-          done();
-        });
+  beforeEach(async () => {
+    url = 'http://example.com/job-posting';
+    const newLink = await LinkRepository.createLink(url);
+    linkId = newLink.id;
+  });
+
+  describe('submitLink', () => {
+    it('should return error message for submitting link with not exist url', async () => {
+      const res = await request(app)
+        .post(`/api/links/`)
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 3 });
+    });
+  });
+
+  describe('rejectLink', () => {
+    it('should return error message for rejecting not exist link', async () => {
+      const res = await request(app)
+        .post(`/api/links/${getNewMongoId()}/reject`)
+        .set('Accept', 'application/json');
+
+      const errors = res.body.errors;
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(errors[0].message).to.equal('Link not found');
     });
 
-    it('should return error message for missing password', (done) => {
-      request(app)
-        .post('/api/auth/login')
-        .send({ email: 'test@gmail.com' })
-        .end((err, res) => {
-          if (err) return done(err);
-          expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+    it('should return a rejected link', async () => {
+      const res = await request(app)
+        .post(`/api/links/${linkId}/reject`)
+        .set('Accept', 'application/json');
 
-          const errors = res.body.errors;
-          expect(errors[0].message).to.equal('Password is required');
-          done();
-        });
+      expect(res.body.data.url).to.equal(url);
+      expect(res.body.message).to.equal('Link has been rejected!');
+    });
+  });
+
+  describe('approveLink', () => {
+    it('should return error message for approving with not exist link', async () => {
+      const addInInfromation = {
+        jobTitle: 'Software Engineer Intern',
+        companyName: 'Example Company',
+      };
+
+      const res = await request(app)
+        .post(`/api/links/${getNewMongoId()}/approve`)
+        .send(addInInfromation)
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
     });
 
-    it('should return error message for user not found', (done) => {
-      request(app)
-        .post('/api/auth/login')
-        .send({ email: 'notfound@gmail.com', password: 'test password' })
-        .end((err, res) => {
-          if (err) done(err);
-          expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+    it('should return a approved link', async () => {
+      const addInInfromation = {
+        jobTitle: 'Software Engineer Intern',
+        companyName: 'Example Company',
+      };
 
-          const errors = res.body.errors;
-          expect(errors[0].message).to.equal('User not found');
-          done();
-        });
+      const res = await request(app)
+        .post(`/api/links/${linkId}/approve`)
+        .send(addInInfromation)
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.message).to.equal('Link has been approved!');
+      expect(res.body.data.url).to.equal(url);
     });
+  });
 
-    it('should return error message for valid user but wrong password', (done) => {
-      request(app)
-        .post('/api/auth/login')
-        .send({ email: 'test@gmail.com', password: 'wrong password' })
-        .end((err, res) => {
-          if (err) done(err);
-          expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+  describe('getPendingLinks', () => {
+    it('should return array of pending links', async () => {
+      const res = await request(app)
+        .get(`/api/links/`)
+        .set('Accept', 'application/json');
 
-          const errors = res.body.errors;
-          expect(errors[0].message).to.equal('Wrong password');
-          done();
-        });
-    });
-
-    it('should return token for valid email and password', (done) => {
-      request(app)
-        .post('/api/auth/login')
-        .send({ email: 'test@gmail.com', password: 'test password' })
-        .end((err, res) => {
-          if (err) done(err);
-          expectSuccessfulResponse({ res, statusCode: 200 });
-          expect(res.body.data).to.have.property('token');
-          done();
-        });
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data.links[0].url).to.equal(url);
     });
   });
 });
