@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ApplicationService } from '@/services/application.service';
 import { z } from 'zod';
 import mongoose from 'mongoose';
+import { handleError } from '@/utils/errors';
 
 const ApplicationRequestSchema = z.object({
   jobPostingId: z

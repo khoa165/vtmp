@@ -21,21 +21,12 @@ const JobIdSchema = z.object({
 
 export const JobPostingController = {
   updateJobPosting: async (req: Request, res: Response) => {
-    const validatedJobIdBody = JobIdSchema.safeParse(req.params);
-    const validatedJobPostingUpdateBody = JobPostingUpdateSchema.safeParse(
-      req.body
-    );
-
-    if (!validatedJobIdBody.success) {
-      throw validatedJobIdBody.error;
-    }
-    if (!validatedJobPostingUpdateBody.success) {
-      throw validatedJobPostingUpdateBody.error;
-    }
+    const { jobId } = JobIdSchema.parse(req.params);
+    const jobPostingData = JobPostingUpdateSchema.parse(req.body);
 
     const updatedJobPosting = await JobPostingService.updateJobPostingById(
-      validatedJobIdBody.data.jobId,
-      validatedJobPostingUpdateBody.data
+      jobId,
+      jobPostingData
     );
     res.status(200).json({
       data: updatedJobPosting,
@@ -43,15 +34,10 @@ export const JobPostingController = {
   },
 
   deleteJobPosting: async (req: Request, res: Response) => {
-    const validatedJobIdBody = JobIdSchema.safeParse(req.params);
+    const { jobId } = JobIdSchema.parse(req.params);
 
-    if (!validatedJobIdBody.success) {
-      throw validatedJobIdBody.error;
-    }
-
-    const deletedJobPosting = await JobPostingService.deleteJobPostingById(
-      validatedJobIdBody.data.jobId
-    );
+    const deletedJobPosting =
+      await JobPostingService.deleteJobPostingById(jobId);
     res.status(200).json({
       data: deletedJobPosting,
     });
