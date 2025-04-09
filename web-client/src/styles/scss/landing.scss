@@ -1,5 +1,5 @@
-@import 'utils';
-@import 'variables';
+@use 'utils';
+@use 'variables';
 
 $arrows-color: rgba(0, 0, 0, 0);
 $arrows-color-mid: rgba(98, 238, 208, 0.4);
@@ -72,7 +72,7 @@ $arrows-color-peak: #00ffaa;
   }
 
   #banner-page {
-    background-color: $brand-primary-background-color;
+    background-color: variables.$brand-primary-background-color;
     position: relative;
     width: 100vw;
     height: 100vh;
@@ -87,7 +87,7 @@ $arrows-color-peak: #00ffaa;
         text-align: center;
         margin-bottom: 10rem;
         font-size: 1.8rem;
-        color: $viettech-green;
+        color: variables.$viettech-green;
       }
 
       #mentorship-banner {
@@ -115,7 +115,7 @@ $arrows-color-peak: #00ffaa;
       padding: 0 50px;
       flex-grow: 1;
 
-      @include resize($bootstrap-md-min, null) {
+      @include utils.resize(variables.$bootstrap-md-min, null) {
         align-self: center;
       }
     }

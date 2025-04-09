@@ -26,7 +26,6 @@ export const buildFileMetadata = (
   });
   filepaths.forEach((filepath) => {
     mapping[getFileName(filepath)].path = filepath;
-    console.log(getFileName(filepath));
   });
   return mapping;
 };

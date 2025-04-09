@@ -36,7 +36,7 @@ export enum InvitationStatus {
   REVOKED = 'REVOKED',
 }
 
-export enum Location {
+export enum JobPostingLocation {
   US = 'US',
   CANADA = 'CANADA',
 }
@@ -47,10 +47,25 @@ export enum LinkStatus {
   REJECTED = 'REJECTED',
 }
 
-export enum Role {
+export enum UserRole {
   ADMIN = 'ADMIN',
   MODERATOR = 'MODERATOR',
   USER = 'USER',
+}
+
+export enum Permission {
+  VIEW_JOB_LINK = 'VIEW_JOB_LINK',
+  CREATE_JOB_LINK = 'CREATE_JOB_LINK',
+  MANAGE_JOB_LINK = 'MANAGE_JOB_LINK',
+
+  VIEW_JOB_POSTING = 'VIEW_JOB_POSTING',
+  MANAGE_JOB_POSTING = 'MANAGE_JOB_POSTING',
+
+  VIEW_INVITATION = 'VIEW_INVITATION',
+  MANAGE_INVITATION = 'MANAGE_INVITATION',
+
+  VIEW_APPLICATION = 'VIEW_APPLICATION',
+  MANAGE_APPLICATION = 'MANAGE_APPLICATION',
 }
 
 export enum InterestLevel {
