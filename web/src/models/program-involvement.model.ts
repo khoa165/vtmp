@@ -1,4 +1,4 @@
-import { Department, Role } from '@/types/enums';
+import { Department, UserRole } from '@/types/enums';
 import mongoose, { Document } from 'mongoose';
 
 interface IProgramInvolvement extends Document {
@@ -6,7 +6,7 @@ interface IProgramInvolvement extends Document {
   programCohortId: mongoose.Schema.Types.ObjectId;
   title: string;
   department: Department;
-  roles: Role[];
+  roles: UserRole[];
   projects: mongoose.Schema.Types.ObjectId[];
   mentees: mongoose.Schema.Types.ObjectId[];
   mentors: mongoose.Schema.Types.ObjectId[];
@@ -36,7 +36,7 @@ const ProgramInvolvementSchema = new mongoose.Schema<IProgramInvolvement>({
     type: [
       {
         type: String,
-        enum: Object.values(Role),
+        enum: Object.values(UserRole),
         required: true,
       },
     ],
