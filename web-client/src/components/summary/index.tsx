@@ -6,10 +6,17 @@ import { CompanyLogo } from 'src/components/layout/company-logo';
 import { CompanyMetadataWithOffers } from 'src/types';
 import { useWindowSize } from 'usehooks-ts';
 import { useSummaryData } from 'src/hooks/useSummaryData';
+import { useQuery } from '@tanstack/react-query';
+import { getSummaryData } from '@/fetch-data/summary';
 
 export const SummaryContainer = () => {
+  const { isLoading, isError, data, error } = useQuery({
+    queryKey: ['summary'],
+    queryFn: getSummaryData,
+  });
+
   const populatedData = useOffersData();
-  const data = useMemo(
+  const sortedData = useMemo(
     () =>
       sortBy(Object.values(populatedData), [
         (d) => -d.offersCountTotal,
@@ -32,7 +39,7 @@ export const SummaryContainer = () => {
   }, [windowWidth]);
 
   const [dataChunks, setDataChunks] = useState<CompanyMetadataWithOffers[][]>(
-    chunk(data, getColumnsCount())
+    chunk(sortedData, getColumnsCount())
   );
   const [halfSize, setHalfSize] = useState(getColumnsCount() / 2);
 
@@ -40,16 +47,26 @@ export const SummaryContainer = () => {
     const respliceData = () => {
       const newHalfSize = getColumnsCount() / 2;
       if (newHalfSize !== halfSize) {
-        setDataChunks(chunk(data, newHalfSize * 2));
+        setDataChunks(chunk(sortedData, newHalfSize * 2));
         setHalfSize(newHalfSize);
       }
     };
     const debounceRespliceData = debounce(respliceData, 300);
 
     debounceRespliceData();
-  }, [windowWidth, data, halfSize, getColumnsCount]);
+  }, [windowWidth, sortedData, halfSize, getColumnsCount]);
 
   const summaryData = useSummaryData();
+
+  if (isLoading || !data) {
+    return <span>Loading...</span>;
+  }
+
+  if (isError) {
+    return (
+      <span>Error: {error.message || 'Failed to load summary data.'}</span>
+    );
+  }
 
   return (
     <div id="summary-container">
@@ -98,25 +115,27 @@ export const SummaryContainer = () => {
           <div className="summary-right-panel">
             <div className="left">
               <h4>
-                <span>1</span>conversation back in 2022
+                <span>{data.conversations}</span>conversation back in 2022
               </h4>
               <h4>
-                <span>2</span>Snap interns with a vision
+                <span>{data.snapInterns}</span>Snap interns with a vision
               </h4>
               <h4>
-                <span>3</span>months of wondering
+                <span>{data.months}</span>months of wondering
               </h4>
               <h4>
-                <span>4</span>believers joining forces
+                <span>{data.believers}</span>believers joining forces
               </h4>
               <hr />
             </div>
             <div className="right">
               <h4>
-                we reviewed <span>497 applications</span>
+                we reviewed{' '}
+                <span>{data.reviewedApplications} applications</span>
               </h4>
               <h4>
-                we interviewed <span>82 candidates</span>
+                we interviewed{' '}
+                <span>{data.interviewedCandidates} candidates</span>
               </h4>
               <h4>
                 we assembled <span>{summaryData.mentorsCount} mentors</span>
@@ -128,16 +147,16 @@ export const SummaryContainer = () => {
             </div>
             <div className="left">
               <h4>
-                <span>21</span>workshops
+                <span>{data.workshops}</span>workshops
               </h4>
               <h4>
-                <span>14</span>AMAs
+                <span>{data.amas}</span>AMAs
               </h4>
               <h4>
-                <span>10</span>group projects
+                <span>{data.groupProjects}</span>group projects
               </h4>
               <h4>
-                <span>41</span>Leetcode contests
+                <span>{data.leetcodeContests}</span>Leetcode contests
               </h4>
               <hr />
             </div>
