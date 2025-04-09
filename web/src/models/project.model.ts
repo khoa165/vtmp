@@ -1,8 +1,7 @@
 import mongoose, { Document } from 'mongoose';
-import { ProgramYear } from '@/types/enums';
 
 interface IProjectActivity {
-  year: ProgramYear;
+  year: number;
   teamMembers: mongoose.Schema.Types.ObjectId[];
   projectAdvisors: mongoose.Schema.Types.ObjectId[];
 }
@@ -26,8 +25,7 @@ const ProjectSchema = new mongoose.Schema<IProject>({
     type: [
       {
         year: {
-          type: String,
-          enum: Object.values(ProgramYear),
+          type: Number,
           required: true,
         },
         teamMembers: {

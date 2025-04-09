@@ -1,10 +1,9 @@
 import mongoose, { Document } from 'mongoose';
-import { ProgramYear } from '@/types/enums';
 
 interface IProgramProfile extends Document {
   programName: string;
   userId: mongoose.Schema.Types.ObjectId;
-  yearJoined: ProgramYear;
+  yearJoined: number;
   isActive: boolean;
 }
 
@@ -20,7 +19,6 @@ const ProgramProfileSchema = new mongoose.Schema<IProgramProfile>({
   },
   yearJoined: {
     type: Number,
-    enum: Object.values(ProgramYear),
     required: true,
   },
   isActive: {

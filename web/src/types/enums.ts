@@ -59,12 +59,6 @@ export enum InterestLevel {
   HIGH = 'HIGH',
 }
 
-export enum ProgramYear {
-  Y2023 = 2023,
-  Y2024 = 2024,
-  Y2025 = 2025,
-}
-
 export enum Department {
   SWE = 'SWE',
   PD = 'PD',
