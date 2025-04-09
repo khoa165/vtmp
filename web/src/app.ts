@@ -6,9 +6,6 @@ import dotenv from 'dotenv';
 import connectDB from '@/config/database';
 import routes from '@/routes/index';
 
-// TODO-(Linh Nguyen): temporary import for testing
-// import { ProjectModel } from '@/models/project.model';
-
 dotenv.config();
 
 const app: Express = express();
