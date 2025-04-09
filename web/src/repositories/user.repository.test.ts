@@ -57,6 +57,9 @@ describe('UserRepository', () => {
       const users = await UserRepository.getAllUsers();
       expect(users).to.be.an('array');
       expect(users).to.have.lengthOf(mockUsers.length);
+      expect(users.map((user) => user.email)).to.have.members(
+        mockUsers.map((user) => user.email)
+      );
     });
 
     it('should not get users that are already soft deleted', async () => {
@@ -73,24 +76,26 @@ describe('UserRepository', () => {
           email: 'test2@example.com',
           encryptedPassword: 'ecnrypted-password-later',
         },
+        {
+          firstName: 'admin3',
+          lastName: 'viettech',
+          email: 'test3@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
       ];
-      await Promise.all(
+      const [user1, user2, user3] = await Promise.all(
         mockUsers.map((mockUser) => UserRepository.createUser(mockUser))
       );
 
-      const mockSoftDeletedUser = {
-        firstName: 'admin3',
-        lastName: 'viettech',
-        email: 'test3@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
-      };
-      const newlyCreatedUser =
-        await UserRepository.createUser(mockSoftDeletedUser);
-      await UserRepository.deleteUserById(newlyCreatedUser.id);
+      await UserRepository.deleteUserById(user2?.id);
 
       const users = await UserRepository.getAllUsers();
       expect(users).to.be.an('array');
-      expect(users).to.have.lengthOf(mockUsers.length);
+      expect(users).to.have.lengthOf(mockUsers.length - 1);
+      expect(users.map((user) => user.email)).to.have.members([
+        user1?.email,
+        user3?.email,
+      ]);
     });
   });
 
@@ -115,7 +120,6 @@ describe('UserRepository', () => {
 
     it('should return null if trying to get soft deleted user by email', async () => {
       await UserRepository.deleteUserById(user.id);
-
       const userFoundByEmail = await UserRepository.getUserByEmail(user.email);
       assert(!userFoundByEmail);
     });
