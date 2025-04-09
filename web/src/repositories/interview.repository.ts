@@ -1,22 +1,58 @@
 import { InterviewModel } from '@/models/interview.model';
 
 export const InterviewRepository = {
-  createInterview: async (applicationId: string) => {
-    return InterviewModel.create(applicationId);
+  createInterview: async ({
+    applicationId,
+    userId,
+  }: {
+    applicationId: string;
+    userId: string;
+  }) => {
+    return InterviewModel.create({ applicationId, userId });
   },
-  getInterview: async (interviewId: string) => {
-    return InterviewModel.findById({ interviewId });
+  getInterview: async ({
+    interviewId,
+    userId,
+  }: {
+    interviewId: string;
+    userId: string;
+  }) => {
+    return InterviewModel.findById({ interviewId, userId });
   },
-  getInterviewsByUserId: async (userId: string) => {
+  getInterviews: async (userId: string) => {
     return InterviewModel.find({ userId });
   },
-  getInterviewsByApplicatonId: async (applicationId: string) => {
-    return InterviewModel.find({ applicationId });
+  getInterviewsByApplicatonId: async ({
+    applicationId,
+    userId,
+  }: {
+    applicationId: string;
+    userId: string;
+  }) => {
+    return InterviewModel.find({ applicationId, userId });
   },
-  updateInterview: async (interviewId: string) => {
-    return InterviewModel.findByIdAndUpdate(interviewId);
+  updateInterview: async ({
+    interviewId,
+    userId,
+    newUpdate,
+  }: {
+    interviewId: string;
+    userId: string;
+    newUpdate: object;
+  }) => {
+    return InterviewModel.findOneAndUpdate(
+      { _id: interviewId, userId },
+      { $set: newUpdate },
+      { new: true }
+    );
   },
-  deleteInterview: async (interviewId: string) => {
-    return InterviewModel.findByIdAndDelete(interviewId);
+  deleteInterview: async ({
+    interviewId,
+    userId,
+  }: {
+    interviewId: string;
+    userId: string;
+  }) => {
+    return InterviewModel.findOneAndDelete({ interviewId, userId });
   },
 };
