@@ -1,5 +1,14 @@
-import Interview from '@/models/interview.model';
+import { InterviewModel } from '@/models/interview.model';
 
-const InterviewRepository = {};
-
-export default InterviewRepository;
+export const InterviewRepository = {
+  createInterview: async (applicationId: string) => {
+    return InterviewModel.create(applicationId);
+  },
+  getInterviewByApplicatonId: async (applicationId: string) => {
+    return InterviewModel.find({ applicationId });
+  },
+  getInterviewByStatus: async ({ status }: { status: string }) => {
+    return InterviewModel.find({ status: status });
+  },
+  updateInterviewWithStatus: async ({}) => {},
+};
