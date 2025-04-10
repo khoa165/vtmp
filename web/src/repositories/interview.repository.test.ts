@@ -16,7 +16,8 @@ describe('Interview Repository', () => {
   const mockInterview_A0 = {
     applicationId: metaApplicationId,
     userId: userId_A,
-    type: InterviewType.BEHAVIORIAL,
+    type: InterviewType.TECHNICAL,
+    interviewOnDate: new Date('2025-06-07'),
   };
 
   const mockInterview_A1 = {
@@ -155,23 +156,90 @@ describe('Interview Repository', () => {
       expect(interviews[0]?.id).to.equal(interview_A2.id);
     });
   });
+
   describe('updateInterview', () => {
     it('should return the interview with updated field', async () => {
-      // TODO
+      const interview =
+        await InterviewRepository.createInterview(mockInterview_A1);
+      const newInterviewDate = new Date('2025-08-10');
+      const newInterviewType = InterviewType.BEHAVIORIAL;
+
+      const updatedInterview = await InterviewRepository.updateInterview({
+        interviewId: interview.id,
+        userId: userId_A,
+        newUpdate: {
+          interviewOnDate: newInterviewDate,
+          type: newInterviewType,
+        },
+      });
+
+      assert(updatedInterview);
+      expect(updatedInterview.type).to.equal(InterviewType.BEHAVIORIAL);
+      expect(updatedInterview.interviewOnDate.toISOString()).to.equal(
+        newInterviewDate.toISOString()
+      );
     });
+
     it('should return null if no interview for the interviewId is found', async () => {
-      // TODO
+      const nonExistentId = getNewMongoId();
+
+      const updatedInterview = await InterviewRepository.updateInterview({
+        interviewId: nonExistentId,
+        userId: userId_A,
+        newUpdate: { interviewOnDate: new Date('2025-08-10') },
+      });
+
+      expect(updatedInterview).to.equal(null);
     });
-    it('should not update fields that are not allowed', async () => {
-      // TODO
+
+    it('should return null if the interview is soft-deleted', async () => {
+      const interview =
+        await InterviewRepository.createInterview(mockInterview_B0);
+
+      await InterviewRepository.deleteInterview({
+        interviewId: interview.id,
+        userId: userId_B,
+      });
+
+      const updatedInterview = await InterviewRepository.updateInterview({
+        interviewId: interview.id,
+        userId: userId_B,
+        newUpdate: { interviewOnDate: new Date('2025-08-10') },
+      });
+
+      expect(updatedInterview).to.be.equal(null);
     });
   });
+
   describe('deleteInterview', () => {
     it('should return and delete the interview with the interviewId', async () => {
-      // TODO
+      const interview =
+        await InterviewRepository.createInterview(mockInterview_A1);
+
+      const deletedInterview = await InterviewRepository.deleteInterview({
+        interviewId: interview.id,
+        userId: userId_A,
+      });
+
+      const foundInterview = await InterviewRepository.getInterview({
+        interviewId: interview.id,
+        userId: userId_A,
+      });
+
+      assert(deletedInterview);
+      expect(deletedInterview.id).to.equal(interview.id);
+      expect(foundInterview).to.be.equal(null);
     });
+
     it('should return null if interview does not exist', async () => {
-      // TODO
+      const nonExistentId = getNewMongoId();
+
+      const deletedInterview = await InterviewRepository.deleteInterview({
+        interviewId: nonExistentId,
+        userId: userId_A,
+      });
+
+      expect(deletedInterview).to.be.equal(null);
     });
   });
 });
