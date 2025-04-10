@@ -10,6 +10,7 @@ export const InterviewRepository = {
   }) => {
     return InterviewModel.create({ applicationId, userId });
   },
+
   getInterview: async ({
     interviewId,
     userId,
@@ -17,11 +18,13 @@ export const InterviewRepository = {
     interviewId: string;
     userId: string;
   }) => {
-    return InterviewModel.findById({ interviewId, userId });
+    return InterviewModel.findById({ interviewId, userId, deletedAt: null });
   },
+
   getInterviews: async (userId: string) => {
-    return InterviewModel.find({ userId });
+    return InterviewModel.find({ userId, deletedAt: null });
   },
+
   getInterviewsByApplicatonId: async ({
     applicationId,
     userId,
@@ -29,8 +32,9 @@ export const InterviewRepository = {
     applicationId: string;
     userId: string;
   }) => {
-    return InterviewModel.find({ applicationId, userId });
+    return InterviewModel.find({ applicationId, userId, deletedAt: null });
   },
+
   updateInterview: async ({
     interviewId,
     userId,
@@ -41,11 +45,12 @@ export const InterviewRepository = {
     newUpdate: object;
   }) => {
     return InterviewModel.findOneAndUpdate(
-      { _id: interviewId, userId },
+      { _id: interviewId, userId, deletedAt: null },
       { $set: newUpdate },
       { new: true }
     );
   },
+
   deleteInterview: async ({
     interviewId,
     userId,
@@ -53,6 +58,10 @@ export const InterviewRepository = {
     interviewId: string;
     userId: string;
   }) => {
-    return InterviewModel.findOneAndDelete({ interviewId, userId });
+    return InterviewModel.findOneAndUpdate(
+      { interviewId, userId, deletedAt: null },
+      { $set: { deletedAt: new Date() } },
+      { new: true }
+    );
   },
 };
