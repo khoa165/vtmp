@@ -1,5 +1,6 @@
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { ApplicationStatus } from '@/types/enums';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
 export const ApplicationService = {
@@ -60,5 +61,27 @@ export const ApplicationService = {
     }
 
     return application;
+  },
+
+  updateApplicationStatus: async (
+    userId: string,
+    applicationId: string,
+    updatedStatus: ApplicationStatus
+  ) => {
+    const updatedApplication =
+      await ApplicationRepository.updateApplicationStatus(
+        userId,
+        applicationId,
+        updatedStatus
+      );
+
+    if (!updatedApplication) {
+      throw new ResourceNotFoundError('Application not found', {
+        applicationId,
+        userId,
+      });
+    }
+
+    return updatedApplication;
   },
 };
