@@ -9,7 +9,7 @@ import { differenceInSeconds } from 'date-fns';
 chai.use(chaiSubset);
 const { expect } = chai;
 
-describe.only('JobPostingRepository', () => {
+describe('JobPostingRepository', () => {
   useMongoDB();
 
   const mockJobPosting = {
