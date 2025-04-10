@@ -1,25 +1,27 @@
-import { JobPostingModel } from '@/models/job-posting.model';
-
+import { JobPostingModel, IJobPosting } from '@/models/job-posting.model';
 export const JobPostingRepository = {
-  createJobPosting: async (jobPostingData: object) => {
+  createJobPosting: async (jobPostingData: object): Promise<IJobPosting> => {
     return JobPostingModel.create(jobPostingData);
   },
 
-  getJobPostingById: async (jobId: string) => {
-    return JobPostingModel.findById(jobId).lean();
+  getJobPostingById: async (jobId: string): Promise<IJobPosting | null> => {
+    return JobPostingModel.findOne({ _id: jobId, deletedAt: null });
   },
 
-  updateJobPostingById: async (jobId: string, newUpdate: object) => {
+  updateJobPostingById: async (
+    jobId: string,
+    newUpdate: object
+  ): Promise<IJobPosting | null> => {
     return JobPostingModel.findByIdAndUpdate(
-      jobId,
+      { _id: jobId, deletedAt: null },
       { $set: newUpdate },
       { new: true }
     );
   },
 
-  deleteJobPostingById: async (jobId: string) => {
+  deleteJobPostingById: async (jobId: string): Promise<IJobPosting | null> => {
     return JobPostingModel.findByIdAndUpdate(
-      jobId,
+      { _id: jobId, deletedAt: null },
       { $set: { deletedAt: new Date() } },
       { new: true }
     );

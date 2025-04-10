@@ -41,5 +41,6 @@
       "prettier --write --config .prettierrc",
       "eslint --fix --config eslint.config.js"
     ]
-  }
+  },
+  "packageManager": "yarn@4.8.1"
 }

@@ -1,7 +1,7 @@
 import mongoose, { Document } from 'mongoose';
 import { JobPostingLocation } from '@/types/enums';
 
-interface IJobPosting extends Document {
+export interface IJobPosting extends Document {
   linkId: mongoose.Schema.Types.ObjectId;
   externalPostingId?: string;
   url: string;
