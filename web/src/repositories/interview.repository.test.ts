@@ -38,7 +38,7 @@ describe('Interview Repository', () => {
     applicationId: getNewMongoId(),
     userId: userId_B,
     type: InterviewType.TECHNICAL,
-    interviewOnDate: new Date('2025-07-06'),
+    interviewOnDate: new Date('2025-06-07'),
   };
 
   describe('createInterview', () => {
@@ -51,7 +51,7 @@ describe('Interview Repository', () => {
         mockInterview_A0.applicationId
       );
       expect(newInterview.userId.toString()).to.equal(mockInterview_A0.userId);
-      expect(newInterview.type).to.equal(InterviewType.TECHNICAL);
+      expect(newInterview.type[0]).to.equal(InterviewType.TECHNICAL);
       expect(newInterview.status).to.equal(InterviewStatus.PENDING);
     });
   });
@@ -67,8 +67,8 @@ describe('Interview Repository', () => {
       });
 
       assert(interview);
-      expect(interview.id).to.equal(interview_B0);
-      expect(interview.userId).to.equal(userId_B);
+      expect(interview.id.toString()).to.equal(interview_B0.id);
+      expect(interview.userId.toString()).to.equal(userId_B);
     });
 
     it('shoud return null if interview cannot be found', async () => {
@@ -90,13 +90,14 @@ describe('Interview Repository', () => {
       const mockInterviewId_A0 = (
         await InterviewRepository.createInterview(mockInterview_A0)
       ).id;
+
       await InterviewRepository.deleteInterview({
-        interviewId: mockInterviewId_A0,
+        interviewId: mockInterviewId_A0.id,
         userId: userId_A,
       });
 
       const interview = await InterviewRepository.getInterview({
-        interviewId: mockInterviewId_A0,
+        interviewId: mockInterviewId_A0.id,
         userId: userId_A,
       });
 
@@ -174,7 +175,7 @@ describe('Interview Repository', () => {
       });
 
       assert(updatedInterview);
-      expect(updatedInterview.type).to.equal(InterviewType.BEHAVIORIAL);
+      expect(updatedInterview.type[0]).to.equal(InterviewType.BEHAVIORIAL);
       expect(updatedInterview.interviewOnDate.toISOString()).to.equal(
         newInterviewDate.toISOString()
       );
