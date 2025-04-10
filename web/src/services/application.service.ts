@@ -1,6 +1,6 @@
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { ApplicationStatus } from '@/types/enums';
+import { ApplicationStatus, InterestLevel } from '@/types/enums';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
 export const ApplicationService = {
@@ -73,6 +73,33 @@ export const ApplicationService = {
         userId,
         applicationId,
         updatedStatus
+      );
+
+    if (!updatedApplication) {
+      throw new ResourceNotFoundError('Application not found', {
+        applicationId,
+        userId,
+      });
+    }
+
+    return updatedApplication;
+  },
+
+  updateApplicationMetadata: async (
+    userId: string,
+    applicationId: string,
+    updatedMetadata: {
+      note?: string;
+      referrer?: string;
+      portalLink?: string;
+      interest?: InterestLevel;
+    }
+  ) => {
+    const updatedApplication =
+      await ApplicationRepository.updateApplicationMetadata(
+        userId,
+        applicationId,
+        updatedMetadata
       );
 
     if (!updatedApplication) {
