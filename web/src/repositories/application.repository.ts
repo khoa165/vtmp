@@ -53,7 +53,7 @@ export const ApplicationRepository = {
     userId,
     applicationId,
     updatedMetadata,
-    options = {},
+    options,
   }: {
     userId: string;
     applicationId: string;
@@ -73,7 +73,7 @@ export const ApplicationRepository = {
       _id: applicationId,
       userId,
     };
-    if (!options.includeDeletedDoc) {
+    if (!options?.includeDeletedDoc) {
       query.deletedAt = null;
     }
     return ApplicationModel.findOneAndUpdate(
