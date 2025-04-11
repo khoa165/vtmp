@@ -72,10 +72,8 @@ export const ApplicationRepository = {
     const query: { _id: string; userId: string; deletedAt?: Date | null } = {
       _id: applicationId,
       userId,
+      ...(options?.includeDeletedDoc ? {} : { deletedAt: null }),
     };
-    if (!options?.includeDeletedDoc) {
-      query.deletedAt = null;
-    }
     return ApplicationModel.findOneAndUpdate(
       query,
       { $set: updatedMetadata },
