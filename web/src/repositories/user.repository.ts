@@ -20,13 +20,13 @@ export const UserRepository = {
     return UserModel.findOne({ email, deletedAt: null });
   },
 
-  getUserById: async (id: string): Promise<IUser | null> => {
-    return UserModel.findOne({ _id: id, deletedAt: null });
+  getUserById: async (userId: string): Promise<IUser | null> => {
+    return UserModel.findOne({ _id: userId, deletedAt: null });
   },
 
   updateUserById: async (
-    id: string,
-    updatedUser: {
+    userId: string,
+    updateUserInfo: {
       firstName?: string;
       lastName?: string;
       email?: string;
@@ -35,17 +35,17 @@ export const UserRepository = {
     }
   ): Promise<IUser | null> => {
     return UserModel.findOneAndUpdate(
-      { _id: id, deletedAt: null },
-      updatedUser,
+      { _id: userId, deletedAt: null },
+      updateUserInfo,
       {
         new: true,
       }
     );
   },
 
-  deleteUserById: async (id: string): Promise<IUser | null> => {
+  deleteUserById: async (userId: string): Promise<IUser | null> => {
     return UserModel.findOneAndUpdate(
-      { _id: id, deletedAt: null },
+      { _id: userId, deletedAt: null },
       { $set: { deletedAt: new Date() } },
       { new: true }
     );
