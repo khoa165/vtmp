@@ -28,12 +28,14 @@ const UserService = {
       role?: UserRole;
     }
   ) => {
-    const user = await UserRepository.getUserByEmail(updateData.email ?? '');
-    if (user) {
-      throw new DuplicateResourceError('This email is already taken', {
-        id,
-        email: updateData.email,
-      });
+    if (updateData.email) {
+      const user = await UserRepository.getUserByEmail(updateData.email);
+      if (user) {
+        throw new DuplicateResourceError('This email is already taken', {
+          id,
+          email: updateData.email,
+        });
+      }
     }
 
     const updatedUser = await UserRepository.updateUserById(id, updateData);
