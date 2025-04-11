@@ -53,14 +53,14 @@ export const InterviewRepository = {
     applicationId: string;
     userId: string;
     filters?: {
-      interviewStatus?: InterviewStatus;
+      status?: InterviewStatus;
     };
   }): Promise<IInterview[]> => {
     const query = {
       applicationId: applicationId,
       userId: userId,
       deletedAt: null,
-      ...(filters?.interviewStatus && { status: filters.interviewStatus }),
+      ...(filters || {}),
     };
     return InterviewModel.find(query);
   },
