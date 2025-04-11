@@ -8,7 +8,7 @@ export interface IInterview extends Document {
   status: InterviewStatus;
   interviewOnDate: Date;
   note?: string;
-  deletedAt: Date;
+  deletedAt?: Date;
 }
 
 const InterviewSchema = new mongoose.Schema<IInterview>({
