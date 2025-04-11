@@ -49,9 +49,14 @@ export const ApplicationRepository = {
     });
   },
 
-  updateApplicationById: async (
-    userId: string,
-    applicationId: string,
+  updateApplicationById: async ({
+    userId,
+    applicationId,
+    updatedMetadata,
+    options = {},
+  }: {
+    userId: string;
+    applicationId: string;
     updatedMetadata: {
       status?: ApplicationStatus;
       note?: string;
@@ -59,10 +64,20 @@ export const ApplicationRepository = {
       portalLink?: string;
       interest?: InterestLevel;
       deletedAt?: Date | null;
+    };
+    options?: {
+      includeDeletedDoc?: boolean;
+    };
+  }): Promise<IApplication | null> => {
+    const query: { _id: string; userId: string; deletedAt?: Date | null } = {
+      _id: applicationId,
+      userId,
+    };
+    if (!options.includeDeletedDoc) {
+      query.deletedAt = null;
     }
-  ): Promise<IApplication | null> => {
     return ApplicationModel.findOneAndUpdate(
-      { _id: applicationId, userId, deletedAt: null },
+      query,
       { $set: updatedMetadata },
       { new: true }
     );

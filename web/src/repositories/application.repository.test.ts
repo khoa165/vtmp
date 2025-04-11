@@ -170,11 +170,11 @@ describe('ApplicationRepository', () => {
   describe('updateApplicationById', () => {
     it('should return null if application does not exist', async () => {
       const updatedApplication =
-        await ApplicationRepository.updateApplicationById(
-          userId_A,
-          getNewMongoId(),
-          {}
-        );
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_A,
+          applicationId: getNewMongoId(),
+          updatedMetadata: {},
+        });
 
       assert(!updatedApplication);
     });
@@ -188,11 +188,11 @@ describe('ApplicationRepository', () => {
         mockApplicationId_B
       );
       const updatedApplication =
-        await ApplicationRepository.updateApplicationById(
-          userId_B,
-          mockApplicationId_B,
-          {}
-        );
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_A,
+          applicationId: getNewMongoId(),
+          updatedMetadata: {},
+        });
 
       assert(!updatedApplication);
     });
@@ -202,17 +202,17 @@ describe('ApplicationRepository', () => {
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
       const updatedApplication =
-        await ApplicationRepository.updateApplicationById(
-          userId_B,
-          mockApplicationId_B,
-          {
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+          updatedMetadata: {
             status: ApplicationStatus.OFFER,
             note: 'note about this application',
             referrer: 'Khoa',
             portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
-          }
-        );
+          },
+        });
 
       assert(updatedApplication);
       expect(updatedApplication.status).to.be.equal(ApplicationStatus.OFFER);
@@ -222,6 +222,27 @@ describe('ApplicationRepository', () => {
       expect(updatedApplication.note).to.be.equal(
         'note about this application'
       );
+    });
+
+    it('should return updated application with deletedAt reset to null', async () => {
+      const mockApplicationId_B = (
+        await ApplicationRepository.createApplication(mockApplication_B)
+      ).id;
+      const softDeletedApp = await ApplicationRepository.deleteApplicationById(
+        userId_B,
+        mockApplicationId_B
+      );
+      assert(softDeletedApp);
+      assert(softDeletedApp.deletedAt);
+
+      const resetApp = await ApplicationRepository.updateApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+        updatedMetadata: { deletedAt: null },
+        options: { includeDeletedDoc: true },
+      });
+      assert(resetApp);
+      assert(!resetApp.deletedAt);
     });
   });
 
