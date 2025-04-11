@@ -48,15 +48,21 @@ export const InterviewRepository = {
   getInterviewsByApplicatonId: async ({
     applicationId,
     userId,
+    filters,
   }: {
     applicationId: string;
     userId: string;
+    filters?: {
+      interviewStatus?: InterviewStatus;
+    };
   }): Promise<IInterview[]> => {
-    return InterviewModel.find({
+    const query = {
       applicationId: applicationId,
       userId: userId,
       deletedAt: null,
-    });
+      ...(filters?.interviewStatus && { status: filters.interviewStatus }),
+    };
+    return InterviewModel.find(query);
   },
 
   updateInterviewbyId: async ({
@@ -76,6 +82,26 @@ export const InterviewRepository = {
     return InterviewModel.findOneAndUpdate(
       { _id: interviewId, userId: userId, deletedAt: null },
       { $set: updatedMetaData },
+      { new: true }
+    );
+  },
+
+  updateInterviewsWithStatus: async ({
+    userId,
+    interviewIds,
+    updatedStatus,
+  }: {
+    userId: string;
+    interviewIds: string[];
+    updatedStatus: InterviewStatus;
+  }) => {
+    return InterviewModel.updateMany(
+      {
+        _id: { $in: interviewIds },
+        userId,
+        deletedAt: null,
+      },
+      { $set: { status: updatedStatus } },
       { new: true }
     );
   },
