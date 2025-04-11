@@ -83,10 +83,13 @@ export const ApplicationRepository = {
     );
   },
 
-  deleteApplicationById: async (
-    userId: string,
-    applicationId: string
-  ): Promise<IApplication | null> => {
+  deleteApplicationById: async ({
+    userId,
+    applicationId,
+  }: {
+    userId: string;
+    applicationId: string;
+  }): Promise<IApplication | null> => {
     return ApplicationModel.findOneAndUpdate(
       { _id: applicationId, userId, deletedAt: null },
       { $set: { deletedAt: new Date() } },

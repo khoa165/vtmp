@@ -94,10 +94,10 @@ describe('ApplicationRepository', () => {
       const mockApplicationId_A1 = (
         await ApplicationRepository.createApplication(mockApplication_A1)
       ).id;
-      await ApplicationRepository.deleteApplicationById(
-        userId_A,
-        mockApplicationId_A1
-      );
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_A,
+        applicationId: mockApplicationId_A1,
+      });
       const applications =
         await ApplicationRepository.getApplications(userId_A);
 
@@ -136,10 +136,10 @@ describe('ApplicationRepository', () => {
       const mockApplicationId_B = (
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
-      await ApplicationRepository.deleteApplicationById(
-        userId_B,
-        mockApplicationId_B
-      );
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
       const foundApplication = await ApplicationRepository.getApplicationById({
         applicationId: mockApplicationId_B,
         userId: userId_B,
@@ -183,10 +183,10 @@ describe('ApplicationRepository', () => {
       const mockApplicationId_B = (
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
-      await ApplicationRepository.deleteApplicationById(
-        userId_B,
-        mockApplicationId_B
-      );
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
       const updatedApplication =
         await ApplicationRepository.updateApplicationById({
           userId: userId_A,
@@ -228,10 +228,10 @@ describe('ApplicationRepository', () => {
       const mockApplicationId_B = (
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
-      const softDeletedApp = await ApplicationRepository.deleteApplicationById(
-        userId_B,
-        mockApplicationId_B
-      );
+      const softDeletedApp = await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
       assert(softDeletedApp);
       assert(softDeletedApp.deletedAt);
 
@@ -249,10 +249,10 @@ describe('ApplicationRepository', () => {
   describe('deleteApplicationById', () => {
     it('should return null if application does not exist', async () => {
       const deletedApplication =
-        await ApplicationRepository.deleteApplicationById(
-          userId_A,
-          getNewMongoId()
-        );
+        await ApplicationRepository.deleteApplicationById({
+          userId: userId_A,
+          applicationId: getNewMongoId(),
+        });
 
       assert(!deletedApplication);
     });
@@ -261,15 +261,15 @@ describe('ApplicationRepository', () => {
       const mockApplicationId_B = (
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
-      await ApplicationRepository.deleteApplicationById(
-        userId_B,
-        mockApplicationId_B
-      );
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
       const deletedApplication =
-        await ApplicationRepository.deleteApplicationById(
-          userId_B,
-          mockApplicationId_B
-        );
+        await ApplicationRepository.deleteApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+        });
 
       assert(!deletedApplication);
     });
@@ -279,10 +279,10 @@ describe('ApplicationRepository', () => {
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
       const deletedApplication =
-        await ApplicationRepository.deleteApplicationById(
-          userId_B,
-          mockApplicationId_B
-        );
+        await ApplicationRepository.deleteApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+        });
 
       assert(deletedApplication);
       assert(deletedApplication.deletedAt);
