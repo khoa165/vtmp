@@ -116,7 +116,7 @@ describe('ApplicationRepository', () => {
   });
 
   describe('getApplicationById', () => {
-    it('should return null if the application is not belong to the authenticated user', async () => {
+    it('should return null if the application does not belong to the authorized user', async () => {
       const mockApplicationId_B = (
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
@@ -144,7 +144,7 @@ describe('ApplicationRepository', () => {
       assert(!foundApplication);
     });
 
-    it('should return an application if there exists an application for authenticated user', async () => {
+    it('should return an application if there exists an application for authorized user', async () => {
       await ApplicationRepository.createApplication(mockApplication_A0);
       await ApplicationRepository.createApplication(mockApplication_B);
       const mockApplicationId_A1 = (
