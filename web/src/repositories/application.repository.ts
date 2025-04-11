@@ -73,7 +73,7 @@ export const ApplicationRepository = {
   ): Promise<IApplication | null> => {
     return ApplicationModel.findOneAndUpdate(
       { _id: applicationId, userId, deletedAt: null },
-      updatedMetadata,
+      { $set: updatedMetadata },
       { new: true }
     );
   },
