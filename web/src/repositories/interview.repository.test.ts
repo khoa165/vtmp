@@ -16,28 +16,28 @@ describe('Interview Repository', () => {
   const mockInterview_A0 = {
     applicationId: metaApplicationId,
     userId: userId_A,
-    type: InterviewType.TECHNICAL,
+    type: [InterviewType.TECHNICAL],
     interviewOnDate: new Date('2025-06-07'),
   };
 
   const mockInterview_A1 = {
     applicationId: getNewMongoId(),
     userId: userId_A,
-    type: InterviewType.TECHNICAL,
+    type: [InterviewType.TECHNICAL],
     interviewOnDate: new Date('2025-06-07'),
   };
 
   const mockInterview_A2 = {
     applicationId: metaApplicationId,
     userId: userId_A,
-    type: InterviewType.TECHNICAL,
+    type: [InterviewType.TECHNICAL],
     interviewOnDate: new Date('2025-06-07'),
   };
 
   const mockInterview_B0 = {
     applicationId: getNewMongoId(),
     userId: userId_B,
-    type: InterviewType.TECHNICAL,
+    type: [InterviewType.TECHNICAL],
     interviewOnDate: new Date('2025-06-07'),
   };
 
@@ -56,12 +56,12 @@ describe('Interview Repository', () => {
     });
   });
 
-  describe('getInterview', () => {
+  describe('getInterviewById', () => {
     it('shoud return the interview for a valid interviewId', async () => {
       const interview_B0 =
         await InterviewRepository.createInterview(mockInterview_B0);
 
-      const interview = await InterviewRepository.getInterview({
+      const interview = await InterviewRepository.getInterviewById({
         interviewId: interview_B0.id,
         userId: userId_B,
       });
@@ -78,7 +78,7 @@ describe('Interview Repository', () => {
       await InterviewRepository.createInterview(mockInterview_A1);
       await InterviewRepository.createInterview(mockInterview_B0);
 
-      const interview = await InterviewRepository.getInterview({
+      const interview = await InterviewRepository.getInterviewById({
         interviewId: mockInterviewId_A0,
         userId: userId_B,
       });
@@ -91,12 +91,12 @@ describe('Interview Repository', () => {
         await InterviewRepository.createInterview(mockInterview_A0)
       ).id;
 
-      await InterviewRepository.deleteInterview({
+      await InterviewRepository.deleteInterviewById({
         interviewId: mockInterviewId_A0.id,
         userId: userId_A,
       });
 
-      const interview = await InterviewRepository.getInterview({
+      const interview = await InterviewRepository.getInterviewById({
         interviewId: mockInterviewId_A0.id,
         userId: userId_A,
       });
@@ -144,7 +144,7 @@ describe('Interview Repository', () => {
       const interview_A2 =
         await InterviewRepository.createInterview(mockInterview_A2);
 
-      await InterviewRepository.deleteInterview({
+      await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
         userId: userId_A,
       });
@@ -158,17 +158,17 @@ describe('Interview Repository', () => {
     });
   });
 
-  describe('updateInterview', () => {
+  describe('updateInterviewById', () => {
     it('should return the interview with updated field', async () => {
       const interview =
         await InterviewRepository.createInterview(mockInterview_A1);
       const newInterviewDate = new Date('2025-08-10');
-      const newInterviewType = InterviewType.BEHAVIORIAL;
+      const newInterviewType = [InterviewType.BEHAVIORIAL];
 
-      const updatedInterview = await InterviewRepository.updateInterview({
+      const updatedInterview = await InterviewRepository.updateInterviewbyId({
         interviewId: interview.id,
         userId: userId_A,
-        newUpdate: {
+        updatedMetaData: {
           interviewOnDate: newInterviewDate,
           type: newInterviewType,
         },
@@ -184,10 +184,10 @@ describe('Interview Repository', () => {
     it('should return null if no interview for the interviewId is found', async () => {
       const nonExistentId = getNewMongoId();
 
-      const updatedInterview = await InterviewRepository.updateInterview({
+      const updatedInterview = await InterviewRepository.updateInterviewbyId({
         interviewId: nonExistentId,
         userId: userId_A,
-        newUpdate: { interviewOnDate: new Date('2025-08-10') },
+        updatedMetaData: { interviewOnDate: new Date('2025-08-10') },
       });
 
       expect(updatedInterview).to.equal(null);
@@ -197,15 +197,15 @@ describe('Interview Repository', () => {
       const interview =
         await InterviewRepository.createInterview(mockInterview_B0);
 
-      await InterviewRepository.deleteInterview({
+      await InterviewRepository.deleteInterviewById({
         interviewId: interview.id,
         userId: userId_B,
       });
 
-      const updatedInterview = await InterviewRepository.updateInterview({
+      const updatedInterview = await InterviewRepository.updateInterviewbyId({
         interviewId: interview.id,
         userId: userId_B,
-        newUpdate: { interviewOnDate: new Date('2025-08-10') },
+        updatedMetaData: { interviewOnDate: new Date('2025-08-10') },
       });
 
       expect(updatedInterview).to.be.equal(null);
@@ -217,12 +217,12 @@ describe('Interview Repository', () => {
       const interview =
         await InterviewRepository.createInterview(mockInterview_A1);
 
-      const deletedInterview = await InterviewRepository.deleteInterview({
+      const deletedInterview = await InterviewRepository.deleteInterviewById({
         interviewId: interview.id,
         userId: userId_A,
       });
 
-      const foundInterview = await InterviewRepository.getInterview({
+      const foundInterview = await InterviewRepository.getInterviewById({
         interviewId: interview.id,
         userId: userId_A,
       });
@@ -235,7 +235,7 @@ describe('Interview Repository', () => {
     it('should return null if interview does not exist', async () => {
       const nonExistentId = getNewMongoId();
 
-      const deletedInterview = await InterviewRepository.deleteInterview({
+      const deletedInterview = await InterviewRepository.deleteInterviewById({
         interviewId: nonExistentId,
         userId: userId_A,
       });

@@ -1,7 +1,7 @@
 import mongoose, { Document } from 'mongoose';
 import { InterviewStatus, InterviewType } from '@/types/enums';
 
-interface IInterview extends Document {
+export interface IInterview extends Document {
   applicationId: mongoose.Schema.Types.ObjectId;
   userId: mongoose.Schema.Types.ObjectId;
   type: InterviewType[];
@@ -19,6 +19,7 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    require: true,
   },
   type: {
     type: [String],

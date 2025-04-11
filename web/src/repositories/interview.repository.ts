@@ -1,17 +1,39 @@
-import { InterviewModel } from '@/models/interview.model';
+import { InterviewModel, IInterview } from '@/models/interview.model';
+import { InterviewStatus, InterviewType } from '@/types/enums';
 
 export const InterviewRepository = {
-  createInterview: async (interviewData: object) => {
-    return InterviewModel.create(interviewData);
+  createInterview: async ({
+    applicationId,
+    userId,
+    type,
+    status,
+    interviewOnDate,
+    note,
+  }: {
+    applicationId: string;
+    userId: string;
+    type: InterviewType[];
+    status?: InterviewStatus;
+    interviewOnDate: Date;
+    note?: string;
+  }): Promise<IInterview> => {
+    return InterviewModel.create({
+      applicationId,
+      userId,
+      type,
+      status,
+      interviewOnDate,
+      note,
+    });
   },
 
-  getInterview: async ({
+  getInterviewById: async ({
     interviewId,
     userId,
   }: {
     interviewId: string;
     userId: string;
-  }) => {
+  }): Promise<IInterview | null> => {
     return InterviewModel.findOne({
       _id: interviewId,
       userId: userId,
@@ -19,7 +41,7 @@ export const InterviewRepository = {
     });
   },
 
-  getInterviews: async (userId: string) => {
+  getInterviews: async (userId: string): Promise<IInterview[]> => {
     return InterviewModel.find({ userId: userId, deletedAt: null });
   },
 
@@ -29,7 +51,7 @@ export const InterviewRepository = {
   }: {
     applicationId: string;
     userId: string;
-  }) => {
+  }): Promise<IInterview[]> => {
     return InterviewModel.find({
       applicationId: applicationId,
       userId: userId,
@@ -37,29 +59,34 @@ export const InterviewRepository = {
     });
   },
 
-  updateInterview: async ({
+  updateInterviewbyId: async ({
     interviewId,
     userId,
-    newUpdate,
+    updatedMetaData,
   }: {
     interviewId: string;
     userId: string;
-    newUpdate: object;
-  }) => {
+    updatedMetaData: {
+      type?: InterviewType[];
+      status?: InterviewStatus;
+      interviewOnDate?: Date;
+      note?: string;
+    };
+  }): Promise<IInterview | null> => {
     return InterviewModel.findOneAndUpdate(
       { _id: interviewId, userId: userId, deletedAt: null },
-      { $set: newUpdate },
+      { $set: updatedMetaData },
       { new: true }
     );
   },
 
-  deleteInterview: async ({
+  deleteInterviewById: async ({
     interviewId,
     userId,
   }: {
     interviewId: string;
     userId: string;
-  }) => {
+  }): Promise<IInterview | null> => {
     return InterviewModel.findOneAndUpdate(
       { _id: interviewId, userId: userId, deletedAt: null },
       { $set: { deletedAt: new Date() } },
