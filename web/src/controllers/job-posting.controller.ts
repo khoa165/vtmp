@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { JobPostingService } from '@/services/job-posting.service';
-import { handleError } from '@/utils/errors';
 import { JobPostingLocation } from '@/types/enums';
 
 const JobPostingUpdateSchema = z.object({
@@ -22,53 +21,25 @@ const JobIdSchema = z.object({
 
 export const JobPostingController = {
   updateJobPosting: async (req: Request, res: Response) => {
-    try {
-      const validatedJobIdBody = JobIdSchema.safeParse(req.params);
-      const validatedJobPostingUpdateBody = JobPostingUpdateSchema.safeParse(
-        req.body
-      );
+    const { jobId } = JobIdSchema.parse(req.params);
+    const jobPostingData = JobPostingUpdateSchema.parse(req.body);
 
-      if (!validatedJobIdBody.success) {
-        throw validatedJobIdBody.error;
-      }
-      if (!validatedJobPostingUpdateBody.success) {
-        throw validatedJobPostingUpdateBody.error;
-      }
-
-      const updatedJobPosting = await JobPostingService.updateJobPostingById(
-        validatedJobIdBody.data.jobId,
-        validatedJobPostingUpdateBody.data
-      );
-      res.status(200).json({
-        data: updatedJobPosting,
-      });
-      return;
-    } catch (error: unknown) {
-      const { statusCode, errors } = handleError(error);
-      res.status(statusCode).json({ errors });
-      return;
-    }
+    const updatedJobPosting = await JobPostingService.updateJobPostingById(
+      jobId,
+      jobPostingData
+    );
+    res.status(200).json({
+      data: updatedJobPosting,
+    });
   },
 
   deleteJobPosting: async (req: Request, res: Response) => {
-    try {
-      const validatedJobIdBody = JobIdSchema.safeParse(req.params);
+    const { jobId } = JobIdSchema.parse(req.params);
 
-      if (!validatedJobIdBody.success) {
-        throw validatedJobIdBody.error;
-      }
-
-      const deletedJobPosting = await JobPostingService.deleteJobPostingById(
-        validatedJobIdBody.data.jobId
-      );
-      res.status(200).json({
-        data: deletedJobPosting,
-      });
-      return;
-    } catch (error: unknown) {
-      const { statusCode, errors } = handleError(error);
-      res.status(statusCode).json({ errors });
-      return;
-    }
+    const deletedJobPosting =
+      await JobPostingService.deleteJobPostingById(jobId);
+    res.status(200).json({
+      data: deletedJobPosting,
+    });
   },
 };
