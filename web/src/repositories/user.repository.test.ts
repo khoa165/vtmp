@@ -157,16 +157,18 @@ describe('UserRepository', () => {
     });
 
     it('should return updated user if user found', async () => {
-      const updatedUser = await UserRepository.updateUserById(user.id, {
+      const updateUserInfo = {
         firstName: 'adminViettech',
         email: 'testupdate@gmail.com',
         role: UserRole.ADMIN,
-      });
+      };
+      const updatedUser = await UserRepository.updateUserById(
+        user.id,
+        updateUserInfo
+      );
 
       assert(updatedUser);
-      expect(updatedUser.firstName).to.be.equal('adminViettech');
-      expect(updatedUser.email).to.be.equal('testupdate@gmail.com');
-      expect(updatedUser.role).to.be.equal(UserRole.ADMIN);
+      expect(updatedUser).to.containSubset(updateUserInfo);
     });
   });
 
