@@ -49,6 +49,20 @@ describe('ApplicationRepository', () => {
   });
 
   describe('doesApplicationExist', () => {
+    it('should evaluate to false if an application with the same jobPostingId and userId was soft deleted', async () => {
+      const mockApplicationId_B = (
+        await ApplicationRepository.createApplication(mockApplication_B)
+      ).id;
+      await ApplicationRepository.deleteApplicationById(
+        mockApplication_B.userId,
+        mockApplicationId_B
+      );
+      const result =
+        await ApplicationRepository.doesApplicationExist(mockApplication_B);
+
+      expect(result).to.equal(false);
+    });
+
     it('should evaluate to true if an application already exists', async () => {
       await ApplicationRepository.createApplication(mockApplication_B);
       const result =
@@ -163,56 +177,10 @@ describe('ApplicationRepository', () => {
     });
   });
 
-  describe('updateApplicationStatus', () => {
+  describe('updateApplicationById', () => {
     it('should return null if application does not exist', async () => {
       const updatedApplication =
-        await ApplicationRepository.updateApplicationStatus(
-          userId_A,
-          getNewMongoId(),
-          ApplicationStatus.OFFER
-        );
-
-      assert(!updatedApplication);
-    });
-
-    it('should return null if trying to update status of a soft-deleted application', async () => {
-      const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
-      ).id;
-      await ApplicationRepository.deleteApplicationById(
-        userId_B,
-        mockApplicationId_B
-      );
-      const updatedApplication =
-        await ApplicationRepository.updateApplicationStatus(
-          userId_B,
-          mockApplicationId_B,
-          ApplicationStatus.OFFER
-        );
-
-      assert(!updatedApplication);
-    });
-
-    it('should return updated application with new status if application found', async () => {
-      const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
-      ).id;
-      const updatedApplication =
-        await ApplicationRepository.updateApplicationStatus(
-          userId_B,
-          mockApplicationId_B,
-          ApplicationStatus.OFFER
-        );
-
-      assert(updatedApplication);
-      expect(updatedApplication.status).to.be.equal(ApplicationStatus.OFFER);
-    });
-  });
-
-  describe('updateApplicationMetadata', () => {
-    it('should return null if application does not exist', async () => {
-      const updatedApplication =
-        await ApplicationRepository.updateApplicationMetadata(
+        await ApplicationRepository.updateApplicationById(
           userId_A,
           getNewMongoId(),
           {}
@@ -230,7 +198,7 @@ describe('ApplicationRepository', () => {
         mockApplicationId_B
       );
       const updatedApplication =
-        await ApplicationRepository.updateApplicationMetadata(
+        await ApplicationRepository.updateApplicationById(
           userId_B,
           mockApplicationId_B,
           {}
@@ -244,19 +212,23 @@ describe('ApplicationRepository', () => {
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
       const updatedApplication =
-        await ApplicationRepository.updateApplicationMetadata(
+        await ApplicationRepository.updateApplicationById(
           userId_B,
           mockApplicationId_B,
           {
+            status: ApplicationStatus.OFFER,
             note: 'note about this application',
             referrer: 'Khoa',
+            portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
           }
         );
 
       assert(updatedApplication);
+      expect(updatedApplication.status).to.be.equal(ApplicationStatus.OFFER);
       expect(updatedApplication.referrer).to.be.equal('Khoa');
       expect(updatedApplication.interest).to.be.equal(InterestLevel.HIGH);
+      expect(updatedApplication.portalLink).to.be.equal('abc.com');
       expect(updatedApplication.note).to.be.equal(
         'note about this application'
       );

@@ -25,6 +25,7 @@ export const ApplicationRepository = {
     return !!(await ApplicationModel.exists({
       jobPostingId,
       userId,
+      deletedAt: null,
     }));
   },
 
@@ -49,22 +50,11 @@ export const ApplicationRepository = {
     });
   },
 
-  updateApplicationStatus: async (
-    userId: string,
-    applicationId: string,
-    updatedStatus: ApplicationStatus
-  ): Promise<IApplication | null> => {
-    return ApplicationModel.findOneAndUpdate(
-      { _id: applicationId, userId, deletedAt: null },
-      { $set: { status: updatedStatus } },
-      { new: true }
-    );
-  },
-
-  updateApplicationMetadata: async (
+  updateApplicationById: async (
     userId: string,
     applicationId: string,
     updatedMetadata: {
+      status?: ApplicationStatus;
       note?: string;
       referrer?: string;
       portalLink?: string;
