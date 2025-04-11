@@ -48,34 +48,24 @@ describe('ApplicationRepository', () => {
     });
   });
 
-  describe('doesApplicationExist', () => {
-    it('should evaluate to false if an application with the same jobPostingId and userId was soft deleted', async () => {
-      const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
-      ).id;
-      await ApplicationRepository.deleteApplicationById(
-        mockApplication_B.userId,
-        mockApplicationId_B
-      );
-      const result =
-        await ApplicationRepository.doesApplicationExist(mockApplication_B);
-
-      expect(result).to.equal(false);
-    });
-
-    it('should evaluate to true if an application already exists', async () => {
+  describe('getApplicationIfExists', () => {
+    it('should return an application if an application with certain jobPostingId and userId already exists', async () => {
       await ApplicationRepository.createApplication(mockApplication_B);
-      const result =
-        await ApplicationRepository.doesApplicationExist(mockApplication_B);
+      const application =
+        await ApplicationRepository.getApplicationIfExists(mockApplication_B);
 
-      expect(result).to.equal(true);
+      assert(application);
+      expect(application).to.containSubset({
+        jobPostingId: toMongoId(mockApplication_B.jobPostingId),
+        userId: toMongoId(mockApplication_B.userId),
+      });
     });
 
-    it('should evaluate to false if an application does not exist', async () => {
-      const result =
-        await ApplicationRepository.doesApplicationExist(mockApplication_B);
+    it('should return null if an application with certain jobPostingId and userId does not exist', async () => {
+      const application =
+        await ApplicationRepository.getApplicationIfExists(mockApplication_B);
 
-      expect(result).to.equal(false);
+      assert(!application);
     });
   });
 
