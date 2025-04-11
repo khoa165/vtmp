@@ -53,6 +53,9 @@ describe('Interview Repository', () => {
       expect(newInterview.userId.toString()).to.equal(mockInterview_A0.userId);
       expect(newInterview.type[0]).to.equal(InterviewType.TECHNICAL);
       expect(newInterview.status).to.equal(InterviewStatus.PENDING);
+      expect(newInterview.interviewOnDate.toISOString()).to.equal(
+        mockInterview_A0.interviewOnDate.toISOString()
+      );
     });
   });
 
@@ -212,7 +215,7 @@ describe('Interview Repository', () => {
     });
   });
 
-  describe('deleteInterview', () => {
+  describe('deleteInterviewById', () => {
     it('should return and delete the interview with the interviewId', async () => {
       const interview =
         await InterviewRepository.createInterview(mockInterview_A1);
