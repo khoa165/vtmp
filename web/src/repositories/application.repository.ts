@@ -15,18 +15,17 @@ export const ApplicationRepository = {
     });
   },
 
-  doesApplicationExist: async ({
+  getApplicationIfExists: async ({
     jobPostingId,
     userId,
   }: {
     jobPostingId: string;
     userId: string;
-  }): Promise<boolean> => {
-    return !!(await ApplicationModel.exists({
+  }): Promise<IApplication | null> => {
+    return ApplicationModel.findOne({
       jobPostingId,
       userId,
-      deletedAt: null,
-    }));
+    });
   },
 
   getApplications: async (userId: string): Promise<IApplication[]> => {
@@ -59,6 +58,7 @@ export const ApplicationRepository = {
       referrer?: string;
       portalLink?: string;
       interest?: InterestLevel;
+      deletedAt?: Date | null;
     }
   ): Promise<IApplication | null> => {
     return ApplicationModel.findOneAndUpdate(
