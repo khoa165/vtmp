@@ -26,13 +26,12 @@ export const ApplicationService = {
 
     if (application) {
       if (application.deletedAt) {
-        await ApplicationRepository.updateApplicationById(
+        await ApplicationRepository.updateApplicationById({
           userId,
-          application.id,
-          {
-            deletedAt: null,
-          }
-        );
+          applicationId: application.id,
+          updatedMetadata: { deletedAt: null },
+          options: { includeDeletedDoc: true },
+        });
         return application;
       } else {
         throw new DuplicateResourceError('Application already exists', {
