@@ -27,5 +27,10 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Print
+        run: |
+          echo "Current directory:"
+          pwd
+
       - name: Run test
         run: yarn run test
