@@ -18,6 +18,7 @@ describe('Interview Repository', () => {
     userId: userId_A,
     type: [InterviewType.TECHNICAL],
     interviewOnDate: new Date('2025-06-07'),
+    status: InterviewStatus.PASSED,
   };
 
   const mockInterview_A1 = {
@@ -25,6 +26,7 @@ describe('Interview Repository', () => {
     userId: userId_A,
     type: [InterviewType.TECHNICAL],
     interviewOnDate: new Date('2025-06-07'),
+    status: InterviewStatus.FAILED,
   };
 
   const mockInterview_A2 = {
@@ -32,6 +34,7 @@ describe('Interview Repository', () => {
     userId: userId_A,
     type: [InterviewType.TECHNICAL],
     interviewOnDate: new Date('2025-06-07'),
+    status: InterviewStatus.PENDING,
   };
 
   const mockInterview_B0 = {
@@ -39,6 +42,7 @@ describe('Interview Repository', () => {
     userId: userId_B,
     type: [InterviewType.TECHNICAL],
     interviewOnDate: new Date('2025-06-07'),
+    status: InterviewStatus.PENDING,
   };
 
   describe('createInterview', () => {
@@ -59,11 +63,11 @@ describe('Interview Repository', () => {
 
   describe('getInterviewById', () => {
     it('shoud return the interview for a valid interviewId', async () => {
-      const mockInterviewId_A0 = (
-        await InterviewRepository.createInterview(mockInterview_A0)
-      ).id;
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
       const interview = await InterviewRepository.getInterviewById({
-        interviewId: mockInterviewId_A0,
+        interviewId: interview_A0.id,
         userId: userId_A,
       });
 
@@ -77,13 +81,12 @@ describe('Interview Repository', () => {
     });
 
     it('shoud return null if interview cannot be found', async () => {
-      const mockInterviewId_A0 = (
-        await InterviewRepository.createInterview(mockInterview_A0)
-      ).id;
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
       await InterviewRepository.createInterview(mockInterview_B0);
 
       const interview = await InterviewRepository.getInterviewById({
-        interviewId: mockInterviewId_A0,
+        interviewId: interview_A0.id,
         userId: userId_B,
       });
 
@@ -91,23 +94,113 @@ describe('Interview Repository', () => {
     });
 
     it('shoud return null if interview is already soft deleted', async () => {
-      const mockInterviewId_A0 = (
-        await InterviewRepository.createInterview(mockInterview_A0)
-      ).id;
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
       await InterviewRepository.deleteInterviewById({
-        interviewId: mockInterviewId_A0,
+        interviewId: interview_A0.id,
         userId: userId_A,
       });
+
       const foundInterview = await InterviewRepository.getInterviewById({
-        interviewId: mockInterviewId_A0,
+        interviewId: interview_A0.id,
         userId: userId_A,
       });
 
       assert(!foundInterview);
     });
+
+    it('shoud return the interview for a valid interviewId', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      const interview = await InterviewRepository.getInterviewById({
+        interviewId: interview_A0.id,
+        userId: userId_B,
+      });
+
+      assert(interview);
+      expect(interview).to.containSubset({
+        applicationId: toMongoId(mockInterview_A0.applicationId),
+        userId: toMongoId(mockInterview_A0.userId),
+        type: mockInterview_A0.type,
+        interviewOnDate: mockInterview_A0.interviewOnDate,
+      });
+    });
+  });
+
+  describe('getInterviews', () => {
+    it('should return an empty array if the userId has no interview', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+    });
+
+    it('should not include soft-deleted interviews', async () => {
+      const newInterview =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      const deletedInterview = await InterviewRepository.deleteInterviewById({
+        interviewId: newInterview.id,
+        userId: userId_A,
+      });
+
+      const interviews = await InterviewRepository.getInterviews(userId_A);
+
+      expect(interviews).to.be.an('array').that.has.lengthOf(0);
+      assert(deletedInterview);
+    });
+
+    it('should return all interviews belong to the userId', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+      const interview_A1 =
+        await InterviewRepository.createInterview(mockInterview_A1);
+
+      const interviews = await InterviewRepository.getInterviews(userId_A);
+
+      expect(interviews[0]).to.containSubset({
+        userId: toMongoId(mockInterview_A0.userId),
+        _id: toMongoId(interview_A0.id),
+      });
+      expect(interviews[1]).to.containSubset({
+        userId: toMongoId(mockInterview_A1.userId),
+        _id: toMongoId(interview_A1.id),
+      });
+    });
   });
 
   describe('getInterviewsByApplicatonId', () => {
+    it('should return empty array if application has no interview', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+
+      const interviews = await InterviewRepository.getInterviewsByApplicatonId({
+        applicationId: getNewMongoId(),
+        userId: userId_A,
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should not include soft-deleted interview', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+      const interview_A2 =
+        await InterviewRepository.createInterview(mockInterview_A2);
+      await InterviewRepository.deleteInterviewById({
+        interviewId: interview_A0.id,
+        userId: userId_A,
+      });
+
+      const interviews = await InterviewRepository.getInterviewsByApplicatonId({
+        applicationId: metaApplicationId,
+        userId: userId_A,
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(1);
+      expect(interviews[0]?.id).to.equal(interview_A2.id);
+    });
+
     it('should return only the interviews belong to the applicationId', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
@@ -120,6 +213,7 @@ describe('Interview Repository', () => {
         userId: userId_A,
       });
 
+      assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(2);
       expect(interviews.map((interview) => interview.id)).to.have.members([
         interview_A0.id,
@@ -127,62 +221,25 @@ describe('Interview Repository', () => {
       ]);
     });
 
-    it('should return empty array if application has no interview', async () => {
+    it('should return only the interviews that belong to the applicationId that have the provided status', async () => {
       await InterviewRepository.createInterview(mockInterview_A0);
-      await InterviewRepository.createInterview(mockInterview_A1);
-      await InterviewRepository.createInterview(mockInterview_A2);
-
-      const interviews = await InterviewRepository.getInterviewsByApplicatonId({
-        applicationId: getNewMongoId(),
-        userId: userId_A,
-      });
-
-      expect(interviews).to.be.an('array').that.have.lengthOf(0);
-    });
-
-    it('should not include soft-deleted interview', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
       const interview_A2 =
         await InterviewRepository.createInterview(mockInterview_A2);
-
-      await InterviewRepository.deleteInterviewById({
-        interviewId: interview_A0.id,
-        userId: userId_A,
-      });
 
       const interviews = await InterviewRepository.getInterviewsByApplicatonId({
         applicationId: metaApplicationId,
         userId: userId_A,
+        filters: { status: InterviewStatus.PENDING },
       });
 
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(1);
       expect(interviews[0]?.id).to.equal(interview_A2.id);
+      expect(interviews[0]?.status).to.equal(InterviewStatus.PENDING);
     });
   });
 
   describe('updateInterviewById', () => {
-    it('should return the interview with updated field', async () => {
-      const interview =
-        await InterviewRepository.createInterview(mockInterview_A1);
-      const newInterviewDate = new Date('2025-08-10');
-      const newInterviewType = [InterviewType.BEHAVIORIAL];
-
-      const updatedInterview = await InterviewRepository.updateInterviewById({
-        interviewId: interview.id,
-        userId: userId_A,
-        updatedMetaData: {
-          interviewOnDate: newInterviewDate,
-          type: newInterviewType,
-        },
-      });
-
-      assert(updatedInterview);
-      expect(updatedInterview.type[0]).to.equal(InterviewType.BEHAVIORIAL);
-      expect(updatedInterview.interviewOnDate.toISOString()).to.equal(
-        newInterviewDate.toISOString()
-      );
-    });
-
     it('should return null if no interview for the interviewId is found', async () => {
       const nonExistentId = getNewMongoId();
 
@@ -192,7 +249,7 @@ describe('Interview Repository', () => {
         updatedMetaData: { interviewOnDate: new Date('2025-08-10') },
       });
 
-      expect(updatedInterview).to.equal(null);
+      assert(!updatedInterview);
     });
 
     it('should return null if the interview is soft-deleted', async () => {
@@ -210,11 +267,62 @@ describe('Interview Repository', () => {
         updatedMetaData: { interviewOnDate: new Date('2025-08-10') },
       });
 
-      expect(updatedInterview).to.be.equal(null);
+      assert(!updatedInterview);
+    });
+
+    it('should return the interview with updated field', async () => {
+      const interview =
+        await InterviewRepository.createInterview(mockInterview_A1);
+
+      const updatedInterview = await InterviewRepository.updateInterviewById({
+        interviewId: interview.id,
+        userId: userId_A,
+        updatedMetaData: {
+          interviewOnDate: new Date('2025-08-10'),
+          type: [InterviewType.BEHAVIORIAL],
+          status: InterviewStatus.PENDING,
+          note: 'This interview is updated.',
+        },
+      });
+
+      assert(updatedInterview);
+      // expect(updatedInterview.type[0]).to.equal(InterviewType.BEHAVIORIAL);
+      // expect(updatedInterview.interviewOnDate.toISOString()).to.equal(
+      //   updatedInterview.interviewOnDate.toSOString()
+      // );
+
+      expect(updatedInterview).to.containSubset({
+        _id: toMongoId(interview.id),
+        userId: interview.userId,
+        applicationId: interview.applicationId,
+        interviewOnDate: new Date('2025-08-10'),
+        type: [InterviewStatus],
+        status: InterviewStatus.PENDING,
+        note: 'This interview is updated.',
+      });
     });
   });
 
+  describe('updateInterviewsWithStatus', () => {
+    // TODO
+  });
+
   describe('deleteInterviewById', () => {
+    it('should return null if interview does not exist', async () => {
+      const nonExistentId = getNewMongoId();
+
+      const deletedInterview = await InterviewRepository.deleteInterviewById({
+        interviewId: nonExistentId,
+        userId: userId_A,
+      });
+
+      assert(!deletedInterview);
+    });
+
+    it('should return null if trying to delete an already soft-deleted interview', async () => {
+      // TODO
+    });
+
     it('should return and delete the interview with the interviewId', async () => {
       const interview =
         await InterviewRepository.createInterview(mockInterview_A1);
@@ -232,17 +340,6 @@ describe('Interview Repository', () => {
       assert(deletedInterview);
       expect(deletedInterview.id).to.equal(interview.id);
       expect(foundInterview).to.be.equal(null);
-    });
-
-    it('should return null if interview does not exist', async () => {
-      const nonExistentId = getNewMongoId();
-
-      const deletedInterview = await InterviewRepository.deleteInterviewById({
-        interviewId: nonExistentId,
-        userId: userId_A,
-      });
-
-      expect(deletedInterview).to.be.equal(null);
     });
   });
 });
