@@ -168,157 +168,159 @@ describe('ApplicationRepository', () => {
   });
 
   describe('updateApplicationById', () => {
-    describe('regular cases', () => {
-      let mockApplicationId_B: string;
-      beforeEach(async () => {
-        mockApplicationId_B = (
-          await ApplicationRepository.createApplication(mockApplication_B)
-        ).id;
+    let mockApplicationId_B: string;
+    beforeEach(async () => {
+      mockApplicationId_B = (
+        await ApplicationRepository.createApplication(mockApplication_B)
+      ).id;
+    });
+
+    it('should return null if application does not exist', async () => {
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_A,
+          applicationId: getNewMongoId(),
+          updatedMetadata: {},
+        });
+
+      assert(!updatedApplication);
+    });
+
+    it('should return null if trying to update metadata of a soft-deleted application', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
       });
-
-      it('should return null if application does not exist', async () => {
-        const updatedApplication =
-          await ApplicationRepository.updateApplicationById({
-            userId: userId_A,
-            applicationId: getNewMongoId(),
-            updatedMetadata: {},
-          });
-
-        assert(!updatedApplication);
-      });
-
-      it('should return null if trying to update metadata of a soft-deleted application', async () => {
-        await ApplicationRepository.deleteApplicationById({
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
           userId: userId_B,
           applicationId: mockApplicationId_B,
+          updatedMetadata: {},
         });
-        const updatedApplication =
-          await ApplicationRepository.updateApplicationById({
-            userId: userId_B,
-            applicationId: mockApplicationId_B,
-            updatedMetadata: {},
-          });
 
-        assert(!updatedApplication);
-      });
+      assert(!updatedApplication);
+    });
 
-      it('should return updated application with new metadata if application found (was not soft deleted)', async () => {
-        const updatedApplication =
-          await ApplicationRepository.updateApplicationById({
-            userId: userId_B,
-            applicationId: mockApplicationId_B,
-            updatedMetadata: {
-              status: ApplicationStatus.OFFER,
-              note: 'note about this application',
-              referrer: 'Khoa',
-              portalLink: 'abc.com',
-              interest: InterestLevel.HIGH,
-            },
-          });
-
-        assert(updatedApplication);
-        expect(updatedApplication).to.containSubset({
-          status: ApplicationStatus.OFFER,
-          referrer: 'Khoa',
-          interest: InterestLevel.HIGH,
-          portalLink: 'abc.com',
-          note: 'note about this application',
-        });
-      });
-
-      it('should return updated application if includeDeletedDoc is true and application is soft-deleted', async () => {
-        const softDeletedApp =
-          await ApplicationRepository.deleteApplicationById({
-            userId: userId_B,
-            applicationId: mockApplicationId_B,
-          });
-        assert(softDeletedApp);
-        assert(softDeletedApp.deletedAt);
-
-        const resetApp = await ApplicationRepository.updateApplicationById({
+    it('should return updated application with new metadata if application found (application was not soft-deleted)', async () => {
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
           userId: userId_B,
           applicationId: mockApplicationId_B,
-          updatedMetadata: { deletedAt: null },
-          options: { includeDeletedDoc: true },
+          updatedMetadata: {
+            status: ApplicationStatus.OFFER,
+            note: 'note about this application',
+            referrer: 'Khoa',
+            portalLink: 'abc.com',
+            interest: InterestLevel.HIGH,
+          },
         });
-        assert(resetApp);
-        assert(!resetApp.deletedAt);
+
+      assert(updatedApplication);
+      expect(updatedApplication).to.containSubset({
+        status: ApplicationStatus.OFFER,
+        referrer: 'Khoa',
+        interest: InterestLevel.HIGH,
+        portalLink: 'abc.com',
+        note: 'note about this application',
       });
     });
 
-    describe('special cases', () => {
-      let mockApplicationId_B: string;
-      beforeEach(async () => {
-        mockApplicationId_B = (
-          await ApplicationRepository.createApplication(mockApplication_B)
-        ).id;
-        await ApplicationRepository.deleteApplicationById({
+    it('should be able to recreate application that was soft-deleted by setting deletedAt back to null if includeDeletedDoc is true,', async () => {
+      const softDeletedApp = await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
+      assert(softDeletedApp);
+      assert(softDeletedApp.deletedAt);
+
+      const resetApp = await ApplicationRepository.updateApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+        updatedMetadata: { deletedAt: null },
+        options: { includeDeletedDoc: true },
+      });
+      assert(resetApp);
+      assert(!resetApp.deletedAt);
+    });
+
+    it('should return updated application if includeDeletedDoc is true and application was soft-deleted', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
           userId: userId_B,
           applicationId: mockApplicationId_B,
+          updatedMetadata: { status: ApplicationStatus.IN_PROGRESS },
+          options: { includeDeletedDoc: true },
         });
+
+      assert(updatedApplication);
+      expect(updatedApplication.status).to.equal(ApplicationStatus.IN_PROGRESS);
+    });
+
+    it('should return null if includeDeletedDoc is false and application was soft-deleted', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
       });
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+          updatedMetadata: { status: ApplicationStatus.OA_RECEIVED },
+          options: { includeDeletedDoc: false },
+        });
 
-      it('should return updated application if includeDeletedDoc is true and application is soft-deleted', async () => {
-        const updatedApplication =
-          await ApplicationRepository.updateApplicationById({
-            userId: userId_B,
-            applicationId: mockApplicationId_B,
-            updatedMetadata: { status: ApplicationStatus.IN_PROGRESS },
-            options: { includeDeletedDoc: true },
-          });
+      assert(!updatedApplication);
+    });
 
-        assert(updatedApplication);
-        expect(updatedApplication.status).to.equal(
-          ApplicationStatus.IN_PROGRESS
-        );
+    it('should return null if includeDeletedDoc is null and application was soft-deleted', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
       });
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+          updatedMetadata: { status: ApplicationStatus.OFFER },
+          options: { includeDeletedDoc: null },
+        });
 
-      it('should return null if includeDeletedDoc is false and application is soft-deleted', async () => {
-        const updatedApplication =
-          await ApplicationRepository.updateApplicationById({
-            userId: userId_B,
-            applicationId: mockApplicationId_B,
-            updatedMetadata: { status: ApplicationStatus.OA_RECEIVED },
-            options: { includeDeletedDoc: false },
-          });
+      assert(!updatedApplication);
+    });
 
-        assert(!updatedApplication);
+    it('should return null if includeDeletedDoc is undefined and application was soft-deleted', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
       });
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+          updatedMetadata: { status: ApplicationStatus.REJECTED },
+          options: {},
+        });
 
-      it('should return null if includeDeletedDoc is null and application is soft-deleted', async () => {
-        const updatedApplication =
-          await ApplicationRepository.updateApplicationById({
-            userId: userId_B,
-            applicationId: mockApplicationId_B,
-            updatedMetadata: { status: ApplicationStatus.OFFER },
-            options: { includeDeletedDoc: null },
-          });
+      assert(!updatedApplication);
+    });
 
-        assert(!updatedApplication);
+    it('should return null if options is undefined and application was soft-deleted', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
       });
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+          updatedMetadata: { status: ApplicationStatus.WITHDRAWN },
+        });
 
-      it('should return null if includeDeletedDoc is undefined and application is soft-deleted', async () => {
-        const updatedApplication =
-          await ApplicationRepository.updateApplicationById({
-            userId: userId_B,
-            applicationId: mockApplicationId_B,
-            updatedMetadata: { status: ApplicationStatus.REJECTED },
-            options: {},
-          });
-
-        assert(!updatedApplication);
-      });
-
-      it('should return null if options is undefined and application is soft-deleted', async () => {
-        const updatedApplication =
-          await ApplicationRepository.updateApplicationById({
-            userId: userId_B,
-            applicationId: mockApplicationId_B,
-            updatedMetadata: { status: ApplicationStatus.WITHDRAWN },
-          });
-
-        assert(!updatedApplication);
-      });
+      assert(!updatedApplication);
     });
   });
 
