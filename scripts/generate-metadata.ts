@@ -29,7 +29,7 @@ const extractMetadata = (text) => {
 };
 
 const buildMetadataFileOutput = (metadata) =>
-  `import { BlogMetadata } from 'types';\n\nexport const allBlogsMetadata: BlogMetadata[] = [\n${metadata
+  `import { BlogMetadata } from 'src/types';\n\nexport const allBlogsMetadata: BlogMetadata[] = [\n${metadata
     .map(
       (m) =>
         '  {\n    ' +
@@ -55,9 +55,9 @@ const buildFilePathsFileOutput = (metadata) => {
   const importPart = metadata
     .map(
       ({ name, filepath }) =>
-        `import T${generateImportName(name)} from "../content/${
+        `import T${generateImportName(name)} from '../content/${
           filepath.split('content/')[1]
-        }";`
+        }';`
     )
     .join('\n');
 
