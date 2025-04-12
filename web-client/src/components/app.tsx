@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AOS from 'aos';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { PeopleContainer } from 'src/components/people';
@@ -17,7 +17,6 @@ import { PageWithNavigation } from 'src/components/layout/page-with-navigation';
 import { TreeContainer } from 'src/components/tree';
 import { Mentorship2025Apply } from 'src/components/apply';
 import { Mentorship2025Proposal } from './proposal';
-import { ExampleEnum } from '@common/enums';
 
 const darkTheme = createTheme({
   palette: {
@@ -28,7 +27,6 @@ const darkTheme = createTheme({
 export const App = () => {
   useEffect(() => {
     AOS.init();
-    console.log('In initialization, ExampleEnum:', ExampleEnum.EXAMPLE1);
   }, []);
 
   const [metadata, setMetadata] = useState<BlogFileMapping | null>(null);
