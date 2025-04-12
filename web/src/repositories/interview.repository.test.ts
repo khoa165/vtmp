@@ -64,7 +64,7 @@ describe('Interview Repository', () => {
       ).id;
       const interview = await InterviewRepository.getInterviewById({
         interviewId: mockInterviewId_A0,
-        userId: userId_B,
+        userId: userId_A,
       });
 
       assert(interview);
