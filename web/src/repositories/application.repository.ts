@@ -66,7 +66,7 @@ export const ApplicationRepository = {
       deletedAt?: Date | null;
     };
     options?: {
-      includeDeletedDoc?: boolean | null;
+      includeDeletedDoc?: boolean;
     };
   }): Promise<IApplication | null> => {
     return ApplicationModel.findOneAndUpdate(

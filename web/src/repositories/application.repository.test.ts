@@ -276,23 +276,7 @@ describe('ApplicationRepository', () => {
       assert(!updatedApplication);
     });
 
-    it('should return null if includeDeletedDoc is null and application was soft-deleted', async () => {
-      await ApplicationRepository.deleteApplicationById({
-        userId: userId_B,
-        applicationId: mockApplicationId_B,
-      });
-      const updatedApplication =
-        await ApplicationRepository.updateApplicationById({
-          userId: userId_B,
-          applicationId: mockApplicationId_B,
-          updatedMetadata: { status: ApplicationStatus.OFFER },
-          options: { includeDeletedDoc: null },
-        });
-
-      assert(!updatedApplication);
-    });
-
-    it('should return null if includeDeletedDoc is undefined and application was soft-deleted', async () => {
+    it('should return null if includeDeletedDoc is not passed in and application was soft-deleted', async () => {
       await ApplicationRepository.deleteApplicationById({
         userId: userId_B,
         applicationId: mockApplicationId_B,
