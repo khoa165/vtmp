@@ -21,10 +21,11 @@ jobs:
           yarn set version stable
           yarn install
 
+      - name: Change to web directory
+        run: cd web
+
       - name: Install dependencies
-        run: |
-          cd web
-          yarn install
+        run: yarn install
 
       - name: Build
         run: yarn build
