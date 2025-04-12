@@ -69,13 +69,12 @@ export const ApplicationRepository = {
       includeDeletedDoc?: boolean;
     };
   }): Promise<IApplication | null> => {
-    const query: { _id: string; userId: string; deletedAt?: Date | null } = {
-      _id: applicationId,
-      userId,
-      ...(options?.includeDeletedDoc ? {} : { deletedAt: null }),
-    };
     return ApplicationModel.findOneAndUpdate(
-      query,
+      {
+        _id: applicationId,
+        userId,
+        ...(options?.includeDeletedDoc ? {} : { deletedAt: null }),
+      },
       { $set: updatedMetadata },
       { new: true }
     );
