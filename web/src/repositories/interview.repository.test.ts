@@ -56,7 +56,7 @@ describe('Interview Repository', () => {
         userId: toMongoId(mockInterview_A0.userId),
         type: mockInterview_A0.type,
         interviewOnDate: mockInterview_A0.interviewOnDate,
-        status: InterviewStatus.PENDING,
+        status: mockInterview_A0.status,
       });
     });
   });
@@ -116,7 +116,7 @@ describe('Interview Repository', () => {
 
       const interview = await InterviewRepository.getInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_B,
+        userId: userId_A,
       });
 
       assert(interview);
@@ -125,6 +125,7 @@ describe('Interview Repository', () => {
         userId: toMongoId(mockInterview_A0.userId),
         type: mockInterview_A0.type,
         interviewOnDate: mockInterview_A0.interviewOnDate,
+        status: mockInterview_A0.status,
       });
     });
   });
@@ -279,24 +280,18 @@ describe('Interview Repository', () => {
         userId: userId_A,
         updatedMetaData: {
           interviewOnDate: new Date('2025-08-10'),
-          type: [InterviewType.BEHAVIORIAL],
+          type: [InterviewType.BEHAVIORIAL, InterviewType.HIRING_MANAGER],
           status: InterviewStatus.PENDING,
           note: 'This interview is updated.',
         },
       });
 
       assert(updatedInterview);
-      // expect(updatedInterview.type[0]).to.equal(InterviewType.BEHAVIORIAL);
-      // expect(updatedInterview.interviewOnDate.toISOString()).to.equal(
-      //   updatedInterview.interviewOnDate.toSOString()
-      // );
-
       expect(updatedInterview).to.containSubset({
         _id: toMongoId(interview.id),
-        userId: interview.userId,
-        applicationId: interview.applicationId,
+        userId: toMongoId(userId_A),
         interviewOnDate: new Date('2025-08-10'),
-        type: [InterviewStatus],
+        type: [InterviewType.BEHAVIORIAL, InterviewType.HIRING_MANAGER],
         status: InterviewStatus.PENDING,
         note: 'This interview is updated.',
       });
