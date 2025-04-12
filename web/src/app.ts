@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import connectDB from '@/config/database';
 import routes from '@/routes/index';
+import { routeErrorHandler } from '@/middlewares/utils';
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ app.get('/vtmp-summary', (_req: Request, res: Response) => {
 
 // Routes
 app.use('/api', routes);
+app.use(routeErrorHandler);
 app.use('*', (_req: Request, res: Response) => {
   res.status(404).send('Not found');
 });

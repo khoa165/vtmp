@@ -15,17 +15,17 @@ export const ApplicationRepository = {
     });
   },
 
-  doesApplicationExist: async ({
+  getApplicationIfExists: async ({
     jobPostingId,
     userId,
   }: {
     jobPostingId: string;
     userId: string;
-  }): Promise<boolean> => {
-    return !!(await ApplicationModel.exists({
+  }): Promise<IApplication | null> => {
+    return ApplicationModel.findOne({
       jobPostingId,
       userId,
-    }));
+    });
   },
 
   getApplications: async (userId: string): Promise<IApplication[]> => {
@@ -49,39 +49,45 @@ export const ApplicationRepository = {
     });
   },
 
-  updateApplicationStatus: async (
-    userId: string,
-    applicationId: string,
-    updatedStatus: ApplicationStatus
-  ): Promise<IApplication | null> => {
-    return ApplicationModel.findOneAndUpdate(
-      { _id: applicationId, userId, deletedAt: null },
-      { $set: { status: updatedStatus } },
-      { new: true }
-    );
-  },
-
-  updateApplicationMetadata: async (
-    userId: string,
-    applicationId: string,
+  updateApplicationById: async ({
+    userId,
+    applicationId,
+    updatedMetadata,
+    options,
+  }: {
+    userId: string;
+    applicationId: string;
     updatedMetadata: {
+      status?: ApplicationStatus;
       note?: string;
       referrer?: string;
       portalLink?: string;
       interest?: InterestLevel;
-    }
-  ): Promise<IApplication | null> => {
+      deletedAt?: Date | null;
+    };
+    options?: {
+      includeDeletedDoc?: boolean;
+    };
+  }): Promise<IApplication | null> => {
+    const query: { _id: string; userId: string; deletedAt?: Date | null } = {
+      _id: applicationId,
+      userId,
+      ...(options?.includeDeletedDoc ? {} : { deletedAt: null }),
+    };
     return ApplicationModel.findOneAndUpdate(
-      { _id: applicationId, userId, deletedAt: null },
+      query,
       { $set: updatedMetadata },
       { new: true }
     );
   },
 
-  deleteApplicationById: async (
-    userId: string,
-    applicationId: string
-  ): Promise<IApplication | null> => {
+  deleteApplicationById: async ({
+    userId,
+    applicationId,
+  }: {
+    userId: string;
+    applicationId: string;
+  }): Promise<IApplication | null> => {
     return ApplicationModel.findOneAndUpdate(
       { _id: applicationId, userId, deletedAt: null },
       { $set: { deletedAt: new Date() } },

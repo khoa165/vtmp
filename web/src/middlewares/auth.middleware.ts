@@ -7,11 +7,11 @@ const DecodedJWTSchema = z.object({
   id: z.string(),
 });
 
-export const authenticate = (
+export const authenticate = async (
   req: Request,
   res: Response,
   next: NextFunction
-): void => {
+): Promise<void> => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
     res.status(401).json({ message: 'Unauthorized' });

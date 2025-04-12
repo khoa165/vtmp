@@ -48,20 +48,24 @@ describe('ApplicationRepository', () => {
     });
   });
 
-  describe('doesApplicationExist', () => {
-    it('should evaluate to true if an application already exists', async () => {
+  describe('getApplicationIfExists', () => {
+    it('should return an application if an application with certain jobPostingId and userId already exists', async () => {
       await ApplicationRepository.createApplication(mockApplication_B);
-      const result =
-        await ApplicationRepository.doesApplicationExist(mockApplication_B);
+      const application =
+        await ApplicationRepository.getApplicationIfExists(mockApplication_B);
 
-      expect(result).to.equal(true);
+      assert(application);
+      expect(application).to.containSubset({
+        jobPostingId: toMongoId(mockApplication_B.jobPostingId),
+        userId: toMongoId(mockApplication_B.userId),
+      });
     });
 
-    it('should evaluate to false if an application does not exist', async () => {
-      const result =
-        await ApplicationRepository.doesApplicationExist(mockApplication_B);
+    it('should return null if an application with certain jobPostingId and userId does not exist', async () => {
+      const application =
+        await ApplicationRepository.getApplicationIfExists(mockApplication_B);
 
-      expect(result).to.equal(false);
+      assert(!application);
     });
   });
 
@@ -90,10 +94,10 @@ describe('ApplicationRepository', () => {
       const mockApplicationId_A1 = (
         await ApplicationRepository.createApplication(mockApplication_A1)
       ).id;
-      await ApplicationRepository.deleteApplicationById(
-        userId_A,
-        mockApplicationId_A1
-      );
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_A,
+        applicationId: mockApplicationId_A1,
+      });
       const applications =
         await ApplicationRepository.getApplications(userId_A);
 
@@ -132,10 +136,10 @@ describe('ApplicationRepository', () => {
       const mockApplicationId_B = (
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
-      await ApplicationRepository.deleteApplicationById(
-        userId_B,
-        mockApplicationId_B
-      );
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
       const foundApplication = await ApplicationRepository.getApplicationById({
         applicationId: mockApplicationId_B,
         userId: userId_B,
@@ -163,60 +167,14 @@ describe('ApplicationRepository', () => {
     });
   });
 
-  describe('updateApplicationStatus', () => {
+  describe('updateApplicationById', () => {
     it('should return null if application does not exist', async () => {
       const updatedApplication =
-        await ApplicationRepository.updateApplicationStatus(
-          userId_A,
-          getNewMongoId(),
-          ApplicationStatus.OFFER
-        );
-
-      assert(!updatedApplication);
-    });
-
-    it('should return null if trying to update status of a soft-deleted application', async () => {
-      const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
-      ).id;
-      await ApplicationRepository.deleteApplicationById(
-        userId_B,
-        mockApplicationId_B
-      );
-      const updatedApplication =
-        await ApplicationRepository.updateApplicationStatus(
-          userId_B,
-          mockApplicationId_B,
-          ApplicationStatus.OFFER
-        );
-
-      assert(!updatedApplication);
-    });
-
-    it('should return updated application with new status if application found', async () => {
-      const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
-      ).id;
-      const updatedApplication =
-        await ApplicationRepository.updateApplicationStatus(
-          userId_B,
-          mockApplicationId_B,
-          ApplicationStatus.OFFER
-        );
-
-      assert(updatedApplication);
-      expect(updatedApplication.status).to.be.equal(ApplicationStatus.OFFER);
-    });
-  });
-
-  describe('updateApplicationMetadata', () => {
-    it('should return null if application does not exist', async () => {
-      const updatedApplication =
-        await ApplicationRepository.updateApplicationMetadata(
-          userId_A,
-          getNewMongoId(),
-          {}
-        );
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_A,
+          applicationId: getNewMongoId(),
+          updatedMetadata: {},
+        });
 
       assert(!updatedApplication);
     });
@@ -225,16 +183,16 @@ describe('ApplicationRepository', () => {
       const mockApplicationId_B = (
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
-      await ApplicationRepository.deleteApplicationById(
-        userId_B,
-        mockApplicationId_B
-      );
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
       const updatedApplication =
-        await ApplicationRepository.updateApplicationMetadata(
-          userId_B,
-          mockApplicationId_B,
-          {}
-        );
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_A,
+          applicationId: getNewMongoId(),
+          updatedMetadata: {},
+        });
 
       assert(!updatedApplication);
     });
@@ -244,32 +202,57 @@ describe('ApplicationRepository', () => {
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
       const updatedApplication =
-        await ApplicationRepository.updateApplicationMetadata(
-          userId_B,
-          mockApplicationId_B,
-          {
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+          updatedMetadata: {
+            status: ApplicationStatus.OFFER,
             note: 'note about this application',
             referrer: 'Khoa',
+            portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
-          }
-        );
+          },
+        });
 
       assert(updatedApplication);
+      expect(updatedApplication.status).to.be.equal(ApplicationStatus.OFFER);
       expect(updatedApplication.referrer).to.be.equal('Khoa');
       expect(updatedApplication.interest).to.be.equal(InterestLevel.HIGH);
+      expect(updatedApplication.portalLink).to.be.equal('abc.com');
       expect(updatedApplication.note).to.be.equal(
         'note about this application'
       );
+    });
+
+    it('should return updated application with deletedAt reset to null', async () => {
+      const mockApplicationId_B = (
+        await ApplicationRepository.createApplication(mockApplication_B)
+      ).id;
+      const softDeletedApp = await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
+      assert(softDeletedApp);
+      assert(softDeletedApp.deletedAt);
+
+      const resetApp = await ApplicationRepository.updateApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+        updatedMetadata: { deletedAt: null },
+        options: { includeDeletedDoc: true },
+      });
+      assert(resetApp);
+      assert(!resetApp.deletedAt);
     });
   });
 
   describe('deleteApplicationById', () => {
     it('should return null if application does not exist', async () => {
       const deletedApplication =
-        await ApplicationRepository.deleteApplicationById(
-          userId_A,
-          getNewMongoId()
-        );
+        await ApplicationRepository.deleteApplicationById({
+          userId: userId_A,
+          applicationId: getNewMongoId(),
+        });
 
       assert(!deletedApplication);
     });
@@ -278,15 +261,15 @@ describe('ApplicationRepository', () => {
       const mockApplicationId_B = (
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
-      await ApplicationRepository.deleteApplicationById(
-        userId_B,
-        mockApplicationId_B
-      );
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
       const deletedApplication =
-        await ApplicationRepository.deleteApplicationById(
-          userId_B,
-          mockApplicationId_B
-        );
+        await ApplicationRepository.deleteApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+        });
 
       assert(!deletedApplication);
     });
@@ -296,10 +279,10 @@ describe('ApplicationRepository', () => {
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
       const deletedApplication =
-        await ApplicationRepository.deleteApplicationById(
-          userId_B,
-          mockApplicationId_B
-        );
+        await ApplicationRepository.deleteApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+        });
 
       assert(deletedApplication);
       assert(deletedApplication.deletedAt);
