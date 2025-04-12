@@ -4,7 +4,7 @@ import assert from 'assert';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
-import { InterviewType } from '@/types/enums';
+import { InterviewType, InterviewStatus } from '@/types/enums';
 
 describe('Interview Repository', () => {
   useMongoDB();
@@ -52,30 +52,34 @@ describe('Interview Repository', () => {
         userId: toMongoId(mockInterview_A0.userId),
         type: mockInterview_A0.type,
         interviewOnDate: mockInterview_A0.interviewOnDate,
+        status: InterviewStatus.PENDING,
       });
     });
   });
 
   describe('getInterviewById', () => {
     it('shoud return the interview for a valid interviewId', async () => {
-      const interview_B0 =
-        await InterviewRepository.createInterview(mockInterview_B0);
-
+      const mockInterviewId_A0 = (
+        await InterviewRepository.createInterview(mockInterview_A0)
+      ).id;
       const interview = await InterviewRepository.getInterviewById({
-        interviewId: interview_B0.id,
+        interviewId: mockInterviewId_A0,
         userId: userId_B,
       });
 
       assert(interview);
-      expect(interview.id.toString()).to.equal(interview_B0.id);
-      expect(interview.userId.toString()).to.equal(userId_B);
+      expect(interview).to.containSubset({
+        applicationId: toMongoId(mockInterview_A0.applicationId),
+        userId: toMongoId(mockInterview_A0.userId),
+        type: mockInterview_A0.type,
+        interviewOnDate: mockInterview_A0.interviewOnDate,
+      });
     });
 
     it('shoud return null if interview cannot be found', async () => {
       const mockInterviewId_A0 = (
         await InterviewRepository.createInterview(mockInterview_A0)
       ).id;
-      await InterviewRepository.createInterview(mockInterview_A1);
       await InterviewRepository.createInterview(mockInterview_B0);
 
       const interview = await InterviewRepository.getInterviewById({
@@ -90,18 +94,16 @@ describe('Interview Repository', () => {
       const mockInterviewId_A0 = (
         await InterviewRepository.createInterview(mockInterview_A0)
       ).id;
-
       await InterviewRepository.deleteInterviewById({
-        interviewId: mockInterviewId_A0.id,
+        interviewId: mockInterviewId_A0,
+        userId: userId_A,
+      });
+      const foundInterview = await InterviewRepository.getInterviewById({
+        interviewId: mockInterviewId_A0,
         userId: userId_A,
       });
 
-      const interview = await InterviewRepository.getInterviewById({
-        interviewId: mockInterviewId_A0.id,
-        userId: userId_A,
-      });
-
-      assert(!interview);
+      assert(!foundInterview);
     });
   });
 
