@@ -79,11 +79,11 @@ export const ApplicationService = {
     updatedStatus: ApplicationStatus
   ) => {
     const updatedApplication =
-      await ApplicationRepository.updateApplicationStatus(
+      await ApplicationRepository.updateApplicationById({
         userId,
         applicationId,
-        updatedStatus
-      );
+        updatedMetadata: { status: updatedStatus },
+      });
 
     if (!updatedApplication) {
       throw new ResourceNotFoundError('Application not found', {
@@ -106,11 +106,11 @@ export const ApplicationService = {
     }
   ) => {
     const updatedApplication =
-      await ApplicationRepository.updateApplicationMetadata(
+      await ApplicationRepository.updateApplicationById({
         userId,
         applicationId,
-        updatedMetadata
-      );
+        updatedMetadata,
+      });
 
     if (!updatedApplication) {
       throw new ResourceNotFoundError('Application not found', {
