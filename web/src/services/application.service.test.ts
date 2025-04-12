@@ -92,6 +92,7 @@ describe('ApplicationService', () => {
       };
       const newApplication =
         await ApplicationService.createApplication(mockApplication);
+      assert(newApplication);
       const timeDiff = differenceInSeconds(
         new Date(),
         newApplication.appliedOnDate

@@ -1,4 +1,4 @@
-name: CI
+name: build (web)
 on:
   pull_request:
     branches:
@@ -22,7 +22,9 @@ jobs:
           yarn install
 
       - name: Install dependencies
-        run: yarn ppp
+        run: |
+          cd web
+          yarn install
 
-      - name: Run test
-        run: yarn test
+      - name: Build
+        run: yarn build
