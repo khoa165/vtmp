@@ -1,5 +1,6 @@
 import { InterviewModel, IInterview } from '@/models/interview.model';
 import { InterviewStatus, InterviewType } from '@/types/enums';
+import { UpdateResult } from 'mongoose';
 
 export const InterviewRepository = {
   createInterview: async ({
@@ -65,7 +66,7 @@ export const InterviewRepository = {
     return InterviewModel.find(query);
   },
 
-  updateInterviewbyId: async ({
+  updateInterviewById: async ({
     interviewId,
     userId,
     updatedMetaData,
@@ -94,15 +95,14 @@ export const InterviewRepository = {
     userId: string;
     interviewIds: string[];
     updatedStatus: InterviewStatus;
-  }) => {
+  }): Promise<UpdateResult> => {
     return InterviewModel.updateMany(
       {
         _id: { $in: interviewIds },
         userId,
         deletedAt: null,
       },
-      { $set: { status: updatedStatus } },
-      { new: true }
+      { $set: { status: updatedStatus } }
     );
   },
 

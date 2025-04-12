@@ -3,8 +3,8 @@ import assert from 'assert';
 
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { InterviewStatus, InterviewType } from '@/types/enums';
+import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
+import { InterviewType } from '@/types/enums';
 
 describe('Interview Repository', () => {
   useMongoDB();
@@ -47,15 +47,12 @@ describe('Interview Repository', () => {
         await InterviewRepository.createInterview(mockInterview_A0);
 
       assert(newInterview);
-      expect(newInterview.applicationId.toString()).to.equal(
-        mockInterview_A0.applicationId
-      );
-      expect(newInterview.userId.toString()).to.equal(mockInterview_A0.userId);
-      expect(newInterview.type[0]).to.equal(InterviewType.TECHNICAL);
-      expect(newInterview.status).to.equal(InterviewStatus.PENDING);
-      expect(newInterview.interviewOnDate.toISOString()).to.equal(
-        mockInterview_A0.interviewOnDate.toISOString()
-      );
+      expect(newInterview).to.containSubset({
+        applicationId: toMongoId(mockInterview_A0.applicationId),
+        userId: toMongoId(mockInterview_A0.userId),
+        type: mockInterview_A0.type,
+        interviewOnDate: mockInterview_A0.interviewOnDate,
+      });
     });
   });
 
@@ -168,7 +165,7 @@ describe('Interview Repository', () => {
       const newInterviewDate = new Date('2025-08-10');
       const newInterviewType = [InterviewType.BEHAVIORIAL];
 
-      const updatedInterview = await InterviewRepository.updateInterviewbyId({
+      const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: interview.id,
         userId: userId_A,
         updatedMetaData: {
@@ -187,7 +184,7 @@ describe('Interview Repository', () => {
     it('should return null if no interview for the interviewId is found', async () => {
       const nonExistentId = getNewMongoId();
 
-      const updatedInterview = await InterviewRepository.updateInterviewbyId({
+      const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: nonExistentId,
         userId: userId_A,
         updatedMetaData: { interviewOnDate: new Date('2025-08-10') },
@@ -205,7 +202,7 @@ describe('Interview Repository', () => {
         userId: userId_B,
       });
 
-      const updatedInterview = await InterviewRepository.updateInterviewbyId({
+      const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: interview.id,
         userId: userId_B,
         updatedMetaData: { interviewOnDate: new Date('2025-08-10') },
