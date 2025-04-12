@@ -1,11 +1,11 @@
-name: CI
+name: test (web)
 on:
   pull_request:
     branches:
       - main
 
 jobs:
-  build:
+  test-web:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -22,7 +22,9 @@ jobs:
           yarn install
 
       - name: Install dependencies
-        run: yarn ppp
+        run: |
+          cd web
+          yarn install
 
       - name: Run test
         run: yarn test
