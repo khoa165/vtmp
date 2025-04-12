@@ -1,7 +1,13 @@
 import { ApplicationRepository } from '@/repositories/application.repository';
+import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { ApplicationStatus, InterestLevel } from '@/types/enums';
+import {
+  ApplicationStatus,
+  InterestLevel,
+  InterviewStatus,
+} from '@/types/enums';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
+import mongoose, { ClientSession } from 'mongoose';
 
 export const ApplicationService = {
   createApplication: async ({
@@ -73,29 +79,7 @@ export const ApplicationService = {
     return application;
   },
 
-  updateApplicationStatus: async (
-    userId: string,
-    applicationId: string,
-    updatedStatus: ApplicationStatus
-  ) => {
-    const updatedApplication =
-      await ApplicationRepository.updateApplicationById({
-        userId,
-        applicationId,
-        updatedMetadata: { status: updatedStatus },
-      });
-
-    if (!updatedApplication) {
-      throw new ResourceNotFoundError('Application not found', {
-        applicationId,
-        userId,
-      });
-    }
-
-    return updatedApplication;
-  },
-
-  updateApplicationMetadata: async (
+  updateApplicationById: async (
     userId: string,
     applicationId: string,
     updatedMetadata: {
@@ -103,6 +87,7 @@ export const ApplicationService = {
       referrer?: string;
       portalLink?: string;
       interest?: InterestLevel;
+      status?: Exclude<ApplicationStatus, ApplicationStatus.REJECTED>;
     }
   ) => {
     const updatedApplication =
@@ -120,5 +105,72 @@ export const ApplicationService = {
     }
 
     return updatedApplication;
+  },
+
+  markApplicationAsRejected: async ({
+    userId,
+    applicationId,
+  }: {
+    userId: string;
+    applicationId: string;
+  }) => {
+    // Call getApplicationById to check existence.
+    // If null, return ResourceNotFound
+    const application = await ApplicationRepository.getApplicationById({
+      applicationId,
+      userId,
+    });
+    if (!application) {
+      throw new ResourceNotFoundError('Application not found', {
+        applicationId,
+        userId,
+      });
+    }
+
+    // Start a transaction
+    const session: ClientSession = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      // Call updateApplicationById with {status: REJECTED} => return updated application
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
+          userId,
+          applicationId,
+          updatedMetadata: { status: ApplicationStatus.REJECTED },
+          session,
+        });
+      // Call getInterviewsByApplicationId, pass in status => get list of interviews
+      const pendingInterviews =
+        await InterviewRepository.getInterviewsByApplicatonId({
+          userId,
+          applicationId,
+          filters: { status: InterviewStatus.PENDING },
+          session,
+        });
+
+      if (pendingInterviews.length > 0) {
+        // Call updateInterviewsWithStatus (updateMany), this takes an array of InterviewIds returned above
+        const interviewIds = pendingInterviews.map(
+          (pendingInterview) => pendingInterview.id
+        );
+        await InterviewRepository.updateInterviewsWithStatus({
+          userId,
+          interviewIds,
+          updatedStatus: InterviewStatus.FAILED,
+          session,
+        });
+      }
+
+      // Commit the transaction
+      await session.commitTransaction();
+      return updatedApplication;
+    } catch (error) {
+      // Roll back transaction in case of error
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      // Make sure to end the transaction
+      session.endSession();
+    }
   },
 };

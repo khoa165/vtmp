@@ -1,5 +1,6 @@
 import { ApplicationModel, IApplication } from '@/models/application.model';
 import { ApplicationStatus, InterestLevel } from '@/types/enums';
+import { ClientSession } from 'mongoose';
 
 export const ApplicationRepository = {
   createApplication: async ({
@@ -54,6 +55,7 @@ export const ApplicationRepository = {
     applicationId,
     updatedMetadata,
     options,
+    session,
   }: {
     userId: string;
     applicationId: string;
@@ -68,6 +70,7 @@ export const ApplicationRepository = {
     options?: {
       includeDeletedDoc?: boolean;
     };
+    session?: ClientSession;
   }): Promise<IApplication | null> => {
     return ApplicationModel.findOneAndUpdate(
       {
@@ -76,7 +79,7 @@ export const ApplicationRepository = {
         ...(options?.includeDeletedDoc ? {} : { deletedAt: null }),
       },
       { $set: updatedMetadata },
-      { new: true }
+      { new: true, session: session ?? null }
     );
   },
 
