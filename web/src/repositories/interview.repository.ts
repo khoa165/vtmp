@@ -57,13 +57,12 @@ export const InterviewRepository = {
       status?: InterviewStatus;
     };
   }): Promise<IInterview[]> => {
-    const query = {
-      applicationId: applicationId,
-      userId: userId,
+    return InterviewModel.find({
+      applicationId,
+      userId,
       deletedAt: null,
       ...(filters || {}),
-    };
-    return InterviewModel.find(query);
+    });
   },
 
   updateInterviewById: async ({

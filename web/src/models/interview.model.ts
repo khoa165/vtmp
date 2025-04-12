@@ -13,7 +13,7 @@ export interface IInterview extends Document {
 
 const InterviewSchema = new mongoose.Schema<IInterview>({
   applicationId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Application',
   },
   userId: {

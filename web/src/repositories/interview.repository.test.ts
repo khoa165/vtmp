@@ -129,7 +129,7 @@ describe('Interview Repository', () => {
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.has.lengthOf(1);
-      expect(interviews[0]?.id).to.equal(interview_A1.id);
+      expect(interviews[0]?.id.toString()).to.equal(interview_A1.id.toString());
     });
 
     it('should return all interviews belong to the userId', async () => {
@@ -184,7 +184,7 @@ describe('Interview Repository', () => {
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(1);
-      expect(interviews[0]?.id).to.equal(interview_A2.id);
+      expect(interviews[0]?.id.toString()).to.equal(interview_A2.id.toString());
     });
 
     it('should return only the interviews belong to the applicationId', async () => {
@@ -220,7 +220,7 @@ describe('Interview Repository', () => {
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(1);
-      expect(interviews[0]?.id).to.equal(interview_A2.id);
+      expect(interviews[0]?.id.toString()).to.equal(interview_A2.id.toString());
       expect(interviews[0]?.status).to.equal(InterviewStatus.PENDING);
     });
   });
@@ -284,7 +284,67 @@ describe('Interview Repository', () => {
   });
 
   describe('updateInterviewsWithStatus', () => {
-    // TODO
+    it('should not update status of soft-deleted interviews', async () => {
+      const interview_A1 =
+        await InterviewRepository.createInterview(mockInterview_A1);
+      const interview_A2 =
+        await InterviewRepository.createInterview(mockInterview_A2);
+
+      await InterviewRepository.deleteInterviewById({
+        interviewId: interview_A1.id,
+        userId: userId_A,
+      });
+
+      const updatedInterviews =
+        await InterviewRepository.updateInterviewsWithStatus({
+          userId: userId_A,
+          interviewIds: [interview_A1.id, interview_A2.id],
+          updatedStatus: InterviewStatus.FAILED,
+        });
+
+      const updatedInterview_A2 = await InterviewRepository.getInterviewById({
+        interviewId: interview_A2.id,
+        userId: userId_A,
+      });
+
+      assert(updatedInterviews);
+      expect(updatedInterviews).to.have.property('acknowledged', true);
+      expect(updatedInterviews).to.have.property('modifiedCount', 1);
+      expect(updatedInterviews).to.have.property('matchedCount', 1);
+      expect(updatedInterview_A2?.status).to.equal(InterviewStatus.FAILED);
+    });
+
+    it('should only update status of valid interviews of authorized user', async () => {
+      const interview_A1 =
+        await InterviewRepository.createInterview(mockInterview_A1);
+      const interview_A2 =
+        await InterviewRepository.createInterview(mockInterview_A2);
+      const interview_B0 =
+        await InterviewRepository.createInterview(mockInterview_B0);
+
+      const updatedInterviews =
+        await InterviewRepository.updateInterviewsWithStatus({
+          userId: userId_A,
+          interviewIds: [interview_A1.id, interview_A2.id, interview_B0.id],
+          updatedStatus: InterviewStatus.PASSED,
+        });
+
+      const updatedInterview_A1 = await InterviewRepository.getInterviewById({
+        interviewId: interview_A1.id,
+        userId: userId_A,
+      });
+      const updatedInterview_A2 = await InterviewRepository.getInterviewById({
+        interviewId: interview_A2.id,
+        userId: userId_A,
+      });
+
+      assert(updatedInterviews);
+      expect(updatedInterviews).to.have.property('acknowledged', true);
+      expect(updatedInterviews).to.have.property('modifiedCount', 2);
+      expect(updatedInterviews).to.have.property('matchedCount', 2);
+      expect(updatedInterview_A1?.status).to.equal(InterviewStatus.PASSED);
+      expect(updatedInterview_A2?.status).to.equal(InterviewStatus.PASSED);
+    });
   });
 
   describe('deleteInterviewById', () => {
@@ -331,7 +391,7 @@ describe('Interview Repository', () => {
       });
 
       assert(deletedInterview);
-      expect(deletedInterview.id).to.equal(interview.id);
+      expect(deletedInterview.id.toString()).to.equal(interview.id.toString());
       expect(foundInterview).to.be.equal(null);
     });
   });
