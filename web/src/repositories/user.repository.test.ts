@@ -5,7 +5,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import assert from 'assert';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { IUser } from '@/models/user.model';
-import { UserRole } from '@/types/enums';
+import { UserRole } from '@common/enums';
 import { differenceInSeconds } from 'date-fns';
 
 chai.use(chaiSubset);

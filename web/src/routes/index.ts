@@ -5,7 +5,7 @@ import ApplicationRoutes from '@/routes/application.routes';
 import InterviewRoutes from '@/routes/interview.routes';
 import JobPostingRoutes from '@/routes/job-posting.routes';
 import LinkRoutes from '@/routes/link.routes';
-import AuthRoutes from './auth.routes';
+import AuthRoutes from '@/routes/auth.routes';
 
 const router = Router();
 

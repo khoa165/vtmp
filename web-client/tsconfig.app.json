@@ -18,9 +18,11 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@common/*": ["../packages/common/src/*"]
     },
     "types": ["vite/client", "vite-plugin-svgr/client"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [{ "path": "../packages/common" }]
 }
