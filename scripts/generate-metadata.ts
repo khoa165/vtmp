@@ -6,7 +6,14 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const extractMetadata = (text) => {
+type BlogMetadata = Record<string, string> & {
+  authors: string;
+  contributors?: string;
+  date: string;
+  tags: string;
+};
+
+const extractMetadata = (text: string): BlogMetadata => {
   const metadata = {};
 
   const metaRegExp = RegExp(/^---[\r\n](((?!---).|[\r\n])*)[\r\n]---$/m);
@@ -25,7 +32,8 @@ const extractMetadata = (text) => {
       }
     });
   }
-  return metadata;
+
+  return metadata as BlogMetadata;
 };
 
 const buildMetadataFileOutput = (metadata) =>
@@ -43,7 +51,7 @@ const buildMetadataFileOutput = (metadata) =>
 
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
-const generateImportName = (filename) =>
+const generateImportName = (filename: string) =>
   filename
     .split('-')
     .map((word) => capitalize(word))
@@ -55,7 +63,7 @@ const buildFilePathsFileOutput = (metadata) => {
   const importPart = metadata
     .map(
       ({ name, filepath }) =>
-        `import T${generateImportName(name)} from '../content/${
+        `import T${generateImportName(name)} from '@/blogs/content/${
           filepath.split('content/')[1]
         }';`
     )
@@ -63,7 +71,7 @@ const buildFilePathsFileOutput = (metadata) => {
 
   const arrayPart = `export const allBlogsFilepaths = [\n${metadata
     .map(({ name }) => '  T' + generateImportName(name))
-    .join(',\n')}\n];\n`;
+    .join(',\n')},\n];\n`;
 
   return importPart + '\n\n' + arrayPart;
 };
@@ -72,16 +80,18 @@ const readdir = promisify(fs.readdir);
 const readfile = promisify(fs.readFile);
 
 async function generatedMetadata() {
-  const blogsMetadata = [];
+  const blogsMetadata: any[] = [];
   try {
     const directoryPath = path.join(
       __dirname,
       '../web-client/src/blogs/content'
     );
-    const directoryContent = await readdir(directoryPath, {
-      recursive: true,
-    });
-    const mdFiles = directoryContent.filter((directoryChild) =>
+    const directoryContent = (
+      await readdir(directoryPath, {
+        recursive: true,
+      })
+    ).map(String);
+    const mdFiles = directoryContent.filter((directoryChild: string) =>
       directoryChild.endsWith('.md')
     );
     const filepaths = mdFiles.map((filename) =>
@@ -98,18 +108,21 @@ async function generatedMetadata() {
     );
 
     const mdMetadata = contents.map(({ content, filepath }, index) => {
-      const { date, authors, tags, ...remainingMetadata } =
+      const { date, authors, contributors, tags, ...remainingMetadata } =
         extractMetadata(content);
       return {
-        name: mdFiles[index].split('/')[1].split('.')[0],
         ...remainingMetadata,
-        date: new Date(date),
-        authors: authors.split(',').map((s) => s.trim()),
-        tags: tags.split(',').map((s) => s.trim()),
+        name: mdFiles[index].split('/')[1].split('.')[0],
+        date: date ? new Date(date) : new Date(),
+        authors: authors ? authors.split(',').map((s) => s.trim()) : [],
+        contributors: contributors
+          ? contributors.split(',').map((s) => s.trim())
+          : [],
+        tags: tags ? tags.split(',').map((s) => s.trim()) : [],
         filepath,
       };
     });
-    blogsMetadata.push(...mdMetadata);
+    blogsMetadata.push(...(mdMetadata as any));
 
     fs.writeFileSync(
       path.join(__dirname, '../web-client/src/blogs/metadata/metadata.ts'),

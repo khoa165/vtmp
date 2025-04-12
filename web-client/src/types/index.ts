@@ -10,7 +10,7 @@ export interface BlogMetadata {
   name: string;
   title: string;
   authors: string[];
-  contributors?: string;
+  contributors: string[];
   description: string;
   banner?: string;
   date: string;
