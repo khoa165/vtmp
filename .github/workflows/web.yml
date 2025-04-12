@@ -27,7 +27,9 @@ jobs:
           yarn install
 
       - name: Build web
-        run: yarn build
+        run: |
+          cd web
+          yarn build
 
   test-web:
     needs: build-web
@@ -52,4 +54,6 @@ jobs:
           yarn install
 
       - name: Run test
-        run: yarn test
+        run: |
+          cd web 
+          yarn test
