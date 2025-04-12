@@ -168,6 +168,13 @@ describe('ApplicationRepository', () => {
   });
 
   describe('updateApplicationById', () => {
+    let mockApplicationId_B: string;
+    beforeEach(async () => {
+      mockApplicationId_B = (
+        await ApplicationRepository.createApplication(mockApplication_B)
+      ).id;
+    });
+
     it('should return null if application does not exist', async () => {
       const updatedApplication =
         await ApplicationRepository.updateApplicationById({
@@ -180,27 +187,21 @@ describe('ApplicationRepository', () => {
     });
 
     it('should return null if trying to update metadata of a soft-deleted application', async () => {
-      const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
-      ).id;
       await ApplicationRepository.deleteApplicationById({
         userId: userId_B,
         applicationId: mockApplicationId_B,
       });
       const updatedApplication =
         await ApplicationRepository.updateApplicationById({
-          userId: userId_A,
-          applicationId: getNewMongoId(),
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
           updatedMetadata: {},
         });
 
       assert(!updatedApplication);
     });
 
-    it('should return updated application with new metadata if application found', async () => {
-      const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
-      ).id;
+    it('should return updated application with new metadata if application found (application was not soft-deleted)', async () => {
       const updatedApplication =
         await ApplicationRepository.updateApplicationById({
           userId: userId_B,
@@ -215,19 +216,16 @@ describe('ApplicationRepository', () => {
         });
 
       assert(updatedApplication);
-      expect(updatedApplication.status).to.be.equal(ApplicationStatus.OFFER);
-      expect(updatedApplication.referrer).to.be.equal('Khoa');
-      expect(updatedApplication.interest).to.be.equal(InterestLevel.HIGH);
-      expect(updatedApplication.portalLink).to.be.equal('abc.com');
-      expect(updatedApplication.note).to.be.equal(
-        'note about this application'
-      );
+      expect(updatedApplication).to.containSubset({
+        status: ApplicationStatus.OFFER,
+        referrer: 'Khoa',
+        interest: InterestLevel.HIGH,
+        portalLink: 'abc.com',
+        note: 'note about this application',
+      });
     });
 
-    it('should return updated application with deletedAt reset to null', async () => {
-      const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
-      ).id;
+    it('should be able to recreate application that was soft-deleted by setting deletedAt back to null if includeDeletedDoc is true,', async () => {
       const softDeletedApp = await ApplicationRepository.deleteApplicationById({
         userId: userId_B,
         applicationId: mockApplicationId_B,
@@ -243,6 +241,70 @@ describe('ApplicationRepository', () => {
       });
       assert(resetApp);
       assert(!resetApp.deletedAt);
+    });
+
+    it('should return updated application if includeDeletedDoc is true and application was soft-deleted', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+          updatedMetadata: { status: ApplicationStatus.IN_PROGRESS },
+          options: { includeDeletedDoc: true },
+        });
+
+      assert(updatedApplication);
+      expect(updatedApplication.status).to.equal(ApplicationStatus.IN_PROGRESS);
+    });
+
+    it('should return null if includeDeletedDoc is false and application was soft-deleted', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+          updatedMetadata: { status: ApplicationStatus.OA_RECEIVED },
+          options: { includeDeletedDoc: false },
+        });
+
+      assert(!updatedApplication);
+    });
+
+    it('should return null if includeDeletedDoc is not passed in and application was soft-deleted', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+          updatedMetadata: { status: ApplicationStatus.REJECTED },
+          options: {},
+        });
+
+      assert(!updatedApplication);
+    });
+
+    it('should return null if options is undefined and application was soft-deleted', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_B,
+        applicationId: mockApplicationId_B,
+      });
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_B,
+          applicationId: mockApplicationId_B,
+          updatedMetadata: { status: ApplicationStatus.WITHDRAWN },
+        });
+
+      assert(!updatedApplication);
     });
   });
 
