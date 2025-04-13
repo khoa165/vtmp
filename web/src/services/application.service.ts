@@ -83,17 +83,21 @@ export const ApplicationService = {
     return application;
   },
 
-  updateApplicationById: async (
-    userId: string,
-    applicationId: string,
+  updateApplicationById: async ({
+    userId,
+    applicationId,
+    updatedMetadata,
+  }: {
+    userId: string;
+    applicationId: string;
     updatedMetadata: {
       note?: string;
       referrer?: string;
       portalLink?: string;
       interest?: InterestLevel;
       status?: Exclude<ApplicationStatus, ApplicationStatus.REJECTED>;
-    }
-  ) => {
+    };
+  }) => {
     const updatedApplication =
       await ApplicationRepository.updateApplicationById({
         userId,
@@ -178,7 +182,7 @@ export const ApplicationService = {
     }
   },
 
-  deleteApplication: async ({
+  deleteApplicationById: async ({
     userId,
     applicationId,
   }: {
