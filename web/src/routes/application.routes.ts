@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { ApplicationController } from '@/controllers/application.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
+import { wrappedHandlers } from '@/middlewares/utils';
 
-const ApplicationRoutes = Router();
+export const ApplicationRoutes = Router();
 
 ApplicationRoutes.post(
   '/',
-  authenticate,
-  ApplicationController.createApplication
+  wrappedHandlers([authenticate, ApplicationController.createApplication])
 );
 ApplicationRoutes.get('/', authenticate, ApplicationController.getApplications);
 ApplicationRoutes.get(
@@ -15,5 +15,3 @@ ApplicationRoutes.get(
   authenticate,
   ApplicationController.getApplicationById
 );
-
-export default ApplicationRoutes;

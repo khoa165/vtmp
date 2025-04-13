@@ -1,5 +1,5 @@
 import { IUser, UserModel } from '@/models/user.model';
-import { UserRole } from '@/types/enums';
+import { UserRole } from '@common/enums';
 
 export const UserRepository = {
   createUser: async (userData: {
@@ -13,20 +13,20 @@ export const UserRepository = {
   },
 
   getAllUsers: async (): Promise<IUser[]> => {
-    return UserModel.find({ deletedAt: null });
+    return UserModel.find({ deletedAt: null }, { encryptedPassword: 0 }).lean();
   },
 
   getUserByEmail: async (email: string): Promise<IUser | null> => {
-    return UserModel.findOne({ email, deletedAt: null });
+    return UserModel.findOne({ email, deletedAt: null }).lean();
   },
 
-  getUserById: async (id: string): Promise<IUser | null> => {
-    return UserModel.findOne({ _id: id, deletedAt: null });
+  getUserById: async (userId: string): Promise<IUser | null> => {
+    return UserModel.findOne({ _id: userId, deletedAt: null }).lean();
   },
 
   updateUserById: async (
-    id: string,
-    updatedUser: {
+    userId: string,
+    updateUserInfo: {
       firstName?: string;
       lastName?: string;
       email?: string;
@@ -35,17 +35,17 @@ export const UserRepository = {
     }
   ): Promise<IUser | null> => {
     return UserModel.findOneAndUpdate(
-      { _id: id, deletedAt: null },
-      updatedUser,
+      { _id: userId, deletedAt: null },
+      updateUserInfo,
       {
         new: true,
       }
-    );
+    ).lean();
   },
 
-  deleteUserById: async (id: string): Promise<IUser | null> => {
+  deleteUserById: async (userId: string): Promise<IUser | null> => {
     return UserModel.findOneAndUpdate(
-      { _id: id, deletedAt: null },
+      { _id: userId, deletedAt: null },
       { $set: { deletedAt: new Date() } },
       { new: true }
     );

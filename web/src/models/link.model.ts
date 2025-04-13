@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { LinkStatus } from '@/types/enums';
+import { LinkStatus } from '@common/enums';
 
 interface ILink extends Document {
   url: string;

@@ -3,9 +3,10 @@ import {
   doesPersonHaveAtLeastOneRoleInYear,
   getPersonPriorityInYear,
 } from 'src/utils/data';
-import { MentorshipRole, PeopleSortColumn } from 'src/utils/constants';
+import { PeopleSortColumn } from 'src/utils/constants';
 import { mentorshipPeople } from 'src/data/people';
 import { sortBy } from 'lodash';
+import { MentorshipRole } from '@common/enums';
 
 export const useMentorshipPeople = (
   year: number,

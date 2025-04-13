@@ -1,5 +1,5 @@
 import UserService from '@/services/user.service';
-import { UserRole } from '@/types/enums';
+import { UserRole } from '@common/enums';
 import { ForbiddenError, handleError } from '@/utils/errors';
 import { Request, Response } from 'express';
 import { z } from 'zod';
@@ -16,7 +16,7 @@ const UserUpdateSchema = z
   .strict()
   .transform((data: object) =>
     Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => value !== undefined)
+      Object.entries(data).filter((value) => value !== undefined)
     )
   );
 

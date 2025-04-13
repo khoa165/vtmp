@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import 'src/styles/scss/people.scss';
 import { DEFAULT_ROLES, getRoleDisplayName } from 'src/utils/data';
 import {
-  MentorshipRole,
   MentorshipYear,
   PeopleSortColumn,
   yearDisplay,
@@ -17,6 +16,7 @@ import { useOffersData } from 'src/hooks/useOffersData';
 import { peopleSortColumnDisplayName } from 'src/utils/displayName';
 import { FaArrowUpWideShort, FaArrowDownWideShort } from 'react-icons/fa6';
 import { useNavigatePreserveQueryParams } from 'src/hooks/useNavigatePreserveQueryParams';
+import { MentorshipRole } from '@common/enums';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;

@@ -1,13 +1,12 @@
 import { Router } from 'express';
 import UserController from '@/controllers/user.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
+import { wrappedHandlers } from '@/middlewares/utils';
 
-const UserRoutes = Router();
-UserRoutes.use(authenticate);
+export const UserRoutes = Router();
+UserRoutes.use(wrappedHandlers([authenticate]));
 
-UserRoutes.get('/', UserController.getAllUsers);
-UserRoutes.get('/:id', UserController.getUser);
-UserRoutes.put('/:id', UserController.updateUser);
-UserRoutes.put('/:id/role', UserController.updateUserRole);
-
-export default UserRoutes;
+UserRoutes.get('/', wrappedHandlers([UserController.getAllUsers]));
+UserRoutes.get('/:id', wrappedHandlers([UserController.getUser]));
+UserRoutes.put('/:id', wrappedHandlers([UserController.updateUser]));
+UserRoutes.put('/:id/role', wrappedHandlers([UserController.updateUserRole]));

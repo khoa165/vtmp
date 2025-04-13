@@ -1,13 +1,12 @@
 import { UserRepository } from '@/repositories/user.repository';
-import { UserRole } from '@/types/enums';
+import { UserRole } from '@common/enums';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
-import { excludePasswordFromUser } from '@/utils/transform';
+import * as R from 'remeda';
 
 const UserService = {
   getAllUsers: async () => {
     const users = await UserRepository.getAllUsers();
-
-    return users.map((user) => excludePasswordFromUser(user));
+    return users;
   },
 
   getUserById: async (id: string) => {
@@ -16,7 +15,7 @@ const UserService = {
       throw new ResourceNotFoundError('User not found', { id });
     }
 
-    return excludePasswordFromUser(user);
+    return R.omit(user, ['encryptedPassword']);
   },
 
   updateUserById: async (
@@ -28,12 +27,14 @@ const UserService = {
       role?: UserRole;
     }
   ) => {
-    const user = await UserRepository.getUserByEmail(updateData.email ?? '');
-    if (user) {
-      throw new DuplicateResourceError('This email is already taken', {
-        id,
-        email: updateData.email,
-      });
+    if (updateData.email) {
+      const user = await UserRepository.getUserByEmail(updateData.email);
+      if (user) {
+        throw new DuplicateResourceError('This email is already taken', {
+          id,
+          email: updateData.email,
+        });
+      }
     }
 
     const updatedUser = await UserRepository.updateUserById(id, updateData);
@@ -41,7 +42,7 @@ const UserService = {
       throw new ResourceNotFoundError('User not found. Cannot update', { id });
     }
 
-    return excludePasswordFromUser(updatedUser);
+    return R.omit(updatedUser, ['encryptedPassword']);
   },
 };
 
