@@ -22,8 +22,9 @@ describe('JobPostingRepository', () => {
 
   describe('createJobPosting', () => {
     it('should be able to create a new job posting', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
 
       expect(newJobPosting).to.containSubset(mockJobPosting);
     });
@@ -31,8 +32,11 @@ describe('JobPostingRepository', () => {
 
   describe('getJobPostingById', () => {
     it('should be able to find a job post by id', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
       const foundJobPosting = await JobPostingRepository.getJobPostingById(
         newJobPosting.id
       );
@@ -44,8 +48,10 @@ describe('JobPostingRepository', () => {
 
   describe('updateJobPostingById', () => {
     it('should be able to update detail of a job post by id', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
 
       const newUpdate = {
         jobTitle: 'Senior Software Engineer',
@@ -64,8 +70,11 @@ describe('JobPostingRepository', () => {
 
   describe('deleteJobPostingById', () => {
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
         newJobPosting.id
       );
