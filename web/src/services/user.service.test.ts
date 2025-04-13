@@ -57,6 +57,9 @@ describe('User Service', () => {
       expect(users)
         .to.be.an('array')
         .that.have.lengthOf(mockMultipleUsers.length);
+      expect(users.map((user) => user.email)).to.have.members(
+        mockMultipleUsers.map((mockUser) => mockUser.email)
+      );
       users.forEach((user) => {
         expect(user).to.not.have.property('encryptedPassword');
       });
@@ -134,6 +137,7 @@ describe('User Service', () => {
       assert(updatedUser);
       expect(updatedUser).to.have.property('role');
       expect(updatedUser.role).to.equal(UserRole.ADMIN);
+      expect(updatedUser).to.not.have.property('encryptedPassword');
     });
 
     it('should successfully update multiple fields of user with given id', async () => {
@@ -157,6 +161,7 @@ describe('User Service', () => {
 
       assert(updatedUser);
       expect(updatedUser).to.containSubset(updateInfo);
+      expect(updatedUser).to.not.have.property('encryptedPassword');
     });
   });
 });

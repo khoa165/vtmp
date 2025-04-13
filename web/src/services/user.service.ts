@@ -1,13 +1,12 @@
 import { UserRepository } from '@/repositories/user.repository';
 import { UserRole } from '@/types/enums';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
-import { excludePasswordFromUser } from '@/utils/transform';
+import * as R from 'remeda';
 
 const UserService = {
   getAllUsers: async () => {
     const users = await UserRepository.getAllUsers();
-
-    return users.map((user) => excludePasswordFromUser(user));
+    return users;
   },
 
   getUserById: async (id: string) => {
@@ -16,7 +15,7 @@ const UserService = {
       throw new ResourceNotFoundError('User not found', { id });
     }
 
-    return excludePasswordFromUser(user);
+    return R.omit(user, ['encryptedPassword']);
   },
 
   updateUserById: async (
@@ -43,7 +42,7 @@ const UserService = {
       throw new ResourceNotFoundError('User not found. Cannot update', { id });
     }
 
-    return excludePasswordFromUser(updatedUser);
+    return R.omit(updatedUser, ['encryptedPassword']);
   },
 };
 
