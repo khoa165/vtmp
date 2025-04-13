@@ -6,7 +6,11 @@ import {
   InterestLevel,
   InterviewStatus,
 } from '@/types/enums';
-import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
+import {
+  DuplicateResourceError,
+  ForbiddenError,
+  ResourceNotFoundError,
+} from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
 
 export const ApplicationService = {
@@ -172,5 +176,45 @@ export const ApplicationService = {
       // Make sure to end the transaction
       session.endSession();
     }
+  },
+
+  deleteApplication: async ({
+    userId,
+    applicationId,
+  }: {
+    userId: string;
+    applicationId: string;
+  }) => {
+    // Check if applicationId exists
+    const application = await ApplicationRepository.getApplicationById({
+      applicationId,
+      userId,
+    });
+    if (!application) {
+      throw new ResourceNotFoundError('Application not found', {
+        applicationId,
+        userId,
+      });
+    }
+
+    // call getInterviewsByApplicationId to get an array to check if this app has interviews
+    const interviews = await InterviewRepository.getInterviewsByApplicatonId({
+      userId,
+      applicationId,
+    });
+    if (interviews.length > 0) {
+      throw new ForbiddenError(
+        'Cannot delete application that has interviews',
+        { userId, applicationId }
+      );
+    }
+
+    // If empty, allow soft delete of application
+    const deletedApplication =
+      await ApplicationRepository.deleteApplicationById({
+        userId,
+        applicationId,
+      });
+    return deletedApplication;
   },
 };
