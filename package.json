@@ -47,5 +47,8 @@
       "prettier --write --config .prettierrc",
       "eslint --fix --config eslint.config.js"
     ]
+  },
+  "dependencies": {
+    "remeda": "^2.21.2"
   }
 }
