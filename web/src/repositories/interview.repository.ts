@@ -46,7 +46,7 @@ export const InterviewRepository = {
     return InterviewModel.find({ userId: userId, deletedAt: null });
   },
 
-  getInterviewsByApplicatonId: async ({
+  getInterviewsByApplicationId: async ({
     applicationId,
     userId,
     filters,
