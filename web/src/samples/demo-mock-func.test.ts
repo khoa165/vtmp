@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { useSandbox } from '@/testutils/sandbox.testutil';
-import { helloPort } from './demo-mock-func';
+import { helloPort } from '@/samples/demo-mock-func';
 import { EnvConfig } from '@/config/env';
 
 describe('helloPort', () => {

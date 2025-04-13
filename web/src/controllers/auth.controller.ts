@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { AuthService } from '@/services/auth.service';
-import { handleError } from '@/utils/errors';
 import { z } from 'zod';
 
 const signupSchema = z
@@ -68,27 +67,14 @@ const loginSchema = z.object({
 
 export const AuthController = {
   signup: async (req: Request, res: Response) => {
-    try {
-      const validatedBody = signupSchema.parse(req.body);
-      const token = await AuthService.signup(validatedBody);
-      res.status(200).json({ data: { token } });
-    } catch (error: unknown) {
-      const { statusCode, errors } = handleError(error);
-      res.status(statusCode).json({ errors });
-      return;
-    }
+    const validatedBody = signupSchema.parse(req.body);
+    const token = await AuthService.signup(validatedBody);
+    res.status(200).json({ data: { token } });
   },
 
   login: async (req: Request, res: Response) => {
-    try {
-      const validatedBody = loginSchema.parse(req.body);
-      const token = await AuthService.login(validatedBody);
-      res.status(200).json({ data: { token } });
-      return;
-    } catch (error: unknown) {
-      const { statusCode, errors } = handleError(error);
-      res.status(statusCode).json({ errors });
-      return;
-    }
+    const validatedBody = loginSchema.parse(req.body);
+    const token = await AuthService.login(validatedBody);
+    res.status(200).json({ data: { token } });
   },
 };

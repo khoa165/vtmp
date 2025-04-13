@@ -1,5 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-import { UserRole } from '@/types/enums';
+import { UserRole } from '@common/enums';
 
 export interface IUser extends Document {
   _id: mongoose.Schema.Types.ObjectId;
@@ -8,6 +8,7 @@ export interface IUser extends Document {
   email: string;
   encryptedPassword: string;
   role: UserRole;
+  deletedAt?: Date;
 }
 
 const UserSchema = new mongoose.Schema<IUser>(
@@ -33,6 +34,9 @@ const UserSchema = new mongoose.Schema<IUser>(
       type: String,
       enum: Object.values(UserRole),
       default: UserRole.USER,
+    },
+    deletedAt: {
+      type: Date,
     },
   },
   { timestamps: true }
