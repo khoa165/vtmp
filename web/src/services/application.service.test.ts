@@ -69,7 +69,7 @@ describe('ApplicationService', () => {
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
-    it('should throw error if an application associated with this job posting and user already exist', async () => {
+    it('should throw error if an application associated with this job posting and user already exist (but was not soft deleted)', async () => {
       const newJobPosting =
         await JobPostingRepository.createJobPosting(mockJobPosting);
       const mockApplication = {
@@ -83,7 +83,7 @@ describe('ApplicationService', () => {
       ).eventually.rejectedWith(DuplicateResourceError);
     });
 
-    it('should create an application successfully', async () => {
+    it('should not throw an error if create an application successfully', async () => {
       const newJobPosting =
         await JobPostingRepository.createJobPosting(mockJobPosting);
       const mockApplication = {
@@ -95,50 +95,114 @@ describe('ApplicationService', () => {
         .eventually.fulfilled;
     });
 
+    it('should not throw an error if trying to create an application with certain jobPostingId and userId but was soft-deleted', async () => {
+      const newJobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const mockApplication = {
+        jobPostingId: newJobPosting.id,
+        userId: userId_B,
+      };
+      const application =
+        await ApplicationRepository.createApplication(mockApplication);
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: application.id,
+        userId: userId_B,
+      });
+
+      await expect(ApplicationService.createApplication(mockApplication))
+        .eventually.fulfilled;
+    });
+
+    it('should restore a soft-deleted application if it already exists', async () => {
+      const newJobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const mockApplication = {
+        jobPostingId: newJobPosting.id,
+        userId: userId_B,
+      };
+      const application =
+        await ApplicationRepository.createApplication(mockApplication);
+
+      // Soft delete it
+      const deletedApplication =
+        await ApplicationRepository.deleteApplicationById({
+          applicationId: application.id,
+          userId: userId_B,
+        });
+      assert(deletedApplication);
+      assert(deletedApplication.deletedAt);
+
+      const restoredApplication =
+        await ApplicationService.createApplication(mockApplication);
+
+      assert(restoredApplication);
+      assert(!restoredApplication.deletedAt);
+      expect(restoredApplication.id).to.equal(application.id);
+    });
+
     it('should create an application successfully and return valid new application', async () => {
       const newJobPosting =
         await JobPostingRepository.createJobPosting(mockJobPosting);
       const mockApplication = {
         jobPostingId: newJobPosting.id,
-        userId: getNewMongoId(),
+        userId: userId_B,
       };
-      const newApplication =
+      const application =
         await ApplicationService.createApplication(mockApplication);
-      assert(newApplication);
+      assert(application);
       const timeDiff = differenceInSeconds(
         new Date(),
-        newApplication.appliedOnDate
+        application.appliedOnDate
       );
 
-      expect(newApplication.jobPostingId.toString()).to.equal(
+      expect(application.jobPostingId.toString()).to.equal(
         mockApplication.jobPostingId
       );
-      expect(newApplication.userId.toString()).to.equal(mockApplication.userId);
-      expect(newApplication.hasApplied).to.equal(true);
-      expect(newApplication.status).to.equal(ApplicationStatus.SUBMITTED);
+      expect(application.userId.toString()).to.equal(mockApplication.userId);
+      expect(application.hasApplied).to.equal(true);
+      expect(application.status).to.equal(ApplicationStatus.SUBMITTED);
       expect(timeDiff).to.lessThan(3);
     });
   });
 
   describe('getApplications', () => {
     it('should only return applications associated with a userId', async () => {
-      const mockApplicationId_A0 = (
-        await ApplicationRepository.createApplication(mockApplication_A0)
-      ).id;
-      const mockApplicationId_A1 = (
-        await ApplicationRepository.createApplication(mockApplication_A1)
-      ).id;
+      const application_A0 =
+        await ApplicationRepository.createApplication(mockApplication_A0);
+      const application_A1 =
+        await ApplicationRepository.createApplication(mockApplication_A1);
       await ApplicationRepository.createApplication(mockApplication_B);
       const applications = await ApplicationService.getApplications(userId_A);
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(2);
       expect(applications.map((application) => application.id)).to.have.members(
-        [mockApplicationId_A0, mockApplicationId_A1]
+        [application_A0.id, application_A1.id]
+      );
+    });
+
+    it('should only return applications that was not soft deleted', async () => {
+      const application_A0 =
+        await ApplicationRepository.createApplication(mockApplication_A0);
+      const application_A1 =
+        await ApplicationRepository.createApplication(mockApplication_A1);
+      await ApplicationRepository.createApplication(mockApplication_B);
+
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: application_A1.id,
+        userId: userId_A,
+      });
+      const applications = await ApplicationService.getApplications(userId_A);
+
+      assert(applications);
+      expect(applications).to.be.an('array').that.have.lengthOf(1);
+      expect(applications.map((application) => application.id)).to.have.members(
+        [application_A0.id]
       );
     });
 
     it('should return no application if authorized user has no application', async () => {
+      await ApplicationRepository.createApplication(mockApplication_B);
       const applications = await ApplicationService.getApplications(userId_A);
 
       assert(applications);
@@ -148,39 +212,50 @@ describe('ApplicationService', () => {
 
   describe('getApplicationById', () => {
     it('should throw an error if no application is associated with the authorized user', async () => {
-      const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
-      ).id;
-
+      const application_B =
+        await ApplicationRepository.createApplication(mockApplication_B);
       await expect(
         ApplicationService.getApplicationById({
-          applicationId: mockApplicationId_B,
+          applicationId: application_B.id,
           userId: userId_A,
         })
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
-    it('should not throw an error when an application associated with the authorized user is found', async () => {
-      const mockApplicationId_A1 = (
-        await ApplicationRepository.createApplication(mockApplication_A1)
-      ).id;
+    it('should throw an error if trying to get a soft deleted application', async () => {
+      const application_B =
+        await ApplicationRepository.createApplication(mockApplication_B);
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: application_B.id,
+        userId: userId_B,
+      });
 
       await expect(
         ApplicationService.getApplicationById({
-          applicationId: mockApplicationId_A1,
+          applicationId: application_B.id,
+          userId: userId_B,
+        })
+      ).eventually.rejectedWith(ResourceNotFoundError);
+    });
+
+    it('should not throw an error when an application associated with the authorized user is found', async () => {
+      const application_A1 =
+        await ApplicationRepository.createApplication(mockApplication_A1);
+      await expect(
+        ApplicationService.getApplicationById({
+          applicationId: application_A1.id,
           userId: userId_A,
         })
       ).eventually.fulfilled;
     });
 
     it('should only return application associated with an applicationId and a userId', async () => {
-      await ApplicationRepository.createApplication(mockApplication_A0);
       await ApplicationRepository.createApplication(mockApplication_B);
-      const mockApplicationId_A1 = (
-        await ApplicationRepository.createApplication(mockApplication_A1)
-      ).id;
+      await ApplicationRepository.createApplication(mockApplication_A0);
+      const application_A1 =
+        await ApplicationRepository.createApplication(mockApplication_A1);
       const application = await ApplicationService.getApplicationById({
-        applicationId: mockApplicationId_A1,
+        applicationId: application_A1.id,
         userId: userId_A,
       });
 
