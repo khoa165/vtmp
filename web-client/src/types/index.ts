@@ -1,16 +1,16 @@
+import { MentorshipYear } from '@/utils/constants';
 import {
   CompanyName,
   MentorshipRole,
   OfferChannel,
   OfferType,
-  MentorshipYear,
-} from 'src/utils/constants';
+} from '@common/enums';
 
 export interface BlogMetadata {
   name: string;
   title: string;
   authors: string[];
-  contributors?: string;
+  contributors: string[];
   description: string;
   banner?: string;
   date: string;

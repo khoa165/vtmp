@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import chaiSubset from 'chai-subset';
-import { LinkStatus } from '@/types/enums';
+import { LinkStatus } from '@common/enums';
 import { differenceInSeconds } from 'date-fns';
 import LinkRepository from '@/repositories/link.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
@@ -17,7 +17,7 @@ describe('LinkRepository', () => {
       const googleLink = await LinkRepository.createLink('google.com');
       const link = await LinkRepository.getLinkById(googleLink.id);
 
-      expect(link).to.not.be.null;
+      assert(link);
     });
   });
 

@@ -13,7 +13,7 @@ import {
   InterestLevel,
   InterviewStatus,
   InterviewType,
-} from '@/types/enums';
+} from '@common/enums';
 import {
   getNewMongoId,
   getNewObjectId,
@@ -99,7 +99,6 @@ describe('ApplicationService', () => {
       };
       const newApplication =
         await ApplicationService.createApplication(mockApplication);
-
       assert(newApplication);
       const timeDiff = differenceInSeconds(
         new Date(),
@@ -216,7 +215,6 @@ describe('ApplicationService', () => {
             referrer: 'Khoa',
             portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
-            status: ApplicationStatus.OA_RECEIVED,
           },
         })
       ).eventually.fulfilled;
@@ -235,7 +233,6 @@ describe('ApplicationService', () => {
             referrer: 'Khoa',
             portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
-            status: ApplicationStatus.OA_RECEIVED,
           },
         }
       );
@@ -270,7 +267,7 @@ describe('ApplicationService', () => {
       await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
-        type: [InterviewType.TECHNICAL, InterviewType.DEBUG],
+        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
       });
 
@@ -289,7 +286,7 @@ describe('ApplicationService', () => {
       await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
-        type: [InterviewType.TECHNICAL, InterviewType.DEBUG],
+        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
         status: InterviewStatus.UPCOMING,
       });
@@ -322,7 +319,7 @@ describe('ApplicationService', () => {
       const interview1 = await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
-        type: [InterviewType.TECHNICAL, InterviewType.DEBUG],
+        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
         status: InterviewStatus.UPCOMING,
       });
@@ -368,7 +365,7 @@ describe('ApplicationService', () => {
       const interview1 = await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
-        type: [InterviewType.TECHNICAL, InterviewType.DEBUG],
+        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
       });
       const interview2 = await InterviewRepository.createInterview({
@@ -413,7 +410,7 @@ describe('ApplicationService', () => {
       const interview1 = await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
-        type: [InterviewType.TECHNICAL, InterviewType.DEBUG],
+        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
       });
 

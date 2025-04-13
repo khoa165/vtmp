@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { JobPostingService } from '@/services/job-posting.service';
-import { JobPostingLocation } from '@/types/enums';
+import { JobPostingLocation } from '@common/enums';
 
 const JobPostingUpdateSchema = z.object({
   externalPostingId: z.string().optional(),

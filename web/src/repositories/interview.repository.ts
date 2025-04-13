@@ -1,5 +1,5 @@
 import { InterviewModel, IInterview } from '@/models/interview.model';
-import { InterviewStatus, InterviewType } from '@/types/enums';
+import { InterviewStatus, InterviewType } from '@common/enums';
 import { ClientSession, UpdateResult } from 'mongoose';
 
 export const InterviewRepository = {
