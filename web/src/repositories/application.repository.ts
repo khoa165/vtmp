@@ -1,5 +1,6 @@
 import { ApplicationModel, IApplication } from '@/models/application.model';
 import { ApplicationStatus, InterestLevel } from '@common/enums';
+import { ClientSession } from 'mongoose';
 
 export const ApplicationRepository = {
   createApplication: async ({

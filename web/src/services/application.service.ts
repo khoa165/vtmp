@@ -5,7 +5,7 @@ import {
   ApplicationStatus,
   InterestLevel,
   InterviewStatus,
-} from '@/types/enums';
+} from '@common/enums';
 import {
   DuplicateResourceError,
   ForbiddenError,
