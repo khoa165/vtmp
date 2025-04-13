@@ -215,6 +215,7 @@ describe('ApplicationService', () => {
             referrer: 'Khoa',
             portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
+            status: ApplicationStatus.OFFER,
           },
         })
       ).eventually.fulfilled;
@@ -233,6 +234,7 @@ describe('ApplicationService', () => {
             referrer: 'Khoa',
             portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
+            status: ApplicationStatus.OFFER,
           },
         }
       );
@@ -242,7 +244,7 @@ describe('ApplicationService', () => {
       expect(updatedApplication.referrer).to.equal('Khoa');
       expect(updatedApplication.portalLink).to.equal('abc.com');
       expect(updatedApplication.interest).to.equal(InterestLevel.HIGH);
-      expect(updatedApplication.status).to.equal(ApplicationStatus.OA_RECEIVED);
+      expect(updatedApplication.status).to.equal(ApplicationStatus.OFFER);
     });
   });
 
