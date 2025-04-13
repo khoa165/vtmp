@@ -1,5 +1,5 @@
 import { ApplicationModel, IApplication } from '@/models/application.model';
-import { ApplicationStatus, InterestLevel } from '@/types/enums';
+import { ApplicationStatus, InterestLevel } from '@common/enums';
 
 export const ApplicationRepository = {
   createApplication: async ({

@@ -1,5 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-import { InvitationStatus } from '@/types/enums';
+import { InvitationStatus } from '@common/enums';
 
 interface IInvitation extends Document {
   receiverEmail: string;

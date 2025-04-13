@@ -2,9 +2,9 @@ import { expect } from 'chai';
 import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
 
-import { ApplicationRepository } from './application.repository';
+import { ApplicationRepository } from '@/repositories/application.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { ApplicationStatus, InterestLevel } from '@/types/enums';
+import { ApplicationStatus, InterestLevel } from '@common/enums';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 
 describe('ApplicationRepository', () => {
