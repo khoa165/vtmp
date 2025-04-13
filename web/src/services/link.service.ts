@@ -1,8 +1,8 @@
 import { LinkRepository } from '@/repositories/link.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { LinkStatus } from '@common/enums';
 import { ResourceNotFoundError } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
-import { LinkStatus } from '@/types/enums';
 
 export const LinkService = {
   submitLink: async (url: string) => {

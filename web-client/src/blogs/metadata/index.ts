@@ -1,4 +1,4 @@
-import { allBlogsFilepaths } from './filepaths';
-import { allBlogsMetadata } from './metadata';
+import { allBlogsFilepaths } from '@/blogs/metadata/filepaths';
+import { allBlogsMetadata } from '@/blogs/metadata/metadata';
 
 export { allBlogsFilepaths, allBlogsMetadata };

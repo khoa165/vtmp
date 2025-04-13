@@ -19,20 +19,56 @@ export const ApplicationService = {
       });
     }
 
-    const applicationExists = await ApplicationRepository.doesApplicationExist({
+    const application = await ApplicationRepository.getApplicationIfExists({
       jobPostingId,
       userId,
     });
-    if (applicationExists) {
-      throw new DuplicateResourceError('Application already exists', {
-        jobPostingId,
-        userId,
-      });
+
+    if (application) {
+      if (application.deletedAt) {
+        return ApplicationRepository.updateApplicationById({
+          userId,
+          applicationId: application.id,
+          updatedMetadata: { deletedAt: null },
+          options: { includeDeletedDoc: true },
+        });
+      } else {
+        throw new DuplicateResourceError('Application already exists', {
+          jobPostingId,
+          userId,
+        });
+      }
     }
 
     return ApplicationRepository.createApplication({
       jobPostingId,
       userId,
     });
+  },
+
+  getApplications: async (userId: string) => {
+    return ApplicationRepository.getApplications(userId);
+  },
+
+  getApplicationById: async ({
+    applicationId,
+    userId,
+  }: {
+    applicationId: string;
+    userId: string;
+  }) => {
+    const application = await ApplicationRepository.getApplicationById({
+      applicationId,
+      userId,
+    });
+
+    if (!application) {
+      throw new ResourceNotFoundError('Application not found', {
+        applicationId,
+        userId,
+      });
+    }
+
+    return application;
   },
 };

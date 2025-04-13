@@ -1,11 +1,11 @@
-@import 'utils';
-@import 'variables';
+@use 'utils';
+@use 'variables';
 
 #tree-container {
   ul {
     margin: 0 100px;
 
-    @include resize(null, $bootstrap-md-max) {
+    @include utils.resize(null, variables.$bootstrap-md-max) {
       margin: 0;
     }
 
@@ -22,11 +22,11 @@
       margin: 0 auto;
       background: linear-gradient(
         to top,
-        $brand-first-gradient-color,
-        $brand-second-gradient-color
+        variables.$brand-first-gradient-color,
+        variables.$brand-second-gradient-color
       );
       list-style: none;
-      @include resize(null, $bootstrap-md-max) {
+      @include utils.resize(null, variables.$bootstrap-md-max) {
         margin-left: 0;
       }
 
@@ -44,7 +44,7 @@
           margin-right: 10px;
         }
 
-        @include resize($bootstrap-lg-min, 1060px) {
+        @include utils.resize(variables.$bootstrap-lg-min, 1060px) {
           width: 375px;
           margin-left: -10px;
         }
@@ -59,11 +59,11 @@
         -o-transition: all 0.4s linear;
         transition: all 0.4s linear;
 
-        @include resize(null, $bootstrap-md-max) {
+        @include utils.resize(null, variables.$bootstrap-md-max) {
           left: 40px;
         }
 
-        @include resize($bootstrap-lg-min, 1060px) {
+        @include utils.resize(variables.$bootstrap-lg-min, 1060px) {
           width: 375px;
           margin-left: 35px;
         }
@@ -75,7 +75,7 @@
 
       &:after {
         content: '';
-        background: $brand-timeline-dot-color;
+        background: variables.$brand-timeline-dot-color;
         position: absolute;
         left: 50%;
         bottom: 0;
@@ -91,16 +91,16 @@
       }
 
       .blog-card {
-        background: $brand-primary-background-color;
-        color: $brand-light-color;
+        background: variables.$brand-primary-background-color;
+        color: variables.$brand-light-color;
         position: relative;
 
         border: 5px solid;
         border-image-slice: 1;
         border-image-source: linear-gradient(
           to left,
-          $brand-first-gradient-color,
-          $brand-second-gradient-color
+          variables.$brand-first-gradient-color,
+          variables.$brand-second-gradient-color
         );
         bottom: 0;
         width: 450px;
@@ -110,32 +110,32 @@
         transition: all 0.3s ease-in-out;
         border-radius: 5px;
 
-        @include resize(null, $bootstrap-md-max) {
+        @include utils.resize(null, variables.$bootstrap-md-max) {
           width: calc(100vw - 90px);
         }
 
         &:hover {
           bottom: 10px;
-          box-shadow: 0px 0px 10px 3px $brand-first-gradient-color;
+          box-shadow: 0px 0px 10px 3px variables.$brand-first-gradient-color;
         }
 
         .card-title {
-          color: $brand-timeline-dot-color;
+          color: variables.$brand-timeline-dot-color;
           font-family: 'Courier New', Courier, monospace;
         }
 
         .card-subtitle {
-          color: $mentorship-primary-grey !important;
+          color: variables.$mentorship-primary-grey !important;
           font-size: 12px;
         }
 
         .badge {
-          background-color: $brand-first-gradient-color !important;
+          background-color: variables.$brand-first-gradient-color !important;
         }
 
         a {
           text-decoration: none;
-          color: $brand-timeline-dot-color;
+          color: variables.$brand-timeline-dot-color;
           font-weight: 500;
 
           &:hover i {

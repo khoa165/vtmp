@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { ApplicationService } from '@/services/application.service';
 import { z } from 'zod';
-import { handleError } from '@/utils/errors';
 import mongoose from 'mongoose';
+import { handleError } from '@/utils/errors';
 
 const ApplicationRequestSchema = z.object({
   jobPostingId: z
@@ -12,7 +12,15 @@ const ApplicationRequestSchema = z.object({
     }),
 });
 
-// TODO: need to figure out how to remove "as AuthenticatedRequest"
+const ApplicationIdParamsSchema = z.object({
+  applicationId: z
+    .string()
+    .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: 'Invalid application ID format',
+    }),
+});
+
+// TODO: dson - need to figure out how to remove "as AuthenticatedRequest"
 interface AuthenticatedRequest extends Request {
   user: {
     id: string;
@@ -21,19 +29,52 @@ interface AuthenticatedRequest extends Request {
 
 export const ApplicationController = {
   createApplication: async (req: Request, res: Response) => {
-    try {
-      const { jobPostingId } = ApplicationRequestSchema.parse(req.body);
+    const { jobPostingId } = ApplicationRequestSchema.parse(req.body);
 
+    const userId = (req as AuthenticatedRequest).user.id;
+
+    const newApplication = await ApplicationService.createApplication({
+      jobPostingId,
+      userId,
+    });
+
+    res.status(201).json({
+      message: 'Application created successfully',
+      data: newApplication,
+    });
+  },
+
+  getApplications: async (req: Request, res: Response) => {
+    try {
       const userId = (req as AuthenticatedRequest).user.id;
 
-      const newApplication = await ApplicationService.createApplication({
-        jobPostingId,
+      const applications = await ApplicationService.getApplications(userId);
+
+      res.status(200).json({
+        message: 'Applications retrieved successfully',
+        data: applications,
+      });
+      return;
+    } catch (error: unknown) {
+      const { statusCode, errors } = handleError(error);
+      res.status(statusCode).json({ errors });
+      return;
+    }
+  },
+
+  getApplicationById: async (req: Request, res: Response) => {
+    try {
+      const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
+      const userId = (req as AuthenticatedRequest).user.id;
+
+      const application = await ApplicationService.getApplicationById({
+        applicationId,
         userId,
       });
 
-      res.status(201).json({
-        message: 'Application created successfully',
-        data: newApplication,
+      res.status(200).json({
+        message: 'Application retrieved successfully',
+        data: application,
       });
       return;
     } catch (error: unknown) {

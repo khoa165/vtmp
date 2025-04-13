@@ -17,7 +17,7 @@ import chaiSubset from 'chai-subset';
 
 chai.use(chaiSubset);
 
-describe.only('LinkController', () => {
+describe('LinkController', () => {
   useMongoDB();
   const sandbox = useSandbox();
   beforeEach(() => {

@@ -12,7 +12,7 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import { UserRole } from '@/types/enums';
+import { UserRole } from '@common/enums';
 
 describe('AuthController', () => {
   useMongoDB();

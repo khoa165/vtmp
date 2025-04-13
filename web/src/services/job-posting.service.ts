@@ -1,5 +1,5 @@
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { ResourceNotFoundError } from '../utils/errors';
+import { ResourceNotFoundError } from '@/utils/errors';
 
 export const JobPostingService = {
   updateJobPostingById: async (jobId: string, newUpdate: object) => {

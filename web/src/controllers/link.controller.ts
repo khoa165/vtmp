@@ -3,8 +3,7 @@ import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
 import { handleError } from '../utils/errors';
 
-import { url } from 'inspector';
-import { LinkStatus } from '@/types/enums';
+import { LinkStatus } from '@common/enums';
 
 const LinkSchema = z.object({
   url: z.string().url(),
