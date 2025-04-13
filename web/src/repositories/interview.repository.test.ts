@@ -4,7 +4,7 @@ import assert from 'assert';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
-import { InterviewType, InterviewStatus } from '@/types/enums';
+import { InterviewType, InterviewStatus } from '@common/enums';
 
 describe('Interview Repository', () => {
   useMongoDB();
@@ -16,7 +16,7 @@ describe('Interview Repository', () => {
   const mockInterview_A0 = {
     applicationId: metaApplicationId,
     userId: userId_A,
-    type: [InterviewType.TECHNICAL],
+    type: [InterviewType.CODE_REVIEW],
     interviewOnDate: new Date('2025-06-07'),
     status: InterviewStatus.PASSED,
   };
@@ -24,7 +24,7 @@ describe('Interview Repository', () => {
   const mockInterview_A1 = {
     applicationId: getNewMongoId(),
     userId: userId_A,
-    type: [InterviewType.TECHNICAL],
+    type: [InterviewType.CODE_REVIEW],
     interviewOnDate: new Date('2025-06-07'),
     status: InterviewStatus.FAILED,
   };
@@ -32,14 +32,14 @@ describe('Interview Repository', () => {
   const mockInterview_A2 = {
     applicationId: metaApplicationId,
     userId: userId_A,
-    type: [InterviewType.TECHNICAL],
+    type: [InterviewType.CODE_REVIEW],
     interviewOnDate: new Date('2025-06-07'),
   };
 
   const mockInterview_B0 = {
     applicationId: getNewMongoId(),
     userId: userId_B,
-    type: [InterviewType.TECHNICAL],
+    type: [InterviewType.CODE_REVIEW],
     interviewOnDate: new Date('2025-06-07'),
     status: InterviewStatus.PENDING,
   };
@@ -265,7 +265,10 @@ describe('Interview Repository', () => {
         userId: userId_A,
         updatedMetaData: {
           interviewOnDate: new Date('2025-08-10'),
-          type: [InterviewType.BEHAVIORIAL, InterviewType.HIRING_MANAGER],
+          type: [
+            InterviewType.PROJECT_WALKTHROUGH,
+            InterviewType.HIRING_MANAGER,
+          ],
           status: InterviewStatus.PENDING,
           note: 'This interview is updated.',
         },
@@ -276,7 +279,7 @@ describe('Interview Repository', () => {
         _id: toMongoId(interview.id),
         userId: toMongoId(userId_A),
         interviewOnDate: new Date('2025-08-10'),
-        type: [InterviewType.BEHAVIORIAL, InterviewType.HIRING_MANAGER],
+        type: [InterviewType.PROJECT_WALKTHROUGH, InterviewType.HIRING_MANAGER],
         status: InterviewStatus.PENDING,
         note: 'This interview is updated.',
       });
