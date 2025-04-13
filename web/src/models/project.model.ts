@@ -1,9 +1,9 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 
 interface IProjectActivity {
   year: number;
-  teamMembers: mongoose.Schema.Types.ObjectId[];
-  projectAdvisors: mongoose.Schema.Types.ObjectId[];
+  teamMembers: Types.ObjectId[];
+  projectAdvisors: Types.ObjectId[];
 }
 
 interface IProject extends Document {
@@ -12,7 +12,7 @@ interface IProject extends Document {
   activities: IProjectActivity[];
 }
 
-const ProjectSchema = new mongoose.Schema<IProject>({
+const ProjectSchema = new Schema<IProject>({
   teamName: {
     type: String,
     required: true,
@@ -31,7 +31,7 @@ const ProjectSchema = new mongoose.Schema<IProject>({
         teamMembers: {
           type: [
             {
-              type: mongoose.Schema.Types.ObjectId,
+              type: Schema.Types.ObjectId,
               ref: 'ProgramProfile',
             },
           ],
@@ -40,7 +40,7 @@ const ProjectSchema = new mongoose.Schema<IProject>({
         projectAdvisors: {
           type: [
             {
-              type: mongoose.Schema.Types.ObjectId,
+              type: Schema.Types.ObjectId,
               ref: 'ProgramProfile',
             },
           ],

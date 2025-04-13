@@ -1,29 +1,29 @@
-import { Department, UserRole } from '@/types/enums';
-import mongoose, { Document } from 'mongoose';
+import { Department, ProgramRole } from '@/types/enums';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 
 interface IProgramInvolvement extends Document {
-  programProfileId: mongoose.Schema.Types.ObjectId;
-  programCohortId: mongoose.Schema.Types.ObjectId;
-  title: string;
+  programProfileId: Types.ObjectId;
+  programCohortId: Types.ObjectId;
+  professionalTitle: string;
   department: Department;
-  roles: UserRole[];
-  projects: mongoose.Schema.Types.ObjectId[];
-  mentees: mongoose.Schema.Types.ObjectId[];
-  mentors: mongoose.Schema.Types.ObjectId[];
+  roles: ProgramRole[];
+  projects: Types.ObjectId[];
+  mentees: Types.ObjectId[];
+  mentors: Types.ObjectId[];
 }
 
-const ProgramInvolvementSchema = new mongoose.Schema<IProgramInvolvement>({
+const ProgramInvolvementSchema = new Schema<IProgramInvolvement>({
   programProfileId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'ProgramProfile',
     required: true,
   },
   programCohortId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'ProgramCohort',
     required: true,
   },
-  title: {
+  professionalTitle: {
     type: String,
     required: true,
   },
@@ -36,7 +36,7 @@ const ProgramInvolvementSchema = new mongoose.Schema<IProgramInvolvement>({
     type: [
       {
         type: String,
-        enum: Object.values(UserRole),
+        enum: Object.values(ProgramRole),
         required: true,
       },
     ],
@@ -45,7 +45,7 @@ const ProgramInvolvementSchema = new mongoose.Schema<IProgramInvolvement>({
   projects: {
     type: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Project',
       },
     ],
@@ -54,7 +54,7 @@ const ProgramInvolvementSchema = new mongoose.Schema<IProgramInvolvement>({
   mentees: {
     type: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'ProgramProfile',
       },
     ],
@@ -63,7 +63,7 @@ const ProgramInvolvementSchema = new mongoose.Schema<IProgramInvolvement>({
   mentors: {
     type: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'ProgramProfile',
       },
     ],
