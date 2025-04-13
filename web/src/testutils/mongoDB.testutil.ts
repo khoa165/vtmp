@@ -1,6 +1,6 @@
 import type { CommandStartedEvent } from 'mongodb';
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoMemoryReplSet } from 'mongodb-memory-server';
 
 const writtenCollections = new Set<string>();
 let mongoAlreadyStarted = false;
@@ -23,12 +23,12 @@ export const useMongoDB = async () => {
   });
 };
 
-let cachedMongo: MongoMemoryServer | undefined;
+let cachedMongo: MongoMemoryReplSet | undefined;
 export const startMongoDB = async () => {
   const dbExistsAndRunning =
     cachedMongo != null && cachedMongo.state === 'running';
   if (!dbExistsAndRunning) {
-    const mongod = await MongoMemoryServer.create();
+    const mongod = await MongoMemoryReplSet.create();
     const uri = mongod.getUri();
     await Promise.all([
       mongoose.connect(uri, {
