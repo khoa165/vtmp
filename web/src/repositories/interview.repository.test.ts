@@ -145,7 +145,7 @@ describe('Interview Repository', () => {
       expect(interviews[0]?.id.toString()).to.equal(interview_A1.id.toString());
     });
 
-    it('should return all interviews belong to the auth', async () => {
+    it('should return all interviews belong to the authorized user', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
       const interview_A1 =
@@ -167,14 +167,16 @@ describe('Interview Repository', () => {
     });
   });
 
-  describe('getInterviewsByApplicatonId', () => {
+  describe('getInterviewsByApplicationId', () => {
     it('should return empty array if application has no interview', async () => {
       await InterviewRepository.createInterview(mockInterview_A0);
 
-      const interviews = await InterviewRepository.getInterviewsByApplicatonId({
-        applicationId: getNewMongoId(),
-        userId: userId_A,
-      });
+      const interviews = await InterviewRepository.getInterviewsByApplicationId(
+        {
+          applicationId: getNewMongoId(),
+          userId: userId_A,
+        }
+      );
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(0);
@@ -184,10 +186,12 @@ describe('Interview Repository', () => {
       await InterviewRepository.createInterview(mockInterview_A0);
       await InterviewRepository.createInterview(mockInterview_A1);
 
-      const interviews = await InterviewRepository.getInterviewsByApplicatonId({
-        applicationId: metaApplicationId,
-        userId: userId_B,
-      });
+      const interviews = await InterviewRepository.getInterviewsByApplicationId(
+        {
+          applicationId: metaApplicationId,
+          userId: userId_B,
+        }
+      );
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(0);
@@ -203,10 +207,12 @@ describe('Interview Repository', () => {
         userId: userId_A,
       });
 
-      const interviews = await InterviewRepository.getInterviewsByApplicatonId({
-        applicationId: metaApplicationId,
-        userId: userId_A,
-      });
+      const interviews = await InterviewRepository.getInterviewsByApplicationId(
+        {
+          applicationId: metaApplicationId,
+          userId: userId_A,
+        }
+      );
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(1);
@@ -220,10 +226,12 @@ describe('Interview Repository', () => {
         await InterviewRepository.createInterview(mockInterview_A2);
       await InterviewRepository.createInterview(mockInterview_A1);
 
-      const interviews = await InterviewRepository.getInterviewsByApplicatonId({
-        applicationId: metaApplicationId,
-        userId: userId_A,
-      });
+      const interviews = await InterviewRepository.getInterviewsByApplicationId(
+        {
+          applicationId: metaApplicationId,
+          userId: userId_A,
+        }
+      );
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(2);
@@ -238,11 +246,13 @@ describe('Interview Repository', () => {
       const interview_A2 =
         await InterviewRepository.createInterview(mockInterview_A2);
 
-      const interviews = await InterviewRepository.getInterviewsByApplicatonId({
-        applicationId: metaApplicationId,
-        userId: userId_A,
-        filters: { status: InterviewStatus.PENDING },
-      });
+      const interviews = await InterviewRepository.getInterviewsByApplicationId(
+        {
+          applicationId: metaApplicationId,
+          userId: userId_A,
+          filters: { status: InterviewStatus.PENDING },
+        }
+      );
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(1);
