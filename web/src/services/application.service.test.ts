@@ -7,7 +7,11 @@ import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ApplicationService } from '@/services/application.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
+import {
+  ResourceNotFoundError,
+  DuplicateResourceError,
+  ForbiddenError,
+} from '@/utils/errors';
 import {
   ApplicationStatus,
   InterestLevel,
@@ -134,7 +138,7 @@ describe('ApplicationService', () => {
       );
     });
 
-    it('should return no application if authenticated user has no application', async () => {
+    it('should return no application if authorized user has no application', async () => {
       const applications = await ApplicationService.getApplications(userId_A);
 
       assert(applications);
@@ -143,7 +147,7 @@ describe('ApplicationService', () => {
   });
 
   describe('getApplicationById', () => {
-    it('should throw an error if no application is associated with the authenticated user', async () => {
+    it('should throw an error if no application is associated with the authorized user', async () => {
       const mockApplicationId_B = (
         await ApplicationRepository.createApplication(mockApplication_B)
       ).id;
@@ -156,7 +160,7 @@ describe('ApplicationService', () => {
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
-    it('should not throw an error when an application associated with the authenticated user is found', async () => {
+    it('should not throw an error when an application associated with the authorized user is found', async () => {
       const mockApplicationId_A1 = (
         await ApplicationRepository.createApplication(mockApplication_A1)
       ).id;
@@ -198,7 +202,7 @@ describe('ApplicationService', () => {
         await ApplicationRepository.createApplication(mockApplication_B);
     });
 
-    it('should throw an error if no application is associated with the authenticated user is found', async () => {
+    it('should throw an error if no application is associated with the authorized user is found', async () => {
       await expect(
         ApplicationService.updateApplicationById({
           applicationId: application_B.id,
@@ -208,7 +212,21 @@ describe('ApplicationService', () => {
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
-    it('should not throw an error when update an application successfully', async () => {
+    it('should throw an error if trying to update a soft deleted application', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: application_B.id,
+        userId: userId_B,
+      });
+      await expect(
+        ApplicationService.updateApplicationById({
+          applicationId: application_B.id,
+          userId: userId_B,
+          updatedMetadata: {},
+        })
+      ).eventually.rejectedWith(ResourceNotFoundError);
+    });
+
+    it('should not throw an error when updating an application successfully', async () => {
       await expect(
         ApplicationService.updateApplicationById({
           applicationId: application_A0.id,
@@ -224,7 +242,7 @@ describe('ApplicationService', () => {
       ).eventually.fulfilled;
     });
 
-    it('should update application successfully and return updated application', async () => {
+    it('should update application successfully and return the updated application', async () => {
       const updatedApplication = await ApplicationService.updateApplicationById(
         {
           applicationId: application_A0.id,
@@ -249,7 +267,7 @@ describe('ApplicationService', () => {
   });
 
   describe('markApplicationAsRejected', () => {
-    it('should throw an error if no application is associated with the authenticated user', async () => {
+    it('should throw an error if no application is associated with the authorized user', async () => {
       await ApplicationRepository.createApplication(mockApplication_A0);
       const application_B =
         await ApplicationRepository.createApplication(mockApplication_B);
@@ -262,7 +280,23 @@ describe('ApplicationService', () => {
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
-    it('should not throw an error when transaction ended successfully when application has pending interview', async () => {
+    it('should throw an error if trying to reject a soft deleted application', async () => {
+      const application_B =
+        await ApplicationRepository.createApplication(mockApplication_B);
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: application_B.id,
+        userId: userId_B,
+      });
+
+      await expect(
+        ApplicationService.markApplicationAsRejected({
+          applicationId: application_B.id,
+          userId: userId_B,
+        })
+      ).eventually.rejectedWith(ResourceNotFoundError);
+    });
+
+    it('should not throw an error if rejecting an application successfully (application has pending interview)', async () => {
       const application_A0 =
         await ApplicationRepository.createApplication(mockApplication_A0);
       // Create pending interviews for the application
@@ -281,7 +315,7 @@ describe('ApplicationService', () => {
       ).eventually.fulfilled;
     });
 
-    it('should not throw an error when transaction ended successfully when application has no pending interview', async () => {
+    it('should not throw an error if rejecting an application successfully (application has no pending interview)', async () => {
       const application_A0 =
         await ApplicationRepository.createApplication(mockApplication_A0);
       // Create non-pending interviews for the application
@@ -301,7 +335,7 @@ describe('ApplicationService', () => {
       ).eventually.fulfilled;
     });
 
-    it('should return updated application, after successfully updating application (which has no interviews) status to REJECTED.', async () => {
+    it('should return updated application, if rejecting an application successfully (application has no interview)', async () => {
       const application_A0 =
         await ApplicationRepository.createApplication(mockApplication_A0);
       const updatedApplication =
@@ -314,7 +348,7 @@ describe('ApplicationService', () => {
       expect(updatedApplication.status).to.equal(ApplicationStatus.REJECTED);
     });
 
-    it('should return updated application, after successfully updating application status to REJECTED. Should not update interviews if no PENDING interviews exist', async () => {
+    it('should return updated application, if rejecting an application successfully. Should not update interviews if no PENDING interviews exist', async () => {
       const application_A0 =
         await ApplicationRepository.createApplication(mockApplication_A0);
       // Create 1 non-pending interview for the application
@@ -356,7 +390,7 @@ describe('ApplicationService', () => {
     it('should only update PENDING interviews to FAILED, and leave other interviews status unchanged. Should return updated application with REJECTED status', async () => {
       const application_A0 =
         await ApplicationRepository.createApplication(mockApplication_A0);
-      // Create pending 2 interviews and 1 non-pending interview for the application
+      // Create pending 1 non-pending interview and 2 interviews for the application
       const nonPendingInterview = await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
@@ -414,7 +448,7 @@ describe('ApplicationService', () => {
       expect(interview.status).to.equal(InterviewStatus.PASSED);
     });
 
-    it('should roll back the transaction if an error occurs', async () => {
+    it('should not reject the application and not update PENDING interview to FAILED if an error occurs during the transaction', async () => {
       const application_A0 =
         await ApplicationRepository.createApplication(mockApplication_A0);
       // Create 1 pending interview for the application
@@ -465,17 +499,92 @@ describe('ApplicationService', () => {
   });
 
   describe('deleteApplicationById', () => {
-    it('should throw an error if no application is associated with the authenticated user', async () => {
-      await ApplicationRepository.createApplication(mockApplication_A0);
-      const application_B =
+    let application_A0: IApplication;
+    let application_B: IApplication;
+    beforeEach(async () => {
+      application_A0 =
+        await ApplicationRepository.createApplication(mockApplication_A0);
+      application_B =
         await ApplicationRepository.createApplication(mockApplication_B);
+    });
 
+    it('should throw an error if no application is associated with the authorized user', async () => {
       await expect(
         ApplicationService.deleteApplicationById({
           applicationId: application_B.id,
           userId: userId_A,
         })
       ).eventually.rejectedWith(ResourceNotFoundError);
+    });
+
+    it('should throw an error if trying to delete an already soft deleted application', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: application_B.id,
+        userId: userId_B,
+      });
+
+      await expect(
+        ApplicationService.deleteApplicationById({
+          applicationId: application_B.id,
+          userId: userId_B,
+        })
+      ).eventually.rejectedWith(ResourceNotFoundError);
+    });
+
+    it('should throw an error if trying to delete an application that has interviews', async () => {
+      // Create pending 2 interviews for application_A0
+      await InterviewRepository.createInterview({
+        applicationId: application_A0.id,
+        userId: userId_A,
+        type: [InterviewType.CODE_REVIEW, InterviewType.SYSTEM_DESIGN],
+        interviewOnDate: new Date(),
+        status: InterviewStatus.PASSED,
+      });
+      await InterviewRepository.createInterview({
+        applicationId: application_A0.id,
+        userId: userId_A,
+        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
+        interviewOnDate: new Date(),
+      });
+
+      await expect(
+        ApplicationService.deleteApplicationById({
+          applicationId: application_A0.id,
+          userId: userId_A,
+        })
+      ).eventually.rejectedWith(ForbiddenError);
+    });
+
+    it('should not throw an error if deleting an application that has no interviews', async () => {
+      await expect(
+        ApplicationService.deleteApplicationById({
+          applicationId: application_A0.id,
+          userId: userId_A,
+        })
+      ).eventually.fulfilled;
+    });
+
+    it('should delete application that has no interviews successfully and return soft deleted application with deletedAt field set', async () => {
+      const deletedApplication = await ApplicationService.deleteApplicationById(
+        {
+          applicationId: application_A0.id,
+          userId: userId_A,
+        }
+      );
+
+      assert(deletedApplication);
+      assert(deletedApplication.deletedAt);
+      const timeDiff = differenceInSeconds(
+        new Date(),
+        deletedApplication.deletedAt
+      );
+      expect(timeDiff).to.lessThan(3);
+
+      const foundApplication = await ApplicationRepository.getApplicationById({
+        applicationId: application_A0.id,
+        userId: userId_A,
+      });
+      assert(!foundApplication);
     });
   });
 });
