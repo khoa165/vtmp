@@ -1,4 +1,4 @@
-import { UserRole, Permission } from '@/types/enums';
+import { UserRole, Permission } from '@common/enums';
 
 export const roleToPermissionMapping: Record<UserRole, Permission[]> = {
   [UserRole.ADMIN]: [

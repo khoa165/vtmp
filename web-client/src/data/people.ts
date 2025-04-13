@@ -4,7 +4,7 @@ import {
   MentorshipRole,
   OfferChannel,
   OfferType,
-} from 'src/utils/constants';
+} from '@common/enums';
 
 export const mentorshipPeople: Record<string, MentorshipPerson> = {
   khoale: {
