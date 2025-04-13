@@ -1,5 +1,5 @@
 import { IUser, UserModel } from '@/models/user.model';
-import { UserRole } from '@/types/enums';
+import { UserRole } from '@common/enums';
 
 export const UserRepository = {
   createUser: async (userData: {

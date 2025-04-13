@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AOS from 'aos';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { PeopleContainer } from 'src/components/people';

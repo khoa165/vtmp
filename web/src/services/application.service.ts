@@ -19,15 +19,25 @@ export const ApplicationService = {
       });
     }
 
-    const applicationExists = await ApplicationRepository.doesApplicationExist({
+    const application = await ApplicationRepository.getApplicationIfExists({
       jobPostingId,
       userId,
     });
-    if (applicationExists) {
-      throw new DuplicateResourceError('Application already exists', {
-        jobPostingId,
-        userId,
-      });
+
+    if (application) {
+      if (application.deletedAt) {
+        return ApplicationRepository.updateApplicationById({
+          userId,
+          applicationId: application.id,
+          updatedMetadata: { deletedAt: null },
+          options: { includeDeletedDoc: true },
+        });
+      } else {
+        throw new DuplicateResourceError('Application already exists', {
+          jobPostingId,
+          userId,
+        });
+      }
     }
 
     return ApplicationRepository.createApplication({

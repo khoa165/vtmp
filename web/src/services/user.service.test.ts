@@ -6,7 +6,7 @@ import { UserRepository } from '@/repositories/user.repository';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { assert } from 'console';
-import { UserRole } from '@/types/enums';
+import { UserRole } from '@common/enums';
 import { IUser } from '@/models/user.model';
 
 describe('User Service', () => {
