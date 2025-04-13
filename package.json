@@ -24,6 +24,10 @@
     "tslint-fix": "tslint --project tsconfig.json --config tslint.json --fix",
     "postinstall": "husky"
   },
+  "workspaces": [
+    "web-client",
+    "web"
+  ],
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "@types/node": "^22.14.1",
