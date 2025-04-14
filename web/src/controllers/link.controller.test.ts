@@ -4,9 +4,6 @@ import app from '@/app';
 import * as chai from 'chai';
 import request from 'supertest';
 import { expect } from 'chai';
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import { EnvConfig } from '@/config/env';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
@@ -20,12 +17,10 @@ chai.use(chaiSubset);
 
 describe('LinkController', () => {
   useMongoDB();
-  const sandbox = useSandbox();
   let linkId: string;
   let url: string;
 
   beforeEach(async () => {
-    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
     url = 'http://example.com/job-posting';
     const newLink = await LinkRepository.createLink(url);
     linkId = newLink.id;
@@ -45,15 +40,15 @@ describe('LinkController', () => {
 
     it('should return a link', async () => {
       const newUrl = 'https://example.com';
-      const res = await request(app).post('/api/links').send({ url: newUrl });
-      // .set('Accept', 'application/json');
+      const res = await request(app)
+        .post('/api/links')
+        .send({ url: newUrl })
+        .set('Accept', 'application/json');
 
-      console.log(res.body.errors);
-
-      //   expectSuccessfulResponse({ res, statusCode: 200 });
-      //   expect(res.body.message).to.equal(
-      //     'Link has been submitted successfully.'
-      //   );
+      expectSuccessfulResponse({ res, statusCode: 201 });
+      expect(res.body.message).to.equal(
+        'Link has been submitted successfully.'
+      );
     });
   });
 
@@ -63,9 +58,9 @@ describe('LinkController', () => {
         .post(`/api/links/${getNewMongoId()}/reject`)
         .set('Accept', 'application/json');
 
-      const errors = res.body.errors;
-
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+
+      const errors = res.body.errors;
       expect(errors[0].message).to.equal('Link not found');
     });
 

@@ -46,7 +46,7 @@ describe('LinkService', () => {
       expect(link.status).to.equal(LinkStatus.APPROVED);
 
       const jobPosting = await JobPostingRepository.getJobPostingById(
-        newJobPosting._id.toString()
+        newJobPosting.id.toString()
       );
       assert(jobPosting);
       expect(jobPosting.linkId.toString()).to.equal(link.id);
