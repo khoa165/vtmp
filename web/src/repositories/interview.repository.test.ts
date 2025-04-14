@@ -61,7 +61,7 @@ describe('Interview Repository', () => {
   });
 
   describe('getInterviewById', () => {
-    it('should return null if interviewId does not exist', async () => {
+    it('should return null if the interview does not exist', async () => {
       const nonExistentId = getNewMongoId();
       await InterviewRepository.createInterview(mockInterview_A0);
       await InterviewRepository.createInterview(mockInterview_A1);
@@ -74,7 +74,7 @@ describe('Interview Repository', () => {
       assert(!interview);
     });
 
-    it('should return null if interviewId does not belong to the user', async () => {
+    it('should return null if the interview does not belong to the user', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
       await InterviewRepository.createInterview(mockInterview_B0);
@@ -87,7 +87,7 @@ describe('Interview Repository', () => {
       assert(!interview);
     });
 
-    it('should return null if interview is already soft deleted', async () => {
+    it('should return null if the interview is already soft deleted', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
 
@@ -104,7 +104,7 @@ describe('Interview Repository', () => {
       assert(!interview);
     });
 
-    it('should return the interview for a valid interviewId', async () => {
+    it('should return the valid interview for authroized user', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
 
@@ -114,11 +114,19 @@ describe('Interview Repository', () => {
       });
 
       assert(interview);
+      expect(interview.id).to.equal(interview_A0.id);
+      expect(interview).to.containSubset({
+        userId: toMongoId(mockInterview_A0.userId),
+        applicationId: toMongoId(mockInterview_A0.applicationId),
+        interviewOnDate: mockInterview_A0.interviewOnDate,
+        type: mockInterview_A0.type,
+        status: mockInterview_A0.status,
+      });
     });
   });
 
   describe('getInterviews', () => {
-    it('should return an empty array if the userId has no interview', async () => {
+    it('should return an empty array if the authorized user has no interview', async () => {
       await InterviewRepository.createInterview(mockInterview_A0);
 
       const interviews = await InterviewRepository.getInterviews(userId_B);
@@ -145,7 +153,7 @@ describe('Interview Repository', () => {
       expect(interviews[0]?.id.toString()).to.equal(interview_A1.id.toString());
     });
 
-    it('should return all interviews belong to the authorized user', async () => {
+    it('should return only interviews belong to the authorized user', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
       const interview_A1 =
@@ -182,7 +190,7 @@ describe('Interview Repository', () => {
       expect(interviews).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('should return empty array if applicationId does not belong to the authorized user', async () => {
+    it('should return empty array if application does not belong to the authorized user', async () => {
       await InterviewRepository.createInterview(mockInterview_A0);
       await InterviewRepository.createInterview(mockInterview_A1);
 
@@ -197,7 +205,7 @@ describe('Interview Repository', () => {
       expect(interviews).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('should not include soft-deleted interview', async () => {
+    it('should not include soft-deleted interviews', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
       const interview_A2 =
@@ -473,7 +481,7 @@ describe('Interview Repository', () => {
       assert(!deletedInterview);
     });
 
-    it('should return and delete the interview with the interviewId', async () => {
+    it('should return and delete the valid interview belong to the authorized user', async () => {
       const interview =
         await InterviewRepository.createInterview(mockInterview_A1);
 
