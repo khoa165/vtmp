@@ -279,7 +279,7 @@ describe('Interview Repository', () => {
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: nonExistentId,
         userId: userId_A,
-        updatedMetaData: { interviewOnDate: new Date('2025-08-10') },
+        updatedMetadata: { interviewOnDate: new Date('2025-08-10') },
       });
 
       assert(!updatedInterview);
@@ -292,7 +292,7 @@ describe('Interview Repository', () => {
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: interview_A0.id,
         userId: userId_B,
-        updatedMetaData: { interviewOnDate: new Date('2025-08-10') },
+        updatedMetadata: { interviewOnDate: new Date('2025-08-10') },
       });
 
       assert(!updatedInterview);
@@ -310,7 +310,7 @@ describe('Interview Repository', () => {
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: interview.id,
         userId: userId_B,
-        updatedMetaData: { interviewOnDate: new Date('2025-08-10') },
+        updatedMetadata: { interviewOnDate: new Date('2025-08-10') },
       });
 
       assert(!updatedInterview);
@@ -323,7 +323,7 @@ describe('Interview Repository', () => {
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: interview.id,
         userId: userId_A,
-        updatedMetaData: {
+        updatedMetadata: {
           interviewOnDate: new Date('2025-08-10'),
           type: [
             InterviewType.PROJECT_WALKTHROUGH,
