@@ -74,11 +74,11 @@ export const InterviewRepository = {
   updateInterviewById: async ({
     interviewId,
     userId,
-    updatedMetaData,
+    updatedMetadata,
   }: {
     interviewId: string;
     userId: string;
-    updatedMetaData: {
+    updatedMetadata: {
       type?: InterviewType[];
       status?: InterviewStatus;
       interviewOnDate?: Date;
@@ -87,7 +87,7 @@ export const InterviewRepository = {
   }): Promise<IInterview | null> => {
     return InterviewModel.findOneAndUpdate(
       { _id: interviewId, userId: userId, deletedAt: null },
-      { $set: updatedMetaData },
+      { $set: updatedMetadata },
       { new: true }
     );
   },
