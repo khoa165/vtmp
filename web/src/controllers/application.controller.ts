@@ -2,7 +2,9 @@ import { Request, Response } from 'express';
 import { ApplicationService } from '@/services/application.service';
 import { z } from 'zod';
 import mongoose from 'mongoose';
-import { handleError } from '@/utils/errors';
+import { ApplicationStatus, InterestLevel } from '@common/enums';
+import { IApplication } from '@/models/application.model';
+import { omitBy } from 'remeda';
 
 const ApplicationRequestSchema = z.object({
   jobPostingId: z
@@ -10,6 +12,24 @@ const ApplicationRequestSchema = z.object({
     .refine((id) => mongoose.Types.ObjectId.isValid(id), {
       message: 'Invalid job posting ID format',
     }),
+});
+
+const ApplicationStatusSchema = z.object({
+  updatedStatus: z.nativeEnum(ApplicationStatus, {
+    required_error: 'New updated status is required',
+    invalid_type_error: 'Invalid application status',
+  }),
+});
+
+const ApplicationMetaDataSchema = z.object({
+  note: z.string().optional(),
+  referrer: z.string().optional(),
+  portalLink: z.string().url().optional(),
+  interest: z
+    .nativeEnum(InterestLevel, {
+      invalid_type_error: 'Invalid interest level',
+    })
+    .optional(),
 });
 
 const ApplicationIdParamsSchema = z.object({
@@ -45,42 +65,92 @@ export const ApplicationController = {
   },
 
   getApplications: async (req: Request, res: Response) => {
-    try {
-      const userId = (req as AuthenticatedRequest).user.id;
+    const userId = (req as AuthenticatedRequest).user.id;
 
-      const applications = await ApplicationService.getApplications(userId);
+    const applications = await ApplicationService.getApplications(userId);
 
-      res.status(200).json({
-        message: 'Applications retrieved successfully',
-        data: applications,
-      });
-      return;
-    } catch (error: unknown) {
-      const { statusCode, errors } = handleError(error);
-      res.status(statusCode).json({ errors });
-      return;
-    }
+    res.status(200).json({
+      message: 'Applications retrieved successfully',
+      data: applications,
+    });
+    return;
   },
 
   getApplicationById: async (req: Request, res: Response) => {
-    try {
-      const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
-      const userId = (req as AuthenticatedRequest).user.id;
+    const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
+    const userId = (req as AuthenticatedRequest).user.id;
 
-      const application = await ApplicationService.getApplicationById({
+    const application = await ApplicationService.getApplicationById({
+      applicationId,
+      userId,
+    });
+
+    res.status(200).json({
+      message: 'Application retrieved successfully',
+      data: application,
+    });
+    return;
+  },
+
+  updateApplicationStatus: async (req: Request, res: Response) => {
+    const userId = (req as AuthenticatedRequest).user.id;
+    const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
+    const { updatedStatus } = ApplicationStatusSchema.parse(req.body);
+
+    let updatedApplication: IApplication | null;
+    if (updatedStatus === ApplicationStatus.REJECTED) {
+      updatedApplication = await ApplicationService.markApplicationAsRejected({
         applicationId,
         userId,
       });
-
-      res.status(200).json({
-        message: 'Application retrieved successfully',
-        data: application,
+    } else {
+      updatedApplication = await ApplicationService.updateApplicationById({
+        applicationId,
+        userId,
+        updatedMetadata: { status: updatedStatus },
       });
-      return;
-    } catch (error: unknown) {
-      const { statusCode, errors } = handleError(error);
-      res.status(statusCode).json({ errors });
-      return;
     }
+
+    res.status(200).json({
+      message: 'Application status updated successfully',
+      data: updatedApplication,
+    });
+  },
+
+  updateApplicationMetadata: async (req: Request, res: Response) => {
+    const userId = (req as AuthenticatedRequest).user.id;
+    const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
+    const updatedMetadata = omitBy(
+      ApplicationMetaDataSchema.parse(req.body),
+      (value) => value == undefined
+    );
+
+    const updatedApplication = await ApplicationService.updateApplicationById({
+      applicationId,
+      userId,
+      updatedMetadata: updatedMetadata,
+    });
+
+    res.status(200).json({
+      message: 'Application metadata updated successfully',
+      data: updatedApplication,
+    });
+    return;
+  },
+
+  deleteApplication: async (req: Request, res: Response) => {
+    const userId = (req as AuthenticatedRequest).user.id;
+    const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
+
+    const deletedApplication = await ApplicationService.deleteApplicationById({
+      applicationId,
+      userId,
+    });
+
+    res.status(200).json({
+      message: 'Application deleted successfully',
+      data: deletedApplication,
+    });
+    return;
   },
 };

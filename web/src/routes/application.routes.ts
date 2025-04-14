@@ -9,9 +9,26 @@ ApplicationRoutes.post(
   '/',
   wrappedHandlers([authenticate, ApplicationController.createApplication])
 );
-ApplicationRoutes.get('/', authenticate, ApplicationController.getApplications);
+ApplicationRoutes.get(
+  '/',
+  wrappedHandlers([authenticate, ApplicationController.getApplications])
+);
 ApplicationRoutes.get(
   '/:applicationId',
-  authenticate,
-  ApplicationController.getApplicationById
+  wrappedHandlers([authenticate, ApplicationController.getApplicationById])
+);
+ApplicationRoutes.put(
+  '/:applicationId',
+  wrappedHandlers([authenticate, ApplicationController.updateApplicationStatus])
+);
+ApplicationRoutes.put(
+  '/:applicationId',
+  wrappedHandlers([
+    authenticate,
+    ApplicationController.updateApplicationMetadata,
+  ])
+);
+ApplicationRoutes.delete(
+  '/:applicationId',
+  wrappedHandlers([authenticate, ApplicationController.deleteApplication])
 );
