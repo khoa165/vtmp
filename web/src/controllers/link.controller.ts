@@ -3,22 +3,14 @@ import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
 import { handleError } from '../utils/errors';
 
-import { LinkStatus } from '@common/enums';
-
 const LinkSchema = z.object({
-  url: z.string().url(),
-  status: z.enum([
-    LinkStatus.APPROVED,
-    LinkStatus.PENDING,
-    LinkStatus.REJECTED,
-  ]),
-  submittedOn: z.coerce.date(),
+  url: z.string({ required_error: 'URL is required' }).url(),
   userNote: z.string().optional(),
 });
 
 const JobPostingAdditionalSchema = z.object({
-  jobTitle: z.string(),
-  companyName: z.string(),
+  jobTitle: z.string({ required_error: 'Job Title is required' }),
+  companyName: z.string({ required_error: 'Company Name is required' }),
   jobDescription: z.string().optional(),
   adminNote: z.string().optional(),
 });
@@ -34,6 +26,7 @@ export const LinkController = {
 
       const submitLink = await LinkService.submitLink(parsedLink.url);
       res.status(201).json({
+        message: 'Link has been submitted successfully.',
         data: { link: submitLink },
       });
       return;
@@ -69,7 +62,7 @@ export const LinkController = {
       );
       res.status(200).json({
         message: 'Link has been approved!',
-        data: approvedLink,
+        data: { link: approvedLink },
       });
       return;
     } catch (error: unknown) {
@@ -85,8 +78,8 @@ export const LinkController = {
 
       const rejectedLink = await LinkService.rejectLink(parsedLink.linkId);
       res.status(200).json({
-        data: rejectedLink,
         message: 'Link has been rejected!',
+        data: { link: rejectedLink },
       });
       return;
     } catch (error: unknown) {

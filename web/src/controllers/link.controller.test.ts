@@ -14,20 +14,18 @@ import {
 import { LinkRepository } from '@/repositories/link.repository';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import chaiSubset from 'chai-subset';
+import { LinkStatus } from '@common/enums';
 
 chai.use(chaiSubset);
 
 describe('LinkController', () => {
   useMongoDB();
   const sandbox = useSandbox();
-  beforeEach(() => {
-    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
-  });
-
   let linkId: string;
   let url: string;
 
   beforeEach(async () => {
+    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
     url = 'http://example.com/job-posting';
     const newLink = await LinkRepository.createLink(url);
     linkId = newLink.id;
@@ -36,10 +34,26 @@ describe('LinkController', () => {
   describe('submitLink', () => {
     it('should return error message for submitting link with not exist url', async () => {
       const res = await request(app)
-        .post(`/api/links/`)
+        .post('/api/links')
         .set('Accept', 'application/json');
 
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 3 });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('URL is required');
+    });
+
+    it('should return a link', async () => {
+      const newUrl = 'https://example.com';
+      const res = await request(app).post('/api/links').send({ url: newUrl });
+      // .set('Accept', 'application/json');
+
+      console.log(res.body.errors);
+
+      //   expectSuccessfulResponse({ res, statusCode: 200 });
+      //   expect(res.body.message).to.equal(
+      //     'Link has been submitted successfully.'
+      //   );
     });
   });
 
@@ -60,21 +74,21 @@ describe('LinkController', () => {
         .post(`/api/links/${linkId}/reject`)
         .set('Accept', 'application/json');
 
-      expect(res.body.data.url).to.equal(url);
+      expect(res.body.data.link.url).to.equal(url);
       expect(res.body.message).to.equal('Link has been rejected!');
     });
   });
 
   describe('approveLink', () => {
     it('should return error message for approving with not exist link', async () => {
-      const addInInfromation = {
+      const addOnInfromation = {
         jobTitle: 'Software Engineer Intern',
         companyName: 'Example Company',
       };
 
       const res = await request(app)
         .post(`/api/links/${getNewMongoId()}/approve`)
-        .send(addInInfromation)
+        .send(addOnInfromation)
         .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
@@ -93,18 +107,32 @@ describe('LinkController', () => {
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.message).to.equal('Link has been approved!');
-      expect(res.body.data.url).to.equal(url);
+      expect(res.body.data.link.url).to.equal(url);
     });
   });
 
   describe('getPendingLinks', () => {
     it('should return array of pending links', async () => {
       const res = await request(app)
-        .get(`/api/links/`)
+        .get(`/api/links`)
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data.links[0].url).to.equal(url);
+    });
+
+    it('should return empty array of pending links', async () => {
+      await LinkRepository.updateLinkStatus({
+        id: linkId,
+        status: LinkStatus.REJECTED,
+      });
+
+      const res = await request(app)
+        .get(`/api/links`)
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data.links).to.be.empty;
     });
   });
 });
