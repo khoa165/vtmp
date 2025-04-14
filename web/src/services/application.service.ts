@@ -149,7 +149,7 @@ export const ApplicationService = {
         });
       // Call getInterviewsByApplicationId, pass in status => get list of interviews
       const pendingInterviews =
-        await InterviewRepository.getInterviewsByApplicatonId({
+        await InterviewRepository.getInterviewsByApplicationId({
           userId,
           applicationId,
           filters: { status: InterviewStatus.PENDING },
@@ -202,7 +202,7 @@ export const ApplicationService = {
     }
 
     // call getInterviewsByApplicationId to get an array to check if this app has interviews
-    const interviews = await InterviewRepository.getInterviewsByApplicatonId({
+    const interviews = await InterviewRepository.getInterviewsByApplicationId({
       userId,
       applicationId,
     });

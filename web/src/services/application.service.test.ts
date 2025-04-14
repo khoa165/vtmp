@@ -445,7 +445,7 @@ describe('ApplicationService', () => {
 
       // Ensure the original interview were not updated to FAILED
       const updatedInterviews =
-        await InterviewRepository.getInterviewsByApplicatonId({
+        await InterviewRepository.getInterviewsByApplicationId({
           applicationId: application_A0.id,
           userId: userId_A,
           filters: { status: InterviewStatus.FAILED },
@@ -486,7 +486,7 @@ describe('ApplicationService', () => {
         interviewOnDate: new Date(),
       });
       const pendingInterviews =
-        await InterviewRepository.getInterviewsByApplicatonId({
+        await InterviewRepository.getInterviewsByApplicationId({
           applicationId: application_A0.id,
           userId: userId_A,
           filters: { status: InterviewStatus.PENDING },
@@ -503,7 +503,7 @@ describe('ApplicationService', () => {
 
       // Ensure only PENDING interviews were updated to FAILED status
       const failedInterviews =
-        await InterviewRepository.getInterviewsByApplicatonId({
+        await InterviewRepository.getInterviewsByApplicationId({
           applicationId: application_A0.id,
           userId: userId_A,
           filters: { status: InterviewStatus.FAILED },
