@@ -122,8 +122,6 @@ export const ApplicationService = {
     userId: string;
     applicationId: string;
   }) => {
-    // Call getApplicationById to check existence.
-    // If null, return ResourceNotFound
     const application = await ApplicationRepository.getApplicationById({
       applicationId,
       userId,
@@ -135,11 +133,9 @@ export const ApplicationService = {
       });
     }
 
-    // Start a transaction
     const session: ClientSession = await mongoose.startSession();
     session.startTransaction();
     try {
-      // Call updateApplicationById with {status: REJECTED} => return updated application
       const updatedApplication =
         await ApplicationRepository.updateApplicationById({
           userId,
@@ -147,7 +143,7 @@ export const ApplicationService = {
           updatedMetadata: { status: ApplicationStatus.REJECTED },
           session,
         });
-      // Call getInterviewsByApplicationId, pass in status => get list of interviews
+
       const pendingInterviews =
         await InterviewRepository.getInterviewsByApplicationId({
           userId,
@@ -157,7 +153,6 @@ export const ApplicationService = {
         });
 
       if (pendingInterviews.length > 0) {
-        // Call updateInterviewsWithStatus (updateMany), this takes an array of InterviewIds returned above
         const interviewIds = pendingInterviews.map(
           (pendingInterview) => pendingInterview.id
         );
@@ -169,15 +164,12 @@ export const ApplicationService = {
         });
       }
 
-      // Commit the transaction
       await session.commitTransaction();
       return updatedApplication;
-    } catch (error) {
-      // Roll back transaction in case of error
+    } catch (error: unknown) {
       await session.abortTransaction();
       throw error;
     } finally {
-      // Make sure to end the transaction
       session.endSession();
     }
   },
@@ -189,7 +181,6 @@ export const ApplicationService = {
     userId: string;
     applicationId: string;
   }) => {
-    // Check if applicationId exists
     const application = await ApplicationRepository.getApplicationById({
       applicationId,
       userId,
