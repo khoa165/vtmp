@@ -2,7 +2,7 @@ name: web
 on:
   pull_request:
     branches:
-      - '*'
+      - main
 
 jobs:
   test-web:
