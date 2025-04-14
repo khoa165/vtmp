@@ -14,19 +14,21 @@ const UserUpdateSchema = z
       .email({ message: 'Invalid email address' })
       .optional(),
   })
-  .strict()
+  .strict({ message: 'Only admin/moderator can update Role' })
   .transform((data: object) =>
     Object.fromEntries(
       Object.entries(data).filter((value) => value !== undefined)
     )
   );
 
-const UserUpdateRoleSchema = z.object({
-  role: z.nativeEnum(UserRole),
-});
+const UserUpdateRoleSchema = z
+  .object({
+    role: z.nativeEnum(UserRole, { message: 'Role is required' }),
+  })
+  .strict('Can only update role');
 
 const UserIdSchema = z.object({
-  id: z.string(),
+  userId: z.string(),
 });
 
 const UserController = {
@@ -37,35 +39,44 @@ const UserController = {
   },
 
   getUser: async (req: Request, res: Response) => {
-    const { id } = UserIdSchema.parse(req.params);
+    const { userId } = UserIdSchema.parse(req.params);
     const userIdFromReq = getUserFromRequest(req).user.id;
-    if (id !== userIdFromReq) {
-      throw new ForbiddenError('Forbidden', { id, userIdFromReq });
+    if (userId !== userIdFromReq) {
+      throw new ForbiddenError('Cannot get other user information', {
+        userId,
+        userIdFromReq,
+      });
     }
 
-    const user = await UserService.getUserById(id);
+    const user = await UserService.getUserById(userId);
     res.status(200).json({ data: user });
     return;
   },
 
   updateUser: async (req: Request, res: Response) => {
-    const { id } = UserIdSchema.parse(req.params);
+    const { userId } = UserIdSchema.parse(req.params);
     const userIdFromReq = getUserFromRequest(req).user.id;
-    if (id !== userIdFromReq) {
-      throw new ForbiddenError('Forbidden', { id, userIdFromReq });
+    if (userId !== userIdFromReq) {
+      throw new ForbiddenError('Cannot update other user information', {
+        userId,
+        userIdFromReq,
+      });
     }
 
     const updateUserData = UserUpdateSchema.parse(req.body);
-    const updatedUser = await UserService.updateUserById(id, updateUserData);
+    const updatedUser = await UserService.updateUserById(
+      userId,
+      updateUserData
+    );
     res.status(200).json({ data: updatedUser });
     return;
   },
 
   updateUserRole: async (req: Request, res: Response) => {
-    const { id } = UserIdSchema.parse(req.params);
+    const { userId } = UserIdSchema.parse(req.params);
     const { role } = UserUpdateRoleSchema.parse(req.body);
 
-    const updatedUser = await UserService.updateUserById(id, { role });
+    const updatedUser = await UserService.updateUserById(userId, { role });
     res.status(200).json({ data: updatedUser });
     return;
   },

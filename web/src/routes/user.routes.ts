@@ -7,6 +7,9 @@ export const UserRoutes = Router();
 UserRoutes.use(wrappedHandlers([authenticate]));
 
 UserRoutes.get('/', wrappedHandlers([UserController.getAllUsers]));
-UserRoutes.get('/:id', wrappedHandlers([UserController.getUser]));
-UserRoutes.put('/:id', wrappedHandlers([UserController.updateUser]));
-UserRoutes.put('/:id/role', wrappedHandlers([UserController.updateUserRole]));
+UserRoutes.get('/:userId', wrappedHandlers([UserController.getUser]));
+UserRoutes.put('/:userId', wrappedHandlers([UserController.updateUser]));
+UserRoutes.put(
+  '/:userId/role',
+  wrappedHandlers([UserController.updateUserRole])
+);
