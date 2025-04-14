@@ -19,7 +19,7 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    require: true,
+    required: true,
   },
   type: {
     type: [String],
