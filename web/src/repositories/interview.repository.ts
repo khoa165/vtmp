@@ -67,7 +67,7 @@ export const InterviewRepository = {
         ...(filters || {}),
       },
       null,
-      { session: session ?? null }
+      session ? { session } : {}
     );
   },
 
