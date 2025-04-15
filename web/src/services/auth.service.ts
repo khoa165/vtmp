@@ -43,7 +43,9 @@ export const AuthService = {
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {
-    const user = await UserRepository.getUserByEmail(email);
+    const user = await UserRepository.getUserByEmail(email, {
+      includePasswordField: true,
+    });
     if (!user) {
       throw new ResourceNotFoundError('User not found', { email });
     }

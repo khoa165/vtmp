@@ -5,8 +5,7 @@ import * as R from 'remeda';
 
 const UserService = {
   getAllUsers: async () => {
-    const users = await UserRepository.getAllUsers();
-    return users;
+    return UserRepository.getAllUsers();
   },
 
   getUserById: async (id: string) => {
@@ -28,12 +27,15 @@ const UserService = {
     }
   ) => {
     if (updateData.email) {
-      const user = await UserRepository.getUserByEmail(updateData.email);
-      if (user) {
-        throw new DuplicateResourceError('This email is already taken', {
-          id,
-          email: updateData.email,
-        });
+      const user = await UserRepository.getUserById(id);
+      if (user && user.email != updateData.email) {
+        const user = await UserRepository.getUserByEmail(updateData.email);
+        if (user) {
+          throw new DuplicateResourceError('This email is already taken', {
+            id,
+            email: updateData.email,
+          });
+        }
       }
     }
 
