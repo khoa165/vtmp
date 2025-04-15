@@ -14,7 +14,6 @@ const UserUpdateSchema = z
       .email({ message: 'Invalid email address' })
       .optional(),
   })
-  .strict({ message: 'Only admin/moderator can update Role' })
   .transform((data: object) =>
     Object.fromEntries(
       Object.entries(data).filter((value) => value !== undefined)
@@ -53,7 +52,7 @@ const UserController = {
     return;
   },
 
-  updateUser: async (req: Request, res: Response) => {
+  updateUserProfile: async (req: Request, res: Response) => {
     const { userId } = UserIdSchema.parse(req.params);
     const userIdFromReq = getUserFromRequest(req).user.id;
     if (userId !== userIdFromReq) {

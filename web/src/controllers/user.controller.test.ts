@@ -77,15 +77,6 @@ describe('UserController', () => {
   });
 
   describe('GET /users/:userId', () => {
-    // it('should return error message not found if user does not exist', async () => {
-    //   const res = await request(app)
-    //     .get(`/api/users/${getNewMongoId()}`)
-    //     .set('Accept', 'application/json')
-    //     .set('Authorization', `Bearer ${mockToken}`);
-
-    //   expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
-    // });
-
     it('should return error message forbidden user try to get other user information', async () => {
       const res = await request(app)
         .get(`/api/users/${getNewMongoId()}`)
@@ -129,24 +120,6 @@ describe('UserController', () => {
       );
     });
 
-    it('should return error message for updating role field', async () => {
-      const updateInfo = {
-        role: UserRole.ADMIN,
-      };
-
-      const res = await request(app)
-        .put(`/api/users/${mockUserId}`)
-        .send(updateInfo)
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      const errors = res.body.errors;
-      expect(errors[0].message).to.equal(
-        'Only admin/moderator can update Role'
-      );
-    });
-
     it('should return error message duplicate resource for updating to an email already exists', async () => {
       await Promise.all(
         mockMultipleUsers.map((mockUser) => AuthService.signup(mockUser))
@@ -166,6 +139,23 @@ describe('UserController', () => {
       expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
       const errors = res.body.errors;
       expect(errors[0].message).to.equal('This email is already taken');
+    });
+
+    it('should return the same user with no fields updated and without encryptedPassword field if trying to update role', async () => {
+      const updateInfo = {
+        role: UserRole.ADMIN,
+      };
+
+      const res = await request(app)
+        .put(`/api/users/${mockUserId}`)
+        .send(updateInfo)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body).to.have.property('data');
+      expect(res.body.data).to.not.have.property('encryptedPassword');
+      expect(res.body.data.role).to.equal(UserRole.USER);
     });
 
     it('should return updated user without encryptedPassword field', async () => {

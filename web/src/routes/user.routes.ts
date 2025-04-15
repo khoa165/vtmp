@@ -8,7 +8,7 @@ UserRoutes.use(wrappedHandlers([authenticate]));
 
 UserRoutes.get('/', wrappedHandlers([UserController.getAllUsers]));
 UserRoutes.get('/:userId', wrappedHandlers([UserController.getUser]));
-UserRoutes.put('/:userId', wrappedHandlers([UserController.updateUser]));
+UserRoutes.put('/:userId', wrappedHandlers([UserController.updateUserProfile]));
 UserRoutes.put(
   '/:userId/role',
   wrappedHandlers([UserController.updateUserRole])
