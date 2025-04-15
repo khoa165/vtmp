@@ -26,6 +26,7 @@ import {
 import { InterviewRepository } from '@/repositories/interview.repository';
 import sinon from 'sinon';
 import { IApplication } from '@/models/application.model';
+import { IJobPosting } from '@/models/job-posting.model';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -58,6 +59,11 @@ describe('ApplicationService', () => {
   };
 
   describe('createApplication', () => {
+    let newJobPosting: IJobPosting;
+    beforeEach(async () => {
+      newJobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
+    });
     it('should throw error if job posting does not exist', async () => {
       const mockApplication = {
         jobPostingId: getNewMongoId(),
@@ -70,8 +76,6 @@ describe('ApplicationService', () => {
     });
 
     it('should throw error if an application associated with this job posting and user already exist (but was not soft deleted)', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: getNewMongoId(),
@@ -84,8 +88,6 @@ describe('ApplicationService', () => {
     });
 
     it('should not throw an error if create an application successfully', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: getNewMongoId(),
@@ -96,8 +98,6 @@ describe('ApplicationService', () => {
     });
 
     it('should not throw an error if trying to create an application with certain jobPostingId and userId but was soft-deleted', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: userId_B,
@@ -114,8 +114,6 @@ describe('ApplicationService', () => {
     });
 
     it('should restore a soft-deleted application if it already exists', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: userId_B,
@@ -123,14 +121,10 @@ describe('ApplicationService', () => {
       const application =
         await ApplicationRepository.createApplication(mockApplication);
 
-      // Soft delete it
-      const deletedApplication =
-        await ApplicationRepository.deleteApplicationById({
-          applicationId: application.id,
-          userId: userId_B,
-        });
-      assert(deletedApplication);
-      assert(deletedApplication.deletedAt);
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: application.id,
+        userId: userId_B,
+      });
 
       const restoredApplication =
         await ApplicationService.createApplication(mockApplication);
@@ -141,8 +135,6 @@ describe('ApplicationService', () => {
     });
 
     it('should create an application successfully and return valid new application', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: userId_B,
@@ -155,12 +147,12 @@ describe('ApplicationService', () => {
         application.appliedOnDate
       );
 
-      expect(application.jobPostingId.toString()).to.equal(
-        mockApplication.jobPostingId
-      );
-      expect(application.userId.toString()).to.equal(mockApplication.userId);
-      expect(application.hasApplied).to.equal(true);
-      expect(application.status).to.equal(ApplicationStatus.SUBMITTED);
+      expect(application).to.containSubset({
+        jobPostingId: toMongoId(mockApplication.jobPostingId),
+        userId: toMongoId(mockApplication.userId),
+        hasApplied: true,
+        status: ApplicationStatus.SUBMITTED,
+      });
       expect(timeDiff).to.lessThan(3);
     });
   });
@@ -174,7 +166,6 @@ describe('ApplicationService', () => {
       await ApplicationRepository.createApplication(mockApplication_B);
       const applications = await ApplicationService.getApplications(userId_A);
 
-      assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(2);
       expect(applications.map((application) => application.id)).to.have.members(
         [application_A0.id, application_A1.id]
@@ -194,7 +185,6 @@ describe('ApplicationService', () => {
       });
       const applications = await ApplicationService.getApplications(userId_A);
 
-      assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(1);
       expect(applications.map((application) => application.id)).to.have.members(
         [application_A0.id]
@@ -205,7 +195,6 @@ describe('ApplicationService', () => {
       await ApplicationRepository.createApplication(mockApplication_B);
       const applications = await ApplicationService.getApplications(userId_A);
 
-      assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(0);
     });
   });
@@ -333,17 +322,24 @@ describe('ApplicationService', () => {
       );
 
       assert(updatedApplication);
-      expect(updatedApplication.note).to.equal('application note');
-      expect(updatedApplication.referrer).to.equal('Khoa');
-      expect(updatedApplication.portalLink).to.equal('abc.com');
-      expect(updatedApplication.interest).to.equal(InterestLevel.HIGH);
-      expect(updatedApplication.status).to.equal(ApplicationStatus.OFFER);
+      expect(updatedApplication).to.containSubset({
+        note: 'application note',
+        referrer: 'Khoa',
+        portalLink: 'abc.com',
+        interest: InterestLevel.HIGH,
+        status: ApplicationStatus.OFFER,
+      });
     });
   });
 
   describe('markApplicationAsRejected', () => {
+    let application_A0: IApplication;
+    beforeEach(async () => {
+      application_A0 =
+        await ApplicationRepository.createApplication(mockApplication_A0);
+    });
+
     it('should throw an error if no application is associated with the authorized user', async () => {
-      await ApplicationRepository.createApplication(mockApplication_A0);
       const application_B =
         await ApplicationRepository.createApplication(mockApplication_B);
 
@@ -372,9 +368,6 @@ describe('ApplicationService', () => {
     });
 
     it('should not throw an error if rejecting an application successfully (application has pending interview)', async () => {
-      const application_A0 =
-        await ApplicationRepository.createApplication(mockApplication_A0);
-      // Create pending interviews for the application
       await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
@@ -390,10 +383,7 @@ describe('ApplicationService', () => {
       ).eventually.fulfilled;
     });
 
-    it('should not throw an error if rejecting an application successfully (application has no pending interview)', async () => {
-      const application_A0 =
-        await ApplicationRepository.createApplication(mockApplication_A0);
-      // Create non-pending interviews for the application
+    it('should not throw an error if rejecting an application successfully (application does not have pending interview)', async () => {
       await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
@@ -410,9 +400,7 @@ describe('ApplicationService', () => {
       ).eventually.fulfilled;
     });
 
-    it('should return updated application, if rejecting an application successfully (application has no interview)', async () => {
-      const application_A0 =
-        await ApplicationRepository.createApplication(mockApplication_A0);
+    it('should return updated application, if rejecting an application successfully (application does not have any interview)', async () => {
       const updatedApplication =
         await ApplicationService.markApplicationAsRejected({
           applicationId: application_A0.id,
@@ -421,51 +409,9 @@ describe('ApplicationService', () => {
 
       assert(updatedApplication);
       expect(updatedApplication.status).to.equal(ApplicationStatus.REJECTED);
-    });
-
-    it('should return updated application, if rejecting an application successfully. Should not update interviews if no PENDING interviews exist', async () => {
-      const application_A0 =
-        await ApplicationRepository.createApplication(mockApplication_A0);
-      // Create 1 non-pending interview for the application
-      const nonPendingInterview = await InterviewRepository.createInterview({
-        applicationId: application_A0.id,
-        userId: userId_A,
-        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
-        interviewOnDate: new Date(),
-        status: InterviewStatus.PASSED,
-      });
-
-      const updatedApplication =
-        await ApplicationService.markApplicationAsRejected({
-          applicationId: application_A0.id,
-          userId: userId_A,
-        });
-      assert(updatedApplication);
-      expect(updatedApplication.status).to.equal(ApplicationStatus.REJECTED);
-
-      // Ensure the original interview were not updated to FAILED
-      const updatedInterviews =
-        await InterviewRepository.getInterviewsByApplicationId({
-          applicationId: application_A0.id,
-          userId: userId_A,
-          filters: { status: InterviewStatus.FAILED },
-        });
-      expect(updatedInterviews).to.be.an('array').that.have.lengthOf(0);
-
-      // Ensure the original interview still have status UPCOMING
-      const interview = await InterviewRepository.getInterviewById({
-        interviewId: nonPendingInterview.id,
-        userId: userId_A,
-      });
-      assert(interview);
-      expect(interview.status).to.not.equal(InterviewStatus.FAILED);
-      expect(interview.status).to.equal(InterviewStatus.PASSED);
     });
 
     it('should only update PENDING interviews to FAILED, and leave other interviews status unchanged. Should return updated application with REJECTED status', async () => {
-      const application_A0 =
-        await ApplicationRepository.createApplication(mockApplication_A0);
-      // Create pending 1 non-pending interview and 2 interviews for the application
       const nonPendingInterview = await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
@@ -501,20 +447,17 @@ describe('ApplicationService', () => {
       assert(updatedApplication);
       expect(updatedApplication.status).to.equal(ApplicationStatus.REJECTED);
 
-      // Ensure only PENDING interviews were updated to FAILED status
       const failedInterviews =
         await InterviewRepository.getInterviewsByApplicationId({
           applicationId: application_A0.id,
           userId: userId_A,
           filters: { status: InterviewStatus.FAILED },
         });
-      assert(failedInterviews);
       expect(failedInterviews).to.be.an('array').that.have.lengthOf(2);
       expect(failedInterviews.map((interview) => interview.id)).to.have.members(
         [pendingInterview1.id, pendingInterview2.id]
       );
 
-      // Ensure other non-pending interview were not updated to FAILED status
       const interview = await InterviewRepository.getInterviewById({
         interviewId: nonPendingInterview.id,
         userId: userId_A,
@@ -524,9 +467,6 @@ describe('ApplicationService', () => {
     });
 
     it('should not reject the application and not update PENDING interview to FAILED if an error occurs during the transaction', async () => {
-      const application_A0 =
-        await ApplicationRepository.createApplication(mockApplication_A0);
-      // Create 1 pending interview for the application
       const pendingInterview1 = await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
@@ -539,7 +479,6 @@ describe('ApplicationService', () => {
         .stub(InterviewRepository, 'updateInterviewsWithStatus')
         .throws(new Error('Simulated transaction failure'));
 
-      // Expect service call to throw error
       await expect(
         ApplicationService.markApplicationAsRejected({
           applicationId: application_A0.id,
@@ -555,9 +494,6 @@ describe('ApplicationService', () => {
         }
       );
       assert(updatedApplication);
-      expect(updatedApplication.status).to.not.equal(
-        ApplicationStatus.REJECTED
-      );
       expect(updatedApplication.status).to.equal(ApplicationStatus.SUBMITTED);
 
       // Verify that the interview status was not updated to FAILED
@@ -566,7 +502,6 @@ describe('ApplicationService', () => {
         userId: userId_A,
       });
       assert(updatedInterview);
-      expect(updatedInterview.status).to.not.equal(InterviewStatus.FAILED);
       expect(updatedInterview.status).to.equal(InterviewStatus.PENDING);
 
       sinon.restore();
