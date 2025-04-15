@@ -5,12 +5,12 @@ interface IProgramProfile extends Document {
   userId: Types.ObjectId;
   yearJoined: number;
   isActive: boolean;
-  hobiies: string[];
+  hobies: string[];
   school: string;
   currentProfessionalTitle: string;
   isFounder: boolean;
-  wereMentee: boolean;
-  externalMentor: boolean;
+  wasMentee: boolean;
+  wasExternallyRecruitedMentor: boolean;
 
   // temporary field
   spreadsheetAlias: string;
@@ -34,7 +34,7 @@ const ProgramProfileSchema = new mongoose.Schema<IProgramProfile>({
     type: Boolean,
     required: true,
   },
-  hobiies: {
+  hobies: {
     type: [String],
     default: [],
   },
@@ -50,11 +50,11 @@ const ProgramProfileSchema = new mongoose.Schema<IProgramProfile>({
     type: Boolean,
     required: true,
   },
-  wereMentee: {
+  wasMentee: {
     type: Boolean,
     required: true,
   },
-  externalMentor: {
+  wasExternallyRecruitedMentor: {
     type: Boolean,
     required: true,
   },

@@ -8,7 +8,7 @@ interface IProjectActivity {
 
 interface IProject extends Document {
   teamName: string;
-  teamNumber: number;
+  teamNumber?: number;
   activities: IProjectActivity[];
 }
 
@@ -19,7 +19,6 @@ const ProjectSchema = new Schema<IProject>({
   },
   teamNumber: {
     type: Number,
-    required: true,
   },
   activities: {
     type: [
