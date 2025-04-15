@@ -12,6 +12,7 @@ import {
   ResourceNotFoundError,
 } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
+import { IApplication } from '@/models/application.model';
 
 export const ApplicationService = {
   createApplication: async ({
@@ -20,7 +21,7 @@ export const ApplicationService = {
   }: {
     jobPostingId: string;
     userId: string;
-  }) => {
+  }): Promise<IApplication | null> => {
     const jobPosting =
       await JobPostingRepository.getJobPostingById(jobPostingId);
     if (!jobPosting) {
@@ -57,7 +58,7 @@ export const ApplicationService = {
     });
   },
 
-  getApplications: async (userId: string) => {
+  getApplications: async (userId: string): Promise<IApplication[]> => {
     return ApplicationRepository.getApplications(userId);
   },
 
@@ -67,7 +68,7 @@ export const ApplicationService = {
   }: {
     applicationId: string;
     userId: string;
-  }) => {
+  }): Promise<IApplication | null> => {
     const application = await ApplicationRepository.getApplicationById({
       applicationId,
       userId,
@@ -97,7 +98,7 @@ export const ApplicationService = {
       interest?: InterestLevel;
       status?: Exclude<ApplicationStatus, ApplicationStatus.REJECTED>;
     };
-  }) => {
+  }): Promise<IApplication | null> => {
     const updatedApplication =
       await ApplicationRepository.updateApplicationById({
         userId,
@@ -121,7 +122,7 @@ export const ApplicationService = {
   }: {
     userId: string;
     applicationId: string;
-  }) => {
+  }): Promise<IApplication | null> => {
     const application = await ApplicationRepository.getApplicationById({
       applicationId,
       userId,
@@ -180,7 +181,7 @@ export const ApplicationService = {
   }: {
     userId: string;
     applicationId: string;
-  }) => {
+  }): Promise<IApplication | null> => {
     const application = await ApplicationRepository.getApplicationById({
       applicationId,
       userId,
