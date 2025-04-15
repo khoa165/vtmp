@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import { ApplicationStatus, InterestLevel } from '@common/enums';
 import { IApplication } from '@/models/application.model';
 import { omitBy } from 'remeda';
+import { getUserFromRequest } from '@/middlewares/utils';
 
 const ApplicationRequestSchema = z.object({
   jobPostingId: z
@@ -14,14 +15,14 @@ const ApplicationRequestSchema = z.object({
     }),
 });
 
-const ApplicationStatusSchema = z.object({
+const ApplicationStatusUpdateSchema = z.object({
   updatedStatus: z.nativeEnum(ApplicationStatus, {
     required_error: 'New updated status is required',
     invalid_type_error: 'Invalid application status',
   }),
 });
 
-const ApplicationMetaDataSchema = z.object({
+const ApplicationMetaDataUpdateSchema = z.object({
   note: z.string().optional(),
   referrer: z.string().optional(),
   portalLink: z.string().url().optional(),
@@ -40,18 +41,11 @@ const ApplicationIdParamsSchema = z.object({
     }),
 });
 
-// TODO: dson - need to figure out how to remove "as AuthenticatedRequest"
-interface AuthenticatedRequest extends Request {
-  user: {
-    id: string;
-  };
-}
-
 export const ApplicationController = {
   createApplication: async (req: Request, res: Response) => {
     const { jobPostingId } = ApplicationRequestSchema.parse(req.body);
 
-    const userId = (req as AuthenticatedRequest).user.id;
+    const userId = getUserFromRequest(req).user.id;
 
     const newApplication = await ApplicationService.createApplication({
       jobPostingId,
@@ -65,7 +59,7 @@ export const ApplicationController = {
   },
 
   getApplications: async (req: Request, res: Response) => {
-    const userId = (req as AuthenticatedRequest).user.id;
+    const userId = getUserFromRequest(req).user.id;
 
     const applications = await ApplicationService.getApplications(userId);
 
@@ -78,7 +72,7 @@ export const ApplicationController = {
 
   getApplicationById: async (req: Request, res: Response) => {
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
-    const userId = (req as AuthenticatedRequest).user.id;
+    const userId = getUserFromRequest(req).user.id;
 
     const application = await ApplicationService.getApplicationById({
       applicationId,
@@ -93,9 +87,9 @@ export const ApplicationController = {
   },
 
   updateApplicationStatus: async (req: Request, res: Response) => {
-    const userId = (req as AuthenticatedRequest).user.id;
+    const userId = getUserFromRequest(req).user.id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
-    const { updatedStatus } = ApplicationStatusSchema.parse(req.body);
+    const { updatedStatus } = ApplicationStatusUpdateSchema.parse(req.body);
 
     let updatedApplication: IApplication | null;
     if (updatedStatus === ApplicationStatus.REJECTED) {
@@ -118,10 +112,10 @@ export const ApplicationController = {
   },
 
   updateApplicationMetadata: async (req: Request, res: Response) => {
-    const userId = (req as AuthenticatedRequest).user.id;
+    const userId = getUserFromRequest(req).user.id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
     const updatedMetadata = omitBy(
-      ApplicationMetaDataSchema.parse(req.body),
+      ApplicationMetaDataUpdateSchema.parse(req.body),
       (value) => value == undefined
     );
 
@@ -139,7 +133,7 @@ export const ApplicationController = {
   },
 
   deleteApplication: async (req: Request, res: Response) => {
-    const userId = (req as AuthenticatedRequest).user.id;
+    const userId = getUserFromRequest(req).user.id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
 
     const deletedApplication = await ApplicationService.deleteApplicationById({
