@@ -16,7 +16,7 @@ describe('User Service', () => {
     firstName: 'admin1',
     lastName: 'viettech',
     email: 'test1@example.com',
-    encryptedPassword: 'ecnrypted-password-later',
+    encryptedPassword: 'encrypted-password-later',
   };
 
   const mockMultipleUsers = [
@@ -24,13 +24,13 @@ describe('User Service', () => {
       firstName: 'admin1',
       lastName: 'viettech',
       email: 'test2@example.com',
-      encryptedPassword: 'ecnrypted-password-later',
+      encryptedPassword: 'encrypted-password-later',
     },
     {
       firstName: 'admin2',
       lastName: 'viettech',
       email: 'test3@example.com',
-      encryptedPassword: 'ecnrypted-password-later',
+      encryptedPassword: 'encrypted-password-later',
     },
   ];
 
