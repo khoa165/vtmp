@@ -26,13 +26,9 @@ const UserService = {
       role?: UserRole;
     }
   ) => {
-    const user = await UserRepository.getUserById(id);
-    if (!user) {
-      throw new ResourceNotFoundError('User not found. Cannot update', { id });
-    }
-
     if (updateData.email) {
-      if (user.email != updateData.email) {
+      const user = await UserRepository.getUserById(id);
+      if (user && user.email != updateData.email) {
         const user = await UserRepository.getUserByEmail(updateData.email);
         if (user) {
           throw new DuplicateResourceError('This email is already taken', {
