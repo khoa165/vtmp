@@ -4,7 +4,6 @@ import { z } from 'zod';
 import mongoose from 'mongoose';
 import { ApplicationStatus, InterestLevel } from '@common/enums';
 import { IApplication } from '@/models/application.model';
-import { omitBy } from 'remeda';
 import { getUserFromRequest } from '@/middlewares/utils';
 
 const ApplicationRequestSchema = z.object({
@@ -22,16 +21,28 @@ const ApplicationStatusUpdateSchema = z.object({
   }),
 });
 
-const ApplicationMetaDataUpdateSchema = z.object({
-  note: z.string().optional(),
-  referrer: z.string().optional(),
-  portalLink: z.string().url().optional(),
-  interest: z
-    .nativeEnum(InterestLevel, {
-      invalid_type_error: 'Invalid interest level',
-    })
-    .optional(),
-});
+const ApplicationMetaDataUpdateSchema = z
+  .object({
+    note: z.string().optional(),
+    referrer: z.string().optional(),
+    portalLink: z.string().url().optional(),
+    interest: z
+      .nativeEnum(InterestLevel, {
+        invalid_type_error: 'Invalid interest level',
+      })
+      .optional(),
+    status: z
+      .nativeEnum(ApplicationStatus)
+      .refine((value) => value !== ApplicationStatus.REJECTED, {
+        message: 'REJECTED status is not allowed',
+      })
+      .optional(),
+  })
+  .transform((data: object) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
+  );
 
 const ApplicationIdParamsSchema = z.object({
   applicationId: z
@@ -114,15 +125,12 @@ export const ApplicationController = {
   updateApplicationMetadata: async (req: Request, res: Response) => {
     const userId = getUserFromRequest(req).user.id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
-    const updatedMetadata = omitBy(
-      ApplicationMetaDataUpdateSchema.parse(req.body),
-      (value) => value == undefined
-    );
+    const updatedMetadata = ApplicationMetaDataUpdateSchema.parse(req.body);
 
     const updatedApplication = await ApplicationService.updateApplicationById({
       applicationId,
       userId,
-      updatedMetadata: updatedMetadata,
+      updatedMetadata,
     });
 
     res.status(200).json({
