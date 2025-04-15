@@ -274,10 +274,8 @@ describe('Interview Repository', () => {
 
   describe('updateInterviewById', () => {
     it('should return null if no interview for the interviewId is found', async () => {
-      const nonExistentId = getNewMongoId();
-
       const updatedInterview = await InterviewRepository.updateInterviewById({
-        interviewId: nonExistentId,
+        interviewId: getNewMongoId(),
         userId: userId_A,
         updatedMetadata: { interviewOnDate: new Date('2025-08-10') },
       });
@@ -347,41 +345,6 @@ describe('Interview Repository', () => {
   });
 
   describe('updateInterviewsWithStatus', () => {
-    it('should not update status of interviews belongs to other users', async () => {
-      const interview_A2 =
-        await InterviewRepository.createInterview(mockInterview_A2);
-      const interview_B0 =
-        await InterviewRepository.createInterview(mockInterview_B0);
-
-      const updateInterviewResult =
-        await InterviewRepository.updateInterviewsWithStatus({
-          userId: userId_A,
-          interviewIds: [interview_A2.id, interview_B0.id],
-          updatedStatus: InterviewStatus.FAILED,
-        });
-
-      const updatedInterview_A2 = await InterviewRepository.getInterviewById({
-        interviewId: interview_A2.id,
-        userId: userId_A,
-      });
-
-      const notUpdatedInterview_B0 = await InterviewRepository.getInterviewById(
-        {
-          interviewId: interview_B0.id,
-          userId: userId_B,
-        }
-      );
-
-      assert(updateInterviewResult);
-      assert(updatedInterview_A2);
-      assert(notUpdatedInterview_B0);
-      expect(updateInterviewResult).to.have.property('acknowledged', true);
-      expect(updateInterviewResult).to.have.property('modifiedCount', 1);
-      expect(updateInterviewResult).to.have.property('matchedCount', 1);
-      expect(updatedInterview_A2.status).to.equal(InterviewStatus.FAILED);
-      expect(notUpdatedInterview_B0.status).to.equal(InterviewStatus.PENDING);
-    });
-
     it('should not update status of soft-deleted interviews', async () => {
       const interview_A1 =
         await InterviewRepository.createInterview(mockInterview_A1);
@@ -411,6 +374,30 @@ describe('Interview Repository', () => {
       expect(interviewUpdateResult).to.have.property('modifiedCount', 1);
       expect(interviewUpdateResult).to.have.property('matchedCount', 1);
       expect(updatedInterview_A2.status).to.equal(InterviewStatus.FAILED);
+    });
+
+    it('should not update any interviews if none belong to the user', async () => {
+      const interview_B0 =
+        await InterviewRepository.createInterview(mockInterview_B0);
+
+      const interviewUpdateResult =
+        await InterviewRepository.updateInterviewsWithStatus({
+          userId: userId_A,
+          interviewIds: [interview_B0.id],
+          updatedStatus: InterviewStatus.PASSED,
+        });
+
+      const unchangedInterview = await InterviewRepository.getInterviewById({
+        interviewId: interview_B0.id,
+        userId: userId_B,
+      });
+
+      assert(interviewUpdateResult);
+      assert(unchangedInterview);
+      expect(interviewUpdateResult).to.have.property('acknowledged', true);
+      expect(interviewUpdateResult).to.have.property('matchedCount', 0);
+      expect(interviewUpdateResult).to.have.property('modifiedCount', 0);
+      expect(unchangedInterview.status).to.not.equal(InterviewStatus.PASSED);
     });
 
     it('should only update status of valid interviews of authorized user', async () => {
