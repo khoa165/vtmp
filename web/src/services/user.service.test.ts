@@ -23,13 +23,13 @@ describe('User Service', () => {
     {
       firstName: 'admin1',
       lastName: 'viettech',
-      email: 'test1@example.com',
+      email: 'test2@example.com',
       encryptedPassword: 'ecnrypted-password-later',
     },
     {
       firstName: 'admin2',
       lastName: 'viettech',
-      email: 'test2@example.com',
+      email: 'test3@example.com',
       encryptedPassword: 'ecnrypted-password-later',
     },
   ];
@@ -100,6 +100,9 @@ describe('User Service', () => {
     let user: IUser;
     beforeEach(async () => {
       user = await UserRepository.createUser(mockOneUser);
+      await Promise.all(
+        mockMultipleUsers.map((mockUser) => UserRepository.createUser(mockUser))
+      );
     });
 
     it('should throw error when user with given id not exists', async () => {
@@ -117,7 +120,7 @@ describe('User Service', () => {
 
     it('should throw error when updating email is already taken', async () => {
       await expect(
-        UserService.updateUserById(user.id, { email: user.email })
+        UserService.updateUserById(user.id, { email: 'test2@example.com' })
       ).eventually.rejectedWith(DuplicateResourceError);
     });
 
