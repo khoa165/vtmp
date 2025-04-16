@@ -10,9 +10,14 @@ import { expect } from 'chai';
 import { IUser } from '@/models/user.model';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { UserRole } from '@common/enums';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import { EnvConfig } from '@/config/env';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 
 describe('UserController', () => {
   useMongoDB();
+  const sandbox = useSandbox();
+
   let mockToken: string;
   let mockUserId: string;
   const mockOneUser = {
@@ -38,6 +43,8 @@ describe('UserController', () => {
   ];
 
   beforeEach(async () => {
+    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+
     mockUserId = (await AuthService.signup(mockOneUser)).id;
     mockToken = await AuthService.login({
       email: mockOneUser.email,
