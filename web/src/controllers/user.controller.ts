@@ -7,13 +7,10 @@ import { getUserFromRequest } from '@/middlewares/utils';
 
 const UserUpdateSchema = z
   .object({
-    firstName: z.string({ required_error: 'Firstname is required' }).optional(),
-    lastName: z.string({ required_error: 'Lastname is required' }).optional(),
-    email: z
-      .string({ required_error: 'Email is required' })
-      .email({ message: 'Invalid email address' })
-      .optional(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
   })
+  .strict({ message: 'Unallowed fields to be updated!' })
   .transform((data: object) =>
     Object.fromEntries(
       Object.entries(data).filter(([, value]) => value !== undefined)

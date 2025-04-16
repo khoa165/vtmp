@@ -111,7 +111,7 @@ describe('UserController', () => {
     it('should return error message forbidden for updaing other user information', async () => {
       const updateInfo = {
         firstName: 'admin_update',
-        email: 'test_update@example.com',
+        lastName: 'viettech',
       };
 
       const res = await request(app)
@@ -127,14 +127,9 @@ describe('UserController', () => {
       );
     });
 
-    it('should return error message duplicate resource for updating to an email already exists', async () => {
-      await Promise.all(
-        mockMultipleUsers.map((mockUser) => AuthService.signup(mockUser))
-      );
-
+    it('should return error message for updating email ', async () => {
       const updateInfo = {
-        firstName: 'admin_update',
-        email: 'test2@example.com',
+        email: 'test4@example.com',
       };
 
       const res = await request(app)
@@ -143,12 +138,28 @@ describe('UserController', () => {
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       const errors = res.body.errors;
-      expect(errors[0].message).to.equal('This email is already taken');
+      expect(errors[0].message).to.equal('Unallowed fields to be updated!');
     });
 
-    it('should return the same user with no fields updated and without encryptedPassword field if trying to update role', async () => {
+    it('should return error message for updating password ', async () => {
+      const updateInfo = {
+        password: 'new-password',
+      };
+
+      const res = await request(app)
+        .put(`/api/users/${mockUserId}`)
+        .send(updateInfo)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Unallowed fields to be updated!');
+    });
+
+    it('should return error message for updating role', async () => {
       const updateInfo = {
         role: UserRole.ADMIN,
       };
@@ -159,20 +170,15 @@ describe('UserController', () => {
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body).to.have.property('data');
-      expect(res.body.data).to.not.have.property('encryptedPassword');
-      expect(res.body.data.role).to.equal(UserRole.USER);
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Unallowed fields to be updated!');
     });
 
     it('should return updated user without encryptedPassword field', async () => {
-      await Promise.all(
-        mockMultipleUsers.map((mockUser) => AuthService.signup(mockUser))
-      );
-
       const updateInfo = {
         firstName: 'admin_update',
-        email: 'test4@example.com',
+        lastName: 'viettech_update',
       };
 
       const res = await request(app)
@@ -192,7 +198,7 @@ describe('UserController', () => {
     it('should return error message for updating fields that is not role', async () => {
       const updateInfo = {
         firstName: 'admin_update',
-        email: 'test_update@example.com',
+        lastName: 'viettech',
       };
 
       const res = await request(app)
