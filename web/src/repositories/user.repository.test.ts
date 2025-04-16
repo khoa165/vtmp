@@ -7,6 +7,7 @@ import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { IUser } from '@/models/user.model';
 import { UserRole } from '@common/enums';
 import { differenceInSeconds } from 'date-fns';
+import * as R from 'remeda';
 
 chai.use(chaiSubset);
 const { expect } = chai;
@@ -103,8 +104,42 @@ describe('UserRepository', () => {
       assert(!userFoundByEmail);
     });
 
-    it('should be able to get user by email', async () => {
+    it('should be able to get user by email with no password field returned when no options provided', async () => {
       const userFoundByEmail = await UserRepository.getUserByEmail(user.email);
+      assert(userFoundByEmail);
+      expect(userFoundByEmail).to.containSubset(
+        R.omit(mockOneUser, ['encryptedPassword'])
+      );
+      expect(userFoundByEmail).to.not.have.property('encryptedPassword');
+    });
+
+    it('should be able to get user by email with no password field returned when providing option but no includePasswordField set', async () => {
+      const userFoundByEmail = await UserRepository.getUserByEmail(
+        user.email,
+        {}
+      );
+      assert(userFoundByEmail);
+      expect(userFoundByEmail).to.containSubset(
+        R.omit(mockOneUser, ['encryptedPassword'])
+      );
+      expect(userFoundByEmail).to.not.have.property('encryptedPassword');
+    });
+
+    it('should be able to get user by email with no password field returned when providing option with includePasswordField set to false', async () => {
+      const userFoundByEmail = await UserRepository.getUserByEmail(user.email, {
+        includePasswordField: false,
+      });
+      assert(userFoundByEmail);
+      expect(userFoundByEmail).to.containSubset(
+        R.omit(mockOneUser, ['encryptedPassword'])
+      );
+      expect(userFoundByEmail).to.not.have.property('encryptedPassword');
+    });
+
+    it('should be able to get user by email with password field returned when providing option with includePasswordField set to true', async () => {
+      const userFoundByEmail = await UserRepository.getUserByEmail(user.email, {
+        includePasswordField: true,
+      });
       assert(userFoundByEmail);
       expect(userFoundByEmail).to.containSubset(mockOneUser);
     });
@@ -128,8 +163,39 @@ describe('UserRepository', () => {
       assert(!userFoundById);
     });
 
-    it('should be able to get user by id', async () => {
+    it('should be able to get user by id with no password field returned when no options provided', async () => {
       const userFoundById = await UserRepository.getUserById(user.id);
+      assert(userFoundById);
+      expect(userFoundById).to.containSubset(
+        R.omit(mockOneUser, ['encryptedPassword'])
+      );
+      expect(userFoundById).to.not.have.property('encryptedPassword');
+    });
+
+    it('should be able to get user by email with no password field returned when providing option but no includePasswordField set', async () => {
+      const userFoundById = await UserRepository.getUserById(user.id, {});
+      assert(userFoundById);
+      expect(userFoundById).to.containSubset(
+        R.omit(mockOneUser, ['encryptedPassword'])
+      );
+      expect(userFoundById).to.not.have.property('encryptedPassword');
+    });
+
+    it('should be able to get user by id with no password field returned when providing option with includePasswordField set to false', async () => {
+      const userFoundById = await UserRepository.getUserById(user.id, {
+        includePasswordField: false,
+      });
+      assert(userFoundById);
+      expect(userFoundById).to.containSubset(
+        R.omit(mockOneUser, ['encryptedPassword'])
+      );
+      expect(userFoundById).to.not.have.property('encryptedPassword');
+    });
+
+    it('should be able to get user by id should be able to get user by email with password field returned when providing option with includePasswordField set to true', async () => {
+      const userFoundById = await UserRepository.getUserById(user.id, {
+        includePasswordField: true,
+      });
       assert(userFoundById);
       expect(userFoundById).to.containSubset(mockOneUser);
     });
