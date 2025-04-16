@@ -3,7 +3,7 @@ import { ApplicationController } from '@/controllers/application.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
 import { wrappedHandlers } from '@/middlewares/utils';
 
-const ApplicationRoutes = Router();
+export const ApplicationRoutes = Router();
 
 ApplicationRoutes.post(
   '/',
@@ -15,5 +15,3 @@ ApplicationRoutes.get(
   authenticate,
   ApplicationController.getApplicationById
 );
-
-export default ApplicationRoutes;

@@ -1,14 +1,14 @@
-import {
-  MentorshipGroup,
-  MentorshipRole,
-  OfferChannel,
-  OfferType,
-} from 'src/utils/constants';
 import { mentorshipPeople } from '../data/people';
 import { rolePriority } from './constants';
 import { min } from 'lodash';
 import { MentorshipOffer, MentorshipPerson } from 'src/types';
 import { groupDisplayName, roleDisplayName } from './displayName';
+import {
+  MentorshipGroup,
+  MentorshipRole,
+  OfferChannel,
+  OfferType,
+} from '@common/enums';
 
 export const getName = (alias: string): string => mentorshipPeople[alias].name;
 

@@ -1,5 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-import { UserRole } from '@/types/enums';
+import { UserRole } from '@common/enums';
 
 export interface IUser extends Document {
   _id: mongoose.Schema.Types.ObjectId;
