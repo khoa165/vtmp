@@ -1,5 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-import { InterviewStatus, InterviewType } from '@/types/enums';
+import { InterviewStatus, InterviewType } from '@common/enums';
 
 interface IInterview extends Document {
   applicationId: mongoose.Schema.Types.ObjectId;

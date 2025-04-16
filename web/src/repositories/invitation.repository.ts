@@ -1,6 +1,6 @@
 import InvitationModel from '@/models/invitation.model';
 import { IInvitation } from '@/models/invitation.model';
-import { InvitationStatus } from '@/types/enums';
+import { InvitationStatus } from '@common/enums';
 import mongoose from 'mongoose';
 
 const InvitationRepository = {

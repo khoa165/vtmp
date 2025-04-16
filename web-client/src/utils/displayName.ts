@@ -1,4 +1,5 @@
-import { MentorshipGroup, MentorshipRole, PeopleSortColumn } from './constants';
+import { MentorshipGroup, MentorshipRole } from '@common/enums';
+import { PeopleSortColumn } from './constants';
 
 export const groupDisplayName: Record<MentorshipGroup, string> = {
   [MentorshipGroup.ORGANIZER]: 'Organizers',
