@@ -41,7 +41,10 @@ const UserService = {
 
     const updatedUser = await UserRepository.updateUserById(id, updateData);
     if (!updatedUser) {
-      throw new ResourceNotFoundError('User not found. Cannot update', { id });
+      throw new ResourceNotFoundError('User not found. Cannot update', {
+        id,
+        updateData,
+      });
     }
 
     return R.omit(updatedUser, ['encryptedPassword']);
