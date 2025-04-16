@@ -16,7 +16,7 @@ const UserUpdateSchema = z
   })
   .transform((data: object) =>
     Object.fromEntries(
-      Object.entries(data).filter((value) => value !== undefined)
+      Object.entries(data).filter(([, value]) => value !== undefined)
     )
   );
 
