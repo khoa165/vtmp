@@ -212,4 +212,89 @@ describe('ApplicationController', () => {
       expect(res.body.data).to.have.property('userId', savedUserId);
     });
   });
+
+  describe('PATCH /applications/:applicationId/status', () => {
+    let application: IApplication;
+    beforeEach(async () => {
+      application = await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: savedUserId,
+      });
+    });
+    it('should return error message with 400 status code if applicationId param is invalid', async () => {
+      const res = await request(app)
+        .patch('/api/applications/123456789/status')
+        .send({ updatedStatus: 'IN_PROGRESS' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Invalid application ID format');
+    });
+
+    it('should return error message with 400 status code if attempting to update other fields other than status', async () => {
+      const validApplicationId = getNewMongoId();
+      const res = await request(app)
+        .patch(`/api/applications/${validApplicationId}/status`)
+        .send({ note: 'some note', referrer: 'Khoa' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 2 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Invalid application status');
+      expect(errors[1].message).to.equal('Only allow updating status');
+    });
+
+    it('should return error message with 400 status code if updated status is invalid', async () => {
+      const validApplicationId = getNewMongoId();
+      const res = await request(app)
+        .patch(`/api/applications/${validApplicationId}/status`)
+        .send({ updatedStatus: 'INVALID_STATUS' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Invalid application status');
+    });
+
+    it('should return 404 if application is not found or does not belong to authenticated user', async () => {
+      const invalidApplicationId = getNewMongoId();
+      const res = await request(app)
+        .patch(`/api/applications/${invalidApplicationId}/status`)
+        .send({ updatedStatus: 'IN_PROGRESS' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Application not found');
+    });
+
+    it('should update the application status to REJECTED and return the updated application', async () => {
+      const res = await request(app)
+        .patch(`/api/applications/${application.id}/status`)
+        .send({ updatedStatus: 'REJECTED' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.have.property('_id', application.id);
+      expect(res.body.data).to.have.property('status', 'REJECTED');
+    });
+
+    it('should update the application status to a valid non-REJECTED status and return the updated application', async () => {
+      const res = await request(app)
+        .patch(`/api/applications/${application.id}/status`)
+        .send({ updatedStatus: 'OFFER' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.have.property('_id', application.id);
+      expect(res.body.data).to.have.property('status', 'OFFER');
+    });
+  });
 });

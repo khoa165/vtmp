@@ -6,7 +6,7 @@ import { ApplicationStatus, InterestLevel } from '@common/enums';
 import { IApplication } from '@/models/application.model';
 import { getUserFromRequest } from '@/middlewares/utils';
 
-const ApplicationRequestSchema = z.object({
+const JobPostingIdParamSchema = z.object({
   jobPostingId: z
     .string({ required_error: 'Job posting ID is required' })
     .refine((id) => mongoose.Types.ObjectId.isValid(id), {
@@ -14,14 +14,23 @@ const ApplicationRequestSchema = z.object({
     }),
 });
 
-const ApplicationStatusUpdateSchema = z.object({
-  updatedStatus: z.nativeEnum(ApplicationStatus, {
-    required_error: 'New updated status is required',
-    invalid_type_error: 'Invalid application status',
-  }),
+const ApplicationIdParamsSchema = z.object({
+  applicationId: z
+    .string({ required_error: 'Application ID is required' })
+    .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: 'Invalid application ID format',
+    }),
 });
 
-const ApplicationMetaDataUpdateSchema = z
+const ApplicationStatusUpdateSchema = z
+  .object({
+    updatedStatus: z.nativeEnum(ApplicationStatus, {
+      message: 'Invalid application status',
+    }),
+  })
+  .strict({ message: 'Only allow updating status' });
+
+const ApplicationMetadataUpdateSchema = z
   .object({
     note: z.string().optional(),
     referrer: z.string().optional(),
@@ -32,23 +41,16 @@ const ApplicationMetaDataUpdateSchema = z
       })
       .optional(),
   })
+  .strict({ message: 'Only allow valid metadata fields' })
   .transform((data: object) =>
     Object.fromEntries(
       Object.entries(data).filter(([, value]) => value !== undefined)
     )
   );
 
-const ApplicationIdParamsSchema = z.object({
-  applicationId: z
-    .string()
-    .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: 'Invalid application ID format',
-    }),
-});
-
 export const ApplicationController = {
   createApplication: async (req: Request, res: Response) => {
-    const { jobPostingId } = ApplicationRequestSchema.parse(req.body);
+    const { jobPostingId } = JobPostingIdParamSchema.parse(req.body);
 
     const userId = getUserFromRequest(req).user.id;
 
@@ -119,7 +121,7 @@ export const ApplicationController = {
   updateApplicationMetadata: async (req: Request, res: Response) => {
     const userId = getUserFromRequest(req).user.id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
-    const updatedMetadata = ApplicationMetaDataUpdateSchema.parse(req.body);
+    const updatedMetadata = ApplicationMetadataUpdateSchema.parse(req.body);
 
     const updatedApplication = await ApplicationService.updateApplicationById({
       applicationId,
