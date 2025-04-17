@@ -1,7 +1,7 @@
 import mongoose, { Document } from 'mongoose';
 import { InvitationStatus } from '@common/enums';
 
-interface IInvitation extends Document {
+export interface IInvitation extends Document {
   receiverEmail: string;
   sender: mongoose.Schema.Types.ObjectId;
   token: string;
