@@ -52,10 +52,9 @@ describe('Interview Repository', () => {
 
       assert(newInterview);
       expect(newInterview).to.containSubset({
+        ...mockInterview_A2,
         applicationId: toMongoId(mockInterview_A2.applicationId),
         userId: toMongoId(mockInterview_A2.userId),
-        type: mockInterview_A2.type,
-        interviewOnDate: mockInterview_A2.interviewOnDate,
         status: InterviewStatus.PENDING,
       });
     });
@@ -116,11 +115,9 @@ describe('Interview Repository', () => {
       assert(interview);
       expect(interview.id).to.equal(interview_A0.id);
       expect(interview).to.containSubset({
-        userId: toMongoId(mockInterview_A0.userId),
+        ...mockInterview_A0,
         applicationId: toMongoId(mockInterview_A0.applicationId),
-        interviewOnDate: mockInterview_A0.interviewOnDate,
-        type: mockInterview_A0.type,
-        status: mockInterview_A0.status,
+        userId: toMongoId(mockInterview_A0.userId),
       });
     });
   });
@@ -165,14 +162,10 @@ describe('Interview Repository', () => {
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.has.lengthOf(2);
-      expect(interviews[0]).to.containSubset({
-        userId: toMongoId(mockInterview_A0.userId),
-        _id: toMongoId(interview_A0.id),
-      });
-      expect(interviews[1]).to.containSubset({
-        userId: toMongoId(mockInterview_A1.userId),
-        _id: toMongoId(interview_A1.id),
-      });
+      expect(interviews.map((interview) => interview.id)).to.have.members([
+        interview_A0.id,
+        interview_A1.id,
+      ]);
     });
   });
 
@@ -376,7 +369,7 @@ describe('Interview Repository', () => {
       expect(updatedInterview_A2.status).to.equal(InterviewStatus.FAILED);
     });
 
-    it('should not update any interviews if none belong to the user', async () => {
+    it('should not update any interviews if not belong to the user', async () => {
       const interview_B0 =
         await InterviewRepository.createInterview(mockInterview_B0);
 
