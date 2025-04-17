@@ -31,12 +31,6 @@ const ApplicationMetaDataUpdateSchema = z
         invalid_type_error: 'Invalid interest level',
       })
       .optional(),
-    status: z
-      .nativeEnum(ApplicationStatus)
-      .refine((value) => value !== ApplicationStatus.REJECTED, {
-        message: 'REJECTED status is not allowed',
-      })
-      .optional(),
   })
   .transform((data: object) =>
     Object.fromEntries(

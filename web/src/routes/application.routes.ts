@@ -17,12 +17,12 @@ ApplicationRoutes.get(
   '/:applicationId',
   wrappedHandlers([authenticate, ApplicationController.getApplicationById])
 );
-ApplicationRoutes.put(
-  '/:applicationId',
+ApplicationRoutes.patch(
+  '/:applicationId/status',
   wrappedHandlers([authenticate, ApplicationController.updateApplicationStatus])
 );
-ApplicationRoutes.put(
-  '/:applicationId',
+ApplicationRoutes.patch(
+  '/:applicationId/metadata',
   wrappedHandlers([
     authenticate,
     ApplicationController.updateApplicationMetadata,
