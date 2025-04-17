@@ -10,6 +10,7 @@ const UserService = {
 
   getUserById: async (id: string) => {
     const user = await UserRepository.getUserById(id);
+
     if (!user) {
       throw new ResourceNotFoundError('User not found', { id });
     }

@@ -3,6 +3,7 @@ import { EnvConfig } from '@/config/env';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
+import UserService from '@/services/user.service';
 
 export const DecodedJWTSchema = z.object({
   id: z.string({ required_error: 'Id is required' }),
@@ -21,9 +22,10 @@ export const authenticate = async (
     }
 
     const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
-
     const parsed = DecodedJWTSchema.parse(decoded);
-    req.user = { id: parsed.id };
+    const user = await UserService.getUserById(parsed.id);
+
+    req.user = { id: String(user._id) };
 
     next();
   } catch (err: unknown) {

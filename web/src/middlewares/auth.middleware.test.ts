@@ -9,6 +9,7 @@ import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
 import { DecodedJWTSchema } from '@/middlewares/auth.middleware';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 chai.use(chaiSubset);
 const { expect } = chai;
@@ -36,6 +37,28 @@ describe('UserRepository', () => {
         .set('Accept', 'application/json')
         .set('Authorization', `fake token`);
       expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+    });
+
+    it('should throw ResourceNotFoundError for cannot find user', async () => {
+      const token = jwt.sign(
+        { id: getNewMongoId() },
+        EnvConfig.get().JWT_SECRET,
+        {
+          expiresIn: '1h',
+        }
+      );
+
+      const resGetProfile = await request(app)
+        .get('/api/users/profile')
+        .send({})
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${token}`);
+
+      expectErrorsArray({
+        res: resGetProfile,
+        statusCode: 404,
+        errorsCount: 1,
+      });
     });
 
     it('should allow user to login, return a token and get user profile', async () => {
