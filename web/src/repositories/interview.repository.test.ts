@@ -103,7 +103,7 @@ describe('Interview Repository', () => {
       assert(!interview);
     });
 
-    it('should return the valid interview for authroized user', async () => {
+    it('should return the valid interview for authorized user', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
 
@@ -123,13 +123,15 @@ describe('Interview Repository', () => {
   });
 
   describe('getInterviews', () => {
-    it('should return an empty array if the authorized user has no interview', async () => {
+    it('should return an empty array if the authorized user has no interviews', async () => {
       await InterviewRepository.createInterview(mockInterview_A0);
 
-      const interviews = await InterviewRepository.getInterviews(userId_B);
+      const interviews = await InterviewRepository.getInterviews({
+        userId: userId_B,
+      });
 
       assert(interviews);
-      expect(interviews).to.be.an('array').that.has.lengthOf(0);
+      expect(interviews).to.be.an('array').that.have.lengthOf(0);
     });
 
     it('should not include soft-deleted interviews', async () => {
@@ -143,63 +145,50 @@ describe('Interview Repository', () => {
         userId: userId_A,
       });
 
-      const interviews = await InterviewRepository.getInterviews(userId_A);
+      const interviews = await InterviewRepository.getInterviews({
+        userId: userId_A,
+      });
 
       assert(interviews);
-      expect(interviews).to.be.an('array').that.has.lengthOf(1);
+      expect(interviews).to.be.an('array').that.have.lengthOf(1);
       assert(interviews[0]);
       expect(interviews[0].id).to.equal(interview_A1.id);
     });
 
-    it('should return only interviews belong to the authorized user', async () => {
+    it('should return only interviews belonging to the authorized user', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
       const interview_A1 =
         await InterviewRepository.createInterview(mockInterview_A1);
       await InterviewRepository.createInterview(mockInterview_B0);
 
-      const interviews = await InterviewRepository.getInterviews(userId_A);
+      const interviews = await InterviewRepository.getInterviews({
+        userId: userId_A,
+      });
 
       assert(interviews);
-      expect(interviews).to.be.an('array').that.has.lengthOf(2);
+      expect(interviews).to.be.an('array').that.have.lengthOf(2);
       expect(interviews.map((interview) => interview.id)).to.have.members([
         interview_A0.id,
         interview_A1.id,
       ]);
     });
-  });
 
-  describe('getInterviewsByApplicationId', () => {
-    it('should return empty array if application has no interview', async () => {
+    it('should return empty array when filtering by an applicationId with no interviews', async () => {
       await InterviewRepository.createInterview(mockInterview_A0);
 
-      const interviews = await InterviewRepository.getInterviewsByApplicationId(
-        {
+      const interviews = await InterviewRepository.getInterviews({
+        userId: userId_A,
+        filters: {
           applicationId: getNewMongoId(),
-          userId: userId_A,
-        }
-      );
+        },
+      });
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('should return empty array if application does not belong to the authorized user', async () => {
-      await InterviewRepository.createInterview(mockInterview_A0);
-      await InterviewRepository.createInterview(mockInterview_A1);
-
-      const interviews = await InterviewRepository.getInterviewsByApplicationId(
-        {
-          applicationId: metaApplicationId,
-          userId: userId_B,
-        }
-      );
-
-      assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(0);
-    });
-
-    it('should not include soft-deleted interviews', async () => {
+    it('should not include soft-deleted interviews when filtering by applicationId', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
       const interview_A2 =
@@ -209,12 +198,12 @@ describe('Interview Repository', () => {
         userId: userId_A,
       });
 
-      const interviews = await InterviewRepository.getInterviewsByApplicationId(
-        {
+      const interviews = await InterviewRepository.getInterviews({
+        userId: userId_A,
+        filters: {
           applicationId: metaApplicationId,
-          userId: userId_A,
-        }
-      );
+        },
+      });
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(1);
@@ -222,19 +211,19 @@ describe('Interview Repository', () => {
       expect(interviews[0].id).to.equal(interview_A2.id);
     });
 
-    it('should return only the interviews belong to the applicationId', async () => {
+    it('should return only the interviews belonging to the applicationId', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
       const interview_A2 =
         await InterviewRepository.createInterview(mockInterview_A2);
       await InterviewRepository.createInterview(mockInterview_A1);
 
-      const interviews = await InterviewRepository.getInterviewsByApplicationId(
-        {
+      const interviews = await InterviewRepository.getInterviews({
+        userId: userId_A,
+        filters: {
           applicationId: metaApplicationId,
-          userId: userId_A,
-        }
-      );
+        },
+      });
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(2);
@@ -244,18 +233,47 @@ describe('Interview Repository', () => {
       ]);
     });
 
-    it('should return only the interviews that belong to the applicationId that have the provided status', async () => {
+    it('should return only interviews with the given status when no applicationId is provided', async () => {
       await InterviewRepository.createInterview(mockInterview_A0);
       const interview_A2 =
         await InterviewRepository.createInterview(mockInterview_A2);
 
-      const interviews = await InterviewRepository.getInterviewsByApplicationId(
-        {
+      const interviews = await InterviewRepository.getInterviews({
+        userId: userId_A,
+        filters: { status: InterviewStatus.PENDING },
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(1);
+      assert(interviews[0]);
+      expect(interviews[0].id).to.equal(interview_A2.id);
+      expect(interviews[0].status).to.equal(InterviewStatus.PENDING);
+    });
+
+    it('should return an empty array when filtering by a status that no interview has', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+
+      const interviews = await InterviewRepository.getInterviews({
+        userId: userId_A,
+        filters: { status: InterviewStatus.PENDING },
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should return only the interviews belonging to the applicationId that have the provided status', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+      const interview_A2 =
+        await InterviewRepository.createInterview(mockInterview_A2);
+
+      const interviews = await InterviewRepository.getInterviews({
+        userId: userId_A,
+        filters: {
           applicationId: metaApplicationId,
-          userId: userId_A,
-          filters: { status: InterviewStatus.PENDING },
-        }
-      );
+          status: InterviewStatus.PENDING,
+        },
+      });
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(1);
@@ -266,7 +284,7 @@ describe('Interview Repository', () => {
   });
 
   describe('updateInterviewById', () => {
-    it('should return null if no interview for the interviewId is found', async () => {
+    it('should return null if no interview with that interviewId exists', async () => {
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: getNewMongoId(),
         userId: userId_A,
@@ -307,7 +325,7 @@ describe('Interview Repository', () => {
       assert(!updatedInterview);
     });
 
-    it('should return the interview with updated field', async () => {
+    it('should return the interview with updated fields', async () => {
       const interview =
         await InterviewRepository.createInterview(mockInterview_A1);
 
@@ -326,8 +344,8 @@ describe('Interview Repository', () => {
       });
 
       assert(updatedInterview);
+      expect(updatedInterview.id).to.equal(interview.id);
       expect(updatedInterview).to.containSubset({
-        _id: toMongoId(interview.id),
         userId: toMongoId(userId_A),
         interviewOnDate: new Date('2025-08-10'),
         type: [InterviewType.PROJECT_WALKTHROUGH, InterviewType.HIRING_MANAGER],
@@ -369,7 +387,7 @@ describe('Interview Repository', () => {
       expect(updatedInterview_A2.status).to.equal(InterviewStatus.FAILED);
     });
 
-    it('should not update any interviews if not belong to the user', async () => {
+    it('should not update any interviews if not belonging to the user', async () => {
       const interview_B0 =
         await InterviewRepository.createInterview(mockInterview_B0);
 
@@ -388,8 +406,8 @@ describe('Interview Repository', () => {
       assert(interviewUpdateResult);
       assert(unchangedInterview);
       expect(interviewUpdateResult).to.have.property('acknowledged', true);
-      expect(interviewUpdateResult).to.have.property('matchedCount', 0);
       expect(interviewUpdateResult).to.have.property('modifiedCount', 0);
+      expect(interviewUpdateResult).to.have.property('matchedCount', 0);
       expect(unchangedInterview.status).to.not.equal(InterviewStatus.PASSED);
     });
 
@@ -467,7 +485,7 @@ describe('Interview Repository', () => {
       assert(!deletedInterview);
     });
 
-    it('should return and delete the valid interview belong to the authorized user', async () => {
+    it('should return and delete the valid interview belonging to the authorized user', async () => {
       const interview =
         await InterviewRepository.createInterview(mockInterview_A1);
 
