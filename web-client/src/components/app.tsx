@@ -17,6 +17,8 @@ import { PageWithNavigation } from 'src/components/layout/page-with-navigation';
 import { TreeContainer } from 'src/components/tree';
 import { Mentorship2025Apply } from 'src/components/apply';
 import { Mentorship2025Proposal } from './proposal';
+import { Playground } from '@/components/playground';
+import { ApplicationTrackerLanding } from '@/components/application-tracker/pages/landing';
 
 const darkTheme = createTheme({
   palette: {
@@ -41,9 +43,9 @@ export const App = () => {
       <div id="mentorship-website">
         <Router>
           <Routes>
-            <Route path="apply" element={<Mentorship2025Apply />} />
-            <Route path="apply-pd" element={<Mentorship2025Apply />} />
-            <Route path="proposal" element={<Mentorship2025Proposal />} />
+            <Route path="/apply" element={<Mentorship2025Apply />} />
+            <Route path="/apply-pd" element={<Mentorship2025Apply />} />
+            <Route path="/proposal" element={<Mentorship2025Proposal />} />
             <Route element={<PageWithNavigation />}>
               <Route path="/summary" element={<SummaryContainer />} />
               <Route path="/people/*" element={<PeopleContainer />} />
@@ -59,7 +61,12 @@ export const App = () => {
               )}
               <Route path="/projects" element={<ProjectsContainer />} />
               <Route path="/stats/*" element={<StatsContainer />} />
+              <Route path="/playground" element={<Playground />} />
             </Route>
+            <Route
+              path="/application-tracker"
+              element={<ApplicationTrackerLanding />}
+            />
             <Route path="/*" element={<LandingContainer />} />
           </Routes>
         </Router>
