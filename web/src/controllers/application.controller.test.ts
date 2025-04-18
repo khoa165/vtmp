@@ -91,18 +91,16 @@ describe('ApplicationController', () => {
     });
 
     it('should return error message with status code 409 if duplicate application exists', async () => {
-      const savedJobPostingId = (
-        await JobPostingRepository.createJobPosting(mockJobPosting)
-      ).id;
-
+      const jobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
       await ApplicationRepository.createApplication({
-        jobPostingId: savedJobPostingId,
+        jobPostingId: jobPosting.id,
         userId: savedUserId,
       });
 
       const res = await request(app)
         .post('/api/applications')
-        .send({ jobPostingId: savedJobPostingId })
+        .send({ jobPostingId: jobPosting.id })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -111,19 +109,46 @@ describe('ApplicationController', () => {
       expect(errors[0].message).to.equal('Application already exists');
     });
 
-    it('should return application object if an application is created successfully', async () => {
-      const savedJobPostingId = (
-        await JobPostingRepository.createJobPosting(mockJobPosting)
-      ).id;
+    it('should return application object if an application (that was previously soft deleted) is created successfully', async () => {
+      const jobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
+
+      const softDeletedApplication =
+        await ApplicationRepository.createApplication({
+          jobPostingId: jobPosting.id,
+          userId: savedUserId,
+        });
+
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: softDeletedApplication.id,
+        userId: savedUserId,
+      });
 
       const res = await request(app)
         .post('/api/applications')
-        .send({ jobPostingId: savedJobPostingId })
+        .send({ jobPostingId: jobPosting.id })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 201 });
-      expect(res.body.data).to.have.property('jobPostingId', savedJobPostingId);
+      expect(res.body.data).to.have.property('jobPostingId', jobPosting.id);
+      expect(res.body.data).to.have.property('userId', savedUserId);
+      expect(res.body.data).to.have.property('_id', softDeletedApplication.id);
+      expect(res.body.data).to.have.property('deletedAt', null);
+    });
+
+    it('should return application object if an application is created successfully', async () => {
+      const jobPosting =
+        await JobPostingRepository.createJobPosting(mockJobPosting);
+
+      const res = await request(app)
+        .post('/api/applications')
+        .send({ jobPostingId: jobPosting.id })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 201 });
+      expect(res.body.data).to.have.property('jobPostingId', jobPosting.id);
       expect(res.body.data).to.have.property('userId', savedUserId);
     });
   });
@@ -151,6 +176,26 @@ describe('ApplicationController', () => {
       ).to.have.members([application1.id, application2.id]);
     });
 
+    it('should not return soft-deleted applications', async () => {
+      const application = await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: savedUserId,
+      });
+
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: application.id,
+        userId: savedUserId,
+      });
+
+      const res = await request(app)
+        .get('/api/applications')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
+    });
+
     it('should return an empty array of applications if user does not have any applications', async () => {
       const res = await request(app)
         .get('/api/applications')
@@ -174,10 +219,31 @@ describe('ApplicationController', () => {
       expect(errors[0].message).to.equal('Invalid application ID format');
     });
 
-    it('should return 404 if application is not found or does not belong to authorized user', async () => {
+    it('should return error message with 404 status code if application is not found or does not belong to authorized user', async () => {
       const invalidApplicationId = getNewMongoId();
       const res = await request(app)
         .get(`/api/applications/${invalidApplicationId}`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Application not found');
+    });
+
+    it('should return error message with 404 status code if application is soft-deleted', async () => {
+      const application = await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: savedUserId,
+      });
+
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: application.id,
+        userId: savedUserId,
+      });
+
+      const res = await request(app)
+        .get(`/api/applications/${application.id}`)
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -256,10 +322,27 @@ describe('ApplicationController', () => {
       expect(errors[0].message).to.equal('Invalid application status');
     });
 
-    it('should return 404 if application is not found or does not belong to authorized user', async () => {
+    it('should return error message with 404 status code if application is not found or does not belong to authorized user', async () => {
       const invalidApplicationId = getNewMongoId();
       const res = await request(app)
         .patch(`/api/applications/${invalidApplicationId}/status`)
+        .send({ updatedStatus: 'IN_PROGRESS' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Application not found');
+    });
+
+    it('should return error message with 404 status code if trying to update the status of a soft-deleted application', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: application.id,
+        userId: savedUserId,
+      });
+
+      const res = await request(app)
+        .patch(`/api/applications/${application.id}/status`)
         .send({ updatedStatus: 'IN_PROGRESS' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -342,10 +425,27 @@ describe('ApplicationController', () => {
       expect(errors[0].message).to.equal('Invalid interest level');
     });
 
-    it('should return 404 if application is not found or does not belong to authorized user', async () => {
+    it('should return error message with 404 status code if application is not found or does not belong to authorized user', async () => {
       const invalidApplicationId = getNewMongoId();
       const res = await request(app)
         .patch(`/api/applications/${invalidApplicationId}/metadata`)
+        .send({ note: 'Updated note' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Application not found');
+    });
+
+    it('should return error message with 404 status code if trying to update metadata of a soft-deleted application', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: application.id,
+        userId: savedUserId,
+      });
+
+      const res = await request(app)
+        .patch(`/api/applications/${application.id}/metadata`)
         .send({ note: 'Updated note' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -401,6 +501,22 @@ describe('ApplicationController', () => {
       const invalidApplicationId = getNewMongoId();
       const res = await request(app)
         .delete(`/api/applications/${invalidApplicationId}`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Application not found');
+    });
+
+    it('should return error message with 404 status code if trying to delete an already soft-deleted application', async () => {
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: application.id,
+        userId: savedUserId,
+      });
+
+      const res = await request(app)
+        .delete(`/api/applications/${application.id}`)
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
