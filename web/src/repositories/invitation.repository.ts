@@ -8,7 +8,7 @@ const InvitationRepository = {
     receiverEmail: string;
     sender: mongoose.Schema.Types.ObjectId;
     token: string;
-    expiryDate?: Date;
+    expiryDate: Date;
     status?: InvitationStatus;
   }): Promise<IInvitation> => {
     return InvitationModel.create(invitationData);
