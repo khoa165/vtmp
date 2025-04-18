@@ -17,6 +17,9 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { IApplication } from '@/models/application.model';
+import { InterviewRepository } from '@/repositories/interview.repository';
+import { InterviewType } from '@common/enums';
+import { differenceInSeconds } from 'date-fns';
 
 describe('ApplicationController', () => {
   useMongoDB();
@@ -126,7 +129,7 @@ describe('ApplicationController', () => {
   });
 
   describe('GET /applications', () => {
-    it('should return all application objects that belong to the authenticated user', async () => {
+    it('should return all application objects that belong to the authorized user', async () => {
       const application1 = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
         userId: savedUserId,
@@ -171,7 +174,7 @@ describe('ApplicationController', () => {
       expect(errors[0].message).to.equal('Invalid application ID format');
     });
 
-    it('should return 404 if application is not found or does not belong to authenticated user', async () => {
+    it('should return 404 if application is not found or does not belong to authorized user', async () => {
       const invalidApplicationId = getNewMongoId();
       const res = await request(app)
         .get(`/api/applications/${invalidApplicationId}`)
@@ -183,7 +186,7 @@ describe('ApplicationController', () => {
       expect(errors[0].message).to.equal('Application not found');
     });
 
-    it('should return an application if found and belongs to authenticated user', async () => {
+    it('should return an application if found and belongs to authorized user', async () => {
       const application = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
         userId: savedUserId,
@@ -206,12 +209,14 @@ describe('ApplicationController', () => {
 
   describe('PATCH /applications/:applicationId/status', () => {
     let application: IApplication;
+
     beforeEach(async () => {
       application = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
         userId: savedUserId,
       });
     });
+
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
       const res = await request(app)
         .patch('/api/applications/123456789/status')
@@ -251,7 +256,7 @@ describe('ApplicationController', () => {
       expect(errors[0].message).to.equal('Invalid application status');
     });
 
-    it('should return 404 if application is not found or does not belong to authenticated user', async () => {
+    it('should return 404 if application is not found or does not belong to authorized user', async () => {
       const invalidApplicationId = getNewMongoId();
       const res = await request(app)
         .patch(`/api/applications/${invalidApplicationId}/status`)
@@ -286,6 +291,158 @@ describe('ApplicationController', () => {
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('_id', application.id);
       expect(res.body.data).to.have.property('status', 'OFFER');
+    });
+  });
+
+  describe('PATCH /applications/:applicationId/metadata', () => {
+    let application: IApplication;
+
+    beforeEach(async () => {
+      application = await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: savedUserId,
+      });
+    });
+
+    it('should return error message with 400 status code if applicationId param is invalid', async () => {
+      const res = await request(app)
+        .patch('/api/applications/123456789/metadata')
+        .send({ note: 'Updated note' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Invalid application ID format');
+    });
+
+    it('should return error message with 400 status code if trying to update status', async () => {
+      const res = await request(app)
+        .patch(`/api/applications/${application.id}/metadata`)
+        .send({ status: 'OFFER' }) // Invalid metadata field
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal(
+        'Only allow updating valid metadata fields'
+      );
+    });
+
+    it('should return error message with 400 status code trying to update interest level with invalid parameter', async () => {
+      const res = await request(app)
+        .patch(`/api/applications/${application.id}/metadata`)
+        .send({ interest: 'VERY_HIGH' }) // Invalid interest level
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Invalid interest level');
+    });
+
+    it('should return 404 if application is not found or does not belong to authorized user', async () => {
+      const invalidApplicationId = getNewMongoId();
+      const res = await request(app)
+        .patch(`/api/applications/${invalidApplicationId}/metadata`)
+        .send({ note: 'Updated note' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Application not found');
+    });
+
+    it('should update the application metadata and return the updated application', async () => {
+      const res = await request(app)
+        .patch(`/api/applications/${application.id}/metadata`)
+        .send({
+          note: 'Updated note',
+          referrer: 'Khoa',
+          portalLink: 'http://abc.com',
+          interest: 'HIGH',
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.have.property('_id', application.id);
+      expect(res.body.data).to.have.property('note', 'Updated note');
+      expect(res.body.data).to.have.property('referrer', 'Khoa');
+      expect(res.body.data).to.have.property('portalLink', 'http://abc.com');
+      expect(res.body.data).to.have.property('interest', 'HIGH');
+    });
+  });
+
+  describe('DELETE /applications/:applicationId', () => {
+    let application: IApplication;
+
+    beforeEach(async () => {
+      application = await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: savedUserId,
+      });
+    });
+
+    it('should return error message with 400 status code if applicationId param is invalid', async () => {
+      const res = await request(app)
+        .delete('/api/applications/123456789')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Invalid application ID format');
+    });
+
+    it('should return error message with 404 status code if application is not found or does not belong to authorized user', async () => {
+      const invalidApplicationId = getNewMongoId();
+      const res = await request(app)
+        .delete(`/api/applications/${invalidApplicationId}`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Application not found');
+    });
+
+    it('should return error message with 403 status code if trying to delete an application that has interviews', async () => {
+      await InterviewRepository.createInterview({
+        applicationId: application.id,
+        userId: savedUserId,
+        type: [InterviewType.CODE_REVIEW],
+        interviewOnDate: new Date(),
+      });
+
+      const res = await request(app)
+        .delete(`/api/applications/${application.id}`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal(
+        'Cannot delete application that has interviews'
+      );
+    });
+
+    it('should delete the application successfully and return the deleted application', async () => {
+      const res = await request(app)
+        .delete(`/api/applications/${application.id}`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      const deletedApplication = res.body.data;
+      expect(deletedApplication).to.have.property('_id', application.id);
+      const timeDiff = differenceInSeconds(
+        deletedApplication.deletedAt,
+        new Date()
+      );
+      expect(timeDiff).to.lessThan(3);
     });
   });
 });

@@ -37,11 +37,11 @@ const ApplicationMetadataUpdateSchema = z
     portalLink: z.string().url().optional(),
     interest: z
       .nativeEnum(InterestLevel, {
-        invalid_type_error: 'Invalid interest level',
+        message: 'Invalid interest level',
       })
       .optional(),
   })
-  .strict({ message: 'Only allow valid metadata fields' })
+  .strict({ message: 'Only allow updating valid metadata fields' })
   .transform((data: object) =>
     Object.fromEntries(
       Object.entries(data).filter(([, value]) => value !== undefined)
