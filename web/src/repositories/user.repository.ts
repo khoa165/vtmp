@@ -13,15 +13,31 @@ export const UserRepository = {
   },
 
   getAllUsers: async (): Promise<IUser[]> => {
-    return UserModel.find({ deletedAt: null });
+    return UserModel.find({ deletedAt: null }, { encryptedPassword: 0 }).lean();
   },
 
-  getUserByEmail: async (email: string): Promise<IUser | null> => {
-    return UserModel.findOne({ email, deletedAt: null });
+  getUserByEmail: async (
+    email: string,
+    options?: {
+      includePasswordField?: boolean;
+    }
+  ): Promise<IUser | null> => {
+    return UserModel.findOne(
+      { email, deletedAt: null },
+      options?.includePasswordField ? {} : { encryptedPassword: 0 }
+    ).lean();
   },
 
-  getUserById: async (userId: string): Promise<IUser | null> => {
-    return UserModel.findOne({ _id: userId, deletedAt: null });
+  getUserById: async (
+    userId: string,
+    options?: {
+      includePasswordField?: boolean;
+    }
+  ): Promise<IUser | null> => {
+    return UserModel.findOne(
+      { _id: userId, deletedAt: null },
+      options?.includePasswordField ? {} : { encryptedPassword: 0 }
+    ).lean();
   },
 
   updateUserById: async (
@@ -40,7 +56,7 @@ export const UserRepository = {
       {
         new: true,
       }
-    );
+    ).lean();
   },
 
   deleteUserById: async (userId: string): Promise<IUser | null> => {
