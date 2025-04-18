@@ -127,20 +127,14 @@ describe('ApplicationController', () => {
 
   describe('GET /applications', () => {
     it('should return all application objects that belong to the authenticated user', async () => {
-      const mockApplication1 = {
+      const application1 = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
         userId: savedUserId,
-      };
-      const mockApplication2 = {
+      });
+      const application2 = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
         userId: savedUserId,
-      };
-      const savedApplicationId1 = (
-        await ApplicationRepository.createApplication(mockApplication1)
-      ).id;
-      const savedApplicationId2 = (
-        await ApplicationRepository.createApplication(mockApplication2)
-      ).id;
+      });
 
       const res = await request(app)
         .get('/api/applications')
@@ -151,7 +145,7 @@ describe('ApplicationController', () => {
       expect(res.body.data).to.be.an('array').that.have.lengthOf(2);
       expect(
         res.body.data.map((application: IApplication) => application._id)
-      ).to.have.members([savedApplicationId1, savedApplicationId2]);
+      ).to.have.members([application1.id, application2.id]);
     });
 
     it('should return an empty array of applications if user does not have any applications', async () => {
@@ -190,24 +184,21 @@ describe('ApplicationController', () => {
     });
 
     it('should return an application if found and belongs to authenticated user', async () => {
-      const mockApplication = {
+      const application = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
         userId: savedUserId,
-      };
-      const savedApplicationId = (
-        await ApplicationRepository.createApplication(mockApplication)
-      ).id;
+      });
 
       const res = await request(app)
-        .get(`/api/applications/${savedApplicationId}`)
+        .get(`/api/applications/${application.id}`)
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.have.property('_id', savedApplicationId);
+      expect(res.body.data).to.have.property('_id', application.id);
       expect(res.body.data).to.have.property(
         'jobPostingId',
-        mockApplication.jobPostingId
+        application.jobPostingId.toString()
       );
       expect(res.body.data).to.have.property('userId', savedUserId);
     });
