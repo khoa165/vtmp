@@ -60,8 +60,8 @@ describe('UserController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      const users = res.body.data;
-      expect(users).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body).to.have.property('data');
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
     });
 
     it('should return an array of all existing users without encryptedPassword field', async () => {
@@ -84,15 +84,15 @@ describe('UserController', () => {
   });
 
   describe('GET /users/:userId', () => {
-    it('should return error message forbidden user try to get other user information', async () => {
+    it('should return error message not found for user not exists', async () => {
       const res = await request(app)
         .get(`/api/users/${getNewMongoId()}`)
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
-      expect(errors[0].message).to.equal('Cannot get other user information');
+      expect(errors[0].message).to.equal('User not found');
     });
 
     it('should return user with requested id without encryptedPassword field', async () => {
@@ -103,12 +103,12 @@ describe('UserController', () => {
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body).to.have.property('data');
-      expect(res.body).to.not.have.property('encryptedPassword');
+      expect(res.body.data).to.not.have.property('encryptedPassword');
     });
   });
 
   describe('PUT /users/:userId', () => {
-    it('should return error message forbidden for updaing other user information', async () => {
+    it('should return error message forbidden for updating other user information', async () => {
       const updateInfo = {
         firstName: 'admin_update',
         lastName: 'viettech',

@@ -1,6 +1,6 @@
 import UserService from '@/services/user.service';
 import { UserRole } from '@common/enums';
-import { ForbiddenError } from '@/utils/errors';
+import { ForbiddenError, ResourceNotFoundError } from '@/utils/errors';
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { getUserFromRequest } from '@/middlewares/utils';
@@ -36,15 +36,11 @@ const UserController = {
 
   getUser: async (req: Request, res: Response) => {
     const { userId } = UserIdSchema.parse(req.params);
-    const userIdFromReq = getUserFromRequest(req).user.id;
-    if (userId !== userIdFromReq) {
-      throw new ForbiddenError('Cannot get other user information', {
-        userId,
-        userIdFromReq,
-      });
+    const user = await UserService.getUserById(userId);
+    if (!user) {
+      throw new ResourceNotFoundError('User not found', { userId });
     }
 
-    const user = await UserService.getUserById(userId);
     res.status(200).json({ data: user });
     return;
   },
