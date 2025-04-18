@@ -43,7 +43,7 @@ export const InterviewRepository = {
   },
 
   getInterviews: async (userId: string): Promise<IInterview[]> => {
-    return InterviewModel.find({ userId: userId, deletedAt: null });
+    return InterviewModel.find({ userId, deletedAt: null });
   },
 
   getInterviewsByApplicationId: async ({
@@ -86,7 +86,7 @@ export const InterviewRepository = {
     };
   }): Promise<IInterview | null> => {
     return InterviewModel.findOneAndUpdate(
-      { _id: interviewId, userId: userId, deletedAt: null },
+      { _id: interviewId, userId, deletedAt: null },
       { $set: updatedMetadata },
       { new: true }
     );
@@ -122,7 +122,7 @@ export const InterviewRepository = {
     userId: string;
   }): Promise<IInterview | null> => {
     return InterviewModel.findOneAndUpdate(
-      { _id: interviewId, userId: userId, deletedAt: null },
+      { _id: interviewId, userId, deletedAt: null },
       { $set: { deletedAt: new Date() } },
       { new: true }
     );
