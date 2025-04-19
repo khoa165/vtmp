@@ -26,13 +26,18 @@ const darkTheme = createTheme({
 
 export const App = () => {
   useEffect(() => {
+    // import('@/blogs/content/vtmp-2023/2023-04-30-using-git.md').then((res) => {
+    //   fetch(res.default)
+    //     .then((response) => response.text())
+    //     .then((text) => console.log(text));
+    // });
     AOS.init();
   }, []);
 
   const [metadata, setMetadata] = useState<BlogFileMapping | null>(null);
 
   useEffect(() => {
-    setMetadata(buildFileMetadata(allBlogsFilepaths, allBlogsMetadata));
+    // setMetadata(buildFileMetadata(allBlogsFilepaths, allBlogsMetadata));
   }, []);
 
   return (

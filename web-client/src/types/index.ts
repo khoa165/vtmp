@@ -8,6 +8,7 @@ import {
 
 export interface BlogMetadata {
   name: string;
+  filepath: string;
   title: string;
   authors: string[];
   contributors: string[];

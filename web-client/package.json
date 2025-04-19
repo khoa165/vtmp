@@ -51,7 +51,7 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "GENERATE_SOURCEMAP=false tsc && vite build",
+    "build": "vite build --watch",
     "serve": "vite preview",
     "test": "vitest",
     "test:coverage": "vitest run --coverage --watch=false"
