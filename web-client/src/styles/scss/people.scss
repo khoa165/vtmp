@@ -85,6 +85,9 @@
     margin-bottom: 30px;
 
     text-align: center;
+    img {
+      display: inline;
+    }
 
     background: variables.$brand-primary-background-color;
     color: variables.$brand-light-color;

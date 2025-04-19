@@ -26,7 +26,7 @@ import { PeopleSortColumn } from 'src/utils/constants';
 import { useSearchParams } from 'react-router-dom';
 
 interface PeopleCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  year: number;
+  year: number | 'all';
   person: MentorshipPerson;
   companiesMetadata: Record<string, CompanyMetadataWithOffers>;
   sortColumn: PeopleSortColumn;
@@ -45,14 +45,15 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
     [firstTerm]
   );
   const currentTerm = useMemo(
-    () => terms.filter((t) => t.year === year)[0],
+    () => terms.find((t) => t.year === year),
     [terms, year]
   );
-  const { roles, title, mentors, projectAdvisors, teamName, teammates } =
-    currentTerm;
+  const { roles, mentors, projectAdvisors, teamName, teammates } =
+    currentTerm ?? {};
+  const title = currentTerm?.title ?? terms.at(-1)?.title;
   const offers = useMemo(
     () =>
-      currentTerm.offers?.map((o) => {
+      currentTerm?.offers?.map((o) => {
         if (isReturnOfferForNewGrad(o)) {
           return `${o.name} (NG RO)`;
         } else if (isReturnOfferForInternship(o)) {
@@ -88,7 +89,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
         <div className="info-offers">
           <CardSubtitle className="app-flex col af-left medium-gap">
             <MiniCompaniesList
-              offersList={currentTerm.offers ?? []}
+              offersList={currentTerm?.offers ?? []}
               prefix={alias}
               companiesMetadata={companiesMetadata}
             />
@@ -127,7 +128,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
       <Avatar url={avatar} />
       <CardBody>
         <CardTitle>{name}</CardTitle>
-        {isOrganizerRole(roles) && (
+        {roles && isOrganizerRole(roles) && (
           <CardSubtitle>
             {roles
               .filter((r) => !isHiddenRole(r, roles))
