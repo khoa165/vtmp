@@ -8,8 +8,8 @@ import { SummaryContainer } from 'src/components/summary';
 import 'src/styles/scss/app.scss';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { allBlogsFilepaths, allBlogsMetadata } from 'src/blogs/metadata';
-import { buildFileMetadata } from 'src/utils/file';
+// import { allBlogsFilepaths, allBlogsMetadata } from 'src/blogs/metadata';
+// import { buildFileMetadata } from 'src/utils/file';
 import { BlogFileMapping } from 'src/types';
 import { LandingContainer } from 'src/components/landing';
 import { BlogContainer } from 'src/components/blogs';
@@ -28,13 +28,18 @@ const darkTheme = createTheme({
 
 export const App = () => {
   useEffect(() => {
+    // import('@/blogs/content/vtmp-2023/2023-04-30-using-git.md').then((res) => {
+    //   fetch(res.default)
+    //     .then((response) => response.text())
+    //     .then((text) => console.log(text));
+    // });
     AOS.init();
   }, []);
 
-  const [metadata, setMetadata] = useState<BlogFileMapping | null>(null);
+  const [metadata] = useState<BlogFileMapping | null>(null);
 
   useEffect(() => {
-    setMetadata(buildFileMetadata(allBlogsFilepaths, allBlogsMetadata));
+    // setMetadata(buildFileMetadata(allBlogsFilepaths, allBlogsMetadata));
   }, []);
 
   return (

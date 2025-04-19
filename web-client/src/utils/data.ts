@@ -112,7 +112,7 @@ export const isReturnOfferForNewGrad = (offer: MentorshipOffer) =>
 export const getPersonPriorityInYear = (
   person: MentorshipPerson,
   year: number
-) => min(getTerm(person, year)?.roles.map(getRolePriority)) ?? 5;
+): number => min(getTerm(person, year)?.roles.map(getRolePriority)) ?? 5;
 
 export const DEFAULT_ROLES = [
   MentorshipRole.SWE_PROGRAM_LEAD,

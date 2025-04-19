@@ -3148,7 +3148,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^22.13.9, @types/node@npm:^22.14.0, @types/node@npm:^22.14.1":
+"@types/node@npm:*, @types/node@npm:^22.13.9, @types/node@npm:^22.14.1":
   version: 22.14.1
   resolution: "@types/node@npm:22.14.1"
   dependencies:
@@ -12173,7 +12173,7 @@ __metadata:
     "@testing-library/user-event": "npm:^13.5.0"
     "@types/aos": "npm:^3.0.7"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^22.14.0"
+    "@types/node": "npm:^22.14.1"
     "@types/react": "npm:^18.3.3"
     "@types/react-dom": "npm:^18.3.0"
     "@visx/visx": "npm:^3.10.2"
@@ -12200,6 +12200,7 @@ __metadata:
     reactstrap: "npm:^9.1.8"
     recharts: "npm:^2.13.0"
     rehype-raw: "npm:^7.0.0"
+    remeda: "npm:^2.21.2"
     sass: "npm:^1.69.6"
     statsig-react: "npm:^2.0.0"
     tailwind-merge: "npm:^3.1.0"

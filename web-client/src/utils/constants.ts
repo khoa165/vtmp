@@ -1,9 +1,9 @@
 import { InterviewType, MentorshipRole } from '@common/enums';
 
 export const rolePriority: Record<MentorshipRole, number> = {
-  [MentorshipRole.SWE_PROGRAM_LEAD]: 1.0,
-  [MentorshipRole.PROGRAM_MANAGER]: 1.1,
-  [MentorshipRole.PROGRAM_FOUNDER]: 1.2,
+  [MentorshipRole.PROGRAM_MANAGER]: 1.0,
+  [MentorshipRole.PROGRAM_FOUNDER]: 1.1,
+  [MentorshipRole.SWE_PROGRAM_LEAD]: 1.2,
   [MentorshipRole.PROGRAM_ADVISOR]: 1.3,
   [MentorshipRole.SWE_RISING_LEAD]: 2,
   [MentorshipRole.SWE_LEAD]: 2.1,
@@ -22,12 +22,6 @@ export enum MentorshipYear {
   YEAR_2024 = 'YEAR_2024',
   YEAR_2025 = 'YEAR_2025',
 }
-
-export const yearDisplay: Record<MentorshipYear, number> = {
-  [MentorshipYear.YEAR_2023]: 2023,
-  [MentorshipYear.YEAR_2024]: 2024,
-  [MentorshipYear.YEAR_2025]: 2025,
-};
 
 export enum StatsType {
   OFFERS = 'offers',

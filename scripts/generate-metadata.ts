@@ -42,7 +42,6 @@ const buildMetadataFileOutput = (metadata) =>
       (m) =>
         '  {\n    ' +
         Object.entries(m)
-          .filter(([key]) => key !== 'filepath')
           .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
           .join(',\n    ') +
         '\n  },'
@@ -80,7 +79,6 @@ const readdir = promisify(fs.readdir);
 const readfile = promisify(fs.readFile);
 
 async function generatedMetadata() {
-  const blogsMetadata: any[] = [];
   try {
     const directoryPath = path.join(
       __dirname,
@@ -119,19 +117,18 @@ async function generatedMetadata() {
           ? contributors.split(',').map((s) => s.trim())
           : [],
         tags: tags ? tags.split(',').map((s) => s.trim()) : [],
-        filepath,
+        filepath: './' + filepath.split('vtmp/web-client/')[1],
       };
     });
-    blogsMetadata.push(...(mdMetadata as any));
 
     fs.writeFileSync(
       path.join(__dirname, '../web-client/src/blogs/metadata/metadata.ts'),
-      buildMetadataFileOutput(blogsMetadata)
+      buildMetadataFileOutput(mdMetadata)
     );
 
     fs.writeFileSync(
       path.join(__dirname, '../web-client/src/blogs/metadata/filepaths.ts'),
-      buildFilePathsFileOutput(blogsMetadata)
+      buildFilePathsFileOutput(mdMetadata)
     );
   } catch (err) {
     return console.log('Unable to finish generate metadata: ' + err);
