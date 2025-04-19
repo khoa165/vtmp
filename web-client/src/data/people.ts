@@ -9,6 +9,7 @@ import {
 export const mentorshipPeople: Record<string, MentorshipPerson> = {
   khoale: {
     name: 'Khoa Le',
+    firstLast: 'Khoa Le',
     alias: 'khoale',
     trackingName: 'Khoa',
     hobbies: 'board games, chess, reality shows',
@@ -50,6 +51,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   huyanh: {
     name: 'Huy Anh',
+    firstLast: 'Anh Nguyen',
     alias: 'huyanh',
     trackingName: 'Huy Anh',
     hobbies: 'cats, startups, capybara',
@@ -84,6 +86,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   chanle: {
     name: 'Chan Le',
+    firstLast: 'Chan Le',
     alias: 'chanle',
     trackingName: 'Chân',
     hobbies: 'real estate, real estate, real estate',
@@ -105,6 +108,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   nguyenvu: {
     name: 'Nguyen Vu',
+    firstLast: 'Nguyen Vu',
     alias: 'nguyenvu',
     trackingName: 'Nguyên',
     hobbies: 'hiking, nature, cooking',
@@ -131,6 +135,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   thuanh: {
     name: 'Thu Anh',
+    firstLast: 'Anh Pham',
     alias: 'thuanh',
     trackingName: 'Thu Anh',
     hobbies: 'reading, writing, corgi',
@@ -157,6 +162,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   kevinluu: {
     name: 'Kevin Luu',
+    firstLast: 'Kevin Luu',
     alias: 'kevinluu',
     trackingName: 'Kevin',
     hobbies: 'travel, pickle ball, badminton',
@@ -183,6 +189,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   jennyquach: {
     name: 'Jenny Quach',
+    firstLast: 'Jenny Quach',
     alias: 'jennyquach',
     trackingName: 'Jenny',
     hobbies: 'board games, anime, food',
@@ -256,7 +263,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
   },
   thienson: {
-    name: 'Son Mac',
+    name: 'Thien Son',
+    firstLast: 'Son Mac',
     alias: 'thienson',
     trackingName: 'Thiên Sơn',
     hobbies: 'frontend, cats, travel',
@@ -278,6 +286,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   nickdoan: {
     name: 'Nick Doan',
+    firstLast: 'Nick Doan',
     alias: 'nickdoan',
     trackingName: 'Nick',
     hobbies: 'coding, running, games',
@@ -299,6 +308,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   sarahvo: {
     name: 'Sarah Vo',
+    firstLast: 'Sarah Vo',
     alias: 'sarahvo',
     trackingName: 'Sarah',
     hobbies: 'board games, PC games, cooking',
@@ -314,7 +324,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     hasNeverBeenMenteeOfProgram: true,
   },
   huudang: {
-    name: 'Dang Pham',
+    name: 'Huu Dang',
+    firstLast: 'Dang Pham',
     alias: 'huudang',
     trackingName: 'Đăng',
     hobbies: 'reading, writing, gaming',
@@ -369,6 +380,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   robinhoang: {
     name: 'Robin Hoang',
+    firstLast: 'Robin Hoang',
     alias: 'robinhoang',
     trackingName: 'Robin',
     hobbies: 'solo trip, pole dance, beach',
@@ -423,6 +435,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   phuocong: {
     name: 'Phuoc Ong',
+    firstLast: 'Phuoc Ong',
     alias: 'phuocong',
     trackingName: 'Phước',
     hobbies: 'gym, food, dog',
@@ -507,6 +520,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   khuetang: {
     name: 'Khue Tang',
+    firstLast: 'Khue Tang',
     alias: 'khuetang',
     trackingName: 'Khuê',
     hobbies: 'pekking duck, cooking, hiking',
@@ -560,6 +574,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   phuongcao: {
     name: 'Phuong Cao',
+    firstLast: 'Phuong Cao',
     alias: 'phuongcao',
     trackingName: 'Phương',
     hobbies: 'pekking duck, anime, music',
@@ -620,6 +635,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   ngocdoan: {
     name: 'Ngoc Doan',
+    firstLast: 'Ngoc Doan',
     alias: 'ngocdoan',
     trackingName: 'Ngọc',
     hobbies: 'road trip, food, concert',
@@ -668,6 +684,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   cuongnguyen: {
     name: 'Cuong Nguyen',
+    firstLast: 'Cuong Nguyen',
     alias: 'cuongnguyen',
     trackingName: 'Cường',
     hobbies: 'board games, PC games, anime',
@@ -733,7 +750,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
   },
   minhquan: {
-    name: 'Quan Le',
+    name: 'Minh Quan',
+    firstLast: 'Quan Le',
     alias: 'minhquan',
     trackingName: 'Minh Quân',
     hobbies: 'cosplay, board games, music',
@@ -787,7 +805,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
   },
   trangvu: {
-    name: 'Trang Vu',
+    name: 'Thuy Trang',
+    firstLast: 'Trang Vu',
     alias: 'trangvu',
     trackingName: 'Trang Vũ',
     hobbies: 'board games, K-drama, flowers',
@@ -833,6 +852,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   hieuvuong: {
     name: 'Hieu Vuong',
+    firstLast: 'Hieu Vuong',
     alias: 'hieuvuong',
     trackingName: 'Hiếu',
     hobbies: 'karaoke, beauty salon, travel',
@@ -867,6 +887,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   thanhnguyen: {
     name: 'Thanh Nguyen',
+    firstLast: 'Thanh Nguyen',
     alias: 'thanhnguyen',
     trackingName: 'Thành',
     hobbies: 'beach, solo travel, writing',
@@ -899,6 +920,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   hungngo: {
     name: 'Hung Ngo',
+    firstLast: 'Hung Ngo',
     alias: 'hungngo',
     trackingName: 'Hưng',
     hobbies: 'keyboard, music, League',
@@ -933,6 +955,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   ngocanhtran: {
     name: 'Ngoc Anh Tran',
+    firstLast: 'Anh Tran',
     alias: 'ngocanhtran',
     trackingName: 'Ngọc Anh',
     hobbies: 'cooking, Chinese dramas, dogs',
@@ -979,6 +1002,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   vynguyen: {
     name: 'Vy Nguyen',
+    firstLast: 'Vy Nguyen',
     alias: 'vynguyen',
     trackingName: 'Thuý Vy',
     hobbies: 'music, cooking, travel',
@@ -1000,6 +1024,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   viennguyen: {
     name: 'Vien Nguyen',
+    firstLast: 'Vien Nguyen',
     alias: 'viennguyen',
     trackingName: 'Viên',
     hobbies: 'fencing, table tennis, travelling',
@@ -1039,7 +1064,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
   },
   thucanh: {
-    name: 'Ally Hoang',
+    name: 'Thuc Anh',
+    firstLast: 'Anh Hoang',
     alias: 'thucanh',
     trackingName: 'Thục Anh',
     hobbies: 'cooking, embroidery, travel',
@@ -1098,6 +1124,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   giangpham: {
     name: 'Giang Pham',
+    firstLast: 'Giang Pham',
     alias: 'giangpham',
     trackingName: 'Giang',
     hobbies: 'Kpop, cooking, japanese books',
@@ -1132,6 +1159,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   phananh: {
     name: 'Phan Anh',
+    firstLast: 'Anh Nguyen',
     alias: 'phananh',
     trackingName: 'Phan Anh',
     hobbies: 'soccer, running, coding',
@@ -1172,6 +1200,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   quynguyen: {
     name: 'Quy Nguyen',
+    firstLast: 'Quy Nguyen',
     alias: 'quynguyen',
     trackingName: 'Quý',
     hobbies: 'sports, soccer games, movies',
@@ -1193,6 +1222,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   thangnguyen: {
     name: 'Thang Nguyen',
+    firstLast: 'Thang Nguyen',
     alias: 'thangnguyen',
     trackingName: 'Thắng',
     hobbies: 'badminton, basketball, video game',
@@ -1214,6 +1244,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   quynhtran: {
     name: 'Quynh Tran',
+    firstLast: 'Quynh Tran',
     alias: 'quynhtran',
     trackingName: 'Quỳnh',
     hobbies: 'cats, K-pop, travel',
@@ -1266,6 +1297,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   phuongle: {
     name: 'Phuong Le',
+    firstLast: 'Phuong Le',
     alias: 'phuongle',
     trackingName: 'Phượng',
     hobbies: 'films, novels, pop ballad',
@@ -1305,7 +1337,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
   },
   baquan: {
-    name: 'Quan Nguyen',
+    name: 'Ba Quan',
+    firstLast: 'Quan Nguyen',
     alias: 'baquan',
     trackingName: 'Bá Quân',
     hobbies: 'guitar, photography, fishing',
@@ -1340,6 +1373,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   vytran: {
     name: 'Vy Tran',
+    firstLast: 'Vy Tran',
     alias: 'vytran',
     trackingName: 'Vy Trần',
     hobbies: 'soccer, mountains, dogs',
@@ -1392,6 +1426,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   tranglinh: {
     name: 'Trang Linh',
+    firstLast: 'Linh Tran',
     alias: 'tranglinh',
     trackingName: 'Trang Linh',
     hobbies: 'draw, sleep, axolotl',
@@ -1432,6 +1467,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   phuckhang: {
     name: 'Phuc Khang',
+    firstLast: 'Khang Nguyen',
     alias: 'phuckhang',
     trackingName: 'Phúc Khang',
     hobbies: 'ice-skating, MUN, skywatching',
@@ -1466,6 +1502,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   longdau: {
     name: 'Long Dau',
+    firstLast: 'Long Dau',
     alias: 'longdau',
     trackingName: 'Long',
     hobbies: 'sports, video game, rap',
@@ -1506,6 +1543,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   hoangnguyen: {
     name: 'Hoang Nguyen',
+    firstLast: 'Hoang Nguyen',
     alias: 'hoangnguyen',
     trackingName: 'Hoàng',
     hobbies: 'indie, k-drama, solo travel',
@@ -1555,6 +1593,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   halinh: {
     name: 'Ha Linh',
+    firstLast: 'Linh Nguyen',
     alias: 'halinh',
     trackingName: 'Hà Linh',
     hobbies: 'food, music, roller coaster',
@@ -1592,6 +1631,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   khanhlinh: {
     name: 'Khanh Linh',
+    firstLast: 'Linh Hoang',
     alias: 'khanhlinh',
     trackingName: 'Khánh Linh',
     hobbies: 'music, dumb tv shows, sunbathing',
@@ -1638,6 +1678,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   huukhang: {
     name: 'Huu Khang',
+    firstLast: 'Khang Nguyen',
     alias: 'huukhang',
     trackingName: 'Hữu Khang',
     hobbies: 'J-pop, gaming, anime',
@@ -1683,7 +1724,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
   },
   trangdo: {
-    name: 'Trang Do',
+    name: 'Lien Trang',
+    firstLast: 'Trang Do',
     alias: 'trangdo',
     trackingName: 'Trang Đỗ',
     hobbies: 'kdrama, cooking, Vpop',
@@ -1736,6 +1778,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   haianh: {
     name: 'Hai Anh',
+    firstLast: 'Anh Nguyen',
     alias: 'haianh',
     trackingName: 'Hải Anh',
     hobbies: 'walking, bike riding, road trip',
@@ -1770,6 +1813,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   namnguyen: {
     name: 'Nam Nguyen',
+    firstLast: 'Nam Nguyen',
     alias: 'namnguyen',
     trackingName: 'Nam',
     hobbies: 'soccer, One Piece, piano',
@@ -1804,6 +1848,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   trihoang: {
     name: 'Tri Hoang',
+    firstLast: 'Tri Hoang',
     alias: 'trihoang',
     trackingName: 'Trí',
     hobbies: 'sports, traveling, movies',
@@ -1874,6 +1919,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   vannguyen: {
     name: 'Van Nguyen',
+    firstLast: 'Van Nguyen',
     alias: 'vannguyen',
     trackingName: 'Vân',
     hobbies: 'kdrama, tarot, drums',
@@ -1965,6 +2011,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   khatran: {
     name: 'Kha Tran',
+    firstLast: 'Kha Tran',
     alias: 'khatran',
     trackingName: 'Kha',
     hobbies: 'coding, reading, gaming',
@@ -1986,6 +2033,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   huequan: {
     name: 'Hue Quan',
+    firstLast: 'Quan Vu',
     alias: 'huequan',
     trackingName: 'Huệ Quân',
     hobbies: '',
@@ -2001,6 +2049,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   tranvo: {
     name: 'Tran Vo',
+    firstLast: 'Tran Vo',
     alias: 'tranvo',
     trackingName: 'Trân',
     hobbies: 'museums, cafe-hopping, Disneyland',
@@ -2016,6 +2065,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   diepnguyen: {
     name: 'Diep Nguyen',
+    firstLast: 'Diep Nguyen',
     alias: 'diepnguyen',
     trackingName: 'Diệp',
     hobbies: '',
@@ -2031,6 +2081,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   phuctruong: {
     name: 'Phuc Truong',
+    firstLast: 'Phuc Truong',
     alias: 'phuctruong',
     trackingName: 'Jun',
     hobbies: '',
@@ -2046,6 +2097,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   antran: {
     name: 'An Tran',
+    firstLast: 'An Tran',
     alias: 'antran',
     trackingName: 'Ân',
     hobbies: '',
@@ -2061,6 +2113,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   quangminh: {
     name: 'Quang Minh',
+    firstLast: 'Minh Nguyen',
     alias: 'quangminh',
     trackingName: 'Quang Minh',
     hobbies: '',
@@ -2076,6 +2129,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   dangson: {
     name: 'Dang Son',
+    firstLast: 'Son Mai',
     alias: 'dangson',
     trackingName: 'Đăng Sơn',
     hobbies: '',
@@ -2091,6 +2145,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   ngoclinh: {
     name: 'Ngoc Linh',
+    firstLast: 'Linh Le',
     alias: 'ngoclinh',
     trackingName: 'Ngọc Linh',
     hobbies: '',
@@ -2106,6 +2161,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   ducnguyen: {
     name: 'Duc Nguyen',
+    firstLast: 'Duc Nguyen',
     alias: 'ducnguyen',
     trackingName: 'Đức',
     hobbies: '',
@@ -2121,6 +2177,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   xuananh: {
     name: 'Xuan Anh',
+    firstLast: 'Anh Tran',
     alias: 'xuananh',
     trackingName: 'Xuân Anh',
     hobbies: '',
@@ -2136,6 +2193,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   datvu: {
     name: 'Dat Vu',
+    firstLast: 'Dat Vu',
     alias: 'datvu',
     trackingName: 'Đạt',
     hobbies: '',
@@ -2151,6 +2209,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   chautran: {
     name: 'Chau Tran',
+    firstLast: 'Chau Tran',
     alias: 'chautran',
     trackingName: 'Châu Trần',
     hobbies: '',
@@ -2166,6 +2225,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   tuananh: {
     name: 'Tuan Anh',
+    firstLast: 'Anh Ngo',
     alias: 'tuananh',
     trackingName: 'Tuấn Anh',
     hobbies: '',
@@ -2181,6 +2241,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   quyendoan: {
     name: 'Quyen Doan',
+    firstLast: 'Quyen Doan',
     alias: 'quyendoan',
     trackingName: 'Quyên',
     hobbies: '',
@@ -2196,6 +2257,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   nhatle: {
     name: 'Nhat Le',
+    firstLast: 'Nhat Le',
     alias: 'nhatle',
     trackingName: 'Nhật',
     hobbies: '',
@@ -2211,6 +2273,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   dannguyen: {
     name: 'Dan Nguyen',
+    firstLast: 'Dan Nguyen',
     alias: 'dannguyen',
     trackingName: 'Đan',
     hobbies: '',
@@ -2226,6 +2289,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   tamnguyen: {
     name: 'Tam Nguyen',
+    firstLast: 'Tam Nguyen',
     alias: 'tamnguyen',
     trackingName: 'Tâm Nguyễn',
     hobbies: '',
@@ -2241,6 +2305,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   thaidang: {
     name: 'Thai Dang',
+    firstLast: 'Dang Nguyen',
     alias: 'thaidang',
     trackingName: 'Thái Đăng',
     hobbies: '',
@@ -2256,6 +2321,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   ngocminh: {
     name: 'Ngoc Minh',
+    firstLast: 'Minh Le',
     alias: 'ngocminh',
     trackingName: 'Ngọc Minh',
     hobbies: '',
@@ -2271,6 +2337,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   tringuyen: {
     name: 'Tri Nguyen',
+    firstLast: 'Tri Nguyen',
     alias: 'tringuyen',
     trackingName: 'Trí Nguyễn',
     hobbies: '',
@@ -2286,6 +2353,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   tamdang: {
     name: 'Tam Dang',
+    firstLast: 'Tam Dang',
     alias: 'tamdang',
     trackingName: 'Tâm Đặng',
     hobbies: '',
@@ -2301,6 +2369,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   kevindoan: {
     name: 'Kevin Doan',
+    firstLast: 'Kevin Doan',
     alias: 'kevindoan',
     trackingName: 'Kevin Đoàn',
     hobbies: '',
@@ -2316,6 +2385,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   thuylinh: {
     name: 'Thuy Linh',
+    firstLast: 'Linh Nguyen',
     alias: 'thuylinh',
     trackingName: 'Thùy Linh',
     hobbies: '',
@@ -2331,6 +2401,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   kientran: {
     name: 'Kien Tran',
+    firstLast: 'Kien Tran',
     alias: 'kientran',
     trackingName: 'Kiên Trần',
     hobbies: '',
@@ -2346,6 +2417,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   hanguyen: {
     name: 'Ha Nguyen',
+    firstLast: 'Ha Nguyen',
     alias: 'hanguyen',
     trackingName: 'Hà Nguyễn',
     hobbies: '',
@@ -2361,6 +2433,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   uyenhoang: {
     name: 'Uyen Hoang',
+    firstLast: 'Uyen Hoang',
     alias: 'uyenhoang',
     trackingName: 'Uyên',
     hobbies: '',
@@ -2376,6 +2449,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   ngocanhhoang: {
     name: 'Ngoc Anh Hoang',
+    firstLast: 'Anh Hoang',
     alias: 'ngocanhhoang',
     trackingName: 'Ngọc Anh Hoàng',
     hobbies: '',
@@ -2391,6 +2465,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   },
   monicahuynh: {
     name: 'Monica Huynh',
+    firstLast: 'Monica Huynh',
     alias: 'monicahuynh',
     trackingName: 'Monica',
     hobbies: '',

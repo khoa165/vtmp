@@ -46,6 +46,7 @@ export interface MentorshipTerm {
 
 export interface MentorshipPerson {
   name: string;
+  firstLast: string;
   alias: string;
   trackingName: string;
   hobbies: string;
