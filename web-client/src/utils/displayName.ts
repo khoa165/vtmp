@@ -7,8 +7,8 @@ export const groupDisplayName: Record<MentorshipGroup, string> = {
 };
 
 export const roleDisplayName: Record<MentorshipRole, string> = {
+  [MentorshipRole.PROGRAM_LEAD]: 'Program Lead',
   [MentorshipRole.SWE_PROGRAM_LEAD]: 'SWE Program Lead',
-  [MentorshipRole.PROGRAM_MANAGER]: 'Program Manager',
   [MentorshipRole.PROGRAM_FOUNDER]: 'Program Founder',
   [MentorshipRole.PROGRAM_ADVISOR]: 'Program Advisor',
   [MentorshipRole.SWE_RISING_LEAD]: 'SWE Lead',

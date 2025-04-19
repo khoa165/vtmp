@@ -33,7 +33,7 @@ export const isHiddenRole = (
 ): boolean =>
   role === MentorshipRole.PROGRAM_FOUNDER ||
   (role === MentorshipRole.SWE_LEAD &&
-    roles.includes(MentorshipRole.PROGRAM_MANAGER));
+    roles.includes(MentorshipRole.PROGRAM_LEAD));
 
 export const getGroupDisplayName = (group: MentorshipGroup): string =>
   groupDisplayName[group];
@@ -77,9 +77,7 @@ const isLeadSubsetRole = (person: MentorshipPerson, year: number) =>
   );
 
 const isProgramManager = (person: MentorshipPerson, year: number) =>
-  Boolean(
-    getTerm(person, year)?.roles?.includes(MentorshipRole.PROGRAM_MANAGER)
-  );
+  Boolean(getTerm(person, year)?.roles?.includes(MentorshipRole.PROGRAM_LEAD));
 
 export const doesPersonHaveRoleInYear = (
   person: MentorshipPerson,

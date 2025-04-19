@@ -1,7 +1,7 @@
 import { InterviewType, MentorshipRole } from '@common/enums';
 
 export const rolePriority: Record<MentorshipRole, number> = {
-  [MentorshipRole.PROGRAM_MANAGER]: 1.0,
+  [MentorshipRole.PROGRAM_LEAD]: 1.0,
   [MentorshipRole.PROGRAM_FOUNDER]: 1.1,
   [MentorshipRole.SWE_PROGRAM_LEAD]: 1.2,
   [MentorshipRole.PROGRAM_ADVISOR]: 1.3,

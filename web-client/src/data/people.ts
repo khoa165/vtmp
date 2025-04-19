@@ -20,7 +20,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Software Engineer @ Vanta',
         roles: [
           MentorshipRole.PROGRAM_FOUNDER,
-          MentorshipRole.PROGRAM_MANAGER,
+          MentorshipRole.PROGRAM_LEAD,
           MentorshipRole.SWE_PROGRAM_LEAD,
           MentorshipRole.SWE_MENTOR,
         ],
@@ -30,7 +30,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Software Engineer II @ Vanta',
         roles: [
           MentorshipRole.PROGRAM_FOUNDER,
-          MentorshipRole.PROGRAM_MANAGER,
+          MentorshipRole.PROGRAM_LEAD,
           MentorshipRole.SWE_PROGRAM_LEAD,
           MentorshipRole.SWE_MENTOR,
         ],
@@ -40,7 +40,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Software Engineer II @ Vanta',
         roles: [
           MentorshipRole.PROGRAM_FOUNDER,
-          MentorshipRole.PROGRAM_MANAGER,
+          MentorshipRole.PROGRAM_LEAD,
           MentorshipRole.SWE_LEAD,
           MentorshipRole.SWE_MENTOR,
         ],
