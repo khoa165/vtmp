@@ -6,7 +6,7 @@ import {
   CardBody,
   UncontrolledTooltip,
 } from 'reactstrap';
-import { FaArrowTrendUp, FaCode, FaHammer } from 'react-icons/fa6';
+import { FaArrowTrendUp, FaCode } from 'react-icons/fa6';
 import { RiTeamFill } from 'react-icons/ri';
 import { Avatar } from 'src/components/layout/avatar';
 import { MiniPeopleList } from 'src/components/layout/mini-people-list';
@@ -24,6 +24,7 @@ import { useGate } from 'statsig-react';
 import { MiniCompaniesList } from 'src/components/layout/mini-companies-list';
 import { PeopleSortColumn } from 'src/utils/constants';
 import { useSearchParams } from 'react-router-dom';
+import { projectDisplayName } from '@/utils/displayName';
 
 interface PeopleCardProps extends React.HTMLAttributes<HTMLDivElement> {
   year: number | 'all';
@@ -87,7 +88,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
     <Card className="mentorship-people-card">
       {showOffers && (
         <div className="info-offers">
-          <CardSubtitle className="app-flex col af-left medium-gap">
+          <CardSubtitle className="flex flex-col gap-y-2">
             <MiniCompaniesList
               offersList={currentTerm?.offers ?? []}
               prefix={alias}
@@ -98,8 +99,9 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
       )}
       {(mentors || projectAdvisors) && (
         <div className="info-assignment">
-          {mentors && (
-            <CardSubtitle className="info-mentors app-flex af-right mt-1 mb-2">
+          {mentors?.length && (
+            <CardSubtitle className="flex justify-end items-center gap-x-2 mt-1">
+              <MiniPeopleList peopleList={mentors} prefix={alias} />
               <FaArrowTrendUp id={`${alias}-mentors-icon`} />
               <UncontrolledTooltip
                 placement="bottom"
@@ -107,12 +109,12 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
               >
                 One-on-one mentors
               </UncontrolledTooltip>
-              <MiniPeopleList peopleList={mentors} prefix={alias} />
             </CardSubtitle>
           )}
 
-          {projectAdvisors && (
-            <CardSubtitle className="info-advisors app-flex af-right mt-2">
+          {projectAdvisors?.length && (
+            <CardSubtitle className="flex items-center justify-end gap-x-2 mt-2">
+              <MiniPeopleList peopleList={projectAdvisors} prefix={alias} />
               <FaCode id={`${alias}-advisors-icon`} />
               <UncontrolledTooltip
                 placement="bottom"
@@ -120,7 +122,34 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
               >
                 Project technical mentors
               </UncontrolledTooltip>
-              <MiniPeopleList peopleList={projectAdvisors} prefix={alias} />
+            </CardSubtitle>
+          )}
+          {/* {teamName && projectDisplayName[teamName] && (
+            <CardSubtitle className="flex gap-x-2 mt-2">
+              {projectDisplayName[teamName]}
+              <FaHammer id={`${alias}-build-icon`} />
+              <UncontrolledTooltip
+                placement="bottom"
+                target={`${alias}-build-icon`}
+              >
+                Group project
+              </UncontrolledTooltip>
+            </CardSubtitle>
+          )} */}
+          {teamName && teammates && (
+            <CardSubtitle className="flex gap-x-2 mt-2">
+              <div className="flex flex-col gap-y-2">
+                <MiniPeopleList peopleList={teammates} prefix={alias} />
+              </div>
+              <div className="mt-1">
+                <RiTeamFill id={`${alias}-teammates-icon`} />
+                <UncontrolledTooltip
+                  placement="bottom"
+                  target={`${alias}-teammates-icon`}
+                >
+                  Teammates from group project {projectDisplayName[teamName]}
+                </UncontrolledTooltip>
+              </div>
             </CardSubtitle>
           )}
         </div>
@@ -135,25 +164,6 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
               .map(getRoleDisplayName)
               .join(' / ')}
           </CardSubtitle>
-        )}
-        {teammates && (
-          <div className="app-flex mt-2">
-            <FaHammer id={`${alias}-build-icon`} /> {teamName}
-            <UncontrolledTooltip
-              placement="bottom"
-              target={`${alias}-build-icon`}
-            >
-              Group project
-            </UncontrolledTooltip>
-            <RiTeamFill id={`${alias}-teammates-icon`} />
-            <UncontrolledTooltip
-              placement="bottom"
-              target={`${alias}-teammates-icon`}
-            >
-              Teammates
-            </UncontrolledTooltip>
-            <MiniPeopleList peopleList={teammates} prefix={alias} />
-          </div>
         )}
         <hr />
         <CardSubtitle className="people-title">{title}</CardSubtitle>

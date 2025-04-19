@@ -38,7 +38,6 @@ export interface MentorshipTerm {
   offers?: MentorshipOffer[];
   teamName?: string;
   teamNumber?: number;
-  teamRanking?: number;
   teammates?: string[];
   mentors?: string[];
   projectAdvisors?: string[];

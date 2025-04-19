@@ -5,16 +5,17 @@ import {
   OfferChannel,
   OfferType,
 } from '@common/enums';
+import { PeopleName, ProjectName } from '@/utils/constants';
 
 export const mentorshipPeople: Record<string, MentorshipPerson> = {
-  khoale: {
+  [PeopleName.KHOA_LE]: {
     name: 'Khoa Le',
     firstLast: 'Khoa Le',
-    alias: 'khoale',
+    alias: PeopleName.KHOA_LE,
     trackingName: 'Khoa',
     hobbies: 'board games, chess, reality shows',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/khoale.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/khoale.jpg',
     terms: [
       {
         year: 2023,
@@ -49,14 +50,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
     hasNeverBeenMenteeOfProgram: true,
   },
-  huyanh: {
+  [PeopleName.HUY_ANH]: {
     name: 'Huy Anh',
     firstLast: 'Anh Nguyen',
-    alias: 'huyanh',
+    alias: PeopleName.HUY_ANH,
     trackingName: 'Huy Anh',
     hobbies: 'cats, startups, capybara',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/huyanh.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/huyanh.jpg',
     terms: [
       {
         year: 2023,
@@ -84,14 +85,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
     hasNeverBeenMenteeOfProgram: true,
   },
-  chanle: {
+  [PeopleName.CHAN_LE]: {
     name: 'Chan Le',
     firstLast: 'Chan Le',
-    alias: 'chanle',
+    alias: PeopleName.CHAN_LE,
     trackingName: 'Chân',
     hobbies: 'real estate, real estate, real estate',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/chanle.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/chanle.jpg',
     terms: [
       {
         year: 2023,
@@ -106,14 +107,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
     hasNeverBeenMenteeOfProgram: true,
   },
-  nguyenvu: {
+  [PeopleName.NGUYEN_VU]: {
     name: 'Nguyen Vu',
     firstLast: 'Nguyen Vu',
-    alias: 'nguyenvu',
+    alias: PeopleName.NGUYEN_VU,
     trackingName: 'Nguyên',
     hobbies: 'hiking, nature, cooking',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/nguyenvu.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/nguyenvu.jpg',
     terms: [
       {
         year: 2023,
@@ -133,14 +134,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
     hasNeverBeenMenteeOfProgram: true,
   },
-  thuanh: {
+  [PeopleName.THU_ANH]: {
     name: 'Thu Anh',
     firstLast: 'Anh Pham',
-    alias: 'thuanh',
+    alias: PeopleName.THU_ANH,
     trackingName: 'Thu Anh',
     hobbies: 'reading, writing, corgi',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/thuanh.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thuanh.jpg',
     terms: [
       {
         year: 2023,
@@ -160,14 +161,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
     hasNeverBeenMenteeOfProgram: true,
   },
-  kevinluu: {
+  [PeopleName.KEVIN_LUU]: {
     name: 'Kevin Luu',
     firstLast: 'Kevin Luu',
-    alias: 'kevinluu',
+    alias: PeopleName.KEVIN_LUU,
     trackingName: 'Kevin',
     hobbies: 'travel, pickle ball, badminton',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/kevinluu.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/kevinluu.jpg',
     terms: [
       {
         year: 2023,
@@ -187,14 +188,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
     hasNeverBeenMenteeOfProgram: true,
   },
-  jennyquach: {
+  [PeopleName.JENNY_QUACH]: {
     name: 'Jenny Quach',
     firstLast: 'Jenny Quach',
-    alias: 'jennyquach',
+    alias: PeopleName.JENNY_QUACH,
     trackingName: 'Jenny',
     hobbies: 'board games, anime, food',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/jennyquach.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/jennyquach.jpg',
     terms: [
       {
         year: 2023,
@@ -226,12 +227,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2023-09-29',
           },
         ],
-        teamName: 'Productify',
+        teamName: ProjectName.PRODUCTIFY,
         teamNumber: 3,
-        teamRanking: 1,
-        teammates: ['huudang', 'robinhoang', 'phuocong'],
-        mentors: ['kevinluu'],
-        projectAdvisors: ['khoale'],
+        teammates: [
+          PeopleName.HUU_DANG,
+          PeopleName.ROBIN_HOANG,
+          PeopleName.PHUOC_ONG,
+        ],
+        mentors: [PeopleName.KEVIN_LUU],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
       {
         year: 2024,
@@ -262,14 +266,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  thienson: {
+  [PeopleName.THIEN_SON]: {
     name: 'Thien Son',
     firstLast: 'Son Mac',
-    alias: 'thienson',
+    alias: PeopleName.THIEN_SON,
     trackingName: 'Thiên Sơn',
     hobbies: 'frontend, cats, travel',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/thienson.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thienson.jpg',
     terms: [
       {
         year: 2024,
@@ -284,14 +288,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
     hasNeverBeenMenteeOfProgram: true,
   },
-  nickdoan: {
+  [PeopleName.NICK_DOAN]: {
     name: 'Nick Doan',
     firstLast: 'Nick Doan',
-    alias: 'nickdoan',
+    alias: PeopleName.NICK_DOAN,
     trackingName: 'Nick',
     hobbies: 'coding, running, games',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/nickdoan.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/nickdoan.jpg',
     terms: [
       {
         year: 2024,
@@ -306,14 +310,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
     hasNeverBeenMenteeOfProgram: true,
   },
-  sarahvo: {
+  [PeopleName.SARAH_VO]: {
     name: 'Sarah Vo',
     firstLast: 'Sarah Vo',
-    alias: 'sarahvo',
+    alias: PeopleName.SARAH_VO,
     trackingName: 'Sarah',
     hobbies: 'board games, PC games, cooking',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/sarahvo.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/sarahvo.jpg',
     terms: [
       {
         year: 2025,
@@ -323,14 +327,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     ],
     hasNeverBeenMenteeOfProgram: true,
   },
-  huudang: {
+  [PeopleName.HUU_DANG]: {
     name: 'Huu Dang',
     firstLast: 'Dang Pham',
-    alias: 'huudang',
+    alias: PeopleName.HUU_DANG,
     trackingName: 'Đăng',
     hobbies: 'reading, writing, gaming',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/huudang.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/huudang.jpg',
     terms: [
       {
         year: 2023,
@@ -350,12 +354,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2023-11-07',
           },
         ],
-        teamName: 'Productify',
+        teamName: ProjectName.PRODUCTIFY,
         teamNumber: 3,
-        teamRanking: 1,
-        teammates: ['jennyquach', 'robinhoang', 'phuocong'],
-        mentors: ['huyanh'],
-        projectAdvisors: ['khoale'],
+        teammates: [
+          PeopleName.JENNY_QUACH,
+          PeopleName.ROBIN_HOANG,
+          PeopleName.PHUOC_ONG,
+        ],
+        mentors: [PeopleName.HUY_ANH],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
       {
         year: 2024,
@@ -378,14 +385,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  robinhoang: {
+  [PeopleName.ROBIN_HOANG]: {
     name: 'Robin Hoang',
     firstLast: 'Robin Hoang',
-    alias: 'robinhoang',
+    alias: PeopleName.ROBIN_HOANG,
     trackingName: 'Robin',
     hobbies: 'solo trip, pole dance, beach',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/robinhoang.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/robinhoang.jpg',
     terms: [
       {
         year: 2023,
@@ -411,12 +418,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2023-10-10',
           },
         ],
-        teamName: 'Productify',
+        teamName: ProjectName.PRODUCTIFY,
         teamNumber: 3,
-        teamRanking: 1,
-        teammates: ['huudang', 'jennyquach', 'phuocong'],
-        mentors: ['khoale', 'thuanh'],
-        projectAdvisors: ['khoale'],
+        teammates: [
+          PeopleName.HUU_DANG,
+          PeopleName.JENNY_QUACH,
+          PeopleName.PHUOC_ONG,
+        ],
+        mentors: [PeopleName.KHOA_LE, PeopleName.THU_ANH],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
       {
         year: 2024,
@@ -433,14 +443,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  phuocong: {
+  [PeopleName.PHUOC_ONG]: {
     name: 'Phuoc Ong',
     firstLast: 'Phuoc Ong',
-    alias: 'phuocong',
+    alias: PeopleName.PHUOC_ONG,
     trackingName: 'Phước',
     hobbies: 'gym, food, dog',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/phuocong.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phuocong.jpg',
     terms: [
       {
         year: 2023,
@@ -466,12 +476,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-01-22',
           },
         ],
-        teamName: 'Productify',
+        teamName: ProjectName.PRODUCTIFY,
         teamNumber: 3,
-        teamRanking: 1,
-        teammates: ['huudang', 'jennyquach', 'robinhoang'],
-        mentors: ['nguyenvu'],
-        projectAdvisors: ['khoale'],
+        teammates: [
+          PeopleName.HUU_DANG,
+          PeopleName.JENNY_QUACH,
+          PeopleName.ROBIN_HOANG,
+        ],
+        mentors: [PeopleName.NGUYEN_VU],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
       {
         year: 2024,
@@ -518,14 +531,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  khuetang: {
+  [PeopleName.KHUE_TANG]: {
     name: 'Khue Tang',
     firstLast: 'Khue Tang',
-    alias: 'khuetang',
+    alias: PeopleName.KHUE_TANG,
     trackingName: 'Khuê',
     hobbies: 'pekking duck, cooking, hiking',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/khuetang.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/khuetang.jpg',
     terms: [
       {
         year: 2023,
@@ -545,12 +558,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2023-10-04',
           },
         ],
-        teamName: 'Safe travel',
+        teamName: ProjectName.SAFE_TRAVEL,
         teamNumber: 2,
-        teamRanking: 2,
-        teammates: ['phuongcao', 'ngocdoan', 'cuongnguyen'],
-        mentors: ['khoale'],
-        projectAdvisors: ['khoale'],
+        teammates: [
+          PeopleName.PHUONG_CAO,
+          PeopleName.NGOC_DOAN,
+          PeopleName.CUONG_NGUYEN,
+        ],
+        mentors: [PeopleName.KHOA_LE],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
       {
         year: 2024,
@@ -572,14 +588,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  phuongcao: {
+  [PeopleName.PHUONG_CAO]: {
     name: 'Phuong Cao',
     firstLast: 'Phuong Cao',
-    alias: 'phuongcao',
+    alias: PeopleName.PHUONG_CAO,
     trackingName: 'Phương',
     hobbies: 'pekking duck, anime, music',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/phuongcao.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phuongcao.jpg',
     terms: [
       {
         year: 2023,
@@ -599,12 +615,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2023-10-06',
           },
         ],
-        teamName: 'Safe travel',
+        teamName: ProjectName.SAFE_TRAVEL,
         teamNumber: 2,
-        teamRanking: 2,
-        teammates: ['khuetang', 'ngocdoan', 'cuongnguyen'],
-        mentors: ['kevinluu'],
-        projectAdvisors: ['khoale'],
+        teammates: [
+          PeopleName.KHUE_TANG,
+          PeopleName.NGOC_DOAN,
+          PeopleName.CUONG_NGUYEN,
+        ],
+        mentors: [PeopleName.KEVIN_LUU],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
       {
         year: 2024,
@@ -633,14 +652,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  ngocdoan: {
+  [PeopleName.NGOC_DOAN]: {
     name: 'Ngoc Doan',
     firstLast: 'Ngoc Doan',
-    alias: 'ngocdoan',
+    alias: PeopleName.NGOC_DOAN,
     trackingName: 'Ngọc',
     hobbies: 'road trip, food, concert',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/placeholder.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/placeholder.jpg',
     terms: [
       {
         year: 2023,
@@ -660,12 +679,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2023-09-29',
           },
         ],
-        teamName: 'Safe travel',
+        teamName: ProjectName.SAFE_TRAVEL,
         teamNumber: 2,
-        teamRanking: 2,
-        teammates: ['khuetang', 'phuongcao', 'cuongnguyen'],
-        mentors: ['nguyenvu'],
-        projectAdvisors: ['khoale'],
+        teammates: [
+          PeopleName.KHUE_TANG,
+          PeopleName.PHUONG_CAO,
+          PeopleName.CUONG_NGUYEN,
+        ],
+        mentors: [PeopleName.NGUYEN_VU],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
       {
         year: 2024,
@@ -682,14 +704,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  cuongnguyen: {
+  [PeopleName.CUONG_NGUYEN]: {
     name: 'Cuong Nguyen',
     firstLast: 'Cuong Nguyen',
-    alias: 'cuongnguyen',
+    alias: PeopleName.CUONG_NGUYEN,
     trackingName: 'Cường',
     hobbies: 'board games, PC games, anime',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/cuongnguyen.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/cuongnguyen.jpg',
     terms: [
       {
         year: 2023,
@@ -709,12 +731,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2023-12-01',
           },
         ],
-        teamName: 'Safe travel',
+        teamName: ProjectName.SAFE_TRAVEL,
         teamNumber: 2,
-        teamRanking: 2,
-        teammates: ['khuetang', 'phuongcao', 'ngocdoan'],
-        mentors: ['khoale'],
-        projectAdvisors: ['khoale'],
+        teammates: [
+          PeopleName.KHUE_TANG,
+          PeopleName.PHUONG_CAO,
+          PeopleName.NGOC_DOAN,
+        ],
+        mentors: [PeopleName.KHOA_LE],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
       {
         year: 2024,
@@ -749,14 +774,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  minhquan: {
+  [PeopleName.MINH_QUAN]: {
     name: 'Minh Quan',
     firstLast: 'Quan Le',
-    alias: 'minhquan',
+    alias: PeopleName.MINH_QUAN,
     trackingName: 'Minh Quân',
     hobbies: 'cosplay, board games, music',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/minhquan.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/minhquan.jpg',
     terms: [
       {
         year: 2023,
@@ -782,12 +807,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2023-10-05',
           },
         ],
-        teamName: 'Financial app',
+        teamName: ProjectName.FINANCIAL_APP,
         teamNumber: 1,
-        teamRanking: 3,
-        teammates: ['trangvu', 'hieuvuong', 'thanhnguyen'],
-        mentors: ['chanle'],
-        projectAdvisors: ['khoale'],
+        teammates: [
+          PeopleName.THUY_TRANG,
+          PeopleName.HIEU_VUONG,
+          PeopleName.THANH_NGUYEN,
+        ],
+        mentors: [PeopleName.CHAN_LE],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
       {
         year: 2024,
@@ -804,25 +832,28 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  trangvu: {
+  [PeopleName.THUY_TRANG]: {
     name: 'Thuy Trang',
     firstLast: 'Trang Vu',
-    alias: 'trangvu',
+    alias: PeopleName.THUY_TRANG,
     trackingName: 'Trang Vũ',
     hobbies: 'board games, K-drama, flowers',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/trangvu.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thuytrang.jpg',
     terms: [
       {
         year: 2023,
         title: 'Student @ York',
         roles: [MentorshipRole.SWE_MENTEE],
-        teamName: 'Financial app',
+        teamName: ProjectName.FINANCIAL_APP,
         teamNumber: 1,
-        teamRanking: 3,
-        teammates: ['minhquan', 'hieuvuong', 'thanhnguyen'],
-        mentors: ['huyanh'],
-        projectAdvisors: ['khoale'],
+        teammates: [
+          PeopleName.MINH_QUAN,
+          PeopleName.HIEU_VUONG,
+          PeopleName.THANH_NGUYEN,
+        ],
+        mentors: [PeopleName.HUY_ANH],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
       {
         year: 2024,
@@ -836,12 +867,19 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2025-02-07',
           },
         ],
-        teamName: 'Tourific',
+        teamName: ProjectName.TOURIFIC,
         teamNumber: 7,
-        teamRanking: 7,
-        teammates: ['trihoang', 'vannguyen', 'khatran'],
-        mentors: ['huyanh', 'khoale', 'vannguyen'],
-        projectAdvisors: ['nickdoan', 'khoale'],
+        teammates: [
+          PeopleName.TRI_HOANG,
+          PeopleName.VAN_NGUYEN,
+          PeopleName.KHA_TRAN,
+        ],
+        mentors: [
+          PeopleName.HUY_ANH,
+          PeopleName.KHOA_LE,
+          PeopleName.VAN_NGUYEN,
+        ],
+        projectAdvisors: [PeopleName.NICK_DOAN, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -850,14 +888,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  hieuvuong: {
+  [PeopleName.HIEU_VUONG]: {
     name: 'Hieu Vuong',
     firstLast: 'Hieu Vuong',
-    alias: 'hieuvuong',
+    alias: PeopleName.HIEU_VUONG,
     trackingName: 'Hiếu',
     hobbies: 'karaoke, beauty salon, travel',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/hieuvuong.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/hieuvuong.jpg',
     terms: [
       {
         year: 2023,
@@ -871,12 +909,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2023-11-08',
           },
         ],
-        teamName: 'Financial app',
+        teamName: ProjectName.FINANCIAL_APP,
         teamNumber: 1,
-        teamRanking: 3,
-        teammates: ['minhquan', 'trangvu', 'thanhnguyen'],
-        mentors: ['nguyenvu', 'thuanh'],
-        projectAdvisors: ['khoale'],
+        teammates: [
+          PeopleName.MINH_QUAN,
+          PeopleName.THUY_TRANG,
+          PeopleName.THANH_NGUYEN,
+        ],
+        mentors: [PeopleName.NGUYEN_VU, PeopleName.THU_ANH],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
       {
         year: 2024,
@@ -885,47 +926,67 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  thanhnguyen: {
+  [PeopleName.THANH_NGUYEN]: {
     name: 'Thanh Nguyen',
     firstLast: 'Thanh Nguyen',
-    alias: 'thanhnguyen',
+    alias: PeopleName.THANH_NGUYEN,
     trackingName: 'Thành',
     hobbies: 'beach, solo travel, writing',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/thanhnguyen.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thanhnguyen.jpg',
     terms: [
       {
         year: 2023,
         title: 'Student @ UBC',
         roles: [MentorshipRole.SWE_MENTEE],
-        teamName: 'Financial app',
+        teamName: ProjectName.FINANCIAL_APP,
         teamNumber: 1,
-        teamRanking: 3,
-        teammates: ['minhquan', 'trangvu', 'hieuvuong'],
-        mentors: ['khoale'],
-        projectAdvisors: ['khoale'],
+        teammates: [
+          PeopleName.MINH_QUAN,
+          PeopleName.THUY_TRANG,
+          PeopleName.HIEU_VUONG,
+        ],
+        mentors: [PeopleName.KHOA_LE],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
       {
         year: 2024,
         title: 'Student @ UBC',
         roles: [MentorshipRole.SWE_MENTEE],
-        teamName: 'Peace Pod',
+        teamName: ProjectName.PEACE_POD,
         teamNumber: 6,
-        teamRanking: 6,
-        teammates: ['trangdo', 'haianh', 'namnguyen'],
-        mentors: ['khoale'],
-        projectAdvisors: ['khuetang', 'khoale'],
+        teammates: [
+          PeopleName.LIEN_TRANG,
+          PeopleName.HAI_ANH,
+          PeopleName.NAM_NGUYEN,
+        ],
+        mentors: [PeopleName.KHOA_LE],
+        projectAdvisors: [PeopleName.KHUE_TANG, PeopleName.KHOA_LE],
+      },
+      {
+        year: 2025,
+        title: 'Student @ UBC',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.SUBLEAZY,
+        teamNumber: 1,
+        teammates: [
+          PeopleName.DUC_NGUYEN,
+          PeopleName.NGOC_LINH,
+          PeopleName.XUAN_ANH,
+        ],
+        mentors: [PeopleName.KHOA_LE],
+        projectAdvisors: [PeopleName.HOANG_NGUYEN, PeopleName.JENNY_QUACH],
       },
     ],
   },
-  hungngo: {
+  [PeopleName.HUNG_NGO]: {
     name: 'Hung Ngo',
     firstLast: 'Hung Ngo',
-    alias: 'hungngo',
+    alias: PeopleName.HUNG_NGO,
     trackingName: 'Hưng',
     hobbies: 'keyboard, music, League',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/hungngo.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/hungngo.jpg',
     terms: [
       {
         year: 2024,
@@ -939,28 +1000,44 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2025-02-19',
           },
         ],
-        teamName: 'Flavorie',
+        teamName: ProjectName.FLAVORIE,
         teamNumber: 1,
-        teamRanking: 1,
-        teammates: ['ngocanhtran', 'vynguyen', 'viennguyen'],
-        mentors: ['nickdoan'],
-        projectAdvisors: ['jennyquach', 'phuongcao', 'khoale'],
+        teammates: [
+          PeopleName.NGOC_ANH_TRAN,
+          PeopleName.VY_NGUYEN,
+          PeopleName.VIEN_NGUYEN,
+        ],
+        mentors: [PeopleName.NICK_DOAN],
+        projectAdvisors: [
+          PeopleName.JENNY_QUACH,
+          PeopleName.PHUONG_CAO,
+          PeopleName.KHOA_LE,
+        ],
       },
       {
         year: 2025,
         title: 'SWE Intern @ PlayStation',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        teamName: ProjectName.CODE_BUDDY,
+        teammates: [
+          PeopleName.HAI_ANH,
+          PeopleName.LONG_DAU,
+          PeopleName.NGOC_ANH_HOANG,
+          PeopleName.NGOC_ANH_TRAN,
+          PeopleName.VAN_NGUYEN,
+        ],
+        projectAdvisors: [PeopleName.NICK_DOAN],
       },
     ],
   },
-  ngocanhtran: {
+  [PeopleName.NGOC_ANH_TRAN]: {
     name: 'Ngoc Anh Tran',
     firstLast: 'Anh Tran',
-    alias: 'ngocanhtran',
+    alias: PeopleName.NGOC_ANH_TRAN,
     trackingName: 'Ngọc Anh',
     hobbies: 'cooking, Chinese dramas, dogs',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/ngocanhtran.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ngocanhtran.jpg',
     terms: [
       {
         year: 2024,
@@ -986,50 +1063,78 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-10-11',
           },
         ],
-        teamName: 'Flavorie',
+        teamName: ProjectName.FLAVORIE,
         teamNumber: 1,
-        teamRanking: 1,
-        teammates: ['hungngo', 'vynguyen', 'viennguyen'],
-        mentors: ['khoale'],
-        projectAdvisors: ['jennyquach', 'phuongcao', 'khoale'],
+        teammates: [
+          PeopleName.HUNG_NGO,
+          PeopleName.VY_NGUYEN,
+          PeopleName.VIEN_NGUYEN,
+        ],
+        mentors: [PeopleName.KHOA_LE],
+        projectAdvisors: [
+          PeopleName.JENNY_QUACH,
+          PeopleName.PHUONG_CAO,
+          PeopleName.KHOA_LE,
+        ],
       },
       {
         year: 2025,
         title: 'SWE Intern @ Robinhood',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        teamName: ProjectName.CODE_BUDDY,
+        teammates: [
+          PeopleName.HAI_ANH,
+          PeopleName.HUNG_NGO,
+          PeopleName.LONG_DAU,
+          PeopleName.NGOC_ANH_HOANG,
+          PeopleName.VAN_NGUYEN,
+        ],
+        projectAdvisors: [PeopleName.NICK_DOAN],
       },
     ],
   },
-  vynguyen: {
+  [PeopleName.VY_NGUYEN]: {
     name: 'Vy Nguyen',
     firstLast: 'Vy Nguyen',
-    alias: 'vynguyen',
+    alias: PeopleName.VY_NGUYEN,
     trackingName: 'Thuý Vy',
     hobbies: 'music, cooking, travel',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/vynguyen.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/vynguyen.jpg',
     terms: [
       {
         year: 2024,
         title: 'Student @ Catholic',
         roles: [MentorshipRole.SWE_MENTEE],
-        teamName: 'Flavorie',
+        teamName: ProjectName.FLAVORIE,
         teamNumber: 1,
-        teamRanking: 1,
-        teammates: ['hungngo', 'ngocanhtran', 'viennguyen'],
-        mentors: ['jennyquach'],
-        projectAdvisors: ['jennyquach', 'phuongcao', 'khoale'],
+        teammates: [
+          PeopleName.HUNG_NGO,
+          PeopleName.NGOC_ANH_TRAN,
+          PeopleName.VIEN_NGUYEN,
+        ],
+        mentors: [PeopleName.JENNY_QUACH],
+        projectAdvisors: [
+          PeopleName.JENNY_QUACH,
+          PeopleName.PHUONG_CAO,
+          PeopleName.KHOA_LE,
+        ],
+      },
+      {
+        year: 2025,
+        title: 'Student @ Catholic',
+        roles: [MentorshipRole.SWE_MENTEE],
       },
     ],
   },
-  viennguyen: {
+  [PeopleName.VIEN_NGUYEN]: {
     name: 'Vien Nguyen',
     firstLast: 'Vien Nguyen',
-    alias: 'viennguyen',
+    alias: PeopleName.VIEN_NGUYEN,
     trackingName: 'Viên',
     hobbies: 'fencing, table tennis, travelling',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/viennguyen.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/viennguyen.jpg',
     terms: [
       {
         year: 2024,
@@ -1049,12 +1154,19 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-12-02',
           },
         ],
-        teamName: 'Flavorie',
+        teamName: ProjectName.FLAVORIE,
         teamNumber: 1,
-        teamRanking: 1,
-        teammates: ['hungngo', 'ngocanhtran', 'vynguyen'],
-        mentors: ['thienson'],
-        projectAdvisors: ['jennyquach', 'phuongcao', 'khoale'],
+        teammates: [
+          PeopleName.HUNG_NGO,
+          PeopleName.NGOC_ANH_TRAN,
+          PeopleName.VY_NGUYEN,
+        ],
+        mentors: [PeopleName.THIEN_SON],
+        projectAdvisors: [
+          PeopleName.JENNY_QUACH,
+          PeopleName.PHUONG_CAO,
+          PeopleName.KHOA_LE,
+        ],
       },
       {
         year: 2025,
@@ -1063,14 +1175,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  thucanh: {
+  [PeopleName.THUC_ANH]: {
     name: 'Thuc Anh',
     firstLast: 'Anh Hoang',
-    alias: 'thucanh',
+    alias: PeopleName.THUC_ANH,
     trackingName: 'Thục Anh',
     hobbies: 'cooking, embroidery, travel',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/thucanh.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thucanh.jpg',
     terms: [
       {
         year: 2024,
@@ -1108,12 +1220,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-08-07',
           },
         ],
-        teamName: 'Pick Me Food',
+        teamName: ProjectName.PICK_ME_FOOD,
         teamNumber: 2,
-        teamRanking: 2,
-        teammates: ['giangpham', 'phananh', 'quynguyen'],
-        mentors: ['khoale', 'jennyquach'],
-        projectAdvisors: ['thienson', 'khoale'],
+        teammates: [
+          PeopleName.GIANG_PHAM,
+          PeopleName.PHAN_ANH,
+          PeopleName.QUY_NGUYEN,
+        ],
+        mentors: [PeopleName.KHOA_LE, PeopleName.JENNY_QUACH],
+        projectAdvisors: [PeopleName.THIEN_SON, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1122,14 +1237,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  giangpham: {
+  [PeopleName.GIANG_PHAM]: {
     name: 'Giang Pham',
     firstLast: 'Giang Pham',
-    alias: 'giangpham',
+    alias: PeopleName.GIANG_PHAM,
     trackingName: 'Giang',
     hobbies: 'Kpop, cooking, japanese books',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/giangpham.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/giangpham.jpg',
     terms: [
       {
         year: 2024,
@@ -1143,12 +1258,19 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2025-02-03',
           },
         ],
-        teamName: 'Pick Me Food',
+        teamName: ProjectName.PICK_ME_FOOD,
         teamNumber: 2,
-        teamRanking: 2,
-        teammates: ['thucanh', 'phananh', 'quynguyen'],
-        mentors: ['thuanh', 'robinhoang', 'khoale'],
-        projectAdvisors: ['thienson', 'khoale'],
+        teammates: [
+          PeopleName.THUC_ANH,
+          PeopleName.PHAN_ANH,
+          PeopleName.QUY_NGUYEN,
+        ],
+        mentors: [
+          PeopleName.THU_ANH,
+          PeopleName.ROBIN_HOANG,
+          PeopleName.KHOA_LE,
+        ],
+        projectAdvisors: [PeopleName.THIEN_SON, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1157,14 +1279,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  phananh: {
+  [PeopleName.PHAN_ANH]: {
     name: 'Phan Anh',
     firstLast: 'Anh Nguyen',
-    alias: 'phananh',
+    alias: PeopleName.PHAN_ANH,
     trackingName: 'Phan Anh',
     hobbies: 'soccer, running, coding',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/phananh.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phananh.jpg',
     terms: [
       {
         year: 2024,
@@ -1184,12 +1306,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-10-24',
           },
         ],
-        teamName: 'Pick Me Food',
+        teamName: ProjectName.PICK_ME_FOOD,
         teamNumber: 2,
-        teamRanking: 2,
-        teammates: ['thucanh', 'giangpham', 'quynguyen'],
-        mentors: ['khoale', 'khuetang'],
-        projectAdvisors: ['thienson', 'khoale'],
+        teammates: [
+          PeopleName.THUC_ANH,
+          PeopleName.GIANG_PHAM,
+          PeopleName.QUY_NGUYEN,
+        ],
+        mentors: [PeopleName.KHOA_LE, PeopleName.KHUE_TANG],
+        projectAdvisors: [PeopleName.THIEN_SON, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1198,58 +1323,78 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  quynguyen: {
+  [PeopleName.QUY_NGUYEN]: {
     name: 'Quy Nguyen',
     firstLast: 'Quy Nguyen',
-    alias: 'quynguyen',
+    alias: PeopleName.QUY_NGUYEN,
     trackingName: 'Quý',
     hobbies: 'sports, soccer games, movies',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/quynguyen.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/quynguyen.jpg',
     terms: [
       {
         year: 2024,
         title: 'Student @ Windsor',
         roles: [MentorshipRole.SWE_MENTEE],
-        teamName: 'Pick Me Food',
+        teamName: ProjectName.PICK_ME_FOOD,
         teamNumber: 2,
-        teamRanking: 2,
-        teammates: ['thucanh', 'giangpham', 'phananh'],
-        mentors: ['cuongnguyen'],
-        projectAdvisors: ['thienson', 'khoale'],
+        teammates: [
+          PeopleName.THUC_ANH,
+          PeopleName.GIANG_PHAM,
+          PeopleName.PHAN_ANH,
+        ],
+        mentors: [PeopleName.CUONG_NGUYEN],
+        projectAdvisors: [PeopleName.THIEN_SON, PeopleName.KHOA_LE],
+      },
+      {
+        year: 2025,
+        title: 'Student @ Windsor',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.LOCAL_TASTE,
+        teamNumber: 3,
+        teammates: [
+          PeopleName.DAN_NGUYEN,
+          PeopleName.NHAT_LE,
+          PeopleName.TAM_NGUYEN,
+        ],
+        mentors: [PeopleName.KHOA_LE],
+        projectAdvisors: [PeopleName.HAI_ANH, PeopleName.JENNY_QUACH],
       },
     ],
   },
-  thangnguyen: {
+  [PeopleName.THANG_NGUYEN]: {
     name: 'Thang Nguyen',
     firstLast: 'Thang Nguyen',
-    alias: 'thangnguyen',
+    alias: PeopleName.THANG_NGUYEN,
     trackingName: 'Thắng',
     hobbies: 'badminton, basketball, video game',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/thangnguyen.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thangnguyen.jpg',
     terms: [
       {
         year: 2024,
         title: 'Student @ Toronto Metropolitan',
         roles: [MentorshipRole.SWE_MENTEE],
-        teamName: 'Gathering Globe',
+        teamName: ProjectName.GATHERING_GLOBE,
         teamNumber: 3,
-        teamRanking: 3,
-        teammates: ['quynhtran', 'phuongle', 'baquan'],
-        mentors: ['kevinluu'],
-        projectAdvisors: ['minhquan', 'khoale'],
+        teammates: [
+          PeopleName.QUYNH_TRAN,
+          PeopleName.PHUONG_LE,
+          PeopleName.BA_QUAN,
+        ],
+        mentors: [PeopleName.KEVIN_LUU],
+        projectAdvisors: [PeopleName.MINH_QUAN, PeopleName.KHOA_LE],
       },
     ],
   },
-  quynhtran: {
+  [PeopleName.QUYNH_TRAN]: {
     name: 'Quynh Tran',
     firstLast: 'Quynh Tran',
-    alias: 'quynhtran',
+    alias: PeopleName.QUYNH_TRAN,
     trackingName: 'Quỳnh',
     hobbies: 'cats, K-pop, travel',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/quynhtran.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/quynhtran.jpg',
     terms: [
       {
         year: 2024,
@@ -1281,12 +1426,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-10-11',
           },
         ],
-        teamName: 'Gathering Globe',
+        teamName: ProjectName.GATHERING_GLOBE,
         teamNumber: 3,
-        teamRanking: 3,
-        teammates: ['thangnguyen', 'phuongle', 'baquan'],
-        mentors: ['thuanh'],
-        projectAdvisors: ['minhquan', 'khoale'],
+        teammates: [
+          PeopleName.THANG_NGUYEN,
+          PeopleName.PHUONG_LE,
+          PeopleName.BA_QUAN,
+        ],
+        mentors: [PeopleName.THU_ANH],
+        projectAdvisors: [PeopleName.MINH_QUAN, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1295,14 +1443,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  phuongle: {
+  [PeopleName.PHUONG_LE]: {
     name: 'Phuong Le',
     firstLast: 'Phuong Le',
-    alias: 'phuongle',
+    alias: PeopleName.PHUONG_LE,
     trackingName: 'Phượng',
     hobbies: 'films, novels, pop ballad',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/phuongle.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phuongle.jpg',
     terms: [
       {
         year: 2024,
@@ -1322,12 +1470,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-10-11',
           },
         ],
-        teamName: 'Gathering Globe',
+        teamName: ProjectName.GATHERING_GLOBE,
         teamNumber: 3,
-        teamRanking: 3,
-        teammates: ['thangnguyen', 'quynhtran', 'baquan'],
-        mentors: ['huudang'],
-        projectAdvisors: ['minhquan', 'khoale'],
+        teammates: [
+          PeopleName.THANG_NGUYEN,
+          PeopleName.QUYNH_TRAN,
+          PeopleName.BA_QUAN,
+        ],
+        mentors: [PeopleName.HUU_DANG],
+        projectAdvisors: [PeopleName.MINH_QUAN, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1336,14 +1487,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  baquan: {
+  [PeopleName.BA_QUAN]: {
     name: 'Ba Quan',
     firstLast: 'Quan Nguyen',
-    alias: 'baquan',
+    alias: PeopleName.BA_QUAN,
     trackingName: 'Bá Quân',
     hobbies: 'guitar, photography, fishing',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/baquan.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/baquan.jpg',
     terms: [
       {
         year: 2024,
@@ -1357,12 +1508,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2025-02-20',
           },
         ],
-        teamName: 'Gathering Globe',
+        teamName: ProjectName.GATHERING_GLOBE,
         teamNumber: 3,
-        teamRanking: 3,
-        teammates: ['thangnguyen', 'quynhtran', 'phuongle'],
-        mentors: ['phuocong'],
-        projectAdvisors: ['minhquan', 'khoale'],
+        teammates: [
+          PeopleName.THANG_NGUYEN,
+          PeopleName.QUYNH_TRAN,
+          PeopleName.PHUONG_LE,
+        ],
+        mentors: [PeopleName.PHUOC_ONG],
+        projectAdvisors: [PeopleName.MINH_QUAN, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1371,14 +1525,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  vytran: {
+  [PeopleName.VY_TRAN]: {
     name: 'Vy Tran',
     firstLast: 'Vy Tran',
-    alias: 'vytran',
+    alias: PeopleName.VY_TRAN,
     trackingName: 'Vy Trần',
     hobbies: 'soccer, mountains, dogs',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/vytran.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/vytran.jpg',
     terms: [
       {
         year: 2024,
@@ -1410,28 +1564,43 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-11-19',
           },
         ],
-        teamName: 'Bondscape',
+        teamName: ProjectName.BONDSCAPE,
         teamNumber: 4,
-        teamRanking: 4,
-        teammates: ['tranglinh', 'phuckhang', 'longdau'],
-        mentors: ['nguyenvu', 'khoale'],
-        projectAdvisors: ['phuocong', 'khoale'],
+        teammates: [
+          PeopleName.TRANG_LINH,
+          PeopleName.PHUC_KHANG,
+          PeopleName.LONG_DAU,
+        ],
+        mentors: [PeopleName.NGUYEN_VU, PeopleName.KHOA_LE],
+        projectAdvisors: [PeopleName.PHUOC_ONG, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
         title: 'Data Engineer Intern @ Meta',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        teamName: ProjectName.APPLICATION_TRACKER,
+        teammates: [
+          PeopleName.AN_TRAN,
+          PeopleName.DANG_SON,
+          PeopleName.HA_LINH,
+          PeopleName.KHA_TRAN,
+          PeopleName.MONICA_HUYNH,
+          PeopleName.NAM_NGUYEN,
+          PeopleName.PHUC_TRUONG,
+          PeopleName.QUANG_MINH,
+        ],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
     ],
   },
-  tranglinh: {
+  [PeopleName.TRANG_LINH]: {
     name: 'Trang Linh',
     firstLast: 'Linh Tran',
-    alias: 'tranglinh',
+    alias: PeopleName.TRANG_LINH,
     trackingName: 'Trang Linh',
     hobbies: 'draw, sleep, axolotl',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/tranglinh.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tranglinh.jpg',
     terms: [
       {
         year: 2024,
@@ -1451,12 +1620,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-11-05',
           },
         ],
-        teamName: 'Bondscape',
+        teamName: ProjectName.BONDSCAPE,
         teamNumber: 4,
-        teamRanking: 4,
-        teammates: ['vytran', 'phuckhang', 'longdau'],
-        mentors: ['ngocdoan'],
-        projectAdvisors: ['phuocong', 'khoale'],
+        teammates: [
+          PeopleName.VY_TRAN,
+          PeopleName.PHUC_KHANG,
+          PeopleName.LONG_DAU,
+        ],
+        mentors: [PeopleName.NGOC_DOAN],
+        projectAdvisors: [PeopleName.PHUOC_ONG, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1465,14 +1637,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  phuckhang: {
+  [PeopleName.PHUC_KHANG]: {
     name: 'Phuc Khang',
     firstLast: 'Khang Nguyen',
-    alias: 'phuckhang',
+    alias: PeopleName.PHUC_KHANG,
     trackingName: 'Phúc Khang',
     hobbies: 'ice-skating, MUN, skywatching',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/phuckhang.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phuckhang.jpg',
     terms: [
       {
         year: 2024,
@@ -1486,12 +1658,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2025-01-30',
           },
         ],
-        teamName: 'Bondscape',
+        teamName: ProjectName.BONDSCAPE,
         teamNumber: 4,
-        teamRanking: 4,
-        teammates: ['vytran', 'tranglinh', 'longdau'],
-        mentors: ['phuongcao'],
-        projectAdvisors: ['phuocong', 'khoale'],
+        teammates: [
+          PeopleName.VY_TRAN,
+          PeopleName.TRANG_LINH,
+          PeopleName.LONG_DAU,
+        ],
+        mentors: [PeopleName.PHUONG_CAO],
+        projectAdvisors: [PeopleName.PHUOC_ONG, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1500,14 +1675,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  longdau: {
+  [PeopleName.LONG_DAU]: {
     name: 'Long Dau',
     firstLast: 'Long Dau',
-    alias: 'longdau',
+    alias: PeopleName.LONG_DAU,
     trackingName: 'Long',
     hobbies: 'sports, video game, rap',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/longdau.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/longdau.jpg',
     terms: [
       {
         year: 2024,
@@ -1527,28 +1702,40 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-10-10',
           },
         ],
-        teamName: 'Bondscape',
+        teamName: ProjectName.BONDSCAPE,
         teamNumber: 4,
-        teamRanking: 4,
-        teammates: ['vytran', 'tranglinh', 'phuckhang'],
-        mentors: ['huudang'],
-        projectAdvisors: ['phuocong', 'khoale'],
+        teammates: [
+          PeopleName.VY_TRAN,
+          PeopleName.TRANG_LINH,
+          PeopleName.PHUC_KHANG,
+        ],
+        mentors: [PeopleName.HUU_DANG],
+        projectAdvisors: [PeopleName.PHUOC_ONG, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
         title: 'SWE Intern @ ServiceNow',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        teamName: ProjectName.CODE_BUDDY,
+        teammates: [
+          PeopleName.HAI_ANH,
+          PeopleName.HUNG_NGO,
+          PeopleName.NGOC_ANH_HOANG,
+          PeopleName.NGOC_ANH_TRAN,
+          PeopleName.VAN_NGUYEN,
+        ],
+        projectAdvisors: [PeopleName.NICK_DOAN],
       },
     ],
   },
-  hoangnguyen: {
+  [PeopleName.HOANG_NGUYEN]: {
     name: 'Hoang Nguyen',
     firstLast: 'Hoang Nguyen',
-    alias: 'hoangnguyen',
+    alias: PeopleName.HOANG_NGUYEN,
     trackingName: 'Hoàng',
     hobbies: 'indie, k-drama, solo travel',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/hoangnguyen.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/hoangnguyen.jpg',
     terms: [
       {
         year: 2024,
@@ -1574,12 +1761,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-09-24',
           },
         ],
-        teamName: 'Cupid',
+        teamName: ProjectName.CUPID,
         teamNumber: 5,
-        teamRanking: 5,
-        teammates: ['halinh', 'khanhlinh', 'huukhang'],
-        mentors: ['hieuvuong'],
-        projectAdvisors: ['huudang', 'khoale'],
+        teammates: [
+          PeopleName.HA_LINH,
+          PeopleName.KHANH_LINH,
+          PeopleName.HUU_KHANG,
+        ],
+        mentors: [PeopleName.HIEU_VUONG],
+        projectAdvisors: [PeopleName.HUU_DANG, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1591,14 +1781,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  halinh: {
+  [PeopleName.HA_LINH]: {
     name: 'Ha Linh',
     firstLast: 'Linh Nguyen',
-    alias: 'halinh',
+    alias: PeopleName.HA_LINH,
     trackingName: 'Hà Linh',
     hobbies: 'food, music, roller coaster',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/halinh.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/halinh.jpg',
     terms: [
       {
         year: 2024,
@@ -1612,12 +1802,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-10-16',
           },
         ],
-        teamName: 'Cupid',
+        teamName: ProjectName.CUPID,
         teamNumber: 5,
-        teamRanking: 5,
-        teammates: ['hoangnguyen', 'khanhlinh', 'huukhang'],
-        mentors: ['phuongcao'],
-        projectAdvisors: ['huudang', 'khoale'],
+        teammates: [
+          PeopleName.HOANG_NGUYEN,
+          PeopleName.KHANH_LINH,
+          PeopleName.HUU_KHANG,
+        ],
+        mentors: [PeopleName.PHUONG_CAO],
+        projectAdvisors: [PeopleName.HUU_DANG, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1626,17 +1819,29 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           MentorshipRole.SWE_RISING_LEAD,
           MentorshipRole.SWE_EXMENTEE_MENTOR,
         ],
+        teamName: ProjectName.APPLICATION_TRACKER,
+        teammates: [
+          PeopleName.AN_TRAN,
+          PeopleName.DANG_SON,
+          PeopleName.KHA_TRAN,
+          PeopleName.MONICA_HUYNH,
+          PeopleName.NAM_NGUYEN,
+          PeopleName.PHUC_TRUONG,
+          PeopleName.QUANG_MINH,
+          PeopleName.VY_TRAN,
+        ],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
     ],
   },
-  khanhlinh: {
+  [PeopleName.KHANH_LINH]: {
     name: 'Khanh Linh',
     firstLast: 'Linh Hoang',
-    alias: 'khanhlinh',
+    alias: PeopleName.KHANH_LINH,
     trackingName: 'Khánh Linh',
     hobbies: 'music, dumb tv shows, sunbathing',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/khanhlinh.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/khanhlinh.jpg',
     terms: [
       {
         year: 2024,
@@ -1662,12 +1867,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-09-26',
           },
         ],
-        teamName: 'Cupid',
+        teamName: ProjectName.CUPID,
         teamNumber: 5,
-        teamRanking: 5,
-        teammates: ['hoangnguyen', 'halinh', 'huukhang'],
-        mentors: ['minhquan'],
-        projectAdvisors: ['huudang', 'khoale'],
+        teammates: [
+          PeopleName.HOANG_NGUYEN,
+          PeopleName.HA_LINH,
+          PeopleName.HUU_KHANG,
+        ],
+        mentors: [PeopleName.MINH_QUAN],
+        projectAdvisors: [PeopleName.HUU_DANG, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1676,14 +1884,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  huukhang: {
+  [PeopleName.HUU_KHANG]: {
     name: 'Huu Khang',
     firstLast: 'Khang Nguyen',
-    alias: 'huukhang',
+    alias: PeopleName.HUU_KHANG,
     trackingName: 'Hữu Khang',
     hobbies: 'J-pop, gaming, anime',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/huukhang.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/huukhang.jpg',
     terms: [
       {
         year: 2024,
@@ -1709,12 +1917,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2025-01-22',
           },
         ],
-        teamName: 'Cupid',
+        teamName: ProjectName.CUPID,
         teamNumber: 5,
-        teamRanking: 5,
-        teammates: ['hoangnguyen', 'halinh', 'khanhlinh'],
-        mentors: ['phuocong'],
-        projectAdvisors: ['huudang', 'khoale'],
+        teammates: [
+          PeopleName.HOANG_NGUYEN,
+          PeopleName.HA_LINH,
+          PeopleName.KHANH_LINH,
+        ],
+        mentors: [PeopleName.PHUOC_ONG],
+        projectAdvisors: [PeopleName.HUU_DANG, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1723,14 +1934,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  trangdo: {
+  [PeopleName.LIEN_TRANG]: {
     name: 'Lien Trang',
     firstLast: 'Trang Do',
-    alias: 'trangdo',
+    alias: PeopleName.LIEN_TRANG,
     trackingName: 'Trang Đỗ',
     hobbies: 'kdrama, cooking, Vpop',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/trangdo.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/lientrang.jpg',
     terms: [
       {
         year: 2024,
@@ -1762,12 +1973,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-10-11',
           },
         ],
-        teamName: 'Peace Pod',
+        teamName: ProjectName.PEACE_POD,
         teamNumber: 6,
-        teamRanking: 6,
-        teammates: ['haianh', 'thanhnguyen', 'namnguyen'],
-        mentors: ['nickdoan'],
-        projectAdvisors: ['khuetang', 'khoale'],
+        teammates: [
+          PeopleName.HAI_ANH,
+          PeopleName.THANH_NGUYEN,
+          PeopleName.NAM_NGUYEN,
+        ],
+        mentors: [PeopleName.NICK_DOAN],
+        projectAdvisors: [PeopleName.KHUE_TANG, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1776,14 +1990,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  haianh: {
+  [PeopleName.HAI_ANH]: {
     name: 'Hai Anh',
     firstLast: 'Anh Nguyen',
-    alias: 'haianh',
+    alias: PeopleName.HAI_ANH,
     trackingName: 'Hải Anh',
     hobbies: 'walking, bike riding, road trip',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/haianh.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/haianh.jpg',
     terms: [
       {
         year: 2024,
@@ -1797,28 +2011,40 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-08-12',
           },
         ],
-        teamName: 'Peace Pod',
+        teamName: ProjectName.PEACE_POD,
         teamNumber: 6,
-        teamRanking: 6,
-        teammates: ['trangdo', 'thanhnguyen', 'namnguyen'],
-        mentors: ['khoale', 'robinhoang'],
-        projectAdvisors: ['khuetang', 'khoale'],
+        teammates: [
+          PeopleName.LIEN_TRANG,
+          PeopleName.THANH_NGUYEN,
+          PeopleName.NAM_NGUYEN,
+        ],
+        mentors: [PeopleName.KHOA_LE, PeopleName.ROBIN_HOANG],
+        projectAdvisors: [PeopleName.KHUE_TANG, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
         title: 'SWE Intern @ Slack',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        teamName: ProjectName.CODE_BUDDY,
+        teammates: [
+          PeopleName.HUNG_NGO,
+          PeopleName.LONG_DAU,
+          PeopleName.NGOC_ANH_HOANG,
+          PeopleName.NGOC_ANH_TRAN,
+          PeopleName.VAN_NGUYEN,
+        ],
+        projectAdvisors: [PeopleName.NICK_DOAN],
       },
     ],
   },
-  namnguyen: {
+  [PeopleName.NAM_NGUYEN]: {
     name: 'Nam Nguyen',
     firstLast: 'Nam Nguyen',
-    alias: 'namnguyen',
+    alias: PeopleName.NAM_NGUYEN,
     trackingName: 'Nam',
     hobbies: 'soccer, One Piece, piano',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/namnguyen.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/namnguyen.jpg',
     terms: [
       {
         year: 2024,
@@ -1832,28 +2058,43 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2025-03-20',
           },
         ],
-        teamName: 'Peace Pod',
+        teamName: ProjectName.PEACE_POD,
         teamNumber: 6,
-        teamRanking: 6,
-        teammates: ['trangdo', 'haianh', 'thanhnguyen'],
-        mentors: ['jennyquach'],
-        projectAdvisors: ['khuetang', 'khoale'],
+        teammates: [
+          PeopleName.LIEN_TRANG,
+          PeopleName.HAI_ANH,
+          PeopleName.THANH_NGUYEN,
+        ],
+        mentors: [PeopleName.JENNY_QUACH],
+        projectAdvisors: [PeopleName.KHUE_TANG, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
         title: 'SWE Intern @ Health Enhancement Systems',
         roles: [MentorshipRole.SWE_EXMENTEE_LOGISTICS_SUPPORT],
+        teamName: ProjectName.APPLICATION_TRACKER,
+        teammates: [
+          PeopleName.AN_TRAN,
+          PeopleName.DANG_SON,
+          PeopleName.HA_LINH,
+          PeopleName.KHA_TRAN,
+          PeopleName.MONICA_HUYNH,
+          PeopleName.PHUC_TRUONG,
+          PeopleName.QUANG_MINH,
+          PeopleName.VY_TRAN,
+        ],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
     ],
   },
-  trihoang: {
+  [PeopleName.TRI_HOANG]: {
     name: 'Tri Hoang',
     firstLast: 'Tri Hoang',
-    alias: 'trihoang',
+    alias: PeopleName.TRI_HOANG,
     trackingName: 'Trí',
     hobbies: 'sports, traveling, movies',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/trihoang.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/trihoang.jpg',
     terms: [
       {
         year: 2024,
@@ -1903,12 +2144,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-10-25',
           },
         ],
-        teamName: 'Tourific',
+        teamName: ProjectName.TOURIFIC,
         teamNumber: 7,
-        teamRanking: 7,
-        teammates: ['trangvu', 'vannguyen', 'khatran'],
-        mentors: ['huyanh'],
-        projectAdvisors: ['nickdoan', 'khoale'],
+        teammates: [
+          PeopleName.THUY_TRANG,
+          PeopleName.VAN_NGUYEN,
+          PeopleName.KHA_TRAN,
+        ],
+        mentors: [PeopleName.HUY_ANH],
+        projectAdvisors: [PeopleName.NICK_DOAN, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -1917,14 +2161,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  vannguyen: {
+  [PeopleName.VAN_NGUYEN]: {
     name: 'Van Nguyen',
     firstLast: 'Van Nguyen',
-    alias: 'vannguyen',
+    alias: PeopleName.VAN_NGUYEN,
     trackingName: 'Vân',
     hobbies: 'kdrama, tarot, drums',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/vannguyen.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/vannguyen.jpg',
     terms: [
       {
         year: 2024,
@@ -1992,12 +2236,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-09-19',
           },
         ],
-        teamName: 'Tourific',
+        teamName: ProjectName.TOURIFIC,
         teamNumber: 7,
-        teamRanking: 7,
-        teammates: ['trihoang', 'trangvu', 'khatran'],
-        mentors: ['thienson'],
-        projectAdvisors: ['nickdoan', 'khoale'],
+        teammates: [
+          PeopleName.TRI_HOANG,
+          PeopleName.THUY_TRANG,
+          PeopleName.KHA_TRAN,
+        ],
+        mentors: [PeopleName.THIEN_SON],
+        projectAdvisors: [PeopleName.NICK_DOAN, PeopleName.KHOA_LE],
       },
       {
         year: 2025,
@@ -2006,39 +2253,69 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           MentorshipRole.SWE_RISING_LEAD,
           MentorshipRole.SWE_EXMENTEE_MENTOR,
         ],
+        teamName: ProjectName.CODE_BUDDY,
+        teammates: [
+          PeopleName.HAI_ANH,
+          PeopleName.HUNG_NGO,
+          PeopleName.LONG_DAU,
+          PeopleName.NGOC_ANH_HOANG,
+          PeopleName.NGOC_ANH_TRAN,
+        ],
+        projectAdvisors: [PeopleName.NICK_DOAN],
       },
     ],
   },
-  khatran: {
+  [PeopleName.KHA_TRAN]: {
     name: 'Kha Tran',
     firstLast: 'Kha Tran',
-    alias: 'khatran',
+    alias: PeopleName.KHA_TRAN,
     trackingName: 'Kha',
     hobbies: 'coding, reading, gaming',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/khatran.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/khatran.jpg',
     terms: [
       {
         year: 2024,
         title: 'Student @ Manitoba',
         roles: [MentorshipRole.SWE_MENTEE],
-        teamName: 'Tourific',
+        teamName: ProjectName.TOURIFIC,
         teamNumber: 7,
-        teamRanking: 7,
-        teammates: ['trihoang', 'trangvu', 'vannguyen'],
-        mentors: ['khuetang'],
-        projectAdvisors: ['nickdoan', 'khoale'],
+        teammates: [
+          PeopleName.TRI_HOANG,
+          PeopleName.THUY_TRANG,
+          PeopleName.VAN_NGUYEN,
+        ],
+        mentors: [PeopleName.KHUE_TANG],
+        projectAdvisors: [PeopleName.NICK_DOAN, PeopleName.KHOA_LE],
+      },
+      {
+        year: 2025,
+        title: 'Student @ Manitoba',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.APPLICATION_TRACKER,
+        teammates: [
+          PeopleName.AN_TRAN,
+          PeopleName.DANG_SON,
+          PeopleName.HA_LINH,
+          PeopleName.MONICA_HUYNH,
+          PeopleName.NAM_NGUYEN,
+          PeopleName.PHUC_TRUONG,
+          PeopleName.QUANG_MINH,
+          PeopleName.VY_TRAN,
+        ],
+        mentors: [PeopleName.KHUE_TANG],
+        projectAdvisors: [PeopleName.KHOA_LE],
       },
     ],
   },
-  huequan: {
+  [PeopleName.HUE_QUAN]: {
     name: 'Hue Quan',
     firstLast: 'Quan Vu',
-    alias: 'huequan',
+    alias: PeopleName.HUE_QUAN,
     trackingName: 'Huệ Quân',
     hobbies: '',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/huequan.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/huequan.jpg',
     terms: [
       {
         year: 2025,
@@ -2047,14 +2324,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  tranvo: {
+  [PeopleName.TRAN_VO]: {
     name: 'Tran Vo',
     firstLast: 'Tran Vo',
-    alias: 'tranvo',
+    alias: PeopleName.TRAN_VO,
     trackingName: 'Trân',
     hobbies: 'museums, cafe-hopping, Disneyland',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/tranvo.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tranvo.jpg',
     terms: [
       {
         year: 2025,
@@ -2063,14 +2340,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  diepnguyen: {
+  [PeopleName.DIEP_NGUYEN]: {
     name: 'Diep Nguyen',
     firstLast: 'Diep Nguyen',
-    alias: 'diepnguyen',
+    alias: PeopleName.DIEP_NGUYEN,
     trackingName: 'Diệp',
     hobbies: '',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/diepnguyen.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/diepnguyen.jpg',
     terms: [
       {
         year: 2025,
@@ -2079,403 +2356,663 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  phuctruong: {
-    name: 'Phuc Truong',
-    firstLast: 'Phuc Truong',
-    alias: 'phuctruong',
-    trackingName: 'Jun',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/phuctruong.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ USF',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  antran: {
-    name: 'An Tran',
-    firstLast: 'An Tran',
-    alias: 'antran',
-    trackingName: 'Ân',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/antran.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Orange Coast',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  quangminh: {
-    name: 'Quang Minh',
-    firstLast: 'Minh Nguyen',
-    alias: 'quangminh',
-    trackingName: 'Quang Minh',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/quangminh.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ FSU',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  dangson: {
-    name: 'Dang Son',
-    firstLast: 'Son Mai',
-    alias: 'dangson',
-    trackingName: 'Đăng Sơn',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/dangson.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Western Governors',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  ngoclinh: {
-    name: 'Ngoc Linh',
-    firstLast: 'Linh Le',
-    alias: 'ngoclinh',
-    trackingName: 'Ngọc Linh',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/ngoclinh.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Mount Holyoke',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  ducnguyen: {
-    name: 'Duc Nguyen',
-    firstLast: 'Duc Nguyen',
-    alias: 'ducnguyen',
-    trackingName: 'Đức',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/ducnguyen.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ George Mason',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  xuananh: {
-    name: 'Xuan Anh',
-    firstLast: 'Anh Tran',
-    alias: 'xuananh',
-    trackingName: 'Xuân Anh',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/xuananh.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Soka',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  datvu: {
-    name: 'Dat Vu',
-    firstLast: 'Dat Vu',
-    alias: 'datvu',
-    trackingName: 'Đạt',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/datvu.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ CSUSM',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  chautran: {
-    name: 'Chau Tran',
-    firstLast: 'Chau Tran',
-    alias: 'chautran',
-    trackingName: 'Châu Trần',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/chautran.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ UMass. Amherst',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  tuananh: {
-    name: 'Tuan Anh',
-    firstLast: 'Anh Ngo',
-    alias: 'tuananh',
-    trackingName: 'Tuấn Anh',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/tuananh.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Colby',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  quyendoan: {
-    name: 'Quyen Doan',
-    firstLast: 'Quyen Doan',
-    alias: 'quyendoan',
-    trackingName: 'Quyên',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/quyendoan.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Augustana',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  nhatle: {
-    name: 'Nhat Le',
-    firstLast: 'Nhat Le',
-    alias: 'nhatle',
-    trackingName: 'Nhật',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/nhatle.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Iowa State',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  dannguyen: {
-    name: 'Dan Nguyen',
-    firstLast: 'Dan Nguyen',
-    alias: 'dannguyen',
-    trackingName: 'Đan',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/dannguyen.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ George Mason',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  tamnguyen: {
-    name: 'Tam Nguyen',
-    firstLast: 'Tam Nguyen',
-    alias: 'tamnguyen',
-    trackingName: 'Tâm Nguyễn',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/tamnguyen.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Minerva',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  thaidang: {
-    name: 'Thai Dang',
-    firstLast: 'Dang Nguyen',
-    alias: 'thaidang',
-    trackingName: 'Thái Đăng',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/thaidang.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ UMass. Amherst',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  ngocminh: {
-    name: 'Ngoc Minh',
-    firstLast: 'Minh Le',
-    alias: 'ngocminh',
-    trackingName: 'Ngọc Minh',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/ngocminh.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Dickinson',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  tringuyen: {
-    name: 'Tri Nguyen',
-    firstLast: 'Tri Nguyen',
-    alias: 'tringuyen',
-    trackingName: 'Trí Nguyễn',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/tringuyen.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Minerva',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  tamdang: {
-    name: 'Tam Dang',
-    firstLast: 'Tam Dang',
-    alias: 'tamdang',
-    trackingName: 'Tâm Đặng',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/tamdang.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ USF',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  kevindoan: {
-    name: 'Kevin Doan',
-    firstLast: 'Kevin Doan',
-    alias: 'kevindoan',
-    trackingName: 'Kevin Đoàn',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/kevindoan.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ TCU',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  thuylinh: {
-    name: 'Thuy Linh',
-    firstLast: 'Linh Nguyen',
-    alias: 'thuylinh',
-    trackingName: 'Thùy Linh',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/thuylinh.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ FSU',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  kientran: {
-    name: 'Kien Tran',
-    firstLast: 'Kien Tran',
-    alias: 'kientran',
-    trackingName: 'Kiên Trần',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/kientran.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Lehigh',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  hanguyen: {
-    name: 'Ha Nguyen',
-    firstLast: 'Ha Nguyen',
-    alias: 'hanguyen',
-    trackingName: 'Hà Nguyễn',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/hanguyen.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Tufts',
-        roles: [MentorshipRole.SWE_MENTEE],
-      },
-    ],
-  },
-  uyenhoang: {
-    name: 'Uyen Hoang',
-    firstLast: 'Uyen Hoang',
-    alias: 'uyenhoang',
-    trackingName: 'Uyên',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/uyenhoang.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Cornell',
-        roles: [MentorshipRole.PD_MENTEE],
-      },
-    ],
-  },
-  ngocanhhoang: {
-    name: 'Ngoc Anh Hoang',
-    firstLast: 'Anh Hoang',
-    alias: 'ngocanhhoang',
-    trackingName: 'Ngọc Anh Hoàng',
-    hobbies: '',
-    avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/ngocanhhoang.jpg',
-    terms: [
-      {
-        year: 2025,
-        title: 'Student @ Tufts',
-        roles: [MentorshipRole.PD_MENTEE],
-      },
-    ],
-  },
-  monicahuynh: {
+  [PeopleName.MONICA_HUYNH]: {
     name: 'Monica Huynh',
     firstLast: 'Monica Huynh',
-    alias: 'monicahuynh',
+    alias: PeopleName.MONICA_HUYNH,
     trackingName: 'Monica',
     hobbies: '',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1745035535/viettech/people/monicahuynh.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/monicahuynh.jpg',
     terms: [
       {
         year: 2025,
         title: 'Student @ UBC',
         roles: [MentorshipRole.PD_MENTEE],
+        teamName: ProjectName.APPLICATION_TRACKER,
+        teammates: [
+          PeopleName.AN_TRAN,
+          PeopleName.DANG_SON,
+          PeopleName.HA_LINH,
+          PeopleName.KHA_TRAN,
+          PeopleName.MONICA_HUYNH,
+          PeopleName.NAM_NGUYEN,
+          PeopleName.PHUC_TRUONG,
+          PeopleName.QUANG_MINH,
+          PeopleName.VY_TRAN,
+        ],
+        mentors: [],
+        projectAdvisors: [PeopleName.KHOA_LE],
+      },
+    ],
+  },
+  [PeopleName.PHUC_TRUONG]: {
+    name: 'Phuc Truong',
+    firstLast: 'Phuc Truong',
+    alias: PeopleName.PHUC_TRUONG,
+    trackingName: 'Jun',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phuctruong.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ USF',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.APPLICATION_TRACKER,
+        teammates: [
+          PeopleName.AN_TRAN,
+          PeopleName.DANG_SON,
+          PeopleName.HA_LINH,
+          PeopleName.KHA_TRAN,
+          PeopleName.MONICA_HUYNH,
+          PeopleName.NAM_NGUYEN,
+          PeopleName.PHUC_TRUONG,
+          PeopleName.QUANG_MINH,
+          PeopleName.VY_TRAN,
+        ],
+        mentors: [PeopleName.KHOA_LE],
+        projectAdvisors: [PeopleName.KHOA_LE],
+      },
+    ],
+  },
+  [PeopleName.AN_TRAN]: {
+    name: 'An Tran',
+    firstLast: 'An Tran',
+    alias: PeopleName.AN_TRAN,
+    trackingName: 'Ân',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/antran.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Orange Coast',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.APPLICATION_TRACKER,
+        teammates: [
+          PeopleName.AN_TRAN,
+          PeopleName.DANG_SON,
+          PeopleName.HA_LINH,
+          PeopleName.KHA_TRAN,
+          PeopleName.MONICA_HUYNH,
+          PeopleName.NAM_NGUYEN,
+          PeopleName.PHUC_TRUONG,
+          PeopleName.QUANG_MINH,
+          PeopleName.VY_TRAN,
+        ],
+        mentors: [PeopleName.JENNY_QUACH],
+        projectAdvisors: [PeopleName.KHOA_LE],
+      },
+    ],
+  },
+  [PeopleName.QUANG_MINH]: {
+    name: 'Quang Minh',
+    firstLast: 'Minh Nguyen',
+    alias: PeopleName.QUANG_MINH,
+    trackingName: 'Quang Minh',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/quangminh.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ FSU',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.APPLICATION_TRACKER,
+        teammates: [
+          PeopleName.AN_TRAN,
+          PeopleName.DANG_SON,
+          PeopleName.HA_LINH,
+          PeopleName.KHA_TRAN,
+          PeopleName.MONICA_HUYNH,
+          PeopleName.NAM_NGUYEN,
+          PeopleName.PHUC_TRUONG,
+          PeopleName.QUANG_MINH,
+          PeopleName.VY_TRAN,
+        ],
+        mentors: [PeopleName.TRI_HOANG],
+        projectAdvisors: [PeopleName.KHOA_LE],
+      },
+    ],
+  },
+  [PeopleName.DANG_SON]: {
+    name: 'Dang Son',
+    firstLast: 'Son Mai',
+    alias: PeopleName.DANG_SON,
+    trackingName: 'Đăng Sơn',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/dangson.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Western Governors',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.APPLICATION_TRACKER,
+        teammates: [
+          PeopleName.AN_TRAN,
+          PeopleName.DANG_SON,
+          PeopleName.HA_LINH,
+          PeopleName.KHA_TRAN,
+          PeopleName.MONICA_HUYNH,
+          PeopleName.NAM_NGUYEN,
+          PeopleName.PHUC_TRUONG,
+          PeopleName.QUANG_MINH,
+          PeopleName.VY_TRAN,
+        ],
+        mentors: [PeopleName.THIEN_SON, PeopleName.SARAH_VO],
+        projectAdvisors: [PeopleName.KHOA_LE],
+      },
+    ],
+  },
+  [PeopleName.NGOC_LINH]: {
+    name: 'Ngoc Linh',
+    firstLast: 'Linh Le',
+    alias: PeopleName.NGOC_LINH,
+    trackingName: 'Ngọc Linh',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ngoclinh.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Mount Holyoke',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.SUBLEAZY,
+        teamNumber: 1,
+        teammates: [
+          PeopleName.DUC_NGUYEN,
+          PeopleName.THANH_NGUYEN,
+          PeopleName.XUAN_ANH,
+        ],
+        mentors: [PeopleName.LIEN_TRANG],
+        projectAdvisors: [PeopleName.HOANG_NGUYEN, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.DUC_NGUYEN]: {
+    name: 'Duc Nguyen',
+    firstLast: 'Duc Nguyen',
+    alias: PeopleName.DUC_NGUYEN,
+    trackingName: 'Đức',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ducnguyen.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ George Mason',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.SUBLEAZY,
+        teamNumber: 1,
+        teammates: [
+          PeopleName.NGOC_LINH,
+          PeopleName.THANH_NGUYEN,
+          PeopleName.XUAN_ANH,
+        ],
+        mentors: [PeopleName.TRANG_LINH],
+        projectAdvisors: [PeopleName.HOANG_NGUYEN, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.XUAN_ANH]: {
+    name: 'Xuan Anh',
+    firstLast: 'Anh Tran',
+    alias: PeopleName.XUAN_ANH,
+    trackingName: 'Xuân Anh',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/xuananh.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Soka',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.SUBLEAZY,
+        teamNumber: 1,
+        teammates: [
+          PeopleName.DUC_NGUYEN,
+          PeopleName.NGOC_LINH,
+          PeopleName.THANH_NGUYEN,
+        ],
+        mentors: [PeopleName.HA_LINH, PeopleName.THUC_ANH],
+        projectAdvisors: [PeopleName.HOANG_NGUYEN, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.DAT_VU]: {
+    name: 'Dat Vu',
+    firstLast: 'Dat Vu',
+    alias: PeopleName.DAT_VU,
+    trackingName: 'Đạt',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/datvu.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ CSUSM',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.ZERO_KM,
+        teamNumber: 2,
+        teammates: [
+          PeopleName.CHAU_TRAN,
+          PeopleName.QUYEN_DOAN,
+          PeopleName.TUAN_ANH,
+        ],
+        mentors: [PeopleName.HOANG_NGUYEN, PeopleName.PHAN_ANH],
+        projectAdvisors: [PeopleName.VAN_NGUYEN, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.CHAU_TRAN]: {
+    name: 'Chau Tran',
+    firstLast: 'Chau Tran',
+    alias: PeopleName.CHAU_TRAN,
+    trackingName: 'Châu Trần',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/chautran.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ UMass. Amherst',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.ZERO_KM,
+        teamNumber: 2,
+        teammates: [
+          PeopleName.DAT_VU,
+          PeopleName.QUYEN_DOAN,
+          PeopleName.TUAN_ANH,
+        ],
+        mentors: [PeopleName.THU_ANH, PeopleName.NGOC_ANH_TRAN],
+        projectAdvisors: [PeopleName.VAN_NGUYEN, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.TUAN_ANH]: {
+    name: 'Tuan Anh',
+    firstLast: 'Anh Ngo',
+    alias: PeopleName.TUAN_ANH,
+    trackingName: 'Tuấn Anh',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tuananh.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Colby',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.ZERO_KM,
+        teamNumber: 2,
+        teammates: [
+          PeopleName.CHAU_TRAN,
+          PeopleName.DAT_VU,
+          PeopleName.QUYEN_DOAN,
+        ],
+        mentors: [PeopleName.HUY_ANH],
+        projectAdvisors: [PeopleName.VAN_NGUYEN, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.QUYEN_DOAN]: {
+    name: 'Quyen Doan',
+    firstLast: 'Quyen Doan',
+    alias: PeopleName.QUYEN_DOAN,
+    trackingName: 'Quyên',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/quyendoan.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Augustana',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.ZERO_KM,
+        teamNumber: 2,
+        teammates: [
+          PeopleName.CHAU_TRAN,
+          PeopleName.DAT_VU,
+          PeopleName.TUAN_ANH,
+        ],
+        mentors: [PeopleName.GIANG_PHAM],
+        projectAdvisors: [PeopleName.VAN_NGUYEN, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.NHAT_LE]: {
+    name: 'Nhat Le',
+    firstLast: 'Nhat Le',
+    alias: PeopleName.NHAT_LE,
+    trackingName: 'Nhật',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/nhatle.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Iowa State',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.LOCAL_TASTE,
+        teamNumber: 3,
+        teammates: [
+          PeopleName.DAN_NGUYEN,
+          PeopleName.QUY_NGUYEN,
+          PeopleName.TAM_NGUYEN,
+        ],
+        mentors: [PeopleName.PHAN_ANH, PeopleName.HUNG_NGO],
+        projectAdvisors: [PeopleName.HAI_ANH, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.DAN_NGUYEN]: {
+    name: 'Dan Nguyen',
+    firstLast: 'Dan Nguyen',
+    alias: PeopleName.DAN_NGUYEN,
+    trackingName: 'Đan',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/dannguyen.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ George Mason',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.LOCAL_TASTE,
+        teamNumber: 3,
+        teammates: [
+          PeopleName.NHAT_LE,
+          PeopleName.QUY_NGUYEN,
+          PeopleName.TAM_NGUYEN,
+        ],
+        mentors: [PeopleName.PHUC_KHANG, PeopleName.PHUONG_LE],
+        projectAdvisors: [PeopleName.HAI_ANH, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.TAM_NGUYEN]: {
+    name: 'Tam Nguyen',
+    firstLast: 'Tam Nguyen',
+    alias: PeopleName.TAM_NGUYEN,
+    trackingName: 'Tâm Nguyễn',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tamnguyen.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Minerva',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.LOCAL_TASTE,
+        teamNumber: 3,
+        teammates: [
+          PeopleName.DAN_NGUYEN,
+          PeopleName.NHAT_LE,
+          PeopleName.QUY_NGUYEN,
+        ],
+        mentors: [PeopleName.HOANG_NGUYEN, PeopleName.KHANH_LINH],
+        projectAdvisors: [PeopleName.HAI_ANH, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.UYEN_HOANG]: {
+    name: 'Uyen Hoang',
+    firstLast: 'Uyen Hoang',
+    alias: PeopleName.UYEN_HOANG,
+    trackingName: 'Uyên',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/uyenhoang.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Cornell',
+        roles: [MentorshipRole.PD_MENTEE],
+        teamName: ProjectName.CARE_BEAR,
+        teamNumber: 4,
+        teammates: [
+          PeopleName.NGOC_MINH,
+          PeopleName.TAM_DANG,
+          PeopleName.THAI_DANG,
+          PeopleName.TRI_NGUYEN,
+        ],
+        mentors: [PeopleName.TRAN_VO],
+        projectAdvisors: [PeopleName.THUC_ANH, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.THAI_DANG]: {
+    name: 'Thai Dang',
+    firstLast: 'Dang Nguyen',
+    alias: PeopleName.THAI_DANG,
+    trackingName: 'Thái Đăng',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thaidang.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ UMass. Amherst',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.CARE_BEAR,
+        teamNumber: 4,
+        teammates: [
+          PeopleName.NGOC_MINH,
+          PeopleName.TAM_DANG,
+          PeopleName.TRI_NGUYEN,
+          PeopleName.UYEN_HOANG,
+        ],
+        mentors: [PeopleName.JENNY_QUACH],
+        projectAdvisors: [PeopleName.THUC_ANH, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.NGOC_MINH]: {
+    name: 'Ngoc Minh',
+    firstLast: 'Minh Le',
+    alias: PeopleName.NGOC_MINH,
+    trackingName: 'Ngọc Minh',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ngocminh.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Dickinson',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.CARE_BEAR,
+        teamNumber: 4,
+        teammates: [
+          PeopleName.TAM_DANG,
+          PeopleName.THAI_DANG,
+          PeopleName.TRI_NGUYEN,
+          PeopleName.UYEN_HOANG,
+        ],
+        mentors: [PeopleName.VAN_NGUYEN],
+        projectAdvisors: [PeopleName.THUC_ANH, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.TRI_NGUYEN]: {
+    name: 'Tri Nguyen',
+    firstLast: 'Tri Nguyen',
+    alias: PeopleName.TRI_NGUYEN,
+    trackingName: 'Trí Nguyễn',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tringuyen.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Minerva',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.CARE_BEAR,
+        teamNumber: 4,
+        teammates: [
+          PeopleName.NGOC_MINH,
+          PeopleName.TAM_DANG,
+          PeopleName.THAI_DANG,
+          PeopleName.UYEN_HOANG,
+        ],
+        mentors: [PeopleName.VIEN_NGUYEN],
+        projectAdvisors: [PeopleName.THUC_ANH, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.TAM_DANG]: {
+    name: 'Tam Dang',
+    firstLast: 'Tam Dang',
+    alias: PeopleName.TAM_DANG,
+    trackingName: 'Tâm Đặng',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tamdang.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ USF',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.CARE_BEAR,
+        teamNumber: 4,
+        teammates: [
+          PeopleName.NGOC_MINH,
+          PeopleName.THAI_DANG,
+          PeopleName.TRI_NGUYEN,
+          PeopleName.UYEN_HOANG,
+        ],
+        mentors: [PeopleName.NICK_DOAN, PeopleName.HUU_KHANG],
+        projectAdvisors: [PeopleName.THUC_ANH, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.NGOC_ANH_HOANG]: {
+    name: 'Ngoc Anh Hoang',
+    firstLast: 'Anh Hoang',
+    alias: PeopleName.NGOC_ANH_HOANG,
+    trackingName: 'Ngọc Anh Hoàng',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ngocanhhoang.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Tufts',
+        roles: [MentorshipRole.PD_MENTEE],
+        teamName: ProjectName.FAIR_SHARE,
+        teamNumber: 5,
+        teammates: [
+          PeopleName.HA_NGUYEN,
+          PeopleName.KEVIN_DOAN,
+          PeopleName.KIEN_TRAN,
+          PeopleName.THUY_LINH,
+        ],
+        mentors: [PeopleName.HUE_QUAN, PeopleName.DIEP_NGUYEN],
+        projectAdvisors: [PeopleName.HUNG_NGO, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.KEVIN_DOAN]: {
+    name: 'Kevin Doan',
+    firstLast: 'Kevin Doan',
+    alias: PeopleName.KEVIN_DOAN,
+    trackingName: 'Kevin Đoàn',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/kevindoan.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ TCU',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.FAIR_SHARE,
+        teamNumber: 5,
+        teammates: [
+          PeopleName.HA_NGUYEN,
+          PeopleName.KIEN_TRAN,
+          PeopleName.NGOC_ANH_HOANG,
+          PeopleName.THUY_LINH,
+        ],
+        mentors: [PeopleName.KHOA_LE],
+        projectAdvisors: [PeopleName.HUNG_NGO, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.THUY_LINH]: {
+    name: 'Thuy Linh',
+    firstLast: 'Linh Nguyen',
+    alias: PeopleName.THUY_LINH,
+    trackingName: 'Thùy Linh',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thuylinh.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ FSU',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.FAIR_SHARE,
+        teamNumber: 5,
+        teammates: [
+          PeopleName.HA_NGUYEN,
+          PeopleName.KEVIN_DOAN,
+          PeopleName.KIEN_TRAN,
+          PeopleName.NGOC_ANH_HOANG,
+        ],
+        mentors: [PeopleName.QUYNH_TRAN, PeopleName.LONG_DAU],
+        projectAdvisors: [PeopleName.HUNG_NGO, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.KIEN_TRAN]: {
+    name: 'Kien Tran',
+    firstLast: 'Kien Tran',
+    alias: PeopleName.KIEN_TRAN,
+    trackingName: 'Kiên Trần',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/kientran.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Lehigh',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.FAIR_SHARE,
+        teamNumber: 5,
+        teammates: [
+          PeopleName.HA_NGUYEN,
+          PeopleName.KEVIN_DOAN,
+          PeopleName.NGOC_ANH_HOANG,
+          PeopleName.THUY_LINH,
+        ],
+        mentors: [PeopleName.THIEN_SON, PeopleName.VY_TRAN],
+        projectAdvisors: [PeopleName.HUNG_NGO, PeopleName.JENNY_QUACH],
+      },
+    ],
+  },
+  [PeopleName.HA_NGUYEN]: {
+    name: 'Ha Nguyen',
+    firstLast: 'Ha Nguyen',
+    alias: PeopleName.HA_NGUYEN,
+    trackingName: 'Hà Nguyễn',
+    hobbies: '',
+    avatar:
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/hanguyen.jpg',
+    terms: [
+      {
+        year: 2025,
+        title: 'Student @ Tufts',
+        roles: [MentorshipRole.SWE_MENTEE],
+        teamName: ProjectName.FAIR_SHARE,
+        teamNumber: 5,
+        teammates: [
+          PeopleName.KEVIN_DOAN,
+          PeopleName.KIEN_TRAN,
+          PeopleName.NGOC_ANH_HOANG,
+          PeopleName.THUY_LINH,
+        ],
+        mentors: [PeopleName.HAI_ANH, PeopleName.NGOC_ANH_TRAN],
+        projectAdvisors: [PeopleName.HUNG_NGO, PeopleName.JENNY_QUACH],
       },
     ],
   },

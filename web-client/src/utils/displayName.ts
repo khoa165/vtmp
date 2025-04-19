@@ -1,5 +1,5 @@
 import { MentorshipGroup, MentorshipRole } from '@common/enums';
-import { PeopleSortColumn } from './constants';
+import { PeopleSortColumn, ProjectName } from './constants';
 
 export const groupDisplayName: Record<MentorshipGroup, string> = {
   [MentorshipGroup.ORGANIZER]: 'Organizers',
@@ -28,4 +28,24 @@ export const peopleSortColumnDisplayName: Record<PeopleSortColumn, string> = {
   [PeopleSortColumn.NAME]: 'Name',
   [PeopleSortColumn.OFFERS_COUNT]: 'Offers Count',
   [PeopleSortColumn.ROLE]: 'Role',
+};
+
+export const projectDisplayName: Record<ProjectName, string> = {
+  [ProjectName.FINANCIAL_APP]: 'Financial App',
+  [ProjectName.SAFE_TRAVEL]: 'Safe Travel',
+  [ProjectName.PRODUCTIFY]: 'Productify',
+  [ProjectName.FLAVORIE]: 'Flavorie',
+  [ProjectName.PICK_ME_FOOD]: 'Pick Me Food',
+  [ProjectName.GATHERING_GLOBE]: 'Gathering Globe',
+  [ProjectName.BONDSCAPE]: 'Bondscape',
+  [ProjectName.CUPID]: 'Cupid',
+  [ProjectName.PEACE_POD]: 'Peace Pod',
+  [ProjectName.TOURIFIC]: 'Tourific',
+  [ProjectName.SUBLEAZY]: 'Subleazy',
+  [ProjectName.ZERO_KM]: '0km',
+  [ProjectName.LOCAL_TASTE]: 'Local Taste',
+  [ProjectName.CARE_BEAR]: 'Care Bear',
+  [ProjectName.FAIR_SHARE]: 'Fair Share',
+  [ProjectName.APPLICATION_TRACKER]: 'Application Tracker',
+  [ProjectName.CODE_BUDDY]: 'Code Buddy',
 };
