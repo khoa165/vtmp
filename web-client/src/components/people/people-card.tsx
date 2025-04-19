@@ -48,9 +48,9 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
     () => terms.find((t) => t.year === year),
     [terms, year]
   );
-  const { roles, mentors, projectAdvisors, teamName, teammates } =
-    currentTerm ?? {};
+  const { mentors, projectAdvisors, teamName, teammates } = currentTerm ?? {};
   const title = currentTerm?.title ?? terms.at(-1)?.title;
+  const roles = currentTerm?.roles ?? terms.at(-1)?.roles;
   const offers = useMemo(
     () =>
       currentTerm?.offers?.map((o) => {
