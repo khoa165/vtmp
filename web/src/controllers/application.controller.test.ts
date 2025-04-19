@@ -18,8 +18,9 @@ import {
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { IApplication } from '@/models/application.model';
 import { InterviewRepository } from '@/repositories/interview.repository';
-import { InterviewType } from '@common/enums';
+import { InterviewStatus, InterviewType } from '@common/enums';
 import { differenceInSeconds } from 'date-fns';
+import assert from 'assert';
 
 describe('ApplicationController', () => {
   useMongoDB();
@@ -352,7 +353,7 @@ describe('ApplicationController', () => {
       expect(errors[0].message).to.equal('Application not found');
     });
 
-    it('should update the application status to REJECTED and return the updated application', async () => {
+    it('should update the application status to REJECTED and should return the updated application, when application does not have interviews', async () => {
       const res = await request(app)
         .patch(`/api/applications/${application.id}/status`)
         .send({ updatedStatus: 'REJECTED' })
@@ -364,7 +365,61 @@ describe('ApplicationController', () => {
       expect(res.body.data).to.have.property('status', 'REJECTED');
     });
 
-    it('should update the application status to a valid non-REJECTED status and return the updated application', async () => {
+    it('should update the application status to REJECTED, and update all pending interviews status to FAILED. All non-pending interviews status should not be affected. Should return the updated application', async () => {
+      // Create 2 PENDING interviews
+      const pendingInterview1 = await InterviewRepository.createInterview({
+        applicationId: application.id,
+        userId: savedUserId,
+        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
+        interviewOnDate: new Date(),
+      });
+      const pendingInterview2 = await InterviewRepository.createInterview({
+        applicationId: application.id,
+        userId: savedUserId,
+        type: [InterviewType.PRACTICAL_CODING, InterviewType.TRIVIA_CONCEPT],
+        interviewOnDate: new Date(),
+      });
+      // Create 1 Non-PENDING interview
+      const nonPendingInterview = await InterviewRepository.createInterview({
+        applicationId: application.id,
+        userId: savedUserId,
+        type: [InterviewType.OVERALL_BEHAVIORAL],
+        interviewOnDate: new Date(),
+        status: InterviewStatus.PASSED,
+      });
+
+      const res = await request(app)
+        .patch(`/api/applications/${application.id}/status`)
+        .send({ updatedStatus: 'REJECTED' })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.have.property('_id', application.id);
+      expect(res.body.data).to.have.property('status', 'REJECTED');
+      // Expect PENDING interviews to switch to FAILED
+      const interviews = await InterviewRepository.getInterviews({
+        userId: savedUserId,
+        filters: {
+          applicationId: application.id,
+          status: InterviewStatus.FAILED,
+        },
+      });
+      expect(interviews).to.be.an('array').that.have.lengthOf(2);
+      expect(interviews.map((interview) => interview.id)).to.have.members([
+        pendingInterview1.id,
+        pendingInterview2.id,
+      ]);
+      // Expect non-PENDING interview status to stay unchanged
+      const interview = await InterviewRepository.getInterviewById({
+        interviewId: nonPendingInterview.id,
+        userId: savedUserId,
+      });
+      assert(interview);
+      expect(interview.status).to.equal(InterviewStatus.PASSED);
+    });
+
+    it('should update the application status to a valid non-REJECTED status and return the updated application. Also associated interviews status should not be affected', async () => {
       const res = await request(app)
         .patch(`/api/applications/${application.id}/status`)
         .send({ updatedStatus: 'OFFER' })
@@ -402,7 +457,7 @@ describe('ApplicationController', () => {
     it('should return error message with 400 status code if trying to update status', async () => {
       const res = await request(app)
         .patch(`/api/applications/${application.id}/metadata`)
-        .send({ status: 'OFFER' }) // Invalid metadata field
+        .send({ status: 'OFFER' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -416,7 +471,7 @@ describe('ApplicationController', () => {
     it('should return error message with 400 status code trying to update interest level with invalid parameter', async () => {
       const res = await request(app)
         .patch(`/api/applications/${application.id}/metadata`)
-        .send({ interest: 'VERY_HIGH' }) // Invalid interest level
+        .send({ interest: 'VERY_HIGH' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -456,6 +511,13 @@ describe('ApplicationController', () => {
     });
 
     it('should update the application metadata and return the updated application', async () => {
+      const updateApplicationMetadata = {
+        note: 'Updated note',
+        referrer: 'Khoa',
+        portalLink: 'http://abc.com',
+        interest: 'HIGH',
+      };
+
       const res = await request(app)
         .patch(`/api/applications/${application.id}/metadata`)
         .send({
@@ -468,11 +530,7 @@ describe('ApplicationController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.have.property('_id', application.id);
-      expect(res.body.data).to.have.property('note', 'Updated note');
-      expect(res.body.data).to.have.property('referrer', 'Khoa');
-      expect(res.body.data).to.have.property('portalLink', 'http://abc.com');
-      expect(res.body.data).to.have.property('interest', 'HIGH');
+      expect(res.body.data).to.containSubset(updateApplicationMetadata);
     });
   });
 
