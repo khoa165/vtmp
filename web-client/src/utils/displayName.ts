@@ -22,6 +22,7 @@ export const roleDisplayName: Record<MentorshipRole, string> = {
     'SWE Logistics Support (Ex-Mentee)',
   [MentorshipRole.SWE_MENTEE]: 'SWE Mentee',
   [MentorshipRole.PD_MENTEE]: 'PD Mentee',
+  [MentorshipRole.COMMUNITY_MEMBER]: 'Community Member',
 };
 
 export const peopleSortColumnDisplayName: Record<PeopleSortColumn, string> = {

@@ -15,6 +15,7 @@ export const rolePriority: Record<MentorshipRole, number> = {
   [MentorshipRole.SWE_EXMENTEE_LOGISTICS_SUPPORT]: 3.3,
   [MentorshipRole.PD_MENTEE]: 4,
   [MentorshipRole.SWE_MENTEE]: 4.1,
+  [MentorshipRole.COMMUNITY_MEMBER]: 10,
 };
 
 export enum MentorshipYear {

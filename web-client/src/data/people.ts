@@ -13,6 +13,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Khoa Le',
     alias: PeopleName.KHOA_LE,
     trackingName: 'Khoa',
+    professionalTitle: 'Software Engineer II @ Vanta',
     hobbies: 'board games, chess, reality shows',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/khoale.jpg',
@@ -55,6 +56,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Nguyen',
     alias: PeopleName.HUY_ANH,
     trackingName: 'Huy Anh',
+    professionalTitle: 'Software Engineer @ Netflix',
     hobbies: 'cats, startups, capybara',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/huyanh.jpg',
@@ -90,6 +92,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Chan Le',
     alias: PeopleName.CHAN_LE,
     trackingName: 'Chân',
+    professionalTitle: 'Viet Tech Founder',
     hobbies: 'real estate, real estate, real estate',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/chanle.jpg',
@@ -112,6 +115,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Nguyen Vu',
     alias: PeopleName.NGUYEN_VU,
     trackingName: 'Nguyên',
+    professionalTitle: 'Software Engineer @ Mastercard',
     hobbies: 'hiking, nature, cooking',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/nguyenvu.jpg',
@@ -139,6 +143,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Pham',
     alias: PeopleName.THU_ANH,
     trackingName: 'Thu Anh',
+    professionalTitle: 'Software Engineer II @ Mastercard',
     hobbies: 'reading, writing, corgi',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thuanh.jpg',
@@ -166,6 +171,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Kevin Luu',
     alias: PeopleName.KEVIN_LUU,
     trackingName: 'Kevin',
+    professionalTitle: 'Software Engineer II @ Anyscale',
     hobbies: 'travel, pickle ball, badminton',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/kevinluu.jpg',
@@ -193,6 +199,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Jenny Quach',
     alias: PeopleName.JENNY_QUACH,
     trackingName: 'Jenny',
+    professionalTitle: 'Software Engineer @ LinkedIn',
     hobbies: 'board games, anime, food',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/jennyquach.jpg',
@@ -271,6 +278,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Son Mac',
     alias: PeopleName.THIEN_SON,
     trackingName: 'Thiên Sơn',
+    professionalTitle: 'Software Engineer II @ Vanta',
     hobbies: 'frontend, cats, travel',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thienson.jpg',
@@ -282,7 +290,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
       {
         year: 2025,
-        title: 'Software Engineer @ Vanta',
+        title: 'Software Engineer II @ Vanta',
         roles: [MentorshipRole.SWE_MENTOR],
       },
     ],
@@ -293,6 +301,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Nick Doan',
     alias: PeopleName.NICK_DOAN,
     trackingName: 'Nick',
+    professionalTitle: 'Software Engineer @ Palantir',
     hobbies: 'coding, running, games',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/nickdoan.jpg',
@@ -315,6 +324,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Sarah Vo',
     alias: PeopleName.SARAH_VO,
     trackingName: 'Sarah',
+    professionalTitle: 'Software Engineer @ Amazon',
     hobbies: 'board games, PC games, cooking',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/sarahvo.jpg',
@@ -332,6 +342,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Dang Pham',
     alias: PeopleName.HUU_DANG,
     trackingName: 'Đăng',
+    professionalTitle: 'SWE Intern @ Meta',
     hobbies: 'reading, writing, gaming',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/huudang.jpg',
@@ -383,6 +394,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           },
         ],
       },
+      {
+        year: 2025,
+        title: 'SWE Intern @ Meta',
+        roles: [MentorshipRole.COMMUNITY_MEMBER],
+      },
     ],
   },
   [PeopleName.ROBIN_HOANG]: {
@@ -390,6 +406,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Robin Hoang',
     alias: PeopleName.ROBIN_HOANG,
     trackingName: 'Robin',
+    professionalTitle: 'Software Engineer @ Microsoft',
     hobbies: 'solo trip, pole dance, beach',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/robinhoang.jpg',
@@ -441,6 +458,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           },
         ],
       },
+      {
+        year: 2025,
+        title: 'Software Engineer @ Microsoft',
+        roles: [MentorshipRole.COMMUNITY_MEMBER],
+      },
     ],
   },
   [PeopleName.PHUOC_ONG]: {
@@ -448,6 +470,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Phuoc Ong',
     alias: PeopleName.PHUOC_ONG,
     trackingName: 'Phước',
+    professionalTitle: 'SWE Intern @ Microsoft',
     hobbies: 'gym, food, dog',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phuocong.jpg',
@@ -529,6 +552,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           },
         ],
       },
+      {
+        year: 2025,
+        title: 'SWE Intern @ Microsoft',
+        roles: [MentorshipRole.COMMUNITY_MEMBER],
+      },
     ],
   },
   [PeopleName.KHUE_TANG]: {
@@ -536,6 +564,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Khue Tang',
     alias: PeopleName.KHUE_TANG,
     trackingName: 'Khuê',
+    professionalTitle: 'Software Engineer @ LinkedIn',
     hobbies: 'pekking duck, cooking, hiking',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/khuetang.jpg',
@@ -593,6 +622,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Phuong Cao',
     alias: PeopleName.PHUONG_CAO,
     trackingName: 'Phương',
+    professionalTitle: 'SWE Intern @ NVIDIA',
     hobbies: 'pekking duck, anime, music',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phuongcao.jpg',
@@ -650,6 +680,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           },
         ],
       },
+      {
+        year: 2025,
+        title: 'SWE Intern @ NVIDIA',
+        roles: [MentorshipRole.COMMUNITY_MEMBER],
+      },
     ],
   },
   [PeopleName.NGOC_DOAN]: {
@@ -657,6 +692,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Ngoc Doan',
     alias: PeopleName.NGOC_DOAN,
     trackingName: 'Ngọc',
+    professionalTitle: 'Software Engineer @ DoorDash',
     hobbies: 'road trip, food, concert',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/placeholder.jpg',
@@ -702,6 +738,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           },
         ],
       },
+      {
+        year: 2025,
+        title: 'Software Engineer @ DoorDash',
+        roles: [MentorshipRole.COMMUNITY_MEMBER],
+      },
     ],
   },
   [PeopleName.CUONG_NGUYEN]: {
@@ -709,6 +750,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Cuong Nguyen',
     alias: PeopleName.CUONG_NGUYEN,
     trackingName: 'Cường',
+    professionalTitle: 'Software Engineer @ Google',
     hobbies: 'board games, PC games, anime',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/cuongnguyen.jpg',
@@ -772,6 +814,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           },
         ],
       },
+      {
+        year: 2025,
+        title: 'Software Engineer @ Google',
+        roles: [MentorshipRole.COMMUNITY_MEMBER],
+      },
     ],
   },
   [PeopleName.MINH_QUAN]: {
@@ -779,6 +826,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Quan Le',
     alias: PeopleName.MINH_QUAN,
     trackingName: 'Minh Quân',
+    professionalTitle: 'Software Engineer @ Meta',
     hobbies: 'cosplay, board games, music',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/minhquan.jpg',
@@ -830,6 +878,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           },
         ],
       },
+      {
+        year: 2025,
+        title: 'Software Engineer @ Meta',
+        roles: [MentorshipRole.COMMUNITY_MEMBER],
+      },
     ],
   },
   [PeopleName.THUY_TRANG]: {
@@ -837,6 +890,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Trang Vu',
     alias: PeopleName.THUY_TRANG,
     trackingName: 'Trang Vũ',
+    professionalTitle: 'SWE Intern @ Shopify',
     hobbies: 'board games, K-drama, flowers',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thuytrang.jpg',
@@ -893,6 +947,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Hieu Vuong',
     alias: PeopleName.HIEU_VUONG,
     trackingName: 'Hiếu',
+    professionalTitle: 'Former SWE Intern @ SAP',
     hobbies: 'karaoke, beauty salon, travel',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/hieuvuong.jpg',
@@ -924,6 +979,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'SWE Intern @ SAP',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
+      {
+        year: 2025,
+        title: 'Student @ Victoria',
+        roles: [MentorshipRole.COMMUNITY_MEMBER],
+      },
     ],
   },
   [PeopleName.THANH_NGUYEN]: {
@@ -931,6 +991,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Thanh Nguyen',
     alias: PeopleName.THANH_NGUYEN,
     trackingName: 'Thành',
+    professionalTitle: 'Student @ UBC',
     hobbies: 'beach, solo travel, writing',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thanhnguyen.jpg',
@@ -984,6 +1045,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Hung Ngo',
     alias: PeopleName.HUNG_NGO,
     trackingName: 'Hưng',
+    professionalTitle: 'SWE Intern @ PlayStation',
     hobbies: 'keyboard, music, League',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/hungngo.jpg',
@@ -1035,6 +1097,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Tran',
     alias: PeopleName.NGOC_ANH_TRAN,
     trackingName: 'Ngọc Anh',
+    professionalTitle: 'SWE Intern @ Robinhood',
     hobbies: 'cooking, Chinese dramas, dogs',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ngocanhtran.jpg',
@@ -1098,6 +1161,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Vy Nguyen',
     alias: PeopleName.VY_NGUYEN,
     trackingName: 'Thuý Vy',
+    professionalTitle: 'Student @ Catholic',
     hobbies: 'music, cooking, travel',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/vynguyen.jpg',
@@ -1132,6 +1196,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Vien Nguyen',
     alias: PeopleName.VIEN_NGUYEN,
     trackingName: 'Viên',
+    professionalTitle: 'SWE Intern @ ServiceNow',
     hobbies: 'fencing, table tennis, travelling',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/viennguyen.jpg',
@@ -1180,6 +1245,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Hoang',
     alias: PeopleName.THUC_ANH,
     trackingName: 'Thục Anh',
+    professionalTitle: 'SWE Intern @ Palantir + Microsoft',
     hobbies: 'cooking, embroidery, travel',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thucanh.jpg',
@@ -1242,6 +1308,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Giang Pham',
     alias: PeopleName.GIANG_PHAM,
     trackingName: 'Giang',
+    professionalTitle: 'Software Engineer @ Amazon',
     hobbies: 'Kpop, cooking, japanese books',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/giangpham.jpg',
@@ -1284,6 +1351,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Nguyen',
     alias: PeopleName.PHAN_ANH,
     trackingName: 'Phan Anh',
+    professionalTitle: 'SWE Intern @ Amazon',
     hobbies: 'soccer, running, coding',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phananh.jpg',
@@ -1328,6 +1396,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Quy Nguyen',
     alias: PeopleName.QUY_NGUYEN,
     trackingName: 'Quý',
+    professionalTitle: 'Student @ Windsor',
     hobbies: 'sports, soccer games, movies',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/quynguyen.jpg',
@@ -1367,6 +1436,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Thang Nguyen',
     alias: PeopleName.THANG_NGUYEN,
     trackingName: 'Thắng',
+    professionalTitle: 'Student @ Toronto Metropolitan',
     hobbies: 'badminton, basketball, video game',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thangnguyen.jpg',
@@ -1385,6 +1455,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         mentors: [PeopleName.KEVIN_LUU],
         projectAdvisors: [PeopleName.MINH_QUAN, PeopleName.KHOA_LE],
       },
+      {
+        year: 2025,
+        title: 'Student @ Toronto Metropolitan',
+        roles: [MentorshipRole.COMMUNITY_MEMBER],
+      },
     ],
   },
   [PeopleName.QUYNH_TRAN]: {
@@ -1392,6 +1467,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Quynh Tran',
     alias: PeopleName.QUYNH_TRAN,
     trackingName: 'Quỳnh',
+    professionalTitle: 'SWE Intern @ Microsoft',
     hobbies: 'cats, K-pop, travel',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/quynhtran.jpg',
@@ -1448,6 +1524,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Phuong Le',
     alias: PeopleName.PHUONG_LE,
     trackingName: 'Phượng',
+    professionalTitle: 'SWE Intern @ TBD',
     hobbies: 'films, novels, pop ballad',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phuongle.jpg',
@@ -1492,6 +1569,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Quan Nguyen',
     alias: PeopleName.BA_QUAN,
     trackingName: 'Bá Quân',
+    professionalTitle: 'SWE Intern @ Ryco.io',
     hobbies: 'guitar, photography, fishing',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/baquan.jpg',
@@ -1530,6 +1608,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Vy Tran',
     alias: PeopleName.VY_TRAN,
     trackingName: 'Vy Trần',
+    professionalTitle: 'Data Engineer Intern @ Meta',
     hobbies: 'soccer, mountains, dogs',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/vytran.jpg',
@@ -1598,6 +1677,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Linh Tran',
     alias: PeopleName.TRANG_LINH,
     trackingName: 'Trang Linh',
+    professionalTitle: 'SWE Intern @ Microsoft',
     hobbies: 'draw, sleep, axolotl',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tranglinh.jpg',
@@ -1642,6 +1722,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Khang Nguyen',
     alias: PeopleName.PHUC_KHANG,
     trackingName: 'Phúc Khang',
+    professionalTitle: 'SWE Intern @ Shopify',
     hobbies: 'ice-skating, MUN, skywatching',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phuckhang.jpg',
@@ -1680,6 +1761,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Long Dau',
     alias: PeopleName.LONG_DAU,
     trackingName: 'Long',
+    professionalTitle: 'SWE Intern @ ServiceNow',
     hobbies: 'sports, video game, rap',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/longdau.jpg',
@@ -1733,6 +1815,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Hoang Nguyen',
     alias: PeopleName.HOANG_NGUYEN,
     trackingName: 'Hoàng',
+    professionalTitle: 'SWE Intern @ Shopify + Amazon',
     hobbies: 'indie, k-drama, solo travel',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/hoangnguyen.jpg',
@@ -1786,6 +1869,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Linh Nguyen',
     alias: PeopleName.HA_LINH,
     trackingName: 'Hà Linh',
+    professionalTitle: 'SWE Intern @ Adobe',
     hobbies: 'food, music, roller coaster',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/halinh.jpg',
@@ -1839,6 +1923,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Linh Hoang',
     alias: PeopleName.KHANH_LINH,
     trackingName: 'Khánh Linh',
+    professionalTitle: 'SWE Intern @ Amazon',
     hobbies: 'music, dumb tv shows, sunbathing',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/khanhlinh.jpg',
@@ -1889,6 +1974,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Khang Nguyen',
     alias: PeopleName.HUU_KHANG,
     trackingName: 'Hữu Khang',
+    professionalTitle: 'SWE Intern @ Amazon',
     hobbies: 'J-pop, gaming, anime',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/huukhang.jpg',
@@ -1939,6 +2025,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Trang Do',
     alias: PeopleName.LIEN_TRANG,
     trackingName: 'Trang Đỗ',
+    professionalTitle: 'SWE Intern @ Asana',
     hobbies: 'kdrama, cooking, Vpop',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/lientrang.jpg',
@@ -1995,6 +2082,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Nguyen',
     alias: PeopleName.HAI_ANH,
     trackingName: 'Hải Anh',
+    professionalTitle: 'SWE Intern @ Slack',
     hobbies: 'walking, bike riding, road trip',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/haianh.jpg',
@@ -2042,6 +2130,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Nam Nguyen',
     alias: PeopleName.NAM_NGUYEN,
     trackingName: 'Nam',
+    professionalTitle: 'SWE Intern @ Health Enhancement Systems',
     hobbies: 'soccer, One Piece, piano',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/namnguyen.jpg',
@@ -2092,6 +2181,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Tri Hoang',
     alias: PeopleName.TRI_HOANG,
     trackingName: 'Trí',
+    professionalTitle: 'SWE Intern @ Meta',
     hobbies: 'sports, traveling, movies',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/trihoang.jpg',
@@ -2166,6 +2256,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Van Nguyen',
     alias: PeopleName.VAN_NGUYEN,
     trackingName: 'Vân',
+    professionalTitle: 'SWE Intern @ Microsoft',
     hobbies: 'kdrama, tarot, drums',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/vannguyen.jpg',
@@ -2270,6 +2361,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Kha Tran',
     alias: PeopleName.KHA_TRAN,
     trackingName: 'Kha',
+    professionalTitle: 'Student @ Manitoba',
     hobbies: 'coding, reading, gaming',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/khatran.jpg',
@@ -2313,6 +2405,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Quan Vu',
     alias: PeopleName.HUE_QUAN,
     trackingName: 'Huệ Quân',
+    professionalTitle: 'Product Design Intern @ Meta',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/huequan.jpg',
@@ -2329,6 +2422,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Tran Vo',
     alias: PeopleName.TRAN_VO,
     trackingName: 'Trân',
+    professionalTitle: 'UX Designer @ Vanguard',
     hobbies: 'museums, cafe-hopping, Disneyland',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tranvo.jpg',
@@ -2345,6 +2439,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Diep Nguyen',
     alias: PeopleName.DIEP_NGUYEN,
     trackingName: 'Diệp',
+    professionalTitle: 'Product Design Intern @ Microsoft',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/diepnguyen.jpg',
@@ -2361,13 +2456,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Monica Huynh',
     alias: PeopleName.MONICA_HUYNH,
     trackingName: 'Monica',
+    professionalTitle: 'Former Student @ UBC',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/monicahuynh.jpg',
     terms: [
       {
         year: 2025,
-        title: 'Student @ UBC',
+        title: 'Former Student @ UBC',
         roles: [MentorshipRole.PD_MENTEE],
         teamName: ProjectName.APPLICATION_TRACKER,
         teammates: [
@@ -2391,6 +2487,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Phuc Truong',
     alias: PeopleName.PHUC_TRUONG,
     trackingName: 'Jun',
+    professionalTitle: 'Student @ USF',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phuctruong.jpg',
@@ -2421,13 +2518,14 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'An Tran',
     alias: PeopleName.AN_TRAN,
     trackingName: 'Ân',
+    professionalTitle: 'Student @ Pomona',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/antran.jpg',
     terms: [
       {
         year: 2025,
-        title: 'Student @ Orange Coast',
+        title: 'Student @ Pomona',
         roles: [MentorshipRole.SWE_MENTEE],
         teamName: ProjectName.APPLICATION_TRACKER,
         teammates: [
@@ -2451,6 +2549,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Minh Nguyen',
     alias: PeopleName.QUANG_MINH,
     trackingName: 'Quang Minh',
+    professionalTitle: 'Student @ FSU',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/quangminh.jpg',
@@ -2481,6 +2580,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Son Mai',
     alias: PeopleName.DANG_SON,
     trackingName: 'Đăng Sơn',
+    professionalTitle: 'Student @ Western Governors',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/dangson.jpg',
@@ -2511,6 +2611,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Linh Le',
     alias: PeopleName.NGOC_LINH,
     trackingName: 'Ngọc Linh',
+    professionalTitle: 'Student @ Mount Holyoke',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ngoclinh.jpg',
@@ -2536,6 +2637,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Duc Nguyen',
     alias: PeopleName.DUC_NGUYEN,
     trackingName: 'Đức',
+    professionalTitle: 'Student @ George Mason',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ducnguyen.jpg',
@@ -2561,6 +2663,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Tran',
     alias: PeopleName.XUAN_ANH,
     trackingName: 'Xuân Anh',
+    professionalTitle: 'Student @ Soka',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/xuananh.jpg',
@@ -2586,6 +2689,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Dat Vu',
     alias: PeopleName.DAT_VU,
     trackingName: 'Đạt',
+    professionalTitle: 'Student @ CSUSM',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/datvu.jpg',
@@ -2611,6 +2715,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Chau Tran',
     alias: PeopleName.CHAU_TRAN,
     trackingName: 'Châu Trần',
+    professionalTitle: 'Student @ UMass. Amherst',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/chautran.jpg',
@@ -2636,6 +2741,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Ngo',
     alias: PeopleName.TUAN_ANH,
     trackingName: 'Tuấn Anh',
+    professionalTitle: 'Student @ Colby',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tuananh.jpg',
@@ -2661,6 +2767,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Quyen Doan',
     alias: PeopleName.QUYEN_DOAN,
     trackingName: 'Quyên',
+    professionalTitle: 'Student @ Augustana',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/quyendoan.jpg',
@@ -2686,6 +2793,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Nhat Le',
     alias: PeopleName.NHAT_LE,
     trackingName: 'Nhật',
+    professionalTitle: 'Student @ Iowa State',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/nhatle.jpg',
@@ -2711,6 +2819,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Dan Nguyen',
     alias: PeopleName.DAN_NGUYEN,
     trackingName: 'Đan',
+    professionalTitle: 'Student @ George Mason',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/dannguyen.jpg',
@@ -2736,6 +2845,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Tam Nguyen',
     alias: PeopleName.TAM_NGUYEN,
     trackingName: 'Tâm Nguyễn',
+    professionalTitle: 'Student @ Minerva',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tamnguyen.jpg',
@@ -2761,6 +2871,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Uyen Hoang',
     alias: PeopleName.UYEN_HOANG,
     trackingName: 'Uyên',
+    professionalTitle: 'Student @ Cornell',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/uyenhoang.jpg',
@@ -2787,6 +2898,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Dang Nguyen',
     alias: PeopleName.THAI_DANG,
     trackingName: 'Thái Đăng',
+    professionalTitle: 'Student @ UMass. Amherst',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thaidang.jpg',
@@ -2813,6 +2925,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Minh Le',
     alias: PeopleName.NGOC_MINH,
     trackingName: 'Ngọc Minh',
+    professionalTitle: 'Student @ Dickinson',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ngocminh.jpg',
@@ -2839,6 +2952,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Tri Nguyen',
     alias: PeopleName.TRI_NGUYEN,
     trackingName: 'Trí Nguyễn',
+    professionalTitle: 'Student @ Minerva',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tringuyen.jpg',
@@ -2865,6 +2979,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Tam Dang',
     alias: PeopleName.TAM_DANG,
     trackingName: 'Tâm Đặng',
+    professionalTitle: 'Student @ USF',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tamdang.jpg',
@@ -2891,6 +3006,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Hoang',
     alias: PeopleName.NGOC_ANH_HOANG,
     trackingName: 'Ngọc Anh Hoàng',
+    professionalTitle: 'Student @ Tufts',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ngocanhhoang.jpg',
@@ -2917,6 +3033,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Kevin Doan',
     alias: PeopleName.KEVIN_DOAN,
     trackingName: 'Kevin Đoàn',
+    professionalTitle: 'Student @ TCU',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/kevindoan.jpg',
@@ -2943,6 +3060,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Linh Nguyen',
     alias: PeopleName.THUY_LINH,
     trackingName: 'Thùy Linh',
+    professionalTitle: 'Student @ FSU',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thuylinh.jpg',
@@ -2969,6 +3087,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Kien Tran',
     alias: PeopleName.KIEN_TRAN,
     trackingName: 'Kiên Trần',
+    professionalTitle: 'Student @ Lehigh',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/kientran.jpg',
@@ -2995,6 +3114,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Ha Nguyen',
     alias: PeopleName.HA_NGUYEN,
     trackingName: 'Hà Nguyễn',
+    professionalTitle: 'Student @ Tufts',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/hanguyen.jpg',

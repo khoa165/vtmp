@@ -155,6 +155,7 @@ export enum MentorshipRole {
   SWE_MENTEE = 'SWE_MENTEE',
   PD_MENTOR = 'PD_MENTOR',
   PD_MENTEE = 'PD_MENTEE',
+  COMMUNITY_MEMBER = 'COMMUNITY_MEMBER',
 }
 
 export enum MentorshipGroup {

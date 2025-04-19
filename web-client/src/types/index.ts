@@ -48,6 +48,7 @@ export interface MentorshipPerson {
   firstLast: string;
   alias: string;
   trackingName: string;
+  professionalTitle: string;
   hobbies: string;
   avatar: string;
   terms: MentorshipTerm[];

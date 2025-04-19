@@ -39,7 +39,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
   companiesMetadata,
   sortColumn,
 }) => {
-  const { name, alias, avatar, terms } = person;
+  const { name, alias, avatar, terms, professionalTitle } = person;
   const firstTerm = useMemo(() => terms[0], [terms]);
   const isOrWasMentee = useMemo(
     () => isMenteeRole(firstTerm.roles),
@@ -50,7 +50,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
     [terms, year]
   );
   const { mentors, projectAdvisors, teamName, teammates } = currentTerm ?? {};
-  const title = currentTerm?.title ?? terms.at(-1)?.title;
+  const title = currentTerm?.title ?? professionalTitle;
   const roles = currentTerm?.roles ?? terms.at(-1)?.roles;
   const offers = useMemo(
     () =>
