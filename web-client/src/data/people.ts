@@ -1584,8 +1584,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Adobe',
         roles: [
-          MentorshipRole.SWE_EXMENTEE_MENTOR,
           MentorshipRole.SWE_RISING_LEAD,
+          MentorshipRole.SWE_EXMENTEE_MENTOR,
         ],
       },
     ],
