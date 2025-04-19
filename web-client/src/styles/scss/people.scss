@@ -62,11 +62,6 @@
       left: 5px;
       text-align: left;
 
-      .offers-row-wrapper {
-        display: flex;
-        gap: 4px;
-      }
-
       .mentorship-avatar img {
         background-color: variables.$brand-stats-background-color;
         object-fit: contain;
@@ -85,6 +80,9 @@
     margin-bottom: 30px;
 
     text-align: center;
+    img {
+      display: inline;
+    }
 
     background: variables.$brand-primary-background-color;
     color: variables.$brand-light-color;
