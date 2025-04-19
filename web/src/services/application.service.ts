@@ -145,13 +145,11 @@ export const ApplicationService = {
           session,
         });
 
-      const pendingInterviews =
-        await InterviewRepository.getInterviewsByApplicationId({
-          userId,
-          applicationId,
-          filters: { status: InterviewStatus.PENDING },
-          session,
-        });
+      const pendingInterviews = await InterviewRepository.getInterviews({
+        userId,
+        filters: { applicationId, status: InterviewStatus.PENDING },
+        session,
+      });
 
       if (pendingInterviews.length > 0) {
         const interviewIds = pendingInterviews.map(
@@ -193,10 +191,10 @@ export const ApplicationService = {
       });
     }
 
-    // call getInterviewsByApplicationId to get an array to check if this app has interviews
-    const interviews = await InterviewRepository.getInterviewsByApplicationId({
+    // call getInterviews to get an array to check if this app has interviews
+    const interviews = await InterviewRepository.getInterviews({
       userId,
-      applicationId,
+      filters: { applicationId },
     });
     if (interviews.length > 0) {
       throw new ForbiddenError(

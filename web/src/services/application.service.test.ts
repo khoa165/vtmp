@@ -431,12 +431,13 @@ describe('ApplicationService', () => {
         type: [InterviewType.PROJECT_WALKTHROUGH],
         interviewOnDate: new Date(),
       });
-      const pendingInterviews =
-        await InterviewRepository.getInterviewsByApplicationId({
+      const pendingInterviews = await InterviewRepository.getInterviews({
+        userId: userId_A,
+        filters: {
           applicationId: application_A0.id,
-          userId: userId_A,
-          filters: { status: InterviewStatus.PENDING },
-        });
+          status: InterviewStatus.PENDING,
+        },
+      });
       expect(pendingInterviews).to.be.an('array').that.have.lengthOf(2);
 
       const updatedApplication =
@@ -447,12 +448,13 @@ describe('ApplicationService', () => {
       assert(updatedApplication);
       expect(updatedApplication.status).to.equal(ApplicationStatus.REJECTED);
 
-      const failedInterviews =
-        await InterviewRepository.getInterviewsByApplicationId({
+      const failedInterviews = await InterviewRepository.getInterviews({
+        userId: userId_A,
+        filters: {
           applicationId: application_A0.id,
-          userId: userId_A,
-          filters: { status: InterviewStatus.FAILED },
-        });
+          status: InterviewStatus.FAILED,
+        },
+      });
       expect(failedInterviews).to.be.an('array').that.have.lengthOf(2);
       expect(failedInterviews.map((interview) => interview.id)).to.have.members(
         [pendingInterview1.id, pendingInterview2.id]

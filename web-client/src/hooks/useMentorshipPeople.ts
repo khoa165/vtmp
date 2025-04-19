@@ -5,11 +5,12 @@ import {
 } from 'src/utils/data';
 import { PeopleSortColumn } from 'src/utils/constants';
 import { mentorshipPeople } from 'src/data/people';
-import { sortBy } from 'lodash';
+import { sortBy, sumBy } from 'lodash';
+import * as R from 'remeda';
 import { MentorshipRole } from '@common/enums';
 
 export const useMentorshipPeople = (
-  year: number,
+  year: number | 'all',
   sortColumn: PeopleSortColumn,
   sortDescending: boolean,
   filteredRoles: MentorshipRole[]
@@ -31,30 +32,51 @@ export const useMentorshipPeople = (
   }, [filteredRoles]);
 
   const people = useMemo(() => {
-    const filteredPeople = Object.values(mentorshipPeople).filter((p) =>
-      doesPersonHaveAtLeastOneRoleInYear(p, roles, year)
-    );
+    let filteredPeople = Object.values(mentorshipPeople);
+    if (year !== 'all') {
+      filteredPeople = Object.values(mentorshipPeople).filter((p) =>
+        doesPersonHaveAtLeastOneRoleInYear(p, roles, year)
+      );
+    }
     let sortedPeople = filteredPeople;
     if (sortColumn === PeopleSortColumn.NAME) {
       sortedPeople = sortBy(filteredPeople, (p) => p.name);
+      return sortDescending ? sortedPeople.reverse() : sortedPeople;
     } else if (sortColumn === PeopleSortColumn.OFFERS_COUNT) {
       sortedPeople = sortBy(
         filteredPeople,
         (p) => {
-          const currentTerm = p.terms.find((t) => t.year === year);
-          return currentTerm?.offers?.length ?? 0;
+          if (year === 'all') {
+            return sumBy(p.terms, (t) => t.offers?.length ?? 0);
+          } else {
+            const currentTerm = p.terms.find((t) => t.year === year);
+            return currentTerm?.offers?.length ?? 0;
+          }
         },
-        (p) => getPersonPriorityInYear(p, year),
         (p) => p.name
       );
+      return sortDescending ? sortedPeople.reverse() : sortedPeople;
     } else if (sortColumn === PeopleSortColumn.ROLE) {
       sortedPeople = sortBy(
         filteredPeople,
-        (p) => getPersonPriorityInYear(p, year),
+        (p) => {
+          if (year === 'all') {
+            const priorityByTerm = p.terms.map((t) =>
+              getPersonPriorityInYear(p, t.year)
+            );
+            const highestPriority = R.firstBy(priorityByTerm, R.identity());
+            if (!highestPriority) {
+              return 1000;
+            }
+            return highestPriority;
+          } else {
+            return getPersonPriorityInYear(p, year);
+          }
+        },
         (p) => p.name
       );
     }
-    return sortDescending ? sortedPeople.reverse() : sortedPeople;
+    return sortedPeople;
   }, [roles, year, sortColumn, sortDescending]);
 
   return people;

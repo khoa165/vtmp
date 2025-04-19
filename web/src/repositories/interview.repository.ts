@@ -42,26 +42,20 @@ export const InterviewRepository = {
     });
   },
 
-  getInterviews: async (userId: string): Promise<IInterview[]> => {
-    return InterviewModel.find({ userId, deletedAt: null });
-  },
-
-  getInterviewsByApplicationId: async ({
-    applicationId,
+  getInterviews: async ({
     userId,
     filters,
     session,
   }: {
-    applicationId: string;
     userId: string;
     filters?: {
+      applicationId?: string;
       status?: InterviewStatus;
     };
     session?: ClientSession;
   }): Promise<IInterview[]> => {
     return InterviewModel.find(
       {
-        applicationId,
         userId,
         deletedAt: null,
         ...(filters || {}),
