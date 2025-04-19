@@ -858,7 +858,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         teamName: ProjectName.FINANCIAL_APP,
         teamNumber: 1,
         teammates: [
-          PeopleName.THUY_TRANG,
+          PeopleName.TRANG_VU,
           PeopleName.HIEU_VUONG,
           PeopleName.THANH_NGUYEN,
         ],
@@ -885,15 +885,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  [PeopleName.THUY_TRANG]: {
+  [PeopleName.TRANG_VU]: {
     name: 'Thuy Trang',
     firstLast: 'Trang Vu',
-    alias: PeopleName.THUY_TRANG,
+    alias: PeopleName.TRANG_VU,
     trackingName: 'Trang Vũ',
     professionalTitle: 'SWE Intern @ Shopify',
     hobbies: 'board games, K-drama, flowers',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thuytrang.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/trangvu.jpg',
     terms: [
       {
         year: 2023,
@@ -968,7 +968,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         teamNumber: 1,
         teammates: [
           PeopleName.MINH_QUAN,
-          PeopleName.THUY_TRANG,
+          PeopleName.TRANG_VU,
           PeopleName.THANH_NGUYEN,
         ],
         mentors: [PeopleName.NGUYEN_VU, PeopleName.THU_ANH],
@@ -1004,7 +1004,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         teamNumber: 1,
         teammates: [
           PeopleName.MINH_QUAN,
-          PeopleName.THUY_TRANG,
+          PeopleName.TRANG_VU,
           PeopleName.HIEU_VUONG,
         ],
         mentors: [PeopleName.KHOA_LE],
@@ -1017,7 +1017,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         teamName: ProjectName.PEACE_POD,
         teamNumber: 6,
         teammates: [
-          PeopleName.LIEN_TRANG,
+          PeopleName.TRANG_DO,
           PeopleName.HAI_ANH,
           PeopleName.NAM_NGUYEN,
         ],
@@ -2020,15 +2020,15 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
   },
-  [PeopleName.LIEN_TRANG]: {
+  [PeopleName.TRANG_DO]: {
     name: 'Lien Trang',
     firstLast: 'Trang Do',
-    alias: PeopleName.LIEN_TRANG,
+    alias: PeopleName.TRANG_DO,
     trackingName: 'Trang Đỗ',
     professionalTitle: 'SWE Intern @ Asana',
     hobbies: 'kdrama, cooking, Vpop',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/lientrang.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/trangdo.jpg',
     terms: [
       {
         year: 2024,
@@ -2102,7 +2102,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         teamName: ProjectName.PEACE_POD,
         teamNumber: 6,
         teammates: [
-          PeopleName.LIEN_TRANG,
+          PeopleName.TRANG_DO,
           PeopleName.THANH_NGUYEN,
           PeopleName.NAM_NGUYEN,
         ],
@@ -2150,7 +2150,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         teamName: ProjectName.PEACE_POD,
         teamNumber: 6,
         teammates: [
-          PeopleName.LIEN_TRANG,
+          PeopleName.TRANG_DO,
           PeopleName.HAI_ANH,
           PeopleName.THANH_NGUYEN,
         ],
@@ -2237,7 +2237,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         teamName: ProjectName.TOURIFIC,
         teamNumber: 7,
         teammates: [
-          PeopleName.THUY_TRANG,
+          PeopleName.TRANG_VU,
           PeopleName.VAN_NGUYEN,
           PeopleName.KHA_TRAN,
         ],
@@ -2331,7 +2331,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         teamNumber: 7,
         teammates: [
           PeopleName.TRI_HOANG,
-          PeopleName.THUY_TRANG,
+          PeopleName.TRANG_VU,
           PeopleName.KHA_TRAN,
         ],
         mentors: [PeopleName.THIEN_SON],
@@ -2374,7 +2374,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         teamNumber: 7,
         teammates: [
           PeopleName.TRI_HOANG,
-          PeopleName.THUY_TRANG,
+          PeopleName.TRANG_VU,
           PeopleName.VAN_NGUYEN,
         ],
         mentors: [PeopleName.KHUE_TANG],
@@ -2627,7 +2627,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           PeopleName.THANH_NGUYEN,
           PeopleName.XUAN_ANH,
         ],
-        mentors: [PeopleName.LIEN_TRANG],
+        mentors: [PeopleName.TRANG_DO],
         projectAdvisors: [PeopleName.HOANG_NGUYEN, PeopleName.JENNY_QUACH],
       },
     ],
