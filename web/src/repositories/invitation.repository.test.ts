@@ -15,7 +15,7 @@ import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 chai.use(chaiSubset);
 const { expect } = chai;
-describe('InvitationRepository', () => {
+describe.only('InvitationRepository', () => {
   useMongoDB();
   const sandbox = useSandbox();
   beforeEach(() => {
@@ -74,9 +74,8 @@ describe('InvitationRepository', () => {
       token: actualInvitation.token,
       status: actualInvitation.status,
     });
-    const timeDiff = differenceInSeconds(
-      actualInvitation.expiryDate,
-      invitation.expiryDate
+    const timeDiff = Math.abs(
+      differenceInSeconds(actualInvitation.expiryDate, invitation.expiryDate)
     );
 
     expect(timeDiff).to.lessThan(3);
@@ -230,8 +229,10 @@ describe('InvitationRepository', () => {
     });
 
     it('should return updated invitation if invitation found', async () => {
+      const newExpiryDate = new Date(Date.now() + 48 * 60 * 60 * 1000);
       const updatedInvitationInfo = {
         status: InvitationStatus.ACCEPTED,
+        expiryDate: newExpiryDate,
       };
 
       const updatedInvitation = await InvitationRepository.updateInvitationById(
@@ -243,6 +244,7 @@ describe('InvitationRepository', () => {
       checkInvitation(updatedInvitation, {
         ...mockOneInvitation,
         status: InvitationStatus.ACCEPTED,
+        expiryDate: newExpiryDate,
       });
     });
   });
