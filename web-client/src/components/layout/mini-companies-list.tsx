@@ -35,7 +35,7 @@ export const MiniCompaniesList: React.FC<MiniCompaniesListProps> = ({
   };
 
   return chunk(offersList, 2).map((ol, index) => (
-    <div key={index} className="offers-row-wrapper">
+    <div key={index} className="flex gap-x-2">
       {ol.map((o) => (
         <Fragment key={o.name}>
           <Avatar
