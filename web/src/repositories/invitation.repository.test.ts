@@ -15,7 +15,7 @@ import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 chai.use(chaiSubset);
 const { expect } = chai;
-describe('InvitationRepository', () => {
+describe.only('InvitationRepository', () => {
   useMongoDB();
   const sandbox = useSandbox();
   beforeEach(() => {
@@ -124,7 +124,7 @@ describe('InvitationRepository', () => {
     });
   });
 
-  describe('getInvitationByEmail', () => {
+  describe('getInvitationsByEmailAndStatus', () => {
     let invitation: IInvitation;
 
     beforeEach(async () => {
@@ -136,16 +136,18 @@ describe('InvitationRepository', () => {
 
     it('should return an empty array if cannot get any invitation with given receiver email', async () => {
       const invitationFoundByEmail =
-        await InvitationRepository.getInvitationByReceiverEmail(
-          'fake@example.com'
+        await InvitationRepository.getInvitationsByReceiverEmailAndStatus(
+          'fake@example.com',
+          InvitationStatus.PENDING
         );
       expect(invitationFoundByEmail).to.be.an('array').to.have.lengthOf(0);
     });
 
     it('should return an array with only 1 invitation found', async () => {
       const invitationFoundByEmail =
-        await InvitationRepository.getInvitationByReceiverEmail(
-          invitation.receiverEmail
+        await InvitationRepository.getInvitationsByReceiverEmailAndStatus(
+          invitation.receiverEmail,
+          InvitationStatus.PENDING
         );
 
       expect(invitationFoundByEmail).to.be.an('array').to.have.lengthOf(1);
@@ -164,8 +166,9 @@ describe('InvitationRepository', () => {
       });
 
       const invitationFoundByEmail =
-        await InvitationRepository.getInvitationByReceiverEmail(
-          invitation.receiverEmail
+        await InvitationRepository.getInvitationsByReceiverEmailAndStatus(
+          invitation.receiverEmail,
+          InvitationStatus.PENDING
         );
 
       expect(invitationFoundByEmail).to.be.an('array').to.have.lengthOf(2);

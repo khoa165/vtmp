@@ -18,10 +18,13 @@ const InvitationRepository = {
     return InvitationModel.find();
   },
 
-  getInvitationByReceiverEmail: async (
-    email: string
+  getInvitationsByReceiverEmailAndStatus: async (
+    email: string,
+    status: InvitationStatus
   ): Promise<IInvitation[]> => {
-    return InvitationModel.find({ receiverEmail: email });
+    return InvitationModel.find({ receiverEmail: email, status }).sort(
+      'createdAt'
+    );
   },
 
   getInvitationById: async (
