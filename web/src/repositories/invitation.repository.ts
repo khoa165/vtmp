@@ -1,12 +1,11 @@
 import InvitationModel from '@/models/invitation.model';
 import { IInvitation } from '@/models/invitation.model';
 import { InvitationStatus } from '@common/enums';
-import mongoose from 'mongoose';
 
 const InvitationRepository = {
   createInvitation: async (invitationData: {
     receiverEmail: string;
-    sender: mongoose.Schema.Types.ObjectId;
+    sender: string;
     token: string;
     expiryDate: Date;
     status?: InvitationStatus;
