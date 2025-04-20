@@ -124,18 +124,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
               </UncontrolledTooltip>
             </CardSubtitle>
           )}
-          {/* {teamName && projectDisplayName[teamName] && (
-            <CardSubtitle className="flex gap-x-2 mt-2">
-              {projectDisplayName[teamName]}
-              <FaHammer id={`${alias}-build-icon`} />
-              <UncontrolledTooltip
-                placement="bottom"
-                target={`${alias}-build-icon`}
-              >
-                Group project
-              </UncontrolledTooltip>
-            </CardSubtitle>
-          )} */}
+
           {teamName && teammates && (
             <CardSubtitle className="flex gap-x-2 mt-2">
               <div className="flex flex-col gap-y-2">
@@ -147,7 +136,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
                   placement="bottom"
                   target={`${alias}-teammates-icon`}
                 >
-                  Teammates from group project {projectDisplayName[teamName]}
+                  Teammates / {projectDisplayName[teamName]}
                 </UncontrolledTooltip>
               </div>
             </CardSubtitle>
