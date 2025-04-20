@@ -138,15 +138,6 @@
   --color-vtmp-dark-grey: var(--vtmp-dark-grey);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
 .rainbow-gradient1 {
   background-color: hsla(0, 100%, 50%, 1);
   background-image:
