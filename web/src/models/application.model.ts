@@ -1,5 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-import { ApplicationStatus, InterestLevel } from '@common/enums';
+import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 
 export interface IApplication extends Document {
   jobPostingId: mongoose.Schema.Types.ObjectId;

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { LinkStatus } from '@common/enums';
+import { LinkStatus } from '@vtmp/common/constants';
 
 interface ILink extends Document {
   url: string;

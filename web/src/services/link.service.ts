@@ -1,4 +1,4 @@
-import { LinkStatus } from '@common/enums';
+import { LinkStatus } from '@vtmp/common/constants';
 import LinkRepository from '@/repositories/link.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';

@@ -2664,6 +2664,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tsconfig/node22@npm:^22.0.1":
+  version: 22.0.1
+  resolution: "@tsconfig/node22@npm:22.0.1"
+  checksum: 10c0/9448a14da65ebdafe10bef2582df11c8c8a769b919854747ad97f127eedc188f5e383b5b08df74bd895fa3738f17a442f9de153c0b326f870f2b335f36b51c43
+  languageName: node
+  linkType: hard
+
 "@types/aos@npm:^3.0.7":
   version: 3.0.7
   resolution: "@types/aos@npm:3.0.7"
@@ -4190,6 +4197,14 @@ __metadata:
   checksum: 10c0/a9cfe0c0f095b58644ce3ba08309de5be8564c10dad9e62035bd378e60b2834e6a256e6e4ded7dcf027fdc2371301f7965040ad3e6323b747d5b3abbb7ceb0d6
   languageName: node
   linkType: hard
+
+"@vtmp/common@npm:*, @vtmp/common@npm:1.0.0, @vtmp/common@workspace:packages/common":
+  version: 0.0.0-use.local
+  resolution: "@vtmp/common@workspace:packages/common"
+  dependencies:
+    typescript: "npm:^5.8.3"
+  languageName: unknown
+  linkType: soft
 
 "abbrev@npm:^3.0.0":
   version: 3.0.1
@@ -11605,7 +11620,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.4.5, typescript@npm:^5.8.2":
+"typescript@npm:^5.4.5, typescript@npm:^5.8.2, typescript@npm:^5.8.3":
   version: 5.8.3
   resolution: "typescript@npm:5.8.3"
   bin:
@@ -11615,7 +11630,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.4.5#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.8.2#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.4.5#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.8.2#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
   version: 5.8.3
   resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
   bin:
@@ -12179,6 +12194,7 @@ __metadata:
     "@visx/visx": "npm:^3.10.2"
     "@vitejs/plugin-react-swc": "npm:^3.8.1"
     "@vitest/coverage-v8": "npm:^3.1.1"
+    "@vtmp/common": "npm:1.0.0"
     aos: "npm:^2.3.4"
     axios: "npm:^1.7.7"
     bootstrap: "npm:^5.2.3"
@@ -12233,6 +12249,7 @@ __metadata:
     "@types/morgan": "npm:^1.9.9"
     "@types/node": "npm:^22.13.9"
     "@types/supertest": "npm:^6.0.3"
+    "@vtmp/common": "npm:*"
     bcryptjs: "npm:^3.0.2"
     chai: "npm:^5.2.0"
     chai-as-promised: "npm:^8.0.1"
@@ -12268,6 +12285,7 @@ __metadata:
   resolution: "vtmp@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.22.0"
+    "@tsconfig/node22": "npm:^22.0.1"
     "@types/node": "npm:^22.14.1"
     "@types/sinon": "npm:^17.0.4"
     concurrently: "npm:^9.1.2"

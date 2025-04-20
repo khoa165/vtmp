@@ -1,5 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-import { InvitationStatus } from '@common/enums';
+import { InvitationStatus } from '@vtmp/common/constants';
 
 interface IInvitation extends Document {
   receiverEmail: string;

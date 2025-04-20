@@ -8,7 +8,7 @@ import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ApplicationService } from '@/services/application.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { ResourceNotFoundError, DuplicateResourceError } from '@/utils/errors';
-import { ApplicationStatus } from '@common/enums';
+import { ApplicationStatus } from '@vtmp/common/constants';
 import {
   getNewMongoId,
   getNewObjectId,

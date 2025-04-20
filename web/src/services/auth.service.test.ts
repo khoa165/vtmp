@@ -14,7 +14,7 @@ import {
 import { assert } from 'console';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { UserRole } from '@common/enums';
+import { UserRole } from '@vtmp/common/constants';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;

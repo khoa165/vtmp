@@ -5,7 +5,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import assert from 'assert';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { IUser } from '@/models/user.model';
-import { UserRole } from '@common/enums';
+import { UserRole } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import * as R from 'remeda';
 

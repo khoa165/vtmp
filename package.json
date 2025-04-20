@@ -7,13 +7,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "client": "cd web-client && yarn run start",
+    "client": "yarn workspace vtmp-web-client run start",
     "add-client": "cd web-client && yarn add",
     "remove-client": "cd web-client && yarn remove",
-    "server": "cd web && yarn run dev",
+    "server": "yarn workspace vtmp-web run dev",
     "add-server": "cd web && yarn add",
     "remove-server": "cd web && yarn remove",
-    "dev": "concurrently \"yarn run server\" \"yarn run client\"",
+    "dev": "concurrently \"yarn run server\" \"yarn run client\" \"yarn workspace @vtmp/common dev\"",
     "ppp": "yarn install && cd web && yarn install && cd ../web-client && yarn install && cd ..",
     "pp": "cd web && yarn install --immutable && cd ../web-client && yarn install --immutable && cd .. && yarn install --immutable",
     "cc": "cookiecutter -c=cookiecutter/cookiecutter.config.js",
@@ -25,11 +25,13 @@
     "postinstall": "husky"
   },
   "workspaces": [
+    "packages/common",
     "web-client",
     "web"
   ],
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@tsconfig/node22": "^22.0.1",
     "@types/node": "^22.14.1",
     "@types/sinon": "^17.0.4",
     "concurrently": "^9.1.2",

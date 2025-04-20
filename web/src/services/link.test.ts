@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { LinkStatus } from '@common/enums';
+import { LinkStatus } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import LinkService from '@/services/link.service';
