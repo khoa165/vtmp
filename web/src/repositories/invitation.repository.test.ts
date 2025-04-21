@@ -22,30 +22,32 @@ describe('InvitationRepository', () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
   });
 
+  const nextDay = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
   const mockMultipleInvitations = [
     {
       receiverEmail: 'mentee1@viettech.com',
       token: 'this is the token',
-      expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      expiryDate: nextDay,
     },
 
     {
       receiverEmail: 'mentee2@viettech.com',
       token: 'this is the token',
-      expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      expiryDate: nextDay,
     },
 
     {
       receiverEmail: 'mentee3@viettech.com',
       token: 'this is the token',
-      expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      expiryDate: nextDay,
     },
   ];
 
   const mockOneInvitation = {
     receiverEmail: 'mentee@viettech.com',
     token: 'this is the token',
-    expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    expiryDate: nextDay,
   };
 
   const mockOneAdmin = {
@@ -69,7 +71,7 @@ describe('InvitationRepository', () => {
       expiryDate: Date;
     }
   ) => {
-    expect(invitation.toObject()).to.include({
+    expect(invitation).to.include({
       receiverEmail: actualInvitation.receiverEmail,
       token: actualInvitation.token,
       status: actualInvitation.status,
@@ -95,7 +97,7 @@ describe('InvitationRepository', () => {
     });
   });
 
-  describe('getAllInvitation', () => {
+  describe('getAllInvitations', () => {
     it('should return an empty array when no invitation', async () => {
       const invitations = await InvitationRepository.getAllInvitations();
       expect(invitations).to.be.an('array').that.have.lengthOf(0);
@@ -139,7 +141,7 @@ describe('InvitationRepository', () => {
           'fake@example.com',
           InvitationStatus.PENDING
         );
-      expect(invitationFoundByEmail).to.be.an('array').to.have.lengthOf(0);
+      expect(invitationFoundByEmail).to.be.an('array').that.have.lengthOf(0);
     });
 
     it('should return an array with only 1 invitation found', async () => {
@@ -149,7 +151,7 @@ describe('InvitationRepository', () => {
           InvitationStatus.PENDING
         );
 
-      expect(invitationFoundByEmail).to.be.an('array').to.have.lengthOf(1);
+      expect(invitationFoundByEmail).to.be.an('array').that.have.lengthOf(1);
       invitationFoundByEmail.map((invitation) => {
         checkInvitation(invitation, {
           ...mockOneInvitation,
@@ -170,7 +172,7 @@ describe('InvitationRepository', () => {
           InvitationStatus.PENDING
         );
 
-      expect(invitationFoundByEmail).to.be.an('array').to.have.lengthOf(2);
+      expect(invitationFoundByEmail).to.be.an('array').that.have.lengthOf(2);
 
       invitationFoundByEmail.map((invitation) => {
         checkInvitation(invitation, {
