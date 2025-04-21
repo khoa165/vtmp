@@ -2471,7 +2471,6 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           PeopleName.DANG_SON,
           PeopleName.HA_LINH,
           PeopleName.KHA_TRAN,
-          PeopleName.MONICA_HUYNH,
           PeopleName.NAM_NGUYEN,
           PeopleName.PHUC_TRUONG,
           PeopleName.QUANG_MINH,
