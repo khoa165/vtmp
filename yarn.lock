@@ -4198,7 +4198,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vtmp/common@npm:*, @vtmp/common@workspace:packages/common":
+"@vtmp/common@npm:*, @vtmp/common@workspace:^, @vtmp/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@vtmp/common@workspace:packages/common"
   dependencies:
@@ -12194,7 +12194,7 @@ __metadata:
     "@visx/visx": "npm:^3.10.2"
     "@vitejs/plugin-react-swc": "npm:^3.8.1"
     "@vitest/coverage-v8": "npm:^3.1.1"
-    "@vtmp/common": "npm:*"
+    "@vtmp/common": "workspace:^"
     aos: "npm:^2.3.4"
     axios: "npm:^1.7.7"
     bootstrap: "npm:^5.2.3"
