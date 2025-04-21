@@ -29,7 +29,11 @@ export const JobPostingRepository = {
     ).lean();
   },
 
-  getJobPostingsNotApplied: async (userId: string) => {
+  getJobPostings: async (): Promise<IJobPosting[]> => {
+    return JobPostingModel.find({ deletedAt: null }).lean();
+  },
+
+  getJobPostingsNotApplied: async (userId: string): Promise<IJobPosting[]> => {
     // What needs to be done here:
     // 1. $lookup then $match
     // 2. $lookup means we left outer join Job Posting with Application collection,
