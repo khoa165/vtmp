@@ -2527,7 +2527,6 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_MENTEE],
         teamName: ProjectName.APPLICATION_TRACKER,
         teammates: [
-          PeopleName.AN_TRAN,
           PeopleName.DANG_SON,
           PeopleName.HA_LINH,
           PeopleName.KHA_TRAN,
