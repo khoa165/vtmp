@@ -29,21 +29,10 @@ export const JobPostingRepository = {
     ).lean();
   },
 
-  getJobPostings: async (): Promise<IJobPosting[]> => {
-    return JobPostingModel.find({ deletedAt: null }).lean();
-  },
-
   getJobPostingsNotApplied: async (userId: string): Promise<IJobPosting[]> => {
-    // What needs to be done here:
-    // 1. $lookup then $match
-    // 2. $lookup means we left outer join Job Posting with Application collection,
-    // 3. For each document in Job Posting collection, Mongo runs a custom mini-query (pipeline)
-    // Basically instead of joining with the whole big Application collection, we only left outer join
-    // with a subset of it (that only contains applciation documents that satisfies certain filters)
-    // 4. Then in $match stage, only take job postings that  have $size empty
     return JobPostingModel.aggregate([
       {
-        // Perform a filtered joib between JobPosting and Application collection
+        // Perform a filtered join between JobPosting and Application collection
         $lookup: {
           from: 'applications',
           let: { jobId: '$_id' },
