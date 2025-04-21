@@ -23,37 +23,6 @@ describe('JobPostingRepository', () => {
     submittedBy: getNewObjectId(),
   };
 
-  const mockMultipleJobPostings = [
-    {
-      linkId: getNewObjectId(),
-      url: 'http://example1.com/job-posting',
-      jobTitle: 'Software Engineer 1',
-      companyName: 'Example Company 1',
-      submittedBy: getNewObjectId(),
-    },
-    {
-      linkId: getNewObjectId(),
-      url: 'http://example2.com/job-posting',
-      jobTitle: 'Software Engineer 2',
-      companyName: 'Example Company 2',
-      submittedBy: getNewObjectId(),
-    },
-    {
-      linkId: getNewObjectId(),
-      url: 'http://example3.com/job-posting',
-      jobTitle: 'Software Engineer 3',
-      companyName: 'Example Company 3',
-      submittedBy: getNewObjectId(),
-    },
-    {
-      linkId: getNewObjectId(),
-      url: 'http://example4.com/job-posting',
-      jobTitle: 'Software Engineer 4',
-      companyName: 'Example Company 4',
-      submittedBy: getNewObjectId(),
-    },
-  ];
-
   describe('createJobPosting', () => {
     it('should be able to create a new job posting', async () => {
       const newJobPosting =
@@ -120,6 +89,37 @@ describe('JobPostingRepository', () => {
       const userIdB = getNewMongoId();
       let jobPostings: IJobPosting[];
 
+      const mockMultipleJobPostings = [
+        {
+          linkId: getNewObjectId(),
+          url: 'http://example1.com/job-posting',
+          jobTitle: 'Software Engineer 1',
+          companyName: 'Example Company 1',
+          submittedBy: getNewObjectId(),
+        },
+        {
+          linkId: getNewObjectId(),
+          url: 'http://example2.com/job-posting',
+          jobTitle: 'Software Engineer 2',
+          companyName: 'Example Company 2',
+          submittedBy: getNewObjectId(),
+        },
+        {
+          linkId: getNewObjectId(),
+          url: 'http://example3.com/job-posting',
+          jobTitle: 'Software Engineer 3',
+          companyName: 'Example Company 3',
+          submittedBy: getNewObjectId(),
+        },
+        {
+          linkId: getNewObjectId(),
+          url: 'http://example4.com/job-posting',
+          jobTitle: 'Software Engineer 4',
+          companyName: 'Example Company 4',
+          submittedBy: getNewObjectId(),
+        },
+      ];
+
       beforeEach(async () => {
         jobPostings = await Promise.all(
           mockMultipleJobPostings.map((jobPosting) =>
@@ -147,9 +147,11 @@ describe('JobPostingRepository', () => {
         const jobsNotAppliedByUserA =
           await JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userIdA);
 
-        expect(jobsNotAppliedByUserA).to.be.an('array').that.has.length(4);
+        expect(jobsNotAppliedByUserA)
+          .to.be.an('array')
+          .that.has.length(mockMultipleJobPostings.length);
         expect(
-          jobsNotAppliedByUserA.map((jobPosting) => jobPosting._id?.toString())
+          jobsNotAppliedByUserA.map((job) => job._id?.toString())
         ).to.have.members(jobPostings.map((jobPosting) => jobPosting.id));
       });
 
@@ -171,13 +173,12 @@ describe('JobPostingRepository', () => {
 
         expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
         expect(
-          jobsNotAppliedByUserA.map((jobPosting) => jobPosting._id?.toString())
+          jobsNotAppliedByUserA.map((job) => job._id?.toString())
         ).to.have.members([jobPosting4?.id]);
       });
 
       it('should not exclude a job posting from the returned array, if the user applied to that job posting, but later deleted the application associated with it', async () => {
         // Still show jobPostingA, if user creates applicationA associated with jobPostingA, but later soft-delete that application
-        const [jobPosting1] = jobPostings;
         const applications = await Promise.all(
           jobPostings.map((jobPosting) =>
             ApplicationRepository.createApplication({
@@ -195,8 +196,8 @@ describe('JobPostingRepository', () => {
 
         expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
         expect(
-          jobsNotAppliedByUserA.map((jobPosting) => jobPosting._id?.toString())
-        ).to.have.members([jobPosting1?.id]);
+          jobsNotAppliedByUserA.map((job) => job._id?.toString())
+        ).to.have.members([jobPostings[0]?.id]);
       });
 
       it('should return all job postings that user has not applied to. Should not exclude job postings applied by another user', async () => {
@@ -219,7 +220,7 @@ describe('JobPostingRepository', () => {
 
         expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(2);
         expect(
-          jobsNotAppliedByUserA.map((jobPosting) => jobPosting._id?.toString())
+          jobsNotAppliedByUserA.map((job) => job._id?.toString())
         ).to.have.members([jobPosting3?.id, jobPosting4?.id]);
       });
     });
