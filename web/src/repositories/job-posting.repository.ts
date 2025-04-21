@@ -29,7 +29,9 @@ export const JobPostingRepository = {
     ).lean();
   },
 
-  getJobPostingsNotApplied: async (userId: string): Promise<IJobPosting[]> => {
+  getJobPostingsUserHasNotAppliedTo: async (
+    userId: string
+  ): Promise<IJobPosting[]> => {
     return JobPostingModel.aggregate([
       {
         // Perform a filtered join between JobPosting and Application collection
@@ -43,6 +45,7 @@ export const JobPostingRepository = {
                   $and: [
                     { $eq: ['$jobPostingId', '$$jobId'] },
                     { $eq: ['$userId', new mongoose.Types.ObjectId(userId)] },
+                    { $not: ['$deletedAt'] },
                   ],
                 },
               },

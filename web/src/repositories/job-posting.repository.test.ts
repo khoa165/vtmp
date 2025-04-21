@@ -115,7 +115,7 @@ describe('JobPostingRepository', () => {
       expect(timeDiff).to.lessThan(3);
     });
 
-    describe('getJobPostingsNotApplied', () => {
+    describe('getJobPostingsUserHasNotAppliedTo', () => {
       const userIdA = getNewMongoId();
       const userIdB = getNewMongoId();
       let jobPostings: IJobPosting[];
@@ -138,14 +138,14 @@ describe('JobPostingRepository', () => {
           )
         );
         const jobsNotAppliedByUserA =
-          await JobPostingRepository.getJobPostingsNotApplied(userIdA);
+          await JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userIdA);
 
         expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(0);
       });
 
       it('should return an exact array of job postings that matches all available job postings in the system if user has no applied to any posting ', async () => {
         const jobsNotAppliedByUserA =
-          await JobPostingRepository.getJobPostingsNotApplied(userIdA);
+          await JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userIdA);
 
         expect(jobsNotAppliedByUserA).to.be.an('array').that.has.length(4);
         expect(
@@ -167,12 +167,35 @@ describe('JobPostingRepository', () => {
         await JobPostingRepository.deleteJobPostingById(jobPosting3?.id);
 
         const jobsNotAppliedByUserA =
-          await JobPostingRepository.getJobPostingsNotApplied(userIdA);
+          await JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userIdA);
 
         expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
         expect(
           jobsNotAppliedByUserA.map((jobPosting) => jobPosting._id?.toString())
         ).to.have.members([jobPosting4?.id]);
+      });
+
+      it('should not exclude a job posting from the returned array, if the user applied to that job posting, but later deleted the application associated with it', async () => {
+        // Still show jobPostingA, if user creates applicationA associated with jobPostingA, but later soft-delete that application
+        const applications = await Promise.all(
+          jobPostings.map((jobPosting) =>
+            ApplicationRepository.createApplication({
+              jobPostingId: jobPosting.id,
+              userId: userIdA,
+            })
+          )
+        );
+        await ApplicationRepository.deleteApplicationById({
+          applicationId: applications[0]?.id,
+          userId: userIdA,
+        });
+        const jobsNotAppliedByUserA =
+          await JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userIdA);
+
+        expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
+        expect(
+          jobsNotAppliedByUserA.map((jobPosting) => jobPosting._id?.toString())
+        ).to.have.members([applications[0]?.jobPostingId.toString()]);
       });
 
       it('should return all job postings that user has not applied to. Should not exclude job postings applied by another user', async () => {
@@ -191,7 +214,7 @@ describe('JobPostingRepository', () => {
           userId: userIdB,
         });
         const jobsNotAppliedByUserA =
-          await JobPostingRepository.getJobPostingsNotApplied(userIdA);
+          await JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userIdA);
 
         expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(2);
         expect(
