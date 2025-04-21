@@ -177,6 +177,7 @@ describe('JobPostingRepository', () => {
 
       it('should not exclude a job posting from the returned array, if the user applied to that job posting, but later deleted the application associated with it', async () => {
         // Still show jobPostingA, if user creates applicationA associated with jobPostingA, but later soft-delete that application
+        const [jobPosting1] = jobPostings;
         const applications = await Promise.all(
           jobPostings.map((jobPosting) =>
             ApplicationRepository.createApplication({
@@ -195,7 +196,7 @@ describe('JobPostingRepository', () => {
         expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
         expect(
           jobsNotAppliedByUserA.map((jobPosting) => jobPosting._id?.toString())
-        ).to.have.members([applications[0]?.jobPostingId.toString()]);
+        ).to.have.members([jobPosting1?.id]);
       });
 
       it('should return all job postings that user has not applied to. Should not exclude job postings applied by another user', async () => {
