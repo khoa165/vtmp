@@ -22,7 +22,7 @@ const InvitationRepository = {
     status: InvitationStatus
   ): Promise<IInvitation[]> => {
     return InvitationModel.find({ receiverEmail: email, status }).sort(
-      'createdAt'
+      '-createdAt'
     );
   },
 

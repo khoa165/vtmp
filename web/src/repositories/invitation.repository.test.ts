@@ -15,7 +15,7 @@ import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 chai.use(chaiSubset);
 const { expect } = chai;
-describe.only('InvitationRepository', () => {
+describe('InvitationRepository', () => {
   useMongoDB();
   const sandbox = useSandbox();
   beforeEach(() => {
