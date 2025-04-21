@@ -45,14 +45,14 @@ export const InvitationService = {
     let newInvitation: IInvitation | null = null;
     let token: string;
 
-    const foundPendingInvitations =
+    const [lastestPendingInvitation] =
       await InvitationRepository.getInvitationsByReceiverEmailAndStatus(
         receiverEmail,
         InvitationStatus.PENDING
       );
 
-    if (foundPendingInvitations.length == 0) {
-      token = jwt.sign({ receiverEmail }, config.JWT_SECRET ?? 'viettech', {
+    if (!lastestPendingInvitation) {
+      token = jwt.sign({ receiverEmail }, config.JWT_SECRET, {
         expiresIn: '1d',
       });
 
@@ -63,20 +63,18 @@ export const InvitationService = {
         expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
       });
     } else {
-      const lastestPendingInvitation = foundPendingInvitations[0];
-      const timeDifferenceInSeconds = differenceInSeconds(
-        lastestPendingInvitation!.expiryDate,
-        Date.now()
+      const timeDifferenceInSeconds = Math.abs(
+        differenceInSeconds(lastestPendingInvitation.expiryDate, Date.now())
       );
 
       if (timeDifferenceInSeconds > 24 * 60 * 60) {
         await InvitationRepository.updateInvitationById(
-          lastestPendingInvitation!.id,
+          lastestPendingInvitation.id,
           { expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000) }
         );
       }
 
-      token = lastestPendingInvitation!.token;
+      token = lastestPendingInvitation.token;
     }
 
     const emailTemplate = getInvitationEmailTemplate(

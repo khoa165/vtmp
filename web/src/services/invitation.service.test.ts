@@ -14,7 +14,9 @@ import {
 import { InvitationStatus } from '@common/enums';
 import assert from 'assert';
 import { expect } from 'chai';
+import { differenceInSeconds } from 'date-fns';
 import { describe } from 'mocha';
+import * as R from 'remeda';
 
 describe('InvitationService', () => {
   useMongoDB();
@@ -111,6 +113,49 @@ describe('InvitationService', () => {
       ).eventually.fulfilled.and.to.be.null;
     });
 
+    it('should not throw error and return null when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
+      await InvitationRepository.createInvitation({
+        ...mockOneInvitation,
+        expiryDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      });
+      await expect(
+        InvitationService.sendInvitation(
+          'Mentee',
+          'mentee@viettech.com',
+          mockAdminId
+        )
+      ).eventually.fulfilled.and.to.be.null;
+    });
+
+    it('should update invitation to new expiry date when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
+      const expiredInvitation = await InvitationRepository.createInvitation({
+        ...mockOneInvitation,
+        expiryDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      });
+      await InvitationService.sendInvitation(
+        'Mentee',
+        'mentee@viettech.com',
+        mockAdminId
+      );
+
+      const invitationWithNewExpiryDate =
+        await InvitationRepository.getInvitationById(expiredInvitation.id);
+      assert(invitationWithNewExpiryDate);
+      expect(invitationWithNewExpiryDate.toObject()).to.containSubset(
+        R.omit({ ...mockOneInvitation, sender: toMongoId(mockAdminId) }, [
+          'expiryDate',
+        ])
+      );
+
+      const timeDiff = Math.abs(
+        differenceInSeconds(
+          invitationWithNewExpiryDate.expiryDate,
+          new Date(Date.now() + 24 * 60 * 60 * 1000)
+        )
+      );
+      expect(timeDiff).to.lessThan(3);
+    });
+
     it('should not throw error when no Pending invitations associated with receiver email exist', async () => {
       await expect(
         InvitationService.sendInvitation(
@@ -121,7 +166,7 @@ describe('InvitationService', () => {
       ).eventually.fulfilled;
     });
 
-    it('should return newly created invitation when no Pending invitations associated with receiver email exist and send email', async () => {
+    it('should return newly created invitation when no Pending invitations associated with receiver email exist', async () => {
       const createdInvitation = await InvitationService.sendInvitation(
         'Mentee',
         'mentee@viettech.com',
