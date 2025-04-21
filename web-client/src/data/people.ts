@@ -1298,7 +1298,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
       {
         year: 2025,
-        title: 'SWE Intern @ Palantir',
+        title: 'SWE Intern @ Palantir + Microsoft',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
@@ -1856,7 +1856,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
       {
         year: 2025,
-        title: 'SWE Intern @ Shopify + Robinhood',
+        title: 'SWE Intern @ Shopify + Amazon',
         roles: [
           MentorshipRole.SWE_RISING_LEAD,
           MentorshipRole.SWE_EXMENTEE_MENTOR,
