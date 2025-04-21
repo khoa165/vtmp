@@ -9,6 +9,8 @@ describe('Config', () => {
     MONGO_URI: 'mongodb://username:password@localhost:27017/database_name',
     PORT: '8000',
     JWT_SECRET: 'some-random-secret-here',
+    GMAIL_EMAIL: 'vtmpwebsite2025@gmail.com',
+    GMAIL_APP_PASSWORD: 'azpj ibvt glaf ebcy',
   };
 
   before(() => {

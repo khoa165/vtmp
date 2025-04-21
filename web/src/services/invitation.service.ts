@@ -2,7 +2,7 @@ import { EnvConfig } from '@/config/env';
 import { IInvitation } from '@/models/invitation.model';
 import InvitationRepository from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
-import { sendEmail, getInvitationEmailTemplate } from '@/utils/emai';
+import { EmailService } from '@/utils/email';
 import {
   DuplicateResourceError,
   ForbiddenError,
@@ -77,12 +77,12 @@ export const InvitationService = {
       token = lastestPendingInvitation.token;
     }
 
-    const emailTemplate = getInvitationEmailTemplate(
+    const emailTemplate = EmailService.getInvitationEmailTemplate(
       receiverName,
       receiverEmail,
       token
     );
-    await sendEmail(emailTemplate);
+    await EmailService.sendEmail(emailTemplate);
     return newInvitation;
   },
 
