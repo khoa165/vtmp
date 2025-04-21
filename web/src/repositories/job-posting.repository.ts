@@ -29,7 +29,7 @@ export const JobPostingRepository = {
     ).lean();
   },
 
-  getJobPostingsNotAppliedYet: async (userId: string) => {
+  getJobPostingsNotApplied: async (userId: string) => {
     // What needs to be done here:
     // 1. $lookup then $match
     // 2. $lookup means we left outer join Job Posting with Application collection,
@@ -41,7 +41,7 @@ export const JobPostingRepository = {
       {
         // Perform a filtered joib between JobPosting and Application collection
         $lookup: {
-          from: 'Application',
+          from: 'applications',
           let: { jobId: '$_id' },
           pipeline: [
             {
