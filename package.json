@@ -19,7 +19,7 @@
     "cc": "cookiecutter -c=cookiecutter/cookiecutter.config.js",
     "blog": "tsx ./scripts/generate-metadata.ts",
     "lint": "yarn eslint .",
-    "test": "cd web && yarn run test",
+    "test": "yarn workspace @vtmp/common build && yarn workspace vtmp-web run test",
     "tslint": "tslint --project tsconfig.json --config tslint.json",
     "tslint-fix": "tslint --project tsconfig.json --config tslint.json --fix",
     "postinstall": "husky"
