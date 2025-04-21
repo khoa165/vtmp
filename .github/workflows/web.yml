@@ -19,6 +19,9 @@ jobs:
       - name: Use latest yarn version
         run: yarn set version stable
 
+      - name: Build packages
+        run: yarn workspace @vtmp/common run build
+
       - name: Install dependencies
         run: yarn install
 
