@@ -23,13 +23,18 @@ export const useMongoDB = async () => {
   });
 };
 
-let cachedMongo: MongoMemoryReplSet | undefined;
+let cachedMongoReplicaSet: MongoMemoryReplSet | undefined;
 export const startMongoDB = async () => {
   const dbExistsAndRunning =
-    cachedMongo != null && cachedMongo.state === 'running';
+    cachedMongoReplicaSet != null && cachedMongoReplicaSet.state === 'running';
   if (!dbExistsAndRunning) {
-    const mongod = await MongoMemoryReplSet.create();
-    const uri = mongod.getUri();
+    cachedMongoReplicaSet = await MongoMemoryReplSet.create({
+      replSet: {
+        count: 1,
+        dbName: 'vtmp-test',
+      },
+    });
+    const uri = cachedMongoReplicaSet.getUri('vtmp');
     await Promise.all([
       mongoose.connect(uri, {
         monitorCommands: true,

@@ -92,8 +92,11 @@ describe('ApplicationController', () => {
     });
 
     it('should return error message with status code 409 if duplicate application exists', async () => {
-      const jobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const jobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(jobPosting);
+
       await ApplicationRepository.createApplication({
         jobPostingId: jobPosting.id,
         userId: savedUserId,
@@ -111,8 +114,10 @@ describe('ApplicationController', () => {
     });
 
     it('should return application object if an application (that was previously soft deleted) is created successfully', async () => {
-      const jobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const jobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(jobPosting);
 
       const softDeletedApplication =
         await ApplicationRepository.createApplication({
@@ -139,8 +144,10 @@ describe('ApplicationController', () => {
     });
 
     it('should return application object if an application is created successfully', async () => {
-      const jobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const jobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(jobPosting);
 
       const res = await request(app)
         .post('/api/applications')

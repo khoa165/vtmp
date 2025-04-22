@@ -59,10 +59,11 @@ describe('ApplicationService', () => {
   };
 
   describe('createApplication', () => {
-    let newJobPosting: IJobPosting;
+    let newJobPosting: IJobPosting | undefined;
     beforeEach(async () => {
-      newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
     });
     it('should throw error if job posting does not exist', async () => {
       const mockApplication = {
@@ -77,7 +78,7 @@ describe('ApplicationService', () => {
 
     it('should throw error if an application associated with this job posting and user already exist (but was not soft deleted)', async () => {
       const mockApplication = {
-        jobPostingId: newJobPosting.id,
+        jobPostingId: newJobPosting?.id,
         userId: getNewMongoId(),
       };
       await ApplicationRepository.createApplication(mockApplication);
@@ -89,7 +90,7 @@ describe('ApplicationService', () => {
 
     it('should not throw an error if create an application successfully', async () => {
       const mockApplication = {
-        jobPostingId: newJobPosting.id,
+        jobPostingId: newJobPosting?.id,
         userId: getNewMongoId(),
       };
 
@@ -99,7 +100,7 @@ describe('ApplicationService', () => {
 
     it('should not throw an error if trying to create an application with certain jobPostingId and userId but was soft-deleted', async () => {
       const mockApplication = {
-        jobPostingId: newJobPosting.id,
+        jobPostingId: newJobPosting?.id,
         userId: userId_B,
       };
       const application =
@@ -115,7 +116,7 @@ describe('ApplicationService', () => {
 
     it('should restore a soft-deleted application if it already exists', async () => {
       const mockApplication = {
-        jobPostingId: newJobPosting.id,
+        jobPostingId: newJobPosting?.id,
         userId: userId_B,
       };
       const application =
@@ -136,7 +137,7 @@ describe('ApplicationService', () => {
 
     it('should create an application successfully and return valid new application', async () => {
       const mockApplication = {
-        jobPostingId: newJobPosting.id,
+        jobPostingId: newJobPosting?.id,
         userId: userId_B,
       };
       const application =
