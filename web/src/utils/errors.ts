@@ -36,12 +36,6 @@ export class DuplicateResourceError extends ApplicationSpecificError {
   }
 }
 
-export class InternalServerError extends ApplicationSpecificError {
-  constructor(message: string, metadata: object) {
-    super(message, metadata, 500);
-  }
-}
-
 export const handleError = (error: unknown) => {
   if (error instanceof ZodError) {
     return {

@@ -9,7 +9,6 @@ import {
 import {
   DuplicateResourceError,
   ForbiddenError,
-  InternalServerError,
   ResourceNotFoundError,
 } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
@@ -109,13 +108,6 @@ export const ApplicationService = {
 
     if (!updatedApplication) {
       throw new ResourceNotFoundError('Application not found', {
-        applicationId,
-        userId,
-      });
-    }
-
-    if (updatedMetadata.status === ApplicationStatus.REJECTED) {
-      throw new InternalServerError('Rejecting an application is not allowed', {
         applicationId,
         userId,
       });
