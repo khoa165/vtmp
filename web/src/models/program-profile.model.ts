@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
-interface IProgramProfile extends Document {
+export interface IProgramProfile extends Document {
   programName: string;
   userId: Types.ObjectId;
   yearJoined: number;
@@ -13,7 +13,7 @@ interface IProgramProfile extends Document {
   wasExternallyRecruitedMentor: boolean;
 
   // temporary field
-  spreadsheetAlias: string;
+  spreadsheetAlias?: string;
 }
 
 const ProgramProfileSchema = new mongoose.Schema<IProgramProfile>({
