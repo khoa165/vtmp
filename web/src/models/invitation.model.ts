@@ -37,6 +37,4 @@ const InvitationSchema = new mongoose.Schema<IInvitation>(
   { timestamps: true }
 );
 
-const InvitationModel = mongoose.model('Invitation', InvitationSchema);
-
-export default InvitationModel;
+export const InvitationModel = mongoose.model('Invitation', InvitationSchema);
