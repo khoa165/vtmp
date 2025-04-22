@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { JobPostingController } from '@/controllers/job-posting.controller';
 import { wrappedHandlers } from '@/middlewares/utils';
+import { authenticate } from '@/middlewares/auth.middleware';
 
 export const JobPostingRoutes = Router();
 
@@ -14,5 +15,6 @@ JobPostingRoutes.delete(
 );
 JobPostingRoutes.get(
   '/not-applied',
+  authenticate,
   wrappedHandlers([JobPostingController.getJobPostingsUserHasNotAppliedTo])
 );
