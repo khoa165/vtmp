@@ -1,10 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { LinkStatus } from '@common/enums';
 
 interface ILink extends Document {
   url: string;
   status?: LinkStatus;
   submittedOn: Date;
+  submittedBy?: Types.ObjectId;
   companyName?: string;
   userNote?: string;
 }
@@ -24,6 +25,12 @@ const LinkSchema = new mongoose.Schema<ILink>(
       type: Date,
       default: Date.now,
     },
+
+    submittedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+
     companyName: {
       type: String,
     },
@@ -34,4 +41,4 @@ const LinkSchema = new mongoose.Schema<ILink>(
   { timestamps: true }
 );
 
-export default mongoose.model<ILink>('Link', LinkSchema);
+export const LinkModel = mongoose.model<ILink>('Link', LinkSchema);
