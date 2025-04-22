@@ -30,8 +30,8 @@ export const startMongoDB = async () => {
   if (!dbExistsAndRunning) {
     cachedMongoReplicaSet = await MongoMemoryReplSet.create({
       replSet: {
-        count: 2,
-        dbName: 'test',
+        count: 1,
+        dbName: 'vtmp-test',
       },
     });
     const uri = cachedMongoReplicaSet.getUri('vtmp');

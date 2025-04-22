@@ -39,10 +39,9 @@ describe('LinkController', () => {
     });
 
     it('should return a link', async () => {
-      const newUrl = 'https://example.com';
       const res = await request(app)
         .post('/api/links')
-        .send({ url: newUrl })
+        .send({ url: 'https://example.com' })
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 201 });
@@ -76,28 +75,24 @@ describe('LinkController', () => {
 
   describe('approveLink', () => {
     it('should return error message for approving with not exist link', async () => {
-      const addOnInfromation = {
-        jobTitle: 'Software Engineer Intern',
-        companyName: 'Example Company',
-      };
-
       const res = await request(app)
         .post(`/api/links/${getNewMongoId()}/approve`)
-        .send(addOnInfromation)
+        .send({
+          jobTitle: 'Software Engineer Intern',
+          companyName: 'Example Company',
+        })
         .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
     });
 
     it('should return a approved link', async () => {
-      const addInInfromation = {
-        jobTitle: 'Software Engineer Intern',
-        companyName: 'Example Company',
-      };
-
       const res = await request(app)
         .post(`/api/links/${linkId}/approve`)
-        .send(addInInfromation)
+        .send({
+          jobTitle: 'Software Engineer Intern',
+          companyName: 'Example Company',
+        })
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
@@ -109,7 +104,7 @@ describe('LinkController', () => {
   describe('getPendingLinks', () => {
     it('should return array of pending links', async () => {
       const res = await request(app)
-        .get(`/api/links`)
+        .get('/api/links')
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
@@ -123,11 +118,11 @@ describe('LinkController', () => {
       });
 
       const res = await request(app)
-        .get(`/api/links`)
+        .get('/api/links')
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data.links).to.be.empty;
+      expect(res.body.data.links).to.be.an('array').that.have.lengthOf(0);
     });
   });
 });

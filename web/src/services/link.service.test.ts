@@ -9,12 +9,18 @@ import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { ResourceNotFoundError } from '@/utils/errors';
 import { LinkRepository } from '@/repositories/link.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { useSandbox } from '@/testutils/sandbox.testutil';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
 describe('LinkService', () => {
   useMongoDB();
+  const sandbox = useSandbox();
+
+  beforeEach(async () => {
+    sandbox.restore();
+  });
 
   describe('submitLink', () => {
     it('should be able to create new link with expected fields', async () => {
@@ -29,9 +35,53 @@ describe('LinkService', () => {
   });
 
   describe('approveLinkAndCreateJobPosting', () => {
+    it('should throw error when link does not exist', async () => {
+      await expect(
+        LinkService.approveLinkAndCreateJobPosting(getNewMongoId(), {
+          jobTitle: 'Software Engineering Intern',
+          companyName: 'Google',
+        })
+      ).eventually.rejectedWith(ResourceNotFoundError);
+    });
+
+    it("should throw an error if job posting can't be created", async () => {
+      sandbox.stub(JobPostingRepository, 'createJobPosting').throws();
+      const newLink = await LinkService.submitLink('google.com');
+      await expect(
+        LinkService.approveLinkAndCreateJobPosting(newLink.id, {
+          jobTitle: 'Software Engineering Intern',
+          companyName: 'Google',
+        })
+      ).eventually.rejectedWith(Error);
+    });
+
+    it("should not approve link if job posting can't be created", async () => {
+      sandbox.stub(JobPostingRepository, 'createJobPosting').throws();
+      const newLink = await LinkService.submitLink('google.com');
+      await expect(
+        LinkService.approveLinkAndCreateJobPosting(newLink.id, {
+          jobTitle: 'Software Engineering Intern',
+          companyName: 'Google',
+        })
+      ).eventually.rejectedWith(Error);
+      const link = await LinkRepository.getLinkById(newLink.id);
+      assert(link);
+      expect(link.status).to.equal(LinkStatus.PENDING);
+    });
+
+    it('should not throw error when job posting data is valid', async () => {
+      const newLink = await LinkRepository.createLink('google.com');
+      await expect(
+        LinkService.approveLinkAndCreateJobPosting(newLink.id, {
+          jobTitle: 'Software Engineering Intern',
+          companyName: 'Google',
+        })
+      ).eventually.fulfilled;
+    });
+
     it('should approve link and create job posting', async () => {
       const COMPANY_NAME = 'Google';
-      const newLink = await LinkService.submitLink('google.com');
+      const newLink = await LinkRepository.createLink('google.com');
       const newJobPosting = await LinkService.approveLinkAndCreateJobPosting(
         newLink.id,
         {
