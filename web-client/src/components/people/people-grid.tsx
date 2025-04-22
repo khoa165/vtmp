@@ -2,15 +2,10 @@ import React from 'react';
 import { Col, Row } from 'reactstrap';
 import { PeopleCard } from 'src/components/people/people-card';
 import { CompanyMetadataWithOffers, MentorshipPerson } from 'src/types';
-import {
-  MentorshipYear,
-  PeopleSortColumn,
-  yearDisplay,
-} from 'src/utils/constants';
-import { max } from 'lodash';
+import { PeopleSortColumn } from 'src/utils/constants';
 
 interface PeopleGridProps {
-  year: number;
+  year: number | 'all';
   people: MentorshipPerson[];
   companiesMetadata: Record<string, CompanyMetadataWithOffers>;
   sortColumn: PeopleSortColumn;
@@ -22,10 +17,7 @@ export const PeopleGrid: React.FC<PeopleGridProps> = ({
   companiesMetadata,
   sortColumn,
 }) => {
-  if (
-    people.length === 0 &&
-    year === max(Object.keys(MentorshipYear).map((y) => yearDisplay[y]))
-  ) {
+  if (people.length === 0) {
     return (
       <h3 className="mt-3 text-center text-green">
         Adjust your filters to see results! Otherwise, check back later for

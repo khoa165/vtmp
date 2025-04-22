@@ -128,6 +128,8 @@ export enum CompanyName {
   NVIDIA = 'NVIDIA',
   HIGHMARK_HEALTH = 'HIGHMARK_HEALTH',
   HEALTH_ENHANCEMENT_SYSTEMS = 'HEALTH_ENHANCEMENT_SYSTEMS',
+  SLB = 'SLB',
+  G_RESEARCH = 'G_RESEARCH',
 }
 
 export enum OfferType {
@@ -141,7 +143,7 @@ export enum OfferChannel {
 }
 
 export enum MentorshipRole {
-  PROGRAM_MANAGER = 'PROGRAM_MANAGER',
+  PROGRAM_LEAD = 'PROGRAM_LEAD',
   PROGRAM_FOUNDER = 'PROGRAM_FOUNDER',
   PROGRAM_ADVISOR = 'PROGRAM_ADVISOR',
   SWE_PROGRAM_LEAD = 'SWE_PROGRAM_LEAD',
@@ -155,6 +157,7 @@ export enum MentorshipRole {
   SWE_MENTEE = 'SWE_MENTEE',
   PD_MENTOR = 'PD_MENTOR',
   PD_MENTEE = 'PD_MENTEE',
+  COMMUNITY_MEMBER = 'COMMUNITY_MEMBER',
 }
 
 export enum MentorshipGroup {

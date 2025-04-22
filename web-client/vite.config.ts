@@ -19,7 +19,7 @@ export default defineConfig({
       exclude: [],
     },
   },
-  assetsInclude: ['src/**/*.md'],
+  // assetsInclude: ['src/**/*.md'],
   resolve: {
     alias: {
       src: '/src',

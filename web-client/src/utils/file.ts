@@ -1,10 +1,19 @@
 import { BlogFileMapping, BlogMetadata } from 'src/types';
 
 export const getFileName = (filepath: string): string => {
-  // Example: /static/media/something-fun.7142a8c9d1daebf8832a.md
-  const fullFileName = filepath.split('/')[5];
-  const partialFileName = fullFileName.split('.')[0];
-  return partialFileName;
+  console.log('filepath', filepath);
+  const fullFileName = filepath.split('/').at(-1);
+  console.log('fullFileName', fullFileName);
+  if (!fullFileName) {
+    throw new Error('Invalid file path');
+  }
+  const filenameWithoutExtension = fullFileName.split('.')[0].split('-');
+  console.log('filenameWithoutExtension', filenameWithoutExtension);
+  const filename = filenameWithoutExtension
+    .slice(0, filenameWithoutExtension.length - 1)
+    .join('-');
+  console.log('filename', filename);
+  return filename;
 };
 
 export const removeMetadata = (text: string): string => {
