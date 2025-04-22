@@ -1,8 +1,8 @@
-import InvitationModel from '@/models/invitation.model';
+import { InvitationModel } from '@/models/invitation.model';
 import { IInvitation } from '@/models/invitation.model';
 import { InvitationStatus } from '@common/enums';
 
-const InvitationRepository = {
+export const InvitationRepository = {
   createInvitation: async (invitationData: {
     receiverEmail: string;
     sender: string;
@@ -13,23 +13,11 @@ const InvitationRepository = {
     return InvitationModel.create(invitationData);
   },
 
-  getAllInvitations: async (): Promise<IInvitation[]> => {
-    return InvitationModel.find();
-  },
-
-  getInvitationsByReceiverEmailAndStatus: async (
-    email: string,
-    status: InvitationStatus
-  ): Promise<IInvitation[]> => {
-    return InvitationModel.find({ receiverEmail: email, status }).sort(
-      '-createdAt'
-    );
-  },
-
-  getInvitationById: async (
-    invitationId: string
-  ): Promise<IInvitation | null> => {
-    return InvitationModel.findOne({ _id: invitationId });
+  getInvitationsWithFilter: async (filter: {
+    receiverEmail?: string;
+    status?: InvitationStatus;
+  }): Promise<IInvitation[]> => {
+    return InvitationModel.find(filter).sort('-createdAt');
   },
 
   updateInvitationById: async (
@@ -46,5 +34,3 @@ const InvitationRepository = {
     );
   },
 };
-
-export default InvitationRepository;
