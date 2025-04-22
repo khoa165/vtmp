@@ -216,6 +216,15 @@ describe('ApplicationController', () => {
   });
 
   describe('GET /applications/:id', () => {
+    let application: IApplication;
+
+    beforeEach(async () => {
+      application = await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: savedUserId,
+      });
+    });
+
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
       const res = await request(app)
         .get('/api/applications/123456789')
@@ -227,7 +236,7 @@ describe('ApplicationController', () => {
       expect(errors[0].message).to.equal('Invalid application ID format');
     });
 
-    it('should return error message with 404 status code if application is not found or does not belong to authorized user', async () => {
+    it('should return error message with 404 status code if application is not found', async () => {
       const invalidApplicationId = getNewMongoId();
       const res = await request(app)
         .get(`/api/applications/${invalidApplicationId}`)
@@ -239,12 +248,23 @@ describe('ApplicationController', () => {
       expect(errors[0].message).to.equal('Application not found');
     });
 
-    it('should return error message with 404 status code if application is soft-deleted', async () => {
-      const application = await ApplicationRepository.createApplication({
+    it('should return error message with 404 status code if application does not belong to authorized user', async () => {
+      const otherApplication = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
-        userId: savedUserId,
+        userId: getNewMongoId(),
       });
 
+      const res = await request(app)
+        .get(`/api/applications/${otherApplication.id}`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Application not found');
+    });
+
+    it('should return error message with 404 status code if application is soft-deleted', async () => {
       await ApplicationRepository.deleteApplicationById({
         applicationId: application.id,
         userId: savedUserId,
@@ -261,11 +281,6 @@ describe('ApplicationController', () => {
     });
 
     it('should return an application if found and belongs to authorized user', async () => {
-      const application = await ApplicationRepository.createApplication({
-        jobPostingId: getNewMongoId(),
-        userId: savedUserId,
-      });
-
       const res = await request(app)
         .get(`/api/applications/${application.id}`)
         .set('Accept', 'application/json')
@@ -281,8 +296,24 @@ describe('ApplicationController', () => {
     });
   });
 
-  describe('PATCH /applications/:applicationId/status', () => {
+  describe('PUT /applications/:applicationId/updateStatus', () => {
     let application: IApplication;
+
+    const multipleInterviews = [
+      {
+        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
+        interviewOnDate: new Date(),
+      },
+      {
+        type: [InterviewType.PRACTICAL_CODING, InterviewType.TRIVIA_CONCEPT],
+        interviewOnDate: new Date(),
+      },
+      {
+        type: [InterviewType.OVERALL_BEHAVIORAL],
+        interviewOnDate: new Date(),
+        status: InterviewStatus.PASSED,
+      },
+    ];
 
     beforeEach(async () => {
       application = await ApplicationRepository.createApplication({
@@ -293,7 +324,7 @@ describe('ApplicationController', () => {
 
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
       const res = await request(app)
-        .patch('/api/applications/123456789/status')
+        .put('/api/applications/123456789/updateStatus')
         .send({ updatedStatus: 'IN_PROGRESS' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -306,7 +337,7 @@ describe('ApplicationController', () => {
     it('should return error message with 400 status code if attempting to update other fields other than status', async () => {
       const validApplicationId = getNewMongoId();
       const res = await request(app)
-        .patch(`/api/applications/${validApplicationId}/status`)
+        .put(`/api/applications/${validApplicationId}/updateStatus`)
         .send({ note: 'some note', referrer: 'Khoa' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -320,7 +351,7 @@ describe('ApplicationController', () => {
     it('should return error message with 400 status code if updated status is invalid', async () => {
       const validApplicationId = getNewMongoId();
       const res = await request(app)
-        .patch(`/api/applications/${validApplicationId}/status`)
+        .put(`/api/applications/${validApplicationId}/updateStatus`)
         .send({ updatedStatus: 'INVALID_STATUS' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -333,7 +364,7 @@ describe('ApplicationController', () => {
     it('should return error message with 404 status code if application is not found or does not belong to authorized user', async () => {
       const invalidApplicationId = getNewMongoId();
       const res = await request(app)
-        .patch(`/api/applications/${invalidApplicationId}/status`)
+        .put(`/api/applications/${invalidApplicationId}/updateStatus`)
         .send({ updatedStatus: 'IN_PROGRESS' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -350,7 +381,7 @@ describe('ApplicationController', () => {
       });
 
       const res = await request(app)
-        .patch(`/api/applications/${application.id}/status`)
+        .put(`/api/applications/${application.id}/updateStatus`)
         .send({ updatedStatus: 'IN_PROGRESS' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -362,7 +393,7 @@ describe('ApplicationController', () => {
 
     it('should update the application status to REJECTED and should return the updated application, when application does not have interviews', async () => {
       const res = await request(app)
-        .patch(`/api/applications/${application.id}/status`)
+        .put(`/api/applications/${application.id}/updateStatus`)
         .send({ updatedStatus: 'REJECTED' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -373,30 +404,19 @@ describe('ApplicationController', () => {
     });
 
     it('should update the application status to REJECTED, and update all pending interviews status to FAILED. All non-pending interviews status should not be affected. Should return the updated application', async () => {
-      // Create 2 PENDING interviews
-      const pendingInterview1 = await InterviewRepository.createInterview({
-        applicationId: application.id,
-        userId: savedUserId,
-        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
-        interviewOnDate: new Date(),
-      });
-      const pendingInterview2 = await InterviewRepository.createInterview({
-        applicationId: application.id,
-        userId: savedUserId,
-        type: [InterviewType.PRACTICAL_CODING, InterviewType.TRIVIA_CONCEPT],
-        interviewOnDate: new Date(),
-      });
-      // Create 1 Non-PENDING interview
-      const nonPendingInterview = await InterviewRepository.createInterview({
-        applicationId: application.id,
-        userId: savedUserId,
-        type: [InterviewType.OVERALL_BEHAVIORAL],
-        interviewOnDate: new Date(),
-        status: InterviewStatus.PASSED,
-      });
+      const [pendingInterview1, pendingInterview2, nonPendingInterview] =
+        await Promise.all(
+          multipleInterviews.map((interview) =>
+            InterviewRepository.createInterview({
+              ...interview,
+              applicationId: application.id,
+              userId: savedUserId,
+            })
+          )
+        );
 
       const res = await request(app)
-        .patch(`/api/applications/${application.id}/status`)
+        .put(`/api/applications/${application.id}/updateStatus`)
         .send({ updatedStatus: 'REJECTED' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -404,7 +424,7 @@ describe('ApplicationController', () => {
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('_id', application.id);
       expect(res.body.data).to.have.property('status', 'REJECTED');
-      // Expect PENDING interviews to switch to FAILED
+
       const interviews = await InterviewRepository.getInterviews({
         userId: savedUserId,
         filters: {
@@ -414,12 +434,12 @@ describe('ApplicationController', () => {
       });
       expect(interviews).to.be.an('array').that.have.lengthOf(2);
       expect(interviews.map((interview) => interview.id)).to.have.members([
-        pendingInterview1.id,
-        pendingInterview2.id,
+        pendingInterview1?.id,
+        pendingInterview2?.id,
       ]);
-      // Expect non-PENDING interview status to stay unchanged
+
       const interview = await InterviewRepository.getInterviewById({
-        interviewId: nonPendingInterview.id,
+        interviewId: nonPendingInterview?.id,
         userId: savedUserId,
       });
       assert(interview);
@@ -428,7 +448,7 @@ describe('ApplicationController', () => {
 
     it('should update the application status to a valid non-REJECTED status and return the updated application. Also associated interviews status should not be affected', async () => {
       const res = await request(app)
-        .patch(`/api/applications/${application.id}/status`)
+        .put(`/api/applications/${application.id}/updateStatus`)
         .send({ updatedStatus: 'OFFER' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -439,7 +459,7 @@ describe('ApplicationController', () => {
     });
   });
 
-  describe('PATCH /applications/:applicationId/metadata', () => {
+  describe('PUT /applications/:applicationId', () => {
     let application: IApplication;
 
     beforeEach(async () => {
@@ -451,7 +471,7 @@ describe('ApplicationController', () => {
 
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
       const res = await request(app)
-        .patch('/api/applications/123456789/metadata')
+        .put('/api/applications/123456789')
         .send({ note: 'Updated note' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -463,7 +483,7 @@ describe('ApplicationController', () => {
 
     it('should return error message with 400 status code if trying to update status', async () => {
       const res = await request(app)
-        .patch(`/api/applications/${application.id}/metadata`)
+        .put(`/api/applications/${application.id}`)
         .send({ status: 'OFFER' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -477,7 +497,7 @@ describe('ApplicationController', () => {
 
     it('should return error message with 400 status code trying to update interest level with invalid parameter', async () => {
       const res = await request(app)
-        .patch(`/api/applications/${application.id}/metadata`)
+        .put(`/api/applications/${application.id}`)
         .send({ interest: 'VERY_HIGH' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -490,7 +510,7 @@ describe('ApplicationController', () => {
     it('should return error message with 404 status code if application is not found or does not belong to authorized user', async () => {
       const invalidApplicationId = getNewMongoId();
       const res = await request(app)
-        .patch(`/api/applications/${invalidApplicationId}/metadata`)
+        .put(`/api/applications/${invalidApplicationId}`)
         .send({ note: 'Updated note' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -507,7 +527,7 @@ describe('ApplicationController', () => {
       });
 
       const res = await request(app)
-        .patch(`/api/applications/${application.id}/metadata`)
+        .put(`/api/applications/${application.id}`)
         .send({ note: 'Updated note' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -526,7 +546,7 @@ describe('ApplicationController', () => {
       };
 
       const res = await request(app)
-        .patch(`/api/applications/${application.id}/metadata`)
+        .put(`/api/applications/${application.id}`)
         .send({
           note: 'Updated note',
           referrer: 'Khoa',

@@ -5,30 +5,28 @@ import { wrappedHandlers } from '@/middlewares/utils';
 
 export const ApplicationRoutes = Router();
 
+ApplicationRoutes.use(wrappedHandlers([authenticate]));
 ApplicationRoutes.post(
   '/',
-  wrappedHandlers([authenticate, ApplicationController.createApplication])
+  wrappedHandlers([ApplicationController.createApplication])
 );
 ApplicationRoutes.get(
   '/',
-  wrappedHandlers([authenticate, ApplicationController.getApplications])
+  wrappedHandlers([ApplicationController.getApplications])
 );
 ApplicationRoutes.get(
   '/:applicationId',
-  wrappedHandlers([authenticate, ApplicationController.getApplicationById])
+  wrappedHandlers([ApplicationController.getApplicationById])
 );
-ApplicationRoutes.patch(
-  '/:applicationId/status',
-  wrappedHandlers([authenticate, ApplicationController.updateApplicationStatus])
+ApplicationRoutes.put(
+  '/:applicationId/updateStatus',
+  wrappedHandlers([ApplicationController.updateApplicationStatus])
 );
-ApplicationRoutes.patch(
-  '/:applicationId/metadata',
-  wrappedHandlers([
-    authenticate,
-    ApplicationController.updateApplicationMetadata,
-  ])
+ApplicationRoutes.put(
+  '/:applicationId',
+  wrappedHandlers([ApplicationController.updateApplicationMetadata])
 );
 ApplicationRoutes.delete(
   '/:applicationId',
-  wrappedHandlers([authenticate, ApplicationController.deleteApplication])
+  wrappedHandlers([ApplicationController.deleteApplication])
 );
