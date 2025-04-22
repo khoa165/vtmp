@@ -1,12 +1,12 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
-interface IProjectActivity {
+export interface IProjectActivity {
   year: number;
   teamMembers: Types.ObjectId[];
   projectAdvisors: Types.ObjectId[];
 }
 
-interface IProject extends Document {
+export interface IProject extends Document {
   teamName: string;
   teamNumber?: number;
   activities: IProjectActivity[];

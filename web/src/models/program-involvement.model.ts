@@ -1,7 +1,7 @@
 import { Department, ProgramRole } from '@/types/enums';
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
-interface IProgramInvolvement extends Document {
+export interface IProgramInvolvement extends Document {
   programProfileId: Types.ObjectId;
   programCohortId: Types.ObjectId;
   professionalTitle: string;
