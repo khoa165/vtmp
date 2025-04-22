@@ -74,7 +74,6 @@ export const ApplicationController = {
       message: 'Applications retrieved successfully',
       data: applications,
     });
-    return;
   },
 
   getApplicationById: async (req: Request, res: Response) => {
@@ -90,7 +89,6 @@ export const ApplicationController = {
       message: 'Application retrieved successfully',
       data: application,
     });
-    return;
   },
 
   updateApplicationStatus: async (req: Request, res: Response) => {
@@ -133,7 +131,6 @@ export const ApplicationController = {
       message: 'Application metadata updated successfully',
       data: updatedApplication,
     });
-    return;
   },
 
   deleteApplication: async (req: Request, res: Response) => {
@@ -149,6 +146,5 @@ export const ApplicationController = {
       message: 'Application deleted successfully',
       data: deletedApplication,
     });
-    return;
   },
 };
