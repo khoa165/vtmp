@@ -12,3 +12,7 @@ JobPostingRoutes.delete(
   '/:jobId',
   wrappedHandlers([JobPostingController.deleteJobPosting])
 );
+JobPostingRoutes.get(
+  '/not-applied',
+  wrappedHandlers([JobPostingController.getJobPostingsUserHasNotAppliedTo])
+);
