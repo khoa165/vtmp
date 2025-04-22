@@ -17,6 +17,7 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { IApplication } from '@/models/application.model';
+import assert from 'assert';
 
 describe('ApplicationController', () => {
   useMongoDB();
@@ -88,18 +89,19 @@ describe('ApplicationController', () => {
     });
 
     it('should return error message with status code 409 if duplicate application exists', async () => {
-      const savedJobPostingId = (
-        await JobPostingRepository.createJobPosting(mockJobPosting)
-      ).id;
+      const jobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(jobPosting);
 
       await ApplicationRepository.createApplication({
-        jobPostingId: savedJobPostingId,
+        jobPostingId: jobPosting.id,
         userId: savedUserId,
       });
 
       const res = await request(app)
         .post('/api/applications')
-        .send({ jobPostingId: savedJobPostingId })
+        .send({ jobPostingId: jobPosting.id })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -109,18 +111,19 @@ describe('ApplicationController', () => {
     });
 
     it('should return application object if an application is created successfully', async () => {
-      const savedJobPostingId = (
-        await JobPostingRepository.createJobPosting(mockJobPosting)
-      ).id;
+      const jobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(jobPosting);
 
       const res = await request(app)
         .post('/api/applications')
-        .send({ jobPostingId: savedJobPostingId })
+        .send({ jobPostingId: jobPosting.id })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 201 });
-      expect(res.body.data).to.have.property('jobPostingId', savedJobPostingId);
+      expect(res.body.data).to.have.property('jobPostingId', jobPosting.id);
       expect(res.body.data).to.have.property('userId', savedUserId);
     });
   });
