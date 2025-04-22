@@ -17,7 +17,7 @@ export const JobPostingRepository = {
   },
 
   getJobPostingById: async (jobId: string) => {
-    return JobPostingModel.findById(jobId);
+    return JobPostingModel.findById(jobId).lean();
   },
 
   updateJobPostingById: async (jobId: string, newUpdate: object) => {
@@ -25,7 +25,7 @@ export const JobPostingRepository = {
       jobId,
       { $set: newUpdate },
       { new: true }
-    );
+    ).lean();
   },
 
   deleteJobPostingById: async (jobId: string) => {
@@ -33,6 +33,6 @@ export const JobPostingRepository = {
       jobId,
       { $set: { deletedAt: new Date() } },
       { new: true }
-    );
+    ).lean();
   },
 };

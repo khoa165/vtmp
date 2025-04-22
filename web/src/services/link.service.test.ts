@@ -46,7 +46,7 @@ describe('LinkService', () => {
 
     it("should throw an error if job posting can't be created", async () => {
       sandbox.stub(JobPostingRepository, 'createJobPosting').throws();
-      const newLink = await LinkService.submitLink('google.com');
+      const newLink = await LinkRepository.createLink('google.com');
       await expect(
         LinkService.approveLinkAndCreateJobPosting(newLink.id, {
           jobTitle: 'Software Engineering Intern',
@@ -57,7 +57,7 @@ describe('LinkService', () => {
 
     it("should not approve link if job posting can't be created", async () => {
       sandbox.stub(JobPostingRepository, 'createJobPosting').throws();
-      const newLink = await LinkService.submitLink('google.com');
+      const newLink = await LinkRepository.createLink('google.com');
       await expect(
         LinkService.approveLinkAndCreateJobPosting(newLink.id, {
           jobTitle: 'Software Engineering Intern',
@@ -96,7 +96,7 @@ describe('LinkService', () => {
       expect(link.status).to.equal(LinkStatus.APPROVED);
 
       const jobPosting = await JobPostingRepository.getJobPostingById(
-        newJobPosting.id.toString()
+        newJobPosting.id
       );
       assert(jobPosting);
       expect(jobPosting.linkId.toString()).to.equal(link.id);
@@ -106,12 +106,12 @@ describe('LinkService', () => {
 
   describe('rejectLink', () => {
     it('should not throw when link exists', async () => {
-      const link = await LinkService.submitLink('google.com');
+      const link = await LinkRepository.createLink('google.com');
       await expect(LinkService.rejectLink(link.id)).eventually.fulfilled;
     });
 
     it('should be able to reject link by id', async () => {
-      const link = await LinkService.submitLink('google.com');
+      const link = await LinkRepository.createLink('google.com');
       const rejectedLink = await LinkService.rejectLink(link.id);
 
       assert(rejectedLink);
@@ -127,8 +127,8 @@ describe('LinkService', () => {
 
   describe('getPendingLinks', () => {
     it('should be able to get all pending links', async () => {
-      const googleLink = await LinkService.submitLink('google.com');
-      const nvidia = await LinkService.submitLink('nvidia.com');
+      const googleLink = await LinkRepository.createLink('google.com');
+      const nvidia = await LinkRepository.createLink('nvidia.com');
 
       const pendingLinks = await LinkService.getPendingLinks();
 
@@ -137,9 +137,9 @@ describe('LinkService', () => {
     });
 
     it('should be able to get all pending links after a link is rejected', async () => {
-      const googleLink = await LinkService.submitLink('google.com');
-      await LinkService.submitLink('nvidia.com');
-      await LinkService.submitLink('microsoft.com');
+      const googleLink = await LinkRepository.createLink('google.com');
+      await LinkRepository.createLink('nvidia.com');
+      await LinkRepository.createLink('microsoft.com');
 
       const beforeUpdateLinks = await LinkService.getPendingLinks();
       expect(beforeUpdateLinks).to.have.lengthOf(3);
