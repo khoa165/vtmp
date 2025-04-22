@@ -13,17 +13,15 @@ const InvitationRepository = {
     return InvitationModel.create(invitationData);
   },
 
-  getAllInvitations: async (): Promise<IInvitation[]> => {
-    return InvitationModel.find();
-  },
+  // getAllInvitations: async (): Promise<IInvitation[]> => {
+  //   return InvitationModel.find();
+  // },
 
-  getInvitationsByReceiverEmailAndStatus: async (
-    email: string,
-    status: InvitationStatus
-  ): Promise<IInvitation[]> => {
-    return InvitationModel.find({ receiverEmail: email, status }).sort(
-      '-createdAt'
-    );
+  getInvitationsWithFilter: async (filter?: {
+    receiverEmail?: string;
+    status?: InvitationStatus;
+  }): Promise<IInvitation[]> => {
+    return InvitationModel.find(filter ?? {}).sort('-createdAt');
   },
 
   getInvitationById: async (

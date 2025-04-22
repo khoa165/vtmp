@@ -97,87 +97,89 @@ describe('InvitationRepository', () => {
     });
   });
 
-  describe('getAllInvitations', () => {
-    it('should return an empty array when no invitation', async () => {
-      const invitations = await InvitationRepository.getAllInvitations();
-      expect(invitations).to.be.an('array').that.have.lengthOf(0);
-    });
+  describe('getInvitationsWithFilter', () => {
+    describe('when no filter is provided', () => {
+      it('should return an empty array when no invitation exists', async () => {
+        const invitations =
+          await InvitationRepository.getInvitationsWithFilter();
+        expect(invitations).to.be.an('array').that.have.lengthOf(0);
+      });
 
-    it('should return an array of all users', async () => {
-      await Promise.all(
-        mockMultipleInvitations.map((invitation) =>
-          InvitationRepository.createInvitation({
-            ...invitation,
-            sender: admin.id,
-          })
-        )
-      );
+      it('should return an array of all invitations', async () => {
+        await Promise.all(
+          mockMultipleInvitations.map((invitation) =>
+            InvitationRepository.createInvitation({
+              ...invitation,
+              sender: admin.id,
+            })
+          )
+        );
 
-      const invitations = await InvitationRepository.getAllInvitations();
-      expect(invitations)
-        .to.be.an('array')
-        .that.have.lengthOf(mockMultipleInvitations.length);
-      expect(
-        invitations.map((invitation) => invitation.receiverEmail)
-      ).to.have.members(
-        mockMultipleInvitations.map((invitation) => invitation.receiverEmail)
-      );
-    });
-  });
-
-  describe('getInvitationsByEmailAndStatus', () => {
-    let invitation: IInvitation;
-
-    beforeEach(async () => {
-      invitation = await InvitationRepository.createInvitation({
-        ...mockOneInvitation,
-        sender: admin.id,
+        const invitations =
+          await InvitationRepository.getInvitationsWithFilter();
+        expect(invitations)
+          .to.be.an('array')
+          .that.have.lengthOf(mockMultipleInvitations.length);
+        expect(
+          invitations.map((invitation) => invitation.receiverEmail)
+        ).to.have.members(
+          mockMultipleInvitations.map((invitation) => invitation.receiverEmail)
+        );
       });
     });
+    describe('when filter is provided', () => {
+      let invitation: IInvitation;
 
-    it('should return an empty array if cannot get any invitation with given receiver email', async () => {
-      const invitationFoundByEmail =
-        await InvitationRepository.getInvitationsByReceiverEmailAndStatus(
-          'fake@example.com',
-          InvitationStatus.PENDING
-        );
-      expect(invitationFoundByEmail).to.be.an('array').that.have.lengthOf(0);
-    });
-
-    it('should return an array with only 1 invitation found', async () => {
-      const invitationFoundByEmail =
-        await InvitationRepository.getInvitationsByReceiverEmailAndStatus(
-          invitation.receiverEmail,
-          InvitationStatus.PENDING
-        );
-
-      expect(invitationFoundByEmail).to.be.an('array').that.have.lengthOf(1);
-      invitationFoundByEmail.map((invitation) => {
-        checkInvitation(invitation, {
+      beforeEach(async () => {
+        invitation = await InvitationRepository.createInvitation({
           ...mockOneInvitation,
-          status: InvitationStatus.PENDING,
+          sender: admin.id,
         });
       });
-    });
 
-    it('should return an array of multiple invitations sent to an email', async () => {
-      await InvitationRepository.createInvitation({
-        ...mockOneInvitation,
-        sender: admin.id,
+      it('should return an empty array if cannot get any invitation with given receiver email', async () => {
+        const invitationFoundByEmail =
+          await InvitationRepository.getInvitationsWithFilter({
+            receiverEmail: 'fake@example.com',
+            status: InvitationStatus.PENDING,
+          });
+        expect(invitationFoundByEmail).to.be.an('array').that.have.lengthOf(0);
       });
 
-      const invitationFoundByEmail =
-        await InvitationRepository.getInvitationsByReceiverEmailAndStatus(
-          invitation.receiverEmail,
-          InvitationStatus.PENDING
-        );
+      it('should return an array with only 1 pending invitation associated with an email', async () => {
+        const invitationFoundByEmail =
+          await InvitationRepository.getInvitationsWithFilter({
+            receiverEmail: invitation.receiverEmail,
+            status: InvitationStatus.PENDING,
+          });
 
-      expect(invitationFoundByEmail).to.be.an('array').that.have.lengthOf(2);
+        expect(invitationFoundByEmail).to.be.an('array').that.have.lengthOf(1);
+        invitationFoundByEmail.map((invitation) => {
+          checkInvitation(invitation, {
+            ...mockOneInvitation,
+            status: InvitationStatus.PENDING,
+          });
+        });
+      });
 
-      invitationFoundByEmail.map((invitation) => {
-        checkInvitation(invitation, {
+      it('should return an array of multiple pending invitations associated with an email', async () => {
+        await InvitationRepository.createInvitation({
           ...mockOneInvitation,
-          status: InvitationStatus.PENDING,
+          sender: admin.id,
+        });
+
+        const invitationFoundByEmail =
+          await InvitationRepository.getInvitationsWithFilter({
+            receiverEmail: invitation.receiverEmail,
+            status: InvitationStatus.PENDING,
+          });
+
+        expect(invitationFoundByEmail).to.be.an('array').that.have.lengthOf(2);
+        invitationFoundByEmail.map((invitation) => {
+          checkInvitation(invitation, {
+            ...mockOneInvitation,
+            status: InvitationStatus.PENDING,
+          });
         });
       });
     });
