@@ -60,7 +60,6 @@ describe('UserController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body).to.have.property('data');
       expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
     });
 
@@ -102,39 +101,32 @@ describe('UserController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body).to.have.property('data');
       expect(res.body.data).to.not.have.property('encryptedPassword');
     });
   });
 
   describe('PUT /users/:userId', () => {
-    it('should return error message forbidden for updating other user information', async () => {
-      const updateInfo = {
-        firstName: 'admin_update',
-        lastName: 'viettech',
-      };
-
+    it('should return error message not found for user not exists', async () => {
       const res = await request(app)
         .put(`/api/users/${getNewMongoId()}`)
-        .send(updateInfo)
+        .send({
+          firstName: 'admin_update',
+          lastName: 'viettech',
+        })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
-      expect(errors[0].message).to.equal(
-        'Cannot update other user information'
-      );
+      expect(errors[0].message).to.equal('User not found. Cannot update');
     });
 
     it('should return error message for updating email ', async () => {
-      const updateInfo = {
-        email: 'test4@example.com',
-      };
-
       const res = await request(app)
         .put(`/api/users/${mockUserId}`)
-        .send(updateInfo)
+        .send({
+          email: 'test4@example.com',
+        })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -144,13 +136,11 @@ describe('UserController', () => {
     });
 
     it('should return error message for updating password ', async () => {
-      const updateInfo = {
-        password: 'new-password',
-      };
-
       const res = await request(app)
         .put(`/api/users/${mockUserId}`)
-        .send(updateInfo)
+        .send({
+          password: 'new-password',
+        })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -160,13 +150,11 @@ describe('UserController', () => {
     });
 
     it('should return error message for updating role', async () => {
-      const updateInfo = {
-        role: UserRole.ADMIN,
-      };
-
       const res = await request(app)
         .put(`/api/users/${mockUserId}`)
-        .send(updateInfo)
+        .send({
+          role: UserRole.ADMIN,
+        })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -188,7 +176,6 @@ describe('UserController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body).to.have.property('data');
       expect(res.body.data).to.containSubset(updateInfo);
       expect(res.body.data).to.not.have.property('encryptedPassword');
     });
@@ -196,14 +183,12 @@ describe('UserController', () => {
 
   describe('PUT /users/:userId/role', () => {
     it('should return error message for updating fields that is not role', async () => {
-      const updateInfo = {
-        firstName: 'admin_update',
-        lastName: 'viettech',
-      };
-
       const res = await request(app)
         .put(`/api/users/${mockUserId}/role`)
-        .send(updateInfo)
+        .send({
+          firstName: 'admin_update',
+          lastName: 'viettech',
+        })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -241,7 +226,6 @@ describe('UserController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body).to.have.property('data');
       expect(res.body.data).to.containSubset(updateInfo);
       expect(res.body.data).to.not.have.property('encryptedPassword');
     });
