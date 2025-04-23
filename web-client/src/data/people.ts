@@ -1298,7 +1298,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
       {
         year: 2025,
-        title: 'SWE Intern @ Palantir',
+        title: 'SWE Intern @ Palantir + Microsoft',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
@@ -1856,7 +1856,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
       {
         year: 2025,
-        title: 'SWE Intern @ Shopify + Robinhood',
+        title: 'SWE Intern @ Shopify + Amazon',
         roles: [
           MentorshipRole.SWE_RISING_LEAD,
           MentorshipRole.SWE_EXMENTEE_MENTOR,
@@ -2471,7 +2471,6 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           PeopleName.DANG_SON,
           PeopleName.HA_LINH,
           PeopleName.KHA_TRAN,
-          PeopleName.MONICA_HUYNH,
           PeopleName.NAM_NGUYEN,
           PeopleName.PHUC_TRUONG,
           PeopleName.QUANG_MINH,
@@ -2504,7 +2503,6 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           PeopleName.KHA_TRAN,
           PeopleName.MONICA_HUYNH,
           PeopleName.NAM_NGUYEN,
-          PeopleName.PHUC_TRUONG,
           PeopleName.QUANG_MINH,
           PeopleName.VY_TRAN,
         ],
@@ -2529,7 +2527,6 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_MENTEE],
         teamName: ProjectName.APPLICATION_TRACKER,
         teammates: [
-          PeopleName.AN_TRAN,
           PeopleName.DANG_SON,
           PeopleName.HA_LINH,
           PeopleName.KHA_TRAN,
@@ -2567,7 +2564,6 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           PeopleName.MONICA_HUYNH,
           PeopleName.NAM_NGUYEN,
           PeopleName.PHUC_TRUONG,
-          PeopleName.QUANG_MINH,
           PeopleName.VY_TRAN,
         ],
         mentors: [PeopleName.TRI_HOANG],
@@ -2592,7 +2588,6 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         teamName: ProjectName.APPLICATION_TRACKER,
         teammates: [
           PeopleName.AN_TRAN,
-          PeopleName.DANG_SON,
           PeopleName.HA_LINH,
           PeopleName.KHA_TRAN,
           PeopleName.MONICA_HUYNH,
