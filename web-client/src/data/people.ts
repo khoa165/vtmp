@@ -2192,6 +2192,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
+            name: CompanyName.G_RESEARCH,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-04-15',
+          },
+          {
+            name: CompanyName.SLB,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-04-10',
+          },
+          {
             name: CompanyName.AMAZON,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,

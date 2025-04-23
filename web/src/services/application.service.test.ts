@@ -58,8 +58,11 @@ describe('ApplicationService', () => {
     });
 
     it('should throw error if an application associated with this job posting and user already exist', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: getNewMongoId(),
@@ -72,10 +75,11 @@ describe('ApplicationService', () => {
     });
 
     it('should create an application successfully', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
       const mockApplication = {
-        jobPostingId: newJobPosting.id,
+        jobPostingId: newJobPosting?.id,
         userId: getNewMongoId(),
       };
 
@@ -84,8 +88,11 @@ describe('ApplicationService', () => {
     });
 
     it('should create an application successfully and return valid new application', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
       const mockApplication = {
         jobPostingId: newJobPosting.id,
         userId: getNewMongoId(),
