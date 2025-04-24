@@ -14,10 +14,6 @@ describe('LinkService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
-  beforeEach(async () => {
-    sandbox.restore();
-  });
-
   describe('submitLink', () => {
     it('should be able to create new link with expected fields', async () => {
       const URL = 'google.com';
