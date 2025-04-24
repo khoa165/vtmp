@@ -65,7 +65,7 @@ describe('JobPostingService', () => {
         newUpdate
       );
 
-      expect(updatedJobPosting).to.containSubset(newUpdate);
+      expect(updatedJobPosting).to.deep.include(newUpdate);
     });
   });
 

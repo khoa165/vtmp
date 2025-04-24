@@ -1,5 +1,4 @@
-import * as chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import { expect } from 'chai';
 import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
 
@@ -14,9 +13,6 @@ import {
   getNewObjectId,
   toMongoId,
 } from '@/testutils/mongoID.testutil';
-
-chai.use(chaiAsPromised);
-const { expect } = chai;
 
 describe('ApplicationService', () => {
   useMongoDB();
@@ -181,7 +177,7 @@ describe('ApplicationService', () => {
       });
 
       assert(application);
-      expect(application).to.containSubset({
+      expect(application).to.deep.include({
         jobPostingId: toMongoId(mockApplication_A1.jobPostingId),
         userId: toMongoId(mockApplication_A1.userId),
       });
