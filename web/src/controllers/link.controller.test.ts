@@ -1,19 +1,15 @@
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { beforeEach, describe } from 'mocha';
 import app from '@/app';
-import * as chai from 'chai';
-import request from 'supertest';
 import { expect } from 'chai';
+import request from 'supertest';
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { LinkRepository } from '@/repositories/link.repository';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import chaiSubset from 'chai-subset';
 import { LinkStatus } from '@common/enums';
-
-chai.use(chaiSubset);
 
 describe('LinkController', () => {
   useMongoDB();
