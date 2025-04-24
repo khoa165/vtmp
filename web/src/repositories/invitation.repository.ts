@@ -20,6 +20,12 @@ export const InvitationRepository = {
     return InvitationModel.find(filter).sort('-createdAt');
   },
 
+  getInvitationById: async (
+    invitationId: string
+  ): Promise<IInvitation | null> => {
+    return InvitationModel.findById(invitationId);
+  },
+
   updateInvitationById: async (
     invitationId: string,
     updateInvitationInfo: {
