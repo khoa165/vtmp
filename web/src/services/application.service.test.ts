@@ -23,12 +23,13 @@ import {
   toMongoId,
 } from '@/testutils/mongoID.testutil';
 import { InterviewRepository } from '@/repositories/interview.repository';
-import sinon from 'sinon';
 import { IApplication } from '@/models/application.model';
 import { IJobPosting } from '@/models/job-posting.model';
+import { useSandbox } from '@/testutils/sandbox.testutil';
 
 describe('ApplicationService', () => {
   useMongoDB();
+  const sandbox = useSandbox();
 
   const userId_A = getNewMongoId();
   const userId_B = getNewMongoId();
@@ -497,7 +498,7 @@ describe('ApplicationService', () => {
         interviewOnDate: new Date(),
       });
 
-      sinon
+      sandbox
         .stub(InterviewRepository, 'updateInterviewsWithStatus')
         .throws(new Error('Simulated transaction failure'));
 
@@ -523,8 +524,6 @@ describe('ApplicationService', () => {
       });
       assert(updatedInterview);
       expect(updatedInterview.status).to.equal(InterviewStatus.PENDING);
-
-      sinon.restore();
     });
   });
 
