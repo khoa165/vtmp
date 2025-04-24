@@ -1,5 +1,5 @@
 import { JobPostingModel, IJobPosting } from '@/models/job-posting.model';
-import mongoose from 'mongoose';
+import { toMongoId } from '@/testutils/mongoID.testutil';
 
 export const JobPostingRepository = {
   createJobPosting: async (jobPostingData: object): Promise<IJobPosting> => {
@@ -44,7 +44,7 @@ export const JobPostingRepository = {
                 $expr: {
                   $and: [
                     { $eq: ['$jobPostingId', '$$jobId'] },
-                    { $eq: ['$userId', new mongoose.Types.ObjectId(userId)] },
+                    { $eq: ['$userId', toMongoId(userId)] },
                     { $not: ['$deletedAt'] },
                   ],
                 },
