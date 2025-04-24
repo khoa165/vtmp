@@ -342,6 +342,26 @@ describe('ApplicationService', () => {
 
   describe('markApplicationAsRejected', () => {
     let application_A0: IApplication;
+
+    const multipleInterviews = [
+      {
+        userId: userId_A,
+        type: [InterviewType.CODE_REVIEW, InterviewType.SYSTEM_DESIGN],
+        interviewOnDate: new Date(),
+        status: InterviewStatus.PASSED,
+      },
+      {
+        userId: userId_A,
+        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
+        interviewOnDate: new Date(),
+      },
+      {
+        userId: userId_A,
+        type: [InterviewType.PROJECT_WALKTHROUGH],
+        interviewOnDate: new Date(),
+      },
+    ];
+
     beforeEach(async () => {
       application_A0 =
         await ApplicationRepository.createApplication(mockApplication_A0);
@@ -420,25 +440,15 @@ describe('ApplicationService', () => {
     });
 
     it('should only update PENDING interviews to FAILED, and leave other interviews status unchanged. Should return updated application with REJECTED status', async () => {
-      const nonPendingInterview = await InterviewRepository.createInterview({
-        applicationId: application_A0.id,
-        userId: userId_A,
-        type: [InterviewType.CODE_REVIEW, InterviewType.SYSTEM_DESIGN],
-        interviewOnDate: new Date(),
-        status: InterviewStatus.PASSED,
-      });
-      const pendingInterview1 = await InterviewRepository.createInterview({
-        applicationId: application_A0.id,
-        userId: userId_A,
-        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
-        interviewOnDate: new Date(),
-      });
-      const pendingInterview2 = await InterviewRepository.createInterview({
-        applicationId: application_A0.id,
-        userId: userId_A,
-        type: [InterviewType.PROJECT_WALKTHROUGH],
-        interviewOnDate: new Date(),
-      });
+      const [nonPendingInterview, pendingInterview1, pendingInterview2] =
+        await Promise.all(
+          multipleInterviews.map((interview) =>
+            InterviewRepository.createInterview({
+              ...interview,
+              applicationId: application_A0.id,
+            })
+          )
+        );
       const pendingInterviews = await InterviewRepository.getInterviews({
         userId: userId_A,
         filters: {
@@ -465,11 +475,11 @@ describe('ApplicationService', () => {
       });
       expect(failedInterviews).to.be.an('array').that.have.lengthOf(2);
       expect(failedInterviews.map((interview) => interview.id)).to.have.members(
-        [pendingInterview1.id, pendingInterview2.id]
+        [pendingInterview1?.id, pendingInterview2?.id]
       );
 
       const interview = await InterviewRepository.getInterviewById({
-        interviewId: nonPendingInterview.id,
+        interviewId: nonPendingInterview?.id,
         userId: userId_A,
       });
       assert(interview);
@@ -484,7 +494,6 @@ describe('ApplicationService', () => {
         interviewOnDate: new Date(),
       });
 
-      // Stub updateInterviewsWithStatus to throw an error
       sinon
         .stub(InterviewRepository, 'updateInterviewsWithStatus')
         .throws(new Error('Simulated transaction failure'));
@@ -496,7 +505,6 @@ describe('ApplicationService', () => {
         })
       ).eventually.rejectedWith(Error, 'Simulated transaction failure');
 
-      // Verify that the application status was not updated to REJECTED
       const updatedApplication = await ApplicationRepository.getApplicationById(
         {
           applicationId: application_A0.id,
@@ -506,7 +514,6 @@ describe('ApplicationService', () => {
       assert(updatedApplication);
       expect(updatedApplication.status).to.equal(ApplicationStatus.SUBMITTED);
 
-      // Verify that the interview status was not updated to FAILED
       const updatedInterview = await InterviewRepository.getInterviewById({
         interviewId: pendingInterview1.id,
         userId: userId_A,
