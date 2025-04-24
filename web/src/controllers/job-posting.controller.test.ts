@@ -15,6 +15,7 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { differenceInSeconds } from 'date-fns';
+import assert from 'assert';
 
 chai.use(chaiSubset);
 describe('JobPostingController', () => {
@@ -34,9 +35,11 @@ describe('JobPostingController', () => {
       companyName: 'Example Company',
       submittedBy: getNewObjectId(),
     };
-    const newJobPosting = await JobPostingRepository.createJobPosting(
-      mockJobPosting
-    );
+    const newJobPosting = await JobPostingRepository.createJobPosting({
+      jobPostingData: mockJobPosting,
+    });
+    assert(newJobPosting);
+
     jobId = newJobPosting.id;
   });
 
