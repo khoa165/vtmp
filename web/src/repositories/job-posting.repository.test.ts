@@ -1,13 +1,9 @@
-import * as chai from 'chai';
-import chaiSubset from 'chai-subset';
+import { expect } from 'chai';
 import assert from 'assert';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewObjectId } from '@/testutils/mongoID.testutil';
 import { differenceInSeconds } from 'date-fns';
-
-chai.use(chaiSubset);
-const { expect } = chai;
 
 describe('JobPostingRepository', () => {
   useMongoDB();
@@ -26,7 +22,7 @@ describe('JobPostingRepository', () => {
         jobPostingData: mockJobPosting,
       });
 
-      expect(newJobPosting).to.containSubset(mockJobPosting);
+      expect(newJobPosting).to.deep.include(mockJobPosting);
     });
   });
 
@@ -42,7 +38,7 @@ describe('JobPostingRepository', () => {
       );
 
       assert(foundJobPosting);
-      expect(foundJobPosting).to.containSubset(mockJobPosting);
+      expect(foundJobPosting).to.deep.include(mockJobPosting);
     });
   });
 
@@ -64,7 +60,7 @@ describe('JobPostingRepository', () => {
         newUpdate
       );
 
-      expect(updatedJobPosting).to.containSubset(newUpdate);
+      expect(updatedJobPosting).to.deep.include(newUpdate);
     });
   });
 
@@ -79,21 +75,12 @@ describe('JobPostingRepository', () => {
         newJobPosting.id
       );
 
-      assert(
-        deletedJobPosting !== null,
-        'Deleted job posting must not be null'
-      );
-      assert(
-        'deletedAt' in deletedJobPosting,
-        'Deleted job posting must have a deletedAt property'
-      );
+      assert(deletedJobPosting?.deletedAt);
 
       const timeDiff = differenceInSeconds(
         new Date(),
         deletedJobPosting.deletedAt
       );
-
-      assert(deletedJobPosting);
       expect(timeDiff).to.lessThan(3);
     });
   });
