@@ -1,5 +1,4 @@
-import * as chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import { expect } from 'chai';
 import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
 
@@ -24,15 +23,13 @@ import {
   toMongoId,
 } from '@/testutils/mongoID.testutil';
 import { InterviewRepository } from '@/repositories/interview.repository';
-import sinon from 'sinon';
 import { IApplication } from '@/models/application.model';
 import { IJobPosting } from '@/models/job-posting.model';
-
-chai.use(chaiAsPromised);
-const { expect } = chai;
+import { useSandbox } from '@/testutils/sandbox.testutil';
 
 describe('ApplicationService', () => {
   useMongoDB();
+  const sandbox = useSandbox();
 
   const userId_A = getNewMongoId();
   const userId_B = getNewMongoId();
@@ -194,9 +191,7 @@ describe('ApplicationService', () => {
       const applications = await ApplicationService.getApplications(userId_A);
 
       expect(applications).to.be.an('array').that.have.lengthOf(1);
-      expect(applications.map((application) => application.id)).to.have.members(
-        [application_A0.id]
-      );
+      expect(applications[0]?.id).to.equal(application_A0.id);
     });
 
     it('should return no application if authorized user has no application', async () => {
@@ -257,7 +252,7 @@ describe('ApplicationService', () => {
       });
 
       assert(application);
-      expect(application).to.containSubset({
+      expect(application).to.deep.include({
         jobPostingId: toMongoId(mockApplication_A1.jobPostingId),
         userId: toMongoId(mockApplication_A1.userId),
       });
@@ -449,14 +444,14 @@ describe('ApplicationService', () => {
             })
           )
         );
-      const pendingInterviews = await InterviewRepository.getInterviews({
+      const pendingInterviewsBefore = await InterviewRepository.getInterviews({
         userId: userId_A,
         filters: {
           applicationId: application_A0.id,
           status: InterviewStatus.PENDING,
         },
       });
-      expect(pendingInterviews).to.be.an('array').that.have.lengthOf(2);
+      expect(pendingInterviewsBefore).to.be.an('array').that.have.lengthOf(2);
 
       const updatedApplication =
         await ApplicationService.markApplicationAsRejected({
@@ -478,12 +473,21 @@ describe('ApplicationService', () => {
         [pendingInterview1?.id, pendingInterview2?.id]
       );
 
-      const interview = await InterviewRepository.getInterviewById({
+      const passedInterview = await InterviewRepository.getInterviewById({
         interviewId: nonPendingInterview?.id,
         userId: userId_A,
       });
-      assert(interview);
-      expect(interview.status).to.equal(InterviewStatus.PASSED);
+      assert(passedInterview);
+      expect(passedInterview.status).to.equal(InterviewStatus.PASSED);
+
+      const pendingInterviewsAfter = await InterviewRepository.getInterviews({
+        userId: userId_A,
+        filters: {
+          applicationId: application_A0.id,
+          status: InterviewStatus.PENDING,
+        },
+      });
+      expect(pendingInterviewsAfter).to.be.an('array').that.have.lengthOf(0);
     });
 
     it('should not reject the application and not update PENDING interview to FAILED if an error occurs during the transaction', async () => {
@@ -494,7 +498,7 @@ describe('ApplicationService', () => {
         interviewOnDate: new Date(),
       });
 
-      sinon
+      sandbox
         .stub(InterviewRepository, 'updateInterviewsWithStatus')
         .throws(new Error('Simulated transaction failure'));
 
@@ -520,8 +524,6 @@ describe('ApplicationService', () => {
       });
       assert(updatedInterview);
       expect(updatedInterview.status).to.equal(InterviewStatus.PENDING);
-
-      sinon.restore();
     });
   });
 
