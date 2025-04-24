@@ -1,14 +1,10 @@
-import * as chai from 'chai';
-import chaiSubset from 'chai-subset';
+import { expect } from 'chai';
 import { LinkStatus } from '@common/enums';
 import { differenceInSeconds } from 'date-fns';
 import { LinkRepository } from '@/repositories/link.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import assert from 'assert';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
-
-chai.use(chaiSubset);
-const { expect } = chai;
 
 describe('LinkRepository', () => {
   useMongoDB();
