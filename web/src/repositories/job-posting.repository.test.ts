@@ -31,14 +31,14 @@ describe('JobPostingRepository', () => {
       const newJobPosting = await JobPostingRepository.createJobPosting({
         jobPostingData: mockJobPosting,
       });
-
       assert(newJobPosting);
+
       const foundJobPosting = await JobPostingRepository.getJobPostingById(
         newJobPosting.id
       );
 
       assert(foundJobPosting);
-      expect(foundJobPosting).to.containSubset(mockJobPosting);
+      expect(foundJobPosting).to.deep.include(mockJobPosting);
     });
   });
 
@@ -47,6 +47,7 @@ describe('JobPostingRepository', () => {
       const newJobPosting = await JobPostingRepository.createJobPosting({
         jobPostingData: mockJobPosting,
       });
+      assert(newJobPosting);
 
       const newUpdate = {
         jobTitle: 'Senior Software Engineer',
@@ -54,7 +55,6 @@ describe('JobPostingRepository', () => {
         jobDescription: 'This is an updated job description.',
       };
 
-      assert(newJobPosting);
       const updatedJobPosting = await JobPostingRepository.updateJobPostingById(
         newJobPosting.id,
         newUpdate
@@ -69,21 +69,18 @@ describe('JobPostingRepository', () => {
       const newJobPosting = await JobPostingRepository.createJobPosting({
         jobPostingData: mockJobPosting,
       });
-
       assert(newJobPosting);
 
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
         newJobPosting.id
       );
 
-      assert(deletedJobPosting !== null);
-      assert('deletedAt' in deletedJobPosting);
+      assert(deletedJobPosting?.deletedAt);
 
       const timeDiff = differenceInSeconds(
         new Date(),
         deletedJobPosting.deletedAt
       );
-
       expect(timeDiff).to.lessThan(3);
     });
   });
