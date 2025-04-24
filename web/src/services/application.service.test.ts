@@ -190,9 +190,7 @@ describe('ApplicationService', () => {
       const applications = await ApplicationService.getApplications(userId_A);
 
       expect(applications).to.be.an('array').that.have.lengthOf(1);
-      expect(applications.map((application) => application.id)).to.have.members(
-        [application_A0.id]
-      );
+      expect(applications[0]?.id).to.equal(application_A0.id);
     });
 
     it('should return no application if authorized user has no application', async () => {
@@ -445,14 +443,14 @@ describe('ApplicationService', () => {
             })
           )
         );
-      const pendingInterviews = await InterviewRepository.getInterviews({
+      const pendingInterviewsBefore = await InterviewRepository.getInterviews({
         userId: userId_A,
         filters: {
           applicationId: application_A0.id,
           status: InterviewStatus.PENDING,
         },
       });
-      expect(pendingInterviews).to.be.an('array').that.have.lengthOf(2);
+      expect(pendingInterviewsBefore).to.be.an('array').that.have.lengthOf(2);
 
       const updatedApplication =
         await ApplicationService.markApplicationAsRejected({
@@ -474,12 +472,21 @@ describe('ApplicationService', () => {
         [pendingInterview1?.id, pendingInterview2?.id]
       );
 
-      const interview = await InterviewRepository.getInterviewById({
+      const passedInterview = await InterviewRepository.getInterviewById({
         interviewId: nonPendingInterview?.id,
         userId: userId_A,
       });
-      assert(interview);
-      expect(interview.status).to.equal(InterviewStatus.PASSED);
+      assert(passedInterview);
+      expect(passedInterview.status).to.equal(InterviewStatus.PASSED);
+
+      const pendingInterviewsAfter = await InterviewRepository.getInterviews({
+        userId: userId_A,
+        filters: {
+          applicationId: application_A0.id,
+          status: InterviewStatus.PENDING,
+        },
+      });
+      expect(pendingInterviewsAfter).to.be.an('array').that.have.lengthOf(0);
     });
 
     it('should not reject the application and not update PENDING interview to FAILED if an error occurs during the transaction', async () => {

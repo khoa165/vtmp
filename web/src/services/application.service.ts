@@ -100,6 +100,13 @@ export const ApplicationService = {
       status?: Exclude<ApplicationStatus, ApplicationStatus.REJECTED>;
     };
   }): Promise<IApplication | null> => {
+    if (updatedMetadata.status === ApplicationStatus.REJECTED) {
+      throw new InternalServerError('Rejecting an application is not allowed', {
+        applicationId,
+        userId,
+      });
+    }
+
     const updatedApplication =
       await ApplicationRepository.updateApplicationById({
         userId,
@@ -109,13 +116,6 @@ export const ApplicationService = {
 
     if (!updatedApplication) {
       throw new ResourceNotFoundError('Application not found', {
-        applicationId,
-        userId,
-      });
-    }
-
-    if (updatedMetadata.status === ApplicationStatus.REJECTED) {
-      throw new InternalServerError('Rejecting an application is not allowed', {
         applicationId,
         userId,
       });
