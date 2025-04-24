@@ -1,5 +1,5 @@
 import { EnvConfig } from '@/config/env';
-import InvitationRepository from '@/repositories/invitation.repository';
+import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { InvitationService } from '@/services/invitation.service';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';

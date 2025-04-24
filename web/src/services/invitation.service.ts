@@ -1,6 +1,6 @@
 import { EnvConfig } from '@/config/env';
 import { IInvitation } from '@/models/invitation.model';
-import InvitationRepository from '@/repositories/invitation.repository';
+import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { EmailService } from '@/utils/email';
 import {
@@ -15,7 +15,7 @@ import jwt from 'jsonwebtoken';
 const config = EnvConfig.get();
 export const InvitationService = {
   getAllInvitations: async () => {
-    return InvitationRepository.getAllInvitations();
+    return InvitationRepository.getInvitationsWithFilter({});
   },
 
   sendInvitation: async (
@@ -32,10 +32,10 @@ export const InvitationService = {
     }
 
     const foundAcceptedInvitation =
-      await InvitationRepository.getInvitationsByReceiverEmailAndStatus(
+      await InvitationRepository.getInvitationsWithFilter({
         receiverEmail,
-        InvitationStatus.ACCEPTED
-      );
+        status: InvitationStatus.ACCEPTED,
+      });
     if (foundAcceptedInvitation.length > 0) {
       throw new Error(
         'User associated with this email has already accepted the invitation'
@@ -46,10 +46,10 @@ export const InvitationService = {
     let token: string;
 
     const [lastestPendingInvitation] =
-      await InvitationRepository.getInvitationsByReceiverEmailAndStatus(
+      await InvitationRepository.getInvitationsWithFilter({
         receiverEmail,
-        InvitationStatus.PENDING
-      );
+        status: InvitationStatus.PENDING,
+      });
 
     if (!lastestPendingInvitation) {
       token = jwt.sign({ receiverEmail }, config.JWT_SECRET, {
