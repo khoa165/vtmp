@@ -1,6 +1,6 @@
 import { InterviewModel, IInterview } from '@/models/interview.model';
 import { InterviewStatus, InterviewType } from '@common/enums';
-import { UpdateResult } from 'mongoose';
+import { ClientSession, UpdateResult } from 'mongoose';
 
 export const InterviewRepository = {
   createInterview: async ({
@@ -45,18 +45,24 @@ export const InterviewRepository = {
   getInterviews: async ({
     userId,
     filters,
+    session,
   }: {
     userId: string;
     filters?: {
       applicationId?: string;
       status?: InterviewStatus;
     };
+    session?: ClientSession;
   }): Promise<IInterview[]> => {
-    return InterviewModel.find({
-      userId,
-      deletedAt: null,
-      ...(filters || {}),
-    });
+    return InterviewModel.find(
+      {
+        userId,
+        deletedAt: null,
+        ...(filters || {}),
+      },
+      null,
+      session ? { session } : {}
+    );
   },
 
   updateInterviewById: async ({
@@ -84,10 +90,12 @@ export const InterviewRepository = {
     userId,
     interviewIds,
     updatedStatus,
+    session,
   }: {
     userId: string;
     interviewIds: string[];
     updatedStatus: InterviewStatus;
+    session?: ClientSession;
   }): Promise<UpdateResult> => {
     return InterviewModel.updateMany(
       {
@@ -95,7 +103,8 @@ export const InterviewRepository = {
         userId,
         deletedAt: null,
       },
-      { $set: { status: updatedStatus } }
+      { $set: { status: updatedStatus } },
+      session ? { session } : {}
     );
   },
 
