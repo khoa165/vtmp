@@ -37,7 +37,7 @@ describe('JobPostingRepository', () => {
         newJobPosting.id
       );
 
-      assert(!foundJobPosting);
+      assert(foundJobPosting);
       expect(foundJobPosting).to.deep.include(mockJobPosting);
     });
   });
@@ -75,21 +75,12 @@ describe('JobPostingRepository', () => {
         newJobPosting.id
       );
 
-      assert(
-        deletedJobPosting !== null,
-        'Deleted job posting must not be null'
-      );
-      assert(
-        'deletedAt' in deletedJobPosting,
-        'Deleted job posting must have a deletedAt property'
-      );
+      assert(deletedJobPosting?.deletedAt);
 
       const timeDiff = differenceInSeconds(
         new Date(),
         deletedJobPosting.deletedAt
       );
-
-      assert(!deletedJobPosting);
       expect(timeDiff).to.lessThan(3);
     });
   });
