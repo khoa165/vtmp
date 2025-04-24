@@ -179,6 +179,35 @@ describe('InvitationRepository', () => {
     });
   });
 
+  describe('getInvitationById', () => {
+    let invitation: IInvitation;
+
+    beforeEach(async () => {
+      invitation = await InvitationRepository.createInvitation({
+        ...mockOneInvitation,
+        sender: admin.id,
+      });
+    });
+
+    it('should return null if cannot get invitation with given id', async () => {
+      const invitationFoundById =
+        await InvitationRepository.getInvitationById(getNewMongoId());
+      assert(!invitationFoundById);
+    });
+
+    it('should succeed to retrieve invitation by id', async () => {
+      const invitationFoundById = await InvitationRepository.getInvitationById(
+        invitation.id
+      );
+
+      assert(invitationFoundById);
+      checkInvitation(invitationFoundById, {
+        ...mockOneInvitation,
+        status: InvitationStatus.PENDING,
+      });
+    });
+  });
+
   describe('updateInvitationById', () => {
     let invitation: IInvitation;
 
