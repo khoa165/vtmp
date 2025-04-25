@@ -9,7 +9,7 @@ import request from 'supertest';
 import { expect } from 'chai';
 import { IUser } from '@/models/user.model';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { UserRole } from '@common/enums';
+import { UserRole } from '@vtmp/common/constants';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';

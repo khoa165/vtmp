@@ -18,7 +18,7 @@ import {
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { IApplication } from '@/models/application.model';
 import { InterviewRepository } from '@/repositories/interview.repository';
-import { InterviewStatus, InterviewType } from '@common/enums';
+import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import assert from 'assert';
 

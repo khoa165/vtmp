@@ -1,6 +1,6 @@
 import { InvitationModel } from '@/models/invitation.model';
 import { IInvitation } from '@/models/invitation.model';
-import { InvitationStatus } from '@common/enums';
+import { InvitationStatus } from '@vtmp/common/constants';
 
 export const InvitationRepository = {
   createInvitation: async (invitationData: {

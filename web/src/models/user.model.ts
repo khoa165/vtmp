@@ -1,5 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-import { UserRole } from '@common/enums';
+import { UserRole } from '@vtmp/common/constants';
 
 export interface IUser extends Document {
   _id: mongoose.Schema.Types.ObjectId;
