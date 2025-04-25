@@ -5,7 +5,7 @@ import { differenceInSeconds } from 'date-fns';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
-import { InterviewType, InterviewStatus } from '@common/enums';
+import { InterviewType, InterviewStatus } from '@vtmp/common/constants';
 
 describe('Interview Repository', () => {
   useMongoDB();

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "module": "ES2022",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "ES2022",
     "allowJs": true,
 
@@ -12,8 +12,7 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@common/*": ["../packages/common/src/*"]
+      "@/*": ["./src/*"]
     },
 
     "allowUnreachableCode": false,
@@ -41,6 +40,5 @@
       "inputGlob": "{js,jsx,mjs}",
       "outputCheck": ["js", "json", "jsx", "mjs"]
     }
-  },
-  "references": [{ "path": "../packages/common" }]
+  }
 }

@@ -1,5 +1,5 @@
 import { IUser, UserModel } from '@/models/user.model';
-import { UserRole } from '@common/enums';
+import { UserRole } from '@vtmp/common/constants';
 
 export const UserRepository = {
   createUser: async (userData: {

@@ -1,5 +1,5 @@
 import UserService from '@/services/user.service';
-import { UserRole } from '@common/enums';
+import { UserRole } from '@vtmp/common/constants';
 import { Request, Response } from 'express';
 import { z } from 'zod';
 

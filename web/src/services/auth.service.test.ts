@@ -12,9 +12,8 @@ import {
   UnauthorizedError,
 } from '@/utils/errors';
 import { assert } from 'console';
+import { UserRole } from '@vtmp/common/constants';
 import { expect } from 'chai';
-
-import { UserRole } from '@common/enums';
 
 describe('AuthService', () => {
   useMongoDB();
