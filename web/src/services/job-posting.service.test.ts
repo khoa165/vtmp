@@ -111,6 +111,10 @@ describe('JobPostingService', () => {
   });
 
   describe('getJobPostingsUserHasNotAppliedTo', () => {
+    const userIdA = getNewMongoId();
+    const userIdB = getNewMongoId();
+    let jobPostings: (IJobPosting | undefined)[];
+
     const mockMultipleJobPostings = [
       {
         linkId: getNewObjectId(),
@@ -142,36 +146,21 @@ describe('JobPostingService', () => {
       },
     ];
 
-    const userIdA = getNewMongoId();
-    const userIdB = getNewMongoId();
-    let jobPostings: IJobPosting[];
-
     beforeEach(async () => {
       jobPostings = await Promise.all(
         mockMultipleJobPostings.map((jobPosting) =>
-          JobPostingRepository.createJobPosting(jobPosting)
+          JobPostingRepository.createJobPosting({
+            jobPostingData: jobPosting,
+          })
         )
       );
     });
 
-    it('should return all job postings if the user has not applied to any of them', async () => {
-      const jobsNotAppliedByUserA =
-        await JobPostingService.getJobPostingsUserHasNotAppliedTo(userIdA);
-
-      expect(jobsNotAppliedByUserA)
-        .to.be.an('array')
-        .that.has.lengthOf(mockMultipleJobPostings.length);
-
-      expect(
-        jobsNotAppliedByUserA.map((job) => job._id?.toString())
-      ).to.have.members(jobPostings.map((jobPosting) => jobPosting.id));
-    });
-
-    it('should return an empty array if the user has applied to all available job postings', async () => {
+    it('should return an empty array if user has applied to all avaialble job postings in the system', async () => {
       await Promise.all(
         jobPostings.map((jobPosting) =>
           ApplicationRepository.createApplication({
-            jobPostingId: jobPosting.id,
+            jobPostingId: jobPosting?.id,
             userId: userIdA,
           })
         )
@@ -180,6 +169,18 @@ describe('JobPostingService', () => {
         await JobPostingService.getJobPostingsUserHasNotAppliedTo(userIdA);
 
       expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should return an exact array of job postings that matches all available job postings in the system if user has no applied to any posting ', async () => {
+      const jobsNotAppliedByUserA =
+        await JobPostingService.getJobPostingsUserHasNotAppliedTo(userIdA);
+
+      expect(jobsNotAppliedByUserA)
+        .to.be.an('array')
+        .that.has.length(mockMultipleJobPostings.length);
+      expect(
+        jobsNotAppliedByUserA.map((job) => job._id?.toString())
+      ).to.have.members(jobPostings.map((jobPosting) => jobPosting?.id));
     });
 
     it('should exclude soft-deleted job postings from the returned array', async () => {
@@ -198,9 +199,33 @@ describe('JobPostingService', () => {
         await JobPostingService.getJobPostingsUserHasNotAppliedTo(userIdA);
 
       expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
-      expect(
-        jobsNotAppliedByUserA.map((job) => job._id?.toString())
-      ).to.have.members([jobPosting4?.id]);
+      assert(jobsNotAppliedByUserA[0]);
+      expect(jobsNotAppliedByUserA[0]._id?.toString()).to.equal(
+        jobPosting4?.id
+      );
+    });
+
+    it('should not exclude a job posting from the returned array, if the user applied to that job posting, but later deleted the application associated with it', async () => {
+      const applications = await Promise.all(
+        jobPostings.map((jobPosting) =>
+          ApplicationRepository.createApplication({
+            jobPostingId: jobPosting?.id,
+            userId: userIdA,
+          })
+        )
+      );
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: applications[0]?.id,
+        userId: userIdA,
+      });
+      const jobsNotAppliedByUserA =
+        await JobPostingService.getJobPostingsUserHasNotAppliedTo(userIdA);
+
+      expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
+      assert(jobsNotAppliedByUserA[0]);
+      expect(jobsNotAppliedByUserA[0]._id?.toString()).to.equal(
+        jobPostings[0]?.id
+      );
     });
 
     it('should return all job postings that user has not applied to. Should not exclude job postings applied by another user', async () => {
@@ -224,28 +249,6 @@ describe('JobPostingService', () => {
       expect(
         jobsNotAppliedByUserA.map((job) => job._id?.toString())
       ).to.have.members([jobPosting3?.id, jobPosting4?.id]);
-    });
-
-    it('should include a job posting if the user applied to it but later deleted the application', async () => {
-      const applications = await Promise.all(
-        jobPostings.map((jobPosting) =>
-          ApplicationRepository.createApplication({
-            jobPostingId: jobPosting.id,
-            userId: userIdA,
-          })
-        )
-      );
-      await ApplicationRepository.deleteApplicationById({
-        applicationId: applications[0]?.id,
-        userId: userIdA,
-      });
-      const jobsNotAppliedByUserA =
-        await JobPostingService.getJobPostingsUserHasNotAppliedTo(userIdA);
-
-      expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
-      expect(
-        jobsNotAppliedByUserA.map((job) => job._id?.toString())
-      ).to.have.members([jobPostings[0]?.id]);
     });
   });
 });
