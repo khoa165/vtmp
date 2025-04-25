@@ -16,7 +16,7 @@ import {
   InterestLevel,
   InterviewStatus,
   InterviewType,
-} from '@common/enums';
+} from '@vtmp/common/constants';
 import {
   getNewMongoId,
   getNewObjectId,

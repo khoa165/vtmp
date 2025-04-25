@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { JobPostingLocation } from '@common/enums';
+import { JobPostingLocation } from '@vtmp/common/constants';
 
 export interface IJobPosting extends Document {
   linkId: Types.ObjectId;

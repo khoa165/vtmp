@@ -4,7 +4,7 @@ import { differenceInSeconds } from 'date-fns';
 
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { ApplicationStatus, InterestLevel } from '@common/enums';
+import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 
 describe('ApplicationRepository', () => {

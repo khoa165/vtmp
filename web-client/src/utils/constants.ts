@@ -1,4 +1,4 @@
-import { InterviewType, MentorshipRole } from '@common/enums';
+import { InterviewType, MentorshipRole } from '@vtmp/common/constants';
 
 export const rolePriority: Record<MentorshipRole, number> = {
   [MentorshipRole.PROGRAM_LEAD]: 1.0,

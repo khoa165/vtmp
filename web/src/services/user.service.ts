@@ -1,5 +1,5 @@
 import { UserRepository } from '@/repositories/user.repository';
-import { UserRole } from '@common/enums';
+import { UserRole } from '@vtmp/common/constants';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import * as R from 'remeda';
 
