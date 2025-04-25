@@ -1,5 +1,4 @@
-import * as chai from 'chai';
-import chaiSubset from 'chai-subset';
+import { expect } from 'chai';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { UserRepository } from '@/repositories/user.repository';
@@ -9,9 +8,7 @@ import { add, differenceInSeconds } from 'date-fns';
 import assert from 'assert';
 import { IInvitation } from '@/models/invitation.model';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { expect } from 'chai';
 
-chai.use(chaiSubset);
 describe('InvitationRepository', () => {
   useMongoDB();
   const nextDay = add(Date.now(), { days: 1 });
