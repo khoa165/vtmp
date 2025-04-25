@@ -6,11 +6,17 @@ import { EmailService } from '@/utils/email';
 import {
   DuplicateResourceError,
   ForbiddenError,
+  InternalServerError,
   ResourceNotFoundError,
 } from '@/utils/errors';
 import { InvitationStatus } from '@common/enums';
-import { differenceInSeconds } from 'date-fns';
+import { addDays, isBefore } from 'date-fns';
 import jwt from 'jsonwebtoken';
+import { z } from 'zod';
+
+const DecodedJWTSchema = z.object({
+  receiverEmail: z.string().email(),
+});
 
 const config = EnvConfig.get();
 export const InvitationService = {
@@ -37,21 +43,22 @@ export const InvitationService = {
         status: InvitationStatus.ACCEPTED,
       });
     if (foundAcceptedInvitation.length > 0) {
-      throw new Error(
-        'User associated with this email has already accepted the invitation'
+      throw new InternalServerError(
+        'User associated with this email has already accepted the invitation',
+        { receiverEmail, foundAcceptedInvitation }
       );
     }
 
     let newInvitation: IInvitation | null = null;
     let token: string;
 
-    const [lastestPendingInvitation] =
+    const [latestPendingInvitation] =
       await InvitationRepository.getInvitationsWithFilter({
         receiverEmail,
         status: InvitationStatus.PENDING,
       });
 
-    if (!lastestPendingInvitation) {
+    if (!latestPendingInvitation) {
       token = jwt.sign({ receiverEmail }, config.JWT_SECRET, {
         expiresIn: '1d',
       });
@@ -60,21 +67,17 @@ export const InvitationService = {
         receiverEmail,
         sender: senderId,
         token,
-        expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        expiryDate: addDays(Date.now(), 1),
       });
     } else {
-      const timeDifferenceInSeconds = Math.abs(
-        differenceInSeconds(lastestPendingInvitation.expiryDate, Date.now())
-      );
-
-      if (timeDifferenceInSeconds > 24 * 60 * 60) {
+      if (isBefore(latestPendingInvitation.expiryDate, Date.now())) {
         await InvitationRepository.updateInvitationById(
-          lastestPendingInvitation.id,
-          { expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000) }
+          latestPendingInvitation.id,
+          { expiryDate: addDays(Date.now(), 1) }
         );
       }
 
-      token = lastestPendingInvitation.token;
+      token = latestPendingInvitation.token;
     }
 
     const emailTemplate = EmailService.getInvitationEmailTemplate(
@@ -104,5 +107,32 @@ export const InvitationService = {
     );
 
     return revokedInvitation;
+  },
+
+  validateInvitation: async (token: string) => {
+    const decodedToken = jwt.verify(token, config.JWT_SECRET);
+    const { receiverEmail } = DecodedJWTSchema.parse(decodedToken);
+
+    const [foundInvitation] =
+      await InvitationRepository.getInvitationsWithFilter({
+        receiverEmail,
+        status: InvitationStatus.PENDING,
+      });
+
+    if (!foundInvitation) {
+      throw new ResourceNotFoundError('Invitation not found', {
+        token,
+        receiverEmail,
+      });
+    }
+
+    if (isBefore(foundInvitation.expiryDate, Date.now())) {
+      throw new ForbiddenError('Invitation has expired', {
+        token,
+        receiverEmail,
+      });
+    }
+
+    return foundInvitation;
   },
 };
