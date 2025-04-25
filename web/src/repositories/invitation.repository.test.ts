@@ -3,7 +3,7 @@ import { InvitationRepository } from '@/repositories/invitation.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { UserRepository } from '@/repositories/user.repository';
 import { IUser } from '@/models/user.model';
-import { InvitationStatus } from '@vtmp/common/constants';
+import { InvitationStatus } from '@/types/enums';
 import { add, differenceInSeconds } from 'date-fns';
 import assert from 'assert';
 import { IInvitation } from '@/models/invitation.model';

@@ -9,7 +9,7 @@ import {
   InternalServerError,
   ResourceNotFoundError,
 } from '@/utils/errors';
-import { InvitationStatus } from '@common/enums';
+import { InvitationStatus } from '@/types/enums';
 import { addDays, isBefore } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
