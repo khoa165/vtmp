@@ -1,8 +1,8 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 import { JobPostingLocation } from '@common/enums';
 
 export interface IJobPosting extends Document {
-  linkId: mongoose.Schema.Types.ObjectId;
+  linkId: Types.ObjectId;
   externalPostingId?: string;
   url: string;
   jobTitle: string;
@@ -11,14 +11,14 @@ export interface IJobPosting extends Document {
   datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
-  submittedBy: mongoose.Schema.Types.ObjectId;
+  submittedBy?: Types.ObjectId;
   deletedAt?: Date;
 }
 
 const JobPostingSchema = new mongoose.Schema<IJobPosting>(
   {
     linkId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Link',
       required: true,
     },
@@ -52,9 +52,8 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
       type: String,
     },
     submittedBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
     },
     deletedAt: {
       type: Date,

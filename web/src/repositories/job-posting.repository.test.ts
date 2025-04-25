@@ -1,5 +1,4 @@
-import * as chai from 'chai';
-import chaiSubset from 'chai-subset';
+import { expect } from 'chai';
 import assert from 'assert';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
@@ -8,9 +7,6 @@ import { differenceInSeconds } from 'date-fns';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { IJobPosting } from '@/models/job-posting.model';
-
-chai.use(chaiSubset);
-const { expect } = chai;
 
 describe('JobPostingRepository', () => {
   useMongoDB();
@@ -25,30 +21,36 @@ describe('JobPostingRepository', () => {
 
   describe('createJobPosting', () => {
     it('should be able to create a new job posting', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
 
-      expect(newJobPosting).to.containSubset(mockJobPosting);
+      expect(newJobPosting).to.deep.include(mockJobPosting);
     });
   });
 
   describe('getJobPostingById', () => {
     it('should be able to find a job post by id', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
       const foundJobPosting = await JobPostingRepository.getJobPostingById(
         newJobPosting.id
       );
 
       assert(foundJobPosting);
-      expect(foundJobPosting).to.containSubset(mockJobPosting);
+      expect(foundJobPosting).to.deep.include(mockJobPosting);
     });
   });
 
   describe('updateJobPostingById', () => {
     it('should be able to update detail of a job post by id', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
 
       const newUpdate = {
         jobTitle: 'Senior Software Engineer',
@@ -61,26 +63,27 @@ describe('JobPostingRepository', () => {
         newUpdate
       );
 
-      expect(updatedJobPosting).to.containSubset(newUpdate);
+      expect(updatedJobPosting).to.deep.include(newUpdate);
     });
   });
 
   describe('deleteJobPostingById', () => {
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
         newJobPosting.id
       );
 
-      assert(deletedJobPosting);
-      assert('deletedAt' in deletedJobPosting);
+      assert(deletedJobPosting?.deletedAt);
 
       const timeDiff = differenceInSeconds(
         new Date(),
         deletedJobPosting.deletedAt
       );
-
       expect(timeDiff).to.lessThan(3);
     });
 
