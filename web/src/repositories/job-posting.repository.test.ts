@@ -1,5 +1,4 @@
-import * as chai from 'chai';
-import chaiSubset from 'chai-subset';
+import { expect } from 'chai';
 import assert from 'assert';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
@@ -8,9 +7,6 @@ import { differenceInSeconds } from 'date-fns';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { IJobPosting } from '@/models/job-posting.model';
-
-chai.use(chaiSubset);
-const { expect } = chai;
 
 describe('JobPostingRepository', () => {
   useMongoDB();
@@ -25,30 +21,36 @@ describe('JobPostingRepository', () => {
 
   describe('createJobPosting', () => {
     it('should be able to create a new job posting', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
 
-      expect(newJobPosting).to.containSubset(mockJobPosting);
+      expect(newJobPosting).to.deep.include(mockJobPosting);
     });
   });
 
   describe('getJobPostingById', () => {
     it('should be able to find a job post by id', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
       const foundJobPosting = await JobPostingRepository.getJobPostingById(
         newJobPosting.id
       );
 
       assert(foundJobPosting);
-      expect(foundJobPosting).to.containSubset(mockJobPosting);
+      expect(foundJobPosting).to.deep.include(mockJobPosting);
     });
   });
 
   describe('updateJobPostingById', () => {
     it('should be able to update detail of a job post by id', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
 
       const newUpdate = {
         jobTitle: 'Senior Software Engineer',
@@ -61,33 +63,34 @@ describe('JobPostingRepository', () => {
         newUpdate
       );
 
-      expect(updatedJobPosting).to.containSubset(newUpdate);
+      expect(updatedJobPosting).to.deep.include(newUpdate);
     });
   });
 
   describe('deleteJobPostingById', () => {
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
         newJobPosting.id
       );
 
-      assert(deletedJobPosting);
-      assert('deletedAt' in deletedJobPosting);
+      assert(deletedJobPosting?.deletedAt);
 
       const timeDiff = differenceInSeconds(
         new Date(),
         deletedJobPosting.deletedAt
       );
-
       expect(timeDiff).to.lessThan(3);
     });
 
     describe('getJobPostingsUserHasNotAppliedTo', () => {
       const userIdA = getNewMongoId();
       const userIdB = getNewMongoId();
-      let jobPostings: IJobPosting[];
+      let jobPostings: (IJobPosting | undefined)[];
 
       const mockMultipleJobPostings = [
         {
@@ -123,7 +126,9 @@ describe('JobPostingRepository', () => {
       beforeEach(async () => {
         jobPostings = await Promise.all(
           mockMultipleJobPostings.map((jobPosting) =>
-            JobPostingRepository.createJobPosting(jobPosting)
+            JobPostingRepository.createJobPosting({
+              jobPostingData: jobPosting,
+            })
           )
         );
       });
@@ -132,7 +137,7 @@ describe('JobPostingRepository', () => {
         await Promise.all(
           jobPostings.map((jobPosting) =>
             ApplicationRepository.createApplication({
-              jobPostingId: jobPosting.id,
+              jobPostingId: jobPosting?.id,
               userId: userIdA,
             })
           )
@@ -152,7 +157,7 @@ describe('JobPostingRepository', () => {
           .that.has.length(mockMultipleJobPostings.length);
         expect(
           jobsNotAppliedByUserA.map((job) => job._id?.toString())
-        ).to.have.members(jobPostings.map((jobPosting) => jobPosting.id));
+        ).to.have.members(jobPostings.map((jobPosting) => jobPosting?.id));
       });
 
       it('should exclude soft-deleted job postings from the returned array', async () => {
@@ -172,17 +177,17 @@ describe('JobPostingRepository', () => {
           await JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userIdA);
 
         expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
-        expect(
-          jobsNotAppliedByUserA.map((job) => job._id?.toString())
-        ).to.have.members([jobPosting4?.id]);
+        assert(jobsNotAppliedByUserA[0]);
+        expect(jobsNotAppliedByUserA[0]._id?.toString()).to.equal(
+          jobPosting4?.id
+        );
       });
 
       it('should not exclude a job posting from the returned array, if the user applied to that job posting, but later deleted the application associated with it', async () => {
-        // Still show jobPostingA, if user creates applicationA associated with jobPostingA, but later soft-delete that application
         const applications = await Promise.all(
           jobPostings.map((jobPosting) =>
             ApplicationRepository.createApplication({
-              jobPostingId: jobPosting.id,
+              jobPostingId: jobPosting?.id,
               userId: userIdA,
             })
           )
@@ -195,9 +200,10 @@ describe('JobPostingRepository', () => {
           await JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userIdA);
 
         expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
-        expect(
-          jobsNotAppliedByUserA.map((job) => job._id?.toString())
-        ).to.have.members([jobPostings[0]?.id]);
+        assert(jobsNotAppliedByUserA[0]);
+        expect(jobsNotAppliedByUserA[0]._id?.toString()).to.equal(
+          jobPostings[0]?.id
+        );
       });
 
       it('should return all job postings that user has not applied to. Should not exclude job postings applied by another user', async () => {

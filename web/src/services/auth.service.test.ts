@@ -12,12 +12,9 @@ import {
   UnauthorizedError,
 } from '@/utils/errors';
 import { assert } from 'console';
-import * as chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import { UserRole } from '@common/enums';
+import { expect } from 'chai';
 
-chai.use(chaiAsPromised);
-const { expect } = chai;
+import { UserRole } from '@common/enums';
 
 describe('AuthService', () => {
   useMongoDB();
