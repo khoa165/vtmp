@@ -90,7 +90,7 @@ describe('JobPostingRepository', () => {
     describe('getJobPostingsUserHasNotAppliedTo', () => {
       const userIdA = getNewMongoId();
       const userIdB = getNewMongoId();
-      let jobPostings: IJobPosting[];
+      let jobPostings: (IJobPosting | undefined)[];
 
       const mockMultipleJobPostings = [
         {
@@ -126,7 +126,9 @@ describe('JobPostingRepository', () => {
       beforeEach(async () => {
         jobPostings = await Promise.all(
           mockMultipleJobPostings.map((jobPosting) =>
-            JobPostingRepository.createJobPosting(jobPosting)
+            JobPostingRepository.createJobPosting({
+              jobPostingData: jobPosting,
+            })
           )
         );
       });
@@ -135,7 +137,7 @@ describe('JobPostingRepository', () => {
         await Promise.all(
           jobPostings.map((jobPosting) =>
             ApplicationRepository.createApplication({
-              jobPostingId: jobPosting.id,
+              jobPostingId: jobPosting?.id,
               userId: userIdA,
             })
           )
@@ -155,7 +157,7 @@ describe('JobPostingRepository', () => {
           .that.has.length(mockMultipleJobPostings.length);
         expect(
           jobsNotAppliedByUserA.map((job) => job._id?.toString())
-        ).to.have.members(jobPostings.map((jobPosting) => jobPosting.id));
+        ).to.have.members(jobPostings.map((jobPosting) => jobPosting?.id));
       });
 
       it('should exclude soft-deleted job postings from the returned array', async () => {
@@ -185,7 +187,7 @@ describe('JobPostingRepository', () => {
         const applications = await Promise.all(
           jobPostings.map((jobPosting) =>
             ApplicationRepository.createApplication({
-              jobPostingId: jobPosting.id,
+              jobPostingId: jobPosting?.id,
               userId: userIdA,
             })
           )
