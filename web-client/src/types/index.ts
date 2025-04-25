@@ -4,7 +4,7 @@ import {
   MentorshipRole,
   OfferChannel,
   OfferType,
-} from '@common/enums';
+} from '@vtmp/common/constants';
 
 export interface BlogMetadata {
   name: string;
