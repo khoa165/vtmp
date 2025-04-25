@@ -21,10 +21,9 @@ import jwt from 'jsonwebtoken';
 import { describe } from 'mocha';
 import * as R from 'remeda';
 
-describe('InvitationService', () => {
+describe.only('InvitationService', () => {
   useMongoDB();
   const sandbox = useSandbox();
-  const config = EnvConfig.get();
 
   beforeEach(() => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
@@ -251,6 +250,7 @@ describe('InvitationService', () => {
 
   describe('validateInvitation', () => {
     let pendingInvitation: IInvitation;
+    const config = EnvConfig.get();
     beforeEach(async () => {
       const token = jwt.sign(
         { receiverEmail: mockOneInvitation.receiverEmail },
