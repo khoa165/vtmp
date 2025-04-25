@@ -1,7 +1,7 @@
 import mongoose, { Document } from 'mongoose';
 import { InvitationStatus } from '@vtmp/common/constants';
 
-interface IInvitation extends Document {
+export interface IInvitation extends Document {
   receiverEmail: string;
   sender: mongoose.Schema.Types.ObjectId;
   token: string;
@@ -37,6 +37,4 @@ const InvitationSchema = new mongoose.Schema<IInvitation>(
   { timestamps: true }
 );
 
-const InvitationModel = new mongoose.Model('Invitation', InvitationSchema);
-
-export default InvitationModel;
+export const InvitationModel = mongoose.model('Invitation', InvitationSchema);

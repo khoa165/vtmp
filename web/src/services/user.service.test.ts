@@ -163,7 +163,7 @@ describe('User Service', () => {
       const updatedUser = await UserService.updateUserById(user.id, updateInfo);
 
       assert(updatedUser);
-      expect(updatedUser).to.containSubset(updateInfo);
+      expect(updatedUser).to.deep.include(updateInfo);
       expect(updatedUser).to.not.have.property('encryptedPassword');
     });
   });

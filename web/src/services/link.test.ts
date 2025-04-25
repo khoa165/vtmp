@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { LinkStatus } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import LinkService from '@/services/link.service';
+import { LinkService } from '@/services/link.service';
 import assert from 'assert';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { ResourceNotFoundError } from '@/utils/errors';

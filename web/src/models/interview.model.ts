@@ -1,18 +1,25 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 
-interface IInterview extends Document {
-  applicationId: mongoose.Schema.Types.ObjectId;
+export interface IInterview extends Document {
+  applicationId: Types.ObjectId;
+  userId: Types.ObjectId;
   type: InterviewType[];
   status: InterviewStatus;
   interviewOnDate: Date;
   note?: string;
+  deletedAt?: Date;
 }
 
 const InterviewSchema = new mongoose.Schema<IInterview>({
   applicationId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Application',
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
   },
   type: {
     type: [String],
@@ -30,6 +37,9 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
   },
   note: {
     type: String,
+  },
+  deletedAt: {
+    type: Date,
   },
 });
 

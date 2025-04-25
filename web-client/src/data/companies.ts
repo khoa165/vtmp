@@ -268,4 +268,14 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
     logoFilename: 'healthenhancementsystems.png',
     maxLogoSize: 100,
   },
+  [CompanyName.SLB]: {
+    displayName: 'SLB',
+    logoFilename: 'slb.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.G_RESEARCH]: {
+    displayName: 'G-Research',
+    logoFilename: 'gresearch.png',
+    maxLogoSize: 80,
+  },
 };
