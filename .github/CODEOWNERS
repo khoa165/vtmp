@@ -1,11 +1,30 @@
 .github/ @khoa165
+.husky/ @khoa165
 .vscode/ @khoa165
+.yarn/ @khoa165
+
 cookiecutter/ @khoa165
 scripts/ @khoa165
+
+packages/common/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804
+
 web/ @khoa165
+web/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804
+
 web-client/ @khoa165
 web-client/src/blogs/content/ @khoa165
 
+.gitattributes @khoa165
 .gitignore @khoa165
+.prettierignore @khoa165
 .prettierrc @khoa165
+.yarnrc.yml @khoa165
+eslint.config.js @khoa165
+
+CODE_OF_CONDUCT.md @khoa165
+LICENSE @khoa165
+README.md @khoa165
+
 package.json @khoa165
+
+docker-compose.yml @khoa165

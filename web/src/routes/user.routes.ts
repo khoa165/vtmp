@@ -4,8 +4,12 @@ import { authenticate } from '@/middlewares/auth.middleware';
 import { wrappedHandlers } from '@/middlewares/utils';
 
 export const UserRoutes = Router();
+UserRoutes.use(wrappedHandlers([authenticate]));
 
-UserRoutes.get(
-  '/profile',
-  wrappedHandlers([authenticate, UserController.getProfile])
+UserRoutes.get('/', wrappedHandlers([UserController.getAllUsers]));
+UserRoutes.get('/:userId', wrappedHandlers([UserController.getUser]));
+UserRoutes.put('/:userId', wrappedHandlers([UserController.updateUserProfile]));
+UserRoutes.put(
+  '/:userId/role',
+  wrappedHandlers([UserController.updateUserRole])
 );

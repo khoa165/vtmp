@@ -55,7 +55,7 @@ describe('ApplicationRepository', () => {
         await ApplicationRepository.getApplicationIfExists(mockApplication_B);
 
       assert(application);
-      expect(application).to.containSubset({
+      expect(application).to.deep.include({
         jobPostingId: toMongoId(mockApplication_B.jobPostingId),
         userId: toMongoId(mockApplication_B.userId),
       });
@@ -79,11 +79,11 @@ describe('ApplicationRepository', () => {
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(2);
-      expect(applications[0]).to.containSubset({
+      expect(applications[0]).to.deep.include({
         jobPostingId: toMongoId(mockApplication_A0.jobPostingId),
         userId: toMongoId(mockApplication_A0.userId),
       });
-      expect(applications[1]).to.containSubset({
+      expect(applications[1]).to.deep.include({
         jobPostingId: toMongoId(mockApplication_A1.jobPostingId),
         userId: toMongoId(mockApplication_A1.userId),
       });
@@ -103,7 +103,7 @@ describe('ApplicationRepository', () => {
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(1);
-      expect(applications[0]).to.containSubset({
+      expect(applications[0]).to.deep.include({
         jobPostingId: toMongoId(mockApplication_A0.jobPostingId),
         userId: toMongoId(mockApplication_A0.userId),
       });
@@ -160,7 +160,7 @@ describe('ApplicationRepository', () => {
       });
 
       assert(application);
-      expect(application).to.containSubset({
+      expect(application).to.deep.include({
         jobPostingId: toMongoId(mockApplication_A1.jobPostingId),
         userId: toMongoId(mockApplication_A1.userId),
       });
@@ -216,7 +216,7 @@ describe('ApplicationRepository', () => {
         });
 
       assert(updatedApplication);
-      expect(updatedApplication).to.containSubset({
+      expect(updatedApplication).to.deep.include({
         status: ApplicationStatus.OFFER,
         referrer: 'Khoa',
         interest: InterestLevel.HIGH,

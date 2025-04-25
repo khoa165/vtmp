@@ -34,8 +34,11 @@ describe('JobPostingService', () => {
     });
 
     it('should not throw an error when a job posting is found', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
       const newUpdate = {
         jobTitle: 'Senior Software Engineer',
         companyName: 'Updated Company',
@@ -48,8 +51,10 @@ describe('JobPostingService', () => {
     });
 
     it('should be able to update detail of a job post by id', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
 
       const newUpdate = {
         jobTitle: 'Senior Software Engineer',
@@ -62,7 +67,7 @@ describe('JobPostingService', () => {
         newUpdate
       );
 
-      expect(updatedJobPosting).to.containSubset(newUpdate);
+      expect(updatedJobPosting).to.deep.include(newUpdate);
     });
   });
 
@@ -74,16 +79,21 @@ describe('JobPostingService', () => {
     });
 
     it('should not throw an error when a job posting is found', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
 
       await expect(JobPostingService.deleteJobPostingById(newJobPosting.id))
         .eventually.fulfilled;
     });
 
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
-      const newJobPosting =
-        await JobPostingRepository.createJobPosting(mockJobPosting);
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
         newJobPosting.id
       );
