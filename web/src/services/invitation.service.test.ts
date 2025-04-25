@@ -21,7 +21,7 @@ import jwt from 'jsonwebtoken';
 import { describe } from 'mocha';
 import * as R from 'remeda';
 
-describe.only('InvitationService', () => {
+describe('InvitationService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
@@ -250,11 +250,11 @@ describe.only('InvitationService', () => {
 
   describe('validateInvitation', () => {
     let pendingInvitation: IInvitation;
-    const config = EnvConfig.get();
+
     beforeEach(async () => {
       const token = jwt.sign(
         { receiverEmail: mockOneInvitation.receiverEmail },
-        config.JWT_SECRET,
+        EnvConfig.get().JWT_SECRET,
         {
           expiresIn: '1d',
         }
@@ -275,7 +275,7 @@ describe.only('InvitationService', () => {
     it('should return error message for invitation not found', async () => {
       const invalidToken = jwt.sign(
         { receiverEmail: 'not-found-email@viettech.com' },
-        config.JWT_SECRET,
+        EnvConfig.get().JWT_SECRET,
         { expiresIn: '1d' }
       );
       await expect(

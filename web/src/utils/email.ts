@@ -1,15 +1,16 @@
 import { EnvConfig } from '@/config/env';
 import nodemailer from 'nodemailer';
 
-const config = EnvConfig.get();
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  auth: {
-    user: config.GMAIL_EMAIL,
-    pass: config.GMAIL_APP_PASSWORD,
-  },
-});
+const createTransporter = () => {
+  return nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    auth: {
+      user: EnvConfig.get().GMAIL_EMAIL,
+      pass: EnvConfig.get().GMAIL_APP_PASSWORD,
+    },
+  });
+};
 
 export const EmailService = {
   getInvitationEmailTemplate: (name: string, email: string, token: string) => {
@@ -35,8 +36,9 @@ export const EmailService = {
     subject: string;
     body: string;
   }) => {
+    const transporter = createTransporter();
     const mailOptions = {
-      from: config.GMAIL_EMAIL,
+      from: EnvConfig.get().GMAIL_EMAIL,
       to: email,
       subject,
       html: body,

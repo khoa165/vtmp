@@ -18,7 +18,6 @@ const DecodedJWTSchema = z.object({
   receiverEmail: z.string().email(),
 });
 
-const config = EnvConfig.get();
 export const InvitationService = {
   getAllInvitations: async () => {
     return InvitationRepository.getInvitationsWithFilter({});
@@ -59,7 +58,7 @@ export const InvitationService = {
       });
 
     if (!latestPendingInvitation) {
-      token = jwt.sign({ receiverEmail }, config.JWT_SECRET, {
+      token = jwt.sign({ receiverEmail }, EnvConfig.get().JWT_SECRET, {
         expiresIn: '1d',
       });
 
@@ -110,7 +109,7 @@ export const InvitationService = {
   },
 
   validateInvitation: async (token: string) => {
-    const decodedToken = jwt.verify(token, config.JWT_SECRET);
+    const decodedToken = jwt.verify(token, EnvConfig.get().JWT_SECRET);
     const { receiverEmail } = DecodedJWTSchema.parse(decodedToken);
 
     const [foundInvitation] =
