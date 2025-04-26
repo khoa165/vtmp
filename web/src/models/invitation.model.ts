@@ -1,9 +1,10 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import { InvitationStatus } from '@vtmp/common/constants';
 
 export interface IInvitation extends Document {
+  _id: Schema.Types.ObjectId;
   receiverEmail: string;
-  sender: mongoose.Schema.Types.ObjectId;
+  sender: Schema.Types.ObjectId;
   token: string;
   expiryDate: Date;
   status: InvitationStatus;
@@ -16,7 +17,7 @@ const InvitationSchema = new mongoose.Schema<IInvitation>(
       required: true,
     },
     sender: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },

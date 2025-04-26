@@ -1,8 +1,9 @@
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import { JobPostingLocation } from '@vtmp/common/constants';
 
 export interface IJobPosting extends Document {
-  linkId: Types.ObjectId;
+  _id: Schema.Types.ObjectId;
+  linkId: Schema.Types.ObjectId;
   externalPostingId?: string;
   url: string;
   jobTitle: string;
@@ -11,7 +12,7 @@ export interface IJobPosting extends Document {
   datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
-  submittedBy?: Types.ObjectId;
+  submittedBy?: Schema.Types.ObjectId;
   deletedAt?: Date;
 }
 
