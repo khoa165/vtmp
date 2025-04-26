@@ -7,7 +7,7 @@ import { PeopleSortColumn } from 'src/utils/constants';
 import { mentorshipPeople } from 'src/data/people';
 import { sortBy, sumBy } from 'lodash';
 import * as R from 'remeda';
-import { MentorshipRole } from '@common/enums';
+import { MentorshipRole } from '@vtmp/common/constants';
 
 export const useMentorshipPeople = (
   year: number | 'all',

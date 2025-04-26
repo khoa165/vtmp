@@ -1,6 +1,6 @@
 import { LinkModel } from '@/models/link.model';
 import mongoose, { ClientSession } from 'mongoose';
-import { LinkStatus } from '@common/enums';
+import { LinkStatus } from '@vtmp/common/constants';
 
 const { ObjectId } = mongoose.Types;
 

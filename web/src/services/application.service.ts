@@ -5,7 +5,7 @@ import {
   ApplicationStatus,
   InterestLevel,
   InterviewStatus,
-} from '@common/enums';
+} from '@vtmp/common/constants';
 import {
   DuplicateResourceError,
   ForbiddenError,

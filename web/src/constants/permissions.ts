@@ -1,4 +1,4 @@
-import { UserRole, Permission } from '@common/enums';
+import { UserRole, Permission } from '@vtmp/common/constants';
 
 export const roleToPermissionMapping: Record<UserRole, Permission[]> = {
   [UserRole.ADMIN]: [

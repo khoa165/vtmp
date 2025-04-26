@@ -1,4 +1,4 @@
-import { MentorshipGroup, MentorshipRole } from '@common/enums';
+import { MentorshipGroup, MentorshipRole } from '@vtmp/common/constants';
 import { PeopleSortColumn, ProjectName } from './constants';
 
 export const groupDisplayName: Record<MentorshipGroup, string> = {
