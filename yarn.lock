@@ -12356,9 +12356,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vtmp-web-client@workspace:web-client":
+"@vtmp/web-client@workspace:web-client":
   version: 0.0.0-use.local
-  resolution: "vtmp-web-client@workspace:web-client"
+  resolution: "@vtmp/web-client@workspace:web-client"
   dependencies:
     "@babel/plugin-proposal-private-property-in-object": "npm:^7.21.11"
     "@emotion/react": "npm:^11.13.3"
@@ -12427,9 +12427,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"vtmp-web@workspace:web":
+"@vtmp/web@workspace:web":
   version: 0.0.0-use.local
-  resolution: "vtmp-web@workspace:web"
+  resolution: "@vtmp/web@workspace:web"
   dependencies:
     "@types/bcryptjs": "npm:^2.4.6"
     "@types/chai": "npm:^5.2.0"
