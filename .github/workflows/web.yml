@@ -26,4 +26,4 @@ jobs:
         run: yarn workspace @vtmp/common run build
 
       - name: Run test
-        run: yarn workspace vtmp-web test
+        run: yarn workspace @vtmp/web test
