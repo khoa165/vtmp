@@ -1,8 +1,8 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import { UserRole } from '@vtmp/common/constants';
 
 export interface IUser extends Document {
-  _id: mongoose.Schema.Types.ObjectId;
+  _id: Schema.Types.ObjectId;
   firstName: string;
   lastName: string;
   email: string;
