@@ -12,7 +12,7 @@ import { useOffersData } from 'src/hooks/useOffersData';
 import { peopleSortColumnDisplayName } from 'src/utils/displayName';
 import { FaArrowUpWideShort, FaArrowDownWideShort } from 'react-icons/fa6';
 import { useNavigatePreserveQueryParams } from 'src/hooks/useNavigatePreserveQueryParams';
-import { MentorshipRole } from '@common/enums';
+import { MentorshipRole } from '@vtmp/common/constants';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;

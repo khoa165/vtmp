@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { JobPostingService } from '@/services/job-posting.service';
-import { JobPostingLocation } from '@common/enums';
+import { JobPostingLocation } from '@vtmp/common/constants';
 import { getUserFromRequest } from '@/middlewares/utils';
 
 const JobPostingUpdateSchema = z.object({

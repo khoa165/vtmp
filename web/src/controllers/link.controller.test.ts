@@ -9,7 +9,7 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { LinkRepository } from '@/repositories/link.repository';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { LinkStatus } from '@common/enums';
+import { LinkStatus } from '@vtmp/common/constants';
 
 describe('LinkController', () => {
   useMongoDB();

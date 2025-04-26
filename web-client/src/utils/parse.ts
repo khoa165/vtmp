@@ -10,7 +10,7 @@ import {
 import { isSome } from 'src/utils/maybe';
 import { interviewTypeAbbreviation, MentorshipYear } from './constants';
 import { mentorshipPeople } from 'src/data/people';
-import { InterviewType } from '@common/enums';
+import { InterviewType } from '@vtmp/common/constants';
 
 interface InterviewCell {
   date: string;

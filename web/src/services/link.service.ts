@@ -1,6 +1,6 @@
+import { LinkStatus } from '@vtmp/common/constants';
 import { LinkRepository } from '@/repositories/link.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { LinkStatus } from '@common/enums';
 import { ResourceNotFoundError } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
 
