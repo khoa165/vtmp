@@ -3,6 +3,7 @@ import {
   columns,
 } from '@/components/pages/application-tracker/applications/columns';
 import { DataTable } from '@/components/pages/application-tracker/applications/data-table';
+import { getApplicationsData } from '@/components/pages/application-tracker/applications/queries';
 
 function getData(): Payment[] {
   // Fetch data from your API here.
@@ -36,6 +37,7 @@ function getData(): Payment[] {
 
 export const ApplicationsContainer = () => {
   const data = getData();
+  getApplicationsData();
 
   return (
     <div className="container mx-auto py-10">
