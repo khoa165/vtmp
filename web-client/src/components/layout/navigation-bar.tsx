@@ -29,6 +29,7 @@ export const Navbar = () => {
             width: 40,
             marginRight: 15,
           }}
+          className="inline"
         />
         Viet Tech Mentorship Program
       </NavbarBrand>
