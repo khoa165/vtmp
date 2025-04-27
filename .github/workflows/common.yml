@@ -1,4 +1,4 @@
-name: web-client
+name: common
 on:
   pull_request:
     branches:
@@ -24,6 +24,3 @@ jobs:
 
       - name: Build common package
         run: yarn workspace @vtmp/common build
-
-      - name: Build web
-        run: yarn workspace @vtmp/web-client build

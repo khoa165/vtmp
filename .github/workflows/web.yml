@@ -5,7 +5,7 @@ on:
       - main
 
 jobs:
-  build-web:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -22,11 +22,14 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Build common package
+        run: yarn workspace @vtmp/common build
+
       - name: Build web
         run: yarn workspace @vtmp/web build
 
-  test-web:
-    needs: build-web
+  test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
