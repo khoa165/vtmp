@@ -1,5 +1,5 @@
 {
-  "name": "vtmp-web",
+  "name": "@vtmp/web",
   "version": "1.0.0",
   "repository": "git@github.com:khoa165/vtmp.git",
   "author": "Viet Tech Mentorship Program <viettechmentorshipprogram@gmail.com>",
@@ -52,8 +52,8 @@
   },
   "scripts": {
     "start": "tsx src/server.ts",
-    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
     "dev": "tsx watch src/server.ts",
+    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
     "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000",
     "seed": "tsx src/scripts/index.ts"
   }
