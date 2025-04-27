@@ -6,7 +6,9 @@ export const ApplicationTrackerWrapper = () => {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Toaster />
-      <Outlet />
+      <div className="bg-background dark:bg-background">
+        <Outlet />
+      </div>
     </ThemeProvider>
   );
 };
