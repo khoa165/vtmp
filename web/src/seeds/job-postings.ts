@@ -5,7 +5,7 @@ export const loadJobPostings = async (
   links: ILink[]
 ): Promise<IJobPosting[]> => {
   const newJobPostings = links.map((link, i) => ({
-    linkId: link._id,
+    linkId: link.id,
     url: link.url,
     jobTitle: `Job title ${i}`,
     companyName: `Company ${i}`,

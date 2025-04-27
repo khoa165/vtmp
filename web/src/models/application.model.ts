@@ -1,10 +1,10 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 
 export interface IApplication extends Document {
-  _id: Schema.Types.ObjectId;
-  jobPostingId: Schema.Types.ObjectId;
-  userId: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
+  jobPostingId: Types.ObjectId;
+  userId: Types.ObjectId;
   hasApplied: boolean;
   status: ApplicationStatus;
   appliedOnDate: Date;

@@ -1,10 +1,10 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 
 export interface IInterview extends Document {
-  _id: Schema.Types.ObjectId;
-  applicationId: Schema.Types.ObjectId;
-  userId: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
+  applicationId: Types.ObjectId;
+  userId: Types.ObjectId;
   type: InterviewType[];
   status: InterviewStatus;
   interviewOnDate: Date;

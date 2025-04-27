@@ -1,12 +1,12 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 import { LinkStatus } from '@vtmp/common/constants';
 
 export interface ILink extends Document {
-  _id: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
   url: string;
   status?: LinkStatus;
   submittedOn: Date;
-  submittedBy?: Schema.Types.ObjectId;
+  submittedBy?: Types.ObjectId;
   companyName?: string;
   userNote?: string;
 }
