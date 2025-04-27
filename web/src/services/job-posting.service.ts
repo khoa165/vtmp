@@ -27,8 +27,4 @@ export const JobPostingService = {
 
     return deletedJobPosting;
   },
-
-  getJobPostingsUserHasNotAppliedTo: async (userId: string) => {
-    return JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userId);
-  },
 };

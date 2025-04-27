@@ -1,5 +1,4 @@
-import { JobPostingModel, IJobPosting } from '@/models/job-posting.model';
-import { toMongoId } from '@/testutils/mongoID.testutil';
+import { JobPostingModel } from '@/models/job-posting.model';
 import { ClientSession } from 'mongoose';
 
 export const JobPostingRepository = {
@@ -9,7 +8,7 @@ export const JobPostingRepository = {
   }: {
     jobPostingData: object;
     session?: ClientSession;
-  }): Promise<IJobPosting | undefined> => {
+  }) => {
     const jobPostings = await JobPostingModel.create([jobPostingData], {
       session: session ?? null,
     });
@@ -17,65 +16,23 @@ export const JobPostingRepository = {
     return jobPostings[0];
   },
 
-  getJobPostingById: async (jobId: string): Promise<IJobPosting | null> => {
-    return JobPostingModel.findOne({ _id: jobId, deletedAt: null }).lean();
+  getJobPostingById: async (jobId: string) => {
+    return JobPostingModel.findById(jobId).lean();
   },
 
-  updateJobPostingById: async (
-    jobId: string,
-    newUpdate: object
-  ): Promise<IJobPosting | null> => {
-    return JobPostingModel.findOneAndUpdate(
-      { _id: jobId, deletedAt: null },
+  updateJobPostingById: async (jobId: string, newUpdate: object) => {
+    return JobPostingModel.findByIdAndUpdate(
+      jobId,
       { $set: newUpdate },
       { new: true }
     ).lean();
   },
 
-  deleteJobPostingById: async (jobId: string): Promise<IJobPosting | null> => {
-    return JobPostingModel.findOneAndUpdate(
-      { _id: jobId, deletedAt: null },
+  deleteJobPostingById: async (jobId: string) => {
+    return JobPostingModel.findByIdAndUpdate(
+      jobId,
       { $set: { deletedAt: new Date() } },
       { new: true }
     ).lean();
-  },
-
-  getJobPostingsUserHasNotAppliedTo: async (
-    userId: string
-  ): Promise<IJobPosting[]> => {
-    return JobPostingModel.aggregate([
-      {
-        // Perform a filtered join between JobPosting and Application collection
-        $lookup: {
-          from: 'applications',
-          let: { jobId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$jobPostingId', '$$jobId'] },
-                    { $eq: ['$userId', toMongoId(userId)] },
-                    { $not: ['$deletedAt'] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'userApplication',
-        },
-      },
-      {
-        $match: {
-          userApplication: { $size: 0 },
-          deletedAt: null,
-        },
-      },
-      {
-        $project: {
-          userApplication: 0,
-        },
-      },
-    ]);
   },
 };
