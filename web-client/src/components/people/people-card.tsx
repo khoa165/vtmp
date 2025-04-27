@@ -50,7 +50,6 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
     [terms, year]
   );
   const { mentors, projectAdvisors, teamName, teammates } = currentTerm ?? {};
-  const title = currentTerm?.title ?? professionalTitle;
   const roles = currentTerm?.roles ?? terms.at(-1)?.roles;
   const offers = useMemo(
     () =>
@@ -155,7 +154,9 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
           </CardSubtitle>
         )}
         <hr />
-        <CardSubtitle className="people-title">{title}</CardSubtitle>
+        <CardSubtitle className="people-title">
+          {professionalTitle}
+        </CardSubtitle>
         {/* <CardSubtitle>{hobbies}</CardSubtitle> */}
       </CardBody>
     </Card>
