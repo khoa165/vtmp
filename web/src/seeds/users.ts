@@ -1,11 +1,13 @@
 import { IUser, UserModel } from '@/models/user.model';
+import bcrypt from 'bcryptjs';
 
 export const loadUsers = async (count: number): Promise<IUser[]> => {
+  const encryptedPassword = await bcrypt.hash('password', 10);
   const newUsers = Array.from({ length: count }, (_, i) => ({
     firstName: `User${i}`,
     lastName: `Last${i}`,
     email: `abc-user${i}-vtmp@gmail.com`,
-    encryptedPassword: 'password',
+    encryptedPassword,
   }));
 
   const users = await UserModel.insertMany(newUsers);
