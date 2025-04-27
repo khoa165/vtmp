@@ -1,5 +1,4 @@
 import React from 'react';
-import 'src/styles/scss/layout.scss';
 
 interface AvatarProps extends React.ComponentPropsWithoutRef<'img'> {
   url: string;

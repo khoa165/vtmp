@@ -19,8 +19,10 @@ export default defineConfig({
       exclude: [],
     },
   },
-  assetsInclude: ['src/**/*.md'],
+  // assetsInclude: ['src/**/*.md'],
   resolve: {
+    // https://stackoverflow.com/a/75451488
+    preserveSymlinks: true,
     alias: {
       src: '/src',
       '@': path.resolve(__dirname, './src'),

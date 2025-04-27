@@ -1,12 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import 'src/styles/scss/people.scss';
 import { DEFAULT_ROLES, getRoleDisplayName } from 'src/utils/data';
-import {
-  MentorshipYear,
-  PeopleSortColumn,
-  yearDisplay,
-} from 'src/utils/constants';
+import { PeopleSortColumn } from 'src/utils/constants';
 import { PeopleGrid } from './people-grid';
 import { Autocomplete, Button, Checkbox, TextField } from '@mui/material';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
@@ -16,13 +11,13 @@ import { useOffersData } from 'src/hooks/useOffersData';
 import { peopleSortColumnDisplayName } from 'src/utils/displayName';
 import { FaArrowUpWideShort, FaArrowDownWideShort } from 'react-icons/fa6';
 import { useNavigatePreserveQueryParams } from 'src/hooks/useNavigatePreserveQueryParams';
-import { MentorshipRole } from '@common/enums';
+import { MentorshipRole } from '@vtmp/common/constants';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 interface PeoplePageProps {
-  year: number;
+  year: number | 'all';
 }
 
 export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
@@ -52,7 +47,7 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
     getSortColumn(filterParams.get('sort'))
   );
   const [sortDescending, setSortDescending] = useState(
-    filterParams.get('direction')?.toLowerCase() === 'desc'
+    (filterParams.get('direction')?.toLowerCase() ?? 'desc') === 'desc'
   );
 
   const onChangeSort = (_event, value) => {
@@ -104,10 +99,13 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
     });
   };
 
-  const mentorshipYears = useMemo(
-    () => Object.keys(MentorshipYear).map((y) => yearDisplay[y] as number),
-    []
-  );
+  const mentorshipYears = ['all' as const, 2023, 2024, 2025];
+  const yearDisplay = (year: (typeof mentorshipYears)[number]) => {
+    if (year === 'all') {
+      return 'All Years';
+    }
+    return year.toString();
+  };
 
   return (
     <div id="people-page">
@@ -140,9 +138,9 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
         <div className="break d-block d-xl-none"></div>
         <Autocomplete
           className="year-control"
-          sx={{ width: 90 }}
+          sx={{ width: 125 }}
           options={mentorshipYears}
-          getOptionLabel={(option) => option.toString()}
+          getOptionLabel={(option) => yearDisplay(option)}
           renderInput={(params) => <TextField {...params} label="Year" />}
           defaultValue={year}
           onChange={onChangeYear}
@@ -167,6 +165,11 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
       {totalOffers >= 10 && (
         <h3 className="achievement-text mt-3 text-center text-green">
           {year} cohort achievements so far: {totalOffers} offers
+        </h3>
+      )}
+      {year === 'all' && (
+        <h3 className="achievement-text mt-3 text-center text-green">
+          Total community members: {people.length} people
         </h3>
       )}
       <PeopleGrid

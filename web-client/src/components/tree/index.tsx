@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { TreeCard } from 'src/components/tree/tree-card';
 import { allBlogsFilepaths } from 'src/blogs/metadata';
 import { getFileName } from 'src/utils/file';
-import 'src/styles/scss/tree.scss';
 import { BlogFileMapping } from 'src/types';
 
 interface TreeContainerProps {

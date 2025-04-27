@@ -6,7 +6,7 @@ import { UserRepository } from '@/repositories/user.repository';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { assert } from 'console';
-import { UserRole } from '@common/enums';
+import { UserRole } from '@vtmp/common/constants';
 import { IUser } from '@/models/user.model';
 
 describe('User Service', () => {
@@ -163,7 +163,7 @@ describe('User Service', () => {
       const updatedUser = await UserService.updateUserById(user.id, updateInfo);
 
       assert(updatedUser);
-      expect(updatedUser).to.containSubset(updateInfo);
+      expect(updatedUser).to.deep.include(updateInfo);
       expect(updatedUser).to.not.have.property('encryptedPassword');
     });
   });

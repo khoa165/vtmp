@@ -4,10 +4,11 @@ import {
   MentorshipRole,
   OfferChannel,
   OfferType,
-} from '@common/enums';
+} from '@vtmp/common/constants';
 
 export interface BlogMetadata {
   name: string;
+  filepath: string;
   title: string;
   authors: string[];
   contributors: string[];
@@ -37,7 +38,6 @@ export interface MentorshipTerm {
   offers?: MentorshipOffer[];
   teamName?: string;
   teamNumber?: number;
-  teamRanking?: number;
   teammates?: string[];
   mentors?: string[];
   projectAdvisors?: string[];
@@ -45,8 +45,10 @@ export interface MentorshipTerm {
 
 export interface MentorshipPerson {
   name: string;
+  firstLast: string;
   alias: string;
   trackingName: string;
+  professionalTitle: string;
   hobbies: string;
   avatar: string;
   terms: MentorshipTerm[];

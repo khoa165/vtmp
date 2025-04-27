@@ -8,7 +8,7 @@ import {
   MentorshipRole,
   OfferChannel,
   OfferType,
-} from '@common/enums';
+} from '@vtmp/common/constants';
 
 export const getName = (alias: string): string => mentorshipPeople[alias].name;
 
@@ -33,7 +33,7 @@ export const isHiddenRole = (
 ): boolean =>
   role === MentorshipRole.PROGRAM_FOUNDER ||
   (role === MentorshipRole.SWE_LEAD &&
-    roles.includes(MentorshipRole.PROGRAM_MANAGER));
+    roles.includes(MentorshipRole.PROGRAM_LEAD));
 
 export const getGroupDisplayName = (group: MentorshipGroup): string =>
   groupDisplayName[group];
@@ -77,9 +77,7 @@ const isLeadSubsetRole = (person: MentorshipPerson, year: number) =>
   );
 
 const isProgramManager = (person: MentorshipPerson, year: number) =>
-  Boolean(
-    getTerm(person, year)?.roles?.includes(MentorshipRole.PROGRAM_MANAGER)
-  );
+  Boolean(getTerm(person, year)?.roles?.includes(MentorshipRole.PROGRAM_LEAD));
 
 export const doesPersonHaveRoleInYear = (
   person: MentorshipPerson,
@@ -112,7 +110,7 @@ export const isReturnOfferForNewGrad = (offer: MentorshipOffer) =>
 export const getPersonPriorityInYear = (
   person: MentorshipPerson,
   year: number
-) => min(getTerm(person, year)?.roles.map(getRolePriority)) ?? 5;
+): number => min(getTerm(person, year)?.roles.map(getRolePriority)) ?? 5;
 
 export const DEFAULT_ROLES = [
   MentorshipRole.SWE_PROGRAM_LEAD,
