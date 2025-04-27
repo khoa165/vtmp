@@ -21,6 +21,9 @@ import { Playground } from '@/components/playground';
 import { PageWithSidebar } from '@/components/layout/page-with-sidebar';
 import { LinkSharing } from '@/components/pages/application-tracker/links/link-sharing';
 import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
+import UserManagement from '@/components/pages/admins/users/user-management';
+import JobPostings from '@/components/pages/application-tracker/job-postings/job-postings';
+import Applications from '@/components/pages/application-tracker/applications/applications';
 
 // const darkTheme = createTheme({
 //   palette: {
@@ -72,9 +75,9 @@ export const App = () => {
         </Route>
         <Route element={<PageWithSidebar />}>
           <Route path="/link-sharing" element={<LinkSharing />} />
-          <Route path="/job-postings" element={<LinkSharing />} />
-          <Route path="/user-management" element={<LinkSharing />} />
-          <Route path="/application-tracker" element={<LinkSharing />} />
+          <Route path="/job-postings" element={<JobPostings />} />
+          <Route path="/user-management" element={<UserManagement />} />
+          <Route path="/application-tracker" element={<Applications />} />
         </Route>
         <Route path="/*" element={<>404</>} />
       </Routes>
