@@ -51,11 +51,7 @@ export const InternalToolsSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  data-no-hover
-                  className="[data-no-hover]:hover:bg-transparent"
-                >
+                <SidebarMenuButton asChild>
                   <a href="/application-tracker" className="w-full">
                     <VTMPLogo />
                     <JobTrackrLogo />
