@@ -8,7 +8,7 @@ export const PageWithSidebar = () => {
   return (
     <SidebarProvider defaultOpen={state}>
       <InternalToolsSidebar />
-      <main>
+      <main className="flex-1">
         <Outlet />
       </main>
     </SidebarProvider>

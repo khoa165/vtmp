@@ -1,7 +1,5 @@
 import React from 'react';
 
-const JobPostings = () => {
-  return <div>JobPostings</div>;
+export const JobPostingPage = () => {
+  return <div>JobPostingPage</div>;
 };
-
-export default JobPostings;

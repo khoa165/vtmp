@@ -1,4 +1,4 @@
-@import 'tailwindcss' important;
+@import 'tailwindcss';
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
@@ -43,16 +43,17 @@
     rgba(248, 255, 106, 1) 80%,
     rgb(75, 43, 43) 100%
   );
-  --vtmp-green: #a3f890;
+  --vtmp-mint: #66ffcc;
   --vtmp-yellow: #f8ff6a;
-  --vtmp-pink: #f49dff;
+  --vtmp-black: #333333;
   --vtmp-white: #fefefe;
   --vtmp-light-grey: #d1d1d1;
-  --vtmp-brown: #caab94;
-  --vtmp-blue: #a2bff0;
-  --vtmp-orange: #feb584;
-  --vtmp-mint: #66ffcc;
   --vtmp-dark-grey: #767676;
+  --vtmp-pink: #f49dff;
+  --vtmp-orange: #feb584;
+  --vtmp-blue: #a2bff0;
+  --vtmp-brown: #caab94;
+  --vtmp-green: #a3f890;
 }
 
 .dark {
@@ -136,6 +137,7 @@
   --color-vtmp-orange: var(--vtmp-orange);
   --color-vtmp-mint: var(--vtmp-mint);
   --color-vtmp-dark-grey: var(--vtmp-dark-grey);
+  --border-vtmp-orange: var(--vtmp-orange);
 }
 
 .rainbow-gradient1 {
@@ -171,13 +173,4 @@
   background-image:
     radial-gradient(at 86% 89%, hsla(0, 0%, 20%, 1) 0px, transparent 50%),
     radial-gradient(at 0% 0%, hsla(62, 100%, 70%, 1) 0px, transparent 50%);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
 }

@@ -5,9 +5,6 @@ import { PeopleContainer } from 'src/components/people';
 import { StatsContainer } from 'src/components/stats';
 import { ProjectsContainer } from 'src/components/projects';
 import { SummaryContainer } from 'src/components/summary';
-import 'src/styles/scss/app.scss';
-// import { ThemeProvider, createTheme } from '@mui/material/styles';
-// import CssBaseline from '@mui/material/CssBaseline';
 // import { allBlogsFilepaths, allBlogsMetadata } from 'src/blogs/metadata';
 // import { buildFileMetadata } from 'src/utils/file';
 import { BlogFileMapping } from 'src/types';
@@ -19,17 +16,12 @@ import { Mentorship2025Apply } from 'src/components/apply';
 import { Mentorship2025Proposal } from './proposal';
 import { Playground } from '@/components/playground';
 import { PageWithSidebar } from '@/components/layout/page-with-sidebar';
-import { LinkSharing } from '@/components/pages/application-tracker/links/link-sharing';
 import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
-import UserManagement from '@/components/pages/admins/users/user-management';
-import JobPostings from '@/components/pages/application-tracker/job-postings/job-postings';
-import Applications from '@/components/pages/application-tracker/applications/applications';
-
-// const darkTheme = createTheme({
-//   palette: {
-//     mode: 'dark',
-//   },
-// });
+import { UserInvitationPage } from '@/components/pages/admins/users/user-invitation';
+import { JobPostingPage } from '@/components/pages/application-tracker/job-postings/job-postings';
+import { ApplicationPage } from '@/components/pages/application-tracker/applications/applications';
+import { PageWithToast } from '@/components/layout/page-with-toast';
+import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 
 export const App = () => {
   useEffect(() => {
@@ -73,11 +65,14 @@ export const App = () => {
             <Route path="/playground" element={<Playground />} />
           </Route>
         </Route>
-        <Route element={<PageWithSidebar />}>
-          <Route path="/link-sharing" element={<LinkSharing />} />
-          <Route path="/job-postings" element={<JobPostings />} />
-          <Route path="/user-management" element={<UserManagement />} />
-          <Route path="/application-tracker" element={<Applications />} />
+        <Route element={<PageWithToast />}>
+          <Route path="/playground" element={<Playground />} />
+          <Route element={<PageWithSidebar />}>
+            <Route path="/link-sharing" element={<LinksPage />} />
+            <Route path="/job-postings" element={<JobPostingPage />} />
+            <Route path="/user-invitation" element={<UserInvitationPage />} />
+            <Route path="/application-tracker" element={<ApplicationPage />} />
+          </Route>
         </Route>
         <Route path="/*" element={<>404</>} />
       </Routes>

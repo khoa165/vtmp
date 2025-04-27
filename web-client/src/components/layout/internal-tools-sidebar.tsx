@@ -23,7 +23,7 @@ export const InternalToolsSidebar = () => {
   const items = [
     {
       title: 'Users',
-      url: '/user-management',
+      url: '/user-invitation',
       icon: ShieldUser,
     },
     {
