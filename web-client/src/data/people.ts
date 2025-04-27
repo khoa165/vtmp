@@ -4,7 +4,7 @@ import {
   MentorshipRole,
   OfferChannel,
   OfferType,
-} from '@common/enums';
+} from '@vtmp/common/constants';
 import { PeopleName, ProjectName } from '@/utils/constants';
 
 export const mentorshipPeople: Record<string, MentorshipPerson> = {
@@ -1245,7 +1245,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Hoang',
     alias: PeopleName.THUC_ANH,
     trackingName: 'Thục Anh',
-    professionalTitle: 'SWE Intern @ Palantir + Microsoft',
+    professionalTitle: 'SWE Intern @ Palantir',
     hobbies: 'cooking, embroidery, travel',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thucanh.jpg',
@@ -1298,7 +1298,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
       {
         year: 2025,
-        title: 'SWE Intern @ Palantir + Microsoft',
+        title: 'SWE Intern @ Palantir',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],
@@ -2191,6 +2191,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Student @ Rice',
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
+          {
+            name: CompanyName.G_RESEARCH,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-04-15',
+          },
+          {
+            name: CompanyName.SLB,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+            date: '2025-04-10',
+          },
           {
             name: CompanyName.AMAZON,
             type: OfferType.INTERNSHIP,

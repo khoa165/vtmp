@@ -3,9 +3,7 @@ import { beforeEach, describe } from 'mocha';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import app from '@/app';
 import request from 'supertest';
-import * as chai from 'chai';
 import { expect } from 'chai';
-import chaiSubset from 'chai-subset';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
@@ -15,8 +13,8 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { differenceInSeconds } from 'date-fns';
+import assert from 'assert';
 
-chai.use(chaiSubset);
 describe('JobPostingController', () => {
   useMongoDB();
   const sandbox = useSandbox();
@@ -34,9 +32,11 @@ describe('JobPostingController', () => {
       companyName: 'Example Company',
       submittedBy: getNewObjectId(),
     };
-    const newJobPosting = await JobPostingRepository.createJobPosting(
-      mockJobPosting
-    );
+    const newJobPosting = await JobPostingRepository.createJobPosting({
+      jobPostingData: mockJobPosting,
+    });
+    assert(newJobPosting);
+
     jobId = newJobPosting.id;
   });
 
@@ -70,7 +70,7 @@ describe('JobPostingController', () => {
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.containSubset(newJobPostingUpdate);
+      expect(res.body.data).to.deep.include(newJobPostingUpdate);
     });
   });
 

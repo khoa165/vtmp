@@ -8,7 +8,7 @@ import {
   MentorshipRole,
   OfferChannel,
   OfferType,
-} from '@common/enums';
+} from '@vtmp/common/constants';
 
 export const getName = (alias: string): string => mentorshipPeople[alias].name;
 

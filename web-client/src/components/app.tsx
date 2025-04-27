@@ -18,7 +18,6 @@ import { TreeContainer } from 'src/components/tree';
 import { Mentorship2025Apply } from 'src/components/apply';
 import { Mentorship2025Proposal } from './proposal';
 import { Playground } from '@/components/playground';
-import { ApplicationTrackerLanding } from '@/components/application-tracker/pages/landing';
 import LoginPage from '@/components/authentication/login';
 
 const darkTheme = createTheme({
@@ -69,10 +68,7 @@ export const App = () => {
               <Route path="/stats/*" element={<StatsContainer />} />
               <Route path="/playground" element={<Playground />} />
             </Route>
-            <Route
-              path="/application-tracker"
-              element={<ApplicationTrackerLanding />}
-            />
+
             <Route path="/login" element={<LoginPage />} />
             <Route path="/*" element={<LandingContainer />} />
           </Routes>
