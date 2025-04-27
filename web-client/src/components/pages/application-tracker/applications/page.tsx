@@ -11,13 +11,13 @@ function getData(): Payment[] {
       id: '728ed52f',
       amount: 100,
       status: 'pending',
-      email: 'm@example.com',
+      email: 'mai@example.com',
     },
     {
       id: '728ed52f',
       amount: 100,
       status: 'pending',
-      email: 'm@example.com',
+      email: 'mo@example.com',
     },
     {
       id: '728ed52f',
@@ -29,7 +29,7 @@ function getData(): Payment[] {
       id: '728ed52f',
       amount: 100,
       status: 'pending',
-      email: 'm@example.com',
+      email: 'son@example.com',
     },
   ];
 }

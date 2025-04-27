@@ -18,7 +18,7 @@ import { Playground } from '@/components/playground';
 import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
 import { ApplicationTrackerWrapper } from '@/components/layout/application-tracker-wrapper';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
-import ApplicationPage from '@/components/pages/application-tracker/applications/application-page';
+import { ApplicationPage } from '@/components/pages/application-tracker/applications/application-page';
 
 export const App = () => {
   useEffect(() => {

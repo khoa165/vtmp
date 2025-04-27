@@ -25,7 +25,7 @@ export interface Payment {
 export const columns: ColumnDef<Payment>[] = [
   {
     accessorKey: 'status',
-    header: 'Status',
+    header: 'Somestatus',
   },
   {
     accessorKey: 'email',
@@ -104,5 +104,4 @@ export const columns: ColumnDef<Payment>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  // ...
 ];
