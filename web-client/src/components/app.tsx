@@ -18,7 +18,7 @@ import { Playground } from '@/components/playground';
 import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
 import { ApplicationTrackerWrapper } from '@/components/layout/application-tracker-wrapper';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
-import { ApplicationPage } from '@/components/pages/application-tracker/applications/application-page';
+import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
 
 export const App = () => {
   useEffect(() => {
@@ -64,7 +64,7 @@ export const App = () => {
         <Route element={<ApplicationTrackerWrapper />}>
           <Route path="/playground" element={<Playground />} />
           <Route path="/link-sharing" element={<LinksPage />} />
-          <Route path="/application-tracker" element={<ApplicationPage />} />
+          <Route path="/application-tracker" element={<ApplicationsPage />} />
         </Route>
         <Route path="/*" element={<LandingContainer />} />
       </Routes>

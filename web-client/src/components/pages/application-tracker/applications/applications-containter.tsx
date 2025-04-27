@@ -34,7 +34,7 @@ function getData(): Payment[] {
   ];
 }
 
-export default function DemoPage() {
+export const ApplicationsContainer = () => {
   const data = getData();
 
   return (
@@ -42,4 +42,4 @@ export default function DemoPage() {
       <DataTable columns={columns} data={data} />
     </div>
   );
-}
+};

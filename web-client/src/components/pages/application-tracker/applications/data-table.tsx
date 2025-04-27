@@ -1,10 +1,6 @@
-'use client';
-
 import { Button } from '@/components/base/button';
 import { Input } from '@/components/base/input';
-
 import * as React from 'react';
-
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -17,14 +13,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/base/dropdown-menu';
-
 import {
   Table,
   TableBody,
