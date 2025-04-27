@@ -6,8 +6,6 @@ import { StatsContainer } from 'src/components/stats';
 import { ProjectsContainer } from 'src/components/projects';
 import { SummaryContainer } from 'src/components/summary';
 import 'src/styles/scss/app.scss';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 // import { allBlogsFilepaths, allBlogsMetadata } from 'src/blogs/metadata';
 // import { buildFileMetadata } from 'src/utils/file';
 import { BlogFileMapping } from 'src/types';
@@ -18,12 +16,8 @@ import { TreeContainer } from 'src/components/tree';
 import { Mentorship2025Apply } from 'src/components/apply';
 import { Mentorship2025Proposal } from './proposal';
 import { Playground } from '@/components/playground';
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-});
+import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
+import { ApplicationTrackerWrapper } from '@/components/layout/application-tracker-wrapper';
 
 export const App = () => {
   useEffect(() => {
@@ -42,35 +36,35 @@ export const App = () => {
   }, []);
 
   return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <div id="mentorship-website">
-        <Router>
-          <Routes>
-            <Route path="/apply" element={<Mentorship2025Apply />} />
-            <Route path="/apply-pd" element={<Mentorship2025Apply />} />
-            <Route path="/proposal" element={<Mentorship2025Proposal />} />
-            <Route element={<PageWithNavigation />}>
-              <Route path="/summary" element={<SummaryContainer />} />
-              <Route path="/people/*" element={<PeopleContainer />} />
+    <Router>
+      <Routes>
+        <Route element={<VTMPWrapper />}>
+          <Route path="/apply" element={<Mentorship2025Apply />} />
+          <Route path="/apply-pd" element={<Mentorship2025Apply />} />
+          <Route path="/proposal" element={<Mentorship2025Proposal />} />
+          <Route element={<PageWithNavigation />}>
+            <Route path="/summary" element={<SummaryContainer />} />
+            <Route path="/people/*" element={<PeopleContainer />} />
+            <Route
+              path="/resources"
+              element={<TreeContainer metadata={metadata} />}
+            />
+            {metadata != null && (
               <Route
-                path="/resources"
-                element={<TreeContainer metadata={metadata} />}
+                path="resources/:filename"
+                element={<BlogContainer metadata={metadata} />}
               />
-              {metadata != null && (
-                <Route
-                  path="resources/:filename"
-                  element={<BlogContainer metadata={metadata} />}
-                />
-              )}
-              <Route path="/projects" element={<ProjectsContainer />} />
-              <Route path="/stats/*" element={<StatsContainer />} />
-              <Route path="/playground" element={<Playground />} />
-            </Route>
-            <Route path="/*" element={<LandingContainer />} />
-          </Routes>
-        </Router>
-      </div>
-    </ThemeProvider>
+            )}
+            <Route path="/projects" element={<ProjectsContainer />} />
+            <Route path="/stats/*" element={<StatsContainer />} />
+            <Route path="/playground" element={<Playground />} />
+          </Route>
+        </Route>
+      </Routes>
+      <Route element={<ApplicationTrackerWrapper />}>
+        <Route path="/playground" element={<LinkSharing />} />
+      </Route>
+      <Route path="/*" element={<LandingContainer />} />
+    </Router>
   );
 };
