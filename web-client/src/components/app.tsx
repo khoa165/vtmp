@@ -18,6 +18,8 @@ import { TreeContainer } from 'src/components/tree';
 import { Mentorship2025Apply } from 'src/components/apply';
 import { Mentorship2025Proposal } from './proposal';
 import { Playground } from '@/components/playground';
+import { Toaster } from '@/components/base/sonner';
+import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 
 const darkTheme = createTheme({
   palette: {
@@ -45,6 +47,7 @@ export const App = () => {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <div id="mentorship-website">
+        <Toaster richColors />
         <Router>
           <Routes>
             <Route path="/apply" element={<Mentorship2025Apply />} />
@@ -66,6 +69,7 @@ export const App = () => {
               <Route path="/projects" element={<ProjectsContainer />} />
               <Route path="/stats/*" element={<StatsContainer />} />
               <Route path="/playground" element={<Playground />} />
+              <Route path="/link-sharing" element={<LinksPage />} />
             </Route>
             <Route path="/*" element={<LandingContainer />} />
           </Routes>
