@@ -272,9 +272,9 @@ function SidebarTrigger({
       {...props}
     >
       {open ? (
-        <PanelLeftOpenIcon size={50} />
-      ) : (
         <PanelLeftCloseIcon size={50} />
+      ) : (
+        <PanelLeftOpenIcon size={50} />
       )}
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
@@ -472,7 +472,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
     <li
       data-slot="sidebar-menu-item"
       data-sidebar="menu-item"
-      className={cn('group/menu-item relative', className)}
+      className={cn('group/menu-item relative w-full', className)}
       {...props}
     />
   );

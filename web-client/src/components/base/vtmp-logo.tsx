@@ -2,7 +2,7 @@ import React from 'react';
 
 export const VTMPLogo = () => {
   return (
-    <a href="/" className="w-fit flex justify-center items-center p-2 border-2">
+    <div className="vtmplogo-container">
       <svg
         width="1rem"
         height="1rem"
@@ -30,6 +30,6 @@ export const VTMPLogo = () => {
           </linearGradient>
         </defs>
       </svg>
-    </a>
+    </div>
   );
 };

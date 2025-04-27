@@ -18,6 +18,7 @@ import {
 } from '@/components/base/sidebar';
 import { VTMPLogo } from '@/components/base/vtmp-logo';
 import { UserLogo } from '@/components/base/user-logo';
+import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
 export const InternalToolsSidebar = () => {
   const items = [
     {
@@ -49,7 +50,19 @@ export const InternalToolsSidebar = () => {
           {/* <SidebarGroupLabel>Application</SidebarGroupLabel> */}
           <SidebarGroupContent>
             <SidebarMenu>
-              <VTMPLogo />
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  data-no-hover
+                  className="[data-no-hover]:hover:bg-transparent"
+                >
+                  <a href="/application-tracker" className="w-full">
+                    <VTMPLogo />
+                    <JobTrackrLogo />
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
