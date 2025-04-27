@@ -136,6 +136,7 @@
   --color-vtmp-orange: var(--vtmp-orange);
   --color-vtmp-mint: var(--vtmp-mint);
   --color-vtmp-dark-grey: var(--vtmp-dark-grey);
+  --border-vtmp-orange: var(--vtmp-orange);
 }
 
 .rainbow-gradient1 {
@@ -171,4 +172,14 @@
   background-image:
     radial-gradient(at 86% 89%, hsla(0, 0%, 20%, 1) 0px, transparent 50%),
     radial-gradient(at 0% 0%, hsla(62, 100%, 70%, 1) 0px, transparent 50%);
+}
+
+body {
+  background-color: yellow;
+}
+
+@layer base {
+  body {
+    background-color: yellow;
+  }
 }

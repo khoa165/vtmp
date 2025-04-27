@@ -5,7 +5,6 @@ import { PeopleContainer } from 'src/components/people';
 import { StatsContainer } from 'src/components/stats';
 import { ProjectsContainer } from 'src/components/projects';
 import { SummaryContainer } from 'src/components/summary';
-import 'src/styles/scss/app.scss';
 // import { allBlogsFilepaths, allBlogsMetadata } from 'src/blogs/metadata';
 // import { buildFileMetadata } from 'src/utils/file';
 import { BlogFileMapping } from 'src/types';
@@ -18,6 +17,7 @@ import { Mentorship2025Proposal } from './proposal';
 import { Playground } from '@/components/playground';
 import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
 import { ApplicationTrackerWrapper } from '@/components/layout/application-tracker-wrapper';
+import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 
 export const App = () => {
   useEffect(() => {
@@ -39,6 +39,7 @@ export const App = () => {
     <Router>
       <Routes>
         <Route element={<VTMPWrapper />}>
+          <Route path="/" element={<LandingContainer />} />
           <Route path="/apply" element={<Mentorship2025Apply />} />
           <Route path="/apply-pd" element={<Mentorship2025Apply />} />
           <Route path="/proposal" element={<Mentorship2025Proposal />} />
@@ -57,14 +58,14 @@ export const App = () => {
             )}
             <Route path="/projects" element={<ProjectsContainer />} />
             <Route path="/stats/*" element={<StatsContainer />} />
-            <Route path="/playground" element={<Playground />} />
           </Route>
         </Route>
+        <Route element={<ApplicationTrackerWrapper />}>
+          <Route path="/playground" element={<Playground />} />
+          <Route path="/link-sharing" element={<LinksPage />} />
+        </Route>
+        <Route path="/*" element={<LandingContainer />} />
       </Routes>
-      <Route element={<ApplicationTrackerWrapper />}>
-        <Route path="/playground" element={<LinkSharing />} />
-      </Route>
-      <Route path="/*" element={<LandingContainer />} />
     </Router>
   );
 };

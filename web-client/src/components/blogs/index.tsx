@@ -5,7 +5,6 @@ import { Container } from 'reactstrap';
 import { removeMetadata } from 'src/utils/file';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import rehypeRaw from 'rehype-raw';
-import 'src/styles/scss/blogs.scss';
 import { BlogFileMapping } from 'src/types';
 
 interface BlogContainerProps {
