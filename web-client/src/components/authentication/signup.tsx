@@ -21,7 +21,7 @@ const passwordMessage = [
   '5. At least 1 number',
 ];
 
-const passwordStrengthColor = ['(--vtmp-orange)', '(--vtmp-green)'];
+const passwordStrengthColor = ['--vtmp-orange', '--vtmp-green'];
 const passwordStrength = ['Weak', 'Strong'];
 
 const isPasswordValid = (password: string) =>
@@ -139,7 +139,7 @@ const SignUpPage = () => {
 
                   {passwordInput !== '' ? (
                     <div
-                      className={`flex flex-row gap-4 border-2 border-red-50 rounded-md text-${passwordStrengthColor[+isPasswordStrong]} p-4 mt-2`}
+                      className={`flex flex-row gap-4 border-2 border-(${passwordStrengthColor[+isPasswordStrong]}) rounded-md text-(${passwordStrengthColor[+isPasswordStrong]}) p-3 mt-2`}
                     >
                       {!isPasswordStrong ? (
                         <TriangleAlert size={20} strokeWidth={2} />
@@ -162,7 +162,7 @@ const SignUpPage = () => {
                 </div>
 
                 <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="confirmPassword" className="pb-2">
+                  <Label htmlFor="password" className="pb-2">
                     Confirm Password
                   </Label>
                   <div className="flex flex-col justify-center relative">
@@ -177,7 +177,7 @@ const SignUpPage = () => {
                       className={
                         confirmPasswordError
                           ? 'border-2 border-(--vtmp-orange)'
-                          : 'border-2 border-(--vtmp-green)'
+                          : ''
                       }
                     />
                     <Button
@@ -205,6 +205,7 @@ const SignUpPage = () => {
           </CardContent>
           <CardFooter className="flex flex-col">
             <Button
+              variant="default"
               className="text-black w-full"
               onClick={() => {
                 const error =
