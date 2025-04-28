@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { mentorshipPeople } from 'src/data/people';
-import 'src/styles/scss/stats.scss';
 import { OffersBarChart } from './offers-bar-chart';
 import { useInterviewData } from 'src/hooks/useInterviewData';
 import { Container } from 'reactstrap';
