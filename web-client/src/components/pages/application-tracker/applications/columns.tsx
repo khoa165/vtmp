@@ -1,5 +1,3 @@
-'use client';
-
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 import { Checkbox } from '@/components/base/checkbox';
@@ -14,15 +12,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/base/dropdown-menu';
+import { IApplication } from '@/components/pages/application-tracker/applications/queries/validation';
 
-export interface Payment {
-  id: string;
-  amount: number;
-  status: 'pending' | 'processing' | 'success' | 'failed';
-  email: string;
-}
+// export interface Payment {
+//   id: string;
+//   amount: number;
+//   status: 'pending' | 'processing' | 'success' | 'failed';
+//   email: string;
+// }
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<IApplication>[] = [
   {
     accessorKey: 'status',
     header: 'Somestatus',
@@ -70,7 +69,7 @@ export const columns: ColumnDef<Payment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(payment._id)}
             >
               Copy payment ID
             </DropdownMenuItem>

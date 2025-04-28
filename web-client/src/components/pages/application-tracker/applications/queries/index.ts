@@ -1,22 +1,20 @@
-// This is where I write function to get data from backend
-
+import {
+  ApplicationTrackerSchema,
+  IApplications,
+} from '@/components/pages/application-tracker/applications/queries/validation';
 import { api } from '@/utils/axios';
 
-export const getApplicationsData = async () => {
-  // const response = await axios.get('http://localhost:8000/getAllApplications');
-  // First need to login to get the token. Send post request to /login
-  const email = 'abc-user0-vtmp@gmail.com';
-  const password = 'password';
+export const getApplicationsData = async (): Promise<IApplications> => {
+  // const email = 'abc-user0-vtmp@gmail.com';
+  // const password = 'password';
+  // const loginResponse = await api.post('/auth/login', { email, password });
+  // const token = loginResponse.data.data.token;
+  const token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MGVmNTQ4YzU3YWE4ZDU1MzZkYjU4MSIsImlhdCI6MTc0NTgxMDgzOSwiZXhwIjoxNzU0NDUwODM5fQ.qyjecS4c4CdzRP1pZFdk5rkv-gGFxJQg-JbESskuiys';
 
-  const loginResponse = await api.post('/auth/login', { email, password });
-  const token = loginResponse.data.data.token;
-  console.log('Token returned from login: ', token);
-
-  // Now use token to get applications for this user
   const response = await api.get('/applications', {
     headers: { Authorization: `Bearer ${token}` },
   });
-  console.log(response.data);
-  console.log(localStorage);
-  // // return response.data;
+  console.log(response.data.data);
+  return ApplicationTrackerSchema.parse(response.data).data;
 };
