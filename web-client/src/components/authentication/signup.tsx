@@ -13,6 +13,7 @@ import LogoMint from '../../assets/images/logo-full-mint.svg?react';
 import { EyeOff, Eye, TriangleAlert } from 'lucide-react';
 import { Check } from 'lucide-react';
 import { api } from '@/utils/axios';
+import axios from 'axios';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 
 const passwordMessage = [
@@ -41,31 +42,63 @@ const SignUpPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [firstNameInput, setFirstNameInput] = useState('');
   const [lastNameInput, setLastNameInput] = useState('');
   const [isPasswordStrong, setIsPasswordStrong] = useState(false);
+  const [firstNameError, setFirstNameError] = useState('');
+  const [lastNameError, setLastNameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const navigate = useNavigatePreserveQueryParams();
 
   const handleSignup = async () => {
     if (
       !isPasswordValid(passwordInput) ||
-      firstNameInput === '' ||
-      lastNameInput === ''
-    )
+      !firstNameInput ||
+      !lastNameInput ||
+      passwordInput !== confirmPasswordInput
+    ) {
+      setConfirmPasswordError(
+        confirmPasswordInput !== passwordInput || !passwordInput
+          ? 'Password does not match'
+          : ''
+      );
+      setPasswordError(!passwordInput ? 'Required' : '');
+      setFirstNameError(!firstNameInput ? 'Required' : '');
+      setLastNameError(!lastNameInput ? 'Required' : '');
       return;
+    }
 
     try {
-      const res = await api.post('/auth/signup', {
+      await api.post('/auth/signup', {
         firstName: firstNameInput,
         lastName: lastNameInput,
         email: emailInput,
         password: passwordInput,
       });
-      console.log('Login response:', res.data);
+
       navigate('/home');
     } catch (error: unknown) {
-      console.log(error);
+      if (axios.isAxiosError(error) && error.response) {
+        error.response.data.errors.forEach((err: { message: string }) => {
+          if (
+            err.message.toLocaleLowerCase().includes('email') ||
+            err.message.toLocaleLowerCase().includes('user')
+          ) {
+            setEmailError(err.message);
+          }
+
+          if (err.message.toLocaleLowerCase().includes('password')) {
+            setPasswordError(err.message);
+            setPasswordInput('');
+            setConfirmPasswordError('');
+          }
+          console.log(err.message);
+        });
+      } else {
+        console.log('Unexpected error', error);
+      }
     }
   };
 
@@ -106,8 +139,17 @@ const SignUpPage = () => {
                       value={firstNameInput}
                       onChange={(e) => {
                         setFirstNameInput(e.target.value);
+                        setFirstNameError('');
                       }}
+                      className={
+                        firstNameError ? 'border-2 border-(--vtmp-orange)' : ''
+                      }
                     />
+                    {firstNameError && (
+                      <p className="text-(--vtmp-orange) my-2">
+                        {firstNameError}
+                      </p>
+                    )}
                   </div>
                   <div className="flex-1 flex-col space-y-1.5">
                     <Label htmlFor="name" className="pb-2">
@@ -119,8 +161,17 @@ const SignUpPage = () => {
                       value={lastNameInput}
                       onChange={(e) => {
                         setLastNameInput(e.target.value);
+                        setLastNameError('');
                       }}
+                      className={
+                        lastNameError ? 'border-2 border-(--vtmp-orange)' : ''
+                      }
                     />
+                    {lastNameError && (
+                      <p className="text-(--vtmp-orange) my-2">
+                        {lastNameError}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-col space-y-1.5">
@@ -132,7 +183,13 @@ const SignUpPage = () => {
                     placeholder="Email"
                     value={emailInput}
                     disabled={true}
+                    className={
+                      emailError ? 'border-2 border-(--vtmp-orange)' : ''
+                    }
                   />
+                  {emailError && (
+                    <p className="text-(--vtmp-orange) my-2">{emailError}</p>
+                  )}
                 </div>
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="password" className="pb-2">
@@ -147,8 +204,13 @@ const SignUpPage = () => {
                       onChange={(e) => {
                         setPasswordInput(e.target.value);
                         setIsPasswordStrong(isPasswordValid(e.target.value));
+                        setPasswordError('');
                       }}
+                      className={
+                        passwordError ? 'border-2 border-(--vtmp-orange)' : ''
+                      }
                     />
+
                     <Button
                       variant="ghost"
                       className="absolute right-2 hover:bg-transparent dark:hover:bg-transparent"
@@ -162,7 +224,9 @@ const SignUpPage = () => {
                     </Button>
                   </div>
 
-                  {passwordInput !== '' ? (
+                  {!passwordInput ? (
+                    <p className="text-(--vtmp-orange) my-2">{passwordError}</p>
+                  ) : (
                     <div
                       className={`flex flex-row gap-4 border-2 border-(${passwordStrengthColor[+isPasswordStrong]}) rounded-md text-(${passwordStrengthColor[+isPasswordStrong]}) p-3 mt-2`}
                     >
@@ -181,8 +245,6 @@ const SignUpPage = () => {
                         ))}
                       </div>
                     </div>
-                  ) : (
-                    <div />
                   )}
                 </div>
 
@@ -233,12 +295,6 @@ const SignUpPage = () => {
               variant="default"
               className="text-black w-full"
               onClick={() => {
-                const error =
-                  confirmPasswordInput !== passwordInput
-                    ? 'Password does not match'
-                    : '';
-
-                setConfirmPasswordError(error);
                 handleSignup();
               }}
             >
