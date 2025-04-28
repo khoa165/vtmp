@@ -12,6 +12,8 @@ import { useState } from 'react';
 import LogoMint from '../../assets/images/logo-full-mint.svg?react';
 import { EyeOff, Eye, TriangleAlert } from 'lucide-react';
 import { Check } from 'lucide-react';
+import { api } from '@/utils/axios';
+import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 
 const passwordMessage = [
   '1. Password length is in range 8-20',
@@ -43,6 +45,29 @@ const SignUpPage = () => {
   const [firstNameInput, setFirstNameInput] = useState('');
   const [lastNameInput, setLastNameInput] = useState('');
   const [isPasswordStrong, setIsPasswordStrong] = useState(false);
+  const navigate = useNavigatePreserveQueryParams();
+
+  const handleSignup = async () => {
+    if (
+      !isPasswordValid(passwordInput) ||
+      firstNameInput === '' ||
+      lastNameInput === ''
+    )
+      return;
+
+    try {
+      const res = await api.post('/auth/signup', {
+        firstName: firstNameInput,
+        lastName: lastNameInput,
+        email: emailInput,
+        password: passwordInput,
+      });
+      console.log('Login response:', res.data);
+      navigate('/home');
+    } catch (error: unknown) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="grid grid-cols-12 gap-4 w-screen h-screen px-20 py-15">
@@ -214,6 +239,7 @@ const SignUpPage = () => {
                     : '';
 
                 setConfirmPasswordError(error);
+                handleSignup();
               }}
             >
               Register
