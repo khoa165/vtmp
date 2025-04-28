@@ -11,6 +11,7 @@ export const ApplicationTrackerSchema = z.object({
       status: z.nativeEnum(ApplicationStatus, {
         message: 'Invalid application status',
       }),
+      appliedOnDate: z.string(),
       note: z.string().optional(),
       referrer: z.string().optional(),
       portalLink: z.string().optional(),

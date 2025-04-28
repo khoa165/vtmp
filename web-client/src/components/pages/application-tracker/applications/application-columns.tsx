@@ -14,43 +14,37 @@ import {
 } from '@/components/base/dropdown-menu';
 import { IApplication } from '@/components/pages/application-tracker/applications/queries/validation';
 
-// export interface Payment {
-//   id: string;
-//   amount: number;
-//   status: 'pending' | 'processing' | 'success' | 'failed';
-//   email: string;
-// }
-
-export const columns: ColumnDef<IApplication>[] = [
+export const applicationColumns: ColumnDef<IApplication>[] = [
   {
-    accessorKey: 'status',
-    header: 'Somestatus',
+    accessorKey: 'jobPostingId',
+    header: 'JobPostingId',
   },
   {
-    accessorKey: 'email',
+    accessorKey: 'status',
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Email
+          Status
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
   },
   {
-    accessorKey: 'amount',
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue('amount'));
-      const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
+    accessorKey: 'appliedOnDate',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Date Applied
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
     },
   },
   {

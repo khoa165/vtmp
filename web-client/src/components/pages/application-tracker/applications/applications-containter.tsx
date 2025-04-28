@@ -1,33 +1,10 @@
-import { ApplicationCard } from '@/components/pages/application-tracker/applications/application-card';
-import {
-  // Payment,
-  columns,
-} from '@/components/pages/application-tracker/applications/columns';
+import { applicationColumns } from '@/components/pages/application-tracker/applications/application-columns';
 import { DataTable } from '@/components/pages/application-tracker/applications/data-table';
 import { getApplicationsData } from '@/components/pages/application-tracker/applications/queries';
 import { QueryKey } from '@/utils/constants';
 import { useQuery } from '@tanstack/react-query';
 
-// function getData(): Payment[] {
-//   // Fetch data from your API here.
-//   return [
-//     {
-//       id: '728ed52f',
-//       amount: 100,
-//       status: 'pending',
-//       email: 'mai@example.com',
-//     },
-//     {
-//       id: '728ed52f',
-//       amount: 100,
-//       status: 'pending',
-//       email: 'mo@example.com',
-//     },
-//   ];
-// }
-
 export const ApplicationsContainer = () => {
-  // const data = getData();
   const {
     isLoading,
     isError,
@@ -52,17 +29,7 @@ export const ApplicationsContainer = () => {
 
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={applicationsData ?? []} />
-      {applicationsData?.map((application) => {
-        return (
-          <ApplicationCard
-            key={application._id}
-            jobPostingId={application.jobPostingId}
-            userId={application.userId}
-            status={application.status}
-          ></ApplicationCard>
-        );
-      })}
+      <DataTable columns={applicationColumns} data={applicationsData ?? []} />
     </div>
   );
 };
