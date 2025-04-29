@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { EnvConfig } from '@/config/env';
 
-const connectDB = async () => {
+export const connectDB = async () => {
   if (process.env.NODE_ENV === 'test') {
     console.log('Test environment');
     return;
@@ -14,5 +14,3 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-
-export default connectDB;
