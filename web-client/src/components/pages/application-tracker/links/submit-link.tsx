@@ -43,7 +43,7 @@ export const SubmitLink = () => {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-4 w-screen h-screen px-20 py-15">
+    <div className="grid grid-cols-12 gap-4 px-20 py-15">
       <div className="col-start-1 col-span-5 flex flex-col justify-start">
         <Card className="bg-transparent border-0 h-full justify-center">
           <CardHeader>
