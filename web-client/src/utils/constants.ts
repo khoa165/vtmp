@@ -152,3 +152,10 @@ export enum ProjectName {
 export enum QueryKey {
   SUBMIT_LINK = '/api/links',
 }
+
+export enum Method {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+}
