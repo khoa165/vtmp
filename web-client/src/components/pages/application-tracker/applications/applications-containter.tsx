@@ -4,7 +4,7 @@ import { getApplicationsData } from '@/components/pages/application-tracker/appl
 import { QueryKey } from '@/utils/constants';
 import { useQuery } from '@tanstack/react-query';
 
-export const ApplicationsContainer = () => {
+export const ApplicationsContainer = (): React.JSX.Element | null => {
   const {
     isLoading,
     isError,
@@ -25,11 +25,16 @@ export const ApplicationsContainer = () => {
     // return (
     //   <span>Error: {error.message || 'Failed to load summary data.'}</span>
     // );
+    return null;
+  }
+
+  if (!applicationsData || applicationsData.length === 0) {
+    return null;
   }
 
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={applicationColumns} data={applicationsData ?? []} />
+      <DataTable columns={applicationColumns} data={applicationsData} />
     </div>
   );
 };
