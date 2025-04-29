@@ -26,6 +26,16 @@ const LoginPage = () => {
   const navigate = useNavigatePreserveQueryParams();
 
   const handleLogin = async () => {
+    if (!emailInput || !passwordInput) {
+      if (!emailInput) {
+        setEmailError('Email is required');
+      }
+      if (!passwordInput) {
+        setPasswordError('Password is required');
+      }
+      return;
+    }
+
     setEmailError('');
     setPasswordError('');
     try {
@@ -111,9 +121,9 @@ const LoginPage = () => {
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
-                        <EyeOff className="absolute right-2" />
-                      ) : (
                         <Eye className="absolute right-2" />
+                      ) : (
+                        <EyeOff className="absolute right-2" />
                       )}
                     </Button>
                   </div>
