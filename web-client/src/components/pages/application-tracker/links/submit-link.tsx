@@ -22,8 +22,8 @@ export const SubmitLink = () => {
   const [submitLinkError, setSubmitLinkError] = useState([]);
 
   const { mutate: submitLinkFn } = useMutation({
-    mutationFn: (url: string) =>
-      request(Method.POST, '/links', { url }, SubmitLinkResponseSchema),
+    mutationFn: (body: { url: string }) =>
+      request(Method.POST, '/links', body, SubmitLinkResponseSchema),
     onSuccess: (res) => {
       console.log('Success in useMutation submitLink');
       toast.success(res.message);
@@ -42,7 +42,7 @@ export const SubmitLink = () => {
   });
 
   const handleSubmit = async () => {
-    submitLinkFn(linkInput);
+    submitLinkFn({ url: linkInput });
   };
 
   return (

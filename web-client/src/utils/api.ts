@@ -20,7 +20,6 @@ export const request = async <T>(
     data,
   });
 
-  console.log(response.data);
   if (schema) {
     return schema.parse(response.data);
   }
