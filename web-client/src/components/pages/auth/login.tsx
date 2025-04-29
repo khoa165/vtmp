@@ -11,7 +11,7 @@ import { Checkbox } from '@/components/base/checkbox';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
 import React, { useState } from 'react';
-import LogoMint from '../../assets/images/logo-full-mint.svg?react';
+import LogoMint from '@/assets/images/logo-full-mint.svg?react';
 import { EyeOff, Eye } from 'lucide-react';
 import { api } from '@/utils/axios';
 import axios from 'axios';

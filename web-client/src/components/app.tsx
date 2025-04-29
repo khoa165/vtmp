@@ -15,7 +15,7 @@ import { TreeContainer } from 'src/components/tree';
 import { Mentorship2025Apply } from 'src/components/apply';
 import { Mentorship2025Proposal } from './proposal';
 import { Playground } from '@/components/playground';
-import LoginPage from '@/components/authentication/login';
+import LoginPage from '@/components/pages/auth/login';
 import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
 import { ApplicationTrackerWrapper } from '@/components/layout/application-tracker-wrapper';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
