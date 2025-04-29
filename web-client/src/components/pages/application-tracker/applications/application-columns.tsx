@@ -30,7 +30,11 @@ export const applicationColumns: ColumnDef<IApplication>[] = [
   },
   {
     accessorKey: 'jobPostingId',
-    header: 'JobPostingId',
+    header: 'Job Posting Id',
+  },
+  {
+    accessorKey: 'companyName',
+    header: 'Company',
   },
   {
     accessorKey: 'status',

@@ -7,6 +7,7 @@ export const ApplicationTrackerSchema = z.object({
     z.object({
       _id: z.string(),
       jobPostingId: z.string(),
+      companyName: z.string(),
       userId: z.string(),
       status: z.nativeEnum(ApplicationStatus, {
         message: 'Invalid application status',
