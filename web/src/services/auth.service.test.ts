@@ -74,7 +74,7 @@ describe('AuthService', () => {
     });
   });
 
-  describe.only('signup', () => {
+  describe('signup', () => {
     it('should fail to signup due to duplicate email', async () => {
       const mockUser = {
         firstName: 'admin',

@@ -17,7 +17,6 @@ import axios from 'axios';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { useMutation } from '@tanstack/react-query';
 import { AuthResponseSchema } from '@/components/authentication/validation';
-import { toast } from 'sonner';
 
 const passwordMessage = [
   '1. Password length is in range 8-20',
@@ -81,9 +80,8 @@ const SignUpPage = () => {
     mutationFn: signUp,
     onSuccess: (res) => {
       console.log(res.data);
-      toast.success('Sign up successfully');
       resetState();
-      navigate('/home');
+      navigate('/');
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response) {
