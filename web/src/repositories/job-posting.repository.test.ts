@@ -40,6 +40,19 @@ describe('JobPostingRepository', () => {
       assert(foundJobPosting);
       expect(foundJobPosting).to.deep.include(mockJobPosting);
     });
+    it('should return null if trying to get soft-deleted job posting', async () => {
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
+      await JobPostingRepository.deleteJobPostingById(newJobPosting.id);
+      const foundJobPosting = await JobPostingRepository.getJobPostingById(
+        newJobPosting.id
+      );
+
+      assert(!foundJobPosting);
+    });
   });
 
   describe('updateJobPostingById', () => {

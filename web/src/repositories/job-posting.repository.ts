@@ -1,4 +1,4 @@
-import { JobPostingModel } from '@/models/job-posting.model';
+import { JobPostingModel, IJobPosting } from '@/models/job-posting.model';
 import { ClientSession } from 'mongoose';
 
 export const JobPostingRepository = {
@@ -8,7 +8,7 @@ export const JobPostingRepository = {
   }: {
     jobPostingData: object;
     session?: ClientSession;
-  }) => {
+  }): Promise<IJobPosting | undefined> => {
     const jobPostings = await JobPostingModel.create([jobPostingData], {
       session: session ?? null,
     });
@@ -16,21 +16,24 @@ export const JobPostingRepository = {
     return jobPostings[0];
   },
 
-  getJobPostingById: async (jobId: string) => {
-    return JobPostingModel.findById(jobId).lean();
+  getJobPostingById: async (jobId: string): Promise<IJobPosting | null> => {
+    return JobPostingModel.findOne({ _id: jobId, deletedAt: null }).lean();
   },
 
-  updateJobPostingById: async (jobId: string, newUpdate: object) => {
-    return JobPostingModel.findByIdAndUpdate(
-      jobId,
+  updateJobPostingById: async (
+    jobId: string,
+    newUpdate: object
+  ): Promise<IJobPosting | null> => {
+    return JobPostingModel.findOneAndUpdate(
+      { _id: jobId, deletedAt: null },
       { $set: newUpdate },
       { new: true }
     ).lean();
   },
 
-  deleteJobPostingById: async (jobId: string) => {
-    return JobPostingModel.findByIdAndUpdate(
-      jobId,
+  deleteJobPostingById: async (jobId: string): Promise<IJobPosting | null> => {
+    return JobPostingModel.findOneAndUpdate(
+      { _id: jobId, deletedAt: null },
       { $set: { deletedAt: new Date() } },
       { new: true }
     ).lean();
