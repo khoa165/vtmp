@@ -16,7 +16,7 @@ export const InterviewRepository = {
     type: InterviewType[];
     status?: InterviewStatus;
     interviewOnDate: Date;
-    note?: string | undefined;
+    note?: string;
   }): Promise<IInterview> => {
     return InterviewModel.create({
       applicationId,

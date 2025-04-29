@@ -1,7 +1,8 @@
 import { InterviewRepository } from '@/repositories/interview.repository';
-import { InterviewStatus, InterviewType } from '@common/enums';
 import { IInterview } from '@/models/interview.model';
 import { UpdateResult } from 'mongoose';
+
+import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 
 export const InterviewService = {
   createInterview: async ({
@@ -23,9 +24,9 @@ export const InterviewService = {
       applicationId,
       userId,
       type,
-      status: status,
+      ...(status !== undefined && { status }),
       interviewOnDate,
-      note,
+      ...(note !== undefined && { note }),
     });
   },
 
