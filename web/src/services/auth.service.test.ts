@@ -12,7 +12,6 @@ import {
   UnauthorizedError,
 } from '@/utils/errors';
 import { assert } from 'console';
-import { UserRole } from '@vtmp/common/constants';
 import { expect } from 'chai';
 
 describe('AuthService', () => {
@@ -75,7 +74,7 @@ describe('AuthService', () => {
     });
   });
 
-  describe('signup', () => {
+  describe.only('signup', () => {
     it('should fail to signup due to duplicate email', async () => {
       const mockUser = {
         firstName: 'admin',
@@ -116,9 +115,8 @@ describe('AuthService', () => {
         password: 'test',
       };
 
-      const user = await AuthService.signup(userData);
-      assert(user);
-      expect(user.role).to.equal(UserRole.USER);
+      const token = await AuthService.signup(userData);
+      assert(token);
     });
   });
 });

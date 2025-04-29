@@ -34,12 +34,21 @@ export const AuthService = {
     const saltRounds = 10;
     const encryptedPassword = await bcrypt.hash(password, saltRounds);
 
-    return UserRepository.createUser({
+    const user = await UserRepository.createUser({
       firstName,
       lastName,
       email,
       encryptedPassword,
     });
+
+    const token = jwt.sign(
+      { id: user._id.toString() },
+      EnvConfig.get().JWT_SECRET,
+      {
+        expiresIn: '1h',
+      }
+    );
+    return token;
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {
