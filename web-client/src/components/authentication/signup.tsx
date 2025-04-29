@@ -15,6 +15,9 @@ import { Check } from 'lucide-react';
 import { api } from '@/utils/axios';
 import axios from 'axios';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
+import { useMutation } from '@tanstack/react-query';
+import { AuthResponseSchema } from '@/components/authentication/validation';
+import { toast } from 'sonner';
 
 const passwordMessage = [
   '1. Password length is in range 8-20',
@@ -36,7 +39,7 @@ const isPasswordValid = (password: string) =>
   /[0-9]/.test(password);
 
 const SignUpPage = () => {
-  const emailInput = 'Email@viettech.com';
+  const emailInput = 'Email2@viettech.com';
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -52,34 +55,37 @@ const SignUpPage = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const navigate = useNavigatePreserveQueryParams();
 
-  const handleSignup = async () => {
-    if (
-      !isPasswordValid(passwordInput) ||
-      !firstNameInput ||
-      !lastNameInput ||
-      passwordInput !== confirmPasswordInput
-    ) {
-      setConfirmPasswordError(
-        confirmPasswordInput !== passwordInput || !passwordInput
-          ? 'Password does not match'
-          : ''
-      );
-      setPasswordError(!passwordInput ? 'Required' : '');
-      setFirstNameError(!firstNameInput ? 'Required' : '');
-      setLastNameError(!lastNameInput ? 'Required' : '');
-      return;
-    }
+  const signUp = async () => {
+    const res = await api.post('/auth/signup', {
+      firstName: firstNameInput,
+      lastName: lastNameInput,
+      email: emailInput,
+      password: passwordInput,
+    });
+    console.log(res.data);
+    return AuthResponseSchema.parse(res.data);
+  };
 
-    try {
-      await api.post('/auth/signup', {
-        firstName: firstNameInput,
-        lastName: lastNameInput,
-        email: emailInput,
-        password: passwordInput,
-      });
+  const resetState = () => {
+    setPasswordInput('');
+    setConfirmPasswordInput('');
+    setFirstNameInput('');
+    setLastNameInput('');
+    setFirstNameError('');
+    setLastNameError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
+  };
 
+  const { mutate: signUpFn } = useMutation({
+    mutationFn: signUp,
+    onSuccess: (res) => {
+      console.log(res.data);
+      toast.success('Sign up successfully');
+      resetState();
       navigate('/home');
-    } catch (error: unknown) {
+    },
+    onError: (error) => {
       if (axios.isAxiosError(error) && error.response) {
         error.response.data.errors.forEach((err: { message: string }) => {
           if (
@@ -99,7 +105,28 @@ const SignUpPage = () => {
       } else {
         console.log('Unexpected error', error);
       }
+    },
+  });
+
+  const handleSignup = async () => {
+    if (
+      !isPasswordValid(passwordInput) ||
+      !firstNameInput ||
+      !lastNameInput ||
+      passwordInput !== confirmPasswordInput
+    ) {
+      setConfirmPasswordError(
+        confirmPasswordInput !== passwordInput || !passwordInput
+          ? 'Password does not match'
+          : ''
+      );
+      setPasswordError(!passwordInput ? 'Required' : '');
+      setFirstNameError(!firstNameInput ? 'Required' : '');
+      setLastNameError(!lastNameInput ? 'Required' : '');
+      return;
     }
+
+    signUpFn();
   };
 
   return (
@@ -114,9 +141,9 @@ const SignUpPage = () => {
         </div>
       </div>
 
-      <div className="col-start-8 col-span-5 flex flex-col justify-end">
+      <div className="col-start-7 col-span-5 flex flex-col justify-end">
         <div className="w-full flex flex-row justify-end">
-          <LogoMint className="w-80 h-32 mb-[56px] pl-6" />
+          <LogoMint className="w-80 h-32 mb-[56px]" />
         </div>
 
         <Card className="bg-transparent border-0 h-full justify-center">
@@ -260,6 +287,7 @@ const SignUpPage = () => {
                       value={confirmPasswordInput}
                       onChange={(e) => {
                         setConfirmPasswordInput(e.target.value);
+                        setConfirmPasswordError('');
                       }}
                       className={
                         confirmPasswordError
@@ -270,9 +298,9 @@ const SignUpPage = () => {
                     <Button
                       variant="ghost"
                       className="absolute right-2 hover:bg-transparent dark:hover:bg-transparent"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
+                      onClick={() => {
+                        setShowConfirmPassword(!showConfirmPassword);
+                      }}
                     >
                       {showConfirmPassword ? (
                         <Eye className="absolute right-2" />
