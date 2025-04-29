@@ -1,4 +1,4 @@
-import { handleError, UnauthorizedError } from '@/utils/errors';
+import { UnauthorizedError } from '@/utils/errors';
 import { EnvConfig } from '@/config/env';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
@@ -16,21 +16,15 @@ export const authenticate = async (
 ): Promise<void> => {
   const token = req.headers.authorization?.split(' ')[1];
 
-  try {
-    if (!token) {
-      throw new UnauthorizedError('Unauthorized', {});
-    }
-
-    const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
-    const parsed = DecodedJWTSchema.parse(decoded);
-    const user = await UserService.getUserById(parsed.id);
-
-    req.user = { id: String(user._id) };
-
-    next();
-  } catch (err: unknown) {
-    const { statusCode, errors } = handleError(err);
-    res.status(statusCode).json({ errors });
-    return;
+  if (!token) {
+    throw new UnauthorizedError('Unauthorized', {});
   }
+
+  const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
+  const parsed = DecodedJWTSchema.parse(decoded);
+  const user = await UserService.getUserById(parsed.id);
+
+  req.user = { id: String(user._id) };
+
+  next();
 };

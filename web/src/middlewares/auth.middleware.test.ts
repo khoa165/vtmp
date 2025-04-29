@@ -11,85 +11,129 @@ import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 const { expect } = chai;
-describe('UserRepository', () => {
+describe.only('AuthMiddleware', () => {
   useMongoDB();
   const sandbox = useSandbox();
   beforeEach(() => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
   });
 
-  describe('AuthMiddleware', () => {
-    it('should throw Unauthorized for no token', async () => {
-      const res = await request(app)
-        .get('/api/users/profile')
-        .send({})
-        .set('Accept', 'application/json')
-        .set('Authorization', '');
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+  it('should throw Unauthorized for no token', async () => {
+    const res = await request(app)
+      .get('/api/users/profile')
+      .set('Accept', 'application/json')
+      .set('Authorization', '');
+    expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+    expect(res.body.errors[0].message).to.eq('Unauthorized');
+  });
+
+  it('should throw Unauthorized for wrong token', async () => {
+    const res = await request(app)
+      .get('/api/users/profile')
+      .set('Accept', 'application/json')
+      .set('Authorization', 'fake token');
+    expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+    expect(res.body.errors[0].message).to.eq('jwt malformed');
+  });
+
+  it('should throw ResourceNotFoundError for cannot find user', async () => {
+    const token = jwt.sign({ id: getNewMongoId() }, MOCK_ENV.JWT_SECRET, {
+      expiresIn: '1h',
     });
 
-    it('should throw Unauthorized for wrong token', async () => {
-      const res = await request(app)
-        .get('/api/users/profile')
-        .send({})
-        .set('Accept', 'application/json')
-        .set('Authorization', 'fake token');
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+    const res = await request(app)
+      .get('/api/users/profile')
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${token}`);
+
+    expectErrorsArray({
+      res,
+      statusCode: 404,
+      errorsCount: 1,
     });
+    expect(res.body.errors[0].message).to.eq('User not found');
+  });
 
-    it('should throw ResourceNotFoundError for cannot find user', async () => {
-      const token = jwt.sign(
-        { id: getNewMongoId() },
-        EnvConfig.get().JWT_SECRET,
-        {
-          expiresIn: '1h',
-        }
-      );
+  it('should allow user to login, return a token and get user profile', async () => {
+    await request(app)
+      .post('/api/auth/signup')
+      .send({
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@example.com',
+        password: 'Test!123',
+      })
+      .set('Accept', 'application/json');
 
-      const res = await request(app)
-        .get('/api/users/profile')
-        .send({})
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${token}`);
+    const resLogin = await request(app)
+      .post('/api/auth/login')
+      .send({
+        email: 'test@example.com',
+        password: 'Test!123',
+      })
+      .set('Accept', 'application/json');
 
-      expectErrorsArray({
-        res,
-        statusCode: 404,
-        errorsCount: 1,
-      });
-    });
+    const token = resLogin.body.data.token;
+    const decoded = jwt.verify(token, MOCK_ENV.JWT_SECRET);
+    const id = DecodedJWTSchema.parse(decoded).id;
 
-    it('should allow user to login, return a token and get user profile', async () => {
-      await request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@example.com',
-          password: 'Test!123',
-        })
-        .set('Accept', 'application/json');
+    const res = await request(app)
+      .get(`/api/users/${id}`)
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${token}`);
 
-      const resLogin = await request(app)
-        .post('/api/auth/login')
-        .send({
-          email: 'test@example.com',
-          password: 'Test!123',
-        })
-        .set('Accept', 'application/json');
+    expect(res.body.data).to.have.property('_id');
+    expect(res.body.data._id).to.equal(id);
+  });
 
-      const token = resLogin.body.data.token;
-      const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
-      const id = DecodedJWTSchema.parse(decoded).id;
+  it('should allow users to login, return tokens and get other user profile', async () => {
+    await request(app)
+      .post('/api/auth/signup')
+      .send({
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@example.com',
+        password: 'Test!123',
+      })
+      .set('Accept', 'application/json');
 
-      const res = await request(app)
-        .get(`/api/users/${id}`)
-        .send({})
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${token}`);
+    await request(app)
+      .post('/api/auth/signup')
+      .send({
+        firstName: 'admin2',
+        lastName: 'viettech',
+        email: 'test1@example.com',
+        password: 'Test!123',
+      })
+      .set('Accept', 'application/json');
 
-      expect(res.body.data).to.have.property('_id');
-      expect(res.body.data._id).to.equal(id);
-    });
+    const resLoginA = await request(app)
+      .post('/api/auth/login')
+      .send({
+        email: 'test@example.com',
+        password: 'Test!123',
+      })
+      .set('Accept', 'application/json');
+
+    const resLoginB = await request(app)
+      .post('/api/auth/login')
+      .send({
+        email: 'test1@example.com',
+        password: 'Test!123',
+      })
+      .set('Accept', 'application/json');
+
+    const tokenA = resLoginA.body.data.token;
+    const decodedA = jwt.verify(tokenA, MOCK_ENV.JWT_SECRET);
+    const idA = DecodedJWTSchema.parse(decodedA).id;
+
+    const tokenB = resLoginB.body.data.token;
+
+    const res = await request(app)
+      .get(`/api/users/${idA}`)
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${tokenB}`);
+
+    console.log(res.body);
   });
 });
