@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
+import { JobPostingModel } from '@/models/job-posting.model';
 
 export interface IApplication extends Document {
   _id: Types.ObjectId;
@@ -63,12 +64,7 @@ const ApplicationSchema = new mongoose.Schema<IApplication>({
 });
 
 ApplicationSchema.pre('save', async function () {
-  const jobPosting = await mongoose
-    .model('JobPosting')
-    .findById(this.jobPostingId)
-    .select('companyName')
-    .exec();
-
+  const jobPosting = await JobPostingModel.findById(this.jobPostingId);
   if (jobPosting) {
     this.companyName = jobPosting.companyName;
   }
