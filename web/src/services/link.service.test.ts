@@ -1,6 +1,5 @@
-import * as chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import { LinkStatus } from '@common/enums';
+import { expect } from 'chai';
+import { LinkStatus } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { LinkService } from '@/services/link.service';
@@ -11,16 +10,9 @@ import { LinkRepository } from '@/repositories/link.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 
-chai.use(chaiAsPromised);
-const { expect } = chai;
-
 describe('LinkService', () => {
   useMongoDB();
   const sandbox = useSandbox();
-
-  beforeEach(async () => {
-    sandbox.restore();
-  });
 
   describe('submitLink', () => {
     it('should be able to create new link with expected fields', async () => {

@@ -1,9 +1,10 @@
-import mongoose, { Document } from 'mongoose';
-import { ApplicationStatus, InterestLevel } from '@common/enums';
+import mongoose, { Document, Schema, Types } from 'mongoose';
+import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 
 export interface IApplication extends Document {
-  jobPostingId: mongoose.Schema.Types.ObjectId;
-  userId: mongoose.Schema.Types.ObjectId;
+  _id: Types.ObjectId;
+  jobPostingId: Types.ObjectId;
+  userId: Types.ObjectId;
   hasApplied: boolean;
   status: ApplicationStatus;
   appliedOnDate: Date;
@@ -16,12 +17,12 @@ export interface IApplication extends Document {
 
 const ApplicationSchema = new mongoose.Schema<IApplication>({
   jobPostingId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'JobPosting',
     required: true,
   },
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
