@@ -2,6 +2,7 @@ import mongoose, { Document, Schema, Types } from 'mongoose';
 import { JobPostingLocation } from '@vtmp/common/constants';
 
 export interface IJobPosting extends Document {
+  _id: Types.ObjectId;
   linkId: Types.ObjectId;
   externalPostingId?: string;
   url: string;

@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import 'src/styles/scss/people.scss';
 import { DEFAULT_ROLES, getRoleDisplayName } from 'src/utils/data';
 import { PeopleSortColumn } from 'src/utils/constants';
 import { PeopleGrid } from './people-grid';
