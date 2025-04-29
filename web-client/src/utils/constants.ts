@@ -152,3 +152,10 @@ export enum ProjectName {
 export enum QueryKey {
   GET_APPLICATIONS = '/api/applications',
 }
+
+export enum Method {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+}
