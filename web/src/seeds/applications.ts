@@ -58,7 +58,9 @@ export const loadApplications = async (
     },
   ];
 
-  const applications = await ApplicationModel.insertMany(seedApplications);
+  const applications = await Promise.all(
+    seedApplications.map((app) => ApplicationModel.create(app))
+  );
   console.log('Successfully seeded applications.');
   return applications;
 };
