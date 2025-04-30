@@ -12,15 +12,18 @@ import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
-import { submitLink } from '@/components/pages/application-tracker/links/queries';
 import { toast } from 'sonner';
+import { Method } from '@/utils/constants';
+import { request } from '@/utils/api';
+import { SubmitLinkResponseSchema } from '@/components/pages/application-tracker/links/validation';
 
 export const SubmitLink = () => {
   const [linkInput, setLinkInput] = useState('');
   const [submitLinkError, setSubmitLinkError] = useState([]);
 
   const { mutate: submitLinkFn } = useMutation({
-    mutationFn: submitLink,
+    mutationFn: (body: { url: string }) =>
+      request(Method.POST, '/links', body, SubmitLinkResponseSchema),
     onSuccess: (res) => {
       console.log('Success in useMutation submitLink');
       toast.success(res.message);
@@ -39,11 +42,11 @@ export const SubmitLink = () => {
   });
 
   const handleSubmit = async () => {
-    submitLinkFn(linkInput);
+    submitLinkFn({ url: linkInput });
   };
 
   return (
-    <div className="grid grid-cols-12 gap-4 w-screen h-screen px-20 py-15">
+    <div className="grid grid-cols-12 gap-4 px-20 py-15">
       <div className="col-start-1 col-span-5 flex flex-col justify-start">
         <Card className="bg-transparent border-0 h-full justify-center">
           <CardHeader>
