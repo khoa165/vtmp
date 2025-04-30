@@ -56,7 +56,7 @@ export const JobPostingRepository = {
                   $and: [
                     { $eq: ['$jobPostingId', '$$jobId'] },
                     { $eq: ['$userId', toMongoId(userId)] },
-                    { $not: ['$deletedAt'] },
+                    { $eq: ['$deletedAt', null] },
                   ],
                 },
               },
