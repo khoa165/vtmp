@@ -1,4 +1,4 @@
-import { SubmitLinkResponseSchema } from '@/components/pages/application-tracker/links/queries/validation.ts';
+import { SubmitLinkResponseSchema } from '@/components/pages/application-tracker/links/queries/validation';
 import { api } from '@/utils/axios';
 
 export const submitLink = async (url: string) => {
