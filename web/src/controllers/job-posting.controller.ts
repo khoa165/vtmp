@@ -48,12 +48,12 @@ export const JobPostingController = {
     const userId = getUserFromRequest(req).user.id;
 
     const jobPostings =
-      JobPostingService.getJobPostingsUserHasNotAppliedTo(userId);
+      await JobPostingService.getJobPostingsUserHasNotAppliedTo(userId);
+    console.log(jobPostings);
 
     res.status(200).json({
       message: 'Job postings retrieved successfully',
       data: jobPostings,
     });
-    return;
   },
 };
