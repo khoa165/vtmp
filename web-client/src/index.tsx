@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import { StatsigProvider } from 'statsig-react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import { App } from 'src/components/app';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
