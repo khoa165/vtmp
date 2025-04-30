@@ -62,7 +62,7 @@ export const AuthService = {
       { id: user._id.toString() },
       EnvConfig.get().JWT_SECRET,
       {
-        expiresIn: '1h',
+        expiresIn: '100 days',
       }
     );
     return token;
