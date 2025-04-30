@@ -171,7 +171,7 @@ describe('JobPostingService', () => {
       expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('should return an exact array of job postings that matches all available job postings in the system if user has no applied to any posting ', async () => {
+    it('should return an exact array of job postings that matches all available job postings in the system if user has no applied to any posting', async () => {
       const jobsNotAppliedByUserA =
         await JobPostingService.getJobPostingsUserHasNotAppliedTo(userIdA);
 
