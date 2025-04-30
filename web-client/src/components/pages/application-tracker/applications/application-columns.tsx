@@ -63,6 +63,11 @@ export const applicationColumns: ColumnDef<IApplication>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const isoDate = row.getValue<string>('appliedOnDate');
+      const date = new Date(isoDate);
+      return date.toISOString().split('T')[0];
+    },
   },
   { accessorKey: 'portalLink', header: 'Portal Link' },
   { accessorKey: 'interest', header: 'Interest' },
