@@ -13,6 +13,7 @@ import { UserRole } from '@vtmp/common/constants';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import jwt from 'jsonwebtoken';
 
 describe('UserController', () => {
   useMongoDB();
@@ -45,7 +46,12 @@ describe('UserController', () => {
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
 
-    mockUserId = (await AuthService.signup(mockOneUser)).id;
+    const token = await AuthService.signup(mockOneUser);
+    const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET) as {
+      id: string;
+    };
+    mockUserId = decoded.id;
+
     mockToken = await AuthService.login({
       email: mockOneUser.email,
       password: mockOneUser.password,
