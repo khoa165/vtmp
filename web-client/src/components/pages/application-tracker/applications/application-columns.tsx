@@ -1,8 +1,17 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/base/checkbox';
 import { ArrowUpDown } from 'lucide-react';
-
+import { MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/base/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/base/dropdown-menu';
+
 import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 
 export const applicationColumns: ColumnDef<IApplication>[] = [
@@ -73,4 +82,39 @@ export const applicationColumns: ColumnDef<IApplication>[] = [
   { accessorKey: 'interest', header: 'Interest' },
   { accessorKey: 'referrer', header: 'Referrer' },
   { accessorKey: 'note', header: 'Note' },
+  {
+    id: 'actions',
+    cell: ({ row }) => {
+      const application = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(application._id)}
+            >
+              Copy application ID
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => console.log('Modified application status')}
+            >
+              Change application status
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => console.log('Delete application')}>
+              Delete application
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
 ];

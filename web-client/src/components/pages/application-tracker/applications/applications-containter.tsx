@@ -12,7 +12,7 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
     data: applicationsData,
     error,
   } = useQuery({
-    queryKey: [QueryKey.GET_APPLICATIONS],
+    queryKey: [QueryKey.GET_APPLICATIONS], // todo-Son: sue something more dynamic here
     queryFn: async () => {
       const response = await request(
         Method.GET,
