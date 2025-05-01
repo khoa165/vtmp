@@ -14,7 +14,9 @@ import {
 
 import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 
-export const applicationColumns: ColumnDef<IApplication>[] = [
+export const applicationColumns = (
+  deleteApplicationFn: (id: string) => void
+): ColumnDef<IApplication>[] => [
   {
     id: 'select',
     header: ({ table }) => (
@@ -109,7 +111,15 @@ export const applicationColumns: ColumnDef<IApplication>[] = [
               Change application status
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => console.log('Delete application')}>
+            <DropdownMenuItem
+              onClick={() => {
+                if (
+                  confirm('Are you sure you want to delete this application?')
+                ) {
+                  deleteApplicationFn(application._id);
+                }
+              }}
+            >
               Delete application
             </DropdownMenuItem>
           </DropdownMenuContent>

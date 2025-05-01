@@ -3,16 +3,18 @@ import { DataTable } from '@/components/pages/application-tracker/applications/d
 import { ApplicationsResponseSchema } from '@/components/pages/application-tracker/applications/validation';
 import { request } from '@/utils/api';
 import { Method, QueryKey } from '@/utils/constants';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const ApplicationsContainer = (): React.JSX.Element | null => {
+  const queryClient = useQueryClient();
+
   const {
     isLoading,
     isError,
     data: applicationsData,
     error,
   } = useQuery({
-    queryKey: [QueryKey.GET_APPLICATIONS], // todo-Son: sue something more dynamic here
+    queryKey: [QueryKey.GET_APPLICATIONS], // todo-Son: use something more dynamic here
     queryFn: async () => {
       const response = await request(
         Method.GET,
@@ -21,6 +23,17 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
         ApplicationsResponseSchema
       );
       return response.data;
+    },
+  });
+
+  const { mutate: deleteApplicationFn } = useMutation({
+    mutationFn: (applicationId: string) =>
+      request(Method.DELETE, `/applications/${applicationId}`, null),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QueryKey.GET_APPLICATIONS] });
+    },
+    onError: (error) => {
+      console.log('Error in useMutation deleting application:', error);
     },
   });
 
@@ -43,7 +56,10 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
 
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={applicationColumns} data={applicationsData} />
+      <DataTable
+        columns={applicationColumns(deleteApplicationFn)}
+        data={applicationsData}
+      />
     </div>
   );
 };
