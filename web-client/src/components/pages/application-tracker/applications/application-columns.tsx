@@ -13,10 +13,23 @@ import {
 } from '@/components/base/dropdown-menu';
 
 import { IApplication } from '@/components/pages/application-tracker/applications/validation';
+import { ApplicationStatus } from '@vtmp/common/constants';
 
-export const applicationColumns = (
-  deleteApplicationFn: (id: string) => void
-): ColumnDef<IApplication>[] => [
+const applicationStatusValues = Object.values(ApplicationStatus);
+
+export const applicationColumns = ({
+  deleteApplicationFn,
+  updateApplicationStatusFn,
+}: {
+  deleteApplicationFn: (id: string) => void;
+  updateApplicationStatusFn: ({
+    applicationId,
+    body,
+  }: {
+    applicationId: string;
+    body: { updatedStatus: ApplicationStatus };
+  }) => void;
+}): ColumnDef<IApplication>[] => [
   {
     id: 'select',
     header: ({ table }) => (
@@ -60,6 +73,32 @@ export const applicationColumns = (
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const application = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Button variant="outline">{application.status}</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {applicationStatusValues.map((status, index) => (
+              <DropdownMenuItem
+                key={index}
+                onClick={() => {
+                  updateApplicationStatusFn({
+                    applicationId: application._id,
+                    body: { updatedStatus: status },
+                  });
+                }}
+              >
+                {status}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
   {
     accessorKey: 'appliedOnDate',
@@ -99,18 +138,17 @@ export const applicationColumns = (
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(application._id)}
             >
               Copy application ID
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => console.log('Modified application status')}
             >
               Change application status
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
                 if (
