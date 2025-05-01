@@ -44,7 +44,7 @@ const LoginPage = () => {
         password: passwordInput,
       });
       console.log('Login response:', res.data);
-      navigate('/home');
+      navigate('/application-tracker');
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
         error.response.data.errors.forEach((err: { message: string }) => {
@@ -64,9 +64,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-4 w-screen h-screen px-20 py-15">
+    <div className="grid grid-cols-12 gap-4 w-screen h-screen px-20 py-15 bg-background dark:bg-background">
       <div className="col-start-1 col-span-5 flex flex-col justify-start">
-        <LogoMint className="w-80 h-32 mb-[56px] pl-6" />
+        <LogoMint className="w-40 h-24 pl-6" />
         <Card className="bg-transparent border-0 h-full justify-center">
           <CardHeader>
             <CardTitle className="text-4xl font-bold">Sign In</CardTitle>
@@ -94,7 +94,7 @@ const LoginPage = () => {
                     }
                   />
                   {emailError && (
-                    <p className="text-(--vtmp-orange) my-2">{emailError}</p>
+                    <p className="text-(--vtmp-orange)">{emailError}</p>
                   )}
                 </div>
                 <div className="flex flex-col space-y-1.5">
@@ -128,7 +128,7 @@ const LoginPage = () => {
                     </Button>
                   </div>
                   {passwordError && (
-                    <p className="text-(--vtmp-orange) my-2">{passwordError}</p>
+                    <p className="text-(--vtmp-orange)">{passwordError}</p>
                   )}
                 </div>
               </div>
