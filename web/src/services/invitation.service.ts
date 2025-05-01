@@ -59,32 +59,33 @@ export const InvitationService = {
 
     if (!latestPendingInvitation) {
       token = jwt.sign({ receiverEmail }, EnvConfig.get().JWT_SECRET, {
-        expiresIn: '1d',
+        expiresIn: '7d',
       });
 
       newInvitation = await InvitationRepository.createInvitation({
         receiverEmail,
         sender: senderId,
         token,
-        expiryDate: addDays(Date.now(), 1),
+        expiryDate: addDays(Date.now(), 7),
       });
     } else {
       if (isBefore(latestPendingInvitation.expiryDate, Date.now())) {
         await InvitationRepository.updateInvitationById(
           latestPendingInvitation.id,
-          { expiryDate: addDays(Date.now(), 1) }
+          { expiryDate: addDays(Date.now(), 7) }
         );
       }
 
       token = latestPendingInvitation.token;
     }
 
-    const emailTemplate = EmailService.getInvitationEmailTemplate(
+    const emailService = new EmailService();
+    const emailTemplate = emailService.getInvitationEmailTemplate(
       receiverName,
       receiverEmail,
       token
     );
-    await EmailService.sendEmail(emailTemplate);
+    await emailService.sendEmail(emailTemplate);
     return newInvitation;
   },
 

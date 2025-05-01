@@ -29,7 +29,7 @@ describe('InvitationService', () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
   });
 
-  const nextDay = addDays(Date.now(), 1);
+  const nextWeek = addDays(Date.now(), 7);
   const mockMenteeName = 'Mentee Viettech';
   const mockAdminId = getNewMongoId();
 
@@ -37,7 +37,7 @@ describe('InvitationService', () => {
     receiverEmail: 'mentee@viettech.com',
     sender: mockAdminId,
     token: 'token-for-invitation',
-    expiryDate: nextDay,
+    expiryDate: nextWeek,
   };
 
   const mockMultipleInvitations = [
@@ -45,21 +45,21 @@ describe('InvitationService', () => {
       receiverEmail: 'mentee1@viettech.com',
       sender: mockAdminId,
       token: 'token-for-invitation',
-      expiryDate: nextDay,
+      expiryDate: nextWeek,
     },
 
     {
       receiverEmail: 'mentee2@viettech.com',
       sender: mockAdminId,
       token: 'token-for-invitation',
-      expiryDate: nextDay,
+      expiryDate: nextWeek,
     },
 
     {
       receiverEmail: 'mentee3@viettech.com',
       sender: mockAdminId,
       token: 'token-for-invitation',
-      expiryDate: nextDay,
+      expiryDate: nextWeek,
     },
   ];
 
@@ -172,7 +172,7 @@ describe('InvitationService', () => {
       const timeDiff = Math.abs(
         differenceInSeconds(
           invitationWithNewExpiryDate.expiryDate,
-          addDays(Date.now(), 1)
+          addDays(Date.now(), 7)
         )
       );
       expect(timeDiff).to.lessThan(3);
@@ -256,7 +256,7 @@ describe('InvitationService', () => {
         { receiverEmail: mockOneInvitation.receiverEmail },
         EnvConfig.get().JWT_SECRET,
         {
-          expiresIn: '1d',
+          expiresIn: '7d',
         }
       );
 
@@ -276,7 +276,7 @@ describe('InvitationService', () => {
       const invalidToken = jwt.sign(
         { receiverEmail: 'not-found-email@viettech.com' },
         EnvConfig.get().JWT_SECRET,
-        { expiresIn: '1d' }
+        { expiresIn: '7d' }
       );
       await expect(
         InvitationService.validateInvitation(invalidToken)

@@ -1,19 +1,21 @@
 import { EnvConfig } from '@/config/env';
 import nodemailer from 'nodemailer';
 
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    auth: {
-      user: EnvConfig.get().GMAIL_EMAIL,
-      pass: EnvConfig.get().GMAIL_APP_PASSWORD,
-    },
-  });
-};
+export class EmailService {
+  private transporter: nodemailer.Transporter;
 
-export const EmailService = {
-  getInvitationEmailTemplate: (name: string, email: string, token: string) => {
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      auth: {
+        user: EnvConfig.get().GMAIL_EMAIL,
+        pass: EnvConfig.get().GMAIL_APP_PASSWORD,
+      },
+    });
+  }
+
+  getInvitationEmailTemplate(name: string, email: string, token: string) {
     const link = `viettechmentorship.com?token=${token}`;
     return {
       email,
@@ -25,9 +27,9 @@ export const EmailService = {
         <a href=${link} target="_blank">Join the community!</a>
         `,
     };
-  },
+  }
 
-  sendEmail: async ({
+  async sendEmail({
     email,
     subject,
     body,
@@ -35,8 +37,7 @@ export const EmailService = {
     email: string;
     subject: string;
     body: string;
-  }) => {
-    const transporter = createTransporter();
+  }) {
     const mailOptions = {
       from: EnvConfig.get().GMAIL_EMAIL,
       to: email,
@@ -45,11 +46,11 @@ export const EmailService = {
     };
 
     try {
-      await transporter.sendMail(mailOptions);
+      await this.transporter.sendMail(mailOptions);
       return true;
     } catch (error: unknown) {
       console.error('error sending email ', error);
       return false;
     }
-  },
-};
+  }
+}
