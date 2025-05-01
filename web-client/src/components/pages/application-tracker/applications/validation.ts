@@ -1,7 +1,7 @@
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 import { z } from 'zod';
 
-export const ApplicationTrackerSchema = z.object({
+export const ApplicationsResponseSchema = z.object({
   message: z.string(),
   data: z.array(
     z.object({
@@ -25,5 +25,5 @@ export const ApplicationTrackerSchema = z.object({
   ),
 });
 
-export type IApplications = z.infer<typeof ApplicationTrackerSchema>['data'];
+export type IApplications = z.infer<typeof ApplicationsResponseSchema>['data'];
 export type IApplication = IApplications[number];

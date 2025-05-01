@@ -3,7 +3,7 @@ import { Checkbox } from '@/components/base/checkbox';
 import { ArrowUpDown } from 'lucide-react';
 
 import { Button } from '@/components/base/button';
-import { IApplication } from '@/components/pages/application-tracker/applications/queries/validation';
+import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 
 export const applicationColumns: ColumnDef<IApplication>[] = [
   {

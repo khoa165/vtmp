@@ -1,7 +1,7 @@
 import {
   ApplicationTrackerSchema,
   IApplications,
-} from '@/components/pages/application-tracker/applications/queries/validation';
+} from '@/components/pages/application-tracker/applications/validation';
 import { api } from '@/utils/axios';
 
 export const getApplicationsData = async (): Promise<IApplications> => {
