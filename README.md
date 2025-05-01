@@ -15,11 +15,7 @@ This project is a monorepo consisting of two main components:
 
 1.  **Install Node.js:** Make sure you have Node.js (version 16 or higher) installed on your system. You can download it from [nodejs.org](https://nodejs.org/).
 
-2.  **Install Yarn:** This project uses Yarn as the package manager. You can install it globally using the following command
-
-```bash
-npm install -g yarn
-```
+2.  **Install Yarn:** This project uses Yarn as the package manager. You can install it following the instruction [here](https://yarnpkg.com/getting-started/install)
 
 3.  **Clone the repository:** Clone this repository to your local machine using Git
 
@@ -60,11 +56,11 @@ git clone git@github.com:khoa165/vtmp.git
 Without Docker
 
 ```bash
-yarn pp
+yarn install
 yarn dev
 ```
 
-With Docker
+With Docker (might be out of dated at the moment)
 
 ```
 docker compose up --build

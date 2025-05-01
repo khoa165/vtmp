@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const UserLogo = () => {
+export const Avatar = () => {
   return (
     <a href="/" className="w-fit flex justify-center items-center">
       <img
