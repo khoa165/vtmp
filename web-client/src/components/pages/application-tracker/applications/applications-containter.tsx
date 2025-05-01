@@ -55,7 +55,7 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <div>
       <DataTable
         columns={applicationColumns(deleteApplicationFn)}
         data={applicationsData}

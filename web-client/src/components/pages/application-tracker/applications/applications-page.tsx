@@ -3,7 +3,7 @@ import { ApplicationsContainer } from '@/components/pages/application-tracker/ap
 
 export const ApplicationsPage = () => {
   return (
-    <div>
+    <div className="container mx-auto py-10">
       <StatusBar />
       <ApplicationsContainer />
     </div>
