@@ -1,6 +1,5 @@
-import { EnvConfig } from '@/config/env';
+import { JWTUtils } from '@/utils/jwt';
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 
 const DecodedJWTSchema = z.object({
@@ -19,12 +18,7 @@ export const authenticate = async (
   }
 
   try {
-    const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
-    const parsed = DecodedJWTSchema.safeParse(decoded);
-    if (parsed.success) {
-      req.user = parsed.data;
-    }
-
+    req.user = JWTUtils.decodeAndParseToken(token, DecodedJWTSchema);
     next();
   } catch {
     res.status(403).json({ message: 'Forbidden' });
