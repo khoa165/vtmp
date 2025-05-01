@@ -1,7 +1,8 @@
 import { applicationColumns } from '@/components/pages/application-tracker/applications/application-columns';
 import { DataTable } from '@/components/pages/application-tracker/applications/data-table';
-import { getApplicationsData } from '@/components/pages/application-tracker/applications/queries';
-import { QueryKey } from '@/utils/constants';
+import { ApplicationsResponseSchema } from '@/components/pages/application-tracker/applications/validation';
+import { request } from '@/utils/api';
+import { Method, QueryKey } from '@/utils/constants';
 import { useQuery } from '@tanstack/react-query';
 
 export const ApplicationsContainer = (): React.JSX.Element | null => {
@@ -11,13 +12,21 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
     data: applicationsData,
     error,
   } = useQuery({
-    queryKey: [QueryKey.GET_APPLICATIONS],
-    queryFn: getApplicationsData,
+    queryKey: [QueryKey.GET_APPLICATIONS], // todo-Son: sue something more dynamic here
+    queryFn: async () => {
+      const response = await request(
+        Method.GET,
+        '/applications',
+        null,
+        ApplicationsResponseSchema
+      );
+      return response.data;
+    },
   });
 
   if (isLoading) {
     console.log('Loading summary data...');
-    // return <span>Loading summary data...</span>;
+    return <span>Loading summary data...</span>;
   }
 
   if (isError) {

@@ -49,6 +49,7 @@ const ApplicationSchema = new mongoose.Schema<IApplication>({
   },
   deletedAt: {
     type: Date,
+    default: null,
   },
   referrer: {
     type: String,

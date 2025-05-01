@@ -1,7 +1,7 @@
 import { Button } from '@/components/base/button';
 import { CardWithForm } from '@/components/playground/demo-cart';
 import { DataTableDemo } from '@/components/playground/demo-table';
-import { Container, Row } from 'reactstrap';
+import { Container } from 'reactstrap';
 
 export const Playground = () => {
   return (
@@ -20,15 +20,14 @@ export const Playground = () => {
       <div className="w-360 h-120 rainbow-gradient2">rainbow gradient 2</div>
       <div className="w-120 h-360 rainbow-gradient2">rainbow gradient 2</div>
 
-      <Row>
+      <div>
         <Button variant="gradient">Phuc Jun</Button>
         <Button variant="destructive">destructive</Button>
         <Button variant="outline">outline</Button>
         <Button variant="secondary">secondary</Button>
         <Button variant="ghost">ghost</Button>
-        <Button variant="gradient2">Phuc Jun</Button>
-        <Button variant="colorText">Color Text</Button>
-      </Row>
+        <Button variant="pink">Phuc Jun</Button>
+      </div>
 
       <DataTableDemo />
       <CardWithForm />
