@@ -17,7 +17,7 @@ import {
   SidebarTrigger,
 } from '@/components/base/sidebar';
 import { VTMPLogo } from '@/components/base/vtmp-logo';
-import { UserLogo } from '@/components/base/user-logo';
+import { Avatar } from '@/components/base/avatar';
 import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
 export const InternalToolsSidebar = () => {
   const items = [
@@ -47,7 +47,6 @@ export const InternalToolsSidebar = () => {
     <Sidebar collapsible="icon" variant="sidebar">
       <SidebarContent>
         <SidebarGroup>
-          {/* <SidebarGroupLabel>Application</SidebarGroupLabel> */}
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -75,7 +74,7 @@ export const InternalToolsSidebar = () => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <UserLogo />
+              <Avatar />
               <SidebarTrigger />
             </SidebarMenu>
           </SidebarGroupContent>
