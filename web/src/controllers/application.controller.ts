@@ -66,9 +66,11 @@ export const ApplicationController = {
   },
 
   getApplications: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    //const userId = getUserFromRequest(req).user.id;
 
-    const applications = await ApplicationService.getApplications(userId);
+    const applications = await ApplicationService.getApplications(
+      '68110356bd157e78f5a2137e'
+    );
 
     res.status(200).json({
       message: 'Applications retrieved successfully',

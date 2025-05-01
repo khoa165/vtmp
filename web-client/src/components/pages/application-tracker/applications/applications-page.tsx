@@ -3,7 +3,7 @@ import { ApplicationsContainer } from '@/components/pages/application-tracker/ap
 
 export const ApplicationsPage = () => {
   return (
-    <div>
+    <div className="w-full h-full container p-10">
       <StatusBar />
       <ApplicationsContainer />
     </div>
