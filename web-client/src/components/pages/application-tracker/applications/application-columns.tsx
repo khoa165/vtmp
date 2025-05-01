@@ -53,10 +53,6 @@ export const applicationColumns = ({
     enableHiding: false,
   },
   {
-    accessorKey: 'jobPostingId',
-    header: 'Job Posting Id',
-  },
-  {
     accessorKey: 'companyName',
     header: 'Company',
   },
@@ -143,11 +139,6 @@ export const applicationColumns = ({
               onClick={() => navigator.clipboard.writeText(application._id)}
             >
               Copy application ID
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => console.log('Modified application status')}
-            >
-              Change application status
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
