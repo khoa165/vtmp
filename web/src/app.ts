@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import connectDB from '@/config/database';
+import { connectDB } from '@/config/database';
 import routes from '@/routes/index';
 import { routeErrorHandler } from '@/middlewares/utils';
 

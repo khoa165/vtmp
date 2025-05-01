@@ -97,7 +97,7 @@ export const ApplicationService = {
       referrer?: string;
       portalLink?: string;
       interest?: InterestLevel;
-      status?: Exclude<ApplicationStatus, ApplicationStatus.REJECTED>;
+      status?: ApplicationStatus;
     };
   }): Promise<IApplication | null> => {
     if (updatedMetadata.status === ApplicationStatus.REJECTED) {

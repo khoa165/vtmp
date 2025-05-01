@@ -1,7 +1,6 @@
 import React from 'react';
 import { Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import 'src/styles/scss/layout.scss';
 
 export const Banner = () => {
   return (

@@ -148,3 +148,7 @@ export enum ProjectName {
   APPLICATION_TRACKER = 'APPLICATION_TRACKER',
   CODE_BUDDY = 'CODE_BUDDY',
 }
+
+export enum QueryKey {
+  SUBMIT_LINK = '/api/links',
+}
