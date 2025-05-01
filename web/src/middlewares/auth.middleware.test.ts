@@ -11,7 +11,7 @@ import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 const { expect } = chai;
-describe.only('AuthMiddleware', () => {
+describe('AuthMiddleware', () => {
   useMongoDB();
   const sandbox = useSandbox();
   beforeEach(() => {
@@ -84,56 +84,5 @@ describe.only('AuthMiddleware', () => {
 
     expect(res.body.data).to.have.property('_id');
     expect(res.body.data._id).to.equal(id);
-  });
-
-  it('should allow users to login, return tokens and get other user profile', async () => {
-    await request(app)
-      .post('/api/auth/signup')
-      .send({
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test@example.com',
-        password: 'Test!123',
-      })
-      .set('Accept', 'application/json');
-
-    await request(app)
-      .post('/api/auth/signup')
-      .send({
-        firstName: 'admin2',
-        lastName: 'viettech',
-        email: 'test1@example.com',
-        password: 'Test!123',
-      })
-      .set('Accept', 'application/json');
-
-    const resLoginA = await request(app)
-      .post('/api/auth/login')
-      .send({
-        email: 'test@example.com',
-        password: 'Test!123',
-      })
-      .set('Accept', 'application/json');
-
-    const resLoginB = await request(app)
-      .post('/api/auth/login')
-      .send({
-        email: 'test1@example.com',
-        password: 'Test!123',
-      })
-      .set('Accept', 'application/json');
-
-    const tokenA = resLoginA.body.data.token;
-    const decodedA = jwt.verify(tokenA, MOCK_ENV.JWT_SECRET);
-    const idA = DecodedJWTSchema.parse(decodedA).id;
-
-    const tokenB = resLoginB.body.data.token;
-
-    const res = await request(app)
-      .get(`/api/users/${idA}`)
-      .set('Accept', 'application/json')
-      .set('Authorization', `Bearer ${tokenB}`);
-
-    console.log(res.body);
   });
 });
