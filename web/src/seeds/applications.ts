@@ -11,7 +11,7 @@ export const loadApplications = async (
     {
       userId: users[0]?.id,
       jobPostingId: jobPostings[0]?.id,
-      status: ApplicationStatus.IN_PROGRESS,
+      status: ApplicationStatus,
       referrer: 'Khoa',
       portalLink: 'abc.com',
       interest: InterestLevel.LOW,
@@ -19,7 +19,7 @@ export const loadApplications = async (
     {
       userId: users[0]?.id,
       jobPostingId: jobPostings[1]?.id,
-      status: ApplicationStatus.OA_RECEIVED,
+      status: ApplicationStatus.OA,
       referrer: 'An',
       portalLink: 'def.com',
       interest: InterestLevel.MEDIUM,
@@ -43,7 +43,7 @@ export const loadApplications = async (
     {
       userId: users[1]?.id,
       jobPostingId: jobPostings[1]?.id,
-      status: ApplicationStatus.OFFER,
+      status: ApplicationStatus.OFFERED,
       referrer: 'Khoa',
       portalLink: 'abc.com',
       interest: InterestLevel.LOW,
