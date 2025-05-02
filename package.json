@@ -7,7 +7,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "frontend": "yarn workspace @vtmp/common build && yarn workspace @vtmp/web-client dev",
+    "frontend": "concurrently \"yarn workspace @vtmp/common dev\" \"yarn workspace @vtmp/web-client dev --force\"",
     "backend": "yarn workspace @vtmp/common build && yarn workspace @vtmp/web dev",
     "fa": "yarn workspace @vtmp/web-client add",
     "fr": "yarn workspace @vtmp/web-client remove",
