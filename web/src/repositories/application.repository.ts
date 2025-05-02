@@ -97,9 +97,15 @@ export const ApplicationRepository = {
     );
   },
 
-  countApplicationsByStatus: async () => {
+  getApplicationsCountByStatus: async (userId: string) => {
     // Need to call aggregate pipeline, this takes an array of stages
     const result = await ApplicationModel.aggregate([
+      {
+        $match: {
+          userId,
+          deletedAt: null,
+        },
+      },
       {
         $group: {
           _id: '$status',

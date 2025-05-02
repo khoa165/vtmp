@@ -18,6 +18,10 @@ ApplicationRoutes.get(
   '/:applicationId',
   wrappedHandlers([ApplicationController.getApplicationById])
 );
+ApplicationRoutes.get(
+  '/applicationsCount',
+  wrappedHandlers([ApplicationController.getApplicationsCountByStatus])
+);
 ApplicationRoutes.put(
   '/:applicationId/updateStatus',
   wrappedHandlers([ApplicationController.updateApplicationStatus])
