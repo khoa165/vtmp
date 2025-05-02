@@ -47,5 +47,17 @@ export const ApplicationResponseSchema = z.object({
   }),
 });
 
+export const CountApplicationsByStatusSchema = z.object({
+  message: z.string(),
+  data: z.object({
+    submittedCount: z.number().optional(),
+    oaCount: z.number().optional(),
+    interviewingCount: z.number().optional(),
+    offeredCount: z.number().optional(),
+    rejectedCount: z.number().optional(),
+    withdrawalCount: z.number().optional(),
+  }),
+});
+
 export type IApplications = z.infer<typeof ApplicationsResponseSchema>['data'];
 export type IApplication = IApplications[number];

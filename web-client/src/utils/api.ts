@@ -14,12 +14,13 @@ export const request = async <T>(
   data?: unknown,
   schema?: { parse: (data: unknown) => T }
 ): Promise<T> => {
+  console.log(url, method, schema);
   const response = await api.request({
     method,
     url,
     ...(data ? { data } : {}),
   });
-
+  console.log(response);
   if (schema) {
     return schema.parse(response.data);
   }

@@ -151,10 +151,13 @@ export const ApplicationController = {
   },
 
   getApplicationsCountByStatus: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    // const userId = getUserFromRequest(req).user.id;
+    console.log('Request hit');
 
     const applicationsCount =
-      await ApplicationService.getApplicationsCountByStatus(userId);
+      await ApplicationService.getApplicationsCountByStatus(
+        '68110356bd157e78f5a2137e'
+      );
 
     res.status(200).json({
       message: 'Applications count retrieved successfully',

@@ -7,43 +7,79 @@ import {
   RejectedStatusDot,
   WithdrawnStatusDot,
 } from '@/components/base/status-dots';
+import { CountApplicationsByStatusSchema } from '@/components/pages/application-tracker/applications/validation';
+import { request } from '@/utils/api';
+import { Method } from '@/utils/constants';
+import { useQuery } from '@tanstack/react-query';
 
 export const StatusBar = () => {
+  const {
+    isLoading,
+    isError,
+    error,
+    data: ApplicationsCountByStatus,
+  } = useQuery({
+    queryKey: ['status-bar'],
+    queryFn: () =>
+      request(
+        Method.GET,
+        '/applications/applicationsCount',
+        null,
+        CountApplicationsByStatusSchema
+      ),
+  });
+
+  if (isLoading) {
+    console.log('Application count loading...');
+    return <span>Loading applications count data...</span>;
+  }
+
+  if (isError) {
+    console.error('Error fetching application count data:', error);
+    // return (
+    //   <span>Error: {error.message || 'Failed to load summary data.'}</span>
+    // );
+    return null;
+  }
+
   const infos = [
     {
-      num: 250,
+      num: ApplicationsCountByStatus?.submittedCount,
       label: 'Submitted',
       dot: <SubmittedStatusDot />,
     },
     {
-      num: 25,
+      num: ApplicationsCountByStatus?.oaCount,
       label: 'OA',
       dot: <OAStatusDot />,
     },
     {
-      num: 12,
+      num: ApplicationsCountByStatus?.interviewingCount,
       label: 'Interviewing',
       dot: <InterviewingStatusDot />,
     },
     {
-      num: 9,
+      num: ApplicationsCountByStatus?.offeredCount,
       label: 'Offered',
       dot: <OfferedStatusDot />,
     },
     {
-      num: 15,
+      num: ApplicationsCountByStatus?.rejectedCount,
       label: 'Rejected',
       dot: <RejectedStatusDot />,
     },
     {
-      num: 2,
+      num: ApplicationsCountByStatus?.withdrawalCount,
       label: 'Withdrawn',
       dot: <WithdrawnStatusDot />,
     },
   ];
+  const filteredInfos = infos.filter((info) => info.num !== undefined);
   return (
-    <div className="grid min-md:grid-cols-6 w-full gap-4 mb-6 max-md:grid-rows-6">
-      {infos.map((info, index) => (
+    <div
+      className={`grid min-md:grid-cols-${filteredInfos.length} w-full gap-4 mb-6 max-md:grid-rows-6`}
+    >
+      {filteredInfos.map((info, index) => (
         <Card
           key={index}
           className="bg-transparent h-fit cursor-pointer hover:bg-[#FEFEFE] hover:text-[#333333] transition-colors duration-200"
