@@ -17,7 +17,7 @@ export const request = async <T>(
   const response = await api.request({
     method,
     url,
-    data,
+    ...(data ? { data } : {}),
   });
 
   if (schema) {
