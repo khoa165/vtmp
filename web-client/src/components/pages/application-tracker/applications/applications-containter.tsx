@@ -1,6 +1,10 @@
 import { applicationColumns } from '@/components/pages/application-tracker/applications/applications-table-columns';
 import { DataTable } from '@/components/pages/application-tracker/applications/applications-table';
-import { useApplications } from '@/components/pages/application-tracker/applications/hooks/useApplications';
+import {
+  useGetApplications,
+  useDeleteApplication,
+  useUpdateApplicationStatus,
+} from '@/components/pages/application-tracker/applications/hooks/applications';
 
 export const ApplicationsContainer = (): React.JSX.Element | null => {
   const {
@@ -8,11 +12,9 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
     isError,
     error,
     data: applicationsData,
-  } = useApplications.useGetApplications();
-  const { mutate: deleteApplicationFn } =
-    useApplications.useDeleteApplication();
-  const { mutate: updateApplicationStatusFn } =
-    useApplications.useUpdateApplicationStatus();
+  } = useGetApplications();
+  const { mutate: deleteApplicationFn } = useDeleteApplication();
+  const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
 
   if (isLoading) {
     console.log('Loading summary data...');
