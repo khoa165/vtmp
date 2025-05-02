@@ -11,10 +11,13 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import { UserRole } from '@vtmp/common/constants';
+import { InvitationStatus, UserRole } from '@vtmp/common/constants';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { addDays } from 'date-fns';
+import { addDays, subDays } from 'date-fns';
 import { InvitationRepository } from '@/repositories/invitation.repository';
+import assert from 'assert';
+import jwt from 'jsonwebtoken';
+import { IInvitation } from '@/models/invitation.model';
 
 describe('InvitationController', () => {
   useMongoDB();
@@ -27,12 +30,12 @@ describe('InvitationController', () => {
   // const mockMenteeName = 'Mentee Viettech';
   const mockAdminId = getNewMongoId();
 
-  // const mockOneInvitation = {
-  //   receiverEmail: 'mentee@viettech.com',
-  //   sender: mockAdminId,
-  //   token: 'token-for-invitation',
-  //   expiryDate: nextWeek,
-  // };
+  const mockOneInvitation = {
+    receiverEmail: 'mentee@viettech.com',
+    sender: mockAdminId,
+    token: 'token-for-invitation',
+    expiryDate: nextWeek,
+  };
 
   const mockMultipleInvitations = [
     {
@@ -253,15 +256,134 @@ describe('InvitationController', () => {
     });
   });
 
-  describe.only('PUT /invitations/:invitationId/revoke', () => {
+  describe('PUT /invitations/:invitationId/revoke', () => {
     it('should return error message when invitation does not exist', async () => {
       const res = await request(app)
         .put(`/api/invitations/${getNewMongoId()}/revoke`)
         .send({})
         .set('Accept', 'application/json');
+
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Invitation not found');
+    });
+
+    it('should return error message when invitation is not pending', async () => {
+      const newInvitation = await InvitationRepository.createInvitation({
+        ...mockOneInvitation,
+        status: InvitationStatus.ACCEPTED,
+      });
+
+      const res = await request(app)
+        .put(`/api/invitations/${newInvitation.id}/revoke`)
+        .send({})
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Can only revoke Pending invitation'
+      );
+    });
+
+    it('should successfully revoke invitation and return the invitation with updated status of REVOKED', async () => {
+      const newInvitation =
+        await InvitationRepository.createInvitation(mockOneInvitation);
+
+      const res = await request(app)
+        .put(`/api/invitations/${newInvitation.id}/revoke`)
+        .send({})
+        .set('Accept', 'application/json');
+
+      assert(res.body.data);
+      expect(res.body.data).to.deep.include({
+        ...mockOneInvitation,
+        expiryDate: mockOneInvitation.expiryDate.toISOString(),
+      });
+      expect(res.body.data.status).to.equal(InvitationStatus.REVOKED);
     });
   });
 
-  // describe('POST /invitations/validate', () => {});
+  describe('POST /invitations/validate', () => {
+    let pendingInvitation: IInvitation;
+
+    beforeEach(async () => {
+      const token = jwt.sign(
+        { receiverEmail: mockOneInvitation.receiverEmail },
+        EnvConfig.get().JWT_SECRET,
+        {
+          expiresIn: '7d',
+        }
+      );
+
+      pendingInvitation = await InvitationRepository.createInvitation({
+        ...mockOneInvitation,
+        token,
+      });
+    });
+
+    it('should return error message for invalid token', async () => {
+      const res = await request(app)
+        .post(`/api/invitations/validate`)
+        .send({ token: 'fake token' })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('jwt malformed');
+    });
+
+    it('should return error message for invitation not found', async () => {
+      const invalidToken = jwt.sign(
+        { receiverEmail: 'not-found-email@viettech.com' },
+        EnvConfig.get().JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      const res = await request(app)
+        .post(`/api/invitations/validate`)
+        .send({ token: invalidToken })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Invitation not found');
+    });
+
+    it('should return error message for invitation has expired', async () => {
+      await InvitationRepository.updateInvitationById(pendingInvitation.id, {
+        expiryDate: subDays(Date.now(), 1),
+      });
+
+      const res = await request(app)
+        .post(`/api/invitations/validate`)
+        .send({ token: pendingInvitation.token })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Invitation has expired');
+    });
+
+    it('should not throw error for valid invitation', async () => {
+      const res = await request(app)
+        .post(`/api/invitations/validate`)
+        .send({ token: pendingInvitation.token })
+        .set('Accept', 'application/json');
+
+      assert(res.body.data);
+    });
+
+    it('should return validated invitation for valid invitation', async () => {
+      const res = await request(app)
+        .post(`/api/invitations/validate`)
+        .send({ token: pendingInvitation.token })
+        .set('Accept', 'application/json');
+
+      const pendingInviObj = pendingInvitation.toObject();
+      expect(res.body.data).to.deep.include({
+        ...pendingInviObj,
+        sender: String(pendingInviObj.sender),
+        expiryDate: pendingInviObj.expiryDate.toISOString(),
+        _id: String(pendingInviObj._id),
+        createdAt: pendingInviObj.createdAt.toISOString(),
+        updatedAt: pendingInviObj.updatedAt.toISOString(),
+      });
+    });
+  });
 });

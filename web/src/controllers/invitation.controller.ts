@@ -34,13 +34,14 @@ export const InvitationController = {
 
   revokeInvitation: async (req: Request, res: Response) => {
     const { invitationId } = InvitationIdSchema.parse(req.params);
-    const revokedInvitation = InvitationService.revokeInvitation(invitationId);
+    const revokedInvitation =
+      await InvitationService.revokeInvitation(invitationId);
     res.status(200).json({ data: revokedInvitation });
   },
 
   validateInvitation: async (req: Request, res: Response) => {
     const { token } = InvitationTokenSchema.parse(req.body);
-    const foundInvitation = InvitationService.validateInvitation(token);
+    const foundInvitation = await InvitationService.validateInvitation(token);
     res.status(200).json({ data: foundInvitation });
   },
 };
