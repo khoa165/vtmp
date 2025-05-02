@@ -5,8 +5,8 @@ import { LinkStatus } from '@vtmp/common/constants';
 const { ObjectId } = mongoose.Types;
 
 export const LinkRepository = {
-  createLink: async (url: string) => {
-    return LinkModel.create({ url });
+  createLink: async (linkData: object) => {
+    return LinkModel.create(linkData);
   },
 
   getLinkById: async (id: string) => {
