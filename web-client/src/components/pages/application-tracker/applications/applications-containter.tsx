@@ -1,5 +1,5 @@
-import { applicationColumns } from '@/components/pages/application-tracker/applications/application-columns';
-import { DataTable } from '@/components/pages/application-tracker/applications/data-table';
+import { applicationColumns } from '@/components/pages/application-tracker/applications/applications-table-columns';
+import { DataTable } from '@/components/pages/application-tracker/applications/applications-table';
 import { useApplications } from '@/components/pages/application-tracker/applications/hooks/useApplications';
 
 export const ApplicationsContainer = (): React.JSX.Element | null => {
