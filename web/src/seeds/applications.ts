@@ -11,7 +11,7 @@ export const loadApplications = async (
     {
       userId: users[0]?.id,
       jobPostingId: jobPostings[0]?.id,
-      status: ApplicationStatus,
+      status: ApplicationStatus.SUBMITTED,
       referrer: 'Khoa',
       portalLink: 'abc.com',
       interest: InterestLevel.LOW,
@@ -27,7 +27,7 @@ export const loadApplications = async (
     {
       userId: users[0]?.id,
       jobPostingId: jobPostings[2]?.id,
-      status: ApplicationStatus.SUBMITTED,
+      status: ApplicationStatus.OFFERED,
       referrer: 'Jun',
       portalLink: 'xyz.com',
       interest: InterestLevel.HIGH,
