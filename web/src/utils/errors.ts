@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import { ZodError } from 'zod';
 
 export abstract class ApplicationSpecificError extends Error {
@@ -49,6 +50,11 @@ export const handleError = (error: unknown) => {
       errors: error.issues.map((issue) => ({
         message: issue.message,
       })),
+    };
+  } else if (error instanceof jwt.JsonWebTokenError) {
+    return {
+      statusCode: 401,
+      errors: [{ message: error.message }],
     };
   } else if (error instanceof ApplicationSpecificError) {
     return {
