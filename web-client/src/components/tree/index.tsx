@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { TreeCard } from 'src/components/tree/tree-card';
-import { allBlogsFilepaths } from 'src/blogs/metadata';
-import { getFileName } from 'src/utils/file';
-import { BlogFileMapping } from 'src/types';
+import { TreeCard } from '@/components/tree/tree-card';
+import { allBlogsFilepaths } from '@/blogs/metadata';
+import { getFileName } from '@/utils/file';
+import { BlogFileMapping } from '@/types';
 
 interface TreeContainerProps {
   metadata: BlogFileMapping | null;

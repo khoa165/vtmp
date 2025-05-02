@@ -16,10 +16,12 @@ import { toast } from 'sonner';
 import { Method } from '@/utils/constants';
 import { request } from '@/utils/api';
 import { SubmitLinkResponseSchema } from '@/components/pages/application-tracker/links/validation';
+import { ApplicationStatus } from '@vtmp/common/constants';
 
 export const SubmitLink = () => {
   const [linkInput, setLinkInput] = useState('');
   const [submitLinkError, setSubmitLinkError] = useState([]);
+  console.log(ApplicationStatus);
 
   const { mutate: submitLinkFn } = useMutation({
     mutationFn: (body: { url: string }) =>
