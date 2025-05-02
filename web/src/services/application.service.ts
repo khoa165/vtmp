@@ -219,4 +219,8 @@ export const ApplicationService = {
       });
     return deletedApplication;
   },
+
+  getApplicationsCountByStatus: async (userId: string) => {
+    return ApplicationRepository.getApplicationsCountByStatus(userId);
+  },
 };
