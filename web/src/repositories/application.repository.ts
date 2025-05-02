@@ -1,6 +1,6 @@
 import { ApplicationModel, IApplication } from '@/models/application.model';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
-import { ClientSession } from 'mongoose';
+import mongoose, { ClientSession } from 'mongoose';
 
 export const ApplicationRepository = {
   createApplication: async ({
@@ -102,7 +102,7 @@ export const ApplicationRepository = {
     const result = await ApplicationModel.aggregate([
       {
         $match: {
-          userId,
+          userId: new mongoose.Types.ObjectId(userId),
           deletedAt: null,
         },
       },

@@ -15,12 +15,12 @@ ApplicationRoutes.get(
   wrappedHandlers([ApplicationController.getApplications])
 );
 ApplicationRoutes.get(
-  '/:applicationId',
-  wrappedHandlers([ApplicationController.getApplicationById])
+  '/countByStatus',
+  wrappedHandlers([ApplicationController.getApplicationsCountByStatus])
 );
 ApplicationRoutes.get(
-  '/applicationsCount',
-  wrappedHandlers([ApplicationController.getApplicationsCountByStatus])
+  '/:applicationId',
+  wrappedHandlers([ApplicationController.getApplicationById])
 );
 ApplicationRoutes.put(
   '/:applicationId/updateStatus',
