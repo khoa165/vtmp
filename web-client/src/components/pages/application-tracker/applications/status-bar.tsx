@@ -20,13 +20,15 @@ export const StatusBar = () => {
     data: ApplicationsCountByStatus,
   } = useQuery({
     queryKey: ['status-bar'],
-    queryFn: () =>
-      request(
+    queryFn: async () => {
+      const response = await request(
         Method.GET,
         '/applications/applicationsCount',
         null,
         CountApplicationsByStatusSchema
-      ),
+      );
+      return response.data;
+    },
   });
 
   if (isLoading) {
