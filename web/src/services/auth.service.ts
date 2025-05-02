@@ -7,6 +7,7 @@ import {
 } from '@/utils/errors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import * as R from 'remeda';
 
 export const AuthService = {
   signup: async ({
@@ -48,7 +49,8 @@ export const AuthService = {
         expiresIn: '1h',
       }
     );
-    return token;
+
+    return { token, user: R.omit(user, ['encryptedPassword']) };
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {
@@ -74,6 +76,7 @@ export const AuthService = {
         expiresIn: '1h',
       }
     );
-    return token;
+
+    return { token, user: R.omit(user, ['encryptedPassword']) };
   },
 };

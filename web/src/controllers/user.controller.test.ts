@@ -46,16 +46,18 @@ describe('UserController', () => {
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
 
-    const token = await AuthService.signup(mockOneUser);
+    const { token } = await AuthService.signup(mockOneUser);
     const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET) as {
       id: string;
     };
     mockUserId = decoded.id;
 
-    mockToken = await AuthService.login({
+    const loginToken = await AuthService.login({
       email: mockOneUser.email,
       password: mockOneUser.password,
     });
+
+    mockToken = loginToken.token;
   });
 
   describe('GET /users', () => {
