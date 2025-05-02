@@ -98,7 +98,6 @@ export const ApplicationRepository = {
   },
 
   getApplicationsCountByStatus: async (userId: string) => {
-    // Need to call aggregate pipeline, this takes an array of stages
     const result = await ApplicationModel.aggregate([
       {
         $match: {
@@ -113,15 +112,12 @@ export const ApplicationRepository = {
         },
       },
     ]);
-    // After the this step, the result looks like [{_id: SUBMITTED, count: 10}, {_id: OFFER, count: 10}]
-    // Then, massage this result, using reduce() to return an object
-    // {SUBMITTED: 10, INTERVIEW: 15, OFFER: 20}
-    const countObject = result.reduce((accummulator, item) => {
-      const newKey = `${item._id.toLowerCase()}Count`;
-      accummulator[newKey] = item.count;
+    // After the this step, the result looks like [{_id: SUBMITTED, count: 10}, {_id: OFFERED, count: 10}]
+    const countGroupByStatus = result.reduce((accummulator, item) => {
+      accummulator[item._id] = item.count;
       return accummulator;
     }, {});
 
-    return countObject;
+    return countGroupByStatus;
   },
 };
