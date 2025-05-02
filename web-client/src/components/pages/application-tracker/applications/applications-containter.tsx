@@ -1,5 +1,5 @@
-import { applicationColumns } from '@/components/pages/application-tracker/applications/applications-table-columns';
-import { DataTable } from '@/components/pages/application-tracker/applications/applications-table';
+import { applicationsTableColumns } from '@/components/pages/application-tracker/applications/applications-table-columns';
+import { ApplicationsTable } from '@/components/pages/application-tracker/applications/applications-table';
 import {
   useGetApplications,
   useDeleteApplication,
@@ -35,8 +35,8 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
 
   return (
     <div>
-      <DataTable
-        columns={applicationColumns({
+      <ApplicationsTable
+        columns={applicationsTableColumns({
           deleteApplicationFn,
           updateApplicationStatusFn,
         })}
