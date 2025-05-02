@@ -618,6 +618,14 @@ describe('ApplicationService', () => {
   });
 
   describe('getApplicationsCountByStatus', () => {
+    const updatedStatus = [
+      ApplicationStatus.SUBMITTED,
+      ApplicationStatus.WITHDRAWN,
+      ApplicationStatus.OFFERED,
+      ApplicationStatus.OFFERED,
+      ApplicationStatus.REJECTED,
+    ];
+
     it('should return an empty object if no applications exist for the user', async () => {
       const result =
         await ApplicationService.getApplicationsCountByStatus(userId_A);
@@ -635,15 +643,6 @@ describe('ApplicationService', () => {
           })
         )
       );
-
-      const updatedStatus = [
-        ApplicationStatus.SUBMITTED,
-        ApplicationStatus.WITHDRAWN,
-        ApplicationStatus.OFFERED,
-        ApplicationStatus.OFFERED,
-        ApplicationStatus.REJECTED,
-      ];
-
       await Promise.all(
         applications.map((application, index) =>
           ApplicationRepository.updateApplicationById({
