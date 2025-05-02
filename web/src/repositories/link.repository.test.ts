@@ -6,7 +6,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import assert from 'assert';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 
-describe.only('LinkRepository', () => {
+describe('LinkRepository', () => {
   useMongoDB();
   const mockLinkData = {
     url: 'http://example.com/job-posting',
