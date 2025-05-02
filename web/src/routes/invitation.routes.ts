@@ -15,7 +15,7 @@ InvitationRoutes.post(
 );
 
 InvitationRoutes.put(
-  '/:invitationid/revoke',
+  '/:invitationId/revoke',
   wrappedHandlers([InvitationController.revokeInvitation])
 );
 

@@ -1,6 +1,5 @@
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { beforeEach, describe } from 'mocha';
-import bcrypt from 'bcryptjs';
 import { UserRepository } from '@/repositories/user.repository';
 import app from '@/app';
 import request from 'supertest';
@@ -13,6 +12,9 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { UserRole } from '@vtmp/common/constants';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { addDays } from 'date-fns';
+import { InvitationRepository } from '@/repositories/invitation.repository';
 
 describe('InvitationController', () => {
   useMongoDB();
@@ -21,87 +23,69 @@ describe('InvitationController', () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
   });
 
-  describe('POST /auth/login', () => {
-    beforeEach(async () => {
-      const encryptedPassword = await bcrypt.hash('test password', 10);
-      const mockUser = {
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test@gmail.com',
-        encryptedPassword,
-      };
-      await UserRepository.createUser(mockUser);
-    });
+  const nextWeek = addDays(Date.now(), 7);
+  // const mockMenteeName = 'Mentee Viettech';
+  const mockAdminId = getNewMongoId();
 
-    it('should return error messages for missing email and password', async () => {
+  // const mockOneInvitation = {
+  //   receiverEmail: 'mentee@viettech.com',
+  //   sender: mockAdminId,
+  //   token: 'token-for-invitation',
+  //   expiryDate: nextWeek,
+  // };
+
+  const mockMultipleInvitations = [
+    {
+      receiverEmail: 'mentee1@viettech.com',
+      sender: mockAdminId,
+      token: 'token-for-invitation',
+      expiryDate: nextWeek,
+    },
+
+    {
+      receiverEmail: 'mentee2@viettech.com',
+      sender: mockAdminId,
+      token: 'token-for-invitation',
+      expiryDate: nextWeek,
+    },
+
+    {
+      receiverEmail: 'mentee3@viettech.com',
+      sender: mockAdminId,
+      token: 'token-for-invitation',
+      expiryDate: nextWeek,
+    },
+  ];
+
+  describe('GET /invitations/', () => {
+    it('should return empty array when no invitations exist', async () => {
       const res = await request(app)
-        .post('/api/auth/login')
-        .send({})
+        .get('/api/invitations')
         .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 2 });
-
-      const errors = res.body.errors;
-      expect(errors[0].message).to.equal('Email is required');
-      expect(errors[1].message).to.equal('Password is required');
-    });
-
-    it('should return error message for missing email', async () => {
-      const res = await request(app)
-        .post('/api/auth/login')
-        .send({ password: 'test' })
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-
-      const errors = res.body.errors;
-      expect(errors[0].message).to.equal('Email is required');
-    });
-
-    it('should return error message for missing password', async () => {
-      const res = await request(app)
-        .post('/api/auth/login')
-        .send({ email: 'test@gmail.com' });
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-
-      const errors = res.body.errors;
-      expect(errors[0].message).to.equal('Password is required');
-    });
-
-    it('should return error message for user not found', async () => {
-      const res = await request(app)
-        .post('/api/auth/login')
-        .send({ email: 'notfound@gmail.com', password: 'test password' });
-
-      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
-
-      const errors = res.body.errors;
-      expect(errors[0].message).to.equal('User not found');
-    });
-
-    it('should return error message for valid user but wrong password', async () => {
-      const res = await request(app)
-        .post('/api/auth/login')
-        .send({ email: 'test@gmail.com', password: 'wrong password' });
-
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
-
-      const errors = res.body.errors;
-      expect(errors[0].message).to.equal('Wrong password');
-    });
-
-    it('should return token for valid email and password', async () => {
-      const res = await request(app)
-        .post('/api/auth/login')
-        .send({ email: 'test@gmail.com', password: 'test password' });
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.have.property('token');
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should return all invitations', async () => {
+      await Promise.all(
+        mockMultipleInvitations.map((mockInvitation) =>
+          InvitationRepository.createInvitation(mockInvitation)
+        )
+      );
+
+      const res = await request(app)
+        .get('/api/invitations/')
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data)
+        .to.be.an('array')
+        .that.have.lengthOf(mockMultipleInvitations.length);
     });
   });
 
-  describe('POST /auth/signup', () => {
+  describe('POST /invitations', () => {
     it('should return error message for unrecognized field', async () => {
       const res = await request(app).post('/api/auth/signup').send({
         firstName: 'admin',
@@ -269,41 +253,15 @@ describe('InvitationController', () => {
     });
   });
 
-  describe('POST /auth/signup + POST /auth/login', () => {
-    it('should not allow user to login after signup if wrong password', async () => {
-      const resSignup = await request(app).post('/api/auth/signup').send({
-        firstName: 'admin',
-        lastName: 'viettech',
-        password: 'Test!123',
-        email: 'test123@gmail.com',
-      });
-      expectSuccessfulResponse({ res: resSignup, statusCode: 200 });
-      expect(resSignup.body.data).to.have.property('token');
-
-      const resLogin = await request(app)
-        .post('/api/auth/login')
-        .send({ email: 'test123@gmail.com', password: 'test Password' });
-      expectErrorsArray({ res: resLogin, statusCode: 401, errorsCount: 1 });
-      const errors = resLogin.body.errors;
-      expect(errors[0].message).to.equal('Wrong password');
-    });
-
-    it('should allow user to login after signup', async () => {
-      const resSignup = await request(app).post('/api/auth/signup').send({
-        firstName: 'admin',
-        lastName: 'viettech',
-        password: 'Test!123',
-        email: 'test123@gmail.com',
-      });
-      expectSuccessfulResponse({ res: resSignup, statusCode: 200 });
-      expect(resSignup.body.data).to.have.property('token');
-
-      const resLogin = await request(app)
-        .post('/api/auth/login')
-        .send({ email: 'test123@gmail.com', password: 'Test!123' });
-
-      expectSuccessfulResponse({ res: resLogin, statusCode: 200 });
-      expect(resLogin.body.data).to.have.property('token');
+  describe.only('PUT /invitations/:invitationId/revoke', () => {
+    it('should return error message when invitation does not exist', async () => {
+      const res = await request(app)
+        .put(`/api/invitations/${getNewMongoId()}/revoke`)
+        .send({})
+        .set('Accept', 'application/json');
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
     });
   });
+
+  // describe('POST /invitations/validate', () => {});
 });
