@@ -1,28 +1,20 @@
-import { applicationColumns } from '@/components/pages/application-tracker/applications/application-columns';
-import { DataTable } from '@/components/pages/application-tracker/applications/data-table';
-import { ApplicationsResponseSchema } from '@/components/pages/application-tracker/applications/validation';
-import { request } from '@/utils/api';
-import { Method, QueryKey } from '@/utils/constants';
-import { useQuery } from '@tanstack/react-query';
+import { applicationColumns } from '@/components/pages/application-tracker/applications/applications-table-columns';
+import { DataTable } from '@/components/pages/application-tracker/applications/applications-table';
+import {
+  useGetApplications,
+  useDeleteApplication,
+  useUpdateApplicationStatus,
+} from '@/components/pages/application-tracker/applications/hooks/applications';
 
 export const ApplicationsContainer = (): React.JSX.Element | null => {
   const {
     isLoading,
     isError,
-    data: applicationsData,
     error,
-  } = useQuery({
-    queryKey: [QueryKey.GET_APPLICATIONS], // todo-Son: sue something more dynamic here
-    queryFn: async () => {
-      const response = await request(
-        Method.GET,
-        '/applications',
-        null,
-        ApplicationsResponseSchema
-      );
-      return response.data;
-    },
-  });
+    data: applicationsData,
+  } = useGetApplications();
+  const { mutate: deleteApplicationFn } = useDeleteApplication();
+  const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
 
   if (isLoading) {
     console.log('Loading summary data...');
@@ -42,8 +34,14 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <DataTable columns={applicationColumns} data={applicationsData} />
+    <div>
+      <DataTable
+        columns={applicationColumns({
+          deleteApplicationFn,
+          updateApplicationStatusFn,
+        })}
+        data={applicationsData}
+      />
     </div>
   );
 };
