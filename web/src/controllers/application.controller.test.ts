@@ -18,7 +18,11 @@ import {
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { IApplication } from '@/models/application.model';
 import { InterviewRepository } from '@/repositories/interview.repository';
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import {
+  ApplicationStatus,
+  InterviewStatus,
+  InterviewType,
+} from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import assert from 'assert';
 
@@ -325,7 +329,7 @@ describe('ApplicationController', () => {
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
       const res = await request(app)
         .put('/api/applications/123456789/updateStatus')
-        .send({ updatedStatus: 'IN_PROGRESS' })
+        .send({ updatedStatus: 'OFFERED' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -365,7 +369,7 @@ describe('ApplicationController', () => {
       const invalidApplicationId = getNewMongoId();
       const res = await request(app)
         .put(`/api/applications/${invalidApplicationId}/updateStatus`)
-        .send({ updatedStatus: 'IN_PROGRESS' })
+        .send({ updatedStatus: 'OFFERED' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -382,7 +386,7 @@ describe('ApplicationController', () => {
 
       const res = await request(app)
         .put(`/api/applications/${application.id}/updateStatus`)
-        .send({ updatedStatus: 'IN_PROGRESS' })
+        .send({ updatedStatus: 'OFFERED' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -449,13 +453,13 @@ describe('ApplicationController', () => {
     it('should update the application status to a valid non-REJECTED status and return the updated application. Also associated interviews status should not be affected', async () => {
       const res = await request(app)
         .put(`/api/applications/${application.id}/updateStatus`)
-        .send({ updatedStatus: 'OFFER' })
+        .send({ updatedStatus: 'OFFERED' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('_id', application.id);
-      expect(res.body.data).to.have.property('status', 'OFFER');
+      expect(res.body.data).to.have.property('status', 'OFFERED');
     });
   });
 
@@ -484,7 +488,7 @@ describe('ApplicationController', () => {
     it('should return error message with 400 status code if trying to update status', async () => {
       const res = await request(app)
         .put(`/api/applications/${application.id}`)
-        .send({ status: 'OFFER' })
+        .send({ status: 'OFFERED' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -644,6 +648,87 @@ describe('ApplicationController', () => {
         new Date()
       );
       expect(timeDiff).to.lessThan(3);
+    });
+  });
+
+  describe('GET /applications/countByStatus', () => {
+    const updatedStatus = [
+      ApplicationStatus.SUBMITTED,
+      ApplicationStatus.WITHDRAWN,
+      ApplicationStatus.OFFERED,
+      ApplicationStatus.OFFERED,
+      ApplicationStatus.REJECTED,
+    ];
+
+    it('should return correct counts grouped by status for the authorized user', async () => {
+      const applications = await Promise.all(
+        Array.from({ length: 5 }, () =>
+          ApplicationRepository.createApplication({
+            jobPostingId: getNewMongoId(),
+            userId: savedUserId,
+          })
+        )
+      );
+      await Promise.all(
+        applications.map((application, index) =>
+          ApplicationRepository.updateApplicationById({
+            userId: savedUserId,
+            applicationId: application.id,
+            updatedMetadata: {
+              status: updatedStatus[index] ?? ApplicationStatus.SUBMITTED,
+            },
+          })
+        )
+      );
+      const res = await request(app)
+        .get('/api/applications/countByStatus')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 1,
+        [ApplicationStatus.WITHDRAWN]: 1,
+        [ApplicationStatus.OFFERED]: 2,
+        [ApplicationStatus.REJECTED]: 1,
+      });
+    });
+
+    it('should return an empty object if no applications exist for the user', async () => {
+      const res = await request(app)
+        .get('/api/applications/countByStatus')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.deep.equal({});
+    });
+
+    it('should exclude soft-deleted applications from the count', async () => {
+      await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: savedUserId,
+      });
+      const applicationToDelete = await ApplicationRepository.createApplication(
+        {
+          jobPostingId: getNewMongoId(),
+          userId: savedUserId,
+        }
+      );
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: applicationToDelete.id,
+        userId: savedUserId,
+      });
+
+      const res = await request(app)
+        .get('/api/applications/countByStatus')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 1,
+      });
     });
   });
 });

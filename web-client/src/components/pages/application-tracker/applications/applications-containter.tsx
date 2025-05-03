@@ -1,5 +1,5 @@
-import { applicationColumns } from '@/components/pages/application-tracker/applications/applications-table-columns';
-import { DataTable } from '@/components/pages/application-tracker/applications/applications-table';
+import { applicationsTableColumns } from '@/components/pages/application-tracker/applications/applications-table-columns';
+import { ApplicationsTable } from '@/components/pages/application-tracker/applications/applications-table';
 import {
   useGetApplications,
   useDeleteApplication,
@@ -17,14 +17,14 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
   const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
 
   if (isLoading) {
-    console.log('Loading summary data...');
-    return <span>Loading summary data...</span>;
+    console.log('Loading applications data...');
+    return <span>Loading applications data...</span>;
   }
 
   if (isError) {
-    console.error('Error fetching summary data:', error);
+    console.error('Error fetching applications data:', error);
     // return (
-    //   <span>Error: {error.message || 'Failed to load summary data.'}</span>
+    //   <span>Error: {error.message || 'Failed to load applications data.'}</span>
     // );
     return null;
   }
@@ -35,8 +35,8 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
 
   return (
     <div>
-      <DataTable
-        columns={applicationColumns({
+      <ApplicationsTable
+        columns={applicationsTableColumns({
           deleteApplicationFn,
           updateApplicationStatusFn,
         })}

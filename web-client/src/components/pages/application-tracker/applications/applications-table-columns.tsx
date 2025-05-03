@@ -10,9 +10,9 @@ import {
 } from '@/components/base/dropdown-menu';
 import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 import { ApplicationStatus } from '@vtmp/common/constants';
-import { ApplicationActions } from '@/components/pages/application-tracker/applications/applications-action';
+import { ApplicationsAction } from '@/components/pages/application-tracker/applications/applications-action';
 
-export const applicationColumns = ({
+export const applicationsTableColumns = ({
   deleteApplicationFn,
   updateApplicationStatusFn,
 }: {
@@ -118,7 +118,7 @@ export const applicationColumns = ({
     cell: ({ row }) => {
       const application = row.original;
       return (
-        <ApplicationActions
+        <ApplicationsAction
           application={application}
           deleteApplicationFn={deleteApplicationFn}
         />

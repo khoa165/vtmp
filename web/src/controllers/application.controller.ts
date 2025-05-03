@@ -94,7 +94,8 @@ export const ApplicationController = {
   },
 
   updateApplicationStatus: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    // const userId = getUserFromRequest(req).user.id;
+    const userId = '68110356bd157e78f5a2137e';
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
     const { updatedStatus } = ApplicationStatusUpdateSchema.parse(req.body);
 
@@ -152,16 +153,17 @@ export const ApplicationController = {
 
   getApplicationsCountByStatus: async (req: Request, res: Response) => {
     // const userId = getUserFromRequest(req).user.id;
-    console.log('Request hit');
+    // console.log('Request hit getApplicationsCountByStatus');
+    // console.log('ApplicationStatus values:', Object.values(ApplicationStatus));
 
-    const applicationsCount =
+    const applicationsCountByStatus =
       await ApplicationService.getApplicationsCountByStatus(
         '68110356bd157e78f5a2137e'
       );
 
     res.status(200).json({
-      message: 'Applications count retrieved successfully',
-      data: applicationsCount,
+      message: 'Applications count by status retrieved successfully',
+      data: applicationsCountByStatus,
     });
   },
 };

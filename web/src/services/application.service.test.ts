@@ -303,7 +303,7 @@ describe('ApplicationService', () => {
             referrer: 'Khoa',
             portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
-            status: ApplicationStatus.OFFER,
+            status: ApplicationStatus.OFFERED,
           },
         })
       ).eventually.fulfilled;
@@ -319,7 +319,7 @@ describe('ApplicationService', () => {
             referrer: 'Khoa',
             portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
-            status: ApplicationStatus.OFFER,
+            status: ApplicationStatus.OFFERED,
           },
         }
       );
@@ -330,7 +330,7 @@ describe('ApplicationService', () => {
         referrer: 'Khoa',
         portalLink: 'abc.com',
         interest: InterestLevel.HIGH,
-        status: ApplicationStatus.OFFER,
+        status: ApplicationStatus.OFFERED,
       });
     });
   });
@@ -614,6 +614,102 @@ describe('ApplicationService', () => {
         userId: userId_A,
       });
       assert(!foundApplication);
+    });
+  });
+
+  describe('getApplicationsCountByStatus', () => {
+    const updatedStatus = [
+      ApplicationStatus.SUBMITTED,
+      ApplicationStatus.WITHDRAWN,
+      ApplicationStatus.OFFERED,
+      ApplicationStatus.OFFERED,
+      ApplicationStatus.REJECTED,
+    ];
+
+    it('should return an empty object if no applications exist for the user', async () => {
+      const result =
+        await ApplicationService.getApplicationsCountByStatus(userId_A);
+
+      assert(result);
+      expect(result).to.deep.equal({});
+    });
+
+    it('should return correct counts grouped by status for the user', async () => {
+      const applications = await Promise.all(
+        Array.from({ length: 5 }, () =>
+          ApplicationRepository.createApplication({
+            jobPostingId: getNewMongoId(),
+            userId: userId_A,
+          })
+        )
+      );
+      await Promise.all(
+        applications.map((application, index) =>
+          ApplicationRepository.updateApplicationById({
+            userId: userId_A,
+            applicationId: application.id,
+            updatedMetadata: {
+              status: updatedStatus[index] ?? ApplicationStatus.SUBMITTED,
+            },
+          })
+        )
+      );
+
+      const result =
+        await ApplicationService.getApplicationsCountByStatus(userId_A);
+
+      assert(result);
+      expect(result).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 1,
+        [ApplicationStatus.WITHDRAWN]: 1,
+        [ApplicationStatus.OFFERED]: 2,
+        [ApplicationStatus.REJECTED]: 1,
+      });
+    });
+
+    it('should exclude soft-deleted applications from the count', async () => {
+      await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: userId_A,
+      });
+      const applicationToDelete = await ApplicationRepository.createApplication(
+        {
+          jobPostingId: getNewMongoId(),
+          userId: userId_A,
+        }
+      );
+
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_A,
+        applicationId: applicationToDelete.id,
+      });
+
+      const result =
+        await ApplicationService.getApplicationsCountByStatus(userId_A);
+
+      assert(result);
+      expect(result).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 1,
+      });
+    });
+
+    it('should return counts only for the specified user', async () => {
+      await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: userId_A,
+      });
+      await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: userId_B,
+      });
+
+      const result =
+        await ApplicationService.getApplicationsCountByStatus(userId_A);
+
+      assert(result);
+      expect(result).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 1,
+      });
     });
   });
 });

@@ -18,9 +18,9 @@ import {
   AlertDialogTrigger,
 } from '@/components/base/alert-dialog';
 import { IApplication } from '@/components/pages/application-tracker/applications/validation';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-export const ApplicationActions = ({
+export const ApplicationsAction = ({
   application,
   deleteApplicationFn,
 }: {

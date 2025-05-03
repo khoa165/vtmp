@@ -7,7 +7,7 @@ import {
   RejectedStatusDot,
   WithdrawnStatusDot,
 } from '@/components/base/status-dots';
-import { CountApplicationsByStatusSchema } from '@/components/pages/application-tracker/applications/validation';
+import { ApplicationsCountByStatusSchema } from '@/components/pages/application-tracker/applications/validation';
 import { request } from '@/utils/api';
 import { Method } from '@/utils/constants';
 import { useQuery } from '@tanstack/react-query';
@@ -20,17 +20,19 @@ export const StatusBar = () => {
     data: ApplicationsCountByStatus,
   } = useQuery({
     queryKey: ['status-bar'],
-    queryFn: () =>
-      request(
+    queryFn: async () => {
+      const response = await request(
         Method.GET,
-        '/applications/applicationsCount',
+        '/applications/countByStatus',
         null,
-        CountApplicationsByStatusSchema
-      ),
+        ApplicationsCountByStatusSchema
+      );
+      return response.data;
+    },
   });
 
   if (isLoading) {
-    console.log('Application count loading...');
+    console.log('Applications count loading...');
     return <span>Loading applications count data...</span>;
   }
 
@@ -44,32 +46,32 @@ export const StatusBar = () => {
 
   const infos = [
     {
-      num: ApplicationsCountByStatus?.submittedCount,
+      num: ApplicationsCountByStatus?.SUBMITTED,
       label: 'Submitted',
       dot: <SubmittedStatusDot />,
     },
     {
-      num: ApplicationsCountByStatus?.oaCount,
+      num: ApplicationsCountByStatus?.OA,
       label: 'OA',
       dot: <OAStatusDot />,
     },
     {
-      num: ApplicationsCountByStatus?.interviewingCount,
+      num: ApplicationsCountByStatus?.INTERVIEWING,
       label: 'Interviewing',
       dot: <InterviewingStatusDot />,
     },
     {
-      num: ApplicationsCountByStatus?.offeredCount,
+      num: ApplicationsCountByStatus?.OFFERED,
       label: 'Offered',
       dot: <OfferedStatusDot />,
     },
     {
-      num: ApplicationsCountByStatus?.rejectedCount,
+      num: ApplicationsCountByStatus?.REJECTED,
       label: 'Rejected',
       dot: <RejectedStatusDot />,
     },
     {
-      num: ApplicationsCountByStatus?.withdrawalCount,
+      num: ApplicationsCountByStatus?.WITHDRAWN,
       label: 'Withdrawn',
       dot: <WithdrawnStatusDot />,
     },

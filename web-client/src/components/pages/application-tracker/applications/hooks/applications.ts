@@ -69,6 +69,9 @@ export const useUpdateApplicationStatus = () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['status-bar'],
+      });
       console.log('Successfully updated application status');
       toast.success(res.message);
     },
