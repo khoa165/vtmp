@@ -30,15 +30,15 @@ export const ApplicationResponseSchema = z.object({
   data: ApplicationSchema,
 });
 
-export const CountApplicationsByStatusSchema = z.object({
+export const ApplicationsCountByStatusSchema = z.object({
   message: z.string(),
   data: z.object({
-    submittedCount: z.number().optional(),
-    oaCount: z.number().optional(),
-    interviewingCount: z.number().optional(),
-    offeredCount: z.number().optional(),
-    rejectedCount: z.number().optional(),
-    withdrawalCount: z.number().optional(),
+    [ApplicationStatus.SUBMITTED]: z.number().optional(),
+    [ApplicationStatus.OA]: z.number().optional(),
+    [ApplicationStatus.INTERVIEWING]: z.number().optional(),
+    [ApplicationStatus.OFFERED]: z.number().optional(),
+    [ApplicationStatus.REJECTED]: z.number().optional(),
+    [ApplicationStatus.WITHDRAWN]: z.number().optional(),
   }),
 });
 
