@@ -1,7 +1,7 @@
 import { mentorshipPeople } from '../data/people';
 import { rolePriority } from './constants';
 import { min } from 'lodash';
-import { MentorshipOffer, MentorshipPerson } from 'src/types';
+import { MentorshipOffer, MentorshipPerson } from '@/types';
 import { groupDisplayName, roleDisplayName } from './displayName';
 import {
   MentorshipGroup,

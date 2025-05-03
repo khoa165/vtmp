@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 import {
   doesPersonHaveAtLeastOneRoleInYear,
   getPersonPriorityInYear,
-} from 'src/utils/data';
-import { PeopleSortColumn } from 'src/utils/constants';
-import { mentorshipPeople } from 'src/data/people';
+} from '@/utils/data';
+import { PeopleSortColumn } from '@/utils/constants';
+import { mentorshipPeople } from '@/data/people';
 import { sortBy, sumBy } from 'lodash';
 import * as R from 'remeda';
 import { MentorshipRole } from '@vtmp/common/constants';

@@ -7,9 +7,9 @@ import {
   MergedDateWithCount,
   MergedInterviewData,
   MergedInterviewRecordsPerCompany,
-} from 'src/types';
-import { MentorshipYear } from 'src/utils/constants';
-import { parseInterviewRecords } from 'src/utils/parse';
+} from '@/types';
+import { MentorshipYear } from '@/utils/constants';
+import { parseInterviewRecords } from '@/utils/parse';
 
 export const useInterviewData = () => {
   const [data, setData] = useState<MergedInterviewData>({
