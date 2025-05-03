@@ -325,7 +325,7 @@ describe('ApplicationController', () => {
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
       const res = await request(app)
         .put('/api/applications/123456789/updateStatus')
-        .send({ updatedStatus: 'OFFERED' })
+        .send({ updatedStatus: 'IN_PROGRESS' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -365,7 +365,7 @@ describe('ApplicationController', () => {
       const invalidApplicationId = getNewMongoId();
       const res = await request(app)
         .put(`/api/applications/${invalidApplicationId}/updateStatus`)
-        .send({ updatedStatus: 'OFFERED' })
+        .send({ updatedStatus: 'IN_PROGRESS' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -382,7 +382,7 @@ describe('ApplicationController', () => {
 
       const res = await request(app)
         .put(`/api/applications/${application.id}/updateStatus`)
-        .send({ updatedStatus: 'OFFERED' })
+        .send({ updatedStatus: 'IN_PROGRESS' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -449,13 +449,13 @@ describe('ApplicationController', () => {
     it('should update the application status to a valid non-REJECTED status and return the updated application. Also associated interviews status should not be affected', async () => {
       const res = await request(app)
         .put(`/api/applications/${application.id}/updateStatus`)
-        .send({ updatedStatus: 'OFFERED' })
+        .send({ updatedStatus: 'OFFER' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('_id', application.id);
-      expect(res.body.data).to.have.property('status', 'OFFERED');
+      expect(res.body.data).to.have.property('status', 'OFFER');
     });
   });
 
@@ -484,7 +484,7 @@ describe('ApplicationController', () => {
     it('should return error message with 400 status code if trying to update status', async () => {
       const res = await request(app)
         .put(`/api/applications/${application.id}`)
-        .send({ status: 'OFFERED' })
+        .send({ status: 'OFFER' })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 

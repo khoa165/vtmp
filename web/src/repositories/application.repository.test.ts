@@ -207,7 +207,7 @@ describe('ApplicationRepository', () => {
           userId: userId_B,
           applicationId: mockApplicationId_B,
           updatedMetadata: {
-            status: ApplicationStatus.OFFERED,
+            status: ApplicationStatus.OFFER,
             note: 'note about this application',
             referrer: 'Khoa',
             portalLink: 'abc.com',
@@ -217,7 +217,7 @@ describe('ApplicationRepository', () => {
 
       assert(updatedApplication);
       expect(updatedApplication).to.deep.include({
-        status: ApplicationStatus.OFFERED,
+        status: ApplicationStatus.OFFER,
         referrer: 'Khoa',
         interest: InterestLevel.HIGH,
         portalLink: 'abc.com',
@@ -252,12 +252,12 @@ describe('ApplicationRepository', () => {
         await ApplicationRepository.updateApplicationById({
           userId: userId_B,
           applicationId: mockApplicationId_B,
-          updatedMetadata: { status: ApplicationStatus.OFFERED },
+          updatedMetadata: { status: ApplicationStatus.IN_PROGRESS },
           options: { includeDeletedDoc: true },
         });
 
       assert(updatedApplication);
-      expect(updatedApplication.status).to.equal(ApplicationStatus.OFFERED);
+      expect(updatedApplication.status).to.equal(ApplicationStatus.IN_PROGRESS);
     });
 
     it('should return null if includeDeletedDoc is false and application was soft-deleted', async () => {

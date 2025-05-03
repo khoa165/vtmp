@@ -1,9 +1,9 @@
 export enum ApplicationStatus {
   SUBMITTED = 'SUBMITTED',
-  OA = 'OA',
-  INTERVIEWING = 'INTERVIEWING',
-  OFFERED = 'OFFERED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  OFFER = 'OFFER',
   REJECTED = 'REJECTED',
+  OA = 'OA',
   WITHDRAWN = 'WITHDRAWN',
 }
 

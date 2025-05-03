@@ -303,7 +303,7 @@ describe('ApplicationService', () => {
             referrer: 'Khoa',
             portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
-            status: ApplicationStatus.OFFERED,
+            status: ApplicationStatus.OFFER,
           },
         })
       ).eventually.fulfilled;
@@ -319,7 +319,7 @@ describe('ApplicationService', () => {
             referrer: 'Khoa',
             portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
-            status: ApplicationStatus.OFFERED,
+            status: ApplicationStatus.OFFER,
           },
         }
       );
@@ -330,7 +330,7 @@ describe('ApplicationService', () => {
         referrer: 'Khoa',
         portalLink: 'abc.com',
         interest: InterestLevel.HIGH,
-        status: ApplicationStatus.OFFERED,
+        status: ApplicationStatus.OFFER,
       });
     });
   });

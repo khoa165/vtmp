@@ -1,9 +1,8 @@
 import { ILink, LinkModel } from '@/models/link.model';
-import { faker } from '@faker-js/faker';
 
 export const loadLinks = async (count: number): Promise<ILink[]> => {
-  const newLinks = Array.from({ length: count }, () => ({
-    url: faker.internet.url(),
+  const newLinks = Array.from({ length: count }, (_, i) => ({
+    url: `https://example.com/link${i}`,
   }));
 
   const links = await LinkModel.insertMany(newLinks);

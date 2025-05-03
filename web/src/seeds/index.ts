@@ -17,7 +17,7 @@ const runSeeds = async () => {
   console.log('Successfully clear database before seeding.');
 
   const users = await loadUsers(10);
-  const links = await loadLinks(30);
+  const links = await loadLinks(5);
   const jobPostings = await loadJobPostings(links);
   const applications = await loadApplications(users, jobPostings);
   await loadInterviews(users, applications);
