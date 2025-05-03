@@ -4,7 +4,6 @@ import {
   OAStatusDot,
   InterviewingStatusDot,
   OfferedStatusDot,
-  RejectedStatusDot,
   WithdrawnStatusDot,
 } from '@/components/base/status-dots';
 import { ApplicationsCountByStatusSchema } from '@/components/pages/application-tracker/applications/validation';
@@ -46,42 +45,34 @@ export const StatusBar = () => {
 
   const infos = [
     {
-      num: ApplicationsCountByStatus?.SUBMITTED,
+      num: ApplicationsCountByStatus?.SUBMITTED ?? 0,
       label: 'Submitted',
       dot: <SubmittedStatusDot />,
     },
     {
-      num: ApplicationsCountByStatus?.OA,
+      num: ApplicationsCountByStatus?.OA ?? 0,
       label: 'OA',
       dot: <OAStatusDot />,
     },
     {
-      num: ApplicationsCountByStatus?.INTERVIEWING,
+      num: ApplicationsCountByStatus?.INTERVIEWING ?? 0,
       label: 'Interviewing',
       dot: <InterviewingStatusDot />,
     },
     {
-      num: ApplicationsCountByStatus?.OFFERED,
+      num: ApplicationsCountByStatus?.OFFERED ?? 0,
       label: 'Offered',
       dot: <OfferedStatusDot />,
     },
     {
-      num: ApplicationsCountByStatus?.REJECTED,
-      label: 'Rejected',
-      dot: <RejectedStatusDot />,
-    },
-    {
-      num: ApplicationsCountByStatus?.WITHDRAWN,
+      num: ApplicationsCountByStatus?.WITHDRAWN ?? 0,
       label: 'Withdrawn',
       dot: <WithdrawnStatusDot />,
     },
   ];
-  const filteredInfos = infos.filter((info) => info.num !== undefined);
   return (
-    <div
-      className={`grid min-md:grid-cols-${filteredInfos.length} w-full gap-4 mb-6 max-md:grid-rows-6`}
-    >
-      {filteredInfos.map((info, index) => (
+    <div className={`grid grid-cols-5 w-full gap-4 mb-6 max-md:grid-rows-6`}>
+      {infos.map((info, index) => (
         <Card
           key={index}
           className="bg-transparent h-fit cursor-pointer hover:bg-[#FEFEFE] hover:text-[#333333] transition-colors duration-200"
