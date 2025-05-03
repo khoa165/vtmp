@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { StatsPage } from './stats-page';
-import { StatsType } from 'src/utils/constants';
+import { StatsType } from '@/utils/constants';
 
 export const StatsContainer = () => {
   return (

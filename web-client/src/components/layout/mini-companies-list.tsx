@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react';
 import { UncontrolledTooltip } from 'reactstrap';
-import { CompanyMetadataWithOffers, MentorshipOffer } from 'src/types';
-import { Avatar } from 'src/components/layout/avatar';
+import { CompanyMetadataWithOffers, MentorshipOffer } from '@/types';
+import { Avatar } from '@/components/layout/avatar';
 import { chunk } from 'lodash';
 import {
   isReturnOfferForNewGrad,
   isReturnOfferForInternship,
   isNewGradOffer,
-} from 'src/utils/data';
+} from '@/utils/data';
 
 interface MiniCompaniesListProps {
   offersList: MentorshipOffer[];

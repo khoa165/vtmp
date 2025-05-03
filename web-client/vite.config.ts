@@ -26,6 +26,7 @@ export default defineConfig({
     alias: {
       src: '/src',
       '@': path.resolve(__dirname, './src'),
+      '@vtmp/common': path.resolve(__dirname, '../packages/common/src'),
     },
   },
   server: {
