@@ -6,10 +6,10 @@ import {
   InterviewRecordsPerCompany,
   MentorshipTerm,
   MergedDateWithCount,
-} from 'src/types';
-import { isSome } from 'src/utils/maybe';
+} from '@/types';
+import { isSome } from '@/utils/maybe';
 import { interviewTypeAbbreviation, MentorshipYear } from './constants';
-import { mentorshipPeople } from 'src/data/people';
+import { mentorshipPeople } from '@/data/people';
 import { InterviewType } from '@vtmp/common/constants';
 
 interface InterviewCell {

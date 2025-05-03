@@ -37,7 +37,7 @@ const extractMetadata = (text: string): BlogMetadata => {
 };
 
 const buildMetadataFileOutput = (metadata) =>
-  `import { BlogMetadata } from 'src/types';\n\nexport const allBlogsMetadata: BlogMetadata[] = [\n${metadata
+  `import { BlogMetadata } from '@/types';\n\nexport const allBlogsMetadata: BlogMetadata[] = [\n${metadata
     .map(
       (m) =>
         '  {\n    ' +
