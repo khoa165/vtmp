@@ -108,7 +108,8 @@ describe('LinkService', () => {
         newJobPosting.id
       );
       assert(jobPosting);
-      expect(jobPosting.linkId.toString()).to.equal(link.id);
+
+      expect(jobPosting.linkId.toString()).to.equal(link._id.toString());
       expect(jobPosting.companyName).to.equal(COMPANY_NAME);
     });
   });
