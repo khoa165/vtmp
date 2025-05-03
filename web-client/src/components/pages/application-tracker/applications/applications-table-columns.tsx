@@ -117,6 +117,7 @@ export const applicationsTableColumns = ({
   { accessorKey: 'note', header: 'Note' },
   {
     id: 'actions',
+    enableHiding: false,
     cell: ({ row }) => {
       const application = row.original;
       return (
