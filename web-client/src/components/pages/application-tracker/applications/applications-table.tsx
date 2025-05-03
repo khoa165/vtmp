@@ -1,4 +1,5 @@
 import { Button } from '@/components/base/button';
+import { Input } from '@/components/base/input';
 import * as React from 'react';
 import {
   ColumnDef,
@@ -20,6 +21,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/base/table';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/base/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -61,6 +69,42 @@ export function ApplicationsTable<TData, TValue>({
 
   return (
     <div>
+      <div className="flex items-center justify-between py-4">
+        <Input
+          placeholder="Filter companies..."
+          value={table.getColumn('companyName')?.getFilterValue() as string}
+          onChange={(event) =>
+            table.getColumn('companyName')?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Button variant="outline" className="ml-auto">
+              Columns <ChevronDown />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <div className="rounded-md overflow-hidden border border-foreground">
         <Table>
           <TableHeader className="bg-foreground">
