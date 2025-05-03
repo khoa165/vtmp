@@ -19,7 +19,7 @@ export const loadApplications = async (
     {
       userId: users[0]?.id,
       jobPostingId: jobPostings[1]?.id,
-      status: ApplicationStatus.OA_RECEIVED,
+      status: ApplicationStatus.OA,
       referrer: 'An',
       portalLink: 'def.com',
       interest: InterestLevel.MEDIUM,
