@@ -2,63 +2,50 @@ import { ApplicationModel, IApplication } from '@/models/application.model';
 import { IJobPosting } from '@/models/job-posting.model';
 import { IUser } from '@/models/user.model';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
+import { faker } from '@faker-js/faker';
 
 export const loadApplications = async (
   users: IUser[],
   jobPostings: IJobPosting[]
 ): Promise<IApplication[]> => {
-  const seedApplications = [
-    {
-      userId: users[0]?.id,
-      jobPostingId: jobPostings[0]?.id,
-      status: ApplicationStatus.IN_PROGRESS,
-      referrer: 'Khoa',
-      portalLink: 'abc.com',
-      interest: InterestLevel.LOW,
-    },
-    {
-      userId: users[0]?.id,
-      jobPostingId: jobPostings[1]?.id,
-      status: ApplicationStatus.OA_RECEIVED,
-      referrer: 'An',
-      portalLink: 'def.com',
-      interest: InterestLevel.MEDIUM,
-    },
-    {
-      userId: users[0]?.id,
-      jobPostingId: jobPostings[2]?.id,
-      status: ApplicationStatus.SUBMITTED,
-      referrer: 'Jun',
-      portalLink: 'xyz.com',
-      interest: InterestLevel.HIGH,
-    },
-    {
-      userId: users[1]?.id,
-      jobPostingId: jobPostings[0]?.id,
-      status: ApplicationStatus.WITHDRAWN,
-      referrer: 'Khoa',
-      portalLink: 'abc.com',
-      interest: InterestLevel.LOW,
-    },
-    {
-      userId: users[1]?.id,
-      jobPostingId: jobPostings[1]?.id,
-      status: ApplicationStatus.OFFER,
-      referrer: 'Khoa',
-      portalLink: 'abc.com',
-      interest: InterestLevel.LOW,
-    },
-    {
-      userId: users[3]?.id,
-      jobPostingId: jobPostings[3]?.id,
-      status: ApplicationStatus.SUBMITTED,
-      referrer: 'Son',
-      portalLink: 'abc.com',
-      interest: InterestLevel.HIGH,
-    },
+  const numAppUser0 = 15;
+  const numAppUser1 = 5;
+  const shuffledJobPostings = faker.helpers.shuffle(jobPostings);
+
+  const randomApplicationsForUser0 = shuffledJobPostings
+    .slice(0, numAppUser0)
+    .map((jobPosting) => {
+      return {
+        userId: users[0]?.id,
+        jobPostingId: jobPosting.id,
+        status: faker.helpers.arrayElement(Object.values(ApplicationStatus)),
+        referrer: faker.person.firstName(),
+        portalLink: faker.internet.url(),
+        interest: faker.helpers.arrayElement(Object.values(InterestLevel)),
+      };
+    });
+
+  const randomApplicationsForUser1 = shuffledJobPostings
+    .slice(0, numAppUser1)
+    .map((jobPosting) => {
+      return {
+        userId: users[1]?.id,
+        jobPostingId: jobPosting.id,
+        status: faker.helpers.arrayElement(Object.values(ApplicationStatus)),
+        referrer: faker.person.firstName(),
+        portalLink: faker.internet.url(),
+        interest: faker.helpers.arrayElement(Object.values(InterestLevel)),
+      };
+    });
+
+  const allApplications = [
+    ...randomApplicationsForUser0,
+    ...randomApplicationsForUser1,
   ];
 
-  const applications = await ApplicationModel.insertMany(seedApplications);
-  console.log('Successfully seeded applications.');
+  const applications = await Promise.all(
+    allApplications.map((app) => ApplicationModel.create(app))
+  );
+  console.log(`Successfully seeded ${numAppUser0 + numAppUser1} applications.`);
   return applications;
 };
