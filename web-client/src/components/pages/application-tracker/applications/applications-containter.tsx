@@ -17,14 +17,14 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
   const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
 
   if (isLoading) {
-    console.log('Loading summary data...');
-    return <span>Loading summary data...</span>;
+    console.log('Loading applications data...');
+    return <span>Loading applications data...</span>;
   }
 
   if (isError) {
-    console.error('Error fetching summary data:', error);
+    console.error('Error fetching applications data:', error);
     // return (
-    //   <span>Error: {error.message || 'Failed to load summary data.'}</span>
+    //   <span>Error: {error.message || 'Failed to load applications data.'}</span>
     // );
     return null;
   }
