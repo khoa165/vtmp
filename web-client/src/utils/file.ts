@@ -1,4 +1,4 @@
-import { BlogFileMapping, BlogMetadata } from 'src/types';
+import { BlogFileMapping, BlogMetadata } from '@/types';
 
 export const getFileName = (filepath: string): string => {
   console.log('filepath', filepath);

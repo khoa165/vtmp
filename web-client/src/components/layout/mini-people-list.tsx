@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo } from 'react';
 import { UncontrolledTooltip } from 'reactstrap';
-import { getAvatar, getName } from 'src/utils/data';
-import { Avatar } from 'src/components/layout/avatar';
+import { getAvatar, getName } from '@/utils/data';
+import { Avatar } from '@/components/layout/avatar';
 import { chunk } from 'remeda';
 
 interface MiniPeopleListProps {

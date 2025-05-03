@@ -269,7 +269,7 @@ describe('ApplicationRepository', () => {
         await ApplicationRepository.updateApplicationById({
           userId: userId_B,
           applicationId: mockApplicationId_B,
-          updatedMetadata: { status: ApplicationStatus.OA_RECEIVED },
+          updatedMetadata: { status: ApplicationStatus.OA },
           options: { includeDeletedDoc: false },
         });
 
