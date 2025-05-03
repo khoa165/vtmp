@@ -11,13 +11,15 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import { InvitationStatus, UserRole } from '@vtmp/common/constants';
+import { InvitationStatus } from '@vtmp/common/constants';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { addDays, subDays } from 'date-fns';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import assert from 'assert';
 import jwt from 'jsonwebtoken';
 import { IInvitation } from '@/models/invitation.model';
+import * as R from 'remeda';
+import { differenceInSeconds } from 'date-fns/fp/differenceInSeconds';
 
 describe('InvitationController', () => {
   useMongoDB();
@@ -27,7 +29,7 @@ describe('InvitationController', () => {
   });
 
   const nextWeek = addDays(Date.now(), 7);
-  // const mockMenteeName = 'Mentee Viettech';
+  const mockMenteeName = 'Mentee Viettech';
   const mockAdminId = getNewMongoId();
 
   const mockOneInvitation = {
@@ -89,170 +91,147 @@ describe('InvitationController', () => {
   });
 
   describe('POST /invitations', () => {
-    it('should return error message for unrecognized field', async () => {
-      const res = await request(app).post('/api/auth/signup').send({
-        firstName: 'admin',
-        lastName: 'viettech',
-        password: 'Test!123',
-        email: 'test123@gmail.com',
-        role: UserRole.ADMIN,
-      });
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal(
-        "Unrecognized key(s) in object: 'role'"
-      );
-    });
-
-    it('should return error message for missing email', async () => {
-      const res = await request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          password: 'Test!123',
-        })
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Email is required');
-    });
-
-    it('should return error message for password being too short', async () => {
-      const res = await request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'vT1?',
-        })
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal(
-        'Password must be between 8 and 20 characters'
-      );
-    });
-
-    it('should return error message for password being too long', async () => {
-      const res = await request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'Thisisasuperlongpasswordthatcouldbeshortened!123',
-        })
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal(
-        'Password must be between 8 and 20 characters'
-      );
-    });
-
-    it('should return error message for password having no special characters', async () => {
-      const res = await request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'Test1234',
-        })
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal(
-        'Password requires at least 1 special character in [!, @, #, $, %, ^, &, ?]'
-      );
-    });
-
-    it('should return error message for password having no uppercase characters', async () => {
-      const res = await request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'test123!',
-        })
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal(
-        'Password requires at least 1 uppercase letter'
-      );
-    });
-
-    it('should return error message for password having no lowercase characters', async () => {
-      const res = await request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'TEST!123',
-        })
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal(
-        'Password requires at least 1 lowercase letter'
-      );
-    });
-
-    it('should return error message for password having no digit', async () => {
-      const res = await request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'Test!!!@@',
-        })
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal(
-        'Password requires at least 1 digit'
-      );
-    });
-
-    it('should return error message for duplicate email', async () => {
+    it('should return error message when user associated with invitation receiver email already exists', async () => {
       const mockUser = {
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test@gmail.com',
-        encryptedPassword: 'Test!123',
+        firstName: 'Admin',
+        lastName: 'Viettech',
+        email: 'test@example.com',
+        encryptedPassword: 'encrypted-password-later',
       };
       await UserRepository.createUser(mockUser);
 
       const res = await request(app)
-        .post('/api/auth/signup')
+        .post('/api/invitations')
         .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'Test!123',
+          receiverName: `${mockUser.firstName} ${mockUser.lastName}`,
+          receiverEmail: mockUser.email,
+          senderId: mockAdminId,
         })
         .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal(
-        'Email is already taken, please sign up with a different email'
+      expect(res.body.errors[0].message).to.eq(
+        'User associated with this email already has an account'
       );
     });
 
-    it('should return new user', async () => {
-      const res = await request(app).post('/api/auth/signup').send({
-        firstName: 'admin',
-        lastName: 'viettech',
-        password: 'Test!123',
-        email: 'test123@gmail.com',
+    it('should return error message for user associated with invitation receiver email has already accepted the invitation but no account found', async () => {
+      await InvitationRepository.createInvitation({
+        ...mockOneInvitation,
+        status: InvitationStatus.ACCEPTED,
       });
-      expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.have.property('token');
+
+      const res = await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverName: mockMenteeName,
+          receiverEmail: mockOneInvitation.receiverEmail,
+          senderId: mockAdminId,
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 500, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq(
+        'User associated with this email has already accepted the invitation'
+      );
+    });
+
+    it('should not throw error and return null when a Pending invitation associated with receiver email exists', async () => {
+      await InvitationRepository.createInvitation(mockOneInvitation);
+      const res = await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverName: mockMenteeName,
+          receiverEmail: mockOneInvitation.receiverEmail,
+          senderId: mockAdminId,
+        })
+        .set('Accept', 'application/json');
+
+      expect(res.body.data).to.be.eql(null);
+    });
+
+    it('should not throw error and return null when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
+      await InvitationRepository.createInvitation({
+        ...mockOneInvitation,
+        expiryDate: subDays(Date.now(), 2),
+      });
+
+      const res = await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverName: mockMenteeName,
+          receiverEmail: mockOneInvitation.receiverEmail,
+          senderId: mockAdminId,
+        })
+        .set('Accept', 'application/json');
+
+      expect(res.body.data).to.be.eql(null);
+    });
+
+    it('should update invitation to new expiry date when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
+      const expiredInvitation = await InvitationRepository.createInvitation({
+        ...mockOneInvitation,
+        expiryDate: subDays(Date.now(), 2),
+      });
+
+      await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverName: mockMenteeName,
+          receiverEmail: mockOneInvitation.receiverEmail,
+          senderId: mockAdminId,
+        })
+        .set('Accept', 'application/json');
+
+      const invitationWithNewExpiryDate =
+        await InvitationRepository.getInvitationById(expiredInvitation.id);
+      assert(invitationWithNewExpiryDate);
+      expect(invitationWithNewExpiryDate.toObject()).to.deep.include(
+        R.omit({ ...mockOneInvitation }, ['expiryDate', 'sender'])
+      );
+      expect(String(invitationWithNewExpiryDate.toObject().sender)).to.eq(
+        mockAdminId
+      );
+
+      const timeDiff = Math.abs(
+        differenceInSeconds(
+          invitationWithNewExpiryDate.expiryDate,
+          addDays(Date.now(), 7)
+        )
+      );
+      expect(timeDiff).to.lessThan(3);
+    });
+
+    it('should not throw error when no Pending invitations associated with receiver email exist', async () => {
+      const res = await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverName: mockMenteeName,
+          receiverEmail: mockOneInvitation.receiverEmail,
+          senderId: mockAdminId,
+        })
+        .set('Accept', 'application/json');
+
+      assert(res.body);
+    });
+
+    it('should return newly created invitation when no Pending invitations associated with receiver email exist', async () => {
+      const res = await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverName: mockMenteeName,
+          receiverEmail: mockOneInvitation.receiverEmail,
+          senderId: mockAdminId,
+        })
+        .set('Accept', 'application/json');
+
+      assert(res.body);
+      expect(res.body.data).to.deep.include({
+        receiverEmail: mockOneInvitation.receiverEmail,
+        status: InvitationStatus.PENDING,
+      });
+
+      expect(String(res.body.data.sender)).to.eq(mockAdminId);
     });
   });
 
