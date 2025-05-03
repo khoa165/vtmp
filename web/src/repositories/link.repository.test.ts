@@ -9,7 +9,7 @@ import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 describe('LinkRepository', () => {
   useMongoDB();
   const mockLinkData = {
-    url: 'http://example.com/job-posting',
+    url: 'google.com',
     jobTitle: 'Software Engineer',
     companyName: 'Example Company',
     submittedBy: getNewObjectId(),
@@ -18,7 +18,6 @@ describe('LinkRepository', () => {
   describe('getLinkById', () => {
     it('should be able to find link by id', async () => {
       const googleLink = await LinkRepository.createLink(mockLinkData);
-      assert(googleLink);
 
       const link = await LinkRepository.getLinkById(googleLink.id);
 
@@ -29,7 +28,6 @@ describe('LinkRepository', () => {
   describe('createLink', () => {
     it('should be able to create new link with expected fields', async () => {
       const link = await LinkRepository.createLink(mockLinkData);
-      assert(link);
 
       const timeDiff = differenceInSeconds(new Date(), link.submittedOn);
 
@@ -50,7 +48,6 @@ describe('LinkRepository', () => {
 
     it('should be able to update link status', async () => {
       const googleLink = await LinkRepository.createLink(mockLinkData);
-      assert(googleLink);
 
       const link = await LinkRepository.updateLinkStatus({
         id: googleLink.id,
@@ -91,7 +88,6 @@ describe('LinkRepository', () => {
 
     it('should not include link of different status', async () => {
       const googleLink = await LinkRepository.createLink(mockLinkData);
-      assert(googleLink);
 
       await LinkRepository.createLink({ ...mockLinkData, url: 'nvidia.com' });
       await LinkRepository.createLink({

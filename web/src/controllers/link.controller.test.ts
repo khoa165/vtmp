@@ -3,7 +3,6 @@ import { beforeEach, describe } from 'mocha';
 import app from '@/app';
 import { expect } from 'chai';
 import request from 'supertest';
-import assert from 'assert';
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
@@ -20,7 +19,6 @@ describe('LinkController', () => {
   beforeEach(async () => {
     url = 'http://example.com/job-posting';
     const newLink = await LinkRepository.createLink({ url });
-    assert(newLink);
 
     linkId = newLink.id;
   });

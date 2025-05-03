@@ -1,11 +1,9 @@
 import { LinkModel, ILink } from '@/models/link.model';
-import mongoose, { ClientSession } from 'mongoose';
+import { Types, ClientSession } from 'mongoose';
 import { LinkStatus } from '@vtmp/common/constants';
 
-const { ObjectId } = mongoose.Types;
-
 export const LinkRepository = {
-  createLink: async (linkData: object): Promise<ILink | null> => {
+  createLink: async (linkData: object): Promise<ILink> => {
     return LinkModel.create(linkData);
   },
 
@@ -23,7 +21,7 @@ export const LinkRepository = {
     session?: ClientSession;
   }): Promise<ILink | null> => {
     return LinkModel.findByIdAndUpdate(
-      new ObjectId(id),
+      new Types.ObjectId(id),
       { $set: { status } },
       { new: true, session: session ?? null }
     ).lean();
