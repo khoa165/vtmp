@@ -106,7 +106,9 @@ export const applicationsTableColumns = ({
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('appliedOnDate');
       const date = new Date(isoDate);
-      return date.toISOString().split('T')[0];
+      return (
+        <div className="px-4 text-left">{date.toISOString().split('T')[0]}</div>
+      );
     },
   },
   { accessorKey: 'portalLink', header: 'Portal Link' },
