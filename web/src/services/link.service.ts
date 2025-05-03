@@ -61,7 +61,7 @@ export const LinkService = {
     return updatedLink;
   },
 
-  getPendingLinks: async () => {
-    return LinkRepository.getLinksByStatus(LinkStatus.PENDING);
+  getLinkCountByStatus: async () => {
+    return LinkRepository.getLinkCountByStatus();
   },
 };

@@ -117,28 +117,43 @@ describe('LinkService', () => {
     });
   });
 
-  describe('getPendingLinks', () => {
-    it('should be able to get all pending links', async () => {
-      const googleLink = await LinkRepository.createLink('google.com');
-      const nvidia = await LinkRepository.createLink('nvidia.com');
-
-      const pendingLinks = await LinkService.getPendingLinks();
-
-      const urls = pendingLinks.map((link) => link.url);
-      expect(urls).to.have.members([googleLink.url, nvidia.url]);
+  describe('getLinkCountByStatus', () => {
+    it('should return empty array when no links exist', async () => {
+      const linkCounts = await LinkService.getLinkCountByStatus();
+      expect(linkCounts).to.deep.equal({});
     });
 
-    it('should be able to get all pending links after a link is rejected', async () => {
-      const googleLink = await LinkRepository.createLink('google.com');
+    it('should be able to get one link by status', async () => {
+      await LinkRepository.createLink('google.com');
+      const linkCounts = await LinkService.getLinkCountByStatus();
+
+      expect(linkCounts).to.deep.include({
+        [LinkStatus.PENDING]: 1,
+      });
+    });
+
+    it('should be able to get multiple links by status', async () => {
+      await LinkRepository.createLink('google.com');
       await LinkRepository.createLink('nvidia.com');
-      await LinkRepository.createLink('microsoft.com');
 
-      const beforeUpdateLinks = await LinkService.getPendingLinks();
-      expect(beforeUpdateLinks).to.have.lengthOf(3);
+      const linkCounts = await LinkService.getLinkCountByStatus();
 
-      await LinkService.rejectLink(googleLink.id);
-      const afterUpdateLinks = await LinkService.getPendingLinks();
-      expect(afterUpdateLinks).to.have.lengthOf(2);
+      expect(linkCounts).to.deep.include({
+        [LinkStatus.PENDING]: 2,
+      });
+    });
+  });
+
+  it('should be able to get multiple links by multiple statuses', async () => {
+    const googleLink = await LinkRepository.createLink('google.com');
+    await LinkRepository.createLink('nvidia.com');
+    await LinkRepository.createLink('microsoft.com');
+
+    await LinkService.rejectLink(googleLink.id);
+    const afterUpdateLinks = await LinkService.getLinkCountByStatus();
+    expect(afterUpdateLinks).to.deep.include({
+      [LinkStatus.PENDING]: 2,
+      [LinkStatus.REJECTED]: 1,
     });
   });
 });

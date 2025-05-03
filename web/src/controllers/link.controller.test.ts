@@ -97,28 +97,50 @@ describe('LinkController', () => {
     });
   });
 
-  describe('getPendingLinks', () => {
-    it('should return array of pending links', async () => {
+  describe('getLinkCountByStatus', () => {
+    it('should return object of count by pending status', async () => {
       const res = await request(app)
-        .get('/api/links')
+        .get('/api/links/linkCount')
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data.links[0].url).to.equal(url);
+      expect(res.body.data.linkCounts).to.deep.include({
+        [LinkStatus.PENDING]: 1,
+      });
     });
 
-    it('should return empty array of pending links', async () => {
+    it('should return object of count by rejected status', async () => {
       await LinkRepository.updateLinkStatus({
         id: linkId,
         status: LinkStatus.REJECTED,
       });
 
       const res = await request(app)
-        .get('/api/links')
+        .get('/api/links/linkCount')
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data.links).to.be.an('array').that.have.lengthOf(0);
+      expect(res.body.data.linkCounts).to.deep.include({
+        [LinkStatus.REJECTED]: 1,
+      });
+    });
+
+    it('should return object of count by multiple statuses', async () => {
+      await LinkRepository.updateLinkStatus({
+        id: linkId,
+        status: LinkStatus.REJECTED,
+      });
+      await LinkRepository.createLink('http://example.com/another-link');
+
+      const res = await request(app)
+        .get('/api/links/linkCount')
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data.linkCounts).to.deep.include({
+        [LinkStatus.REJECTED]: 1,
+        [LinkStatus.PENDING]: 1,
+      });
     });
   });
 });
