@@ -11,7 +11,6 @@ export interface ILink extends Document {
   location: JobPostingLocation;
   datePosted?: Date;
   jobDescription?: string;
-  userNote?: string;
   submittedBy?: Types.ObjectId;
   deletedAt?: Date;
 }
@@ -46,9 +45,6 @@ const LinkSchema = new mongoose.Schema<ILink>(
       type: Date,
     },
     jobDescription: {
-      type: String,
-    },
-    userNote: {
       type: String,
     },
     submittedBy: {
