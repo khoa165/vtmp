@@ -137,7 +137,8 @@ export const ApplicationController = {
   },
 
   deleteApplication: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    // const userId = getUserFromRequest(req).user.id;
+    const userId = '68110356bd157e78f5a2137e';
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
 
     const deletedApplication = await ApplicationService.deleteApplicationById({
