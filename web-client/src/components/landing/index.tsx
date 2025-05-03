@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { PrgramValues } from './program-values';
-import { mentorshipProgramValues } from 'src/utils/values';
+import { mentorshipProgramValues } from '@/utils/values';
 import { VisualStack } from './visual-stack';
 import { Col, Row } from 'reactstrap';
 import { BannerPage } from './banner-page';

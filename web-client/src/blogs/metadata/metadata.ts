@@ -1,4 +1,4 @@
-import { BlogMetadata } from 'src/types';
+import { BlogMetadata } from '@/types';
 
 export const allBlogsMetadata: BlogMetadata[] = [
   {

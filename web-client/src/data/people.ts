@@ -1,4 +1,4 @@
-import { MentorshipPerson } from 'src/types';
+import { MentorshipPerson } from '@/types';
 import {
   CompanyName,
   MentorshipRole,
