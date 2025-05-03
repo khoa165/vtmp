@@ -11,6 +11,7 @@ import {
 import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import { ApplicationsAction } from '@/components/pages/application-tracker/applications/applications-action';
+import { format } from 'date-fns';
 
 export const applicationsTableColumns = ({
   deleteApplicationFn,
@@ -107,7 +108,7 @@ export const applicationsTableColumns = ({
       const isoDate = row.getValue<string>('appliedOnDate');
       const date = new Date(isoDate);
       return (
-        <div className="px-4 text-left">{date.toISOString().split('T')[0]}</div>
+        <div className="px-4 text-left">{format(date, 'MMM d, yyyy')}</div>
       );
     },
   },
