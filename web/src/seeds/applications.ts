@@ -12,6 +12,11 @@ export const loadApplications = async (
   const numAppUser1 = 5;
   const shuffledJobPostings = faker.helpers.shuffle(jobPostings);
 
+  const formatPortalLink = (companyName: string): string => {
+    const formattedName = companyName.toLowerCase().replace(/\s+/g, '');
+    return `https://careers.${formattedName}.com`;
+  };
+
   const randomApplicationsForUser0 = shuffledJobPostings
     .slice(0, numAppUser0)
     .map((jobPosting) => {
@@ -20,7 +25,7 @@ export const loadApplications = async (
         jobPostingId: jobPosting.id,
         status: faker.helpers.arrayElement(Object.values(ApplicationStatus)),
         referrer: faker.person.firstName(),
-        portalLink: faker.internet.url(),
+        portalLink: formatPortalLink(jobPosting.companyName),
         interest: faker.helpers.arrayElement(Object.values(InterestLevel)),
       };
     });
