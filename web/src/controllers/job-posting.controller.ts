@@ -49,7 +49,6 @@ export const JobPostingController = {
 
     const jobPostings =
       await JobPostingService.getJobPostingsUserHasNotAppliedTo(userId);
-    console.log(jobPostings);
 
     res.status(200).json({
       message: 'Job postings retrieved successfully',
