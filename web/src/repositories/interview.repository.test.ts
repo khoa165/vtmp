@@ -128,6 +128,7 @@ describe('Interview Repository', () => {
 
       const interviews = await InterviewRepository.getInterviews({
         userId: userId_B,
+        filters: {},
       });
 
       assert(interviews);
@@ -147,6 +148,7 @@ describe('Interview Repository', () => {
 
       const interviews = await InterviewRepository.getInterviews({
         userId: userId_A,
+        filters: {},
       });
 
       assert(interviews);
@@ -164,6 +166,7 @@ describe('Interview Repository', () => {
 
       const interviews = await InterviewRepository.getInterviews({
         userId: userId_A,
+        filters: {},
       });
 
       assert(interviews);

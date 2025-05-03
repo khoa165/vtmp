@@ -48,7 +48,7 @@ export const InterviewRepository = {
     session,
   }: {
     userId: string;
-    filters?: {
+    filters: {
       applicationId?: string;
       status?: InterviewStatus;
     };

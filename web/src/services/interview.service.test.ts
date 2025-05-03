@@ -1,31 +1,319 @@
+import assert from 'assert';
+import { expect } from 'chai';
+
+import { InterviewRepository } from '@/repositories/interview.repository';
 import { InterviewService } from '@/services/interview.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
-import { assert } from 'console';
+import { ResourceNotFoundError } from '@/utils/errors';
 
 describe('InterviewService', () => {
   useMongoDB();
 
   const userId_A = getNewMongoId();
+  const userId_B = getNewMongoId();
 
   const googleApplicationId = getNewMongoId();
 
   const mockInterview_A0 = {
     applicationId: googleApplicationId,
     userId: userId_A,
+    type: [InterviewType.TECHNICAL_LC_CODING],
+    status: InterviewStatus.PASSED,
+    interviewOnDate: new Date('2025-06-07'),
+    note: 'This is a note of an interview with google',
+  };
+
+  const mockInterview_A1 = {
+    applicationId: getNewMongoId(),
+    userId: userId_A,
+    type: [InterviewType.DEBUGGING, InterviewType.CODE_REVIEW],
+    status: InterviewStatus.UPCOMING,
+    interviewOnDate: new Date('2025-07-07'),
+    note: 'This is a note of an interview',
+  };
+
+  const mockInterview_A2 = {
+    applicationId: googleApplicationId,
+    userId: userId_A,
+    type: [InterviewType.HIRING_MANAGER],
+    interviewOnDate: new Date('2025-08-01'),
+    note: 'This is a note of another interview with google',
+  };
+
+  const mockInterview_B0 = {
+    applicationId: getNewMongoId(),
+    userId: userId_B,
     type: [InterviewType.CODE_REVIEW],
     status: InterviewStatus.PENDING,
-    interviewOnDate: new Date(),
-    note: 'This is a note',
+    interviewOnDate: new Date('2025-08-08'),
+    note: 'This is a note of an interview',
   };
 
   describe('createInterview', () => {
     it('should be able to create a new interview', async () => {
       const newInterview =
-        await InterviewService.createInterview(mockInterview_A0);
+        await InterviewService.createInterview(mockInterview_A2);
 
       assert(newInterview);
+      expect(newInterview).to.deep.include({
+        ...mockInterview_A2,
+        applicationId: toMongoId(mockInterview_A2.applicationId),
+        userId: toMongoId(mockInterview_A2.userId),
+        status: InterviewStatus.PENDING,
+      });
+    });
+  });
+
+  describe('getInterviewsById', () => {
+    it('should throw an error if the interview does not exist', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+
+      await expect(
+        InterviewService.getInterviewById({
+          interviewId: getNewMongoId(),
+          userId: userId_A,
+        })
+      ).eventually.to.be.rejectedWith(
+        ResourceNotFoundError,
+        'Interview not found'
+      );
+    });
+
+    it('should throw an error if the interview does not belong to the authorized user', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+
+      await expect(
+        InterviewService.getInterviewById({
+          interviewId: mockInterview_A0.applicationId,
+          userId: userId_B,
+        })
+      ).eventually.to.be.rejectedWith(
+        ResourceNotFoundError,
+        'Interview not found'
+      );
+    });
+
+    it('should throw an error if the interview is already soft deleted', async () => {
+      const interview_A1 =
+        await InterviewRepository.createInterview(mockInterview_A1);
+
+      await InterviewRepository.deleteInterviewById({
+        interviewId: interview_A1.id,
+        userId: userId_A,
+      });
+
+      expect(
+        InterviewService.getInterviewById({
+          interviewId: interview_A1.id,
+          userId: userId_A,
+        })
+      ).eventually.to.be.rejectedWith(
+        ResourceNotFoundError,
+        'Interview not found'
+      );
+    });
+
+    it('should not throw an error if the interview exists and belongs to the user', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      await expect(
+        InterviewService.getInterviewById({
+          interviewId: interview_A0.id,
+          userId: userId_A,
+        })
+      ).eventually.to.be.fulfilled;
+    });
+
+    it('should only return the valid interview that belongs to the authorized user', async () => {
+      const interview_B0 =
+        await InterviewRepository.createInterview(mockInterview_B0);
+
+      const interview = await InterviewService.getInterviewById({
+        interviewId: interview_B0.id,
+        userId: userId_B,
+      });
+
+      assert(interview);
+      expect(interview).to.deep.include({
+        ...mockInterview_B0,
+        applicationId: toMongoId(mockInterview_B0.applicationId),
+        userId: toMongoId(mockInterview_B0.userId),
+      });
+    });
+  });
+
+  describe('getInterviews', () => {
+    it('should return an empty array if the authorized user has no interviews', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+
+      const interviews = await InterviewService.getInterviews({
+        userId: userId_B,
+        filters: {},
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should not include soft-deleted interviews when no filter is applied', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+      await InterviewRepository.createInterview(mockInterview_A1);
+      await InterviewRepository.deleteInterviewById({
+        interviewId: interview_A0.id,
+        userId: userId_A,
+      });
+
+      const interviews = await InterviewService.getInterviews({
+        userId: userId_A,
+        filters: {},
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(1);
+      assert(interviews[0]);
+      expect(interviews[0]).to.deep.include({
+        ...mockInterview_A1,
+        applicationId: toMongoId(mockInterview_A1.applicationId),
+        userId: toMongoId(mockInterview_A1.userId),
+      });
+    });
+
+    it('should return only interviews belonging to the authorized user', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+      const interview_A1 =
+        await InterviewRepository.createInterview(mockInterview_A1);
+      await InterviewRepository.createInterview(mockInterview_B0);
+
+      const interviews = await InterviewService.getInterviews({
+        userId: userId_A,
+        filters: {},
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(2);
+      expect(interviews.map((interview) => interview.id)).to.have.members([
+        interview_A0.id,
+        interview_A1.id,
+      ]);
+    });
+
+    it('should return empty array when filtering by an applicationId with no interviews', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+      await InterviewRepository.createInterview(mockInterview_A1);
+
+      const interviews = await InterviewService.getInterviews({
+        userId: userId_A,
+        filters: { applicationId: getNewMongoId() },
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should not include soft-deleted interviews when filtering by applicationId', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+      await InterviewRepository.createInterview(mockInterview_A2);
+      await InterviewRepository.deleteInterviewById({
+        interviewId: interview_A0.id,
+        userId: userId_A,
+      });
+
+      const interviews = await InterviewService.getInterviews({
+        userId: userId_A,
+        filters: { applicationId: googleApplicationId },
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(1);
+      assert(interviews[0]);
+      expect(interviews[0]).to.deep.include({
+        ...mockInterview_A2,
+        applicationId: toMongoId(mockInterview_A2.applicationId),
+        userId: toMongoId(mockInterview_A2.userId),
+      });
+    });
+
+    it('should return only the interviews belonging to the applicationId', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+      const interview_A2 =
+        await InterviewRepository.createInterview(mockInterview_A2);
+      await InterviewRepository.createInterview(mockInterview_B0);
+
+      const interviews = await InterviewService.getInterviews({
+        userId: userId_A,
+        filters: { applicationId: mockInterview_A0.applicationId },
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(2);
+      expect(interviews.map((interview) => interview.id)).to.have.members([
+        interview_A0.id,
+        interview_A2.id,
+      ]);
+    });
+
+    it('should return only interviews with the given status when no applicationId is provided', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+      await InterviewRepository.createInterview(mockInterview_A1);
+
+      const interviews = await InterviewService.getInterviews({
+        userId: userId_A,
+        filters: { status: InterviewStatus.UPCOMING },
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(1);
+      assert(interviews[0]);
+      expect(interviews[0]).to.deep.include({
+        ...mockInterview_A1,
+        applicationId: toMongoId(mockInterview_A1.applicationId),
+        userId: toMongoId(mockInterview_A1.userId),
+        status: InterviewStatus.UPCOMING,
+      });
+    });
+
+    it('should return an empty array when filtering by a status that no interview has', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+      await InterviewRepository.createInterview(mockInterview_A1);
+
+      const interviews = await InterviewService.getInterviews({
+        userId: userId_A,
+        filters: { status: InterviewStatus.FAILED },
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should return only the interviews belonging to the applicationId that have the provided status', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+      await InterviewRepository.createInterview(mockInterview_A1);
+      await InterviewRepository.createInterview(mockInterview_B0);
+
+      const interviews = await InterviewService.getInterviews({
+        userId: userId_A,
+        filters: {
+          applicationId: mockInterview_A0.applicationId,
+          status: InterviewStatus.PASSED,
+        },
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(1);
+      assert(interviews[0]);
+      expect(interviews[0]).to.deep.include({
+        ...mockInterview_A0,
+        applicationId: toMongoId(mockInterview_A0.applicationId),
+        userId: toMongoId(mockInterview_A0.userId),
+        status: InterviewStatus.PASSED,
+      });
     });
   });
 });

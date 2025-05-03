@@ -3,6 +3,7 @@ import { IInterview } from '@/models/interview.model';
 import { UpdateResult } from 'mongoose';
 
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import { ResourceNotFoundError } from '@/utils/errors';
 
 export const InterviewService = {
   createInterview: async ({
@@ -37,7 +38,19 @@ export const InterviewService = {
     interviewId: string;
     userId: string;
   }): Promise<IInterview | null> => {
-    return InterviewRepository.getInterviewById({ interviewId, userId });
+    const interview = await InterviewRepository.getInterviewById({
+      interviewId,
+      userId,
+    });
+
+    if (!interview) {
+      throw new ResourceNotFoundError('Interview not found', {
+        interviewId,
+        userId,
+      });
+    }
+
+    return interview;
   },
 
   getInterviews: async ({
