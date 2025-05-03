@@ -24,7 +24,7 @@ export const loadUsers = async (count: number): Promise<IUser[]> => {
     encryptedPassword,
   };
 
-  const allUsers = [...newUsers, user0];
+  const allUsers = [user0, ...newUsers];
 
   const users = await UserModel.insertMany(allUsers);
 
