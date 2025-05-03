@@ -13,7 +13,7 @@ import {
   InternalServerError,
   ResourceNotFoundError,
 } from '@/utils/errors';
-import { InvitationStatus } from '@/types/enums';
+import { InvitationStatus } from '@vtmp/common/constants';
 import assert from 'assert';
 import { expect } from 'chai';
 import { addDays, differenceInSeconds, subDays } from 'date-fns';
