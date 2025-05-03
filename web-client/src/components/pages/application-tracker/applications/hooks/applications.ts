@@ -10,7 +10,7 @@ import { ApplicationStatus } from '@vtmp/common/constants';
 
 export const useGetApplications = () => {
   return useQuery({
-    queryKey: [QueryKey.GET_APPLICATIONS],
+    queryKey: [QueryKey.APPLICATIONS],
     queryFn: async () => {
       const response = await request(
         Method.GET,
@@ -36,7 +36,10 @@ export const useDeleteApplication = () => {
       ),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
-        queryKey: [QueryKey.GET_APPLICATIONS],
+        queryKey: [QueryKey.APPLICATIONS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.APPLICATIONS_COUNT_BY_STATUS],
       });
       console.log('Successfully deleted an application');
       toast.success(res.message);
@@ -67,10 +70,10 @@ export const useUpdateApplicationStatus = () => {
       ),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
-        queryKey: [QueryKey.GET_APPLICATIONS],
+        queryKey: [QueryKey.APPLICATIONS],
       });
       queryClient.invalidateQueries({
-        queryKey: ['status-bar'],
+        queryKey: [QueryKey.APPLICATIONS_COUNT_BY_STATUS],
       });
       console.log('Successfully updated application status');
       toast.success(res.message);

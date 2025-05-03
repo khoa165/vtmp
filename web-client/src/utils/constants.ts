@@ -150,7 +150,8 @@ export enum ProjectName {
 }
 
 export enum QueryKey {
-  GET_APPLICATIONS = '/api/applications',
+  APPLICATIONS = '/api/applications',
+  APPLICATIONS_COUNT_BY_STATUS = '/api/applications/countByStatus',
 }
 
 export enum Method {

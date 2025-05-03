@@ -8,7 +8,7 @@ import {
 } from '@/components/base/status-dots';
 import { ApplicationsCountByStatusSchema } from '@/components/pages/application-tracker/applications/validation';
 import { request } from '@/utils/api';
-import { Method } from '@/utils/constants';
+import { Method, QueryKey } from '@/utils/constants';
 import { useQuery } from '@tanstack/react-query';
 
 export const StatusBar = () => {
@@ -18,7 +18,7 @@ export const StatusBar = () => {
     error,
     data: ApplicationsCountByStatus,
   } = useQuery({
-    queryKey: ['status-bar'],
+    queryKey: [QueryKey.APPLICATIONS_COUNT_BY_STATUS],
     queryFn: async () => {
       const response = await request(
         Method.GET,
