@@ -10,19 +10,32 @@ export const loadInterviews = async (
 ) => {
   const numInterviewsUser0 = 5;
   const numInterviewsUser1 = 5;
+  const sixtyDaysBeforeNow = new Date();
+  sixtyDaysBeforeNow.setDate(sixtyDaysBeforeNow.getDate() - 60);
+  const sixtyDaysAfterNow = new Date();
+  sixtyDaysAfterNow.setDate(sixtyDaysAfterNow.getDate() + 60);
+
+  const generateInterviewData = () => {
+    return {
+      applicationId: faker.helpers.arrayElement(applications)?.id,
+      type: faker.helpers.arrayElements(
+        Object.values(InterviewType),
+        faker.number.int({ min: 1, max: 2 })
+      ),
+      status: faker.helpers.arrayElement(Object.values(InterviewStatus)),
+      interviewOnDate: faker.date.between({
+        from: sixtyDaysBeforeNow.toISOString(),
+        to: sixtyDaysAfterNow.toISOString(),
+      }),
+    };
+  };
 
   const randomInterviewsForUser0 = Array.from(
     { length: numInterviewsUser0 },
     () => {
       return {
         userId: users[0]?.id,
-        applicationId: faker.helpers.arrayElement(applications)?.id,
-        type: faker.helpers.arrayElements(
-          Object.values(InterviewType),
-          faker.number.int({ min: 1, max: 2 })
-        ),
-        status: faker.helpers.arrayElement(Object.values(InterviewStatus)),
-        interviewOnDate: faker.date.future({ years: 1 }),
+        ...generateInterviewData(),
       };
     }
   );
@@ -32,13 +45,7 @@ export const loadInterviews = async (
     () => {
       return {
         userId: users[1]?.id,
-        applicationId: faker.helpers.arrayElement(applications)?.id,
-        type: faker.helpers.arrayElements(
-          Object.values(InterviewType),
-          faker.number.int({ min: 1, max: 2 })
-        ),
-        status: faker.helpers.arrayElement(Object.values(InterviewStatus)),
-        interviewOnDate: faker.date.future({ years: 1 }),
+        ...generateInterviewData(),
       };
     }
   );

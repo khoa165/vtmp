@@ -10,6 +10,8 @@ export const loadApplications = async (
 ): Promise<IApplication[]> => {
   const numAppUser0 = 15;
   const numAppUser1 = 5;
+  const sixtyDaysBeforeNow = new Date();
+  sixtyDaysBeforeNow.setDate(sixtyDaysBeforeNow.getDate() - 60);
   const shuffledJobPostings = faker.helpers.shuffle(jobPostings);
 
   const formatPortalLink = (companyName: string): string => {
@@ -27,6 +29,10 @@ export const loadApplications = async (
         referrer: faker.person.firstName(),
         portalLink: formatPortalLink(jobPosting.companyName),
         interest: faker.helpers.arrayElement(Object.values(InterestLevel)),
+        appliedOnDate: faker.date.recent({
+          days: 60,
+          refDate: sixtyDaysBeforeNow.toISOString(),
+        }),
       };
     });
 
@@ -40,6 +46,7 @@ export const loadApplications = async (
         referrer: faker.person.firstName(),
         portalLink: faker.internet.url(),
         interest: faker.helpers.arrayElement(Object.values(InterestLevel)),
+        appliedOnDate: faker.date.recent({ days: 90 }),
       };
     });
 
