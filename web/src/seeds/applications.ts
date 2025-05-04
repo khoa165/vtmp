@@ -3,16 +3,14 @@ import { IJobPosting } from '@/models/job-posting.model';
 import { IUser } from '@/models/user.model';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 import { faker } from '@faker-js/faker';
-import { sub } from 'date-fns';
 
 export const loadApplications = async (
   users: IUser[],
   jobPostings: IJobPosting[]
 ): Promise<IApplication[]> => {
-  const RECENT_DAYS = 60;
+  const RECENT_DAYS = 90;
   const MIN_JOB_POSTINGS_RATIO = 0.5;
   const MAX_JOB_POSTINGS_RATIO = 1.0;
-  const twoMonthsAgo = sub(new Date(), { months: 2 });
   const allApplications: Partial<IApplication>[] = [];
   const numJobPostings: number = jobPostings.length;
 
@@ -33,7 +31,6 @@ export const loadApplications = async (
     interest: faker.helpers.enumValue(InterestLevel),
     appliedOnDate: faker.date.recent({
       days: RECENT_DAYS,
-      refDate: twoMonthsAgo.toISOString(),
     }),
   });
 
