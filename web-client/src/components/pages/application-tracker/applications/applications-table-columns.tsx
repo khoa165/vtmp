@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/base/checkbox';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/base/button';
 import {
   DropdownMenu,
@@ -70,7 +70,9 @@ export const applicationsTableColumns = ({
       return (
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Button variant="outline">{application.status}</Button>
+            <Button variant="outline">
+              {application.status} <ChevronDown />
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {Object.values(ApplicationStatus).map((status, index) => (
