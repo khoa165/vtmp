@@ -3,61 +3,53 @@ import { IJobPosting } from '@/models/job-posting.model';
 import { IUser } from '@/models/user.model';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 import { faker } from '@faker-js/faker';
+import { sub } from 'date-fns';
 
 export const loadApplications = async (
   users: IUser[],
   jobPostings: IJobPosting[]
 ): Promise<IApplication[]> => {
-  const numAppUser0 = 15;
-  const numAppUser1 = 5;
-  const sixtyDaysBeforeNow = new Date();
-  sixtyDaysBeforeNow.setDate(sixtyDaysBeforeNow.getDate() - 60);
-  const shuffledJobPostings = faker.helpers.shuffle(jobPostings);
+  const RECENT_DAYS = 60;
+  const MIN_JOB_POSTINGS_RATIO = 0.5;
+  const MAX_JOB_POSTINGS_RATIO = 1.0;
+  const twoMonthsAgo = sub(new Date(), { months: 2 });
+  const allApplications: Partial<IApplication>[] = [];
+  const numJobPostings: number = jobPostings.length;
 
   const formatPortalLink = (companyName: string): string => {
     const formattedName = companyName.toLowerCase().replace(/\s+/g, '');
     return `https://careers.${formattedName}.com`;
   };
 
-  const randomApplicationsForUser0 = shuffledJobPostings
-    .slice(0, numAppUser0)
-    .map((jobPosting) => {
-      return {
-        userId: users[0]?.id,
-        jobPostingId: jobPosting.id,
-        status: faker.helpers.arrayElement(Object.values(ApplicationStatus)),
-        referrer: faker.person.firstName(),
-        portalLink: formatPortalLink(jobPosting.companyName),
-        interest: faker.helpers.arrayElement(Object.values(InterestLevel)),
-        appliedOnDate: faker.date.recent({
-          days: 60,
-          refDate: sixtyDaysBeforeNow.toISOString(),
-        }),
-      };
-    });
+  const generateApplicationData = (
+    user: IUser,
+    jobPosting: IJobPosting
+  ): Partial<IApplication> => ({
+    userId: user._id,
+    jobPostingId: jobPosting._id,
+    status: faker.helpers.enumValue(ApplicationStatus),
+    referrer: faker.person.firstName(),
+    portalLink: formatPortalLink(jobPosting.companyName),
+    interest: faker.helpers.enumValue(InterestLevel),
+    appliedOnDate: faker.date.recent({
+      days: RECENT_DAYS,
+      refDate: twoMonthsAgo.toISOString(),
+    }),
+  });
 
-  const randomApplicationsForUser1 = shuffledJobPostings
-    .slice(0, numAppUser1)
-    .map((jobPosting) => {
-      return {
-        userId: users[1]?.id,
-        jobPostingId: jobPosting.id,
-        status: faker.helpers.arrayElement(Object.values(ApplicationStatus)),
-        referrer: faker.person.firstName(),
-        portalLink: faker.internet.url(),
-        interest: faker.helpers.arrayElement(Object.values(InterestLevel)),
-        appliedOnDate: faker.date.recent({ days: 90 }),
-      };
+  for (const user of users) {
+    const randomShuffledJobPostings = faker.helpers.arrayElements(jobPostings, {
+      min: Math.floor(numJobPostings * MIN_JOB_POSTINGS_RATIO),
+      max: Math.floor(numJobPostings * MAX_JOB_POSTINGS_RATIO),
     });
-
-  const allApplications = [
-    ...randomApplicationsForUser0,
-    ...randomApplicationsForUser1,
-  ];
+    for (const jobPosting of randomShuffledJobPostings) {
+      allApplications.push(generateApplicationData(user, jobPosting));
+    }
+  }
 
   const applications = await Promise.all(
     allApplications.map((app) => ApplicationModel.create(app))
   );
-  console.log(`Successfully seeded ${numAppUser0 + numAppUser1} applications.`);
+  console.log(`Successfully seeded ${allApplications.length} applications.`);
   return applications;
 };
