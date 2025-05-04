@@ -15,16 +15,14 @@ export const loadJobPostings = async (
   };
 
   const newJobPostings = links.map((link) => ({
-    linkId: link.id,
+    linkId: link._id,
     url: link.url,
     jobTitle: faker.person.jobTitle(),
-    companyName: formatCompanyName(
-      faker.helpers.arrayElement(Object.values(CompanyName))
-    ),
-    location: faker.helpers.arrayElement(Object.values(JobPostingLocation)),
+    companyName: formatCompanyName(faker.helpers.enumValue(CompanyName)),
+    location: faker.helpers.enumValue(JobPostingLocation),
   }));
 
   const jobPostings = await JobPostingModel.insertMany(newJobPostings);
-  console.log(`Successfully seeded ${links.length} job postings.`);
+  console.log(`Successfully seeded ${jobPostings.length} job postings.`);
   return jobPostings;
 };
