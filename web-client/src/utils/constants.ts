@@ -150,6 +150,7 @@ export enum ProjectName {
 }
 
 export enum QueryKey {
+  SUBMIT_LINK = '/api/links',
   GET_APPLICATIONS = '/api/applications',
 }
 
