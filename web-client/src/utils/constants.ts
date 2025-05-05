@@ -152,7 +152,7 @@ export enum ProjectName {
 export enum QueryKey {
   SUBMIT_LINK = '/api/links',
   GET_APPLICATIONS = '/api/applications',
-  APPLICATIONS_COUNT_BY_STATUS = '/api/applications/countByStatus',
+  GET_APPLICATIONS_COUNT_BY_STATUS = '/api/applications/countByStatus',
 }
 
 export enum Method {

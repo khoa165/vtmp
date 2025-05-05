@@ -18,7 +18,7 @@ export const StatusBar = () => {
     error,
     data: ApplicationsCountByStatus,
   } = useQuery({
-    queryKey: [QueryKey.APPLICATIONS_COUNT_BY_STATUS],
+    queryKey: [QueryKey.GET_APPLICATIONS_COUNT_BY_STATUS],
     queryFn: async () => {
       const response = await request(
         Method.GET,
