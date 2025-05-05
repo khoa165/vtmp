@@ -55,6 +55,7 @@ export const applicationsTableColumns = ({
   {
     accessorKey: 'status',
     header: ({ column }) => {
+      // TODO-(QuangMinhNguyen27405/dsmai): Add arrow up when sorting ascending and down when descending
       return (
         <Button
           variant="ghost"
@@ -96,6 +97,7 @@ export const applicationsTableColumns = ({
   {
     accessorKey: 'appliedOnDate',
     header: ({ column }) => {
+      // TODO-(QuangMinhNguyen27405/dsmai): Add arrow up when sorting ascending and down when descending
       return (
         <Button
           variant="ghost"

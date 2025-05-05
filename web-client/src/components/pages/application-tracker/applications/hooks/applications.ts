@@ -75,10 +75,10 @@ export const useUpdateApplicationStatus = () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.APPLICATIONS_COUNT_BY_STATUS],
       });
-      console.log('Successfully updated application status');
       toast.success(res.message);
     },
     onError: (error) => {
+      // TODO-(QuangMinhNguyen27405/dsmai): Remove this console log in production and handle error properly
       console.error('Error updating application status:', error);
       toast.error('Failed to update application status.');
     },

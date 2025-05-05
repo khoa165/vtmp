@@ -17,11 +17,13 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
   const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
 
   if (isLoading) {
+    // TODO-(QuangMinhNguyen27405/dsmai): Remove this console log in production and add a loading spinner
     console.log('Loading applications data...');
     return <span>Loading applications data...</span>;
   }
 
   if (isError) {
+    // TODO-(QuangMinhNguyen27405/dsmai) : Remove this line in production and add a toast error message
     console.error('Error fetching applications data:', error);
     // return (
     //   <span>Error: {error.message || 'Failed to load applications data.'}</span>
@@ -30,18 +32,17 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
   }
 
   if (!applicationsData || applicationsData.length === 0) {
+    // TODO-(QuangMinhNguyen27405/dsmai): Replace `return null` with an empty state message or component
     return null;
   }
 
   return (
-    <div>
-      <ApplicationsTable
-        columns={applicationsTableColumns({
-          deleteApplicationFn,
-          updateApplicationStatusFn,
-        })}
-        data={applicationsData}
-      />
-    </div>
+    <ApplicationsTable
+      columns={applicationsTableColumns({
+        deleteApplicationFn,
+        updateApplicationStatusFn,
+      })}
+      data={applicationsData}
+    />
   );
 };
