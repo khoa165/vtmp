@@ -30,6 +30,23 @@ const ApplicationStatusUpdateSchema = z
   })
   .strict({ message: 'Only allow updating status' });
 
+const ApplicationFilterSchema = z
+  .object({
+    status: z
+      .nativeEnum(ApplicationStatus, {
+        message: 'Invalid application status',
+      })
+      .optional(),
+  })
+  .strict({
+    message: 'Only allow filtering by status',
+  })
+  .transform((data: object) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
+  );
+
 const ApplicationMetadataUpdateSchema = z
   .object({
     note: z.string().optional(),
@@ -68,8 +85,10 @@ export const ApplicationController = {
   getApplications: async (req: Request, res: Response) => {
     //const userId = getUserFromRequest(req).user.id;
 
+    const filters = ApplicationFilterSchema.parse(req.body);
     const applications = await ApplicationService.getApplications(
-      '68110356bd157e78f5a2137e'
+      // '68110356bd157e78f5a2137e'
+      { userId: '68110356bd157e78f5a2137e', filters }
     );
 
     res.status(200).json({
