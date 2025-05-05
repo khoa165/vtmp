@@ -30,7 +30,7 @@ export const ApplicationsAction = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
-    <div>
+    <>
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -75,6 +75,6 @@ export const ApplicationsAction = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </>
   );
 };
