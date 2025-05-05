@@ -23,7 +23,7 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
   }
 
   if (isError) {
-    // TODO-(QuangMinhNguyen27405/dsmai) : Remove this line in production and add a toast error message
+    // TODO-(QuangMinhNguyen27405/dsmai) : Remove this and add a toast error message. Add react-error-boundary
     console.error('Error fetching applications data:', error);
     // return (
     //   <span>Error: {error.message || 'Failed to load applications data.'}</span>
@@ -33,6 +33,7 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
 
   if (!applicationsData || applicationsData.length === 0) {
     // TODO-(QuangMinhNguyen27405/dsmai): Replace `return null` with an empty state message or component
+    // we shouldn't just return null when mentee has no application yet
     return null;
   }
 
