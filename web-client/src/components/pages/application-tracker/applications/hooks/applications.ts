@@ -7,6 +7,7 @@ import {
   ApplicationResponseSchema,
 } from '@/components/pages/application-tracker/applications/validation';
 import { ApplicationStatus } from '@vtmp/common/constants';
+import axios from 'axios';
 
 export const useGetApplications = () => {
   return useQuery({
@@ -41,9 +42,21 @@ export const useDeleteApplication = () => {
       console.log('Successfully deleted an application');
       toast.success(res.message);
     },
-    onError: (error) => {
-      console.error('Error deleting application:', error);
-      toast.error('Failed to delete application.');
+    onError: (error: unknown) => {
+      // What I want to do here: I want to surface the error
+      // sent from the backend to frontend => using toast
+      // Check type of error
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessages = error.response.data.errors((err) => err.message);
+        const combinedErrorMessage = errorMessages.join(', ');
+        toast.error(
+          'Failed to delete application due to: ',
+          combinedErrorMessage
+        );
+      } else {
+        console.error('Unexpected error: ', error);
+        toast.error('Failed to delete application due to: Unexpected error');
+      }
     },
   });
 };
@@ -71,10 +84,21 @@ export const useUpdateApplicationStatus = () => {
       });
       toast.success(res.message);
     },
-    onError: (error) => {
+    onError: (error: unknown) => {
       // TODO-(QuangMinhNguyen27405/dsmai): Remove this console log in production and handle error properly
-      console.error('Error updating application status:', error);
-      toast.error('Failed to update application status.');
+      // console.error('Error updating application status:', error);
+      // toast.error('Failed to update application status.');
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessages = error.response.data.errors((err) => err.message);
+        const combinedErrorMessage = errorMessages.join(', ');
+        toast.error(
+          'Failed to delete application due to: ',
+          combinedErrorMessage
+        );
+      } else {
+        console.error('Unexpected error: ', error);
+        toast.error('Failed to delete application due to: Unexpected error');
+      }
     },
   });
 };
