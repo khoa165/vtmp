@@ -11,7 +11,7 @@ import axios from 'axios';
 
 export const useGetApplications = () => {
   return useQuery({
-    queryKey: [QueryKey.APPLICATIONS],
+    queryKey: [QueryKey.GET_APPLICATIONS],
     queryFn: async () => {
       const response = await request(
         Method.GET,
@@ -37,7 +37,7 @@ export const useDeleteApplication = () => {
       ),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
-        queryKey: [QueryKey.APPLICATIONS],
+        queryKey: [QueryKey.GET_APPLICATIONS],
       });
       queryClient.invalidateQueries({
         queryKey: [QueryKey.APPLICATIONS_COUNT_BY_STATUS],
@@ -83,7 +83,7 @@ export const useUpdateApplicationStatus = () => {
       ),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
-        queryKey: [QueryKey.APPLICATIONS],
+        queryKey: [QueryKey.GET_APPLICATIONS],
       });
       queryClient.invalidateQueries({
         queryKey: [QueryKey.APPLICATIONS_COUNT_BY_STATUS],
