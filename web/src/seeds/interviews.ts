@@ -3,17 +3,21 @@ import { IInterview, InterviewModel } from '@/models/interview.model';
 import { IUser } from '@/models/user.model';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 import { faker } from '@faker-js/faker';
-import { sub, add } from 'date-fns';
 
 export const loadInterviews = async (
   users: IUser[],
   applications: IApplication[]
 ) => {
-  const MIN_INTERVIEWS = 0;
-  const MAX_INTERVIEWS = 3;
+  const SOON_DAYS = 180;
+  const weightedNumInterviews = [
+    { weight: 99, value: 0 },
+    { weight: 0.6, value: 1 },
+    { weight: 0.2, value: 2 },
+    { weight: 0.1, value: 3 },
+    { weight: 0.09, value: 4 },
+    { weight: 0.01, value: 5 },
+  ];
   const allInterviews: Partial<IInterview>[] = [];
-  const twoMonthsAgo = sub(new Date(), { months: 2 });
-  const twoMonthsLater = add(new Date(), { months: 2 });
 
   const generateInterviewData = (
     user: IUser,
@@ -27,9 +31,9 @@ export const loadInterviews = async (
         faker.number.int({ min: 1, max: 2 })
       ),
       status: faker.helpers.enumValue(InterviewStatus),
-      interviewOnDate: faker.date.between({
-        from: twoMonthsAgo.toISOString(),
-        to: twoMonthsLater.toISOString(),
+      interviewOnDate: faker.date.soon({
+        days: SOON_DAYS,
+        refDate: application.appliedOnDate,
       }),
     };
   };
@@ -39,12 +43,11 @@ export const loadInterviews = async (
       (app) => app.userId === user._id
     );
     for (const application of applicationsOfUser) {
-      const randomNumInterviews = faker.helpers.rangeToNumber({
-        min: MIN_INTERVIEWS,
-        max: MAX_INTERVIEWS,
-      });
+      const numInterviews = faker.helpers.weightedArrayElement(
+        weightedNumInterviews
+      );
       allInterviews.push(
-        ...Array.from({ length: randomNumInterviews }, () =>
+        ...Array.from({ length: numInterviews }, () =>
           generateInterviewData(user, application)
         )
       );
