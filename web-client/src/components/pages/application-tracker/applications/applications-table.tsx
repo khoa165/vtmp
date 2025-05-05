@@ -1,6 +1,6 @@
 import { Button } from '@/components/base/button';
 import { Input } from '@/components/base/input';
-import * as React from 'react';
+import { useState } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -38,15 +38,12 @@ export function ApplicationsTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,

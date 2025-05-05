@@ -13,6 +13,9 @@ import { ApplicationStatus } from '@vtmp/common/constants';
 import { ApplicationsAction } from '@/components/pages/application-tracker/applications/applications-action';
 import { format } from 'date-fns';
 
+// TODO-(QuangMinhNguyen27405/dsmai): General => Add arrow up when sorting ascending and down when descending
+// and updown if we are sorting by a different column
+
 export const applicationsTableColumns = ({
   deleteApplicationFn,
   updateApplicationStatusFn,
@@ -56,6 +59,7 @@ export const applicationsTableColumns = ({
     accessorKey: 'status',
     header: ({ column }) => {
       // TODO-(QuangMinhNguyen27405/dsmai): Add arrow up when sorting ascending and down when descending
+      // and updown if we are sorting by a different column
       return (
         <Button
           variant="ghost"
@@ -98,6 +102,7 @@ export const applicationsTableColumns = ({
     accessorKey: 'appliedOnDate',
     header: ({ column }) => {
       // TODO-(QuangMinhNguyen27405/dsmai): Add arrow up when sorting ascending and down when descending
+      // and updown if we are sorting by a different column
       return (
         <Button
           variant="ghost"

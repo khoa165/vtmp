@@ -39,6 +39,7 @@ export const ApplicationsAction = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          {/* TODO-(QuangMinhNguyen27405/dsmai): Remove this 'Copy Application ID action' */}
           <DropdownMenuItem
             onClick={() => navigator.clipboard.writeText(application._id)}
           >
