@@ -9,6 +9,7 @@ const configSchema = z.object({
   JWT_SECRET: z.string(),
   GMAIL_EMAIL: z.string(),
   GMAIL_APP_PASSWORD: z.string(),
+  VTMP_WEB_URL: z.string(),
 });
 
 export const EnvConfig = {

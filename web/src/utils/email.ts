@@ -16,7 +16,7 @@ export class EmailService {
   }
 
   getInvitationEmailTemplate(name: string, email: string, token: string) {
-    const link = `viettechmentorship.com?token=${token}`;
+    const link = `${EnvConfig.get().VTMP_WEB_URL}?token=${token}`;
     return {
       email,
       subject: 'Invitation to join VTMP',
@@ -45,12 +45,6 @@ export class EmailService {
       html: body,
     };
 
-    try {
-      await this.transporter.sendMail(mailOptions);
-      return true;
-    } catch (error: unknown) {
-      console.error('error sending email ', error);
-      return false;
-    }
+    await this.transporter.sendMail(mailOptions);
   }
 }
