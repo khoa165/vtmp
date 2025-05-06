@@ -10,13 +10,37 @@ import {
 import { LinkRepository } from '@/repositories/link.repository';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { LinkStatus } from '@vtmp/common/constants';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import { EnvConfig } from '@/config/env';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import bcrypt from 'bcryptjs';
+import { AuthService } from '@/services/auth.service';
+import { UserRepository } from '@/repositories/user.repository';
 
 describe('LinkController', () => {
   useMongoDB();
+  const sandbox = useSandbox();
+
   let linkId: string;
   let url: string;
-
+  let mockToken: string;
   beforeEach(async () => {
+    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+
+    const encryptedPassword = await bcrypt.hash('test password', 10);
+    const mockUser = {
+      firstName: 'admin',
+      lastName: 'viettech',
+      email: 'test@gmail.com',
+      encryptedPassword,
+    };
+
+    await UserRepository.createUser(mockUser);
+    mockToken = await AuthService.login({
+      email: mockUser.email,
+      password: 'test password',
+    });
+
     url = 'http://example.com/job-posting';
     const newLink = await LinkRepository.createLink(url);
     linkId = newLink.id;
@@ -100,15 +124,16 @@ describe('LinkController', () => {
   describe('getLinkCountByStatus', () => {
     it('should return 1 link for pending status', async () => {
       const res = await request(app)
-        .get('/api/links/count')
-        .set('Accept', 'application/json');
+        .get('/api/links/count-by-status')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.message).to.equal(
         'Link count has been retrieved successfully.'
       );
 
-      expect(res.body.data.linkCounts).to.deep.equal({
+      expect(res.body.data).to.deep.equal({
         [LinkStatus.PENDING]: 1,
         [LinkStatus.APPROVED]: 0,
         [LinkStatus.REJECTED]: 0,
@@ -131,15 +156,15 @@ describe('LinkController', () => {
       });
 
       const res = await request(app)
-        .get('/api/links/count')
-        .set('Accept', 'application/json');
+        .get('/api/links/count-by-status')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.message).to.equal(
         'Link count has been retrieved successfully.'
       );
-
-      expect(res.body.data.linkCounts).to.deep.equal({
+      expect(res.body.data).to.deep.equal({
         [LinkStatus.PENDING]: 2,
         [LinkStatus.APPROVED]: 1,
         [LinkStatus.REJECTED]: 1,
