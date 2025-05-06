@@ -651,7 +651,7 @@ describe('ApplicationController', () => {
     });
   });
 
-  describe('GET /applications/countByStatus', () => {
+  describe('GET /applications/count-by-status', () => {
     const updatedStatus = [
       ApplicationStatus.SUBMITTED,
       ApplicationStatus.WITHDRAWN,
@@ -662,7 +662,7 @@ describe('ApplicationController', () => {
 
     it('should return correct counts grouped by status for the authorized user', async () => {
       const applications = await Promise.all(
-        Array.from({ length: 5 }, () =>
+        Array.from({ length: updatedStatus.length }, () =>
           ApplicationRepository.createApplication({
             jobPostingId: getNewMongoId(),
             userId: savedUserId,
@@ -681,7 +681,7 @@ describe('ApplicationController', () => {
         )
       );
       const res = await request(app)
-        .get('/api/applications/countByStatus')
+        .get('/api/applications/count-by-status')
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -691,17 +691,26 @@ describe('ApplicationController', () => {
         [ApplicationStatus.WITHDRAWN]: 1,
         [ApplicationStatus.OFFERED]: 2,
         [ApplicationStatus.REJECTED]: 1,
+        [ApplicationStatus.INTERVIEWING]: 0,
+        [ApplicationStatus.OA]: 0,
       });
     });
 
-    it('should return an empty object if no applications exist for the user', async () => {
+    it('should return an object with all application status count of 0 if no applications exist for the user', async () => {
       const res = await request(app)
-        .get('/api/applications/countByStatus')
+        .get('/api/applications/count-by-status')
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.deep.equal({});
+      expect(res.body.data).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 0,
+        [ApplicationStatus.WITHDRAWN]: 0,
+        [ApplicationStatus.OFFERED]: 0,
+        [ApplicationStatus.REJECTED]: 0,
+        [ApplicationStatus.INTERVIEWING]: 0,
+        [ApplicationStatus.OA]: 0,
+      });
     });
 
     it('should exclude soft-deleted applications from the count', async () => {
@@ -721,13 +730,18 @@ describe('ApplicationController', () => {
       });
 
       const res = await request(app)
-        .get('/api/applications/countByStatus')
+        .get('/api/applications/count-by-status')
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.deep.equal({
         [ApplicationStatus.SUBMITTED]: 1,
+        [ApplicationStatus.WITHDRAWN]: 0,
+        [ApplicationStatus.OFFERED]: 0,
+        [ApplicationStatus.REJECTED]: 0,
+        [ApplicationStatus.INTERVIEWING]: 0,
+        [ApplicationStatus.OA]: 0,
       });
     });
   });

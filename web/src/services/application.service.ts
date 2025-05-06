@@ -221,6 +221,14 @@ export const ApplicationService = {
   },
 
   getApplicationsCountByStatus: async (userId: string) => {
-    return ApplicationRepository.getApplicationsCountByStatus(userId);
+    const applicationsCountByStatus =
+      await ApplicationRepository.getApplicationsCountByStatus(userId);
+
+    return Object.fromEntries(
+      Object.keys(ApplicationStatus).map((status) => [
+        status,
+        applicationsCountByStatus[status] || 0,
+      ])
+    );
   },
 };

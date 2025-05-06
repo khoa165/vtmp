@@ -381,7 +381,7 @@ describe('ApplicationRepository', () => {
 
     it('should return correct counts grouped by status for the user', async () => {
       const applications = await Promise.all(
-        Array.from({ length: 5 }, () =>
+        Array.from({ length: updatedStatus.length }, () =>
           ApplicationRepository.createApplication({
             jobPostingId: getNewMongoId(),
             userId: userId_A,

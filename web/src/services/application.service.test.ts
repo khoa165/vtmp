@@ -626,17 +626,24 @@ describe('ApplicationService', () => {
       ApplicationStatus.REJECTED,
     ];
 
-    it('should return an empty object if no applications exist for the user', async () => {
+    it('should return an object with all application status count of 0 if no applications exist for the user', async () => {
       const result =
         await ApplicationService.getApplicationsCountByStatus(userId_A);
 
       assert(result);
-      expect(result).to.deep.equal({});
+      expect(result).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 0,
+        [ApplicationStatus.WITHDRAWN]: 0,
+        [ApplicationStatus.OFFERED]: 0,
+        [ApplicationStatus.REJECTED]: 0,
+        [ApplicationStatus.INTERVIEWING]: 0,
+        [ApplicationStatus.OA]: 0,
+      });
     });
 
     it('should return correct counts grouped by status for the user', async () => {
       const applications = await Promise.all(
-        Array.from({ length: 5 }, () =>
+        Array.from({ length: updatedStatus.length }, () =>
           ApplicationRepository.createApplication({
             jobPostingId: getNewMongoId(),
             userId: userId_A,
@@ -664,6 +671,8 @@ describe('ApplicationService', () => {
         [ApplicationStatus.WITHDRAWN]: 1,
         [ApplicationStatus.OFFERED]: 2,
         [ApplicationStatus.REJECTED]: 1,
+        [ApplicationStatus.INTERVIEWING]: 0,
+        [ApplicationStatus.OA]: 0,
       });
     });
 
@@ -690,6 +699,11 @@ describe('ApplicationService', () => {
       assert(result);
       expect(result).to.deep.equal({
         [ApplicationStatus.SUBMITTED]: 1,
+        [ApplicationStatus.WITHDRAWN]: 0,
+        [ApplicationStatus.OFFERED]: 0,
+        [ApplicationStatus.REJECTED]: 0,
+        [ApplicationStatus.INTERVIEWING]: 0,
+        [ApplicationStatus.OA]: 0,
       });
     });
 
@@ -709,6 +723,11 @@ describe('ApplicationService', () => {
       assert(result);
       expect(result).to.deep.equal({
         [ApplicationStatus.SUBMITTED]: 1,
+        [ApplicationStatus.WITHDRAWN]: 0,
+        [ApplicationStatus.OFFERED]: 0,
+        [ApplicationStatus.REJECTED]: 0,
+        [ApplicationStatus.INTERVIEWING]: 0,
+        [ApplicationStatus.OA]: 0,
       });
     });
   });

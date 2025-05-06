@@ -112,7 +112,7 @@ export const ApplicationRepository = {
         },
       },
     ]);
-    // After the this step, the result looks like [{_id: SUBMITTED, count: 10}, {_id: OFFERED, count: 10}]
+    // After this step, result looks like [{_id: SUBMITTED, count: 10}, {_id: OFFERED, count: 10}, ...]
     const countGroupByStatus = result.reduce((accummulator, item) => {
       accummulator[item._id] = item.count;
       return accummulator;
