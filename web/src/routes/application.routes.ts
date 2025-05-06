@@ -15,7 +15,7 @@ ApplicationRoutes.get(
   wrappedHandlers([ApplicationController.getApplications])
 );
 ApplicationRoutes.get(
-  '/countByStatus',
+  '/count-by-status',
   wrappedHandlers([ApplicationController.getApplicationsCountByStatus])
 );
 ApplicationRoutes.get(
