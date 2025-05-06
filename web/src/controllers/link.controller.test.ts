@@ -104,6 +104,9 @@ describe('LinkController', () => {
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.message).to.equal(
+        'Link count has been retrieved successfully.'
+      );
 
       expect(res.body.data.linkCounts).to.deep.equal({
         [LinkStatus.PENDING]: 1,
@@ -132,6 +135,9 @@ describe('LinkController', () => {
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.message).to.equal(
+        'Link count has been retrieved successfully.'
+      );
 
       expect(res.body.data.linkCounts).to.deep.equal({
         [LinkStatus.PENDING]: 2,

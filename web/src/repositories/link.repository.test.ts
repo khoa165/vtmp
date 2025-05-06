@@ -61,7 +61,7 @@ describe('LinkRepository', () => {
       await LinkRepository.createLink('google.com');
       const linkCounts = await LinkRepository.getLinkCountByStatus();
 
-      expect(linkCounts).to.deep.include({
+      expect(linkCounts).to.deep.equal({
         [LinkStatus.PENDING]: 1,
       });
     });
@@ -71,7 +71,7 @@ describe('LinkRepository', () => {
       await LinkRepository.createLink('nvidia.com');
       const linkCounts = await LinkRepository.getLinkCountByStatus();
 
-      expect(linkCounts).to.deep.include({
+      expect(linkCounts).to.deep.equal({
         [LinkStatus.PENDING]: 2,
       });
     });
@@ -87,7 +87,7 @@ describe('LinkRepository', () => {
       });
 
       const afterUpdateLinks = await LinkRepository.getLinkCountByStatus();
-      expect(afterUpdateLinks).to.deep.include({
+      expect(afterUpdateLinks).to.deep.equal({
         [LinkStatus.PENDING]: 2,
         [LinkStatus.APPROVED]: 1,
       });
