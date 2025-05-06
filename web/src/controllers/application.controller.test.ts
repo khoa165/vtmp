@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { expect } from 'chai';
 import bcrypt from 'bcryptjs';
+import * as R from 'remeda';
 
 import app from '@/app';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
@@ -658,11 +659,11 @@ describe('ApplicationController', () => {
       ApplicationStatus.OFFERED,
       ApplicationStatus.OFFERED,
       ApplicationStatus.REJECTED,
-    ];
+    ] as const;
 
     it('should return correct counts grouped by status for the authorized user', async () => {
       const applications = await Promise.all(
-        Array.from({ length: updatedStatus.length }, () =>
+        R.times(updatedStatus.length, () =>
           ApplicationRepository.createApplication({
             jobPostingId: getNewMongoId(),
             userId: savedUserId,
@@ -670,12 +671,12 @@ describe('ApplicationController', () => {
         )
       );
       await Promise.all(
-        applications.map((application, index) =>
+        R.zip(applications, updatedStatus).map(([application, status]) =>
           ApplicationRepository.updateApplicationById({
             userId: savedUserId,
             applicationId: application.id,
             updatedMetadata: {
-              status: updatedStatus[index] ?? ApplicationStatus.SUBMITTED,
+              status,
             },
           })
         )
