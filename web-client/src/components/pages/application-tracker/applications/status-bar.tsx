@@ -22,7 +22,7 @@ export const StatusBar = () => {
     queryFn: async () => {
       const response = await request(
         Method.GET,
-        '/applications/countByStatus',
+        '/applications/count-by-status',
         null,
         ApplicationsCountByStatusSchema
       );
