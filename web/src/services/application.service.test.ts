@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
-import * as R from 'remeda';
+import { times, zip } from 'remeda';
 
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -644,7 +644,7 @@ describe('ApplicationService', () => {
 
     it('should return correct counts grouped by status for the user', async () => {
       const applications = await Promise.all(
-        R.times(updatedStatus.length, () =>
+        times(updatedStatus.length, () =>
           ApplicationRepository.createApplication({
             jobPostingId: getNewMongoId(),
             userId: userId_A,
@@ -652,7 +652,7 @@ describe('ApplicationService', () => {
         )
       );
       await Promise.all(
-        R.zip(applications, updatedStatus).map(([application, status]) =>
+        zip(applications, updatedStatus).map(([application, status]) =>
           ApplicationRepository.updateApplicationById({
             userId: userId_A,
             applicationId: application.id,
