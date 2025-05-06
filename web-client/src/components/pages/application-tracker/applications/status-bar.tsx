@@ -10,8 +10,12 @@ import { ApplicationsCountByStatusSchema } from '@/components/pages/application-
 import { request } from '@/utils/api';
 import { Method, QueryKey } from '@/utils/constants';
 import { useQuery } from '@tanstack/react-query';
+import { ApplicationStatus } from '@vtmp/common/constants';
+import { useState } from 'react';
 
-export const StatusBar = () => {
+export const StatusBar = ({ setFilter }) => {
+  const [selectedStatus, setSelectedStatus] =
+    useState<ApplicationStatus | null>(null);
   const {
     isLoading,
     isError,
@@ -45,37 +49,57 @@ export const StatusBar = () => {
 
   const infos = [
     {
-      num: ApplicationsCountByStatus?.SUBMITTED ?? 0,
+      num: ApplicationsCountByStatus?.SUBMITTED,
       label: 'Submitted',
       dot: <SubmittedStatusDot />,
+      status: ApplicationStatus.SUBMITTED,
     },
     {
-      num: ApplicationsCountByStatus?.OA ?? 0,
+      num: ApplicationsCountByStatus?.OA,
       label: 'OA',
       dot: <OAStatusDot />,
+      status: ApplicationStatus.OA,
     },
     {
-      num: ApplicationsCountByStatus?.INTERVIEWING ?? 0,
+      num: ApplicationsCountByStatus?.INTERVIEWING,
       label: 'Interviewing',
       dot: <InterviewingStatusDot />,
+      status: ApplicationStatus.INTERVIEWING,
     },
     {
-      num: ApplicationsCountByStatus?.OFFERED ?? 0,
+      num: ApplicationsCountByStatus?.OFFERED,
       label: 'Offered',
       dot: <OfferedStatusDot />,
+      status: ApplicationStatus.OFFERED,
     },
     {
-      num: ApplicationsCountByStatus?.WITHDRAWN ?? 0,
+      num: ApplicationsCountByStatus?.WITHDRAWN,
       label: 'Withdrawn',
       dot: <WithdrawnStatusDot />,
+      status: ApplicationStatus.WITHDRAWN,
     },
   ];
+  // What I want to do: I want register when I click on the status box
+  // it has to reinvalidate GET_APPLICATIONS queryKey and refetch useGetApplications with filter being the status selected
+  const handleStatusClick = (status: ApplicationStatus) => {
+    // queryClient.invalidateQueries({ queryKey: [QueryKey.GET_APPLICATIONS] });
+    // If the already existing state match the new status
+    if (selectedStatus === status) {
+      // Clear the status and refetch
+      setSelectedStatus(null);
+      setFilter({});
+    } else {
+      setSelectedStatus(status);
+      setFilter({ status });
+    }
+  };
   return (
     <div className={`grid grid-cols-5 w-full gap-4 mb-6 max-md:grid-rows-6`}>
       {infos.map((info, index) => (
         <Card
           key={index}
           className="bg-transparent h-fit cursor-pointer hover:bg-[#FEFEFE] hover:text-[#333333] transition-colors duration-200"
+          onClick={() => handleStatusClick(info.status)}
         >
           <div className="flex flex-col items-center justify-center">
             <div className="text-[2rem] max-lg:text-[1rem] font-bold">

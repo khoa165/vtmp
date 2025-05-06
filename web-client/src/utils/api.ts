@@ -17,7 +17,8 @@ export const request = async <T>(
   const response = await api.request({
     method,
     url,
-    ...(data ? { data } : {}),
+    ...(method === Method.GET && data ? { params: data } : {}), // Use `params` for GET requests
+    ...(method !== Method.GET && data ? { data } : {}), // Use `data` for non-GET requests
   });
   if (schema) {
     return schema.parse(response.data);

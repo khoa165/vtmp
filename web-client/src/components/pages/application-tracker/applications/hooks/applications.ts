@@ -9,16 +9,21 @@ import {
 import { ApplicationStatus } from '@vtmp/common/constants';
 import axios from 'axios';
 
-export const useGetApplications = () => {
+export const useGetApplications = (
+  filter: { status?: ApplicationStatus } = {}
+) => {
+  console.log('Query Key:', [QueryKey.GET_APPLICATIONS, filter]);
+  console.log('Filter object inside useGetApplications: ', filter);
   return useQuery({
-    queryKey: [QueryKey.GET_APPLICATIONS],
+    queryKey: [QueryKey.GET_APPLICATIONS, filter],
     queryFn: async () => {
       const response = await request(
         Method.GET,
         '/applications',
-        null,
+        filter,
         ApplicationsResponseSchema
       );
+      console.log('Response: ', response);
       return response.data;
     },
   });

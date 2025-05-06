@@ -84,8 +84,10 @@ export const ApplicationController = {
 
   getApplications: async (req: Request, res: Response) => {
     //const userId = getUserFromRequest(req).user.id;
+    console.log('Req body from backend controller: ', req.query);
 
-    const filters = ApplicationFilterSchema.parse(req.body);
+    const filters = ApplicationFilterSchema.parse(req.query);
+    console.log('Filter from backend server: ', filters);
     const applications = await ApplicationService.getApplications(
       // '68110356bd157e78f5a2137e'
       { userId: '68110356bd157e78f5a2137e', filters }
