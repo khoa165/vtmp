@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { offerCompanies } from 'src/data/companies';
-import { mentorshipPeople } from 'src/data/people';
+import { offerCompanies } from '@/data/companies';
+import { mentorshipPeople } from '@/data/people';
 import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
 

@@ -1,6 +1,6 @@
 import { ApplicationModel, IApplication } from '@/models/application.model';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
-import { ClientSession } from 'mongoose';
+import mongoose, { ClientSession } from 'mongoose';
 
 export const ApplicationRepository = {
   createApplication: async ({
@@ -95,5 +95,29 @@ export const ApplicationRepository = {
       { $set: { deletedAt: new Date() } },
       { new: true }
     );
+  },
+
+  getApplicationsCountByStatus: async (userId: string) => {
+    const result = await ApplicationModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          deletedAt: null,
+        },
+      },
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    // After this step, result looks like [{_id: SUBMITTED, count: 10}, {_id: OFFERED, count: 10}, ...]
+    const countGroupByStatus = result.reduce((accummulator, item) => {
+      accummulator[item._id] = item.count;
+      return accummulator;
+    }, {});
+
+    return countGroupByStatus;
   },
 };

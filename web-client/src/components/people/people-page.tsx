@@ -1,16 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { DEFAULT_ROLES, getRoleDisplayName } from 'src/utils/data';
-import { PeopleSortColumn } from 'src/utils/constants';
+import { DEFAULT_ROLES, getRoleDisplayName } from '@/utils/data';
+import { PeopleSortColumn } from '@/utils/constants';
 import { PeopleGrid } from './people-grid';
 import { Autocomplete, Button, Checkbox, TextField } from '@mui/material';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import { useMentorshipPeople } from 'src/hooks/useMentorshipPeople';
-import { useOffersData } from 'src/hooks/useOffersData';
-import { peopleSortColumnDisplayName } from 'src/utils/displayName';
+import { useMentorshipPeople } from '@/hooks/useMentorshipPeople';
+import { useOffersData } from '@/hooks/useOffersData';
+import { peopleSortColumnDisplayName } from '@/utils/displayName';
 import { FaArrowUpWideShort, FaArrowDownWideShort } from 'react-icons/fa6';
-import { useNavigatePreserveQueryParams } from 'src/hooks/useNavigatePreserveQueryParams';
+import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { MentorshipRole } from '@vtmp/common/constants';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
