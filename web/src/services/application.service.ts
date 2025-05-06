@@ -219,4 +219,16 @@ export const ApplicationService = {
       });
     return deletedApplication;
   },
+
+  getApplicationsCountByStatus: async (userId: string) => {
+    const applicationsCountByStatus =
+      await ApplicationRepository.getApplicationsCountByStatus(userId);
+
+    return Object.fromEntries(
+      Object.keys(ApplicationStatus).map((status) => [
+        status,
+        applicationsCountByStatus[status] || 0,
+      ])
+    );
+  },
 };

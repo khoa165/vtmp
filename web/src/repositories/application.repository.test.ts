@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
+import { times, zip } from 'remeda';
 
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
@@ -359,6 +360,102 @@ describe('ApplicationRepository', () => {
         userId: userId_B,
       });
       assert(!foundApplication);
+    });
+  });
+
+  describe('getApplicationsCountByStatus', () => {
+    const updatedStatus = [
+      ApplicationStatus.SUBMITTED,
+      ApplicationStatus.WITHDRAWN,
+      ApplicationStatus.OFFERED,
+      ApplicationStatus.OFFERED,
+      ApplicationStatus.REJECTED,
+    ] as const;
+
+    it('should return an empty object if no applications exist for the user', async () => {
+      const result =
+        await ApplicationRepository.getApplicationsCountByStatus(userId_A);
+
+      assert(result);
+      expect(result).to.deep.equal({});
+    });
+
+    it('should return correct counts grouped by status for the user', async () => {
+      const applications = await Promise.all(
+        times(updatedStatus.length, () =>
+          ApplicationRepository.createApplication({
+            jobPostingId: getNewMongoId(),
+            userId: userId_A,
+          })
+        )
+      );
+      await Promise.all(
+        zip(applications, updatedStatus).map(([application, status]) =>
+          ApplicationRepository.updateApplicationById({
+            userId: userId_A,
+            applicationId: application.id,
+            updatedMetadata: {
+              status,
+            },
+          })
+        )
+      );
+
+      const result =
+        await ApplicationRepository.getApplicationsCountByStatus(userId_A);
+
+      assert(result);
+      expect(result).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 1,
+        [ApplicationStatus.WITHDRAWN]: 1,
+        [ApplicationStatus.OFFERED]: 2,
+        [ApplicationStatus.REJECTED]: 1,
+      });
+    });
+
+    it('should exclude soft-deleted applications from the count', async () => {
+      await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: userId_A,
+      });
+      const applicationToDelete = await ApplicationRepository.createApplication(
+        {
+          jobPostingId: getNewMongoId(),
+          userId: userId_A,
+        }
+      );
+
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_A,
+        applicationId: applicationToDelete.id,
+      });
+
+      const result =
+        await ApplicationRepository.getApplicationsCountByStatus(userId_A);
+
+      assert(result);
+      expect(result).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 1,
+      });
+    });
+
+    it('should return counts only for the specified user', async () => {
+      await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: userId_A,
+      });
+      await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: userId_B,
+      });
+
+      const result =
+        await ApplicationRepository.getApplicationsCountByStatus(userId_A);
+
+      assert(result);
+      expect(result).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 1,
+      });
     });
   });
 });
