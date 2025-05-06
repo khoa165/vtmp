@@ -30,17 +30,14 @@ export const LinkRepository = {
   },
 
   getLinkCountByStatus: async () => {
-    const result = await LinkModel.aggregate(
-      [
+    const result = await LinkModel.aggregate([
         {
           $group: {
             _id: '$status',
             count: { $sum: 1 },
           },
         },
-      ],
-      {}
-    );
+    ]);
 
     const groupCountByStatus = result.reduce((accumulator, item) => {
       accumulator[item._id] = item.count;
