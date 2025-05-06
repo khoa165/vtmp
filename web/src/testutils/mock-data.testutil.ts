@@ -4,4 +4,5 @@ export const MOCK_ENV = {
   JWT_SECRET: 'vtmp-secret',
   GMAIL_EMAIL: 'vtmpwebsite2025@gmail.com',
   GMAIL_APP_PASSWORD: 'azpj ibvt glaf ebcy',
+  VTMP_WEB_URL: 'viettechmentorship.com',
 };

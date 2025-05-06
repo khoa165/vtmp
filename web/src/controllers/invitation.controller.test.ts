@@ -91,6 +91,45 @@ describe('InvitationController', () => {
   });
 
   describe('POST /invitations', () => {
+    it('should return error for missing receiverName', async () => {
+      const res = await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverEmail: mockOneInvitation.receiverEmail,
+          senderId: mockAdminId,
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Receiver Email is required');
+    });
+
+    it('should return error for missing receiverEmail', async () => {
+      const res = await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverName: 'Admin',
+          senderId: mockAdminId,
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Email is required');
+    });
+
+    it('should return error for missing senderId', async () => {
+      const res = await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverName: 'Admin',
+          receiverEmail: mockOneInvitation.receiverEmail,
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('SenderId is required');
+    });
+
     it('should return error message when user associated with invitation receiver email already exists', async () => {
       const mockUser = {
         firstName: 'Admin',
@@ -297,6 +336,16 @@ describe('InvitationController', () => {
         ...mockOneInvitation,
         token,
       });
+    });
+
+    it('should return error for missing token', async () => {
+      const res = await request(app)
+        .post(`/api/invitations/validate`)
+        .send({ token: '' })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('jwt must be provided');
     });
 
     it('should return error message for invalid token', async () => {

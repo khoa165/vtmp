@@ -193,8 +193,6 @@ describe('JobPostingRepository', () => {
           })
         )
       );
-      const applications = await ApplicationRepository.getApplications(userIdA);
-      console.log(applications);
       const jobsNotAppliedByUserA =
         await JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userIdA);
 

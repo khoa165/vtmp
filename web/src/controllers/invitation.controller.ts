@@ -3,9 +3,11 @@ import { InvitationService } from '@/services/invitation.service';
 import { z } from 'zod';
 
 const InvitationSendEmailSchema = z.object({
-  receiverName: z.string(),
-  receiverEmail: z.string().email(),
-  senderId: z.string(),
+  receiverName: z.string({ required_error: 'Receiver Email is required' }),
+  receiverEmail: z
+    .string({ required_error: 'Email is required' })
+    .email({ message: 'Invalid email address' }),
+  senderId: z.string({ required_error: 'SenderId is required' }),
 });
 
 const InvitationIdSchema = z.object({
