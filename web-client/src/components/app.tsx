@@ -19,9 +19,9 @@ import { PageWithSidebar } from '@/components/layout/page-with-sidebar';
 import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
 import { UserInvitationPage } from '@/components/pages/admins/users/user-invitation';
 import { JobPostingPage } from '@/components/pages/application-tracker/job-postings/job-postings';
-import { ApplicationPage } from '@/components/pages/application-tracker/applications/applications';
 import { PageWithToast } from '@/components/layout/page-with-toast';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
+import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
 
 export const App = () => {
   useEffect(() => {
@@ -71,7 +71,7 @@ export const App = () => {
             <Route path="/link-sharing" element={<LinksPage />} />
             <Route path="/job-postings" element={<JobPostingPage />} />
             <Route path="/user-invitation" element={<UserInvitationPage />} />
-            <Route path="/application-tracker" element={<ApplicationPage />} />
+            <Route path="/application-tracker" element={<ApplicationsPage />} />
           </Route>
         </Route>
         <Route path="/*" element={<>404</>} />
