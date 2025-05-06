@@ -62,6 +62,11 @@ export const LinkService = {
   },
 
   getLinkCountByStatus: async () => {
-    return LinkRepository.getLinkCountByStatus();
+    const linksCountByStatus = await LinkRepository.getLinkCountByStatus();
+    return {
+      [LinkStatus.PENDING]: linksCountByStatus['PENDING'] ?? 0,
+      [LinkStatus.APPROVED]: linksCountByStatus['APPROVED'] ?? 0,
+      [LinkStatus.REJECTED]: linksCountByStatus['REJECTED'] ?? 0,
+    };
   },
 };

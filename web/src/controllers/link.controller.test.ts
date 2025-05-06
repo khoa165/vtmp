@@ -98,48 +98,45 @@ describe('LinkController', () => {
   });
 
   describe('getLinkCountByStatus', () => {
-    it('should return object of count by pending status', async () => {
+    it('should return 1 link for pending status', async () => {
       const res = await request(app)
-        .get('/api/links/linkCount')
+        .get('/api/links/count')
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data.linkCounts).to.deep.include({
+
+      expect(res.body.data.linkCounts).to.deep.equal({
         [LinkStatus.PENDING]: 1,
+        [LinkStatus.APPROVED]: 0,
+        [LinkStatus.REJECTED]: 0,
       });
     });
 
-    it('should return object of count by rejected status', async () => {
+    it('should return correct link counts for multiple statuses when multiple links exist', async () => {
+      const googleLink = await LinkRepository.createLink('google.com');
+      await LinkRepository.createLink('nvidia.com');
+      await LinkRepository.createLink('microsoft.com');
+
       await LinkRepository.updateLinkStatus({
-        id: linkId,
+        id: googleLink.id,
         status: LinkStatus.REJECTED,
       });
 
-      const res = await request(app)
-        .get('/api/links/linkCount')
-        .set('Accept', 'application/json');
-
-      expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data.linkCounts).to.deep.include({
-        [LinkStatus.REJECTED]: 1,
-      });
-    });
-
-    it('should return object of count by multiple statuses', async () => {
       await LinkRepository.updateLinkStatus({
         id: linkId,
-        status: LinkStatus.REJECTED,
+        status: LinkStatus.APPROVED,
       });
-      await LinkRepository.createLink('http://example.com/another-link');
 
       const res = await request(app)
-        .get('/api/links/linkCount')
+        .get('/api/links/count')
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data.linkCounts).to.deep.include({
+
+      expect(res.body.data.linkCounts).to.deep.equal({
+        [LinkStatus.PENDING]: 2,
+        [LinkStatus.APPROVED]: 1,
         [LinkStatus.REJECTED]: 1,
-        [LinkStatus.PENDING]: 1,
       });
     });
   });

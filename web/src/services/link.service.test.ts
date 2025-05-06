@@ -118,42 +118,27 @@ describe('LinkService', () => {
   });
 
   describe('getLinkCountByStatus', () => {
-    it('should return empty array when no links exist', async () => {
+    it('should return 0 links for all statuses when no links exist', async () => {
       const linkCounts = await LinkService.getLinkCountByStatus();
-      expect(linkCounts).to.deep.equal({});
-    });
-
-    it('should be able to get one link by status', async () => {
-      await LinkRepository.createLink('google.com');
-      const linkCounts = await LinkService.getLinkCountByStatus();
-
-      expect(linkCounts).to.deep.include({
-        [LinkStatus.PENDING]: 1,
+      expect(linkCounts).to.deep.equal({
+        [LinkStatus.PENDING]: 0,
+        [LinkStatus.APPROVED]: 0,
+        [LinkStatus.REJECTED]: 0,
       });
     });
 
-    it('should be able to get multiple links by status', async () => {
-      await LinkRepository.createLink('google.com');
+    it('should return correct link counts for multiple statuses when multiple links exist', async () => {
+      const googleLink = await LinkRepository.createLink('google.com');
       await LinkRepository.createLink('nvidia.com');
+      await LinkRepository.createLink('microsoft.com');
 
-      const linkCounts = await LinkService.getLinkCountByStatus();
-
-      expect(linkCounts).to.deep.include({
+      await LinkService.rejectLink(googleLink.id);
+      const afterUpdateLinks = await LinkService.getLinkCountByStatus();
+      expect(afterUpdateLinks).to.deep.equal({
         [LinkStatus.PENDING]: 2,
+        [LinkStatus.APPROVED]: 0,
+        [LinkStatus.REJECTED]: 1,
       });
-    });
-  });
-
-  it('should be able to get multiple links by multiple statuses', async () => {
-    const googleLink = await LinkRepository.createLink('google.com');
-    await LinkRepository.createLink('nvidia.com');
-    await LinkRepository.createLink('microsoft.com');
-
-    await LinkService.rejectLink(googleLink.id);
-    const afterUpdateLinks = await LinkService.getLinkCountByStatus();
-    expect(afterUpdateLinks).to.deep.include({
-      [LinkStatus.PENDING]: 2,
-      [LinkStatus.REJECTED]: 1,
     });
   });
 });
