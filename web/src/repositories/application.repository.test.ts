@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
+import { times, zip } from 'remeda';
 
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
@@ -74,8 +75,9 @@ describe('ApplicationRepository', () => {
       await ApplicationRepository.createApplication(mockApplication_A0);
       await ApplicationRepository.createApplication(mockApplication_A1);
       await ApplicationRepository.createApplication(mockApplication_B);
-      const applications =
-        await ApplicationRepository.getApplications(userId_A);
+      const applications = await ApplicationRepository.getApplications({
+        userId: userId_A,
+      });
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(2);
@@ -98,8 +100,9 @@ describe('ApplicationRepository', () => {
         userId: userId_A,
         applicationId: mockApplicationId_A1,
       });
-      const applications =
-        await ApplicationRepository.getApplications(userId_A);
+      const applications = await ApplicationRepository.getApplications({
+        userId: userId_A,
+      });
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(1);
@@ -111,8 +114,9 @@ describe('ApplicationRepository', () => {
 
     it('should return an empty array if no applications found for userId', async () => {
       await ApplicationRepository.createApplication(mockApplication_B);
-      const applications =
-        await ApplicationRepository.getApplications(userId_A);
+      const applications = await ApplicationRepository.getApplications({
+        userId: userId_A,
+      });
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(0);
@@ -369,7 +373,7 @@ describe('ApplicationRepository', () => {
       ApplicationStatus.OFFERED,
       ApplicationStatus.OFFERED,
       ApplicationStatus.REJECTED,
-    ];
+    ] as const;
 
     it('should return an empty object if no applications exist for the user', async () => {
       const result =
@@ -381,7 +385,7 @@ describe('ApplicationRepository', () => {
 
     it('should return correct counts grouped by status for the user', async () => {
       const applications = await Promise.all(
-        Array.from({ length: updatedStatus.length }, () =>
+        times(updatedStatus.length, () =>
           ApplicationRepository.createApplication({
             jobPostingId: getNewMongoId(),
             userId: userId_A,
@@ -389,12 +393,12 @@ describe('ApplicationRepository', () => {
         )
       );
       await Promise.all(
-        applications.map((application, index) =>
+        zip(applications, updatedStatus).map(([application, status]) =>
           ApplicationRepository.updateApplicationById({
             userId: userId_A,
             applicationId: application.id,
             updatedMetadata: {
-              status: updatedStatus[index] ?? ApplicationStatus.SUBMITTED,
+              status,
             },
           })
         )

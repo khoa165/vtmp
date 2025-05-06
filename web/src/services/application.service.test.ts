@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
+import { times, zip } from 'remeda';
 
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -169,7 +170,9 @@ describe('ApplicationService', () => {
       const application_A1 =
         await ApplicationRepository.createApplication(mockApplication_A1);
       await ApplicationRepository.createApplication(mockApplication_B);
-      const applications = await ApplicationService.getApplications(userId_A);
+      const applications = await ApplicationService.getApplications({
+        userId: userId_A,
+      });
 
       expect(applications).to.be.an('array').that.have.lengthOf(2);
       expect(applications.map((application) => application.id)).to.have.members(
@@ -188,7 +191,9 @@ describe('ApplicationService', () => {
         applicationId: application_A1.id,
         userId: userId_A,
       });
-      const applications = await ApplicationService.getApplications(userId_A);
+      const applications = await ApplicationService.getApplications({
+        userId: userId_A,
+      });
 
       expect(applications).to.be.an('array').that.have.lengthOf(1);
       expect(applications[0]?.id).to.equal(application_A0.id);
@@ -196,7 +201,9 @@ describe('ApplicationService', () => {
 
     it('should return no application if authorized user has no application', async () => {
       await ApplicationRepository.createApplication(mockApplication_B);
-      const applications = await ApplicationService.getApplications(userId_A);
+      const applications = await ApplicationService.getApplications({
+        userId: userId_A,
+      });
 
       expect(applications).to.be.an('array').that.have.lengthOf(0);
     });
@@ -624,7 +631,7 @@ describe('ApplicationService', () => {
       ApplicationStatus.OFFERED,
       ApplicationStatus.OFFERED,
       ApplicationStatus.REJECTED,
-    ];
+    ] as const;
 
     it('should return an object with all application status count of 0 if no applications exist for the user', async () => {
       const result =
@@ -643,7 +650,7 @@ describe('ApplicationService', () => {
 
     it('should return correct counts grouped by status for the user', async () => {
       const applications = await Promise.all(
-        Array.from({ length: updatedStatus.length }, () =>
+        times(updatedStatus.length, () =>
           ApplicationRepository.createApplication({
             jobPostingId: getNewMongoId(),
             userId: userId_A,
@@ -651,12 +658,12 @@ describe('ApplicationService', () => {
         )
       );
       await Promise.all(
-        applications.map((application, index) =>
+        zip(applications, updatedStatus).map(([application, status]) =>
           ApplicationRepository.updateApplicationById({
             userId: userId_A,
             applicationId: application.id,
             updatedMetadata: {
-              status: updatedStatus[index] ?? ApplicationStatus.SUBMITTED,
+              status,
             },
           })
         )
