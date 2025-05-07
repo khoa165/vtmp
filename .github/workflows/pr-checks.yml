@@ -127,4 +127,3 @@ jobs:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           exitZeroOnChanges: false
           workingDir: web-client
-          storybookBuildDir:
