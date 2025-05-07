@@ -21,7 +21,7 @@ const meta = {
     Button,
   },
   render: (args) => (
-    <Card className="w-[600px]" {...args}>
+    <Card className="w-[750px]" {...args}>
       <CardHeader>
         <CardTitle>Viet Tech Mentorship</CardTitle>
         <CardDescription>
@@ -38,7 +38,7 @@ const meta = {
         </ul>
       </CardContent>
       <CardFooter>
-        <Button variant='pink'>Join now</Button>
+        <Button>Join now</Button>
       </CardFooter>
     </Card>
   ),
