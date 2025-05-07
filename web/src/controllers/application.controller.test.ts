@@ -53,11 +53,10 @@ describe('ApplicationController', () => {
     };
 
     savedUserId = (await UserRepository.createUser(mockUser)).id;
-    const { token } = await AuthService.login({
+    ({ token: mockToken } = await AuthService.login({
       email: mockUser.email,
       password: 'test password',
-    });
-    mockToken = token;
+    }));
   });
 
   describe('POST /applications', () => {

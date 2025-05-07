@@ -13,6 +13,7 @@ import {
 } from '@/utils/errors';
 import { assert } from 'console';
 import { expect } from 'chai';
+import { UserRole } from '@vtmp/common/constants';
 
 describe('AuthService', () => {
   useMongoDB();
@@ -115,8 +116,11 @@ describe('AuthService', () => {
         password: 'test',
       };
 
-      const token = await AuthService.signup(userData);
-      assert(token);
+      const data = await AuthService.signup(userData);
+
+      assert(data);
+      expect(data).to.have.property('token');
+      expect(data.user.role).to.eq(UserRole.USER);
     });
   });
 });

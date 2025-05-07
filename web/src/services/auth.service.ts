@@ -7,7 +7,7 @@ import {
 } from '@/utils/errors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import * as R from 'remeda';
+import { omit } from 'remeda';
 
 export const AuthService = {
   signup: async ({
@@ -50,7 +50,8 @@ export const AuthService = {
       }
     );
 
-    return { token, user: R.omit(user, ['encryptedPassword']) };
+    const userObj = user.toObject();
+    return { token, user: omit(userObj, ['encryptedPassword']) };
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {
@@ -77,6 +78,6 @@ export const AuthService = {
       }
     );
 
-    return { token, user: R.omit(user, ['encryptedPassword']) };
+    return { token, user: omit(user, ['encryptedPassword']) };
   },
 };
