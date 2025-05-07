@@ -1,5 +1,5 @@
 import React from 'react';
 
-export const JobPostingPage = () => {
+export const JobPostingsPage = () => {
   return <div>JobPostingPage</div>;
 };
