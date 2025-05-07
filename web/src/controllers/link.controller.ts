@@ -29,7 +29,7 @@ export const LinkController = {
     });
   },
 
-  getLinkCountByStatus: async (req: Request, res: Response) => {
+  getLinkCountByStatus: async (_req: Request, res: Response) => {
     const linkCounts = await LinkService.getLinkCountByStatus();
     res.status(200).json({
       message: 'Link count has been retrieved successfully.',

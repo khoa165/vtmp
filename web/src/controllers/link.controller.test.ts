@@ -50,7 +50,8 @@ describe('LinkController', () => {
     it('should return error message for submitting link with not exist url', async () => {
       const res = await request(app)
         .post('/api/links')
-        .set('Accept', 'application/json');
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
 
@@ -62,7 +63,8 @@ describe('LinkController', () => {
       const res = await request(app)
         .post('/api/links')
         .send({ url: 'https://example.com' })
-        .set('Accept', 'application/json');
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 201 });
       expect(res.body.message).to.equal(
@@ -75,7 +77,8 @@ describe('LinkController', () => {
     it('should return error message for rejecting not exist link', async () => {
       const res = await request(app)
         .post(`/api/links/${getNewMongoId()}/reject`)
-        .set('Accept', 'application/json');
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
 
@@ -86,7 +89,8 @@ describe('LinkController', () => {
     it('should return a rejected link', async () => {
       const res = await request(app)
         .post(`/api/links/${linkId}/reject`)
-        .set('Accept', 'application/json');
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
       expect(res.body.data.link.url).to.equal(url);
       expect(res.body.message).to.equal('Link has been rejected!');
@@ -101,7 +105,8 @@ describe('LinkController', () => {
           jobTitle: 'Software Engineer Intern',
           companyName: 'Example Company',
         })
-        .set('Accept', 'application/json');
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
     });
@@ -113,7 +118,8 @@ describe('LinkController', () => {
           jobTitle: 'Software Engineer Intern',
           companyName: 'Example Company',
         })
-        .set('Accept', 'application/json');
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.message).to.equal('Link has been approved!');
