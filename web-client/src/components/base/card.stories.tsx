@@ -23,7 +23,7 @@ const meta = {
   render: (args) => (
     <Card className="w-[600px]" {...args}>
       <CardHeader>
-        <CardTitle>Mentorship</CardTitle>
+        <CardTitle>Viet Tech Mentorship</CardTitle>
         <CardDescription>
           Growing a community of Vietnamese early career tech talents
         </CardDescription>
@@ -38,7 +38,7 @@ const meta = {
         </ul>
       </CardContent>
       <CardFooter>
-        <Button>Join now</Button>
+        <Button variant='orange'>Join now</Button>
       </CardFooter>
     </Card>
   ),
