@@ -21,7 +21,7 @@ const meta = {
     Button,
   },
   render: (args) => (
-    <Card className="w-[750px]" {...args}>
+    <Card className="w-[600px]" {...args}>
       <CardHeader>
         <CardTitle>Mentorship</CardTitle>
         <CardDescription>
