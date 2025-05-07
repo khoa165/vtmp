@@ -1,6 +1,5 @@
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { IInterview } from '@/models/interview.model';
-import { UpdateResult } from 'mongoose';
 
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 import { ResourceNotFoundError } from '@/utils/errors';
@@ -37,7 +36,7 @@ export const InterviewService = {
   }: {
     interviewId: string;
     userId: string;
-  }): Promise<IInterview | null> => {
+  }): Promise<IInterview> => {
     const interview = await InterviewRepository.getInterviewById({
       interviewId,
       userId,
@@ -79,28 +78,21 @@ export const InterviewService = {
       interviewOnDate?: Date;
       note?: string;
     };
-  }): Promise<IInterview | null> => {
-    return InterviewRepository.updateInterviewById({
+  }): Promise<IInterview> => {
+    const updatedInterview = await InterviewRepository.updateInterviewById({
       interviewId,
       userId,
       updatedMetadata,
     });
-  },
 
-  updateInterviewsWithStatus: async ({
-    userId,
-    interviewIds,
-    updatedStatus,
-  }: {
-    userId: string;
-    interviewIds: string[];
-    updatedStatus: InterviewStatus;
-  }): Promise<UpdateResult> => {
-    return InterviewRepository.updateInterviewsWithStatus({
-      userId,
-      interviewIds,
-      updatedStatus,
-    });
+    if (!updatedInterview) {
+      throw new ResourceNotFoundError('Interview not found', {
+        interviewId,
+        userId,
+      });
+    }
+
+    return updatedInterview;
   },
 
   deleteInterviewById: async ({
@@ -109,7 +101,19 @@ export const InterviewService = {
   }: {
     interviewId: string;
     userId: string;
-  }): Promise<IInterview | null> => {
-    return InterviewRepository.deleteInterviewById({ interviewId, userId });
+  }): Promise<IInterview> => {
+    const deletedInterview = await InterviewRepository.deleteInterviewById({
+      interviewId,
+      userId,
+    });
+
+    if (!deletedInterview) {
+      throw new ResourceNotFoundError('Interview not found', {
+        interviewId,
+        userId,
+      });
+    }
+
+    return deletedInterview;
   },
 };
