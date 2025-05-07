@@ -1466,6 +1466,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@radix-ui/react-alert-dialog@npm:^1.1.11":
+  version: 1.1.11
+  resolution: "@radix-ui/react-alert-dialog@npm:1.1.11"
+  dependencies:
+    "@radix-ui/primitive": "npm:1.1.2"
+    "@radix-ui/react-compose-refs": "npm:1.1.2"
+    "@radix-ui/react-context": "npm:1.1.2"
+    "@radix-ui/react-dialog": "npm:1.1.11"
+    "@radix-ui/react-primitive": "npm:2.1.0"
+    "@radix-ui/react-slot": "npm:1.2.0"
+  peerDependencies:
+    "@types/react": "*"
+    "@types/react-dom": "*"
+    react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: 10c0/c1c1c901865bf54929fefff194b0b57e49dc096525511df8940058b01e8f949dc83dc193aa314c62fad83afc15b760b41f9acf364412920c17d5f6bc54b65fcb
+  languageName: node
+  linkType: hard
+
 "@radix-ui/react-arrow@npm:1.1.4":
   version: 1.1.4
   resolution: "@radix-ui/react-arrow@npm:1.1.4"
@@ -1559,7 +1583,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-dialog@npm:^1.1.11":
+"@radix-ui/react-dialog@npm:1.1.11, @radix-ui/react-dialog@npm:^1.1.11":
   version: 1.1.11
   resolution: "@radix-ui/react-dialog@npm:1.1.11"
   dependencies:
@@ -5035,6 +5059,7 @@ __metadata:
     "@emotion/styled": "npm:^11.13.0"
     "@mui/icons-material": "npm:^6.1.4"
     "@mui/material": "npm:^6.1.4"
+    "@radix-ui/react-alert-dialog": "npm:^1.1.11"
     "@radix-ui/react-checkbox": "npm:^1.1.5"
     "@radix-ui/react-dialog": "npm:^1.1.11"
     "@radix-ui/react-dropdown-menu": "npm:^2.1.7"
