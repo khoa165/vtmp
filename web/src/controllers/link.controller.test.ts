@@ -97,17 +97,33 @@ describe('LinkController', () => {
     });
   });
 
-  describe('getPendingLinks', () => {
-    it('should return array of pending links', async () => {
+  describe('getLinksByStatus', () => {
+    it('should return correct number of pending links without given status', async () => {
       const res = await request(app)
         .get('/api/links')
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data.links[0].url).to.equal(url);
+      expect(res.body.data.links[0].status).to.equal(LinkStatus.PENDING);
     });
 
-    it('should return empty array of pending links', async () => {
+    it('should return correct number of links with a given status', async () => {
+      await LinkRepository.updateLinkStatus({
+        id: linkId,
+        status: LinkStatus.APPROVED,
+      });
+
+      const res = await request(app)
+        .get(`/api/links?status=${LinkStatus.APPROVED}`)
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data.links[0].url).to.equal(url);
+      expect(res.body.data.links[0].status).to.equal(LinkStatus.APPROVED);
+    });
+
+    it('should return empty array when no links exist with given status', async () => {
       await LinkRepository.updateLinkStatus({
         id: linkId,
         status: LinkStatus.REJECTED,

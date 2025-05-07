@@ -1,4 +1,4 @@
-import { LinkModel } from '@/models/link.model';
+import { LinkModel, ILink } from '@/models/link.model';
 import mongoose, { ClientSession } from 'mongoose';
 import { LinkStatus } from '@vtmp/common/constants';
 
@@ -29,7 +29,7 @@ export const LinkRepository = {
     );
   },
 
-  getLinksByStatus: async (status: LinkStatus) => {
-    return LinkModel.find({ status });
+  getLinksByStatus: async (status: LinkStatus): Promise<ILink[]> => {
+    return LinkModel.find({ status }).lean();
   },
 };

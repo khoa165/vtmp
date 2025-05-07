@@ -5,7 +5,7 @@ import { wrappedHandlers } from '@/middlewares/utils';
 export const LinkRoutes = Router();
 
 LinkRoutes.post('/', wrappedHandlers([LinkController.submitLink]));
-LinkRoutes.get('/', wrappedHandlers([LinkController.getPendingLinks]));
+LinkRoutes.get('/', wrappedHandlers([LinkController.getLinksByStatus]));
 LinkRoutes.post(
   '/:linkId/approve',
   wrappedHandlers([LinkController.approveLink])
