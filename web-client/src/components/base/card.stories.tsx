@@ -38,7 +38,7 @@ const meta = {
         </ul>
       </CardContent>
       <CardFooter>
-        <Button variant='orange'>Join now</Button>
+        <Button variant='pink'>Join now</Button>
       </CardFooter>
     </Card>
   ),
