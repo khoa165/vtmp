@@ -43,6 +43,7 @@ describe('JobPostingRepository', () => {
       assert(foundJobPosting);
       expect(foundJobPosting).to.deep.include(mockJobPosting);
     });
+
     it('should return null if trying to get soft-deleted job posting', async () => {
       const newJobPosting = await JobPostingRepository.createJobPosting({
         jobPostingData: mockJobPosting,
@@ -78,6 +79,27 @@ describe('JobPostingRepository', () => {
 
       expect(updatedJobPosting).to.deep.include(newUpdate);
     });
+
+    it('should return null if trying to update soft-deleted job posting', async () => {
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
+      await JobPostingRepository.deleteJobPostingById(newJobPosting.id);
+
+      const newUpdate = {
+        jobTitle: 'Senior Software Engineer',
+        companyName: 'Updated Company',
+        jobDescription: 'This is an updated job description.',
+      };
+      const updatedJobPosting = await JobPostingRepository.updateJobPostingById(
+        newJobPosting.id,
+        newUpdate
+      );
+
+      assert(!updatedJobPosting);
+    });
   });
 
   describe('deleteJobPostingById', () => {
@@ -98,6 +120,21 @@ describe('JobPostingRepository', () => {
         deletedJobPosting.deletedAt
       );
       expect(timeDiff).to.lessThan(3);
+    });
+
+    it('should return null if trying to set a delete-timestamp for soft-deleted job posting', async () => {
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
+      await JobPostingRepository.deleteJobPostingById(newJobPosting.id);
+
+      const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
+        newJobPosting.id
+      );
+
+      assert(!deletedJobPosting);
     });
   });
 
@@ -156,8 +193,6 @@ describe('JobPostingRepository', () => {
           })
         )
       );
-      const applications = await ApplicationRepository.getApplications(userIdA);
-      console.log(applications);
       const jobsNotAppliedByUserA =
         await JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userIdA);
 

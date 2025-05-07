@@ -11,6 +11,7 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.4",
     "@mui/material": "^6.1.4",
+    "@radix-ui/react-alert-dialog": "^1.1.11",
     "@radix-ui/react-checkbox": "^1.1.5",
     "@radix-ui/react-dialog": "^1.1.11",
     "@radix-ui/react-dropdown-menu": "^2.1.7",
@@ -68,7 +69,8 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage --watch=false",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "npx chromatic --project-token=chpt_2e498319a4c7c4b"
   },
   "eslintConfig": {
     "extends": [
@@ -112,6 +114,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitest/coverage-v8": "^3.1.1",
+    "chromatic": "^11.28.2",
     "eslint-plugin-storybook": "^0.12.0",
     "jsdom": "^26.0.0",
     "storybook": "^8.6.12",

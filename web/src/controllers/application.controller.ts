@@ -147,4 +147,16 @@ export const ApplicationController = {
       data: deletedApplication,
     });
   },
+
+  getApplicationsCountByStatus: async (req: Request, res: Response) => {
+    const userId = getUserFromRequest(req).user.id;
+
+    const applicationsCountByStatus =
+      await ApplicationService.getApplicationsCountByStatus(userId);
+
+    res.status(200).json({
+      message: 'Applications count by status retrieved successfully',
+      data: applicationsCountByStatus,
+    });
+  },
 };

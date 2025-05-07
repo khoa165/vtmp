@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { PeoplePage } from 'src/components/people/people-page';
+import { PeoplePage } from '@/components/people/people-page';
 
 export const PeopleContainer = () => {
   return (
