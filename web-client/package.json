@@ -68,8 +68,7 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage --watch=false",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "chromatic": "npx chromatic --project-token=chpt_2e498319a4c7c4b"
+    "build-storybook": "storybook build"
   },
   "eslintConfig": {
     "extends": [
