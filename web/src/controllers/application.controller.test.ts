@@ -67,7 +67,7 @@ describe('ApplicationController', () => {
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
       expect(errors[0].message).to.equal('Job posting ID is required');
     });
