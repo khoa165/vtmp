@@ -12,6 +12,7 @@ import { IApplication } from '@/components/pages/application-tracker/application
 import { ApplicationStatus } from '@vtmp/common/constants';
 import { ApplicationsAction } from '@/components/pages/application-tracker/applications/applications-action';
 import { format } from 'date-fns';
+import { titleCase } from '@/utils/helpers';
 
 // TODO-(QuangMinhNguyen27405/dsmai): General => Add arrow up when sorting ascending and down when descending
 // and updown if we are sorting by a different column
@@ -76,21 +77,26 @@ export const applicationsTableColumns = ({
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button variant="outline">
-              {application.status} <ChevronDown />
+              {application.status === ApplicationStatus.OA
+                ? application.status
+                : titleCase(application.status)}{' '}
+              <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {Object.values(ApplicationStatus).map((status, index) => (
+            {Object.values(ApplicationStatus).map((dropdownStatus, index) => (
               <DropdownMenuItem
                 key={index}
                 onClick={() => {
                   updateApplicationStatusFn({
                     applicationId: application._id,
-                    body: { updatedStatus: status },
+                    body: { updatedStatus: dropdownStatus },
                   });
                 }}
               >
-                {status}
+                {dropdownStatus === ApplicationStatus.OA
+                  ? dropdownStatus
+                  : titleCase(dropdownStatus)}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>

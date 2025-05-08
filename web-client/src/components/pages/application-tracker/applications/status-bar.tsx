@@ -93,7 +93,9 @@ export const StatusBar = ({ setFilter }): React.JSX.Element | null => {
             <div className="flex flex-row items-center gap-2">
               {displayedStatus.dot}
               <span className="font-bold max-lg:text-[0.7rem] text-wrap">
-                {titleCase(displayedStatus.status)}
+                {displayedStatus.status === ApplicationStatus.OA
+                  ? displayedStatus.status
+                  : titleCase(displayedStatus.status)}
               </span>
             </div>
           </div>
