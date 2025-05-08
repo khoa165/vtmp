@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { UserRole } from '@vtmp/common/constants';
 import { handleError, UnauthorizedError } from '@/utils/errors';
+import { z } from 'zod';
 
 interface AuthenticatedRequest extends Request {
   user: {
@@ -41,3 +42,7 @@ export const wrappedHandlers = (handlers: AsyncRequestHandler[]) => {
     };
   });
 };
+
+export const reqAfterAuthMiddlewareSchema = z.object({
+  user: z.object({ id: z.string() }),
+});

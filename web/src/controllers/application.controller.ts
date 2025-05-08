@@ -4,7 +4,7 @@ import { z } from 'zod';
 import mongoose from 'mongoose';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 import { IApplication } from '@/models/application.model';
-import { getUserFromRequest } from '@/middlewares/utils';
+import { reqAfterAuthMiddlewareSchema } from '@/middlewares/utils';
 
 const JobPostingIdParamSchema = z.object({
   jobPostingId: z
@@ -52,7 +52,7 @@ export const ApplicationController = {
   createApplication: async (req: Request, res: Response) => {
     const { jobPostingId } = JobPostingIdParamSchema.parse(req.body);
 
-    const userId = getUserFromRequest(req).user.id;
+    const userId = reqAfterAuthMiddlewareSchema.parse(req).user.id;
 
     const newApplication = await ApplicationService.createApplication({
       jobPostingId,
@@ -66,7 +66,7 @@ export const ApplicationController = {
   },
 
   getApplications: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    const userId = reqAfterAuthMiddlewareSchema.parse(req).user.id;
 
     const applications = await ApplicationService.getApplications(userId);
 
@@ -78,7 +78,7 @@ export const ApplicationController = {
 
   getApplicationById: async (req: Request, res: Response) => {
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
-    const userId = getUserFromRequest(req).user.id;
+    const userId = reqAfterAuthMiddlewareSchema.parse(req).user.id;
 
     const application = await ApplicationService.getApplicationById({
       applicationId,
@@ -92,7 +92,7 @@ export const ApplicationController = {
   },
 
   updateApplicationStatus: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    const userId = reqAfterAuthMiddlewareSchema.parse(req).user.id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
     const { updatedStatus } = ApplicationStatusUpdateSchema.parse(req.body);
 
@@ -117,7 +117,7 @@ export const ApplicationController = {
   },
 
   updateApplicationMetadata: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    const userId = reqAfterAuthMiddlewareSchema.parse(req).user.id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
     const updatedMetadata = ApplicationMetadataUpdateSchema.parse(req.body);
 
@@ -134,7 +134,7 @@ export const ApplicationController = {
   },
 
   deleteApplication: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    const userId = reqAfterAuthMiddlewareSchema.parse(req).user.id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
 
     const deletedApplication = await ApplicationService.deleteApplicationById({
@@ -149,7 +149,7 @@ export const ApplicationController = {
   },
 
   getApplicationsCountByStatus: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    const userId = reqAfterAuthMiddlewareSchema.parse(req).user.id;
 
     const applicationsCountByStatus =
       await ApplicationService.getApplicationsCountByStatus(userId);
