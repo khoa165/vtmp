@@ -24,6 +24,14 @@ describe('LinkController', () => {
   let linkId: string;
   let url: string;
   let mockToken: string;
+
+  const mockLinkData = {
+    url: 'google.com',
+    jobTitle: 'Software Engineer',
+    companyName: 'Example Company',
+    submittedBy: getNewMongoId(),
+  };
+
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
 
@@ -148,9 +156,13 @@ describe('LinkController', () => {
     });
 
     it('should return correct link counts for multiple statuses when multiple links exist', async () => {
-      const googleLink = await LinkRepository.createLink('google.com');
-      await LinkRepository.createLink('nvidia.com');
-      await LinkRepository.createLink('microsoft.com');
+      const googleLink = await LinkRepository.createLink(mockLinkData);
+
+      await LinkRepository.createLink({ ...mockLinkData, url: 'nvidia.com' });
+      await LinkRepository.createLink({
+        ...mockLinkData,
+        url: 'microsoft.com',
+      });
 
       await LinkRepository.updateLinkStatus({
         id: googleLink.id,
