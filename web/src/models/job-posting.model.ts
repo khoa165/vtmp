@@ -8,7 +8,7 @@ export interface IJobPosting extends Document {
   url: string;
   jobTitle: string;
   companyName: string;
-  location?: JobPostingLocation;
+  location: JobPostingLocation;
   datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
