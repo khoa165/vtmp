@@ -6,6 +6,7 @@ import {
 } from '@/utils/errors';
 import { JWTUtils } from '@/utils/jwt';
 import bcrypt from 'bcryptjs';
+import { omit } from 'remeda';
 
 export const AuthService = {
   signup: async ({
@@ -33,12 +34,21 @@ export const AuthService = {
     const saltRounds = 10;
     const encryptedPassword = await bcrypt.hash(password, saltRounds);
 
-    return UserRepository.createUser({
+    const user = await UserRepository.createUser({
       firstName,
       lastName,
       email,
       encryptedPassword,
     });
+
+    const token = JWTUtils.createTokenWithPayload(
+      { id: user._id.toString() },
+      {
+        expiresIn: '1h',
+      }
+    );
+
+    return { token, user: omit(user.toObject(), ['encryptedPassword']) };
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {
@@ -63,6 +73,7 @@ export const AuthService = {
         expiresIn: '1h',
       }
     );
-    return token;
+
+    return { token, user: omit(user, ['encryptedPassword']) };
   },
 };

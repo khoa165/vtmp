@@ -12,8 +12,8 @@ import {
   UnauthorizedError,
 } from '@/utils/errors';
 import { assert } from 'console';
-import { UserRole } from '@vtmp/common/constants';
 import { expect } from 'chai';
+import { UserRole } from '@vtmp/common/constants';
 
 describe('AuthService', () => {
   useMongoDB();
@@ -116,9 +116,11 @@ describe('AuthService', () => {
         password: 'test',
       };
 
-      const user = await AuthService.signup(userData);
-      assert(user);
-      expect(user.role).to.equal(UserRole.USER);
+      const data = await AuthService.signup(userData);
+
+      assert(data);
+      expect(data).to.have.property('token');
+      expect(data.user.role).to.eq(UserRole.USER);
     });
   });
 });
