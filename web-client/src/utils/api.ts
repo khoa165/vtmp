@@ -19,7 +19,6 @@ export const request = async <T>(
     url,
     ...(data ? { data } : {}),
   });
-
   if (schema) {
     return schema.parse(response.data);
   }

@@ -152,6 +152,7 @@ export enum ProjectName {
 export enum QueryKey {
   SUBMIT_LINK = '/api/links',
   GET_APPLICATIONS = '/api/applications',
+  GET_DASHBOARD_LINKS = '/api/links/getLinksByStatus',
 }
 
 export enum Method {

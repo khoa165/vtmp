@@ -32,7 +32,8 @@ export const LinkController = {
   getPendingLinks: async (_req: Request, res: Response) => {
     const links = await LinkService.getPendingLinks();
     res.status(200).json({
-      data: { links },
+      message: 'Links has been retrieved successfully!',
+      data: links,
     });
   },
 
