@@ -170,7 +170,9 @@ describe('ApplicationService', () => {
       const application_A1 =
         await ApplicationRepository.createApplication(mockApplication_A1);
       await ApplicationRepository.createApplication(mockApplication_B);
-      const applications = await ApplicationService.getApplications(userId_A);
+      const applications = await ApplicationService.getApplications({
+        userId: userId_A,
+      });
 
       expect(applications).to.be.an('array').that.have.lengthOf(2);
       expect(applications.map((application) => application.id)).to.have.members(
@@ -189,7 +191,9 @@ describe('ApplicationService', () => {
         applicationId: application_A1.id,
         userId: userId_A,
       });
-      const applications = await ApplicationService.getApplications(userId_A);
+      const applications = await ApplicationService.getApplications({
+        userId: userId_A,
+      });
 
       expect(applications).to.be.an('array').that.have.lengthOf(1);
       expect(applications[0]?.id).to.equal(application_A0.id);
@@ -197,7 +201,9 @@ describe('ApplicationService', () => {
 
     it('should return no application if authorized user has no application', async () => {
       await ApplicationRepository.createApplication(mockApplication_B);
-      const applications = await ApplicationService.getApplications(userId_A);
+      const applications = await ApplicationService.getApplications({
+        userId: userId_A,
+      });
 
       expect(applications).to.be.an('array').that.have.lengthOf(0);
     });

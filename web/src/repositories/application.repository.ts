@@ -29,10 +29,17 @@ export const ApplicationRepository = {
     });
   },
 
-  getApplications: async (userId: string): Promise<IApplication[]> => {
+  getApplications: async ({
+    userId,
+    filters = {},
+  }: {
+    userId: string;
+    filters?: { status?: ApplicationStatus };
+  }): Promise<IApplication[]> => {
     return ApplicationModel.find({
       userId: userId,
       deletedAt: null,
+      ...filters,
     });
   },
 
