@@ -190,4 +190,47 @@ describe('LinkController', () => {
       });
     });
   });
+
+  describe('getLinksByStatus', () => {
+    it('should return correct number of pending links without given status', async () => {
+      const res = await request(app)
+        .get('/api/links')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data[0].url).to.equal(url);
+      expect(res.body.data[0].status).to.equal(LinkStatus.PENDING);
+    });
+
+    it('should return correct number of links with a given status', async () => {
+      await LinkRepository.updateLinkStatus({
+        id: linkId,
+        status: LinkStatus.APPROVED,
+      });
+
+      const res = await request(app)
+        .get(`/api/links?status=${LinkStatus.APPROVED}`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data[0].url).to.equal(url);
+      expect(res.body.data[0].status).to.equal(LinkStatus.APPROVED);
+    });
+
+    it('should return empty array when no links exist with given status', async () => {
+      await LinkRepository.updateLinkStatus({
+        id: linkId,
+        status: LinkStatus.REJECTED,
+      });
+      const res = await request(app)
+        .get('/api/links')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
+    });
+  });
 });

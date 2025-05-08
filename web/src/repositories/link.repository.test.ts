@@ -105,4 +105,55 @@ describe('LinkRepository', () => {
       });
     });
   });
+
+  describe('getLinksByStatus', () => {
+    it('should be able to get multiple links by a status', async () => {
+      await LinkRepository.createLink(mockLinkData);
+      await LinkRepository.createLink({ ...mockLinkData, url: 'nvidia.com' });
+      const links = await LinkRepository.getLinksByStatus(LinkStatus.PENDING);
+
+      expect(links).to.have.lengthOf(2);
+    });
+
+    it('should return empty array when no links exist with given status', async () => {
+      await LinkRepository.createLink(mockLinkData);
+      const links = await LinkRepository.getLinksByStatus(LinkStatus.APPROVED);
+      expect(links).to.have.lengthOf(0);
+    });
+
+    it('should be able to get link by a status after update', async () => {
+      const googleLink = await LinkRepository.createLink(mockLinkData);
+
+      await LinkRepository.updateLinkStatus({
+        id: googleLink.id,
+        status: LinkStatus.APPROVED,
+      });
+      const links = await LinkRepository.getLinksByStatus(LinkStatus.APPROVED);
+
+      expect(links).to.have.lengthOf(1);
+    });
+
+    it('should not include link of different status', async () => {
+      const googleLink = await LinkRepository.createLink(mockLinkData);
+
+      await LinkRepository.createLink({ ...mockLinkData, url: 'nvidia.com' });
+      await LinkRepository.createLink({
+        ...mockLinkData,
+        url: 'microsoft.com',
+      });
+
+      const beforeUpdateLinks = await LinkRepository.getLinksByStatus(
+        LinkStatus.PENDING
+      );
+      expect(beforeUpdateLinks).to.have.lengthOf(3);
+      await LinkRepository.updateLinkStatus({
+        id: googleLink.id,
+        status: LinkStatus.APPROVED,
+      });
+      const afterUpdateLinks = await LinkRepository.getLinksByStatus(
+        LinkStatus.PENDING
+      );
+      expect(afterUpdateLinks).to.have.lengthOf(2);
+    });
+  });
 });
