@@ -160,4 +160,74 @@ describe('LinkService', () => {
       });
     });
   });
+
+  describe('getLinksByStatus', () => {
+    it('should return empty array when no links exist with given status', async () => {
+      const links = await LinkService.getLinksByStatus(LinkStatus.APPROVED);
+      expect(links).to.have.lengthOf(0);
+    });
+
+    it('should be able to get all pending links without passing status', async () => {
+      const googleLink = await LinkRepository.createLink(mockLinkData);
+      const nvidia = await LinkRepository.createLink({
+        ...mockLinkData,
+        url: 'nvidia.com',
+      });
+
+      const pendingLinks = await LinkService.getLinksByStatus();
+
+      const urls = pendingLinks.map((link) => link.url);
+      expect(urls).to.have.members([googleLink.url, nvidia.url]);
+    });
+
+    it('should be able to get all links with given status', async () => {
+      const googleLink = await LinkRepository.createLink(mockLinkData);
+      const nvidia = await LinkRepository.createLink({
+        ...mockLinkData,
+        url: 'nvidia.com',
+      });
+
+      await LinkRepository.updateLinkStatus({
+        id: googleLink.id,
+        status: LinkStatus.APPROVED,
+      });
+      await LinkRepository.updateLinkStatus({
+        id: nvidia.id,
+        status: LinkStatus.APPROVED,
+      });
+
+      const pendingLinks = await LinkService.getLinksByStatus(
+        LinkStatus.APPROVED
+      );
+
+      const urls = pendingLinks.map((link) => link.url);
+      expect(urls).to.have.members([googleLink.url, nvidia.url]);
+    });
+
+    it('should be able to get correct number of links with a given status after a link update', async () => {
+      const googleLink = await LinkRepository.createLink(mockLinkData);
+      const nvidia = await LinkRepository.createLink({
+        ...mockLinkData,
+        url: 'nvidia.com',
+      });
+      const microsoft = await LinkRepository.createLink({
+        ...mockLinkData,
+        url: 'microsoft.com',
+      });
+
+      const beforeUpdateLinks = await LinkService.getLinksByStatus(
+        LinkStatus.PENDING
+      );
+      expect(beforeUpdateLinks).to.have.lengthOf(3);
+
+      await LinkService.rejectLink(googleLink.id);
+      const afterUpdateLinks = await LinkService.getLinksByStatus(
+        LinkStatus.PENDING
+      );
+      expect(afterUpdateLinks).to.have.lengthOf(2);
+
+      const urls = afterUpdateLinks.map((link) => link.url);
+      expect(urls).to.have.members([microsoft.url, nvidia.url]);
+    });
+  });
 });

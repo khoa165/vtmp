@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
+import { LinkStatus } from '@vtmp/common/constants';
 
 const LinkSchema = z.object({
   url: z.string({ required_error: 'URL is required' }).url(),
@@ -25,6 +26,17 @@ export const LinkController = {
     res.status(201).json({
       message: 'Link has been submitted successfully.',
       data: { link: submitLink },
+    });
+  },
+
+  getLinksByStatus: async (req: Request, res: Response) => {
+    const links = await LinkService.getLinksByStatus(
+      Object.values(LinkStatus).find(
+        (statusEnum) => statusEnum === req.query.status
+      )
+    );
+    res.status(200).json({
+      data: links,
     });
   },
 
