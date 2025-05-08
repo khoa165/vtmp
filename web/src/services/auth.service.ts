@@ -1,12 +1,11 @@
-import { EnvConfig } from '@/config/env';
 import { UserRepository } from '@/repositories/user.repository';
 import {
   DuplicateResourceError,
   UnauthorizedError,
   ResourceNotFoundError,
 } from '@/utils/errors';
+import { JWTUtils } from '@/utils/jwt';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { omit } from 'remeda';
 
 export const AuthService = {
@@ -42,16 +41,14 @@ export const AuthService = {
       encryptedPassword,
     });
 
-    const token = jwt.sign(
+    const token = JWTUtils.createTokenWithPayload(
       { id: user._id.toString() },
-      EnvConfig.get().JWT_SECRET,
       {
         expiresIn: '1h',
       }
     );
 
-    const userObj = user.toObject();
-    return { token, user: omit(userObj, ['encryptedPassword']) };
+    return { token, user: omit(user.toObject(), ['encryptedPassword']) };
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {
@@ -70,9 +67,8 @@ export const AuthService = {
       throw new UnauthorizedError('Wrong password', { email });
     }
 
-    const token = jwt.sign(
+    const token = JWTUtils.createTokenWithPayload(
       { id: user._id.toString() },
-      EnvConfig.get().JWT_SECRET,
       {
         expiresIn: '1h',
       }
