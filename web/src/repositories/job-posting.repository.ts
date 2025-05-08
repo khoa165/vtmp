@@ -1,4 +1,5 @@
 import { JobPostingModel, IJobPosting } from '@/models/job-posting.model';
+import { toMongoId } from '@/testutils/mongoID.testutil';
 import { ClientSession } from 'mongoose';
 
 export const JobPostingRepository = {
@@ -37,5 +38,44 @@ export const JobPostingRepository = {
       { $set: { deletedAt: new Date() } },
       { new: true }
     ).lean();
+  },
+
+  getJobPostingsUserHasNotAppliedTo: async (
+    userId: string
+  ): Promise<IJobPosting[]> => {
+    return JobPostingModel.aggregate([
+      {
+        // Perform a filtered join between JobPosting and Application collection
+        $lookup: {
+          from: 'applications',
+          let: { jobId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$jobPostingId', '$$jobId'] },
+                    { $eq: ['$userId', toMongoId(userId)] },
+                    { $eq: ['$deletedAt', null] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: 'userApplication',
+        },
+      },
+      {
+        $match: {
+          userApplication: { $size: 0 },
+          deletedAt: null,
+        },
+      },
+      {
+        $project: {
+          userApplication: 0,
+        },
+      },
+    ]);
   },
 };

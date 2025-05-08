@@ -1,32 +1,28 @@
-import { EnvConfig } from '@/config/env';
+import { JWTUtils } from '@/utils/jwt';
+import { UnauthorizedError } from '@/utils/errors';
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 import { z } from 'zod';
+import UserService from '@/services/user.service';
 
-const DecodedJWTSchema = z.object({
-  id: z.string(),
+export const DecodedJWTSchema = z.object({
+  id: z.string({ required_error: 'Id is required' }),
 });
 
 export const authenticate = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): Promise<void> => {
   const token = req.headers.authorization?.split(' ')[1];
+
   if (!token) {
-    res.status(401).json({ message: 'Unauthorized' });
-    return;
+    throw new UnauthorizedError('Unauthorized', {});
   }
 
-  try {
-    const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
-    const parsed = DecodedJWTSchema.safeParse(decoded);
-    if (parsed.success) {
-      req.user = parsed.data;
-    }
+  const parsed = JWTUtils.decodeAndParseToken(token, DecodedJWTSchema);
+  const user = await UserService.getUserById(parsed.id);
 
-    next();
-  } catch {
-    res.status(403).json({ message: 'Forbidden' });
-  }
+  req.user = { id: String(user._id) };
+
+  next();
 };
