@@ -83,15 +83,13 @@ export const ApplicationController = {
   },
 
   getApplications: async (req: Request, res: Response) => {
-    //const userId = getUserFromRequest(req).user.id;
-    console.log('Req body from backend controller: ', req.query);
+    const userId = getUserFromRequest(req).user.id;
 
     const filters = ApplicationFilterSchema.parse(req.query);
-    console.log('Filter from backend server: ', filters);
-    const applications = await ApplicationService.getApplications(
-      // '68110356bd157e78f5a2137e'
-      { userId: '68110356bd157e78f5a2137e', filters }
-    );
+    const applications = await ApplicationService.getApplications({
+      userId,
+      filters,
+    });
 
     res.status(200).json({
       message: 'Applications retrieved successfully',
@@ -115,8 +113,7 @@ export const ApplicationController = {
   },
 
   updateApplicationStatus: async (req: Request, res: Response) => {
-    // const userId = getUserFromRequest(req).user.id;
-    const userId = '68110356bd157e78f5a2137e';
+    const userId = getUserFromRequest(req).user.id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
     const { updatedStatus } = ApplicationStatusUpdateSchema.parse(req.body);
 
@@ -158,8 +155,7 @@ export const ApplicationController = {
   },
 
   deleteApplication: async (req: Request, res: Response) => {
-    // const userId = getUserFromRequest(req).user.id;
-    const userId = '68110356bd157e78f5a2137e';
+    const userId = getUserFromRequest(req).user.id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
 
     const deletedApplication = await ApplicationService.deleteApplicationById({
@@ -174,14 +170,10 @@ export const ApplicationController = {
   },
 
   getApplicationsCountByStatus: async (req: Request, res: Response) => {
-    // const userId = getUserFromRequest(req).user.id;
-    // console.log('Request hit getApplicationsCountByStatus');
-    // console.log('ApplicationStatus values:', Object.values(ApplicationStatus));
+    const userId = getUserFromRequest(req).user.id;
 
     const applicationsCountByStatus =
-      await ApplicationService.getApplicationsCountByStatus(
-        '68110356bd157e78f5a2137e'
-      );
+      await ApplicationService.getApplicationsCountByStatus(userId);
 
     res.status(200).json({
       message: 'Applications count by status retrieved successfully',
