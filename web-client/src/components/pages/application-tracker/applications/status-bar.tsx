@@ -13,9 +13,10 @@ import { useQuery } from '@tanstack/react-query';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import { useState } from 'react';
 
-export const StatusBar = ({ setFilter }) => {
+export const StatusBar = ({ setFilter }): React.JSX.Element | null => {
   const [selectedStatus, setSelectedStatus] =
     useState<ApplicationStatus | null>(null);
+
   const {
     isLoading,
     isError,
@@ -23,15 +24,13 @@ export const StatusBar = ({ setFilter }) => {
     data: ApplicationsCountByStatus,
   } = useQuery({
     queryKey: [QueryKey.GET_APPLICATIONS_COUNT_BY_STATUS],
-    queryFn: async () => {
-      const response = await request(
-        Method.GET,
-        '/applications/count-by-status',
-        null,
-        ApplicationsCountByStatusSchema
-      );
-      return response.data;
-    },
+    queryFn: () =>
+      request({
+        method: Method.GET,
+        url: '/applications/count-by-status',
+        schema: ApplicationsCountByStatusSchema,
+        options: { includeOnlyDataField: true },
+      }),
   });
 
   if (isLoading) {
@@ -98,7 +97,11 @@ export const StatusBar = ({ setFilter }) => {
       {infos.map((info, index) => (
         <Card
           key={index}
-          className="bg-transparent h-fit cursor-pointer hover:bg-[#FEFEFE] hover:text-[#333333] transition-colors duration-200"
+          className={`bg-transparent h-fit cursor-pointer transition-colors duration-200 ${
+            selectedStatus === info.status
+              ? 'bg-[#FEFEFE] text-[#333333]' // Apply shaded style when selected
+              : 'hover:bg-[#FEFEFE] hover:text-[#333333]' // Apply hover style when not selected
+          }`}
           onClick={() => handleStatusClick(info.status)}
         >
           <div className="flex flex-col items-center justify-center">
