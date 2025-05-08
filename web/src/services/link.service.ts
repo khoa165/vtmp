@@ -71,7 +71,7 @@ export const LinkService = {
     );
   },
 
-  getLinksByStatus: async (status?: LinkStatus) => {
-    return LinkRepository.getLinksByStatus(status ?? LinkStatus.PENDING);
+  getLinks: async (filters?: object) => {
+    return LinkRepository.getLinks(filters);
   },
 };

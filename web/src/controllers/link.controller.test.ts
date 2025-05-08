@@ -9,13 +9,14 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { LinkRepository } from '@/repositories/link.repository';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { LinkStatus } from '@vtmp/common/constants';
+import { JobPostingLocation, LinkStatus } from '@vtmp/common/constants';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import bcrypt from 'bcryptjs';
 import { AuthService } from '@/services/auth.service';
 import { UserRepository } from '@/repositories/user.repository';
+import { ILink } from '@/models/link.model';
 
 describe('LinkController', () => {
   useMongoDB();
@@ -28,7 +29,7 @@ describe('LinkController', () => {
   const mockLinkData = {
     url: 'google.com',
     jobTitle: 'Software Engineer',
-    companyName: 'Example Company',
+    companyName: 'Google',
     submittedBy: getNewMongoId(),
   };
 
@@ -113,6 +114,7 @@ describe('LinkController', () => {
         .send({
           jobTitle: 'Software Engineer Intern',
           companyName: 'Example Company',
+          location: JobPostingLocation.CANADA,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -126,6 +128,7 @@ describe('LinkController', () => {
         .send({
           jobTitle: 'Software Engineer Intern',
           companyName: 'Example Company',
+          location: JobPostingLocation.US,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -191,16 +194,27 @@ describe('LinkController', () => {
     });
   });
 
-  describe('getLinksByStatus', () => {
-    it('should return correct number of pending links without given status', async () => {
+  describe('getLinks', () => {
+    it('should return all links when no filter is given', async () => {
+      const facebookLink = await LinkRepository.createLink({
+        ...mockLinkData,
+        url: 'facebook.com',
+      });
+
+      await LinkRepository.updateLinkStatus({
+        id: linkId,
+        status: LinkStatus.APPROVED,
+      });
       const res = await request(app)
         .get('/api/links')
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data[0].url).to.equal(url);
-      expect(res.body.data[0].status).to.equal(LinkStatus.PENDING);
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(2);
+
+      const links = res.body.data.map((link: ILink) => link.url);
+      expect(links).to.have.members([url, facebookLink.url]);
     });
 
     it('should return correct number of links with a given status', async () => {
@@ -225,7 +239,7 @@ describe('LinkController', () => {
         status: LinkStatus.REJECTED,
       });
       const res = await request(app)
-        .get('/api/links')
+        .get(`/api/links?status=${LinkStatus.APPROVED}`)
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
