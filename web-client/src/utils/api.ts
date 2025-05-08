@@ -8,7 +8,6 @@ const api = axios.create({
   },
 });
 
-// Base interface
 interface RequestBaseArgs<T> {
   method: Method.GET | Method.POST | Method.DELETE | Method.PUT;
   url: string;
@@ -17,7 +16,6 @@ interface RequestBaseArgs<T> {
 }
 
 // Define an interface that defines 2 overloads for the request function
-// Overloads allow function to have multiple call signature, depending on arguments passed to it
 interface IRequest {
   // First overload: if options.includeOnlyData is true
   // Return only the data field from parsed response
