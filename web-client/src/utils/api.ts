@@ -17,14 +17,10 @@ interface RequestBaseArgs<T> {
 
 // Define an interface that defines 2 overloads for the request function
 interface IRequest {
-  // First overload: if options.includeOnlyData is true
-  // Return only the data field from parsed response
   <T extends { data: object; message: string }>(
     args: RequestBaseArgs<T> & { options: { includeOnlyDataField: true } }
   ): Promise<T['data']>;
 
-  // Second overload: if options.includeOnlyData is false or not provided
-  // Return the entire parsed response object
   <T extends { data: object; message: string }>(
     args: RequestBaseArgs<T> & {
       options?: { includeOnlyDataField?: false | undefined };
@@ -32,7 +28,6 @@ interface IRequest {
   ): Promise<T>;
 }
 
-// Implementation of the function using the interface IRequest
 export const request: IRequest = async <
   T extends { data: object; message: string },
 >({
