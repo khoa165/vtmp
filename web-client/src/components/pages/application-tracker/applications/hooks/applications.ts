@@ -5,14 +5,15 @@ import { toast } from 'sonner';
 import {
   ApplicationsResponseSchema,
   ApplicationResponseSchema,
+  ApplicationsCountByStatusSchema,
 } from '@/components/pages/application-tracker/applications/validation';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import axios from 'axios';
 
 export const useGetApplications = (
   filter: { status?: ApplicationStatus } = {}
-) => {
-  return useQuery({
+) =>
+  useQuery({
     queryKey: [QueryKey.GET_APPLICATIONS, filter],
     queryFn: () =>
       request({
@@ -23,7 +24,18 @@ export const useGetApplications = (
         options: { includeOnlyDataField: true },
       }),
   });
-};
+
+export const useGetApplicationsCountByStatus = () =>
+  useQuery({
+    queryKey: [QueryKey.GET_APPLICATIONS_COUNT_BY_STATUS],
+    queryFn: () =>
+      request({
+        method: Method.GET,
+        url: '/applications/count-by-status',
+        schema: ApplicationsCountByStatusSchema,
+        options: { includeOnlyDataField: true },
+      }),
+  });
 
 export const useDeleteApplication = () => {
   const queryClient = useQueryClient();
