@@ -6,7 +6,7 @@ import mongoose, { ClientSession } from 'mongoose';
 
 export const LinkService = {
   submitLink: async (url: string) => {
-    return LinkRepository.createLink(url);
+    return LinkRepository.createLink({ url });
   },
 
   approveLinkAndCreateJobPosting: async (

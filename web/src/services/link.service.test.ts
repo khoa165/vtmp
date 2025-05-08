@@ -4,7 +4,7 @@ import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { LinkService } from '@/services/link.service';
 import assert from 'assert';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { ResourceNotFoundError } from '@/utils/errors';
 import { LinkRepository } from '@/repositories/link.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -14,10 +14,18 @@ describe('LinkService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
+  const mockLinkData = {
+    url: 'google.com',
+    jobTitle: 'Software Engineer',
+    companyName: 'Example Company',
+    submittedBy: getNewObjectId(),
+  };
+
   describe('submitLink', () => {
     it('should be able to create new link with expected fields', async () => {
       const URL = 'google.com';
       const link = await LinkService.submitLink(URL);
+
       const timeDiff = differenceInSeconds(new Date(), link.submittedOn);
 
       expect(link.url).to.equal(URL);
@@ -38,7 +46,8 @@ describe('LinkService', () => {
 
     it("should throw an error if job posting can't be created", async () => {
       sandbox.stub(JobPostingRepository, 'createJobPosting').throws();
-      const newLink = await LinkRepository.createLink('google.com');
+      const newLink = await LinkRepository.createLink(mockLinkData);
+
       await expect(
         LinkService.approveLinkAndCreateJobPosting(newLink.id, {
           jobTitle: 'Software Engineering Intern',
@@ -49,7 +58,8 @@ describe('LinkService', () => {
 
     it("should not approve link if job posting can't be created", async () => {
       sandbox.stub(JobPostingRepository, 'createJobPosting').throws();
-      const newLink = await LinkRepository.createLink('google.com');
+      const newLink = await LinkRepository.createLink(mockLinkData);
+
       await expect(
         LinkService.approveLinkAndCreateJobPosting(newLink.id, {
           jobTitle: 'Software Engineering Intern',
@@ -62,7 +72,8 @@ describe('LinkService', () => {
     });
 
     it('should not throw error when job posting data is valid', async () => {
-      const newLink = await LinkRepository.createLink('google.com');
+      const newLink = await LinkRepository.createLink(mockLinkData);
+
       await expect(
         LinkService.approveLinkAndCreateJobPosting(newLink.id, {
           jobTitle: 'Software Engineering Intern',
@@ -73,7 +84,8 @@ describe('LinkService', () => {
 
     it('should approve link and create job posting', async () => {
       const COMPANY_NAME = 'Google';
-      const newLink = await LinkRepository.createLink('google.com');
+      const newLink = await LinkRepository.createLink(mockLinkData);
+
       const newJobPosting = await LinkService.approveLinkAndCreateJobPosting(
         newLink.id,
         {
@@ -91,19 +103,22 @@ describe('LinkService', () => {
         newJobPosting.id
       );
       assert(jobPosting);
-      expect(jobPosting.linkId.toString()).to.equal(link.id);
+
+      expect(jobPosting.linkId.toString()).to.equal(link._id.toString());
       expect(jobPosting.companyName).to.equal(COMPANY_NAME);
     });
   });
 
   describe('rejectLink', () => {
     it('should not throw when link exists', async () => {
-      const link = await LinkRepository.createLink('google.com');
+      const link = await LinkRepository.createLink(mockLinkData);
+
       await expect(LinkService.rejectLink(link.id)).eventually.fulfilled;
     });
 
     it('should be able to reject link by id', async () => {
-      const link = await LinkRepository.createLink('google.com');
+      const link = await LinkRepository.createLink(mockLinkData);
+
       const rejectedLink = await LinkService.rejectLink(link.id);
 
       assert(rejectedLink);
@@ -128,9 +143,13 @@ describe('LinkService', () => {
     });
 
     it('should return correct link counts for multiple statuses when multiple links exist', async () => {
-      const googleLink = await LinkRepository.createLink('google.com');
-      await LinkRepository.createLink('nvidia.com');
-      await LinkRepository.createLink('microsoft.com');
+      const googleLink = await LinkRepository.createLink(mockLinkData);
+
+      await LinkRepository.createLink({ ...mockLinkData, url: 'nvidia.com' });
+      await LinkRepository.createLink({
+        ...mockLinkData,
+        url: 'microsoft.com',
+      });
 
       await LinkService.rejectLink(googleLink.id);
       const afterUpdateLinks = await LinkService.getLinkCountByStatus();

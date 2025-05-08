@@ -4,7 +4,6 @@ import { z } from 'zod';
 
 const LinkSchema = z.object({
   url: z.string({ required_error: 'URL is required' }).url(),
-  userNote: z.string().optional(),
 });
 
 const JobPostingAdditionalSchema = z.object({

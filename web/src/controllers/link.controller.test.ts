@@ -42,7 +42,8 @@ describe('LinkController', () => {
     });
 
     url = 'http://example.com/job-posting';
-    const newLink = await LinkRepository.createLink(url);
+    const newLink = await LinkRepository.createLink({ url });
+
     linkId = newLink.id;
   });
 

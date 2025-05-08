@@ -1,12 +1,11 @@
-import { EnvConfig } from '@/config/env';
 import { UserRepository } from '@/repositories/user.repository';
 import {
   DuplicateResourceError,
   UnauthorizedError,
   ResourceNotFoundError,
 } from '@/utils/errors';
+import { JWTUtils } from '@/utils/jwt';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 
 export const AuthService = {
   signup: async ({
@@ -58,9 +57,8 @@ export const AuthService = {
       throw new UnauthorizedError('Wrong password', { email });
     }
 
-    const token = jwt.sign(
+    const token = JWTUtils.createTokenWithPayload(
       { id: user._id.toString() },
-      EnvConfig.get().JWT_SECRET,
       {
         expiresIn: '1h',
       }
