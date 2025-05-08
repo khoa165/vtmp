@@ -1,5 +1,5 @@
 import { Button } from '@/components/base/button';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, ChevronDown } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,8 +19,41 @@ import {
 } from '@/components/base/alert-dialog';
 import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 import { useState } from 'react';
+import confetti from 'canvas-confetti';
+import { ApplicationStatus } from '@vtmp/common/constants';
+import { titleCase } from '@/utils/helpers';
 
-export const ApplicationsAction = ({
+const handleOfferedSelected = () => {
+  const end = Date.now() + 3 * 1000; // 3 seconds
+  const colors = ['#a786ff', '#fd8bbc', '#eca184', '#f8deb1'];
+
+  const frame = () => {
+    if (Date.now() > end) return;
+
+    confetti({
+      particleCount: 2,
+      angle: 60,
+      spread: 55,
+      startVelocity: 60,
+      origin: { x: 0, y: 0.5 },
+      colors: colors,
+    });
+    confetti({
+      particleCount: 2,
+      angle: 120,
+      spread: 55,
+      startVelocity: 60,
+      origin: { x: 1, y: 0.5 },
+      colors: colors,
+    });
+
+    requestAnimationFrame(frame);
+  };
+
+  frame();
+};
+
+export const CellActions = ({
   application,
   deleteApplicationFn,
 }: {
@@ -28,7 +61,6 @@ export const ApplicationsAction = ({
   deleteApplicationFn: (id: string) => void;
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   return (
     <>
       <DropdownMenu>
@@ -76,6 +108,55 @@ export const ApplicationsAction = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+    </>
+  );
+};
+
+export const CellApplicationStatus = ({
+  application,
+  updateApplicationStatusFn,
+}: {
+  application: IApplication;
+  updateApplicationStatusFn: ({
+    applicationId,
+    body,
+  }: {
+    applicationId: string;
+    body: { updatedStatus: ApplicationStatus };
+  }) => void;
+}) => {
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Button variant="outline">
+            {application.status === ApplicationStatus.OA
+              ? application.status
+              : titleCase(application.status)}{' '}
+            <ChevronDown />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {Object.values(ApplicationStatus).map((dropdownStatus, index) => (
+            <DropdownMenuItem
+              key={index}
+              onClick={() => {
+                if (dropdownStatus === ApplicationStatus.OFFERED) {
+                  handleOfferedSelected();
+                }
+                updateApplicationStatusFn({
+                  applicationId: application._id,
+                  body: { updatedStatus: dropdownStatus },
+                });
+              }}
+            >
+              {dropdownStatus === ApplicationStatus.OA
+                ? dropdownStatus
+                : titleCase(dropdownStatus)}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </>
   );
 };
