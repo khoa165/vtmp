@@ -22,6 +22,7 @@ import { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import { titleCase } from '@/utils/helpers';
+import { StatusDot } from '@/components/base/status-dots';
 
 const handleOfferedSelected = () => {
   const end = Date.now() + 3 * 1000; // 3 seconds
@@ -130,6 +131,7 @@ export const CellApplicationStatus = ({
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Button variant="outline">
+            <StatusDot status={application.status} />
             {application.status === ApplicationStatus.OA
               ? application.status
               : titleCase(application.status)}

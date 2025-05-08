@@ -1,11 +1,5 @@
 import { Card } from '@/components/base/card';
-import {
-  SubmittedStatusDot,
-  OAStatusDot,
-  InterviewingStatusDot,
-  OfferedStatusDot,
-  WithdrawnStatusDot,
-} from '@/components/base/status-dots';
+import { StatusDot } from '@/components/base/status-dots';
 import { useGetApplicationsCountByStatus } from '@/components/pages/application-tracker/applications/hooks/applications';
 import { titleCase } from '@/utils/helpers';
 import { ApplicationStatus } from '@vtmp/common/constants';
@@ -37,33 +31,10 @@ export const ApplicationStatusCards = ({
     return null;
   }
 
-  const allDisplayedStatus = [
-    {
-      count: ApplicationsCountByStatus?.SUBMITTED,
-      dotComponent: <SubmittedStatusDot />,
-      status: ApplicationStatus.SUBMITTED,
-    },
-    {
-      count: ApplicationsCountByStatus?.OA,
-      dotComponent: <OAStatusDot />,
-      status: ApplicationStatus.OA,
-    },
-    {
-      count: ApplicationsCountByStatus?.INTERVIEWING,
-      dotComponent: <InterviewingStatusDot />,
-      status: ApplicationStatus.INTERVIEWING,
-    },
-    {
-      count: ApplicationsCountByStatus?.OFFERED,
-      dotComponent: <OfferedStatusDot />,
-      status: ApplicationStatus.OFFERED,
-    },
-    {
-      count: ApplicationsCountByStatus?.WITHDRAWN,
-      dotComponent: <WithdrawnStatusDot />,
-      status: ApplicationStatus.WITHDRAWN,
-    },
-  ];
+  const allDisplayedStatus = Object.values(ApplicationStatus).filter(
+    (status) => status != ApplicationStatus.REJECTED
+  );
+
   // What I want to do: I want register when I click on the status box
   // it has to reinvalidate GET_APPLICATIONS queryKey and refetch useGetApplications with filter being the status selected
   const handleStatusClick = (status: ApplicationStatus) => {
@@ -76,28 +47,29 @@ export const ApplicationStatusCards = ({
       setFilter({ status });
     }
   };
+
   return (
     <div className={`grid grid-cols-5 w-full gap-4 mb-6 max-md:grid-rows-6`}>
       {allDisplayedStatus.map((displayedStatus, index) => (
         <Card
           key={index}
           className={`bg-transparent h-fit cursor-pointer transition-colors duration-200 ${
-            selectedStatus === displayedStatus.status
+            selectedStatus === displayedStatus
               ? 'bg-[#FEFEFE] text-[#333333]'
               : 'hover:bg-[#FEFEFE] hover:text-[#333333]'
           }`}
-          onClick={() => handleStatusClick(displayedStatus.status)}
+          onClick={() => handleStatusClick(displayedStatus)}
         >
           <section className="flex flex-col items-center justify-center">
             <div className="text-[2rem] max-lg:text-[1rem] font-bold">
-              {displayedStatus.count}
+              {ApplicationsCountByStatus?.[displayedStatus]}
             </div>
             <div className="flex flex-row items-center gap-2">
-              {displayedStatus.dotComponent}
+              <StatusDot status={displayedStatus} />
               <span className="font-bold max-lg:text-[0.7rem] text-wrap">
-                {displayedStatus.status === ApplicationStatus.OA
-                  ? displayedStatus.status
-                  : titleCase(displayedStatus.status)}
+                {displayedStatus === ApplicationStatus.OA
+                  ? displayedStatus
+                  : titleCase(displayedStatus)}
               </span>
             </div>
           </section>

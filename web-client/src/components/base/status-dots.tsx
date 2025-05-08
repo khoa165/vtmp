@@ -1,42 +1,19 @@
-import React from 'react';
+import { ApplicationStatus } from '@vtmp/common/constants';
 
-const SubmittedStatusDot = () => {
-  return (
-    <div className="w-[1rem] h-[1rem] rounded-full bg-[#A2BFF0] max-lg:w-[0.7rem] max-lg:h-[0.7rem]"></div>
-  );
-};
-
-const OAStatusDot = () => {
-  return (
-    <div className="w-[1rem] h-[1rem] rounded-full bg-[#F49DFF] max-lg:w-[0.7rem] max-lg:h-[0.7rem]"></div>
-  );
-};
-const InterviewingStatusDot = () => {
-  return (
-    <div className="w-[1rem] h-[1rem] rounded-full bg-[#F8FF6A] max-lg:w-[0.7rem] max-lg:h-[0.7rem]"></div>
-  );
-};
-const OfferedStatusDot = () => {
-  return (
-    <div className="w-[1rem] h-[1rem] rounded-full bg-[#A3F890] max-lg:w-[0.7rem] max-lg:h-[0.7rem]"></div>
-  );
-};
-const RejectedStatusDot = () => {
-  return (
-    <div className="w-[1rem] h-[1rem] rounded-full bg-[#FEB584] max-lg:w-[0.7rem] max-lg:h-[0.7rem]"></div>
-  );
-};
-const WithdrawnStatusDot = () => {
-  return (
-    <div className="w-[1rem] h-[1rem] rounded-full bg-[#CAAB94] max-lg:w-[0.7rem] max-lg:h-[0.7rem]"></div>
-  );
+const statusColorMapping = {
+  [ApplicationStatus.SUBMITTED]: 'bg-[#A2BFF0]',
+  [ApplicationStatus.OA]: 'bg-[#F49DFF]',
+  [ApplicationStatus.INTERVIEWING]: 'bg-[#F8FF6A]',
+  [ApplicationStatus.OFFERED]: 'bg-[#A3F890]',
+  [ApplicationStatus.WITHDRAWN]: 'bg-[#CAAB94]',
+  [ApplicationStatus.REJECTED]: 'bg-[#FEB584]',
 };
 
-export {
-  SubmittedStatusDot,
-  OAStatusDot,
-  InterviewingStatusDot,
-  OfferedStatusDot,
-  RejectedStatusDot,
-  WithdrawnStatusDot,
+export const StatusDot = ({ status }: { status: ApplicationStatus }) => {
+  const color = statusColorMapping[status];
+  return (
+    <div
+      className={`w-[1rem] h-[1rem] rounded-full ${color} max-lg:w-[0.7rem] max-lg:h-[0.7rem]`}
+    />
+  );
 };
