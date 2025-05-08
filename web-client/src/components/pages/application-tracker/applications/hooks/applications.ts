@@ -12,20 +12,16 @@ import axios from 'axios';
 export const useGetApplications = (
   filter: { status?: ApplicationStatus } = {}
 ) => {
-  console.log('Query Key:', [QueryKey.GET_APPLICATIONS, filter]);
-  console.log('Filter object inside useGetApplications: ', filter);
   return useQuery({
     queryKey: [QueryKey.GET_APPLICATIONS, filter],
-    queryFn: async () => {
-      const response = await request(
-        Method.GET,
-        '/applications',
-        filter,
-        ApplicationsResponseSchema
-      );
-      console.log('Response: ', response);
-      return response.data;
-    },
+    queryFn: () =>
+      request({
+        method: Method.GET,
+        url: '/applications',
+        data: filter,
+        schema: ApplicationsResponseSchema,
+        options: { includeOnlyDataField: true },
+      }),
   });
 };
 
@@ -34,12 +30,11 @@ export const useDeleteApplication = () => {
 
   return useMutation({
     mutationFn: (applicationId: string) =>
-      request(
-        Method.DELETE,
-        `/applications/${applicationId}`,
-        null,
-        ApplicationResponseSchema
-      ),
+      request({
+        method: Method.DELETE,
+        url: `/applications/${applicationId}`,
+        schema: ApplicationResponseSchema,
+      }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS],
@@ -73,12 +68,12 @@ export const useUpdateApplicationStatus = () => {
       applicationId: string;
       body: { updatedStatus: ApplicationStatus };
     }) =>
-      request(
-        Method.PUT,
-        `/applications/${applicationId}/updateStatus`,
-        body,
-        ApplicationResponseSchema
-      ),
+      request({
+        method: Method.PUT,
+        url: `/applications/${applicationId}/updateStatus`,
+        data: body,
+        schema: ApplicationResponseSchema,
+      }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS],
