@@ -44,10 +44,11 @@ describe('LinkController', () => {
     };
 
     await UserRepository.createUser(mockUser);
-    mockToken = await AuthService.login({
+    const { token } = await AuthService.login({
       email: mockUser.email,
       password: 'test password',
     });
+    mockToken = token;
 
     url = 'http://example.com/job-posting';
     const newLink = await LinkRepository.createLink({ url });
