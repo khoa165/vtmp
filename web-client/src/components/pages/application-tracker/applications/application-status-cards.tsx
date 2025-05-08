@@ -11,7 +11,9 @@ import { titleCase } from '@/utils/helpers';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import { useState } from 'react';
 
-export const StatusBar = ({ setFilter }): React.JSX.Element | null => {
+export const ApplicationStatusCards = ({
+  setFilter,
+}): React.JSX.Element | null => {
   const [selectedStatus, setSelectedStatus] =
     useState<ApplicationStatus | null>(null);
 
@@ -37,28 +39,28 @@ export const StatusBar = ({ setFilter }): React.JSX.Element | null => {
 
   const allDisplayedStatus = [
     {
-      num: ApplicationsCountByStatus?.SUBMITTED,
-      dot: <SubmittedStatusDot />,
+      count: ApplicationsCountByStatus?.SUBMITTED,
+      dotComponent: <SubmittedStatusDot />,
       status: ApplicationStatus.SUBMITTED,
     },
     {
-      num: ApplicationsCountByStatus?.OA,
-      dot: <OAStatusDot />,
+      count: ApplicationsCountByStatus?.OA,
+      dotComponent: <OAStatusDot />,
       status: ApplicationStatus.OA,
     },
     {
-      num: ApplicationsCountByStatus?.INTERVIEWING,
-      dot: <InterviewingStatusDot />,
+      count: ApplicationsCountByStatus?.INTERVIEWING,
+      dotComponent: <InterviewingStatusDot />,
       status: ApplicationStatus.INTERVIEWING,
     },
     {
-      num: ApplicationsCountByStatus?.OFFERED,
-      dot: <OfferedStatusDot />,
+      count: ApplicationsCountByStatus?.OFFERED,
+      dotComponent: <OfferedStatusDot />,
       status: ApplicationStatus.OFFERED,
     },
     {
-      num: ApplicationsCountByStatus?.WITHDRAWN,
-      dot: <WithdrawnStatusDot />,
+      count: ApplicationsCountByStatus?.WITHDRAWN,
+      dotComponent: <WithdrawnStatusDot />,
       status: ApplicationStatus.WITHDRAWN,
     },
   ];
@@ -86,19 +88,19 @@ export const StatusBar = ({ setFilter }): React.JSX.Element | null => {
           }`}
           onClick={() => handleStatusClick(displayedStatus.status)}
         >
-          <div className="flex flex-col items-center justify-center">
+          <section className="flex flex-col items-center justify-center">
             <div className="text-[2rem] max-lg:text-[1rem] font-bold">
-              {displayedStatus.num}
+              {displayedStatus.count}
             </div>
             <div className="flex flex-row items-center gap-2">
-              {displayedStatus.dot}
+              {displayedStatus.dotComponent}
               <span className="font-bold max-lg:text-[0.7rem] text-wrap">
                 {displayedStatus.status === ApplicationStatus.OA
                   ? displayedStatus.status
                   : titleCase(displayedStatus.status)}
               </span>
             </div>
-          </div>
+          </section>
         </Card>
       ))}
     </div>

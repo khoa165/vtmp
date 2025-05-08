@@ -132,29 +132,31 @@ export const CellApplicationStatus = ({
           <Button variant="outline">
             {application.status === ApplicationStatus.OA
               ? application.status
-              : titleCase(application.status)}{' '}
+              : titleCase(application.status)}
             <ChevronDown />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          {Object.values(ApplicationStatus).map((dropdownStatus, index) => (
-            <DropdownMenuItem
-              key={index}
-              onClick={() => {
-                if (dropdownStatus === ApplicationStatus.OFFERED) {
-                  handleOfferedSelected();
-                }
-                updateApplicationStatusFn({
-                  applicationId: application._id,
-                  body: { updatedStatus: dropdownStatus },
-                });
-              }}
-            >
-              {dropdownStatus === ApplicationStatus.OA
-                ? dropdownStatus
-                : titleCase(dropdownStatus)}
-            </DropdownMenuItem>
-          ))}
+          {Object.values(ApplicationStatus)
+            .filter((value) => value !== application.status)
+            .map((dropdownStatus, index) => (
+              <DropdownMenuItem
+                key={index}
+                onClick={() => {
+                  if (dropdownStatus === ApplicationStatus.OFFERED) {
+                    handleOfferedSelected();
+                  }
+                  updateApplicationStatusFn({
+                    applicationId: application._id,
+                    body: { updatedStatus: dropdownStatus },
+                  });
+                }}
+              >
+                {dropdownStatus === ApplicationStatus.OA
+                  ? dropdownStatus
+                  : titleCase(dropdownStatus)}
+              </DropdownMenuItem>
+            ))}
         </DropdownMenuContent>
       </DropdownMenu>
     </>
