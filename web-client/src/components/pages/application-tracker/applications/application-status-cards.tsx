@@ -1,5 +1,5 @@
 import { Card } from '@/components/base/card';
-import { StatusDot } from '@/components/base/status-dots';
+import { StatusDot } from '@/components/base/status-dot';
 import { useGetApplicationsCountByStatus } from '@/components/pages/application-tracker/applications/hooks/applications';
 import { titleCase } from '@/utils/helpers';
 import { ApplicationStatus } from '@vtmp/common/constants';

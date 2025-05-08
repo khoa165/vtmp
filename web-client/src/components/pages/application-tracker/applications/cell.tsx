@@ -22,7 +22,7 @@ import { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import { titleCase } from '@/utils/helpers';
-import { StatusDot } from '@/components/base/status-dots';
+import { StatusDot } from '@/components/base/status-dot';
 
 const handleOfferedSelected = () => {
   const end = Date.now() + 3 * 1000; // 3 seconds
