@@ -8,20 +8,48 @@ const api = axios.create({
   },
 });
 
-export const request = async <T>(
-  method: Method.GET | Method.POST | Method.DELETE | Method.PUT,
-  url: string,
-  data?: unknown,
-  schema?: { parse: (data: unknown) => T }
-): Promise<T> => {
+interface RequestBaseArgs<T> {
+  method: Method.GET | Method.POST | Method.DELETE | Method.PUT;
+  url: string;
+  data?: object;
+  schema: { parse: (data: object) => T };
+}
+
+// Define an interface that defines 2 overloads for the request function
+interface IRequest {
+  <T extends { data: object; message: string }>(
+    args: RequestBaseArgs<T> & { options: { includeOnlyDataField: true } }
+  ): Promise<T['data']>;
+
+  <T extends { data: object; message: string }>(
+    args: RequestBaseArgs<T> & {
+      options?: { includeOnlyDataField?: false | undefined };
+    }
+  ): Promise<T>;
+}
+
+export const request: IRequest = async <
+  T extends { data: object; message: string },
+>({
+  method,
+  url,
+  data = {},
+  schema,
+  options = {},
+}: {
+  method: Method.GET | Method.POST | Method.DELETE | Method.PUT;
+  url: string;
+  data?: object;
+  schema: { parse: (data: object) => T };
+  options?: { includeOnlyDataField?: boolean };
+}): Promise<T['data'] | T> => {
+  const { includeOnlyDataField = false } = options;
   const response = await api.request({
     method,
     url,
-    ...(data ? { data } : {}),
+    ...(method === Method.GET ? { params: data } : { data }),
   });
-  if (schema) {
-    return schema.parse(response.data);
-  }
+  const parsedData = schema.parse(response.data);
 
-  return response.data;
+  return includeOnlyDataField ? parsedData.data : parsedData;
 };

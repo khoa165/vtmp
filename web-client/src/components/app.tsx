@@ -18,11 +18,10 @@ import { Playground } from '@/components/playground';
 import { PageWithSidebar } from '@/components/layout/page-with-sidebar';
 import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
 import { UserInvitationPage } from '@/components/pages/admins/users/user-invitation';
+import { JobPostingPage } from '@/components/pages/application-tracker/job-postings/job-postings';
 import { PageWithToast } from '@/components/layout/page-with-toast';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
-import { JobPostingPage } from '@/components/pages/application-tracker/job-postings/job-postings';
-import { DashBoardPage } from '@/components/pages/admins/dashboard/dashboard-page';
 
 export const App = () => {
   useEffect(() => {
@@ -73,7 +72,6 @@ export const App = () => {
             <Route path="/job-postings" element={<JobPostingPage />} />
             <Route path="/user-invitation" element={<UserInvitationPage />} />
             <Route path="/application-tracker" element={<ApplicationsPage />} />
-            <Route path="/admin/dashboard" element={<DashBoardPage />} />
           </Route>
         </Route>
         <Route path="/*" element={<>404</>} />

@@ -6,13 +6,13 @@ import {
   useUpdateApplicationStatus,
 } from '@/components/pages/application-tracker/applications/hooks/applications';
 
-export const ApplicationsContainer = (): React.JSX.Element | null => {
+export const ApplicationsContainer = ({ filter }): React.JSX.Element | null => {
   const {
     isLoading,
     isError,
     error,
     data: applicationsData,
-  } = useGetApplications();
+  } = useGetApplications(filter);
   const { mutate: deleteApplicationFn } = useDeleteApplication();
   const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
 
