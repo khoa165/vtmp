@@ -3,7 +3,7 @@ import React from 'react';
 
 export const DashBoardPage = () => {
   return (
-    <div className="container py-10 h-full">
+    <div className="container p-10 h-full ">
       <DashBoardContainer />
     </div>
   );

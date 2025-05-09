@@ -22,6 +22,7 @@ import { JobPostingPage } from '@/components/pages/application-tracker/job-posti
 import { PageWithToast } from '@/components/layout/page-with-toast';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
+import { DashBoardPage } from '@/components/pages/admins/dashboard/dashboard-page';
 
 export const App = () => {
   useEffect(() => {
@@ -72,6 +73,7 @@ export const App = () => {
             <Route path="/job-postings" element={<JobPostingPage />} />
             <Route path="/user-invitation" element={<UserInvitationPage />} />
             <Route path="/application-tracker" element={<ApplicationsPage />} />
+            <Route path="/admin/dashboard" element={<DashBoardPage />} />
           </Route>
         </Route>
         <Route path="/*" element={<>404</>} />

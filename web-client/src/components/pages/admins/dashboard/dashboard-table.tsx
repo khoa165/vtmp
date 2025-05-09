@@ -104,11 +104,11 @@ export function DashBoardTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="border border-foreground h-fit ">
-        <Table>
-          <TableHeader className="bg-foreground">
+      <div className="rounded-md overflow-hidden border border-foreground h-fit">
+        <Table className="hover:bg-none">
+          <TableHeader className="bg-foreground sticky">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id} className="text-background">
@@ -130,6 +130,7 @@ export function DashBoardTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  className="hover:bg-transparent"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="text-foreground">

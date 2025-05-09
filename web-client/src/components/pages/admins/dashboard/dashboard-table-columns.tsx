@@ -3,9 +3,23 @@ import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/base/button';
 import { IDashBoardLink } from '@/components/pages/admins/dashboard/validation';
 import { format } from 'date-fns';
-import { ReviewPopupButton } from '@/components/pages/admins/dashboard/review-popup';
+import { ReviewPopupButton } from '@/components/pages/admins/dashboard/review-popup-button';
+import { StatusDot } from '@/components/base/status-dot';
+import { LinkStatus } from '@vtmp/common/constants';
 
-export const dashboardTableColumns = (): ColumnDef<IDashBoardLink>[] => [
+export const dashboardTableColumns = ({
+  approveDashBoardLinkFn,
+  rejectDashBoardLinkFn,
+}: {
+  approveDashBoardLinkFn: ({
+    linkId,
+    newUpdate,
+  }: {
+    linkId: string;
+    newUpdate: Partial<IDashBoardLink>;
+  }) => void;
+  rejectDashBoardLinkFn: ({ linkId }: { linkId: string }) => void;
+}): ColumnDef<IDashBoardLink>[] => [
   {
     accessorKey: 'url',
     header: 'URL',
@@ -18,8 +32,14 @@ export const dashboardTableColumns = (): ColumnDef<IDashBoardLink>[] => [
   {
     header: 'Status',
     cell: ({ row }) => {
-      const link = row.original;
-      return <Button variant="outline">{link.status}</Button>;
+      return (
+        <Button variant="outline">
+          <StatusDot
+            status={LinkStatus[row.original.status as keyof typeof LinkStatus]}
+          />{' '}
+          {row.original.status}
+        </Button>
+      );
     },
   },
   {
@@ -43,13 +63,36 @@ export const dashboardTableColumns = (): ColumnDef<IDashBoardLink>[] => [
       );
     },
     cell: ({ row }) => {
-      const isoDate = row.getValue<string>('datePosted');
+      const isoDate = row.getValue<Date>('datePosted');
       const date = new Date(isoDate);
       return <span>{format(date, 'MM/dd/yyyy')}</span>;
     },
   },
   {
     header: 'Review',
-    cell: () => <ReviewPopupButton />,
+    cell: ({ row }) => {
+      const {
+        _id,
+        url,
+        companyName,
+        jobTitle,
+        location,
+        datePosted,
+        jobDescription,
+      } = row.original;
+      return (
+        <ReviewPopupButton
+          linkId={_id}
+          url={url}
+          companyName={companyName}
+          jobTitle={jobTitle}
+          location={location}
+          datePosted={datePosted ? format(datePosted, 'MM/dd/yyyy') : ''}
+          jobDescription={jobDescription}
+          approveDashBoardLinkFn={approveDashBoardLinkFn}
+          rejectDashBoardLinkFn={rejectDashBoardLinkFn}
+        />
+      );
+    },
   },
 ];

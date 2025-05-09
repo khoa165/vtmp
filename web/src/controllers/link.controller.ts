@@ -21,7 +21,13 @@ const JobPostingAdditionalSchema = z
     }),
     jobDescription: z.string().optional(),
     adminNote: z.string().optional(),
-    datePosted: z.date().optional(),
+    datePosted: z
+      .string()
+      .optional()
+      .transform((isoDate) => {
+        if (!isoDate) return undefined;
+        return new Date(isoDate);
+      }),
   })
   .transform(filterUndefinedAttributes);
 
@@ -49,7 +55,7 @@ export const LinkController = {
     const submitLink = await LinkService.submitLink(parsedLink.url);
     res.status(201).json({
       message: 'Link has been submitted successfully.',
-      data: { link: submitLink },
+      data: submitLink,
     });
   },
 
@@ -57,7 +63,7 @@ export const LinkController = {
     const filters = LinkFilterSchema.parse(req.query);
     const links = await LinkService.getLinks(filters);
     res.status(200).json({
-      messsage: 'Links have been retrieved successfully.',
+      message: 'Links have been retrieved successfully.',
       data: links,
     });
   },
@@ -80,7 +86,7 @@ export const LinkController = {
     );
     res.status(200).json({
       message: 'Link has been approved!',
-      data: { link: approvedLink },
+      data: approvedLink,
     });
   },
 
@@ -90,7 +96,7 @@ export const LinkController = {
     const rejectedLink = await LinkService.rejectLink(parsedLink.linkId);
     res.status(200).json({
       message: 'Link has been rejected!',
-      data: { link: rejectedLink },
+      data: rejectedLink,
     });
   },
 };

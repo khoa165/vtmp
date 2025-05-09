@@ -103,7 +103,7 @@ describe('LinkController', () => {
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expect(res.body.data.link.url).to.equal(url);
+      expect(res.body.data.url).to.equal(url);
       expect(res.body.message).to.equal('Link has been rejected!');
     });
   });
@@ -136,7 +136,7 @@ describe('LinkController', () => {
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.message).to.equal('Link has been approved!');
-      expect(res.body.data.link.url).to.equal(url);
+      expect(res.body.data.url).to.equal(url);
     });
   });
 

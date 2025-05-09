@@ -1,12 +1,10 @@
 import { z } from 'zod';
-import { LinkStatus, JobPostingLocation } from '@vtmp/common/constants';
+import { JobPostingLocation } from '@vtmp/common/constants';
 
 const DashBoardLinkSchema = z.object({
   _id: z.string(),
   url: z.string().url(),
-  status: z.nativeEnum(LinkStatus, {
-    message: 'Invalid link status',
-  }),
+  status: z.string(),
   submittedOn: z.string().optional(),
   jobTitle: z.string().optional(),
   companyName: z.string().optional(),
@@ -27,6 +25,13 @@ export const DashBoardLinksResponseSchema = z.object({
 export const DashBoardLinkResponseSchema = z.object({
   message: z.string(),
   data: DashBoardLinkSchema,
+});
+
+export const JobPostingResponseSchema = z.object({
+  message: z.string(),
+  data: DashBoardLinkSchema.omit({
+    status: true,
+  }),
 });
 
 export type IDashBoardLink = z.infer<typeof DashBoardLinkSchema>;

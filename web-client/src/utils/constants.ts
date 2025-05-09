@@ -153,6 +153,7 @@ export enum QueryKey {
   SUBMIT_LINK = '/api/links',
   GET_APPLICATIONS = '/api/applications',
   GET_APPLICATIONS_COUNT_BY_STATUS = '/api/applications/countByStatus',
+  GET_DASHBOARD_LINKS = '/api/links/getLinks',
 }
 
 export enum Method {
