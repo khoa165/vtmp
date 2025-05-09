@@ -1,17 +1,18 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { JobPostingLocation, LinkStatus } from '@vtmp/common/constants';
-
+import { LinkStatus } from '@vtmp/common/constants';
+import { JobPostingLocation } from '@vtmp/common/constants';
 export interface ILink extends Document {
   _id: Types.ObjectId;
   url: string;
-  status?: LinkStatus;
+  status: LinkStatus;
   submittedOn: Date;
-  submittedBy?: Types.ObjectId;
+  jobTitle?: string;
   companyName?: string;
-  userNote?: string;
-  datePosted: Date;
-  jobDescription: string;
   location: JobPostingLocation;
+  datePosted?: Date;
+  jobDescription?: string;
+  submittedBy?: Types.ObjectId;
+  deletedAt?: Date;
 }
 
 const LinkSchema = new mongoose.Schema<ILink>(
@@ -29,17 +30,16 @@ const LinkSchema = new mongoose.Schema<ILink>(
       type: Date,
       default: Date.now,
     },
-
-    submittedBy: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
+    jobTitle: {
+      type: String,
     },
-
     companyName: {
       type: String,
     },
-    userNote: {
+    location: {
       type: String,
+      enum: Object.values(JobPostingLocation),
+      default: JobPostingLocation.US,
     },
     datePosted: {
       type: Date,
@@ -47,10 +47,12 @@ const LinkSchema = new mongoose.Schema<ILink>(
     jobDescription: {
       type: String,
     },
-    location: {
-      type: String,
-      enum: Object.values(JobPostingLocation),
-      default: JobPostingLocation.US,
+    submittedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    deletedAt: {
+      type: Date,
     },
   },
   { timestamps: true }

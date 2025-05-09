@@ -4,7 +4,6 @@ import { z } from 'zod';
 
 const LinkSchema = z.object({
   url: z.string({ required_error: 'URL is required' }).url(),
-  userNote: z.string().optional(),
 });
 
 const JobPostingAdditionalSchema = z.object({
@@ -29,11 +28,11 @@ export const LinkController = {
     });
   },
 
-  getPendingLinks: async (_req: Request, res: Response) => {
-    const links = await LinkService.getPendingLinks();
+  getLinkCountByStatus: async (_req: Request, res: Response) => {
+    const linkCounts = await LinkService.getLinkCountByStatus();
     res.status(200).json({
-      message: 'Links has been retrieved successfully!',
-      data: links,
+      message: 'Link count has been retrieved successfully.',
+      data: linkCounts,
     });
   },
 
