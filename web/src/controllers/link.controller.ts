@@ -28,10 +28,11 @@ export const LinkController = {
     });
   },
 
-  getPendingLinks: async (_req: Request, res: Response) => {
-    const links = await LinkService.getPendingLinks();
+  getLinkCountByStatus: async (_req: Request, res: Response) => {
+    const linkCounts = await LinkService.getLinkCountByStatus();
     res.status(200).json({
-      data: { links },
+      message: 'Link count has been retrieved successfully.',
+      data: linkCounts,
     });
   },
 

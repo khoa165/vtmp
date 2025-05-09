@@ -27,7 +27,21 @@ export const LinkRepository = {
     ).lean();
   },
 
-  getLinksByStatus: async (status: LinkStatus): Promise<ILink[]> => {
-    return LinkModel.find({ status });
+  getLinkCountByStatus: async () => {
+    const result = await LinkModel.aggregate([
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const groupCountByStatus = result.reduce((accumulator, item) => {
+      accumulator[item._id] = item.count;
+      return accumulator;
+    }, {});
+
+    return groupCountByStatus;
   },
 };

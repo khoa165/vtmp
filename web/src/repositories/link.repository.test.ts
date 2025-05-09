@@ -59,34 +59,32 @@ describe('LinkRepository', () => {
     });
   });
 
-  describe('getLinksByStatus', () => {
+  describe('getLinkCountByStatus', () => {
     it('should return empty array when no links exist', async () => {
-      const links = await LinkRepository.getLinksByStatus(LinkStatus.PENDING);
-      expect(links).to.have.lengthOf(0);
-    });
-
-    it('should return empty array when no links exist with given status', async () => {
-      await LinkRepository.createLink(mockLinkData);
-      const links = await LinkRepository.getLinksByStatus(LinkStatus.APPROVED);
-      expect(links).to.have.lengthOf(0);
+      const linkCounts = await LinkRepository.getLinkCountByStatus();
+      expect(linkCounts).to.deep.equal({});
     });
 
     it('should be able to get one link by status', async () => {
       await LinkRepository.createLink(mockLinkData);
-      const links = await LinkRepository.getLinksByStatus(LinkStatus.PENDING);
+      const linkCounts = await LinkRepository.getLinkCountByStatus();
 
-      expect(links).to.have.lengthOf(1);
+      expect(linkCounts).to.deep.equal({
+        [LinkStatus.PENDING]: 1,
+      });
     });
 
     it('should be able to get multiple links by status', async () => {
       await LinkRepository.createLink(mockLinkData);
       await LinkRepository.createLink(mockLinkData);
-      const links = await LinkRepository.getLinksByStatus(LinkStatus.PENDING);
+      const linkCounts = await LinkRepository.getLinkCountByStatus();
 
-      expect(links).to.have.lengthOf(2);
+      expect(linkCounts).to.deep.equal({
+        [LinkStatus.PENDING]: 2,
+      });
     });
 
-    it('should not include link of different status', async () => {
+    it('should be able to get multiple links by multiple statuses', async () => {
       const googleLink = await LinkRepository.createLink(mockLinkData);
 
       await LinkRepository.createLink({ ...mockLinkData, url: 'nvidia.com' });
@@ -95,19 +93,16 @@ describe('LinkRepository', () => {
         url: 'microsoft.com',
       });
 
-      const beforeUpdateLinks = await LinkRepository.getLinksByStatus(
-        LinkStatus.PENDING
-      );
-      expect(beforeUpdateLinks).to.have.lengthOf(3);
-
       await LinkRepository.updateLinkStatus({
         id: googleLink.id,
         status: LinkStatus.APPROVED,
       });
-      const afterUpdateLinks = await LinkRepository.getLinksByStatus(
-        LinkStatus.PENDING
-      );
-      expect(afterUpdateLinks).to.have.lengthOf(2);
+
+      const afterUpdateLinks = await LinkRepository.getLinkCountByStatus();
+      expect(afterUpdateLinks).to.deep.equal({
+        [LinkStatus.PENDING]: 2,
+        [LinkStatus.APPROVED]: 1,
+      });
     });
   });
 });
