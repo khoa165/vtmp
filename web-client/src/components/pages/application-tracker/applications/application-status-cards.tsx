@@ -35,10 +35,7 @@ export const ApplicationStatusCards = ({
     (status) => status != ApplicationStatus.REJECTED
   );
 
-  // What I want to do: I want register when I click on the status box
-  // it has to reinvalidate GET_APPLICATIONS queryKey and refetch useGetApplications with filter being the status selected
   const handleStatusClick = (status: ApplicationStatus) => {
-    // If the already existing status match the new status
     if (selectedStatus === status) {
       setSelectedStatus(null);
       setFilter({});
