@@ -20,10 +20,19 @@ export const UserRepository = {
     email: string,
     options?: {
       includePasswordField?: boolean;
+      resetToken?: string;
     }
   ): Promise<IUser | null> => {
+    const query: any = { deletedAt: null };
+    if (email) {
+      query.email = email;
+    }
+    if (options?.resetToken) {
+      query.resetToken = options.resetToken;
+    }
+
     return UserModel.findOne(
-      { email, deletedAt: null },
+      query,
       options?.includePasswordField ? {} : { encryptedPassword: 0 }
     ).lean();
   },
@@ -48,6 +57,8 @@ export const UserRepository = {
       email?: string;
       encryptedPassword?: string;
       role?: UserRole;
+      resetToken?: string | undefined;
+      resetTokenExpiry?: Date | undefined;
     }
   ): Promise<IUser | null> => {
     return UserModel.findOneAndUpdate(
