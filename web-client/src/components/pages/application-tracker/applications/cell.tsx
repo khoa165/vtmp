@@ -130,7 +130,7 @@ export const CellApplicationStatus = ({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <Button variant="outline">
+          <Button variant="outline" size="sm">
             <StatusDot status={application.status} />
             {application.status === ApplicationStatus.OA
               ? application.status

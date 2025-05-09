@@ -40,9 +40,7 @@ export function ApplicationsTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-
   const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
@@ -128,9 +126,10 @@ export function ApplicationsTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  className="border-white"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-foreground">
+                    <TableCell key={cell.id} className="text-foreground py-4">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

@@ -13,12 +13,16 @@ export const HeaderSorting = ({ column, headerName }) => {
   }
 
   return (
-    <Button
-      variant="ghost"
-      onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-    >
-      {headerName}
-      <SortingIcon className="ml-2 h-4 w-4" />
-    </Button>
+    <div className="flex items-center">
+      <span>{headerName}</span>
+      <Button
+        variant="ghost"
+        className="p-0 ml-0 w-fit"
+        size="sm"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        <SortingIcon className="h-4 w-4" />
+      </Button>
+    </div>
   );
 };

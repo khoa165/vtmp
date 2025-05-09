@@ -32,6 +32,7 @@ export const applicationsTableColumns = ({
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
+        className="ml-4"
       />
     ),
     cell: ({ row }) => (
@@ -39,6 +40,7 @@ export const applicationsTableColumns = ({
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="ml-4"
       />
     ),
     enableSorting: false,
@@ -73,9 +75,7 @@ export const applicationsTableColumns = ({
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('appliedOnDate');
       const date = new Date(isoDate);
-      return (
-        <div className="px-4 text-left">{format(date, 'MMM d, yyyy')}</div>
-      );
+      return <div>{format(date, 'MMM d, yyyy')}</div>;
     },
   },
   { accessorKey: 'portalLink', header: 'Portal Link' },
