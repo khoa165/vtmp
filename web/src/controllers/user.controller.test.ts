@@ -45,11 +45,10 @@ describe('UserController', () => {
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
 
-    mockUserId = (await AuthService.signup(mockOneUser)).id;
-    mockToken = await AuthService.login({
-      email: mockOneUser.email,
-      password: mockOneUser.password,
-    });
+    ({
+      token: mockToken,
+      user: { _id: mockUserId },
+    } = await AuthService.signup(mockOneUser));
   });
 
   describe('GET /users', () => {

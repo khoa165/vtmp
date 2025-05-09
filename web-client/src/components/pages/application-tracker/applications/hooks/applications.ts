@@ -7,6 +7,7 @@ import {
   ApplicationResponseSchema,
 } from '@/components/pages/application-tracker/applications/validation';
 import { ApplicationStatus } from '@vtmp/common/constants';
+import axios from 'axios';
 
 export const useGetApplications = () => {
   return useQuery({
@@ -38,12 +39,17 @@ export const useDeleteApplication = () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS],
       });
-      console.log('Successfully deleted an application');
       toast.success(res.message);
     },
-    onError: (error) => {
-      console.error('Error deleting application:', error);
-      toast.error('Failed to delete application.');
+    onError: (error: unknown) => {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessages = error.response.data.errors.map(
+          (err) => err.message
+        );
+        toast.error(errorMessages.join('\n'));
+      } else {
+        toast.error('Unexpected error');
+      }
     },
   });
 };
@@ -71,10 +77,15 @@ export const useUpdateApplicationStatus = () => {
       });
       toast.success(res.message);
     },
-    onError: (error) => {
-      // TODO-(QuangMinhNguyen27405/dsmai): Remove this console log in production and handle error properly
-      console.error('Error updating application status:', error);
-      toast.error('Failed to update application status.');
+    onError: (error: unknown) => {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessages = error.response.data.errors.map(
+          (err) => err.message
+        );
+        toast.error(errorMessages.join('\n'));
+      } else {
+        toast.error('Unexpected error');
+      }
     },
   });
 };
