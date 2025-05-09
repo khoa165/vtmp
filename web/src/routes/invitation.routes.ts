@@ -1,8 +1,11 @@
 import { Router } from 'express';
 import { InvitationController } from '@/controllers/invitation.controller';
 import { wrappedHandlers } from '@/middlewares/utils';
+import { authenticate } from '@/middlewares/auth.middleware';
 
 export const InvitationRoutes = Router();
+
+InvitationRoutes.use(wrappedHandlers([authenticate]));
 
 InvitationRoutes.get(
   '/',

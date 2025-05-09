@@ -3,9 +3,9 @@ import { InvitationService } from '@/services/invitation.service';
 import { z } from 'zod';
 
 const InvitationSendEmailSchema = z.object({
-  receiverName: z.string({ required_error: 'Receiver Email is required' }),
+  receiverName: z.string({ required_error: 'Receiver Name is required' }),
   receiverEmail: z
-    .string({ required_error: 'Email is required' })
+    .string({ required_error: 'Receiver Email is required' })
     .email({ message: 'Invalid email address' }),
   senderId: z.string({ required_error: 'SenderId is required' }),
 });
@@ -25,11 +25,12 @@ export const InvitationController = {
   },
 
   sendInvitation: async (req: Request, res: Response) => {
-    const emailData = InvitationSendEmailSchema.parse(req.body);
+    const { receiverName, receiverEmail, senderId } =
+      InvitationSendEmailSchema.parse(req.body);
     const sendingEmail = await InvitationService.sendInvitation(
-      emailData.receiverName,
-      emailData.receiverEmail,
-      emailData.senderId
+      receiverName,
+      receiverEmail,
+      senderId
     );
     res.status(200).json({ data: sendingEmail });
   },
@@ -43,7 +44,8 @@ export const InvitationController = {
 
   validateInvitation: async (req: Request, res: Response) => {
     const { token } = InvitationTokenSchema.parse(req.body);
-    const foundInvitation = await InvitationService.validateInvitation(token);
-    res.status(200).json({ data: foundInvitation });
+    const validatedInvitation =
+      await InvitationService.validateInvitation(token);
+    res.status(200).json({ data: validatedInvitation });
   },
 };
