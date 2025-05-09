@@ -26,6 +26,10 @@ import {
 } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import assert from 'assert';
+import {
+  HTTPMethod,
+  runDefaultAuthMiddlewareTests,
+} from './authMiddleware.test.utils';
 
 describe('ApplicationController', () => {
   useMongoDB();
@@ -59,7 +63,14 @@ describe('ApplicationController', () => {
     });
   });
 
-  describe('POST /applications', () => {
+  describe.only('POST /applications', () => {
+    runDefaultAuthMiddlewareTests({
+      route: '/api/applications',
+      method: HTTPMethod.POST,
+      token: mockToken,
+      body: {},
+    });
+
     it('should return error message with 400 status code if request body schema is invalid', async () => {
       const res = await request(app)
         .post('/api/applications')
