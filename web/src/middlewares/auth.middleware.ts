@@ -1,7 +1,6 @@
+import { JWTUtils } from '@/utils/jwt';
 import { UnauthorizedError } from '@/utils/errors';
-import { EnvConfig } from '@/config/env';
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import UserService from '@/services/user.service';
 
@@ -20,8 +19,7 @@ export const authenticate = async (
     throw new UnauthorizedError('Unauthorized', {});
   }
 
-  const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
-  const parsed = DecodedJWTSchema.parse(decoded);
+  const parsed = JWTUtils.decodeAndParseToken(token, DecodedJWTSchema);
   const user = await UserService.getUserById(parsed.id);
 
   req.user = { id: String(user._id) };

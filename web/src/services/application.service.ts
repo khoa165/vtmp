@@ -59,8 +59,14 @@ export const ApplicationService = {
     });
   },
 
-  getApplications: async (userId: string): Promise<IApplication[]> => {
-    return ApplicationRepository.getApplications(userId);
+  getApplications: async ({
+    userId,
+    filters = {},
+  }: {
+    userId: string;
+    filters?: { status?: ApplicationStatus };
+  }): Promise<IApplication[]> => {
+    return ApplicationRepository.getApplications({ userId, filters });
   },
 
   getApplicationById: async ({
@@ -218,5 +224,17 @@ export const ApplicationService = {
         applicationId,
       });
     return deletedApplication;
+  },
+
+  getApplicationsCountByStatus: async (userId: string) => {
+    const applicationsCountByStatus =
+      await ApplicationRepository.getApplicationsCountByStatus(userId);
+
+    return Object.fromEntries(
+      Object.keys(ApplicationStatus).map((status) => [
+        status,
+        applicationsCountByStatus[status] || 0,
+      ])
+    );
   },
 };
