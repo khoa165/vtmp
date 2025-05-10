@@ -1,4 +1,3 @@
-import { handleError } from '@/utils/errors';
 import { Permission } from '@vtmp/common/constants';
 import { Request, Response, NextFunction } from 'express';
 import { ForbiddenError } from '@/utils/errors';
@@ -8,21 +7,14 @@ import { getUserFromRequest } from '@/middlewares/utils';
 export const hasPermission = (permission: Permission) => {
   return async (
     req: Request,
-    res: Response,
+    _res: Response,
     next: NextFunction
   ): Promise<void> => {
-    try {
-      const user = getUserFromRequest(req).user;
+    const user = getUserFromRequest(req).user;
 
-      if (!roleToPermissionMapping[user.role].includes(permission)) {
-        throw new ForbiddenError('Forbidden', { user });
-      }
-      next();
-      return;
-    } catch (error: unknown) {
-      const { statusCode, errors } = handleError(error);
-      res.status(statusCode).json({ errors });
-      return;
+    if (!roleToPermissionMapping[user.role].includes(permission)) {
+      throw new ForbiddenError('Forbidden', { user });
     }
+    next();
   };
 };
