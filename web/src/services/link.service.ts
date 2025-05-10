@@ -1,16 +1,21 @@
-import { LinkStatus } from '@/types/enums';
-import LinkRepository from '@/repositories/link.repository';
+import { LinkStatus } from '@vtmp/common/constants';
+import { LinkRepository } from '@/repositories/link.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
 
-const LinkService = {
+export const LinkService = {
   submitLink: async (url: string) => {
-    return LinkRepository.createLink(url);
+    return LinkRepository.createLink({ url });
   },
 
-  approveLinkAndCreateJobPosting: async (linkId: string) => {
+  approveLinkAndCreateJobPosting: async (
+    linkId: string,
+    jobPostingData: object
+  ) => {
     const session: ClientSession = await mongoose.startSession();
     session.startTransaction();
+    let jobPosting;
     try {
       const updatedLink = await LinkRepository.updateLinkStatus({
         id: linkId,
@@ -23,13 +28,24 @@ const LinkService = {
         });
       }
 
+      jobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: {
+          ...jobPostingData,
+          linkId,
+          url: updatedLink.url,
+          submittedBy: updatedLink.submittedBy,
+        },
+        session,
+      });
+
       await session.commitTransaction();
-    } catch (error) {
+    } catch (error: unknown) {
       await session.abortTransaction();
       throw error;
     } finally {
       await session.endSession();
     }
+    return jobPosting;
   },
 
   rejectLink: async (linkId: string) => {
@@ -45,9 +61,13 @@ const LinkService = {
     return updatedLink;
   },
 
-  getPendingLinks: async () => {
-    return LinkRepository.getLinksByStatus(LinkStatus.PENDING);
+  getLinkCountByStatus: async () => {
+    const linksCountByStatus = await LinkRepository.getLinkCountByStatus();
+    return Object.fromEntries(
+      Object.keys(LinkStatus).map((status) => [
+        status,
+        linksCountByStatus[status] || 0,
+      ])
+    );
   },
 };
-
-export default LinkService;

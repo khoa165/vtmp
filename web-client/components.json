@@ -8,12 +8,13 @@
     "css": "src/index.css",
     "baseColor": "slate",
     "cssVariables": true,
-    "prefix": ""
+    "prefix": "",
+    "important": true
   },
   "aliases": {
     "components": "@/components",
     "utils": "@/lib/utils",
-    "ui": "@/components/ui",
+    "ui": "@/components/base",
     "lib": "@/lib",
     "hooks": "@/hooks"
   },

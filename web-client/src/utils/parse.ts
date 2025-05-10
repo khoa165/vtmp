@@ -6,10 +6,11 @@ import {
   InterviewRecordsPerCompany,
   MentorshipTerm,
   MergedDateWithCount,
-} from 'src/types';
-import { isSome } from 'src/utils/maybe';
-import { InterviewType, MentorshipYear } from './constants';
-import { mentorshipPeople } from 'src/data/people';
+} from '@/types';
+import { isSome } from '@/utils/maybe';
+import { interviewTypeAbbreviation, MentorshipYear } from './constants';
+import { mentorshipPeople } from '@/data/people';
+import { InterviewType } from '@vtmp/common/constants';
 
 interface InterviewCell {
   date: string;
@@ -32,12 +33,12 @@ const processInterviewCell = (
   const hasTechnicalPortion = [
     InterviewType.TECHNICAL_LC_CODING,
     InterviewType.PRACTICAL_CODING,
-  ].some((t) => type.includes(t));
+  ].some((t) => type.includes(interviewTypeAbbreviation[t]));
   const hasBehavioralPortion = [
     InterviewType.OVERALL_BEHAVIORAL,
     InterviewType.RECRUITER_SCREEN,
     InterviewType.HIRING_MANAGER,
-  ].some((t) => type.includes(t));
+  ].some((t) => type.includes(interviewTypeAbbreviation[t]));
   const hasPracticalPortion = [
     InterviewType.TRIVIA_CONCEPT,
     InterviewType.SYSTEM_DESIGN,
@@ -45,7 +46,7 @@ const processInterviewCell = (
     InterviewType.DEBUGGING,
     InterviewType.CRITICAL_THINKING,
     InterviewType.CODE_REVIEW,
-  ].some((t) => type.includes(t));
+  ].some((t) => type.includes(interviewTypeAbbreviation[t]));
   const interviewFlags = [
     hasTechnicalPortion,
     hasBehavioralPortion,

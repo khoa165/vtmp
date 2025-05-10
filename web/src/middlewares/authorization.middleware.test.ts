@@ -26,18 +26,9 @@ describe('hasPermission', () => {
     };
     await UserRepository.createUser(mockUser);
 
-    token = await AuthService.login({
+    ({ token } = await AuthService.login({
       email: 'test@gmail.com',
       password: 'test password',
-    });
-  });
-
-  it('should return forbidden error', async () => {
-    const res = await request(app)
-      .get('/api/users/profile')
-      .set('Authorization', `Bearer ${token}`);
-
-    expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
-    expect(res.body.errors[0].message).to.equal('Forbidden');
+    }));
   });
 });

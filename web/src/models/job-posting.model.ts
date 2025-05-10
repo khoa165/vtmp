@@ -1,24 +1,25 @@
-import mongoose, { Document } from 'mongoose';
-import { JobPostingLocation } from '@/types/enums';
+import mongoose, { Document, Schema, Types } from 'mongoose';
+import { JobPostingLocation } from '@vtmp/common/constants';
 
-interface IJobPosting extends Document {
-  linkId: mongoose.Schema.Types.ObjectId;
+export interface IJobPosting extends Document {
+  _id: Types.ObjectId;
+  linkId: Types.ObjectId;
   externalPostingId?: string;
   url: string;
   jobTitle: string;
   companyName: string;
-  location?: JobPostingLocation;
+  location: JobPostingLocation;
   datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
-  submittedBy: mongoose.Schema.Types.ObjectId;
+  submittedBy?: Types.ObjectId;
   deletedAt?: Date;
 }
 
 const JobPostingSchema = new mongoose.Schema<IJobPosting>(
   {
     linkId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Link',
       required: true,
     },
@@ -52,9 +53,8 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
       type: String,
     },
     submittedBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
     },
     deletedAt: {
       type: Date,

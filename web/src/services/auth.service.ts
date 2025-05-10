@@ -1,12 +1,12 @@
-import { EnvConfig } from '@/config/env';
 import { UserRepository } from '@/repositories/user.repository';
 import {
   DuplicateResourceError,
   UnauthorizedError,
   ResourceNotFoundError,
 } from '@/utils/errors';
+import { JWTUtils } from '@/utils/jwt';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { omit } from 'remeda';
 
 export const AuthService = {
   signup: async ({
@@ -20,7 +20,7 @@ export const AuthService = {
     email: string;
     password: string;
   }) => {
-    const userByEmail = await UserRepository.findUserByEmail(email);
+    const userByEmail = await UserRepository.getUserByEmail(email);
 
     if (userByEmail) {
       throw new DuplicateResourceError(
@@ -34,16 +34,27 @@ export const AuthService = {
     const saltRounds = 10;
     const encryptedPassword = await bcrypt.hash(password, saltRounds);
 
-    return UserRepository.createUser({
+    const user = await UserRepository.createUser({
       firstName,
       lastName,
       email,
       encryptedPassword,
     });
+
+    const token = JWTUtils.createTokenWithPayload(
+      { id: user._id.toString() },
+      {
+        expiresIn: '1h',
+      }
+    );
+
+    return { token, user: omit(user.toObject(), ['encryptedPassword']) };
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {
-    const user = await UserRepository.findUserByEmail(email);
+    const user = await UserRepository.getUserByEmail(email, {
+      includePasswordField: true,
+    });
     if (!user) {
       throw new ResourceNotFoundError('User not found', { email });
     }
@@ -56,13 +67,13 @@ export const AuthService = {
       throw new UnauthorizedError('Wrong password', { email });
     }
 
-    const token = jwt.sign(
+    const token = JWTUtils.createTokenWithPayload(
       { id: user._id.toString() },
-      EnvConfig.get().JWT_SECRET,
       {
         expiresIn: '1h',
       }
     );
-    return token;
+
+    return { token, user: omit(user, ['encryptedPassword']) };
   },
 };

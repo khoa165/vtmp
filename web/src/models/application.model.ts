@@ -1,9 +1,12 @@
-import mongoose, { Document } from 'mongoose';
-import { ApplicationStatus, InterestLevel } from '@/types/enums';
+import mongoose, { Document, Schema, Types } from 'mongoose';
+import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
+import { JobPostingModel } from '@/models/job-posting.model';
 
-interface IApplication extends Document {
-  jobPostingId: mongoose.Schema.Types.ObjectId;
-  userId: mongoose.Schema.Types.ObjectId;
+export interface IApplication extends Document {
+  _id: Types.ObjectId;
+  jobPostingId: Types.ObjectId;
+  companyName?: string;
+  userId: Types.ObjectId;
   hasApplied: boolean;
   status: ApplicationStatus;
   appliedOnDate: Date;
@@ -16,12 +19,15 @@ interface IApplication extends Document {
 
 const ApplicationSchema = new mongoose.Schema<IApplication>({
   jobPostingId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'JobPosting',
     required: true,
   },
+  companyName: {
+    type: String,
+  },
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
@@ -43,6 +49,7 @@ const ApplicationSchema = new mongoose.Schema<IApplication>({
   },
   deletedAt: {
     type: Date,
+    default: null,
   },
   referrer: {
     type: String,
@@ -55,6 +62,13 @@ const ApplicationSchema = new mongoose.Schema<IApplication>({
     enum: Object.values(InterestLevel),
     default: InterestLevel.MEDIUM,
   },
+});
+
+ApplicationSchema.pre('save', async function () {
+  const jobPosting = await JobPostingModel.findById(this.jobPostingId);
+  if (jobPosting) {
+    this.companyName = jobPosting.companyName;
+  }
 });
 
 export const ApplicationModel = mongoose.model<IApplication>(

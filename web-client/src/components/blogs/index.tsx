@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useParams } from 'react-router-dom';
 import { Container } from 'reactstrap';
-import { removeMetadata } from 'src/utils/file';
+import { removeMetadata } from '@/utils/file';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import rehypeRaw from 'rehype-raw';
-import 'src/styles/scss/blogs.scss';
-import { BlogFileMapping } from 'src/types';
+import { BlogFileMapping } from '@/types';
 
 interface BlogContainerProps {
   metadata: BlogFileMapping;
@@ -47,9 +46,14 @@ export const BlogContainer: React.FC<BlogContainerProps> = ({ metadata }) => {
         ) : (
           <p className="fst-italic mb-0">Author: {authors[0]}</p>
         )}
-        {contributors != null && contributors.length > 0 && (
-          <p className="fst-italic">Contributors: {contributors}</p>
-        )}
+        {contributors.length > 0 &&
+          (contributors.length > 1 ? (
+            <p className="fst-italic mb-0">
+              Contributors: {contributors.join(', ')}
+            </p>
+          ) : (
+            <p className="fst-italic mb-0">Contributor: {contributors[0]}</p>
+          ))}
         <p className="mt-2">𓆝 𓆟 𓆞 𓆝 𓆟 𓆝 𓆟 𓆞 𓆝 𓆟</p>
       </div>
       <div className="blog-content">

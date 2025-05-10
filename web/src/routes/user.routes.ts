@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import UserController from '@/controllers/user.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
-import { hasPermission } from '@/middlewares/authorization.middleware';
-import { Permission } from '@/types/enums';
+import { wrappedHandlers } from '@/middlewares/utils';
 
-const UserRoutes = Router();
+export const UserRoutes = Router();
+UserRoutes.use(wrappedHandlers([authenticate]));
 
-UserRoutes.get(
-  '/profile',
-  [authenticate, hasPermission(Permission.MANAGE_INVITATION)],
-  UserController.getProfile
+UserRoutes.get('/', wrappedHandlers([UserController.getAllUsers]));
+UserRoutes.get('/:userId', wrappedHandlers([UserController.getUser]));
+UserRoutes.put('/:userId', wrappedHandlers([UserController.updateUserProfile]));
+UserRoutes.put(
+  '/:userId/role',
+  wrappedHandlers([UserController.updateUserRole])
 );
-
-export default UserRoutes;

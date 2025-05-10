@@ -1,13 +1,14 @@
-import mongoose, { Document } from 'mongoose';
-import { UserRole } from '@/types/enums';
+import mongoose, { Document, Types } from 'mongoose';
+import { UserRole } from '@vtmp/common/constants';
 
 export interface IUser extends Document {
-  _id: mongoose.Schema.Types.ObjectId;
+  _id: Types.ObjectId;
   firstName: string;
   lastName: string;
   email: string;
   encryptedPassword: string;
   role: UserRole;
+  deletedAt?: Date;
 }
 
 const UserSchema = new mongoose.Schema<IUser>(
@@ -33,6 +34,9 @@ const UserSchema = new mongoose.Schema<IUser>(
       type: String,
       enum: Object.values(UserRole),
       default: UserRole.USER,
+    },
+    deletedAt: {
+      type: Date,
     },
   },
   { timestamps: true }

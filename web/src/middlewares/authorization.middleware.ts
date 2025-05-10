@@ -1,5 +1,5 @@
 import { handleError } from '@/utils/errors';
-import { Permission } from '@/types/enums';
+import { Permission } from '@vtmp/common/constants';
 import { Request, Response, NextFunction } from 'express';
 import { ForbiddenError } from '@/utils/errors';
 import { roleToPermissionMapping } from '@/constants/permissions';

@@ -1,9 +1,10 @@
-import mongoose, { Document } from 'mongoose';
-import { InvitationStatus } from '@/types/enums';
+import mongoose, { Document, Schema, Types } from 'mongoose';
+import { InvitationStatus } from '@vtmp/common/constants';
 
-interface IInvitation extends Document {
+export interface IInvitation extends Document {
+  _id: Types.ObjectId;
   receiverEmail: string;
-  sender: mongoose.Schema.Types.ObjectId;
+  sender: Types.ObjectId;
   token: string;
   expiryDate: Date;
   status: InvitationStatus;
@@ -16,7 +17,7 @@ const InvitationSchema = new mongoose.Schema<IInvitation>(
       required: true,
     },
     sender: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
@@ -37,6 +38,4 @@ const InvitationSchema = new mongoose.Schema<IInvitation>(
   { timestamps: true }
 );
 
-const InvitationModel = new mongoose.Model('Invitation', InvitationSchema);
-
-export default InvitationModel;
+export const InvitationModel = mongoose.model('Invitation', InvitationSchema);

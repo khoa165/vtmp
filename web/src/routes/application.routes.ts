@@ -1,13 +1,36 @@
 import { Router } from 'express';
 import { ApplicationController } from '@/controllers/application.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
+import { wrappedHandlers } from '@/middlewares/utils';
 
-const ApplicationRoutes = Router();
+export const ApplicationRoutes = Router();
 
+ApplicationRoutes.use(wrappedHandlers([authenticate]));
 ApplicationRoutes.post(
   '/',
-  authenticate,
-  ApplicationController.createApplication
+  wrappedHandlers([ApplicationController.createApplication])
 );
-
-export default ApplicationRoutes;
+ApplicationRoutes.get(
+  '/',
+  wrappedHandlers([ApplicationController.getApplications])
+);
+ApplicationRoutes.get(
+  '/count-by-status',
+  wrappedHandlers([ApplicationController.getApplicationsCountByStatus])
+);
+ApplicationRoutes.get(
+  '/:applicationId',
+  wrappedHandlers([ApplicationController.getApplicationById])
+);
+ApplicationRoutes.put(
+  '/:applicationId/updateStatus',
+  wrappedHandlers([ApplicationController.updateApplicationStatus])
+);
+ApplicationRoutes.put(
+  '/:applicationId',
+  wrappedHandlers([ApplicationController.updateApplicationMetadata])
+);
+ApplicationRoutes.delete(
+  '/:applicationId',
+  wrappedHandlers([ApplicationController.deleteApplication])
+);

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { roleToPermissionMapping } from '@/constants/permissions';
-import { Permission, UserRole } from '@/types/enums';
+import { Permission, UserRole } from '@vtmp/common/constants';
 
 describe('roleToPermissionMapping', () => {
   it('should ensure every permission associated with at least a role', async () => {

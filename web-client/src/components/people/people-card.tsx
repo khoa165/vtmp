@@ -6,11 +6,11 @@ import {
   CardBody,
   UncontrolledTooltip,
 } from 'reactstrap';
-import { FaArrowTrendUp, FaCode, FaHammer } from 'react-icons/fa6';
+import { FaArrowTrendUp, FaCode } from 'react-icons/fa6';
 import { RiTeamFill } from 'react-icons/ri';
-import { Avatar } from 'src/components/layout/avatar';
-import { MiniPeopleList } from 'src/components/layout/mini-people-list';
-import { CompanyMetadataWithOffers, MentorshipPerson } from 'src/types';
+import { Avatar } from '@/components/layout/avatar';
+import { MiniPeopleList } from '@/components/layout/mini-people-list';
+import { CompanyMetadataWithOffers, MentorshipPerson } from '@/types';
 import {
   getRoleDisplayName,
   isMenteeRole,
@@ -19,14 +19,15 @@ import {
   isOrganizerRole,
   isReturnOfferForInternship,
   isReturnOfferForNewGrad,
-} from 'src/utils/data';
+} from '@/utils/data';
 import { useGate } from 'statsig-react';
-import { MiniCompaniesList } from 'src/components/layout/mini-companies-list';
-import { PeopleSortColumn } from 'src/utils/constants';
+import { MiniCompaniesList } from '@/components/layout/mini-companies-list';
+import { PeopleSortColumn } from '@/utils/constants';
 import { useSearchParams } from 'react-router-dom';
+import { projectDisplayName } from '@/utils/displayName';
 
 interface PeopleCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  year: number;
+  year: number | 'all';
   person: MentorshipPerson;
   companiesMetadata: Record<string, CompanyMetadataWithOffers>;
   sortColumn: PeopleSortColumn;
@@ -38,21 +39,21 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
   companiesMetadata,
   sortColumn,
 }) => {
-  const { name, alias, avatar, terms } = person;
+  const { name, alias, avatar, terms, professionalTitle } = person;
   const firstTerm = useMemo(() => terms[0], [terms]);
   const isOrWasMentee = useMemo(
     () => isMenteeRole(firstTerm.roles),
     [firstTerm]
   );
   const currentTerm = useMemo(
-    () => terms.filter((t) => t.year === year)[0],
+    () => terms.find((t) => t.year === year),
     [terms, year]
   );
-  const { roles, title, mentors, projectAdvisors, teamName, teammates } =
-    currentTerm;
+  const { mentors, projectAdvisors, teamName, teammates } = currentTerm ?? {};
+  const roles = currentTerm?.roles ?? terms.at(-1)?.roles;
   const offers = useMemo(
     () =>
-      currentTerm.offers?.map((o) => {
+      currentTerm?.offers?.map((o) => {
         if (isReturnOfferForNewGrad(o)) {
           return `${o.name} (NG RO)`;
         } else if (isReturnOfferForInternship(o)) {
@@ -86,9 +87,9 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
     <Card className="mentorship-people-card">
       {showOffers && (
         <div className="info-offers">
-          <CardSubtitle className="app-flex col af-left medium-gap">
+          <CardSubtitle className="flex flex-col gap-y-2">
             <MiniCompaniesList
-              offersList={currentTerm.offers ?? []}
+              offersList={currentTerm?.offers ?? []}
               prefix={alias}
               companiesMetadata={companiesMetadata}
             />
@@ -97,8 +98,9 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
       )}
       {(mentors || projectAdvisors) && (
         <div className="info-assignment">
-          {mentors && (
-            <CardSubtitle className="info-mentors app-flex af-right mt-1 mb-2">
+          {mentors?.length && (
+            <CardSubtitle className="flex justify-end items-center gap-x-2 mt-1">
+              <MiniPeopleList peopleList={mentors} prefix={alias} />
               <FaArrowTrendUp id={`${alias}-mentors-icon`} />
               <UncontrolledTooltip
                 placement="bottom"
@@ -106,12 +108,12 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
               >
                 One-on-one mentors
               </UncontrolledTooltip>
-              <MiniPeopleList peopleList={mentors} prefix={alias} />
             </CardSubtitle>
           )}
 
-          {projectAdvisors && (
-            <CardSubtitle className="info-advisors app-flex af-right mt-2">
+          {projectAdvisors?.length && (
+            <CardSubtitle className="flex items-center justify-end gap-x-2 mt-2">
+              <MiniPeopleList peopleList={projectAdvisors} prefix={alias} />
               <FaCode id={`${alias}-advisors-icon`} />
               <UncontrolledTooltip
                 placement="bottom"
@@ -119,7 +121,23 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
               >
                 Project technical mentors
               </UncontrolledTooltip>
-              <MiniPeopleList peopleList={projectAdvisors} prefix={alias} />
+            </CardSubtitle>
+          )}
+
+          {teamName && teammates && (
+            <CardSubtitle className="flex gap-x-2 mt-2">
+              <div className="flex flex-col gap-y-2">
+                <MiniPeopleList peopleList={teammates} prefix={alias} />
+              </div>
+              <div className="mt-1">
+                <RiTeamFill id={`${alias}-teammates-icon`} />
+                <UncontrolledTooltip
+                  placement="bottom"
+                  target={`${alias}-teammates-icon`}
+                >
+                  Teammates / {projectDisplayName[teamName]}
+                </UncontrolledTooltip>
+              </div>
             </CardSubtitle>
           )}
         </div>
@@ -127,7 +145,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
       <Avatar url={avatar} />
       <CardBody>
         <CardTitle>{name}</CardTitle>
-        {isOrganizerRole(roles) && (
+        {roles && isOrganizerRole(roles) && (
           <CardSubtitle>
             {roles
               .filter((r) => !isHiddenRole(r, roles))
@@ -135,27 +153,10 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
               .join(' / ')}
           </CardSubtitle>
         )}
-        {teammates && (
-          <div className="app-flex mt-2">
-            <FaHammer id={`${alias}-build-icon`} /> {teamName}
-            <UncontrolledTooltip
-              placement="bottom"
-              target={`${alias}-build-icon`}
-            >
-              Group project
-            </UncontrolledTooltip>
-            <RiTeamFill id={`${alias}-teammates-icon`} />
-            <UncontrolledTooltip
-              placement="bottom"
-              target={`${alias}-teammates-icon`}
-            >
-              Teammates
-            </UncontrolledTooltip>
-            <MiniPeopleList peopleList={teammates} prefix={alias} />
-          </div>
-        )}
         <hr />
-        <CardSubtitle className="people-title">{title}</CardSubtitle>
+        <CardSubtitle className="people-title">
+          {professionalTitle}
+        </CardSubtitle>
         {/* <CardSubtitle>{hobbies}</CardSubtitle> */}
       </CardBody>
     </Card>

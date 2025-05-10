@@ -1,5 +1,5 @@
-import { CompanyMetadata } from 'src/types';
-import { CompanyName } from 'src/utils/constants';
+import { CompanyMetadata } from '@/types';
+import { CompanyName } from '@vtmp/common/constants';
 
 export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   [CompanyName.MICROSOFT]: {
@@ -267,5 +267,15 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
     displayName: 'Health Enhancement Systems',
     logoFilename: 'healthenhancementsystems.png',
     maxLogoSize: 100,
+  },
+  [CompanyName.SLB]: {
+    displayName: 'SLB',
+    logoFilename: 'slb.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.G_RESEARCH]: {
+    displayName: 'G-Research',
+    logoFilename: 'gresearch.png',
+    maxLogoSize: 80,
   },
 };
