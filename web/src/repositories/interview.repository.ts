@@ -44,7 +44,7 @@ export const InterviewRepository = {
 
   getInterviews: async ({
     userId,
-    filters,
+    filters = {},
     session,
   }: {
     userId: string;
@@ -58,7 +58,7 @@ export const InterviewRepository = {
       {
         userId,
         deletedAt: null,
-        ...(filters || {}),
+        ...filters,
       },
       null,
       session ? { session } : {}

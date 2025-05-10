@@ -75,8 +75,9 @@ describe('ApplicationRepository', () => {
       await ApplicationRepository.createApplication(mockApplication_A0);
       await ApplicationRepository.createApplication(mockApplication_A1);
       await ApplicationRepository.createApplication(mockApplication_B);
-      const applications =
-        await ApplicationRepository.getApplications(userId_A);
+      const applications = await ApplicationRepository.getApplications({
+        userId: userId_A,
+      });
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(2);
@@ -99,8 +100,9 @@ describe('ApplicationRepository', () => {
         userId: userId_A,
         applicationId: mockApplicationId_A1,
       });
-      const applications =
-        await ApplicationRepository.getApplications(userId_A);
+      const applications = await ApplicationRepository.getApplications({
+        userId: userId_A,
+      });
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(1);
@@ -112,8 +114,9 @@ describe('ApplicationRepository', () => {
 
     it('should return an empty array if no applications found for userId', async () => {
       await ApplicationRepository.createApplication(mockApplication_B);
-      const applications =
-        await ApplicationRepository.getApplications(userId_A);
+      const applications = await ApplicationRepository.getApplications({
+        userId: userId_A,
+      });
 
       assert(applications);
       expect(applications).to.be.an('array').that.have.lengthOf(0);
