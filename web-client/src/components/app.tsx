@@ -74,9 +74,9 @@ export const App = () => {
             <Route path="/user-invitation" element={<UserInvitationPage />} />
             <Route path="/application-tracker" element={<ApplicationsPage />} />
           </Route>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/*" element={<>404</>} />
         </Route>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/*" element={<>404</>} />
       </Routes>
     </Router>
   );

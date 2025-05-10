@@ -13,9 +13,12 @@ import { Label } from '@/components/base/label';
 import React, { useState } from 'react';
 import LogoMint from '@/assets/images/logo-full-mint.svg?react';
 import { EyeOff, Eye } from 'lucide-react';
-import { api } from '@/utils/axios';
+import { request } from '@/utils/api';
 import axios from 'axios';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
+import { Method } from '@/utils/constants';
+import { useMutation } from '@tanstack/react-query';
+import { LoginResponseSchema } from '@/components/pages/auth/validation';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,27 +28,15 @@ const LoginPage = () => {
   const [passwordError, setPasswordError] = useState('');
   const navigate = useNavigatePreserveQueryParams();
 
-  const handleLogin = async () => {
-    if (!emailInput || !passwordInput) {
-      if (!emailInput) {
-        setEmailError('Email is required');
-      }
-      if (!passwordInput) {
-        setPasswordError('Password is required');
-      }
-      return;
-    }
-
-    setEmailError('');
-    setPasswordError('');
-    try {
-      const res = await api.post('/auth/login', {
-        email: emailInput,
-        password: passwordInput,
-      });
-      console.log('Login response:', res.data);
+  const { mutate: loginFn } = useMutation({
+    mutationFn: (body: { email: string; password: string }) =>
+      request(Method.POST, '/auth/login', body, LoginResponseSchema),
+    onSuccess: (res) => {
+      console.log('Login successfully: ', res);
       navigate('/application-tracker');
-    } catch (error: unknown) {
+    },
+    onError: (error) => {
+      console.log('Error in useMutation login');
       if (axios.isAxiosError(error) && error.response) {
         error.response.data.errors.forEach((err: { message: string }) => {
           if (
@@ -60,7 +51,19 @@ const LoginPage = () => {
       } else {
         console.log('Unexpected error', error);
       }
+    },
+  });
+
+  const handleLogin = async () => {
+    if (!emailInput) {
+      setEmailError('Email is required');
+      return;
     }
+    if (!passwordInput) {
+      setPasswordError('Password is required');
+      return;
+    }
+    loginFn({ email: emailInput, password: passwordInput });
   };
 
   return (
