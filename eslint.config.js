@@ -17,11 +17,5 @@ export default tseslint.config(
       '@typescript-eslint/no-non-null-assertion': 'warn',
     },
   },
-  { ignores: ['cookiecutter/', 'scripts/'] },
-  {
-    files: ['*.test.js'],
-    rules: {
-      'no-unused-expressions': 'off',
-    },
-  }
+  { ignores: ['cookiecutter/', 'scripts/'] }
 );
