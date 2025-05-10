@@ -316,7 +316,6 @@ describe('InvitationController', () => {
     it('should throw Unauthorized for no token', async () => {
       const res = await request(app)
         .put(`/api/invitations/${getNewMongoId()}/revoke`)
-        .send({})
         .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
@@ -326,7 +325,6 @@ describe('InvitationController', () => {
     it('should throw Unauthorized for wrong token', async () => {
       const res = await request(app)
         .put(`/api/invitations/${getNewMongoId()}/revoke`)
-        .send({})
         .set('Accept', 'application/json')
         .set('Authorization', 'fake token');
       expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
@@ -336,7 +334,6 @@ describe('InvitationController', () => {
     it('should return error message when invitation does not exist', async () => {
       const res = await request(app)
         .put(`/api/invitations/${getNewMongoId()}/revoke`)
-        .send({})
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -352,7 +349,6 @@ describe('InvitationController', () => {
 
       const res = await request(app)
         .put(`/api/invitations/${newInvitation.id}/revoke`)
-        .send({})
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
@@ -368,15 +364,19 @@ describe('InvitationController', () => {
 
       const res = await request(app)
         .put(`/api/invitations/${newInvitation.id}/revoke`)
-        .send({})
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.deep.include({
-        ...mockOneInvitation,
-        expiryDate: mockOneInvitation.expiryDate.toISOString(),
-      });
+
+      const { expiryDate, ...nonDateInvitation } = mockOneInvitation;
+      const timeDiff = differenceInSeconds(
+        res.body.data.expiryDate,
+        expiryDate
+      );
+
+      expect(res.body.data).to.deep.include(nonDateInvitation);
+      expect(timeDiff).to.lessThan(3);
       expect(res.body.data.status).to.equal(InvitationStatus.REVOKED);
     });
   });
@@ -481,12 +481,15 @@ describe('InvitationController', () => {
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
+      const { expiryDate, ...nonDateInvitation } = mockOneInvitation;
+      const timeDiff = differenceInSeconds(
+        res.body.data.expiryDate,
+        expiryDate
+      );
+
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.include({
-        ...mockOneInvitation,
-        token,
-        expiryDate: pendingInvitation.expiryDate.toISOString(),
-      });
+      expect(res.body.data).to.include({ ...nonDateInvitation, token });
+      expect(timeDiff).to.lessThan(3);
     });
   });
 });

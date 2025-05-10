@@ -27,12 +27,12 @@ export const InvitationController = {
   sendInvitation: async (req: Request, res: Response) => {
     const { receiverName, receiverEmail, senderId } =
       InvitationSendEmailSchema.parse(req.body);
-    const sendingEmail = await InvitationService.sendInvitation(
+    const invitation = await InvitationService.sendInvitation(
       receiverName,
       receiverEmail,
       senderId
     );
-    res.status(200).json({ data: sendingEmail });
+    res.status(200).json({ data: invitation });
   },
 
   revokeInvitation: async (req: Request, res: Response) => {
