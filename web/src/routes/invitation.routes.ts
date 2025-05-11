@@ -5,20 +5,21 @@ import { authenticate } from '@/middlewares/auth.middleware';
 
 export const InvitationRoutes = Router();
 
-InvitationRoutes.use(wrappedHandlers([authenticate]));
-
 InvitationRoutes.get(
   '/',
+  wrappedHandlers([authenticate]),
   wrappedHandlers([InvitationController.getAllInvitations])
 );
 
 InvitationRoutes.post(
   '/',
+  wrappedHandlers([authenticate]),
   wrappedHandlers([InvitationController.sendInvitation])
 );
 
 InvitationRoutes.put(
   '/:invitationId/revoke',
+  wrappedHandlers([authenticate]),
   wrappedHandlers([InvitationController.revokeInvitation])
 );
 
