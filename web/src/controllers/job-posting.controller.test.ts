@@ -97,7 +97,8 @@ describe('JobPostingController', () => {
       const res = await request(app)
         .put(`/api/job-postings/${getNewMongoId()}`)
         .send(newJobPostingUpdate)
-        .set('Accept', 'application/json');
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
 
@@ -114,18 +115,51 @@ describe('JobPostingController', () => {
       const res = await request(app)
         .put(`/api/job-postings/${jobPostings[0]?.id}`)
         .send(newJobPostingUpdate)
-        .set('Accept', 'application/json');
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.deep.include(newJobPostingUpdate);
+    });
+
+    it('should return 400 for invalid job posting ID format', async () => {
+      const res = await request(app)
+        .put('/api/job-postings/invalid-id')
+        .send({ jobTitle: 'Invalid Test' })
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expect(res.status).to.equal(400);
+      expect(res.body.errors[0].message).to.equal('Invalid job ID format');
+    });
+
+    it('should return 400 for invalid job title type', async () => {
+      const res = await request(app)
+        .put(`/api/job-postings/${jobPostings[0]?.id}`)
+        .send({ jobTitle: 123 })
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expect(res.status).to.equal(400);
+      expect(res.body.errors[0].message).to.equal('Invalid job title format');
+    });
+
+    it('should return 400 for field not allow to update', async () => {
+      const res = await request(app)
+        .put(`/api/job-postings/${jobPostings[0]?.id}`)
+        .send({ userId: 'test' })
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expect(res.status).to.equal(400);
+      expect(res.body.errors[0].message).to.equal(
+        'field is not allowed to update'
+      );
     });
   });
 
   describe('deleteJobPosting', () => {
     it('should return an error message for no job posting found', async () => {
-      const res = await request(app).delete(
-        `/api/job-postings/${getNewMongoId()}`
-      );
+      const res = await request(app)
+        .delete(`/api/job-postings/${getNewMongoId()}`)
+        .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
 
@@ -134,9 +168,9 @@ describe('JobPostingController', () => {
     });
 
     it('should return a deleted job posting', async () => {
-      const res = await request(app).delete(
-        `/api/job-postings/${jobPostings[0]?.id}`
-      );
+      const res = await request(app)
+        .delete(`/api/job-postings/${jobPostings[0]?.id}`)
+        .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('deletedAt');
@@ -147,6 +181,35 @@ describe('JobPostingController', () => {
         new Date()
       );
       expect(timeDiff).to.lessThan(3);
+    });
+
+    it('should return 401 if no auth token is provided', async () => {
+      const res = await request(app).delete(
+        `/api/job-postings/${jobPostings[0]?.id}`
+      );
+      expect(res.status).to.equal(401);
+    });
+
+    it('should return 400 for invalid job posting ID format', async () => {
+      const res = await request(app)
+        .delete('/api/job-postings/invalid-id-format')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expect(res.status).to.equal(400);
+      expect(res.body.errors[0].message).to.equal('Invalid job ID format');
+    });
+
+    it('should return 404 if job posting was already deleted', async () => {
+      await request(app)
+        .delete(`/api/job-postings/${jobPostings[1]?.id}`)
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      const res = await request(app)
+        .delete(`/api/job-postings/${jobPostings[1]?.id}`)
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expect(res.status).to.equal(404);
+      expect(res.body.errors[0].message).to.equal('Job posting not found');
     });
   });
 

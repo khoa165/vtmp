@@ -18,22 +18,21 @@ describe('JobPostingRepository', () => {
     companyName: 'Example Company',
     submittedBy: getNewObjectId(),
   };
-
+  let newJobPosting: IJobPosting | undefined;
+  beforeEach(async () => {
+    newJobPosting = await JobPostingRepository.createJobPosting({
+      jobPostingData: mockJobPosting,
+    });
+  });
   describe('createJobPosting', () => {
     it('should be able to create a new job posting', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
-
+      assert(newJobPosting);
       expect(newJobPosting).to.deep.include(mockJobPosting);
     });
   });
 
   describe('getJobPostingById', () => {
     it('should be able to find a job post by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       const foundJobPosting = await JobPostingRepository.getJobPostingById(
@@ -45,9 +44,6 @@ describe('JobPostingRepository', () => {
     });
 
     it('should return null if trying to get soft-deleted job posting', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       await JobPostingRepository.deleteJobPostingById(newJobPosting.id);
@@ -61,9 +57,6 @@ describe('JobPostingRepository', () => {
 
   describe('updateJobPostingById', () => {
     it('should be able to update detail of a job post by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       const newUpdate = {
@@ -80,10 +73,21 @@ describe('JobPostingRepository', () => {
       expect(updatedJobPosting).to.deep.include(newUpdate);
     });
 
+    it('should return null if job posting not found', async () => {
+      const newUpdate = {
+        jobTitle: 'Senior Software Engineer',
+        companyName: 'Updated Company',
+        jobDescription: 'This is an updated job description.',
+      };
+      const updatedJobPosting = await JobPostingRepository.updateJobPostingById(
+        getNewMongoId(),
+        newUpdate
+      );
+
+      assert(!updatedJobPosting);
+    });
+
     it('should return null if trying to update soft-deleted job posting', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       await JobPostingRepository.deleteJobPostingById(newJobPosting.id);
@@ -104,9 +108,6 @@ describe('JobPostingRepository', () => {
 
   describe('deleteJobPostingById', () => {
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
@@ -123,9 +124,13 @@ describe('JobPostingRepository', () => {
     });
 
     it('should return null if trying to set a delete-timestamp for soft-deleted job posting', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
+      const deletedJobPosting =
+        await JobPostingRepository.deleteJobPostingById(getNewMongoId());
+
+      assert(!deletedJobPosting);
+    });
+
+    it('should return null if trying to set a delete-timestamp for soft-deleted job posting', async () => {
       assert(newJobPosting);
 
       await JobPostingRepository.deleteJobPostingById(newJobPosting.id);
@@ -182,6 +187,9 @@ describe('JobPostingRepository', () => {
           })
         )
       );
+
+      assert(newJobPosting);
+      await JobPostingRepository.deleteJobPostingById(newJobPosting.id);
     });
 
     it('should return an empty array if user has applied to all avaialble job postings in the system', async () => {
