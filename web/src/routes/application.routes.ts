@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { ApplicationController } from '@/controllers/application.controller';
-import { authenticate } from '@/middlewares/auth.middleware';
+// import { authenticate } from '@/middlewares/auth.middleware';
 import { wrappedHandlers } from '@/middlewares/utils';
 
 export const ApplicationRoutes = Router();
 
-ApplicationRoutes.use(wrappedHandlers([authenticate]));
+// ApplicationRoutes.use(wrappedHandlers([authenticate]));
 ApplicationRoutes.post(
   '/',
   wrappedHandlers([ApplicationController.createApplication])
