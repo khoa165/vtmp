@@ -78,7 +78,17 @@ export const applicationsTableColumns = ({
       return <div>{format(date, 'MMM d, yyyy')}</div>;
     },
   },
-  { accessorKey: 'portalLink', header: 'Portal Link' },
+  {
+    accessorKey: 'portalLink',
+    header: 'Portal Link',
+    cell: ({ row }) => {
+      return (
+        <a href={row.original.portalLink} className="text-blue-500 underline">
+          {row.original.portalLink}
+        </a>
+      );
+    },
+  },
   { accessorKey: 'interest', header: 'Interest' },
   { accessorKey: 'referrer', header: 'Referrer' },
   { accessorKey: 'note', header: 'Note' },

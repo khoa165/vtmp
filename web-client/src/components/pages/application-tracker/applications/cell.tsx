@@ -21,7 +21,7 @@ import { IApplication } from '@/components/pages/application-tracker/application
 import { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { ApplicationStatus } from '@vtmp/common/constants';
-import { titleCase } from '@/utils/helpers';
+import { formatStatus } from '@/utils/helpers';
 import { StatusDot } from '@/components/base/status-dot';
 
 const handleOfferedSelected = () => {
@@ -132,9 +132,7 @@ export const CellApplicationStatus = ({
         <DropdownMenuTrigger>
           <Button variant="outline" size="sm">
             <StatusDot status={application.status} />
-            {application.status === ApplicationStatus.OA
-              ? application.status
-              : titleCase(application.status)}
+            {formatStatus(application.status)}
             <ChevronDown />
           </Button>
         </DropdownMenuTrigger>
@@ -154,9 +152,7 @@ export const CellApplicationStatus = ({
                   });
                 }}
               >
-                {dropdownStatus === ApplicationStatus.OA
-                  ? dropdownStatus
-                  : titleCase(dropdownStatus)}
+                {formatStatus(dropdownStatus)}
               </DropdownMenuItem>
             ))}
         </DropdownMenuContent>

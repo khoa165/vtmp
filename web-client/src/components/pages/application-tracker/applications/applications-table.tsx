@@ -104,7 +104,7 @@ export function ApplicationsTable<TData, TValue>({
         <Table>
           <TableHeader className="bg-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id} className="text-background">
