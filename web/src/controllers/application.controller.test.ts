@@ -1,17 +1,13 @@
 import request from 'supertest';
 import { expect } from 'chai';
-import bcrypt from 'bcryptjs';
 import { times, zip } from 'remeda';
-
 import app from '@/app';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import { UserRepository } from '@/repositories/user.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ApplicationRepository } from '@/repositories/application.repository';
-import { AuthService } from '@/services/auth.service';
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
@@ -29,14 +25,13 @@ import assert from 'assert';
 import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
-} from './authMiddleware.test.utils';
+  runUserLogin,
+} from '@/controllers/authMiddleware.test.utils';
 
 describe('ApplicationController', () => {
   useMongoDB();
   const sandbox = useSandbox();
-
-  let savedUserId: string;
-  let mockToken: string;
+  let mockUserId: string, mockUserToken: string;
   const mockJobPosting = {
     linkId: getNewObjectId(),
     url: 'vtmp.com',
@@ -47,28 +42,15 @@ describe('ApplicationController', () => {
 
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
-
-    const encryptedPassword = await bcrypt.hash('test password', 10);
-    const mockUser = {
-      firstName: 'admin',
-      lastName: 'viettech',
-      email: 'test@gmail.com',
-      encryptedPassword,
-    };
-
-    savedUserId = (await UserRepository.createUser(mockUser)).id;
-    mockToken = await AuthService.login({
-      email: mockUser.email,
-      password: 'test password',
-    });
+    ({ mockUserId, mockUserToken } = await runUserLogin());
   });
 
-  describe.only('POST /applications', () => {
+  describe('POST /applications', () => {
     runDefaultAuthMiddlewareTests({
       route: '/api/applications',
       method: HTTPMethod.POST,
-      token: mockToken,
-      body: {},
+      token: mockUserToken,
+      body: { jobPostingId: getNewMongoId() },
     });
 
     it('should return error message with 400 status code if request body schema is invalid', async () => {
@@ -76,7 +58,7 @@ describe('ApplicationController', () => {
         .post('/api/applications')
         .send({ invalidIdSchema: getNewMongoId() })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       const errors = res.body.errors;
@@ -88,7 +70,7 @@ describe('ApplicationController', () => {
         .post('/api/applications')
         .send({ jobPostingId: '123456789' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       const errors = res.body.errors;
@@ -100,7 +82,7 @@ describe('ApplicationController', () => {
         .post('/api/applications')
         .send({ jobPostingId: getNewMongoId() })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
@@ -115,14 +97,14 @@ describe('ApplicationController', () => {
 
       await ApplicationRepository.createApplication({
         jobPostingId: jobPosting.id,
-        userId: savedUserId,
+        userId: mockUserId,
       });
 
       const res = await request(app)
         .post('/api/applications')
         .send({ jobPostingId: jobPosting.id })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
       const errors = res.body.errors;
@@ -138,23 +120,23 @@ describe('ApplicationController', () => {
       const softDeletedApplication =
         await ApplicationRepository.createApplication({
           jobPostingId: jobPosting.id,
-          userId: savedUserId,
+          userId: mockUserId,
         });
 
       await ApplicationRepository.deleteApplicationById({
         applicationId: softDeletedApplication.id,
-        userId: savedUserId,
+        userId: mockUserId,
       });
 
       const res = await request(app)
         .post('/api/applications')
         .send({ jobPostingId: jobPosting.id })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 201 });
       expect(res.body.data).to.have.property('jobPostingId', jobPosting.id);
-      expect(res.body.data).to.have.property('userId', savedUserId);
+      expect(res.body.data).to.have.property('userId', mockUserId);
       expect(res.body.data).to.have.property('_id', softDeletedApplication.id);
       expect(res.body.data).to.have.property('deletedAt', null);
     });
@@ -169,29 +151,35 @@ describe('ApplicationController', () => {
         .post('/api/applications')
         .send({ jobPostingId: jobPosting.id })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 201 });
       expect(res.body.data).to.have.property('jobPostingId', jobPosting.id);
-      expect(res.body.data).to.have.property('userId', savedUserId);
+      expect(res.body.data).to.have.property('userId', mockUserId);
     });
   });
 
   describe('GET /applications', () => {
+    runDefaultAuthMiddlewareTests({
+      route: '/api/applications',
+      method: HTTPMethod.GET,
+      token: mockUserToken,
+    });
+
     it('should return all application objects that belong to the authorized user', async () => {
       const application1 = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
-        userId: savedUserId,
+        userId: mockUserId,
       });
       const application2 = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
-        userId: savedUserId,
+        userId: mockUserId,
       });
 
       const res = await request(app)
         .get('/api/applications')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(2);
@@ -203,18 +191,18 @@ describe('ApplicationController', () => {
     it('should not return soft-deleted applications', async () => {
       const application = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
-        userId: savedUserId,
+        userId: mockUserId,
       });
 
       await ApplicationRepository.deleteApplicationById({
         applicationId: application.id,
-        userId: savedUserId,
+        userId: mockUserId,
       });
 
       const res = await request(app)
         .get('/api/applications')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
@@ -224,7 +212,7 @@ describe('ApplicationController', () => {
       const res = await request(app)
         .get('/api/applications')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
@@ -237,15 +225,21 @@ describe('ApplicationController', () => {
     beforeEach(async () => {
       application = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
-        userId: savedUserId,
+        userId: mockUserId,
       });
+    });
+
+    runDefaultAuthMiddlewareTests({
+      route: `/api/applications/${getNewMongoId()}`,
+      method: HTTPMethod.POST,
+      token: mockUserToken,
     });
 
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
       const res = await request(app)
         .get('/api/applications/123456789')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       const errors = res.body.errors;
@@ -257,7 +251,7 @@ describe('ApplicationController', () => {
       const res = await request(app)
         .get(`/api/applications/${invalidApplicationId}`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
@@ -273,7 +267,7 @@ describe('ApplicationController', () => {
       const res = await request(app)
         .get(`/api/applications/${otherApplication.id}`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
@@ -283,13 +277,13 @@ describe('ApplicationController', () => {
     it('should return error message with 404 status code if application is soft-deleted', async () => {
       await ApplicationRepository.deleteApplicationById({
         applicationId: application.id,
-        userId: savedUserId,
+        userId: mockUserId,
       });
 
       const res = await request(app)
         .get(`/api/applications/${application.id}`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
@@ -300,7 +294,7 @@ describe('ApplicationController', () => {
       const res = await request(app)
         .get(`/api/applications/${application.id}`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('_id', application.id);
@@ -308,7 +302,7 @@ describe('ApplicationController', () => {
         'jobPostingId',
         application.jobPostingId.toString()
       );
-      expect(res.body.data).to.have.property('userId', savedUserId);
+      expect(res.body.data).to.have.property('userId', mockUserId);
     });
   });
 
@@ -334,8 +328,14 @@ describe('ApplicationController', () => {
     beforeEach(async () => {
       application = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
-        userId: savedUserId,
+        userId: mockUserId,
       });
+    });
+
+    runDefaultAuthMiddlewareTests({
+      route: `/api/applications/${getNewMongoId()}/updateStatus`,
+      method: HTTPMethod.PUT,
+      token: mockUserToken,
     });
 
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
@@ -343,7 +343,7 @@ describe('ApplicationController', () => {
         .put('/api/applications/123456789/updateStatus')
         .send({ updatedStatus: 'OFFERED' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       const errors = res.body.errors;
@@ -356,7 +356,7 @@ describe('ApplicationController', () => {
         .put(`/api/applications/${validApplicationId}/updateStatus`)
         .send({ note: 'some note', referrer: 'Khoa' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 2 });
       const errors = res.body.errors;
@@ -370,7 +370,7 @@ describe('ApplicationController', () => {
         .put(`/api/applications/${validApplicationId}/updateStatus`)
         .send({ updatedStatus: 'INVALID_STATUS' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       const errors = res.body.errors;
@@ -383,7 +383,7 @@ describe('ApplicationController', () => {
         .put(`/api/applications/${invalidApplicationId}/updateStatus`)
         .send({ updatedStatus: 'OFFERED' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
@@ -393,14 +393,14 @@ describe('ApplicationController', () => {
     it('should return error message with 404 status code if trying to update the status of a soft-deleted application', async () => {
       await ApplicationRepository.deleteApplicationById({
         applicationId: application.id,
-        userId: savedUserId,
+        userId: mockUserId,
       });
 
       const res = await request(app)
         .put(`/api/applications/${application.id}/updateStatus`)
         .send({ updatedStatus: 'OFFERED' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
@@ -412,7 +412,7 @@ describe('ApplicationController', () => {
         .put(`/api/applications/${application.id}/updateStatus`)
         .send({ updatedStatus: 'REJECTED' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('_id', application.id);
@@ -426,7 +426,7 @@ describe('ApplicationController', () => {
             InterviewRepository.createInterview({
               ...interview,
               applicationId: application.id,
-              userId: savedUserId,
+              userId: mockUserId,
             })
           )
         );
@@ -435,14 +435,14 @@ describe('ApplicationController', () => {
         .put(`/api/applications/${application.id}/updateStatus`)
         .send({ updatedStatus: 'REJECTED' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('_id', application.id);
       expect(res.body.data).to.have.property('status', 'REJECTED');
 
       const interviews = await InterviewRepository.getInterviews({
-        userId: savedUserId,
+        userId: mockUserId,
         filters: {
           applicationId: application.id,
           status: InterviewStatus.FAILED,
@@ -456,7 +456,7 @@ describe('ApplicationController', () => {
 
       const interview = await InterviewRepository.getInterviewById({
         interviewId: nonPendingInterview?.id,
-        userId: savedUserId,
+        userId: mockUserId,
       });
       assert(interview);
       expect(interview.status).to.equal(InterviewStatus.PASSED);
@@ -467,7 +467,7 @@ describe('ApplicationController', () => {
         .put(`/api/applications/${application.id}/updateStatus`)
         .send({ updatedStatus: 'OFFERED' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('_id', application.id);
@@ -481,8 +481,14 @@ describe('ApplicationController', () => {
     beforeEach(async () => {
       application = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
-        userId: savedUserId,
+        userId: mockUserId,
       });
+    });
+
+    runDefaultAuthMiddlewareTests({
+      route: `/api/applications/${getNewMongoId()}`,
+      method: HTTPMethod.PUT,
+      token: mockUserToken,
     });
 
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
@@ -490,7 +496,7 @@ describe('ApplicationController', () => {
         .put('/api/applications/123456789')
         .send({ note: 'Updated note' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       const errors = res.body.errors;
@@ -502,7 +508,7 @@ describe('ApplicationController', () => {
         .put(`/api/applications/${application.id}`)
         .send({ status: 'OFFERED' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       const errors = res.body.errors;
@@ -516,7 +522,7 @@ describe('ApplicationController', () => {
         .put(`/api/applications/${application.id}`)
         .send({ interest: 'VERY_HIGH' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       const errors = res.body.errors;
@@ -529,7 +535,7 @@ describe('ApplicationController', () => {
         .put(`/api/applications/${invalidApplicationId}`)
         .send({ note: 'Updated note' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
@@ -539,14 +545,14 @@ describe('ApplicationController', () => {
     it('should return error message with 404 status code if trying to update metadata of a soft-deleted application', async () => {
       await ApplicationRepository.deleteApplicationById({
         applicationId: application.id,
-        userId: savedUserId,
+        userId: mockUserId,
       });
 
       const res = await request(app)
         .put(`/api/applications/${application.id}`)
         .send({ note: 'Updated note' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
@@ -570,7 +576,7 @@ describe('ApplicationController', () => {
           interest: 'HIGH',
         })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.containSubset(updateApplicationMetadata);
@@ -583,15 +589,21 @@ describe('ApplicationController', () => {
     beforeEach(async () => {
       application = await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
-        userId: savedUserId,
+        userId: mockUserId,
       });
+    });
+
+    runDefaultAuthMiddlewareTests({
+      route: `/api/applications/${getNewMongoId()}`,
+      method: HTTPMethod.DELETE,
+      token: mockUserToken,
     });
 
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
       const res = await request(app)
         .delete('/api/applications/123456789')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       const errors = res.body.errors;
@@ -603,7 +615,7 @@ describe('ApplicationController', () => {
       const res = await request(app)
         .delete(`/api/applications/${invalidApplicationId}`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
@@ -613,13 +625,13 @@ describe('ApplicationController', () => {
     it('should return error message with 404 status code if trying to delete an already soft-deleted application', async () => {
       await ApplicationRepository.deleteApplicationById({
         applicationId: application.id,
-        userId: savedUserId,
+        userId: mockUserId,
       });
 
       const res = await request(app)
         .delete(`/api/applications/${application.id}`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       const errors = res.body.errors;
@@ -629,7 +641,7 @@ describe('ApplicationController', () => {
     it('should return error message with 403 status code if trying to delete an application that has interviews', async () => {
       await InterviewRepository.createInterview({
         applicationId: application.id,
-        userId: savedUserId,
+        userId: mockUserId,
         type: [InterviewType.CODE_REVIEW],
         interviewOnDate: new Date(),
       });
@@ -637,7 +649,7 @@ describe('ApplicationController', () => {
       const res = await request(app)
         .delete(`/api/applications/${application.id}`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
       const errors = res.body.errors;
@@ -650,7 +662,7 @@ describe('ApplicationController', () => {
       const res = await request(app)
         .delete(`/api/applications/${application.id}`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       const deletedApplication = res.body.data;
@@ -672,19 +684,25 @@ describe('ApplicationController', () => {
       ApplicationStatus.REJECTED,
     ] as const;
 
+    runDefaultAuthMiddlewareTests({
+      route: `/api/applications/count-by-status`,
+      method: HTTPMethod.PUT,
+      token: mockUserToken,
+    });
+
     it('should return correct counts grouped by status for the authorized user', async () => {
       const applications = await Promise.all(
         times(updatedStatus.length, () =>
           ApplicationRepository.createApplication({
             jobPostingId: getNewMongoId(),
-            userId: savedUserId,
+            userId: mockUserId,
           })
         )
       );
       await Promise.all(
         zip(applications, updatedStatus).map(([application, status]) =>
           ApplicationRepository.updateApplicationById({
-            userId: savedUserId,
+            userId: mockUserId,
             applicationId: application.id,
             updatedMetadata: {
               status,
@@ -695,7 +713,7 @@ describe('ApplicationController', () => {
       const res = await request(app)
         .get('/api/applications/count-by-status')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.deep.equal({
@@ -712,7 +730,7 @@ describe('ApplicationController', () => {
       const res = await request(app)
         .get('/api/applications/count-by-status')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.deep.equal({
@@ -728,23 +746,23 @@ describe('ApplicationController', () => {
     it('should exclude soft-deleted applications from the count', async () => {
       await ApplicationRepository.createApplication({
         jobPostingId: getNewMongoId(),
-        userId: savedUserId,
+        userId: mockUserId,
       });
       const applicationToDelete = await ApplicationRepository.createApplication(
         {
           jobPostingId: getNewMongoId(),
-          userId: savedUserId,
+          userId: mockUserId,
         }
       );
       await ApplicationRepository.deleteApplicationById({
         applicationId: applicationToDelete.id,
-        userId: savedUserId,
+        userId: mockUserId,
       });
 
       const res = await request(app)
         .get('/api/applications/count-by-status')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.deep.equal({
