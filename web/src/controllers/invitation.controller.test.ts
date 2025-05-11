@@ -400,32 +400,11 @@ describe('InvitationController', () => {
       });
     });
 
-    it('should throw Unauthorized for no token', async () => {
-      const res = await request(app)
-        .post(`/api/invitations/validate`)
-        .send({ token: '' })
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Unauthorized');
-    });
-
-    it('should throw Unauthorized for wrong token', async () => {
-      const res = await request(app)
-        .post(`/api/invitations/validate`)
-        .send({ token: '' })
-        .set('Accept', 'application/json')
-        .set('Authorization', 'fake token');
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('jwt malformed');
-    });
-
     it('should return error for missing token', async () => {
       const res = await request(app)
         .post(`/api/invitations/validate`)
         .send({ token: '' })
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('jwt must be provided');
@@ -435,8 +414,7 @@ describe('InvitationController', () => {
       const res = await request(app)
         .post(`/api/invitations/validate`)
         .send({ token: 'fake token' })
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('jwt malformed');
@@ -452,8 +430,7 @@ describe('InvitationController', () => {
       const res = await request(app)
         .post(`/api/invitations/validate`)
         .send({ token: invalidToken })
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Invitation not found');
@@ -467,8 +444,7 @@ describe('InvitationController', () => {
       const res = await request(app)
         .post(`/api/invitations/validate`)
         .send({ token: pendingInvitation.token })
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Invitation has expired');
@@ -478,8 +454,7 @@ describe('InvitationController', () => {
       const res = await request(app)
         .post(`/api/invitations/validate`)
         .send({ token })
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Accept', 'application/json');
 
       const { expiryDate, ...nonDateInvitation } = mockOneInvitation;
       const timeDiff = differenceInSeconds(
