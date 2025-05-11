@@ -13,7 +13,7 @@ export const hasPermission = (permission: Permission) => {
     const user = getUserFromRequest(req).user;
 
     if (!roleToPermissionMapping[user.role].includes(permission)) {
-      throw new ForbiddenError('Forbidden', { user });
+      throw new ForbiddenError('Forbidden', { user, permission });
     }
     next();
   };
