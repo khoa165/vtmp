@@ -33,10 +33,12 @@ export const runUserLogin = async (): Promise<{
     encryptedPassword,
   };
   const mockUserId = (await UserRepository.createUser(mockUser)).id;
-  const mockUserToken = await AuthService.login({
-    email: mockUser.email,
-    password: 'test password',
-  });
+  const mockUserToken = (
+    await AuthService.login({
+      email: mockUser.email,
+      password: 'test password',
+    })
+  ).token;
 
   return { mockUserId, mockUserToken };
 };
