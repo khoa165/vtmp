@@ -3,21 +3,53 @@ import { z } from 'zod';
 import { JobPostingService } from '@/services/job-posting.service';
 import { JobPostingLocation } from '@vtmp/common/constants';
 import { getUserFromRequest } from '@/middlewares/utils';
+import { parse } from 'date-fns';
 
-const JobPostingUpdateSchema = z.object({
-  externalPostingId: z.string().optional(),
-  url: z.string().url().optional(),
-  jobTitle: z.string().optional(),
-  companyName: z.string().optional(),
-  location: z
-    .enum([JobPostingLocation.US, JobPostingLocation.CANADA])
-    .optional(),
-  datePosted: z.coerce.date().optional(),
-  jobDescription: z.string().optional(),
-  adminNote: z.string().optional(),
-});
+const JobPostingUpdateSchema = z
+  .object({
+    externalPostingId: z
+      .string({ invalid_type_error: 'Invalid external posting ID format' })
+      .optional(),
+    url: z
+      .string({ invalid_type_error: 'URL must be a string' })
+      .url('Invalid URL format')
+      .optional(),
+    jobTitle: z
+      .string({ invalid_type_error: 'Invalid job title format' })
+      .optional(),
+    companyName: z
+      .string({ invalid_type_error: 'Invalid company name format' })
+      .optional(),
+    location: z
+      .enum([JobPostingLocation.US, JobPostingLocation.CANADA], {
+        invalid_type_error: 'Invalid Location format',
+      })
+      .optional(),
+    datePosted: z
+      .string()
+      .transform((val) => parse(val, 'MM/dd/yyyy', new Date()))
+      .refine((val) => !isNaN(val.getTime()), {
+        message: 'Invalid date posted format',
+      })
+      .optional(),
+    jobDescription: z
+      .string({ invalid_type_error: 'Invalid job description format' })
+      .optional(),
+    adminNote: z
+      .string({ invalid_type_error: 'Invalid admin note format' })
+      .optional(),
+  })
+  .strict({
+    message: 'field is not allowed to update',
+  })
+  .transform((data: object) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
+  );
+
 const JobIdSchema = z.object({
-  jobId: z.string(),
+  jobId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid job ID format'),
 });
 
 export const JobPostingController = {
