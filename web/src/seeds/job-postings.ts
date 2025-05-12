@@ -6,6 +6,8 @@ import { CompanyName, JobPostingLocation } from '@vtmp/common/constants';
 export const loadJobPostings = async (
   links: ILink[]
 ): Promise<IJobPosting[]> => {
+  const RECENT_DAYS = 90;
+
   const formatCompanyName = (name: string) => {
     return name
       .toLowerCase()
@@ -19,6 +21,7 @@ export const loadJobPostings = async (
     url: link.url,
     jobTitle: faker.person.jobTitle(),
     companyName: formatCompanyName(faker.helpers.enumValue(CompanyName)),
+    datePosted: faker.date.recent({ days: RECENT_DAYS }),
     location: faker.helpers.enumValue(JobPostingLocation),
   }));
 

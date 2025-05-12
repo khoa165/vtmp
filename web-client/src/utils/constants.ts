@@ -152,7 +152,7 @@ export enum ProjectName {
 export enum QueryKey {
   SUBMIT_LINK = '/api/links',
   GET_APPLICATIONS = '/api/applications',
-  GET_JOB_POSTINGS = '',
+  GET_JOB_POSTINGS = '/api//job-postings/not-applied',
 }
 
 export enum Method {

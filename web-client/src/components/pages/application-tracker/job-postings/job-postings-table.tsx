@@ -61,7 +61,7 @@ export function JobPostingsTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-foreground">
+                    <TableCell key={cell.id} className="h-10 text-foreground">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -71,7 +71,7 @@ export function JobPostingsTable<TData, TValue>({
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow className="py-6 px-4">
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"

@@ -9,7 +9,7 @@ export const useGetJobPostings = () => {
     queryFn: async () => {
       const response = await request(
         Method.GET,
-        '/job-postings',
+        '/job-postings/not-applied',
         null,
         JobPostingsResponseSchema
       );
