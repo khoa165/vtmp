@@ -1,6 +1,9 @@
-import { useGetJobPostings } from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
 import { JobPostingsTable } from '@/components/pages/application-tracker/job-postings/job-postings-table';
 import { jobPostingsTableColumns } from '@/components/pages/application-tracker/job-postings/job-postings-table-columns';
+import {
+  useCreateApplication,
+  useGetJobPostings,
+} from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
 
 export const JobPostingsContainer = (): React.JSX.Element | null => {
   const {
@@ -9,6 +12,7 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
     error,
     data: jobPostingsData,
   } = useGetJobPostings();
+  const { mutate: createApplicationFn } = useCreateApplication();
 
   if (isLoading) {
     // TODO-(QuangMinhNguyen27405): Remove this console log in production and add a loading spinner
@@ -29,7 +33,7 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
 
   return (
     <JobPostingsTable
-      columns={jobPostingsTableColumns()}
+      columns={jobPostingsTableColumns({ createApplicationFn })}
       data={jobPostingsData}
     />
   );

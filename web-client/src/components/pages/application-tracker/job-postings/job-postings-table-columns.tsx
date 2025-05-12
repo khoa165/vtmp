@@ -4,8 +4,13 @@ import { Button } from 'reactstrap';
 import { ArrowUpDown, Link } from 'lucide-react';
 import { format } from 'date-fns';
 import { IJobPosting } from '@/components/pages/application-tracker/job-postings/validations';
+import { JobPostingsAction } from '@/components/pages/application-tracker/job-postings/job-postings-action';
 
-export const jobPostingsTableColumns = (): ColumnDef<IJobPosting>[] => [
+export const jobPostingsTableColumns = ({
+  createApplicationFn,
+}: {
+  createApplicationFn: (body: { jobPostingId: string }) => void;
+}): ColumnDef<IJobPosting>[] => [
   {
     id: 'select',
     header: ({ table }) => (
@@ -83,5 +88,18 @@ export const jobPostingsTableColumns = (): ColumnDef<IJobPosting>[] => [
   {
     accessorKey: 'adminNotes',
     header: 'Note',
+  },
+  {
+    id: 'actions',
+    enableHiding: false,
+    cell: ({ row }) => {
+      const jobPosting = row.original;
+      return (
+        <JobPostingsAction
+          jobPosting={jobPosting}
+          createApplicationFn={createApplicationFn}
+        />
+      );
+    },
   },
 ];
