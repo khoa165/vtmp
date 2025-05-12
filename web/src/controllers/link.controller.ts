@@ -1,20 +1,55 @@
 import { Request, Response } from 'express';
 import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
-
+import { JobPostingLocation } from '@vtmp/common/constants';
+import { parse } from 'date-fns';
 const LinkSchema = z.object({
   url: z.string({ required_error: 'URL is required' }).url(),
 });
 
-const JobPostingAdditionalSchema = z.object({
-  jobTitle: z.string({ required_error: 'Job Title is required' }),
-  companyName: z.string({ required_error: 'Company Name is required' }),
-  jobDescription: z.string().optional(),
-  adminNote: z.string().optional(),
-});
+const JobPostingDataSchema = z
+  .object({
+    url: z.string().url({ message: 'Invalid URL format' }),
+    jobTitle: z.string({
+      required_error: 'Job title is required',
+      invalid_type_error: 'Invalid job title format',
+    }),
+    companyName: z.string({
+      required_error: 'Company name is required',
+      invalid_type_error: 'Invalid company name format',
+    }),
+    location: z
+      .nativeEnum(JobPostingLocation, {
+        message: 'Invalid job location',
+      })
+      .optional(),
+    datePosted: z
+      .string()
+      .transform((val) => parse(val, 'MM/dd/yyyy', new Date()))
+      .refine((val) => !isNaN(val.getTime()), {
+        message: 'Invalid date posted format',
+      })
+      .optional(),
+    jobDescription: z
+      .string({ invalid_type_error: 'Invalid job description format' })
+      .optional(),
+    adminNote: z
+      .string({ invalid_type_error: 'Invalid admin note format format' })
+      .optional(),
+    submittedBy: z
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/, 'Invalid job ID format')
+      .optional(),
+  })
+  .strict({ message: 'Some fields are not valid' })
+  .transform((data: object) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
+  );
 
 const LinkIdSchema = z.object({
-  linkId: z.string(),
+  linkId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid link ID format'),
 });
 
 export const LinkController = {
@@ -28,20 +63,21 @@ export const LinkController = {
     });
   },
 
-  getPendingLinks: async (_req: Request, res: Response) => {
-    const links = await LinkService.getPendingLinks();
+  getLinkCountByStatus: async (_req: Request, res: Response) => {
+    const linkCounts = await LinkService.getLinkCountByStatus();
     res.status(200).json({
-      data: { links },
+      message: 'Link count has been retrieved successfully.',
+      data: linkCounts,
     });
   },
 
   approveLink: async (req: Request, res: Response) => {
     const parsedLink = LinkIdSchema.parse(req.params);
-    const parsedAdminAddOn = JobPostingAdditionalSchema.parse(req.body);
+    const parsedJobPostingData = JobPostingDataSchema.parse(req.body);
 
     const approvedLink = await LinkService.approveLinkAndCreateJobPosting(
       parsedLink.linkId,
-      parsedAdminAddOn
+      parsedJobPostingData
     );
     res.status(200).json({
       message: 'Link has been approved!',

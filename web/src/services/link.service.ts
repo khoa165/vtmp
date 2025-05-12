@@ -1,8 +1,8 @@
-import { LinkStatus } from '@vtmp/common/constants';
+import { JobPostingLocation, LinkStatus } from '@vtmp/common/constants';
 import { LinkRepository } from '@/repositories/link.repository';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
+import { JobPostingService } from '@/services/job-posting.service';
 
 export const LinkService = {
   submitLink: async (url: string) => {
@@ -11,7 +11,16 @@ export const LinkService = {
 
   approveLinkAndCreateJobPosting: async (
     linkId: string,
-    jobPostingData: object
+    jobPostingData: {
+      url?: string;
+      externalPostingId?: string;
+      jobTitle?: string;
+      companyName?: string;
+      location?: JobPostingLocation;
+      datePosted?: Date;
+      jobDescription?: string;
+      adminNote?: string;
+    }
   ) => {
     const session: ClientSession = await mongoose.startSession();
     session.startTransaction();
@@ -28,12 +37,14 @@ export const LinkService = {
         });
       }
 
-      jobPosting = await JobPostingRepository.createJobPosting({
+      jobPosting = await JobPostingService.createJobPosting({
         jobPostingData: {
           ...jobPostingData,
-          linkId,
+          linkId: updatedLink._id,
           url: updatedLink.url,
-          submittedBy: updatedLink.submittedBy,
+          ...(updatedLink.submittedBy
+            ? { submittedBy: updatedLink.submittedBy }
+            : {}),
         },
         session,
       });
@@ -61,7 +72,13 @@ export const LinkService = {
     return updatedLink;
   },
 
-  getPendingLinks: async () => {
-    return LinkRepository.getLinksByStatus(LinkStatus.PENDING);
+  getLinkCountByStatus: async () => {
+    const linksCountByStatus = await LinkRepository.getLinkCountByStatus();
+    return Object.fromEntries(
+      Object.keys(LinkStatus).map((status) => [
+        status,
+        linksCountByStatus[status] || 0,
+      ])
+    );
   },
 };

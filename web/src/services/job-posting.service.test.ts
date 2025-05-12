@@ -19,6 +19,29 @@ describe('JobPostingService', () => {
     companyName: 'Example Company',
     submittedBy: getNewObjectId(),
   };
+  let newJobPosting: IJobPosting | undefined;
+  beforeEach(async () => {
+    newJobPosting = await JobPostingRepository.createJobPosting({
+      jobPostingData: mockJobPosting,
+    });
+  });
+
+  describe('createJobPosting', () => {
+    it('should be able to create a new job posting', async () => {
+      assert(newJobPosting);
+      expect(newJobPosting).to.deep.include(mockJobPosting);
+    });
+
+    it('should not allow to create a duplicate job posting', async () => {
+      assert(newJobPosting);
+
+      await expect(
+        JobPostingRepository.createJobPosting({
+          jobPostingData: mockJobPosting,
+        })
+      ).eventually.rejectedWith(Error);
+    });
+  });
 
   describe('updateJobPostingById', () => {
     it('should throw an error when no job posting is found', async () => {
@@ -34,9 +57,6 @@ describe('JobPostingService', () => {
     });
 
     it('should not throw an error when a job posting is found', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       const newUpdate = {
@@ -51,9 +71,6 @@ describe('JobPostingService', () => {
     });
 
     it('should be able to update detail of a job post by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       const newUpdate = {
@@ -79,9 +96,6 @@ describe('JobPostingService', () => {
     });
 
     it('should not throw an error when a job posting is found', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       await expect(JobPostingService.deleteJobPostingById(newJobPosting.id))
@@ -89,9 +103,6 @@ describe('JobPostingService', () => {
     });
 
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
@@ -154,6 +165,8 @@ describe('JobPostingService', () => {
           })
         )
       );
+      assert(newJobPosting);
+      await JobPostingRepository.deleteJobPostingById(newJobPosting.id);
     });
 
     it('should return an empty array if user has applied to all avaialble job postings in the system', async () => {

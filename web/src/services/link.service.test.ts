@@ -14,10 +14,16 @@ describe('LinkService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
-  const mockLinkData = {
+  const mockJobData = {
+    linkId: getNewObjectId(),
     url: 'google.com',
     jobTitle: 'Software Engineer',
-    companyName: 'Example Company',
+    companyName: 'Google',
+    submittedBy: getNewObjectId(),
+  };
+  const mockLinkData = {
+    url: 'facebook.com',
+    status: LinkStatus.PENDING,
     submittedBy: getNewObjectId(),
   };
 
@@ -37,10 +43,7 @@ describe('LinkService', () => {
   describe('approveLinkAndCreateJobPosting', () => {
     it('should throw error when link does not exist', async () => {
       await expect(
-        LinkService.approveLinkAndCreateJobPosting(getNewMongoId(), {
-          jobTitle: 'Software Engineering Intern',
-          companyName: 'Google',
-        })
+        LinkService.approveLinkAndCreateJobPosting(getNewMongoId(), mockJobData)
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
@@ -49,10 +52,7 @@ describe('LinkService', () => {
       const newLink = await LinkRepository.createLink(mockLinkData);
 
       await expect(
-        LinkService.approveLinkAndCreateJobPosting(newLink.id, {
-          jobTitle: 'Software Engineering Intern',
-          companyName: 'Google',
-        })
+        LinkService.approveLinkAndCreateJobPosting(newLink.id, mockJobData)
       ).eventually.rejectedWith(Error);
     });
 
@@ -61,10 +61,7 @@ describe('LinkService', () => {
       const newLink = await LinkRepository.createLink(mockLinkData);
 
       await expect(
-        LinkService.approveLinkAndCreateJobPosting(newLink.id, {
-          jobTitle: 'Software Engineering Intern',
-          companyName: 'Google',
-        })
+        LinkService.approveLinkAndCreateJobPosting(newLink.id, mockJobData)
       ).eventually.rejectedWith(Error);
       const link = await LinkRepository.getLinkById(newLink.id);
       assert(link);
@@ -75,10 +72,7 @@ describe('LinkService', () => {
       const newLink = await LinkRepository.createLink(mockLinkData);
 
       await expect(
-        LinkService.approveLinkAndCreateJobPosting(newLink.id, {
-          jobTitle: 'Software Engineering Intern',
-          companyName: 'Google',
-        })
+        LinkService.approveLinkAndCreateJobPosting(newLink.id, mockJobData)
       ).eventually.fulfilled;
     });
 
@@ -88,10 +82,7 @@ describe('LinkService', () => {
 
       const newJobPosting = await LinkService.approveLinkAndCreateJobPosting(
         newLink.id,
-        {
-          jobTitle: 'Software Engineering Intern',
-          companyName: COMPANY_NAME,
-        }
+        mockJobData
       );
       assert(newJobPosting);
 
@@ -132,22 +123,17 @@ describe('LinkService', () => {
     });
   });
 
-  describe('getPendingLinks', () => {
-    it('should be able to get all pending links', async () => {
-      const googleLink = await LinkRepository.createLink(mockLinkData);
-
-      const nvidia = await LinkRepository.createLink({
-        ...mockLinkData,
-        url: 'nvidia.com',
+  describe('getLinkCountByStatus', () => {
+    it('should return 0 links for all statuses when no links exist', async () => {
+      const linkCounts = await LinkService.getLinkCountByStatus();
+      expect(linkCounts).to.deep.equal({
+        [LinkStatus.PENDING]: 0,
+        [LinkStatus.APPROVED]: 0,
+        [LinkStatus.REJECTED]: 0,
       });
-
-      const pendingLinks = await LinkService.getPendingLinks();
-
-      const urls = pendingLinks.map((link) => link.url);
-      expect(urls).to.have.members([googleLink.url, nvidia.url]);
     });
 
-    it('should be able to get all pending links after a link is rejected', async () => {
+    it('should return correct link counts for multiple statuses when multiple links exist', async () => {
       const googleLink = await LinkRepository.createLink(mockLinkData);
 
       await LinkRepository.createLink({ ...mockLinkData, url: 'nvidia.com' });
@@ -156,12 +142,13 @@ describe('LinkService', () => {
         url: 'microsoft.com',
       });
 
-      const beforeUpdateLinks = await LinkService.getPendingLinks();
-      expect(beforeUpdateLinks).to.have.lengthOf(3);
-
       await LinkService.rejectLink(googleLink.id);
-      const afterUpdateLinks = await LinkService.getPendingLinks();
-      expect(afterUpdateLinks).to.have.lengthOf(2);
+      const afterUpdateLinks = await LinkService.getLinkCountByStatus();
+      expect(afterUpdateLinks).to.deep.equal({
+        [LinkStatus.PENDING]: 2,
+        [LinkStatus.APPROVED]: 0,
+        [LinkStatus.REJECTED]: 1,
+      });
     });
   });
 });

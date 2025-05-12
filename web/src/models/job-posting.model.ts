@@ -8,7 +8,7 @@ export interface IJobPosting extends Document {
   url: string;
   jobTitle: string;
   companyName: string;
-  location: JobPostingLocation;
+  location?: JobPostingLocation;
   datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
@@ -22,13 +22,19 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
       type: Schema.Types.ObjectId,
       ref: 'Link',
       required: true,
+      unique: true,
+      sparse: true,
     },
     externalPostingId: {
       type: String,
+      unique: true,
+      sparse: true,
     },
     url: {
       type: String,
       required: true,
+      unique: true,
+      sparse: true,
     },
     jobTitle: {
       type: String,

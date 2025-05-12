@@ -1,13 +1,25 @@
 import { JobPostingModel, IJobPosting } from '@/models/job-posting.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
-import { ClientSession } from 'mongoose';
+import { JobPostingLocation } from '@vtmp/common/constants';
+import { ClientSession, Types } from 'mongoose';
 
 export const JobPostingRepository = {
   createJobPosting: async ({
     jobPostingData,
     session,
   }: {
-    jobPostingData: object;
+    jobPostingData: {
+      linkId?: Types.ObjectId;
+      externalPostingId?: string;
+      url?: string;
+      jobTitle?: string;
+      companyName?: string;
+      location?: JobPostingLocation;
+      datePosted?: Date;
+      jobDescription?: string;
+      adminNote?: string;
+      submittedBy?: Types.ObjectId;
+    };
     session?: ClientSession;
   }): Promise<IJobPosting | undefined> => {
     const jobPostings = await JobPostingModel.create([jobPostingData], {
@@ -23,7 +35,16 @@ export const JobPostingRepository = {
 
   updateJobPostingById: async (
     jobId: string,
-    newUpdate: object
+    newUpdate: {
+      externalPostingId?: string;
+      url?: string;
+      jobTitle?: string;
+      companyName?: string;
+      location?: JobPostingLocation;
+      datePosted?: Date;
+      jobDescription?: string;
+      adminNote?: string;
+    }
   ): Promise<IJobPosting | null> => {
     return JobPostingModel.findOneAndUpdate(
       { _id: jobId, deletedAt: null },
@@ -45,7 +66,6 @@ export const JobPostingRepository = {
   ): Promise<IJobPosting[]> => {
     return JobPostingModel.aggregate([
       {
-        // Perform a filtered join between JobPosting and Application collection
         $lookup: {
           from: 'applications',
           let: { jobId: '$_id' },

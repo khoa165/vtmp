@@ -1,8 +1,45 @@
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
-
+import { JobPostingLocation } from '@vtmp/common/constants';
+import { ClientSession, Types } from 'mongoose';
 export const JobPostingService = {
-  updateJobPostingById: async (jobId: string, newUpdate: object) => {
+  createJobPosting: async ({
+    jobPostingData,
+    session,
+  }: {
+    jobPostingData: {
+      linkId?: Types.ObjectId;
+      externalPostingId?: string;
+      url?: string;
+      jobTitle?: string;
+      companyName?: string;
+      location?: JobPostingLocation;
+      datePosted?: Date;
+      jobDescription?: string;
+      adminNote?: string;
+      submittedBy?: Types.ObjectId;
+    };
+    session?: ClientSession;
+  }) => {
+    return JobPostingRepository.createJobPosting({
+      jobPostingData,
+      ...(session ? { session } : {}),
+    });
+  },
+
+  updateJobPostingById: async (
+    jobId: string,
+    newUpdate: {
+      externalPostingId?: string;
+      url?: string;
+      jobTitle?: string;
+      companyName?: string;
+      location?: JobPostingLocation;
+      datePosted?: Date;
+      jobDescription?: string;
+      adminNote?: string;
+    }
+  ) => {
     const updatedJobPosting = await JobPostingRepository.updateJobPostingById(
       jobId,
       newUpdate
