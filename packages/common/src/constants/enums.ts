@@ -36,7 +36,7 @@ export enum InvitationStatus {
   REVOKED = 'REVOKED',
 }
 
-export enum JobPostingLocation {
+export enum JobPostingRegion {
   US = 'US',
   CANADA = 'CANADA',
 }

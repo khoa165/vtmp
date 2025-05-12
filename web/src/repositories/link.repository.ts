@@ -45,7 +45,7 @@ export const LinkRepository = {
     return groupCountByStatus;
   },
 
-  getLinks: async (filters?: object): Promise<ILink[]> => {
+  getLinks: async (filters: { status?: LinkStatus } = {}): Promise<ILink[]> => {
     return LinkModel.find(filters ?? {}).lean();
   },
 };

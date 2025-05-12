@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { JobPostingService } from '@/services/job-posting.service';
-import { JobPostingLocation } from '@vtmp/common/constants';
+import { JobPostingRegion } from '@vtmp/common/constants';
 import { getUserFromRequest } from '@/middlewares/utils';
 
 const JobPostingUpdateSchema = z.object({
@@ -9,9 +9,7 @@ const JobPostingUpdateSchema = z.object({
   url: z.string().url().optional(),
   jobTitle: z.string().optional(),
   companyName: z.string().optional(),
-  location: z
-    .enum([JobPostingLocation.US, JobPostingLocation.CANADA])
-    .optional(),
+  location: z.enum([JobPostingRegion.US, JobPostingRegion.CANADA]).optional(),
   datePosted: z.coerce.date().optional(),
   jobDescription: z.string().optional(),
   adminNote: z.string().optional(),

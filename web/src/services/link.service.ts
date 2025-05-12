@@ -71,7 +71,7 @@ export const LinkService = {
     );
   },
 
-  getLinks: async (filters?: object) => {
+  getLinks: async (filters: { status?: LinkStatus } = {}) => {
     return LinkRepository.getLinks(filters);
   },
 };
