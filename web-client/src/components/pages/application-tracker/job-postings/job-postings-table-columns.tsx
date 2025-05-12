@@ -42,14 +42,15 @@ export const jobPostingsTableColumns = ({
     accessorKey: 'jobTitle',
     header: 'Position',
     cell: ({ row }) => {
+      // // TODO-(QuangMinhNguyen27405): Modify column width for better visibility
       return (
         <a
-          href={row.getValue('url')}
+          href={row.original.url}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center underline hover:text-primary"
         >
-          {row.getValue('jobTitle')}
+          {row.original.jobTitle}
           <Link className="ml-1 h-4 w-4" />
         </a>
       );
