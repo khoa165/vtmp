@@ -12,6 +12,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
+  OnChangeFn,
 } from '@tanstack/react-table';
 import {
   Table,
@@ -37,8 +38,12 @@ interface DataTableProps<TData, TValue> {
 export function ApplicationsTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  sorting,
+  setSorting,
+}: DataTableProps<TData, TValue> & {
+  sorting: SortingState;
+  setSorting: OnChangeFn<SortingState>;
+}) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
