@@ -16,6 +16,7 @@ export const jobPostingsTableColumns = (): ColumnDef<IJobPosting>[] => [
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
+        className="border border-background hover:bg-background"
       />
     ),
     cell: ({ row }) => (
@@ -31,10 +32,6 @@ export const jobPostingsTableColumns = (): ColumnDef<IJobPosting>[] => [
   {
     accessorKey: '_id',
     header: 'ID',
-  },
-  {
-    accessorKey: 'url',
-    header: 'URL',
   },
   {
     accessorKey: 'jobTitle',

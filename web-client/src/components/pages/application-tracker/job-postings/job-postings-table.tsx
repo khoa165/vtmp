@@ -59,9 +59,10 @@ export function JobPostingsTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  className="h-13"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="h-10 text-foreground">
+                    <TableCell key={cell.id} className="text-foreground">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
