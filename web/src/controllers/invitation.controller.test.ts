@@ -381,7 +381,7 @@ describe('InvitationController', () => {
     });
   });
 
-  describe('POST /invitations/validate', () => {
+  describe('POST /auth/validate', () => {
     let pendingInvitation: IInvitation;
     let token: string;
 
@@ -402,7 +402,7 @@ describe('InvitationController', () => {
 
     it('should return error for missing token', async () => {
       const res = await request(app)
-        .post(`/api/invitations/validate`)
+        .post(`/api/auth/validate`)
         .send({ token: '' })
         .set('Accept', 'application/json');
 
@@ -412,7 +412,7 @@ describe('InvitationController', () => {
 
     it('should return error message for invalid token', async () => {
       const res = await request(app)
-        .post(`/api/invitations/validate`)
+        .post(`/api/auth/validate`)
         .send({ token: 'fake token' })
         .set('Accept', 'application/json');
 
@@ -428,7 +428,7 @@ describe('InvitationController', () => {
       );
 
       const res = await request(app)
-        .post(`/api/invitations/validate`)
+        .post(`/api/auth/validate`)
         .send({ token: invalidToken })
         .set('Accept', 'application/json');
 
@@ -442,7 +442,7 @@ describe('InvitationController', () => {
       });
 
       const res = await request(app)
-        .post(`/api/invitations/validate`)
+        .post(`/api/auth/validate`)
         .send({ token: pendingInvitation.token })
         .set('Accept', 'application/json');
 
@@ -452,7 +452,7 @@ describe('InvitationController', () => {
 
     it('should return validated invitation for valid invitation', async () => {
       const res = await request(app)
-        .post(`/api/invitations/validate`)
+        .post(`/api/auth/validate`)
         .send({ token })
         .set('Accept', 'application/json');
 
