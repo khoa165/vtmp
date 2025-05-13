@@ -40,7 +40,9 @@ export const ReviewPopupButton = ({
       </DialogTrigger>
       <DialogContent className="w-fit text-white border-none">
         <DialogHeader>
-          <DialogTitle>Review Link Submission</DialogTitle>
+          <DialogTitle>
+            <span className="text-2xl font-bold">Review Link Submission</span>
+          </DialogTitle>
         </DialogHeader>
         <ReviewPopupInput
           label={'URL'}

@@ -2,72 +2,51 @@ import { Request, Response } from 'express';
 import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
 import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
-import { parse } from 'date-fns';
 
 const LinkSchema = z.object({
   url: z.string({ required_error: 'URL is required' }).url(),
 });
-const JobPostingDataSchema = z
-  .object({
-    url: z.string().url({ message: 'Invalid URL format' }),
-    jobTitle: z.string({
-      required_error: 'Job title is required',
-      invalid_type_error: 'Invalid job title format',
-    }),
-    companyName: z.string({
-      required_error: 'Company name is required',
-      invalid_type_error: 'Invalid company name format',
-    }),
-    location: z
-      .nativeEnum(JobPostingRegion, {
-        message: 'Invalid job location',
-      })
-      .optional(),
-    datePosted: z
-      .string()
-      .transform((val) => parse(val, 'MM/dd/yyyy', new Date()))
-      .refine((val) => !isNaN(val.getTime()), {
-        message: 'Invalid date posted format',
-      })
-      .optional(),
-    jobDescription: z
-      .string({ invalid_type_error: 'Invalid job description format' })
-      .optional(),
-    adminNote: z
-      .string({ invalid_type_error: 'Invalid admin note format format' })
-      .optional(),
-    submittedBy: z
-      .string()
-      .regex(/^[0-9a-fA-F]{24}$/, 'Invalid job ID format')
-      .optional(),
-  })
-  .strict({ message: 'Some fields are not valid' })
-  .transform((data: object) =>
-    Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== undefined)
-    )
+
+const filterUndefinedAttributes = (data: object) =>
+  Object.fromEntries(
+    Object.entries(data).filter(([, value]) => value !== undefined)
   );
 
+const JobPostingAdditionalSchema = z
+  .object({
+    jobTitle: z.string({ required_error: 'Job Title is required' }),
+    companyName: z.string({ required_error: 'Company Name is required' }),
+    location: z.nativeEnum(JobPostingRegion, {
+      message: 'Invalid location',
+    }),
+    jobDescription: z.string().optional(),
+    adminNote: z.string().optional(),
+    datePosted: z
+      .string()
+      .optional()
+      .transform((isoDate) => {
+        if (!isoDate) return undefined;
+        return new Date(isoDate);
+      }),
+  })
+  .transform(filterUndefinedAttributes);
+
 const LinkIdSchema = z.object({
-  linkId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid job ID format'),
+  linkId: z.string(),
 });
 
 const LinkFilterSchema = z
   .object({
     status: z
       .nativeEnum(LinkStatus, {
-        message: 'Invalid link status',
+        message: 'Invalid application status',
       })
       .optional(),
   })
   .strict({
     message: 'Only allow filtering by given fields',
   })
-  .transform((data: object) =>
-    Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== undefined)
-    )
-  );
+  .transform(filterUndefinedAttributes);
 
 export const LinkController = {
   submitLink: async (req: Request, res: Response) => {
@@ -99,7 +78,7 @@ export const LinkController = {
 
   approveLink: async (req: Request, res: Response) => {
     const parsedLink = LinkIdSchema.parse(req.params);
-    const parsedAdminAddOn = JobPostingDataSchema.parse(req.body);
+    const parsedAdminAddOn = JobPostingAdditionalSchema.parse(req.body);
 
     const approvedLink = await LinkService.approveLinkAndCreateJobPosting(
       parsedLink.linkId,

@@ -5,7 +5,7 @@ import { wrappedHandlers } from '@/middlewares/utils';
 
 export const LinkRoutes = Router();
 
-// LinkRoutes.use(wrappedHandlers([authenticate]));
+//LinkRoutes.use(wrappedHandlers([authenticate]));
 LinkRoutes.post('/', wrappedHandlers([LinkController.submitLink]));
 LinkRoutes.get('/', wrappedHandlers([LinkController.getLinks]));
 LinkRoutes.get(

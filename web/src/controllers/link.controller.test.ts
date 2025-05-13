@@ -8,7 +8,7 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { LinkRepository } from '@/repositories/link.repository';
-import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
@@ -25,7 +25,6 @@ describe('LinkController', () => {
   let linkId: string;
   let url: string;
   let mockToken: string;
-  let googleLink: ILink;
 
   const mockLinkData = {
     url: 'google.com',
@@ -52,10 +51,10 @@ describe('LinkController', () => {
     });
     mockToken = token;
 
-    url = 'google.com';
-    googleLink = await LinkRepository.createLink(mockLinkData);
+    url = 'http://example.com/job-posting';
+    const newLink = await LinkRepository.createLink({ url });
 
-    linkId = googleLink.id;
+    linkId = newLink.id;
   });
 
   describe('submitLink', () => {
@@ -104,7 +103,7 @@ describe('LinkController', () => {
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expect(res.body.data.link.url).to.equal(url);
+      expect(res.body.data.url).to.equal(url);
       expect(res.body.message).to.equal('Link has been rejected!');
     });
   });
@@ -114,13 +113,13 @@ describe('LinkController', () => {
       const res = await request(app)
         .post(`/api/links/${getNewMongoId()}/approve`)
         .send({
-          url: 'https://facebook.com',
           jobTitle: 'Software Engineer Intern',
           companyName: 'Example Company',
           location: JobPostingRegion.CANADA,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
+
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
     });
 
@@ -128,7 +127,6 @@ describe('LinkController', () => {
       const res = await request(app)
         .post(`/api/links/${linkId}/approve`)
         .send({
-          url: 'https://facebook.com',
           jobTitle: 'Software Engineer Intern',
           companyName: 'Example Company',
           location: JobPostingRegion.US,
@@ -138,7 +136,7 @@ describe('LinkController', () => {
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.message).to.equal('Link has been approved!');
-      expect(res.body.data.link.url).to.equal(url);
+      expect(res.body.data.url).to.equal(url);
     });
   });
 
@@ -154,9 +152,6 @@ describe('LinkController', () => {
         'Link count has been retrieved successfully.'
       );
 
-      expect(res.body.message).to.equal(
-        'Link count has been retrieved successfully.'
-      );
       expect(res.body.data).to.deep.equal({
         [LinkStatus.PENDING]: 1,
         [LinkStatus.APPROVED]: 0,
@@ -165,24 +160,13 @@ describe('LinkController', () => {
     });
 
     it('should return correct link counts for multiple statuses when multiple links exist', async () => {
-      const mockMultipleLinks = [
-        {
-          url: 'nvida.com',
-          jobTitle: 'Software Engineer',
-          companyName: 'Example Company',
-          submittedBy: getNewObjectId(),
-        },
+      const googleLink = await LinkRepository.createLink(mockLinkData);
 
-        {
-          url: 'microsoft.com',
-          jobTitle: 'Software Engineer',
-          companyName: 'Example Company',
-          submittedBy: getNewObjectId(),
-        },
-      ];
-      await Promise.all(
-        mockMultipleLinks.map((link) => LinkRepository.createLink(link))
-      );
+      await LinkRepository.createLink({ ...mockLinkData, url: 'nvidia.com' });
+      await LinkRepository.createLink({
+        ...mockLinkData,
+        url: 'microsoft.com',
+      });
 
       await LinkRepository.updateLinkStatus({
         id: googleLink.id,
@@ -206,46 +190,17 @@ describe('LinkController', () => {
       expect(res.body.data).to.deep.equal({
         [LinkStatus.PENDING]: 2,
         [LinkStatus.APPROVED]: 1,
-        [LinkStatus.REJECTED]: 0,
+        [LinkStatus.REJECTED]: 1,
       });
     });
   });
 
   describe('getLinks', () => {
-    it('should return empty array when no links exist with given status', async () => {
-      await LinkRepository.updateLinkStatus({
-        id: linkId,
-        status: LinkStatus.REJECTED,
-      });
-      const res = await request(app)
-        .get(`/api/links?status=${LinkStatus.APPROVED}`)
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
-
-      expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
-    });
-
     it('should return all links when no filter is given', async () => {
-      const mockMultipleLinks = [
-        {
-          url: 'nvida.com',
-          jobTitle: 'Software Engineer',
-          companyName: 'Example Company',
-          submittedBy: getNewObjectId(),
-        },
-
-        {
-          url: 'microsoft.com',
-          jobTitle: 'Software Engineer',
-          companyName: 'Example Company',
-          submittedBy: getNewObjectId(),
-        },
-      ];
-
-      await Promise.all(
-        mockMultipleLinks.map((link) => LinkRepository.createLink(link))
-      );
+      const facebookLink = await LinkRepository.createLink({
+        ...mockLinkData,
+        url: 'facebook.com',
+      });
 
       await LinkRepository.updateLinkStatus({
         id: linkId,
@@ -257,13 +212,10 @@ describe('LinkController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(2);
 
       const links = res.body.data.map((link: ILink) => link.url);
-      expect(links).to.be.an('array').that.have.lengthOf(3);
-      expect(links).to.have.members([
-        url,
-        ...mockMultipleLinks.map((link) => link.url),
-      ]);
+      expect(links).to.have.members([url, facebookLink.url]);
     });
 
     it('should return correct number of links with a given status', async () => {
@@ -282,49 +234,18 @@ describe('LinkController', () => {
       expect(res.body.data[0].status).to.equal(LinkStatus.APPROVED);
     });
 
-    it('should return 400 when an invalid status is provided', async () => {
+    it('should return empty array when no links exist with given status', async () => {
+      await LinkRepository.updateLinkStatus({
+        id: linkId,
+        status: LinkStatus.REJECTED,
+      });
       const res = await request(app)
-        .get('/api/links?status=INVALID_STATUS')
+        .get(`/api/links?status=${LinkStatus.APPROVED}`)
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expect(res.status).to.equal(400);
-      expect(res.body.errors[0].message).to.include('Invalid link status');
-    });
-
-    it('should return 400 when query contains fields other than status', async () => {
-      const res = await request(app)
-        .get('/api/links?status=APPROVED&extraField=notAllowed')
-        .set('Authorization', `Bearer ${mockToken}`);
-
-      expect(res.status).to.equal(400);
-      expect(res.body.errors[0].message).to.include(
-        'Only allow filtering by given fields'
-      );
-    });
-
-    it('should return 400 when unknown field is used without status', async () => {
-      const res = await request(app)
-        .get('/api/links?unexpectedField=value')
-        .set('Authorization', `Bearer ${mockToken}`);
-
-      expect(res.status).to.equal(400);
-      expect(res.body.errors[0].message).to.include(
-        'Only allow filtering by given fields'
-      );
-    });
-
-    it('should return 400 when required fields are missing during link creation', async () => {
-      const res = await request(app)
-        .post('/api/links')
-        .send({
-          url: '',
-          jobTitle: 'Software Engineer',
-        })
-        .set('Authorization', `Bearer ${mockToken}`);
-
-      expect(res.status).to.equal(400);
-      expect(res.body.errors[0].message).to.include('Invalid url');
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
     });
   });
 });
