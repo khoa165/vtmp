@@ -9,15 +9,13 @@ import axios from 'axios';
 export const useGetJobPostings = () => {
   return useQuery({
     queryKey: [QueryKey.GET_JOB_POSTINGS],
-    queryFn: async () => {
-      const response = await request(
-        Method.GET,
-        '/job-postings/not-applied',
-        null,
-        JobPostingsResponseSchema
-      );
-      return response.data;
-    },
+    queryFn: () =>
+      request({
+        method: Method.GET,
+        url: '/job-postings/not-applied',
+        schema: JobPostingsResponseSchema,
+        options: { includeOnlyDataField: true },
+      }),
   });
 };
 
