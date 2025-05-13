@@ -22,7 +22,7 @@ export const authenticate = async (
   const parsed = JWTUtils.decodeAndParseToken(token, DecodedJWTSchema);
   const user = await UserService.getUserById(parsed.id);
 
-  req.user = { id: String(user._id) };
+  req.user = { id: String(user._id), role: user.role };
 
   next();
 };
