@@ -24,7 +24,12 @@ export const useCreateApplication = () => {
 
   return useMutation({
     mutationFn: (body: { jobPostingId: string }) =>
-      request(Method.POST, `/applications`, body, ApplicationResponseSchema),
+      request({
+        method: Method.POST,
+        url: '/applications',
+        data: body,
+        schema: ApplicationResponseSchema,
+      }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_JOB_POSTINGS],
