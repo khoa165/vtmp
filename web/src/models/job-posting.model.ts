@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { JobPostingLocation } from '@vtmp/common/constants';
+import { JobPostingRegion } from '@vtmp/common/constants';
 
 export interface IJobPosting extends Document {
   _id: Types.ObjectId;
@@ -8,7 +8,7 @@ export interface IJobPosting extends Document {
   url: string;
   jobTitle: string;
   companyName: string;
-  location: JobPostingLocation;
+  location: JobPostingRegion;
   datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
@@ -40,8 +40,8 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
     },
     location: {
       type: String,
-      enum: Object.values(JobPostingLocation),
-      default: JobPostingLocation.US,
+      enum: Object.values(JobPostingRegion),
+      default: JobPostingRegion.US,
     },
     datePosted: {
       type: Date,

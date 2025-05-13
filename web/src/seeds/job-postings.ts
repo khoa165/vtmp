@@ -1,7 +1,7 @@
 import { IJobPosting, JobPostingModel } from '@/models/job-posting.model';
 import { ILink } from '@/models/link.model';
 import { faker } from '@faker-js/faker';
-import { CompanyName, JobPostingLocation } from '@vtmp/common/constants';
+import { CompanyName, JobPostingRegion } from '@vtmp/common/constants';
 
 export const loadJobPostings = async (
   links: ILink[]
@@ -19,7 +19,7 @@ export const loadJobPostings = async (
     url: link.url,
     jobTitle: faker.person.jobTitle(),
     companyName: formatCompanyName(faker.helpers.enumValue(CompanyName)),
-    location: faker.helpers.enumValue(JobPostingLocation),
+    location: faker.helpers.enumValue(JobPostingRegion),
   }));
 
   const jobPostings = await JobPostingModel.insertMany(newJobPostings);

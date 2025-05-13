@@ -49,6 +49,8 @@ export const request: IRequest = async <
     url,
     ...(method === Method.GET ? { params: data } : { data }),
   });
+  console.log(response.data);
+
   const parsedData = schema.parse(response.data);
 
   return includeOnlyDataField ? parsedData.data : parsedData;

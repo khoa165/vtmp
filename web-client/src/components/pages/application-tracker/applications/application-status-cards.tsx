@@ -1,7 +1,7 @@
 import { Card } from '@/components/base/card';
 import { StatusDot } from '@/components/base/status-dot';
 import { useGetApplicationsCountByStatus } from '@/components/pages/application-tracker/applications/hooks/applications';
-import { titleCase } from '@/utils/helpers';
+import { formatStatus } from '@/utils/helpers';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import { useState } from 'react';
 
@@ -19,11 +19,13 @@ export const ApplicationStatusCards = ({
   } = useGetApplicationsCountByStatus();
 
   if (isLoading) {
+    // TODO-(QuangMinhNguyen27405/dsmai): Remove this console log in production and add a loading spinner
     console.log('Applications count loading...');
     return <span>Loading applications count data...</span>;
   }
 
   if (isError) {
+    // TODO-(QuangMinhNguyen27405/dsmai) : Remove this and add a toast error message. Add react-error-boundary
     console.error('Error fetching application count data:', error);
     // return (
     //   <span>Error: {error.message || 'Failed to load summary data.'}</span>
@@ -35,10 +37,7 @@ export const ApplicationStatusCards = ({
     (status) => status != ApplicationStatus.REJECTED
   );
 
-  // What I want to do: I want register when I click on the status box
-  // it has to reinvalidate GET_APPLICATIONS queryKey and refetch useGetApplications with filter being the status selected
   const handleStatusClick = (status: ApplicationStatus) => {
-    // If the already existing status match the new status
     if (selectedStatus === status) {
       setSelectedStatus(null);
       setFilter({});
@@ -53,7 +52,7 @@ export const ApplicationStatusCards = ({
       {allDisplayedStatus.map((displayedStatus, index) => (
         <Card
           key={index}
-          className={`bg-transparent h-fit cursor-pointer transition-colors duration-200 ${
+          className={`active:bg-gray-300 bg-transparent h-fit cursor-pointer transition-colors duration-200 ${
             selectedStatus === displayedStatus
               ? 'bg-[#FEFEFE] text-[#333333]'
               : 'hover:bg-[#FEFEFE] hover:text-[#333333]'
@@ -67,9 +66,7 @@ export const ApplicationStatusCards = ({
             <div className="flex flex-row items-center gap-2">
               <StatusDot status={displayedStatus} />
               <span className="font-bold max-lg:text-[0.7rem] text-wrap">
-                {displayedStatus === ApplicationStatus.OA
-                  ? displayedStatus
-                  : titleCase(displayedStatus)}
+                {formatStatus(displayedStatus)}
               </span>
             </div>
           </section>

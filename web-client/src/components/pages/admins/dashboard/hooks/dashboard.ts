@@ -3,7 +3,6 @@ import { request } from '@/utils/api';
 import { Method, QueryKey } from '@/utils/constants';
 import { toast } from 'sonner';
 import {
-  DashBoardLinkResponseSchema,
   DashBoardLinksResponseSchema,
   JobPostingResponseSchema,
   LinksCountByStatusSchema,
@@ -25,19 +24,17 @@ export const useGetDashBoardLinks = (filter: { status?: LinkStatus } = {}) => {
   });
 };
 
-export const useGetDashBoardLinkById = (linkId: string) => {
-  return useQuery({
-    queryKey: [QueryKey.GET_DASHBOARD_LINKS],
-    queryFn: async () => {
-      const response = await request({
+export const useGetLinksCountByStatus = () =>
+  useQuery({
+    queryKey: [QueryKey.GET_LINKS_COUNT_BY_STATUS],
+    queryFn: () =>
+      request({
         method: Method.GET,
-        url: `/links/getLink/${linkId}`,
-        schema: DashBoardLinkResponseSchema,
-      });
-      return response.data;
-    },
+        url: '/links/count-by-status',
+        schema: LinksCountByStatusSchema,
+        options: { includeOnlyDataField: true },
+      }),
   });
-};
 
 export const useApproveDashBoardLink = () => {
   const queryClient = useQueryClient();
@@ -59,6 +56,9 @@ export const useApproveDashBoardLink = () => {
     onSuccess: (res) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_DASHBOARD_LINKS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_LINKS_COUNT_BY_STATUS],
       });
       toast.success(res.message);
     },
@@ -90,6 +90,9 @@ export const useRejectDashBoardLink = () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_DASHBOARD_LINKS],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_LINKS_COUNT_BY_STATUS],
+      });
       toast.success(res.message);
     },
     onError: (error: unknown) => {
@@ -104,15 +107,3 @@ export const useRejectDashBoardLink = () => {
     },
   });
 };
-
-export const useGetLinksCountByStatus = () =>
-  useQuery({
-    queryKey: [QueryKey.GET_LINKS_COUNT_BY_STATUS],
-    queryFn: () =>
-      request({
-        method: Method.GET,
-        url: '/links/count-by-status',
-        schema: LinksCountByStatusSchema,
-        options: { includeOnlyDataField: true },
-      }),
-  });
