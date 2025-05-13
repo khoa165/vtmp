@@ -154,6 +154,7 @@ export enum QueryKey {
   GET_APPLICATIONS = '/api/applications',
   GET_APPLICATIONS_COUNT_BY_STATUS = '/api/applications/countByStatus',
   GET_DASHBOARD_LINKS = '/api/links/getLinks',
+  GET_LINKS_COUNT_BY_STATUS = '/api/links/count-by-status',
 }
 
 export enum Method {

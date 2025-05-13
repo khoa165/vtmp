@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { JobPostingLocation } from '@vtmp/common/constants';
+import { JobPostingLocation, LinkStatus } from '@vtmp/common/constants';
 
 const DashBoardLinkSchema = z.object({
   _id: z.string(),
@@ -31,6 +31,15 @@ export const JobPostingResponseSchema = z.object({
   message: z.string(),
   data: DashBoardLinkSchema.omit({
     status: true,
+  }),
+});
+
+export const LinksCountByStatusSchema = z.object({
+  message: z.string(),
+  data: z.object({
+    [LinkStatus.PENDING]: z.number(),
+    [LinkStatus.APPROVED]: z.number(),
+    [LinkStatus.REJECTED]: z.number(),
   }),
 });
 

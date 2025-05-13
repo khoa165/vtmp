@@ -6,20 +6,22 @@ import {
   DashBoardLinkResponseSchema,
   DashBoardLinksResponseSchema,
   JobPostingResponseSchema,
+  LinksCountByStatusSchema,
 } from '@/components/pages/admins/dashboard/validation';
 import axios from 'axios';
+import { LinkStatus } from '@vtmp/common/constants';
 
-export const useGetDashBoardLinks = () => {
+export const useGetDashBoardLinks = (filter: { status?: LinkStatus } = {}) => {
   return useQuery({
-    queryKey: [QueryKey.GET_DASHBOARD_LINKS],
-    queryFn: async () => {
-      const response = await request({
+    queryKey: [QueryKey.GET_DASHBOARD_LINKS, filter],
+    queryFn: () =>
+      request({
         method: Method.GET,
         url: '/links',
         schema: DashBoardLinksResponseSchema,
-      });
-      return response.data;
-    },
+        data: filter,
+        options: { includeOnlyDataField: true },
+      }),
   });
 };
 
@@ -102,3 +104,15 @@ export const useRejectDashBoardLink = () => {
     },
   });
 };
+
+export const useGetLinksCountByStatus = () =>
+  useQuery({
+    queryKey: [QueryKey.GET_LINKS_COUNT_BY_STATUS],
+    queryFn: () =>
+      request({
+        method: Method.GET,
+        url: '/links/count-by-status',
+        schema: LinksCountByStatusSchema,
+        options: { includeOnlyDataField: true },
+      }),
+  });

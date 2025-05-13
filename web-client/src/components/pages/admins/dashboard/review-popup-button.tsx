@@ -11,7 +11,6 @@ import { Label } from '@/components/base/label';
 import ReviewPopupInput from '@/components/pages/admins/dashboard/review-popup-input';
 import { Textarea } from '@/components/base/textarea';
 import { useState } from 'react';
-import { parse } from 'date-fns';
 
 export const ReviewPopupButton = ({
   linkId,
@@ -26,6 +25,12 @@ export const ReviewPopupButton = ({
 }) => {
   const [jobDescriptionValue, setJobDescriptionValue] =
     useState(jobDescription);
+  const [currentCountry, setCurrentCountry] = useState(location);
+  const [urlValue, setUrl] = useState(url);
+  const [jobTitleValue, setJobTitleValue] = useState(jobTitle);
+  const [companyNameValue, setCompanyNameValue] = useState(companyName);
+  const [datePostedValue, setDatePostedValue] = useState(datePosted);
+
   return (
     <Dialog>
       <DialogTrigger className="cursor-pointer">
@@ -37,34 +42,38 @@ export const ReviewPopupButton = ({
         <DialogHeader>
           <DialogTitle>Review Link Submission</DialogTitle>
         </DialogHeader>
-        <ReviewPopupInput label={'URL'} placeHolder={'URL'} value={url} />
         <ReviewPopupInput
-          label={'Submitted By'}
-          placeHolder={'Username'}
-          value={'username'}
+          label={'URL'}
+          placeHolder={'URL'}
+          value={urlValue}
+          setValue={setUrl}
         />
         <div className="grid grid-cols-2 gap-4">
           <ReviewPopupInput
             label={'Job Title'}
             placeHolder={'Job Title'}
-            value={jobTitle}
+            value={jobTitleValue}
+            setValue={setJobTitleValue}
           />
           <ReviewPopupInput
             label={'Company Name'}
             placeHolder={'Company Name'}
-            value={companyName}
+            value={companyNameValue}
+            setValue={setCompanyNameValue}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <ReviewPopupInput
-            label={'Location'}
-            placeHolder={'Location'}
-            value={location}
+            label={'Country'}
+            placeHolder={'US/CANADA'}
+            value={currentCountry}
+            setValue={setCurrentCountry}
           />
           <ReviewPopupInput
             label={'Date Posted'}
             placeHolder={'MM/dd/yyyy'}
-            value={datePosted}
+            value={datePostedValue}
+            setValue={setDatePostedValue}
           />
         </div>
         <div className="flex flex-col items-start gap-2">
@@ -94,11 +103,11 @@ export const ReviewPopupButton = ({
             onClick={() => {
               const newUpdate = {
                 jobDescription: jobDescriptionValue,
-                url: url,
-                companyName: companyName,
-                jobTitle: jobTitle,
-                location: location,
-                datePosted: parse(datePosted, 'MM/dd/yyyy', new Date()),
+                url: urlValue,
+                companyName: companyNameValue,
+                jobTitle: jobTitleValue,
+                location: currentCountry,
+                datePosted: datePostedValue,
               };
               approveDashBoardLinkFn({ linkId, newUpdate });
             }}

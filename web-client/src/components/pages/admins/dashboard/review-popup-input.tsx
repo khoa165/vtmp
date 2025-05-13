@@ -1,9 +1,6 @@
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-import { useState } from 'react';
-const ReviewPopupInput = ({ label, placeHolder, value }) => {
-  const [textValue, settextValue] = useState(value);
-
+const ReviewPopupInput = ({ label, placeHolder, setValue, value }) => {
   return (
     <div className="flex flex-col items-start gap-2">
       <Label htmlFor="username" className="text-right">
@@ -13,10 +10,11 @@ const ReviewPopupInput = ({ label, placeHolder, value }) => {
         id="username"
         className="col-span-3"
         placeholder={placeHolder}
-        value={textValue}
+        value={value}
         onChange={(e) => {
-          settextValue(e.target.value);
+          setValue(e.target.value);
         }}
+        required
       />
     </div>
   );

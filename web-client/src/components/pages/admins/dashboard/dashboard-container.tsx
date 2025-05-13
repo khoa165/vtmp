@@ -5,8 +5,13 @@ import {
   useGetDashBoardLinks,
   useRejectDashBoardLink,
 } from '@/components/pages/admins/dashboard/hooks/dashboard';
-export const DashBoardContainer = () => {
-  const { isLoading, isError, error, data: linksData } = useGetDashBoardLinks();
+export const DashBoardContainer = ({ filter }) => {
+  const {
+    isLoading,
+    isError,
+    error,
+    data: linksData,
+  } = useGetDashBoardLinks(filter);
   const { mutate: approveDashBoardLinkFn } = useApproveDashBoardLink();
   const { mutate: rejectDashBoardLinkFn } = useRejectDashBoardLink();
   if (isLoading) {

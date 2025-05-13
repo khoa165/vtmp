@@ -21,8 +21,20 @@ export const dashboardTableColumns = ({
   rejectDashBoardLinkFn: ({ linkId }: { linkId: string }) => void;
 }): ColumnDef<IDashBoardLink>[] => [
   {
-    accessorKey: 'url',
     header: 'URL',
+    cell: ({ row }) => {
+      const { url } = row.original;
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 underline cursor-pointer"
+        >
+          {url}
+        </a>
+      );
+    },
   },
 
   {
