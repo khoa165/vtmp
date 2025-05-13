@@ -7,6 +7,7 @@ export const LinkRoutes = Router();
 
 // LinkRoutes.use(wrappedHandlers([authenticate]));
 LinkRoutes.post('/', wrappedHandlers([LinkController.submitLink]));
+LinkRoutes.get('/', wrappedHandlers([LinkController.getLinks]));
 LinkRoutes.get(
   '/count-by-status',
   wrappedHandlers([LinkController.getLinkCountByStatus])

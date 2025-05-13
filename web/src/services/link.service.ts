@@ -70,4 +70,8 @@ export const LinkService = {
       ])
     );
   },
+
+  getLinks: async (filters?: object) => {
+    return LinkRepository.getLinks(filters);
+  },
 };
