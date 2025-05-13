@@ -368,14 +368,17 @@ describe('InvitationController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-
-      const { expiryDate, ...nonDateInvitation } = mockOneInvitation;
-      const timeDiff = differenceInSeconds(
-        res.body.data.expiryDate,
-        expiryDate
+      expect(res.body.data).to.deep.include(
+        omit(mockOneInvitation, ['expiryDate'])
       );
 
-      expect(res.body.data).to.deep.include(nonDateInvitation);
+      const timeDiff = Math.abs(
+        differenceInSeconds(
+          res.body.data.expiryDate,
+          mockOneInvitation.expiryDate
+        )
+      );
+
       expect(timeDiff).to.lessThan(3);
       expect(res.body.data.status).to.equal(InvitationStatus.REVOKED);
     });
