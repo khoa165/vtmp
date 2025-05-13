@@ -53,16 +53,15 @@ export const InterviewService = {
   },
 
   getInterviews: async ({
-    userId,
-    filters,
+    filters = {},
   }: {
-    userId: string;
     filters: {
+      userId?: string;
       applicationId?: string;
       status?: InterviewStatus;
     };
   }): Promise<IInterview[]> => {
-    return InterviewRepository.getInterviews({ userId, filters });
+    return InterviewRepository.getInterviews({ filters });
   },
 
   updateInterviewById: async ({

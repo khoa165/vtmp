@@ -43,12 +43,11 @@ export const InterviewRepository = {
   },
 
   getInterviews: async ({
-    userId,
     filters = {},
     session,
   }: {
-    userId: string;
     filters: {
+      userId?: string;
       applicationId?: string;
       status?: InterviewStatus;
     };
@@ -56,7 +55,6 @@ export const InterviewRepository = {
   }): Promise<IInterview[]> => {
     return InterviewModel.find(
       {
-        userId,
         deletedAt: null,
         ...filters,
       },

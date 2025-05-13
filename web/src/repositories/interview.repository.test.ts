@@ -127,8 +127,9 @@ describe('Interview Repository', () => {
       await InterviewRepository.createInterview(mockInterview_A0);
 
       const interviews = await InterviewRepository.getInterviews({
-        userId: userId_B,
-        filters: {},
+        filters: {
+          userId: userId_B,
+        },
       });
 
       assert(interviews);
@@ -147,8 +148,9 @@ describe('Interview Repository', () => {
       });
 
       const interviews = await InterviewRepository.getInterviews({
-        userId: userId_A,
-        filters: {},
+        filters: {
+          userId: userId_A,
+        },
       });
 
       assert(interviews);
@@ -165,8 +167,9 @@ describe('Interview Repository', () => {
       await InterviewRepository.createInterview(mockInterview_B0);
 
       const interviews = await InterviewRepository.getInterviews({
-        userId: userId_A,
-        filters: {},
+        filters: {
+          userId: userId_A,
+        },
       });
 
       assert(interviews);
@@ -181,8 +184,8 @@ describe('Interview Repository', () => {
       await InterviewRepository.createInterview(mockInterview_A0);
 
       const interviews = await InterviewRepository.getInterviews({
-        userId: userId_A,
         filters: {
+          userId: userId_A,
           applicationId: getNewMongoId(),
         },
       });
@@ -202,8 +205,8 @@ describe('Interview Repository', () => {
       });
 
       const interviews = await InterviewRepository.getInterviews({
-        userId: userId_A,
         filters: {
+          userId: userId_A,
           applicationId: metaApplicationId,
         },
       });
@@ -222,8 +225,8 @@ describe('Interview Repository', () => {
       await InterviewRepository.createInterview(mockInterview_A1);
 
       const interviews = await InterviewRepository.getInterviews({
-        userId: userId_A,
         filters: {
+          userId: userId_A,
           applicationId: metaApplicationId,
         },
       });
@@ -242,8 +245,10 @@ describe('Interview Repository', () => {
         await InterviewRepository.createInterview(mockInterview_A2);
 
       const interviews = await InterviewRepository.getInterviews({
-        userId: userId_A,
-        filters: { status: InterviewStatus.PENDING },
+        filters: {
+          userId: userId_A,
+          status: InterviewStatus.PENDING,
+        },
       });
 
       assert(interviews);
@@ -257,8 +262,10 @@ describe('Interview Repository', () => {
       await InterviewRepository.createInterview(mockInterview_A0);
 
       const interviews = await InterviewRepository.getInterviews({
-        userId: userId_A,
-        filters: { status: InterviewStatus.PENDING },
+        filters: {
+          userId: userId_A,
+          status: InterviewStatus.PENDING,
+        },
       });
 
       assert(interviews);
@@ -271,8 +278,8 @@ describe('Interview Repository', () => {
         await InterviewRepository.createInterview(mockInterview_A2);
 
       const interviews = await InterviewRepository.getInterviews({
-        userId: userId_A,
         filters: {
+          userId: userId_A,
           applicationId: metaApplicationId,
           status: InterviewStatus.PENDING,
         },

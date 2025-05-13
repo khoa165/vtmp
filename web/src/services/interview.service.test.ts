@@ -151,8 +151,9 @@ describe('InterviewService', () => {
       await InterviewRepository.createInterview(mockInterview_A0);
 
       const interviews = await InterviewService.getInterviews({
-        userId: userId_B,
-        filters: {},
+        filters: {
+          userId: userId_B,
+        },
       });
 
       assert(interviews);
@@ -169,8 +170,7 @@ describe('InterviewService', () => {
       });
 
       const interviews = await InterviewService.getInterviews({
-        userId: userId_A,
-        filters: {},
+        filters: { userId: userId_A },
       });
 
       assert(interviews);
@@ -191,8 +191,7 @@ describe('InterviewService', () => {
       await InterviewRepository.createInterview(mockInterview_B0);
 
       const interviews = await InterviewService.getInterviews({
-        userId: userId_A,
-        filters: {},
+        filters: { userId: userId_A },
       });
 
       assert(interviews);
@@ -208,8 +207,10 @@ describe('InterviewService', () => {
       await InterviewRepository.createInterview(mockInterview_A1);
 
       const interviews = await InterviewService.getInterviews({
-        userId: userId_A,
-        filters: { applicationId: getNewMongoId() },
+        filters: {
+          userId: userId_A,
+          applicationId: getNewMongoId(),
+        },
       });
 
       assert(interviews);
@@ -226,8 +227,10 @@ describe('InterviewService', () => {
       });
 
       const interviews = await InterviewService.getInterviews({
-        userId: userId_A,
-        filters: { applicationId: googleApplicationId },
+        filters: {
+          userId: userId_A,
+          applicationId: googleApplicationId,
+        },
       });
 
       assert(interviews);
@@ -248,8 +251,10 @@ describe('InterviewService', () => {
       await InterviewRepository.createInterview(mockInterview_B0);
 
       const interviews = await InterviewService.getInterviews({
-        userId: userId_A,
-        filters: { applicationId: mockInterview_A0.applicationId },
+        filters: {
+          userId: userId_A,
+          applicationId: mockInterview_A0.applicationId,
+        },
       });
 
       assert(interviews);
@@ -265,8 +270,10 @@ describe('InterviewService', () => {
       await InterviewRepository.createInterview(mockInterview_A1);
 
       const interviews = await InterviewService.getInterviews({
-        userId: userId_A,
-        filters: { status: InterviewStatus.UPCOMING },
+        filters: {
+          userId: userId_A,
+          status: InterviewStatus.UPCOMING,
+        },
       });
 
       assert(interviews);
@@ -285,8 +292,10 @@ describe('InterviewService', () => {
       await InterviewRepository.createInterview(mockInterview_A1);
 
       const interviews = await InterviewService.getInterviews({
-        userId: userId_A,
-        filters: { status: InterviewStatus.FAILED },
+        filters: {
+          userId: userId_A,
+          status: InterviewStatus.FAILED,
+        },
       });
 
       assert(interviews);
@@ -299,8 +308,8 @@ describe('InterviewService', () => {
       await InterviewRepository.createInterview(mockInterview_B0);
 
       const interviews = await InterviewService.getInterviews({
-        userId: userId_A,
         filters: {
+          userId: userId_A,
           applicationId: mockInterview_A0.applicationId,
           status: InterviewStatus.PASSED,
         },
