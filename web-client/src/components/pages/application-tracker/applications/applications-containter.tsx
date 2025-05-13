@@ -5,16 +5,29 @@ import {
   useDeleteApplication,
   useUpdateApplicationStatus,
 } from '@/components/pages/application-tracker/applications/hooks/applications';
+import { useMemo, useState } from 'react';
+import { SortingState } from '@tanstack/react-table';
 
-export const ApplicationsContainer = (): React.JSX.Element | null => {
+export const ApplicationsContainer = ({ filter }): React.JSX.Element | null => {
   const {
     isLoading,
     isError,
     error,
     data: applicationsData,
-  } = useGetApplications();
+  } = useGetApplications(filter);
   const { mutate: deleteApplicationFn } = useDeleteApplication();
   const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const columns = useMemo(
+    () =>
+      applicationsTableColumns({
+        deleteApplicationFn,
+        updateApplicationStatusFn,
+      }),
+    [deleteApplicationFn, updateApplicationStatusFn]
+  );
 
   if (isLoading) {
     // TODO-(QuangMinhNguyen27405/dsmai): Remove this console log in production and add a loading spinner
@@ -39,11 +52,10 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
 
   return (
     <ApplicationsTable
-      columns={applicationsTableColumns({
-        deleteApplicationFn,
-        updateApplicationStatusFn,
-      })}
+      columns={columns}
       data={applicationsData}
+      sorting={sorting}
+      setSorting={setSorting}
     />
   );
 };
