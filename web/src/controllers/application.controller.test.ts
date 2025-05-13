@@ -431,8 +431,8 @@ describe('ApplicationController', () => {
       expect(res.body.data).to.have.property('status', 'REJECTED');
 
       const interviews = await InterviewRepository.getInterviews({
-        userId: savedUserId,
         filters: {
+          userId: savedUserId,
           applicationId: application.id,
           status: InterviewStatus.FAILED,
         },
