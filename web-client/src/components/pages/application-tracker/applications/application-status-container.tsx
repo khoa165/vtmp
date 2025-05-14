@@ -20,8 +20,8 @@ export const ApplicationStatusContainer = ({
   if (isLoading) {
     return (
       <div className="grid grid-cols-5 w-full gap-4 mb-6 max-md:grid-rows-6">
-        {Array.from({ length: 5 }).map(() => (
-          <Skeleton className="w-full h-[8rem] rounded-xl" />
+        {Array.from({ length: 5 }).map((_, index) => (
+          <Skeleton key={index} className="w-full h-[8rem] rounded-xl" />
         ))}
       </div>
     );
