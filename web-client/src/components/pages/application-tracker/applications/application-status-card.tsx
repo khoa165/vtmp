@@ -9,7 +9,6 @@ export const ApplicationStatusCard = ({
   onClick,
   isSelected,
 }: {
-  isSkeleton?: boolean;
   status?: ApplicationStatus;
   count?: number;
   onClick?: () => void;
