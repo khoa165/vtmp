@@ -9,6 +9,7 @@ export const InterviewRepository = {
     type,
     status,
     interviewOnDate,
+    companyName,
     note,
   }: {
     applicationId: string;
@@ -16,6 +17,7 @@ export const InterviewRepository = {
     type: InterviewType[];
     status?: InterviewStatus;
     interviewOnDate: Date;
+    companyName?: string;
     note?: string;
   }): Promise<IInterview> => {
     return InterviewModel.create({
@@ -24,6 +26,7 @@ export const InterviewRepository = {
       type,
       status,
       interviewOnDate,
+      companyName,
       note,
     });
   },
@@ -50,6 +53,7 @@ export const InterviewRepository = {
       userId?: string;
       applicationId?: string;
       status?: InterviewStatus;
+      companyName?: string;
     };
     session?: ClientSession;
   }): Promise<IInterview[]> => {

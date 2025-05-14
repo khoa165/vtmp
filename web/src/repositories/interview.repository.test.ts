@@ -20,6 +20,7 @@ describe('Interview Repository', () => {
     type: [InterviewType.CODE_REVIEW],
     interviewOnDate: new Date('2025-06-07'),
     status: InterviewStatus.PASSED,
+    companyName: 'Meta',
   };
 
   const mockInterview_A1 = {
@@ -28,6 +29,7 @@ describe('Interview Repository', () => {
     type: [InterviewType.CODE_REVIEW],
     interviewOnDate: new Date('2025-06-07'),
     status: InterviewStatus.FAILED,
+    companyName: 'Google',
   };
 
   const mockInterview_A2 = {
@@ -35,6 +37,7 @@ describe('Interview Repository', () => {
     userId: userId_A,
     type: [InterviewType.CODE_REVIEW],
     interviewOnDate: new Date('2025-06-07'),
+    companyName: 'Meta',
   };
 
   const mockInterview_B0 = {
@@ -43,6 +46,16 @@ describe('Interview Repository', () => {
     type: [InterviewType.CODE_REVIEW],
     interviewOnDate: new Date('2025-06-07'),
     status: InterviewStatus.PENDING,
+    companyName: 'Netflix',
+  };
+
+  const mockInterview_B1 = {
+    applicationId: getNewMongoId(),
+    userId: userId_B,
+    type: [InterviewType.CODE_REVIEW],
+    interviewOnDate: new Date('2025-06-07'),
+    status: InterviewStatus.PENDING,
+    companyName: 'Meta',
   };
 
   describe('createInterview', () => {
@@ -123,7 +136,7 @@ describe('Interview Repository', () => {
   });
 
   describe('getInterviews', () => {
-    it('should return an empty array if the authorized user has no interviews', async () => {
+    it('should return an empty array if no interviews belongs to the provided userId', async () => {
       await InterviewRepository.createInterview(mockInterview_A0);
 
       const interviews = await InterviewRepository.getInterviews({
@@ -136,7 +149,7 @@ describe('Interview Repository', () => {
       expect(interviews).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('should not include soft-deleted interviews', async () => {
+    it('should not include soft-deleted interviews belong to the provided userId', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
       const interview_A1 =
@@ -159,7 +172,7 @@ describe('Interview Repository', () => {
       expect(interviews[0].id).to.equal(interview_A1.id);
     });
 
-    it('should return only interviews belonging to the authorized user', async () => {
+    it('should return only interviews belonging to the provided userId', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
       const interview_A1 =
@@ -272,7 +285,71 @@ describe('Interview Repository', () => {
       expect(interviews).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('should return only the interviews belonging to the applicationId that have the provided status', async () => {
+    it('should return an empty array when filtering by a companyName that no interview has', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+      await InterviewRepository.createInterview(mockInterview_A2);
+
+      const interviews = await InterviewRepository.getInterviews({
+        filters: {
+          companyName: 'Google',
+        },
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should return interviews of all users belongs to the provided companyName', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+      const interview_A2 =
+        await InterviewRepository.createInterview(mockInterview_A2);
+      const interview_B1 =
+        await InterviewRepository.createInterview(mockInterview_B1);
+
+      const interviews = await InterviewRepository.getInterviews({
+        filters: {
+          companyName: 'Meta',
+        },
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(3);
+      expect(interviews.map((interview) => interview.id)).to.have.members([
+        interview_A0.id,
+        interview_A2.id,
+        interview_B1.id,
+      ]);
+    });
+
+    it('should not include soft-deleted interviews when filter by companyName', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+      const interview_A2 =
+        await InterviewRepository.createInterview(mockInterview_A2);
+      const interview_B1 =
+        await InterviewRepository.createInterview(mockInterview_B1);
+
+      await InterviewRepository.deleteInterviewById({
+        interviewId: interview_A0.id,
+        userId: userId_A,
+      });
+
+      const interviews = await InterviewRepository.getInterviews({
+        filters: {
+          companyName: 'Meta',
+        },
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(2);
+      expect(interviews.map((interview) => interview.id)).to.have.members([
+        interview_A2.id,
+        interview_B1.id,
+      ]);
+    });
+
+    it('should return only the interviews belonging to the userId and applicationId that have the provided status', async () => {
       await InterviewRepository.createInterview(mockInterview_A0);
       const interview_A2 =
         await InterviewRepository.createInterview(mockInterview_A2);
@@ -360,6 +437,7 @@ describe('Interview Repository', () => {
         interviewOnDate: new Date('2025-08-10'),
         type: [InterviewType.PROJECT_WALKTHROUGH, InterviewType.HIRING_MANAGER],
         status: InterviewStatus.PENDING,
+        companyName: 'Google',
         note: 'This interview is updated.',
       });
     });

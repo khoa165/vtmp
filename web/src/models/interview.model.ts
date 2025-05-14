@@ -8,6 +8,7 @@ export interface IInterview extends Document {
   type: InterviewType[];
   status: InterviewStatus;
   interviewOnDate: Date;
+  companyName?: string;
   note?: string;
   deletedAt?: Date;
 }
@@ -35,6 +36,9 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
   interviewOnDate: {
     type: Date,
     required: true,
+  },
+  companyName: {
+    type: String,
   },
   note: {
     type: String,

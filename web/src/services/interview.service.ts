@@ -11,6 +11,7 @@ export const InterviewService = {
     type,
     status,
     interviewOnDate,
+    companyName,
     note,
   }: {
     applicationId: string;
@@ -18,6 +19,7 @@ export const InterviewService = {
     type: InterviewType[];
     status?: InterviewStatus;
     interviewOnDate: Date;
+    companyName?: string;
     note?: string;
   }): Promise<IInterview> => {
     return InterviewRepository.createInterview({
@@ -26,6 +28,7 @@ export const InterviewService = {
       type,
       ...(status !== undefined && { status }),
       interviewOnDate,
+      ...(companyName !== undefined && { companyName }),
       ...(note !== undefined && { note }),
     });
   },
@@ -59,6 +62,7 @@ export const InterviewService = {
       userId?: string;
       applicationId?: string;
       status?: InterviewStatus;
+      companyName?: string;
     };
   }): Promise<IInterview[]> => {
     return InterviewRepository.getInterviews({ filters });
