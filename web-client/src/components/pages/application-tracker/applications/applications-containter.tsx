@@ -31,8 +31,7 @@ export const ApplicationsContainer = ({ filter }): React.JSX.Element | null => {
   );
 
   if (isLoading) {
-    // return <span>Loading applications data...</span>;
-    return <Skeleton className="w-[100px] h-[20px] rounded-full" />;
+    return <Skeleton className="h-[32rem] w-full rounded-xl" />;
   }
 
   if (isError) {
