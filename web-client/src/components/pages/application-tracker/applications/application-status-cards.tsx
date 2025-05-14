@@ -4,6 +4,7 @@ import { useGetApplicationsCountByStatus } from '@/components/pages/application-
 import { formatStatus } from '@/utils/helpers';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import { useState } from 'react';
+import { Skeleton } from '@/components/base/skeleton';
 
 export const ApplicationStatusCards = ({
   setFilter,
@@ -19,9 +20,8 @@ export const ApplicationStatusCards = ({
   } = useGetApplicationsCountByStatus();
 
   if (isLoading) {
-    // TODO-(QuangMinhNguyen27405/dsmai): Remove this console log in production and add a loading spinner
-    console.log('Applications count loading...');
-    return <span>Loading applications count data...</span>;
+    // return <span>Loading applications count data...</span>;
+    return <Skeleton className="w-[100px] h-[20px] rounded-full" />;
   }
 
   if (isError) {

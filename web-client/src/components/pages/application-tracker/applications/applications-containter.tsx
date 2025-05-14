@@ -7,6 +7,7 @@ import {
 } from '@/components/pages/application-tracker/applications/hooks/applications';
 import { useMemo, useState } from 'react';
 import { SortingState } from '@tanstack/react-table';
+import { Skeleton } from '@/components/base/skeleton';
 
 export const ApplicationsContainer = ({ filter }): React.JSX.Element | null => {
   const {
@@ -30,9 +31,8 @@ export const ApplicationsContainer = ({ filter }): React.JSX.Element | null => {
   );
 
   if (isLoading) {
-    // TODO-(QuangMinhNguyen27405/dsmai): Remove this console log in production and add a loading spinner
-    console.log('Loading applications data...');
-    return <span>Loading applications data...</span>;
+    // return <span>Loading applications data...</span>;
+    return <Skeleton className="w-[100px] h-[20px] rounded-full" />;
   }
 
   if (isError) {
