@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { JobPostingService } from '@/services/job-posting.service';
 import { JobPostingLocation } from '@vtmp/common/constants';
-import { getUserFromRequest } from '@/middlewares/utils';
+// import { getUserFromRequest } from '@/middlewares/utils';
 
 const JobPostingUpdateSchema = z.object({
   externalPostingId: z.string().optional(),
@@ -45,7 +45,8 @@ export const JobPostingController = {
   },
 
   getJobPostingsUserHasNotAppliedTo: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    // const userId = getUserFromRequest(req).user.id;
+    const userId = '68110356bd157e78f5a2137e';
 
     const jobPostings =
       await JobPostingService.getJobPostingsUserHasNotAppliedTo(userId);

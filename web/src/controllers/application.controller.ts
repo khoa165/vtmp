@@ -69,7 +69,8 @@ export const ApplicationController = {
   createApplication: async (req: Request, res: Response) => {
     const { jobPostingId } = JobPostingIdParamSchema.parse(req.body);
 
-    const userId = getUserFromRequest(req).user.id;
+    // const userId = getUserFromRequest(req).user.id;
+    const userId = '68110356bd157e78f5a2137e';
 
     const newApplication = await ApplicationService.createApplication({
       jobPostingId,
