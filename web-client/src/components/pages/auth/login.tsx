@@ -45,9 +45,9 @@ const LoginPage = () => {
             err.message.toLowerCase().includes('email') ||
             err.message.toLowerCase().includes('user')
           ) {
-            setEmailErrors([...emailErrors, err.message]);
+            setEmailErrors([err.message]);
           } else if (err.message.toLowerCase().includes('password')) {
-            setPasswordErrors([...passwordErrors, err.message]);
+            setPasswordErrors([err.message]);
           }
         });
       } else {
