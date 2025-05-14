@@ -2,8 +2,8 @@ import { Router } from 'express';
 import { ApplicationController } from '@/controllers/application.controller';
 // import { authenticate } from '@/middlewares/auth.middleware';
 import { wrappedHandlers } from '@/middlewares/utils';
-import { hasPermission } from '@/middlewares/authorization.middleware';
-import { Permission } from '@vtmp/common/constants';
+// import { hasPermission } from '@/middlewares/authorization.middleware';
+// import { Permission } from '@vtmp/common/constants';
 
 export const ApplicationRoutes = Router();
 
@@ -11,7 +11,7 @@ export const ApplicationRoutes = Router();
 ApplicationRoutes.post(
   '/',
   wrappedHandlers([
-    hasPermission(Permission.MANAGE_APPLICATION),
+    // hasPermission(Permission.MANAGE_APPLICATION),
     ApplicationController.createApplication,
   ])
 );
