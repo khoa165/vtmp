@@ -31,7 +31,19 @@ export const ApplicationsContainer = ({ filter }): React.JSX.Element | null => {
   );
 
   if (isLoading) {
-    return <Skeleton className="h-[32rem] w-full rounded-xl" />;
+    return (
+      <>
+        <div className="flex items-center justify-between py-4">
+          {/* Skeleton for Filter Input */}
+          <Skeleton className="h-10 w-[24rem] rounded-md" />
+
+          {/* Skeleton for Dropdown Menu Button */}
+          <Skeleton className="h-10 w-[8rem] rounded-md" />
+        </div>
+        {/* Skeleton for the Application Table */}
+        <Skeleton className="h-[32rem] w-full rounded-xl" />
+      </>
+    );
   }
 
   if (isError) {
