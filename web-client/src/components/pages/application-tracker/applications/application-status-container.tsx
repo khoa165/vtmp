@@ -3,9 +3,12 @@ import { ApplicationStatus } from '@vtmp/common/constants';
 import { useState } from 'react';
 import { ApplicationStatusCard } from '@/components/pages/application-tracker/applications/application-status-card';
 import { Skeleton } from '@/components/base/skeleton';
+import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
 
 export const ApplicationStatusContainer = ({
-  setFilter,
+  setApplicationFilter,
+}: {
+  setApplicationFilter: (applicationFilter: ApplicationsFilter) => void;
 }): React.JSX.Element | null => {
   const [selectedStatus, setSelectedStatus] =
     useState<ApplicationStatus | null>(null);
@@ -43,10 +46,10 @@ export const ApplicationStatusContainer = ({
   const handleStatusClick = (status: ApplicationStatus) => {
     if (selectedStatus === status) {
       setSelectedStatus(null);
-      setFilter({});
+      setApplicationFilter({});
     } else {
       setSelectedStatus(status);
-      setFilter({ status });
+      setApplicationFilter({ status });
     }
   };
 
