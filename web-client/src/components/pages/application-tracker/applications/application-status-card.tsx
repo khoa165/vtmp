@@ -25,17 +25,14 @@ export const ApplicationStatusCard = ({
     >
       <section className="flex flex-col items-center justify-center">
         <div className="text-[2rem] max-lg:text-[1rem] font-bold">{count}</div>
-
-        <div className="flex flex-row items-center gap-2">
-          {status ? (
-            <>
-              <StatusDot status={status} />
-              <span className="font-bold max-lg:text-[0.7rem] text-wrap">
-                {formatStatus(status)}
-              </span>
-            </>
-          ) : null}
-        </div>
+        {status ? (
+          <div className="flex flex-row items-center gap-2">
+            <StatusDot status={status} />
+            <span className="font-bold max-lg:text-[0.7rem] text-wrap">
+              {formatStatus(status)}
+            </span>
+          </div>
+        ) : null}
       </section>
     </Card>
   );

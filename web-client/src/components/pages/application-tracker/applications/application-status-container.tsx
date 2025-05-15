@@ -53,6 +53,12 @@ export const ApplicationStatusContainer = ({
     }
   };
 
+  if (allDisplayedStatus.length === 0) {
+    //TODO-dsmai: Remove this and add reacr-error-boundary to handle this case
+    console.log('No status available to display');
+    return null;
+  }
+
   return (
     <div className="grid grid-cols-5 w-full gap-4 mb-6 max-md:grid-rows-6">
       {allDisplayedStatus.map((displayedStatus, index) => (
