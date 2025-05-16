@@ -23,7 +23,12 @@ export const SubmitLink = () => {
 
   const { mutate: submitLinkFn } = useMutation({
     mutationFn: (body: { url: string }) =>
-      request(Method.POST, '/links', body, SubmitLinkResponseSchema),
+      request({
+        method: Method.POST,
+        url: '/links',
+        data: body,
+        schema: SubmitLinkResponseSchema,
+      }),
     onSuccess: (res) => {
       console.log('Success in useMutation submitLink');
       toast.success(res.message);
