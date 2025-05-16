@@ -48,12 +48,8 @@ export const ApplicationsContainer = ({
   }
 
   if (isError) {
-    // TODO-(QuangMinhNguyen27405/dsmai) : Remove this and add a toast error message. Add react-error-boundary
     console.error('Error fetching applications data:', error);
-    // return (
-    //   <span>Error: {error.message || 'Failed to load applications data.'}</span>
-    // );
-    return null;
+    throw error;
   }
 
   if (!applicationsData || applicationsData.length === 0) {
