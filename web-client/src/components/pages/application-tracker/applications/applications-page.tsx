@@ -10,54 +10,29 @@ export interface ApplicationsFilter {
   status?: ApplicationStatus;
 }
 
-// const TestErrorComponent = ({ shouldThrowError }) => {
-//   if (shouldThrowError) {
-//     throw new Error('This is a test error');
-//   } else {
-//     return null;
-//   }
-// };
-
 export const ApplicationsPage = () => {
   const [applicationFilter, setApplicationFilter] =
     useState<ApplicationsFilter>({});
-  // const [shouldThrowError, setShouldThrowError] = useState(true);
   return (
     <div className="w-full h-full p-10">
       <ErrorBoundary
         FallbackComponent={(props) => (
-          <FallbackComponent
-            {...props}
-            customText="Application Status Cards"
-            // resetErrorBoundary={() => {
-            //   props.resetErrorBoundary();
-            //   setShouldThrowError(false);
-            // }}
-          />
+          <FallbackComponent {...props} customText="Application Status Cards" />
         )}
         onError={logError}
       >
         <ApplicationStatusContainer
           setApplicationFilter={setApplicationFilter}
         />
-        {/* <TestErrorComponent shouldThrowError={shouldThrowError} /> */}
       </ErrorBoundary>
 
       <ErrorBoundary
         FallbackComponent={(props) => (
-          <FallbackComponent
-            {...props}
-            customText="Application Table"
-            // resetErrorBoundary={() => {
-            //   props.resetErrorBoundary();
-            //   setShouldThrowError(false);
-            // }}
-          />
+          <FallbackComponent {...props} customText="Application Table" />
         )}
         onError={logError}
       >
         <ApplicationsContainer applicationFilter={applicationFilter} />
-        {/* <TestErrorComponent shouldThrowError={shouldThrowError} /> */}
       </ErrorBoundary>
     </div>
   );
