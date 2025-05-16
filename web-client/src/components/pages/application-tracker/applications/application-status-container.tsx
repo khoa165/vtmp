@@ -31,12 +31,8 @@ export const ApplicationStatusContainer = ({
   }
 
   if (isError) {
-    // TODO-(QuangMinhNguyen27405/dsmai) : Remove this and add a toast error message. Add react-error-boundary
     console.error('Error fetching application count data:', error);
-    // return (
-    //   <span>Error: {error.message || 'Failed to load summary data.'}</span>
-    // );
-    return null;
+    throw error;
   }
 
   const allDisplayedStatus = Object.values(ApplicationStatus).filter(
