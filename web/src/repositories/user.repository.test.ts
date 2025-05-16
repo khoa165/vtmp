@@ -1,16 +1,14 @@
-import * as chai from 'chai';
-import chaiSubset from 'chai-subset';
+import { expect } from 'chai';
+
 import { UserRepository } from '@/repositories/user.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import assert from 'assert';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { IUser } from '@/models/user.model';
-import { UserRole } from '@common/enums';
+import { UserRole } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
-import * as R from 'remeda';
+import { omit } from 'remeda';
 
-chai.use(chaiSubset);
-const { expect } = chai;
 describe('UserRepository', () => {
   useMongoDB();
   const mockOneUser = {
@@ -44,7 +42,7 @@ describe('UserRepository', () => {
   describe('createUser', () => {
     it('should create an user', async () => {
       const user = await UserRepository.createUser(mockOneUser);
-      expect(user).to.containSubset(mockOneUser);
+      expect(user).to.deep.include(mockOneUser);
     });
   });
 
@@ -107,8 +105,8 @@ describe('UserRepository', () => {
     it('should be able to get user by email with no password field returned when no options provided', async () => {
       const userFoundByEmail = await UserRepository.getUserByEmail(user.email);
       assert(userFoundByEmail);
-      expect(userFoundByEmail).to.containSubset(
-        R.omit(mockOneUser, ['encryptedPassword'])
+      expect(userFoundByEmail).to.deep.include(
+        omit(mockOneUser, ['encryptedPassword'])
       );
       expect(userFoundByEmail).to.not.have.property('encryptedPassword');
     });
@@ -119,8 +117,8 @@ describe('UserRepository', () => {
         {}
       );
       assert(userFoundByEmail);
-      expect(userFoundByEmail).to.containSubset(
-        R.omit(mockOneUser, ['encryptedPassword'])
+      expect(userFoundByEmail).to.deep.include(
+        omit(mockOneUser, ['encryptedPassword'])
       );
       expect(userFoundByEmail).to.not.have.property('encryptedPassword');
     });
@@ -130,8 +128,8 @@ describe('UserRepository', () => {
         includePasswordField: false,
       });
       assert(userFoundByEmail);
-      expect(userFoundByEmail).to.containSubset(
-        R.omit(mockOneUser, ['encryptedPassword'])
+      expect(userFoundByEmail).to.deep.include(
+        omit(mockOneUser, ['encryptedPassword'])
       );
       expect(userFoundByEmail).to.not.have.property('encryptedPassword');
     });
@@ -141,7 +139,7 @@ describe('UserRepository', () => {
         includePasswordField: true,
       });
       assert(userFoundByEmail);
-      expect(userFoundByEmail).to.containSubset(mockOneUser);
+      expect(userFoundByEmail).to.deep.include(mockOneUser);
     });
   });
 
@@ -166,8 +164,8 @@ describe('UserRepository', () => {
     it('should be able to get user by id with no password field returned when no options provided', async () => {
       const userFoundById = await UserRepository.getUserById(user.id);
       assert(userFoundById);
-      expect(userFoundById).to.containSubset(
-        R.omit(mockOneUser, ['encryptedPassword'])
+      expect(userFoundById).to.deep.include(
+        omit(mockOneUser, ['encryptedPassword'])
       );
       expect(userFoundById).to.not.have.property('encryptedPassword');
     });
@@ -175,8 +173,8 @@ describe('UserRepository', () => {
     it('should be able to get user by email with no password field returned when providing option but no includePasswordField set', async () => {
       const userFoundById = await UserRepository.getUserById(user.id, {});
       assert(userFoundById);
-      expect(userFoundById).to.containSubset(
-        R.omit(mockOneUser, ['encryptedPassword'])
+      expect(userFoundById).to.deep.include(
+        omit(mockOneUser, ['encryptedPassword'])
       );
       expect(userFoundById).to.not.have.property('encryptedPassword');
     });
@@ -186,8 +184,8 @@ describe('UserRepository', () => {
         includePasswordField: false,
       });
       assert(userFoundById);
-      expect(userFoundById).to.containSubset(
-        R.omit(mockOneUser, ['encryptedPassword'])
+      expect(userFoundById).to.deep.include(
+        omit(mockOneUser, ['encryptedPassword'])
       );
       expect(userFoundById).to.not.have.property('encryptedPassword');
     });
@@ -197,7 +195,7 @@ describe('UserRepository', () => {
         includePasswordField: true,
       });
       assert(userFoundById);
-      expect(userFoundById).to.containSubset(mockOneUser);
+      expect(userFoundById).to.deep.include(mockOneUser);
     });
   });
 
@@ -234,7 +232,7 @@ describe('UserRepository', () => {
       );
 
       assert(updatedUser);
-      expect(updatedUser).to.containSubset(updateUserInfo);
+      expect(updatedUser).to.deep.include(updateUserInfo);
     });
   });
 

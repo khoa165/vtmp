@@ -1,5 +1,6 @@
 import { ApplicationModel, IApplication } from '@/models/application.model';
-import { ApplicationStatus, InterestLevel } from '@common/enums';
+import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
+import mongoose, { ClientSession } from 'mongoose';
 
 export const ApplicationRepository = {
   createApplication: async ({
@@ -28,10 +29,17 @@ export const ApplicationRepository = {
     });
   },
 
-  getApplications: async (userId: string): Promise<IApplication[]> => {
+  getApplications: async ({
+    userId,
+    filters = {},
+  }: {
+    userId: string;
+    filters?: { status?: ApplicationStatus };
+  }): Promise<IApplication[]> => {
     return ApplicationModel.find({
       userId: userId,
       deletedAt: null,
+      ...filters,
     });
   },
 
@@ -54,6 +62,7 @@ export const ApplicationRepository = {
     applicationId,
     updatedMetadata,
     options,
+    session,
   }: {
     userId: string;
     applicationId: string;
@@ -68,6 +77,7 @@ export const ApplicationRepository = {
     options?: {
       includeDeletedDoc?: boolean;
     };
+    session?: ClientSession;
   }): Promise<IApplication | null> => {
     return ApplicationModel.findOneAndUpdate(
       {
@@ -76,7 +86,7 @@ export const ApplicationRepository = {
         ...(options?.includeDeletedDoc ? {} : { deletedAt: null }),
       },
       { $set: updatedMetadata },
-      { new: true }
+      { new: true, session: session ?? null }
     );
   },
 
@@ -92,5 +102,29 @@ export const ApplicationRepository = {
       { $set: { deletedAt: new Date() } },
       { new: true }
     );
+  },
+
+  getApplicationsCountByStatus: async (userId: string) => {
+    const result = await ApplicationModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          deletedAt: null,
+        },
+      },
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    // After this step, result looks like [{_id: SUBMITTED, count: 10}, {_id: OFFERED, count: 10}, ...]
+    const countGroupByStatus = result.reduce((accummulator, item) => {
+      accummulator[item._id] = item.count;
+      return accummulator;
+    }, {});
+
+    return countGroupByStatus;
   },
 };

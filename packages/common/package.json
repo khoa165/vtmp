@@ -1,0 +1,15 @@
+{
+  "name": "@vtmp/common",
+  "version": "1.0.0",
+  "exports": {
+    "./constants": "./dist/constants/index.js",
+    "./utils": "./dist/utils/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

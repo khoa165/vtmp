@@ -1,10 +1,10 @@
-import { MentorshipPerson } from 'src/types';
+import { MentorshipPerson } from '@/types';
 import {
   CompanyName,
   MentorshipRole,
   OfferChannel,
   OfferType,
-} from '@common/enums';
+} from '@vtmp/common/constants';
 import { PeopleName, ProjectName } from '@/utils/constants';
 
 export const mentorshipPeople: Record<string, MentorshipPerson> = {
@@ -1245,7 +1245,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Hoang',
     alias: PeopleName.THUC_ANH,
     trackingName: 'Thục Anh',
-    professionalTitle: 'SWE Intern @ Palantir + Microsoft',
+    professionalTitle: 'SWE Intern @ Palantir',
     hobbies: 'cooking, embroidery, travel',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thucanh.jpg',
@@ -1298,7 +1298,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
       {
         year: 2025,
-        title: 'SWE Intern @ Palantir + Microsoft',
+        title: 'SWE Intern @ Palantir',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
       },
     ],

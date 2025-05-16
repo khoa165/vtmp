@@ -1,5 +1,5 @@
-import { CompanyMetadata } from 'src/types';
-import { CompanyName } from '@common/enums';
+import { CompanyMetadata } from '@/types';
+import { CompanyName } from '@vtmp/common/constants';
 
 export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   [CompanyName.MICROSOFT]: {

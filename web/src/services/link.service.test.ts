@@ -1,31 +1,31 @@
-import * as chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import { LinkStatus } from '@common/enums';
+import { expect } from 'chai';
+import { LinkStatus } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { LinkService } from '@/services/link.service';
 import assert from 'assert';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { ResourceNotFoundError } from '@/utils/errors';
 import { LinkRepository } from '@/repositories/link.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 
-chai.use(chaiAsPromised);
-const { expect } = chai;
-
 describe('LinkService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
-  beforeEach(async () => {
-    sandbox.restore();
-  });
+  const mockLinkData = {
+    url: 'google.com',
+    jobTitle: 'Software Engineer',
+    companyName: 'Example Company',
+    submittedBy: getNewObjectId(),
+  };
 
   describe('submitLink', () => {
     it('should be able to create new link with expected fields', async () => {
       const URL = 'google.com';
       const link = await LinkService.submitLink(URL);
+
       const timeDiff = differenceInSeconds(new Date(), link.submittedOn);
 
       expect(link.url).to.equal(URL);
@@ -46,7 +46,8 @@ describe('LinkService', () => {
 
     it("should throw an error if job posting can't be created", async () => {
       sandbox.stub(JobPostingRepository, 'createJobPosting').throws();
-      const newLink = await LinkRepository.createLink('google.com');
+      const newLink = await LinkRepository.createLink(mockLinkData);
+
       await expect(
         LinkService.approveLinkAndCreateJobPosting(newLink.id, {
           jobTitle: 'Software Engineering Intern',
@@ -57,7 +58,8 @@ describe('LinkService', () => {
 
     it("should not approve link if job posting can't be created", async () => {
       sandbox.stub(JobPostingRepository, 'createJobPosting').throws();
-      const newLink = await LinkRepository.createLink('google.com');
+      const newLink = await LinkRepository.createLink(mockLinkData);
+
       await expect(
         LinkService.approveLinkAndCreateJobPosting(newLink.id, {
           jobTitle: 'Software Engineering Intern',
@@ -70,7 +72,8 @@ describe('LinkService', () => {
     });
 
     it('should not throw error when job posting data is valid', async () => {
-      const newLink = await LinkRepository.createLink('google.com');
+      const newLink = await LinkRepository.createLink(mockLinkData);
+
       await expect(
         LinkService.approveLinkAndCreateJobPosting(newLink.id, {
           jobTitle: 'Software Engineering Intern',
@@ -81,7 +84,8 @@ describe('LinkService', () => {
 
     it('should approve link and create job posting', async () => {
       const COMPANY_NAME = 'Google';
-      const newLink = await LinkRepository.createLink('google.com');
+      const newLink = await LinkRepository.createLink(mockLinkData);
+
       const newJobPosting = await LinkService.approveLinkAndCreateJobPosting(
         newLink.id,
         {
@@ -99,19 +103,22 @@ describe('LinkService', () => {
         newJobPosting.id
       );
       assert(jobPosting);
-      expect(jobPosting.linkId.toString()).to.equal(link.id);
+
+      expect(jobPosting.linkId.toString()).to.equal(link._id.toString());
       expect(jobPosting.companyName).to.equal(COMPANY_NAME);
     });
   });
 
   describe('rejectLink', () => {
     it('should not throw when link exists', async () => {
-      const link = await LinkRepository.createLink('google.com');
+      const link = await LinkRepository.createLink(mockLinkData);
+
       await expect(LinkService.rejectLink(link.id)).eventually.fulfilled;
     });
 
     it('should be able to reject link by id', async () => {
-      const link = await LinkRepository.createLink('google.com');
+      const link = await LinkRepository.createLink(mockLinkData);
+
       const rejectedLink = await LinkService.rejectLink(link.id);
 
       assert(rejectedLink);
@@ -125,28 +132,32 @@ describe('LinkService', () => {
     });
   });
 
-  describe('getPendingLinks', () => {
-    it('should be able to get all pending links', async () => {
-      const googleLink = await LinkRepository.createLink('google.com');
-      const nvidia = await LinkRepository.createLink('nvidia.com');
-
-      const pendingLinks = await LinkService.getPendingLinks();
-
-      const urls = pendingLinks.map((link) => link.url);
-      expect(urls).to.have.members([googleLink.url, nvidia.url]);
+  describe('getLinkCountByStatus', () => {
+    it('should return 0 links for all statuses when no links exist', async () => {
+      const linkCounts = await LinkService.getLinkCountByStatus();
+      expect(linkCounts).to.deep.equal({
+        [LinkStatus.PENDING]: 0,
+        [LinkStatus.APPROVED]: 0,
+        [LinkStatus.REJECTED]: 0,
+      });
     });
 
-    it('should be able to get all pending links after a link is rejected', async () => {
-      const googleLink = await LinkRepository.createLink('google.com');
-      await LinkRepository.createLink('nvidia.com');
-      await LinkRepository.createLink('microsoft.com');
+    it('should return correct link counts for multiple statuses when multiple links exist', async () => {
+      const googleLink = await LinkRepository.createLink(mockLinkData);
 
-      const beforeUpdateLinks = await LinkService.getPendingLinks();
-      expect(beforeUpdateLinks).to.have.lengthOf(3);
+      await LinkRepository.createLink({ ...mockLinkData, url: 'nvidia.com' });
+      await LinkRepository.createLink({
+        ...mockLinkData,
+        url: 'microsoft.com',
+      });
 
       await LinkService.rejectLink(googleLink.id);
-      const afterUpdateLinks = await LinkService.getPendingLinks();
-      expect(afterUpdateLinks).to.have.lengthOf(2);
+      const afterUpdateLinks = await LinkService.getLinkCountByStatus();
+      expect(afterUpdateLinks).to.deep.equal({
+        [LinkStatus.PENDING]: 2,
+        [LinkStatus.APPROVED]: 0,
+        [LinkStatus.REJECTED]: 1,
+      });
     });
   });
 });

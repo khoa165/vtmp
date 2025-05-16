@@ -1,7 +1,7 @@
 import { UserRepository } from '@/repositories/user.repository';
-import { UserRole } from '@common/enums';
+import { UserRole } from '@vtmp/common/constants';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
-import * as R from 'remeda';
+import { omit } from 'remeda';
 
 const UserService = {
   getAllUsers: async () => {
@@ -10,11 +10,12 @@ const UserService = {
 
   getUserById: async (id: string) => {
     const user = await UserRepository.getUserById(id);
+
     if (!user) {
       throw new ResourceNotFoundError('User not found', { id });
     }
 
-    return R.omit(user, ['encryptedPassword']);
+    return omit(user, ['encryptedPassword']);
   },
 
   updateUserById: async (
@@ -47,7 +48,7 @@ const UserService = {
       });
     }
 
-    return R.omit(updatedUser, ['encryptedPassword']);
+    return omit(updatedUser, ['encryptedPassword']);
   },
 };
 

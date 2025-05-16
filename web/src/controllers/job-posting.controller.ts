@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { JobPostingService } from '@/services/job-posting.service';
-import { JobPostingLocation } from '@common/enums';
+import { JobPostingLocation } from '@vtmp/common/constants';
+import { getUserFromRequest } from '@/middlewares/utils';
 
 const JobPostingUpdateSchema = z.object({
   externalPostingId: z.string().optional(),
@@ -40,6 +41,18 @@ export const JobPostingController = {
       await JobPostingService.deleteJobPostingById(jobId);
     res.status(200).json({
       data: deletedJobPosting,
+    });
+  },
+
+  getJobPostingsUserHasNotAppliedTo: async (req: Request, res: Response) => {
+    const userId = getUserFromRequest(req).user.id;
+
+    const jobPostings =
+      await JobPostingService.getJobPostingsUserHasNotAppliedTo(userId);
+
+    res.status(200).json({
+      message: 'Job postings retrieved successfully',
+      data: jobPostings,
     });
   },
 };

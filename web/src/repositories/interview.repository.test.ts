@@ -5,7 +5,7 @@ import { differenceInSeconds } from 'date-fns';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
-import { InterviewType, InterviewStatus } from '@common/enums';
+import { InterviewType, InterviewStatus } from '@vtmp/common/constants';
 
 describe('Interview Repository', () => {
   useMongoDB();
@@ -51,7 +51,7 @@ describe('Interview Repository', () => {
         await InterviewRepository.createInterview(mockInterview_A2);
 
       assert(newInterview);
-      expect(newInterview).to.containSubset({
+      expect(newInterview).to.deep.include({
         ...mockInterview_A2,
         applicationId: toMongoId(mockInterview_A2.applicationId),
         userId: toMongoId(mockInterview_A2.userId),
@@ -114,7 +114,7 @@ describe('Interview Repository', () => {
 
       assert(interview);
       expect(interview.id).to.equal(interview_A0.id);
-      expect(interview).to.containSubset({
+      expect(interview).to.deep.include({
         ...mockInterview_A0,
         applicationId: toMongoId(mockInterview_A0.applicationId),
         userId: toMongoId(mockInterview_A0.userId),
@@ -345,7 +345,7 @@ describe('Interview Repository', () => {
 
       assert(updatedInterview);
       expect(updatedInterview.id).to.equal(interview.id);
-      expect(updatedInterview).to.containSubset({
+      expect(updatedInterview).to.deep.include({
         userId: toMongoId(userId_A),
         interviewOnDate: new Date('2025-08-10'),
         type: [InterviewType.PROJECT_WALKTHROUGH, InterviewType.HIRING_MANAGER],

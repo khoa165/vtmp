@@ -1,9 +1,11 @@
 {
+  "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
-    "composite": true,
     "baseUrl": "./src",
+    "outDir": "dist",
+    "declaration": true,
     "paths": {
-      "@common/*": ["./*"]
+      "@/*": ["./src/*"]
     }
   }
 }

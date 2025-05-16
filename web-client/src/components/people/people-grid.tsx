@@ -1,8 +1,8 @@
 import React from 'react';
 import { Col, Row } from 'reactstrap';
-import { PeopleCard } from 'src/components/people/people-card';
-import { CompanyMetadataWithOffers, MentorshipPerson } from 'src/types';
-import { PeopleSortColumn } from 'src/utils/constants';
+import { PeopleCard } from '@/components/people/people-card';
+import { CompanyMetadataWithOffers, MentorshipPerson } from '@/types';
+import { PeopleSortColumn } from '@/utils/constants';
 
 interface PeopleGridProps {
   year: number | 'all';

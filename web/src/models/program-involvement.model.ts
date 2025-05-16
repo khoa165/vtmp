@@ -1,4 +1,4 @@
-import { Department, ProgramRole } from '@/types/enums';
+import { Department, ProgramRole } from '@vtmp/common/constants';
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
 export interface IProgramInvolvement extends Document {

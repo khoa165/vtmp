@@ -8,9 +8,9 @@ import {
 } from 'reactstrap';
 import { FaArrowTrendUp, FaCode } from 'react-icons/fa6';
 import { RiTeamFill } from 'react-icons/ri';
-import { Avatar } from 'src/components/layout/avatar';
-import { MiniPeopleList } from 'src/components/layout/mini-people-list';
-import { CompanyMetadataWithOffers, MentorshipPerson } from 'src/types';
+import { Avatar } from '@/components/layout/avatar';
+import { MiniPeopleList } from '@/components/layout/mini-people-list';
+import { CompanyMetadataWithOffers, MentorshipPerson } from '@/types';
 import {
   getRoleDisplayName,
   isMenteeRole,
@@ -19,10 +19,10 @@ import {
   isOrganizerRole,
   isReturnOfferForInternship,
   isReturnOfferForNewGrad,
-} from 'src/utils/data';
+} from '@/utils/data';
 import { useGate } from 'statsig-react';
-import { MiniCompaniesList } from 'src/components/layout/mini-companies-list';
-import { PeopleSortColumn } from 'src/utils/constants';
+import { MiniCompaniesList } from '@/components/layout/mini-companies-list';
+import { PeopleSortColumn } from '@/utils/constants';
 import { useSearchParams } from 'react-router-dom';
 import { projectDisplayName } from '@/utils/displayName';
 
@@ -50,7 +50,6 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
     [terms, year]
   );
   const { mentors, projectAdvisors, teamName, teammates } = currentTerm ?? {};
-  const title = currentTerm?.title ?? professionalTitle;
   const roles = currentTerm?.roles ?? terms.at(-1)?.roles;
   const offers = useMemo(
     () =>
@@ -155,7 +154,9 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
           </CardSubtitle>
         )}
         <hr />
-        <CardSubtitle className="people-title">{title}</CardSubtitle>
+        <CardSubtitle className="people-title">
+          {professionalTitle}
+        </CardSubtitle>
         {/* <CardSubtitle>{hobbies}</CardSubtitle> */}
       </CardBody>
     </Card>
