@@ -1,7 +1,7 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/base/alert';
 import { Button } from '@/components/base/button';
 
-export const Fallback = ({
+export const FallbackComponent = ({
   error,
   resetErrorBoundary,
   customText,
