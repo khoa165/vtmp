@@ -8,74 +8,137 @@ import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 import { ResourceNotFoundError } from '@/utils/errors';
 import { differenceInSeconds } from 'date-fns';
+import { ApplicationRepository } from '@/repositories/application.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 
 describe('InterviewService', () => {
   useMongoDB();
 
-  const userId_A = getNewMongoId();
-  const userId_B = getNewMongoId();
+  interface MockInterview {
+    applicationId: string;
+    userId: string;
+    type: InterviewType[];
+    interviewOnDate: Date;
+    status?: InterviewStatus;
+    note?: string;
+  }
 
-  const googleApplicationId = getNewMongoId();
+  let userId_A: string;
+  let userId_B: string;
 
-  const mockInterview_A0 = {
-    applicationId: googleApplicationId,
-    userId: userId_A,
-    type: [InterviewType.TECHNICAL_LC_CODING],
-    status: InterviewStatus.PASSED,
-    interviewOnDate: new Date('2025-06-07'),
-    companyName: 'Meta',
-    note: 'This is a note of an interview with google',
-  };
+  let metaApplication_A: IApplication;
+  let googleApplication_A: IApplication;
 
-  const mockInterview_A1 = {
-    applicationId: getNewMongoId(),
-    userId: userId_A,
-    type: [InterviewType.DEBUGGING, InterviewType.CODE_REVIEW],
-    status: InterviewStatus.UPCOMING,
-    interviewOnDate: new Date('2025-07-07'),
-    companyName: 'Google',
-    note: 'This is a note of an interview',
-  };
+  let mockInterview_A0: MockInterview;
+  let mockInterview_A1: MockInterview;
+  let mockInterview_A2: MockInterview;
+  let mockInterview_B0: MockInterview;
+  let mockInterview_B1: MockInterview;
 
-  const mockInterview_A2 = {
-    applicationId: googleApplicationId,
-    userId: userId_A,
-    type: [InterviewType.HIRING_MANAGER],
-    interviewOnDate: new Date('2025-08-01'),
-    companyName: 'Meta',
-    note: 'This is a note of another interview with google',
-  };
+  beforeEach(async () => {
+    userId_A = getNewMongoId();
+    userId_B = getNewMongoId();
 
-  const mockInterview_B0 = {
-    applicationId: getNewMongoId(),
-    userId: userId_B,
-    type: [InterviewType.CODE_REVIEW],
-    status: InterviewStatus.PENDING,
-    interviewOnDate: new Date('2025-08-08'),
-    companyName: 'Netflix',
-    note: 'This is a note of an interview',
-  };
+    const mockJobPosting_Meta = {
+      linkId: getNewMongoId(),
+      url: 'http://meta.com/job-posting',
+      jobTitle: 'Software Engineer',
+      companyName: 'Meta',
+      submittedBy: getNewMongoId(),
+    };
 
-  const mockInterview_B1 = {
-    applicationId: getNewMongoId(),
-    userId: userId_B,
-    type: [InterviewType.CODE_REVIEW],
-    interviewOnDate: new Date('2025-06-07'),
-    status: InterviewStatus.PENDING,
-    companyName: 'Meta',
-  };
+    const mockJobPosting_Google = {
+      linkId: getNewMongoId(),
+      url: 'http://google.com/job-posting',
+      jobTitle: 'Software Engineer',
+      companyName: 'Google',
+      submittedBy: getNewMongoId(),
+    };
+
+    const metaJobPosting = await JobPostingRepository.createJobPosting({
+      jobPostingData: mockJobPosting_Meta,
+    });
+
+    const googleJobPosting = await JobPostingRepository.createJobPosting({
+      jobPostingData: mockJobPosting_Google,
+    });
+
+    if (!metaJobPosting || !googleJobPosting) {
+      throw new Error('Failed to create job posting');
+    }
+
+    metaApplication_A = await ApplicationRepository.createApplication({
+      jobPostingId: metaJobPosting.id,
+      userId: userId_A,
+    });
+
+    googleApplication_A = await ApplicationRepository.createApplication({
+      jobPostingId: googleJobPosting.id,
+      userId: userId_A,
+    });
+
+    const metaApplication_B = await ApplicationRepository.createApplication({
+      jobPostingId: metaJobPosting.id,
+      userId: userId_B,
+    });
+
+    const googleApplication_B = await ApplicationRepository.createApplication({
+      jobPostingId: googleJobPosting.id,
+      userId: userId_B,
+    });
+
+    mockInterview_A0 = {
+      applicationId: metaApplication_A._id,
+      userId: userId_A,
+      type: [InterviewType.CODE_REVIEW],
+      interviewOnDate: new Date('2025-06-07'),
+      status: InterviewStatus.PASSED,
+    };
+
+    mockInterview_A1 = {
+      applicationId: googleApplication_A._id,
+      userId: userId_A,
+      type: [InterviewType.CODE_REVIEW],
+      interviewOnDate: new Date('2025-06-07'),
+      status: InterviewStatus.FAILED,
+    };
+
+    mockInterview_A2 = {
+      applicationId: metaApplication_A._id,
+      userId: userId_A,
+      type: [InterviewType.CODE_REVIEW],
+      interviewOnDate: new Date('2025-06-07'),
+    };
+
+    mockInterview_B0 = {
+      applicationId: googleApplication_B._id,
+      userId: userId_B,
+      type: [InterviewType.CODE_REVIEW],
+      interviewOnDate: new Date('2025-06-07'),
+      status: InterviewStatus.PENDING,
+    };
+
+    mockInterview_B1 = {
+      applicationId: metaApplication_B._id,
+      userId: userId_B,
+      type: [InterviewType.CODE_REVIEW],
+      interviewOnDate: new Date('2025-06-07'),
+      status: InterviewStatus.PENDING,
+    };
+  });
 
   describe('createInterview', () => {
     it('should be able to create a new interview', async () => {
       const newInterview =
-        await InterviewService.createInterview(mockInterview_A2);
+        await InterviewRepository.createInterview(mockInterview_A2);
 
       assert(newInterview);
       expect(newInterview).to.deep.include({
         ...mockInterview_A2,
         applicationId: toMongoId(mockInterview_A2.applicationId),
-        userId: toMongoId(mockInterview_A2.userId),
+        userId: toMongoId(userId_A),
         status: InterviewStatus.PENDING,
+        companyName: 'Meta',
       });
     });
   });
@@ -242,7 +305,7 @@ describe('InterviewService', () => {
       const interviews = await InterviewService.getInterviews({
         filters: {
           userId: userId_A,
-          applicationId: googleApplicationId,
+          applicationId: metaApplication_A.id,
         },
       });
 
@@ -251,8 +314,8 @@ describe('InterviewService', () => {
       assert(interviews[0]);
       expect(interviews[0]).to.deep.include({
         ...mockInterview_A2,
-        applicationId: toMongoId(mockInterview_A2.applicationId),
-        userId: toMongoId(mockInterview_A2.userId),
+        applicationId: toMongoId(metaApplication_A.id),
+        userId: toMongoId(userId_A),
       });
     });
 
@@ -285,7 +348,7 @@ describe('InterviewService', () => {
       const interviews = await InterviewService.getInterviews({
         filters: {
           userId: userId_A,
-          status: InterviewStatus.UPCOMING,
+          status: InterviewStatus.FAILED,
         },
       });
 
@@ -295,8 +358,8 @@ describe('InterviewService', () => {
       expect(interviews[0]).to.deep.include({
         ...mockInterview_A1,
         applicationId: toMongoId(mockInterview_A1.applicationId),
-        userId: toMongoId(mockInterview_A1.userId),
-        status: InterviewStatus.UPCOMING,
+        userId: toMongoId(userId_A),
+        status: InterviewStatus.FAILED,
       });
     });
 
@@ -307,7 +370,7 @@ describe('InterviewService', () => {
       const interviews = await InterviewService.getInterviews({
         filters: {
           userId: userId_A,
-          status: InterviewStatus.FAILED,
+          status: InterviewStatus.UPCOMING,
         },
       });
 
@@ -319,7 +382,7 @@ describe('InterviewService', () => {
       await InterviewRepository.createInterview(mockInterview_A0);
       await InterviewRepository.createInterview(mockInterview_A2);
 
-      const interviews = await InterviewRepository.getInterviews({
+      const interviews = await InterviewService.getInterviews({
         filters: {
           companyName: 'Google',
         },
@@ -337,7 +400,9 @@ describe('InterviewService', () => {
       const interview_B1 =
         await InterviewRepository.createInterview(mockInterview_B1);
 
-      const interviews = await InterviewRepository.getInterviews({
+      console.log(interview_A0, interview_A2, interview_B1);
+
+      const interviews = await InterviewService.getInterviews({
         filters: {
           companyName: 'Meta',
         },
@@ -365,7 +430,7 @@ describe('InterviewService', () => {
         userId: userId_A,
       });
 
-      const interviews = await InterviewRepository.getInterviews({
+      const interviews = await InterviewService.getInterviews({
         filters: {
           companyName: 'Meta',
         },
