@@ -147,7 +147,7 @@ export function JobPostingsTable<TData, TValue>({
                 </TableRow>
               ))
             ) : (
-              <TableRow className="py-6 px-4">
+              <TableRow>
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"
