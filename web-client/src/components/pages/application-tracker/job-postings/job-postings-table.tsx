@@ -1,11 +1,17 @@
 import { Button } from '@/components/base/button';
+import { Input } from '@/components/base/input';
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
+  SortingState,
+  VisibilityState,
   getCoreRowModel,
   getPaginationRowModel,
-  VisibilityState,
+  getFilteredRowModel,
+  getSortedRowModel,
   useReactTable,
+  OnChangeFn,
 } from '@tanstack/react-table';
 import {
   Table,
@@ -32,23 +38,46 @@ interface DataTableProps<TData, TValue> {
 export function JobPostingsTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+  sorting,
+  setSorting,
+}: DataTableProps<TData, TValue> & {
+  sorting: SortingState;
+  setSorting: OnChangeFn<SortingState>;
+}) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
     state: {
+      sorting,
+      columnFilters,
       columnVisibility,
+      rowSelection,
     },
   });
 
   return (
     <>
-      <div className="flex items-center justify-between py-4">
+      <section className="flex items-center justify-between py-4">
+        <Input
+          placeholder="Filter companies..."
+          value={table.getColumn('companyName')?.getFilterValue() as string}
+          onChange={(event) =>
+            table.getColumn('companyName')?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button
@@ -78,12 +107,12 @@ export function JobPostingsTable<TData, TValue>({
               })}
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
-      <div className="rounded-md overflow-hidden border border-foreground">
+      </section>
+      <section className="rounded-md overflow-hidden border border-foreground">
         <Table>
           <TableHeader className="bg-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id} className="text-background">
@@ -105,10 +134,10 @@ export function JobPostingsTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className="h-13"
+                  className="border-white"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-foreground">
+                    <TableCell key={cell.id} className="text-foreground py-4">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -129,8 +158,8 @@ export function JobPostingsTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      </section>
+      <section className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
           size="sm"
@@ -149,7 +178,7 @@ export function JobPostingsTable<TData, TValue>({
         >
           Next
         </Button>
-      </div>
+      </section>
     </>
   );
 }

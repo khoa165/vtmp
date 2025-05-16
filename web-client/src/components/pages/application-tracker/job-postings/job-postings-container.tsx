@@ -4,6 +4,9 @@ import {
   useCreateApplication,
   useGetJobPostings,
 } from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
+import { useMemo, useState } from 'react';
+import { SortingState } from '@tanstack/react-table';
+import { Skeleton } from '@/components/base/skeleton';
 
 export const JobPostingsContainer = (): React.JSX.Element | null => {
   const {
@@ -14,10 +17,23 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
   } = useGetJobPostings();
   const { mutate: createApplicationFn } = useCreateApplication();
 
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const columns = useMemo(
+    () => jobPostingsTableColumns({ createApplicationFn }),
+    [createApplicationFn]
+  );
+
   if (isLoading) {
-    // TODO-(QuangMinhNguyen27405): Remove this console log in production and add a loading spinner
-    console.log('Loading job postings data...');
-    return <span>Loading job postings...</span>;
+    return (
+      <>
+        <div className="flex items-center justify-between py-4">
+          <Skeleton className="h-10 w-[24rem] rounded-md" />
+          <Skeleton className="h-10 w-[8rem] rounded-md" />
+        </div>
+        <Skeleton className="h-[32rem] w-full rounded-xl" />
+      </>
+    );
   }
 
   if (isError) {
@@ -33,8 +49,10 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
 
   return (
     <JobPostingsTable
-      columns={jobPostingsTableColumns({ createApplicationFn })}
+      columns={columns}
       data={jobPostingsData}
+      sorting={sorting}
+      setSorting={setSorting}
     />
   );
 };
