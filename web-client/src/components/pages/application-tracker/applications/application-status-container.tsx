@@ -49,7 +49,7 @@ export const ApplicationStatusContainer = ({
     }
   };
 
-  if (allDisplayedStatus.length !== 0) {
+  if (allDisplayedStatus.length === 0) {
     throw new Error('No status available to display');
   }
 
