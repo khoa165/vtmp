@@ -73,6 +73,41 @@ describe('ProjectRepository', () => {
     teamNumber: 1,
   };
 
+  const mockMultipleProjects = [
+    {
+      teamName: 'team1',
+      teamNumber: 1,
+      activities: [
+        {
+          year: 2025,
+          teamMembers: [],
+          projectAdvisors: [],
+        },
+      ],
+    },
+    {
+      teamName: 'team2',
+      teamNumber: 2,
+      activities: [
+        {
+          year: 2023,
+          teamMembers: [],
+          projectAdvisors: [],
+        },
+      ],
+    },
+    {
+      teamName: 'team-vtmp',
+      activities: [
+        {
+          year: 2024,
+          teamMembers: [],
+          projectAdvisors: [],
+        },
+      ],
+    },
+  ];
+
   describe('createProject', () => {
     it('should create a project with empty array for activity field', async () => {
       const project = await ProjectRepository.createProject(mockOneProject);
@@ -113,8 +148,37 @@ describe('ProjectRepository', () => {
       expect(project)
         .to.have.nested.property('activities[0].teamMembers')
         .that.have.lengthOf(3);
+    });
+  });
 
-      //
+  describe('getProject', () => {
+    it('should return team 2 project', async () => {
+      const projects = await Promise.all(
+        mockMultipleProjects.map((project) =>
+          ProjectRepository.createProject(project)
+        )
+      );
+
+      const team2ProjectId = projects[1]!.id;
+      const team2Project =
+        await ProjectRepository.getProjectById(team2ProjectId);
+
+      expect(team2Project).to.deep.contain({ teamName: 'team2' });
+    });
+
+    it('should return no project', async () => {
+      const projects = await ProjectRepository.getAllProjects();
+      expect(projects).to.have.lengthOf(0);
+    });
+
+    it('should return 3 projects', async () => {
+      const projects = await Promise.all(
+        mockMultipleProjects.map((project) =>
+          ProjectRepository.createProject(project)
+        )
+      );
+
+      expect(projects).to.have.lengthOf(3);
     });
   });
 });

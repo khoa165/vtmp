@@ -12,9 +12,9 @@ export const ProgramInvolvementRepository = {
     professionalTitle: string;
     department: Department;
     roles: ProgramRole[];
-    projects: Types.ObjectId[];
-    mentees: Types.ObjectId[];
-    mentors: Types.ObjectId[];
+    projects?: Types.ObjectId[];
+    mentees?: Types.ObjectId[];
+    mentors?: Types.ObjectId[];
   }): Promise<IProgramInvolvement> => {
     return ProgramInvolvementModel.create(ProgramInvolvementData);
   },

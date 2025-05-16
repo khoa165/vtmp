@@ -7,9 +7,9 @@ export interface IProgramInvolvement extends Document {
   professionalTitle: string;
   department: Department;
   roles: ProgramRole[];
-  projects: Types.ObjectId[];
-  mentees: Types.ObjectId[];
-  mentors: Types.ObjectId[];
+  projects?: Types.ObjectId[];
+  mentees?: Types.ObjectId[];
+  mentors?: Types.ObjectId[];
 }
 
 const ProgramInvolvementSchema = new Schema<IProgramInvolvement>({
