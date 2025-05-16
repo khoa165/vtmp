@@ -10,6 +10,7 @@ import { ResourceNotFoundError } from '@/utils/errors';
 import { differenceInSeconds } from 'date-fns';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { IApplication } from '@/models/application.model';
 
 describe('InterviewService', () => {
   useMongoDB();
@@ -88,7 +89,7 @@ describe('InterviewService', () => {
     });
 
     mockInterview_A0 = {
-      applicationId: metaApplication_A._id,
+      applicationId: metaApplication_A.id,
       userId: userId_A,
       type: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
@@ -96,7 +97,7 @@ describe('InterviewService', () => {
     };
 
     mockInterview_A1 = {
-      applicationId: googleApplication_A._id,
+      applicationId: googleApplication_A.id,
       userId: userId_A,
       type: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
@@ -104,14 +105,14 @@ describe('InterviewService', () => {
     };
 
     mockInterview_A2 = {
-      applicationId: metaApplication_A._id,
+      applicationId: metaApplication_A.id,
       userId: userId_A,
       type: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
     };
 
     mockInterview_B0 = {
-      applicationId: googleApplication_B._id,
+      applicationId: googleApplication_B.id,
       userId: userId_B,
       type: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
@@ -119,7 +120,7 @@ describe('InterviewService', () => {
     };
 
     mockInterview_B1 = {
-      applicationId: metaApplication_B._id,
+      applicationId: metaApplication_B.id,
       userId: userId_B,
       type: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
@@ -399,8 +400,6 @@ describe('InterviewService', () => {
         await InterviewRepository.createInterview(mockInterview_A2);
       const interview_B1 =
         await InterviewRepository.createInterview(mockInterview_B1);
-
-      console.log(interview_A0, interview_A2, interview_B1);
 
       const interviews = await InterviewService.getInterviews({
         filters: {
