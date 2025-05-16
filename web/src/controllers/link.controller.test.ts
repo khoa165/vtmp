@@ -33,6 +33,21 @@ describe('LinkController', () => {
     companyName: 'Google',
     submittedBy: getNewMongoId(),
   };
+  const mockMultipleLinks = [
+    {
+      url: 'nvida.com',
+      jobTitle: 'Software Engineer',
+      companyName: 'Example Company',
+      submittedBy: getNewObjectId(),
+    },
+
+    {
+      url: 'microsoft.com',
+      jobTitle: 'Software Engineer',
+      companyName: 'Example Company',
+      submittedBy: getNewObjectId(),
+    },
+  ];
 
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
@@ -104,7 +119,9 @@ describe('LinkController', () => {
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
+      expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data.url).to.equal(url);
+      expect(res.body.data.status).to.equal(LinkStatus.REJECTED);
       expect(res.body.message).to.equal('Link has been rejected!');
     });
   });
@@ -122,9 +139,10 @@ describe('LinkController', () => {
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Link not found');
     });
 
-    it('should return a approved link', async () => {
+    it('should return a job posting after approve', async () => {
       const res = await request(app)
         .post(`/api/links/${linkId}/approve`)
         .send({
@@ -153,10 +171,6 @@ describe('LinkController', () => {
       expect(res.body.message).to.equal(
         'Link count has been retrieved successfully.'
       );
-
-      expect(res.body.message).to.equal(
-        'Link count has been retrieved successfully.'
-      );
       expect(res.body.data).to.deep.equal({
         [LinkStatus.PENDING]: 1,
         [LinkStatus.APPROVED]: 0,
@@ -165,21 +179,6 @@ describe('LinkController', () => {
     });
 
     it('should return correct link counts for multiple statuses when multiple links exist', async () => {
-      const mockMultipleLinks = [
-        {
-          url: 'nvida.com',
-          jobTitle: 'Software Engineer',
-          companyName: 'Example Company',
-          submittedBy: getNewObjectId(),
-        },
-
-        {
-          url: 'microsoft.com',
-          jobTitle: 'Software Engineer',
-          companyName: 'Example Company',
-          submittedBy: getNewObjectId(),
-        },
-      ];
       await Promise.all(
         mockMultipleLinks.map((link) => LinkRepository.createLink(link))
       );
@@ -212,6 +211,55 @@ describe('LinkController', () => {
   });
 
   describe('getLinks', () => {
+    it('should return 400 when an invalid status is provided', async () => {
+      const res = await request(app)
+        .get('/api/links?status=INVALID_STATUS')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.status).to.equal(400);
+      expect(res.body.errors[0].message).to.include('Invalid link status');
+    });
+
+    it('should return 400 when query contains fields other than status', async () => {
+      const res = await request(app)
+        .get('/api/links?status=APPROVED&extraField=notAllowed')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.status).to.equal(400);
+      expect(res.body.errors[0].message).to.include(
+        'Only allow filtering by given fields'
+      );
+    });
+
+    it('should return 400 when unknown field is used without status', async () => {
+      const res = await request(app)
+        .get('/api/links?unexpectedField=value')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.status).to.equal(400);
+      expect(res.body.errors[0].message).to.include(
+        'Only allow filtering by given fields'
+      );
+    });
+
+    it('should return 400 when required fields are missing during link creation', async () => {
+      const res = await request(app)
+        .post('/api/links')
+        .send({
+          url: '',
+          jobTitle: 'Software Engineer',
+        })
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.status).to.equal(400);
+      expect(res.body.errors[0].message).to.include('Invalid url');
+    });
+
     it('should return empty array when no links exist with given status', async () => {
       await LinkRepository.updateLinkStatus({
         id: linkId,
@@ -227,22 +275,6 @@ describe('LinkController', () => {
     });
 
     it('should return all links when no filter is given', async () => {
-      const mockMultipleLinks = [
-        {
-          url: 'nvida.com',
-          jobTitle: 'Software Engineer',
-          companyName: 'Example Company',
-          submittedBy: getNewObjectId(),
-        },
-
-        {
-          url: 'microsoft.com',
-          jobTitle: 'Software Engineer',
-          companyName: 'Example Company',
-          submittedBy: getNewObjectId(),
-        },
-      ];
-
       await Promise.all(
         mockMultipleLinks.map((link) => LinkRepository.createLink(link))
       );
@@ -280,51 +312,6 @@ describe('LinkController', () => {
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data[0].url).to.equal(url);
       expect(res.body.data[0].status).to.equal(LinkStatus.APPROVED);
-    });
-
-    it('should return 400 when an invalid status is provided', async () => {
-      const res = await request(app)
-        .get('/api/links?status=INVALID_STATUS')
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
-
-      expect(res.status).to.equal(400);
-      expect(res.body.errors[0].message).to.include('Invalid link status');
-    });
-
-    it('should return 400 when query contains fields other than status', async () => {
-      const res = await request(app)
-        .get('/api/links?status=APPROVED&extraField=notAllowed')
-        .set('Authorization', `Bearer ${mockToken}`);
-
-      expect(res.status).to.equal(400);
-      expect(res.body.errors[0].message).to.include(
-        'Only allow filtering by given fields'
-      );
-    });
-
-    it('should return 400 when unknown field is used without status', async () => {
-      const res = await request(app)
-        .get('/api/links?unexpectedField=value')
-        .set('Authorization', `Bearer ${mockToken}`);
-
-      expect(res.status).to.equal(400);
-      expect(res.body.errors[0].message).to.include(
-        'Only allow filtering by given fields'
-      );
-    });
-
-    it('should return 400 when required fields are missing during link creation', async () => {
-      const res = await request(app)
-        .post('/api/links')
-        .send({
-          url: '',
-          jobTitle: 'Software Engineer',
-        })
-        .set('Authorization', `Bearer ${mockToken}`);
-
-      expect(res.status).to.equal(400);
-      expect(res.body.errors[0].message).to.include('Invalid url');
     });
   });
 });

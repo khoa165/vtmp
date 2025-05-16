@@ -38,7 +38,7 @@ const JobPostingDataSchema = z
       .optional(),
     submittedBy: z
       .string()
-      .regex(/^[0-9a-fA-F]{24}$/, 'Invalid job ID format')
+      .regex(/^[0-9a-fA-F]{24}$/, 'Invalid link ID format')
       .optional(),
   })
   .strict({ message: 'Some fields are not valid' })
