@@ -21,7 +21,7 @@ export const jobPostingsTableColumns = ({
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className="border border-background hover:bg-background"
+        className="ml-4 border border-background hover:bg-background"
       />
     ),
     cell: ({ row }) => (
@@ -29,6 +29,7 @@ export const jobPostingsTableColumns = ({
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="ml-4"
       />
     ),
     enableSorting: false,
