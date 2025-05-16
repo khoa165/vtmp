@@ -1,4 +1,8 @@
-import { InterviewType, MentorshipRole } from '@vtmp/common/constants';
+import {
+  InterviewType,
+  MentorshipRole,
+  ApplicationStatus,
+} from '@vtmp/common/constants';
 
 export const rolePriority: Record<MentorshipRole, number> = {
   [MentorshipRole.PROGRAM_LEAD]: 1.0,
@@ -161,3 +165,12 @@ export enum Method {
   PUT = 'PUT',
   DELETE = 'DELETE',
 }
+
+export const statusColorMap = {
+  [ApplicationStatus.SUBMITTED]: 'bg-[#A2BFF0]',
+  [ApplicationStatus.OA]: 'bg-[#F49DFF]',
+  [ApplicationStatus.INTERVIEWING]: 'bg-[#F8FF6A]',
+  [ApplicationStatus.OFFERED]: 'bg-[#A3F890]',
+  [ApplicationStatus.WITHDRAWN]: 'bg-[#CAAB94]',
+  [ApplicationStatus.REJECTED]: 'bg-[#FEB584]',
+};

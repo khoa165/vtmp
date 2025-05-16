@@ -49,10 +49,8 @@ export const ApplicationStatusContainer = ({
     }
   };
 
-  if (allDisplayedStatus.length === 0) {
-    //TODO-dsmai: Remove this and add reacr-error-boundary to handle this case
-    console.log('No status available to display');
-    return null;
+  if (allDisplayedStatus.length !== 0) {
+    throw new Error('No status available to display');
   }
 
   return (

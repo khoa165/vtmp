@@ -1,16 +1,17 @@
 import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/base/button';
 
+const sortingIconMap = {
+  asc: ArrowUp,
+  desc: ArrowDown,
+};
+
 export const HeaderSorting = ({ column, headerName }) => {
   const sortingState = column.getIsSorted();
-  let SortingIcon;
-  if (sortingState == 'asc') {
-    SortingIcon = ArrowUp;
-  } else if (sortingState === 'desc') {
-    SortingIcon = ArrowDown;
-  } else {
-    SortingIcon = ArrowUpDown;
-  }
+  const SortingIcon =
+    sortingState && sortingIconMap[sortingState]
+      ? sortingIconMap[sortingState]
+      : ArrowUpDown;
 
   return (
     <div className="flex items-center">

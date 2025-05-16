@@ -2,6 +2,7 @@ import { Card } from '@/components/base/card';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import { StatusDot } from '@/components/base/status-dot';
 import { formatStatus } from '@/utils/helpers';
+import { statusColorMap } from '@/utils/constants';
 
 export const ApplicationStatusCard = ({
   status,
@@ -27,7 +28,7 @@ export const ApplicationStatusCard = ({
         <div className="text-[2rem] max-lg:text-[1rem] font-bold">{count}</div>
         {status ? (
           <div className="flex flex-row items-center gap-2">
-            <StatusDot status={status} />
+            <StatusDot status={status} colorMap={statusColorMap} />
             <span className="font-bold max-lg:text-[0.7rem] text-wrap">
               {formatStatus(status)}
             </span>
