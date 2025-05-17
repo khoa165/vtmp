@@ -3,7 +3,7 @@ import { ApplicationsContainer } from '@/components/pages/application-tracker/ap
 import { ApplicationStatus } from '@vtmp/common/constants';
 import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { FallbackComponent } from '@/components/base/fallback-component';
+import { ErrorBoundaryWrapper } from '@/components/base/error-boundary-wrapper';
 import { logError } from '@/utils/errors';
 
 export interface ApplicationsFilter {
@@ -17,7 +17,10 @@ export const ApplicationsPage = () => {
     <div className="w-full h-full p-10">
       <ErrorBoundary
         FallbackComponent={(props) => (
-          <FallbackComponent {...props} customText="Application Status Cards" />
+          <ErrorBoundaryWrapper
+            {...props}
+            customText="Application Status Cards"
+          />
         )}
         onError={logError}
       >
@@ -28,7 +31,7 @@ export const ApplicationsPage = () => {
 
       <ErrorBoundary
         FallbackComponent={(props) => (
-          <FallbackComponent {...props} customText="Application Table" />
+          <ErrorBoundaryWrapper {...props} customText="Application Table" />
         )}
         onError={logError}
       >

@@ -1,7 +1,8 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/base/alert';
 import { Button } from '@/components/base/button';
 
-export const FallbackComponent = ({
+export const ErrorBoundaryWrapper = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   error,
   resetErrorBoundary,
   customText,
@@ -10,7 +11,6 @@ export const FallbackComponent = ({
   resetErrorBoundary: () => void;
   customText: string;
 }) => {
-  console.log(error.message);
   return (
     <Alert
       variant="default"
