@@ -1,6 +1,7 @@
+import { UserRole } from '@vtmp/common/constants';
 import { z } from 'zod';
 
-export const LoginResponseSchema = z.object({
+export const AuthResponseSchema = z.object({
   data: z.object({
     token: z.string(),
     user: z.object({
@@ -8,6 +9,7 @@ export const LoginResponseSchema = z.object({
       firstName: z.string(),
       lastName: z.string(),
       email: z.string(),
+      role: z.nativeEnum(UserRole, { message: 'Invalid user role' }),
     }),
   }),
 });

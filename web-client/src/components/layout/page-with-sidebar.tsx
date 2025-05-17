@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { InternalToolsSidebar } from '@/components/layout/internal-tools-sidebar';
 import { SidebarProvider } from '@/components/base/sidebar';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
+import { toast } from 'sonner';
 export const PageWithSidebar = () => {
   const open = document.cookie.split('=')[1];
   const state = open === 'true';
@@ -13,16 +14,16 @@ export const PageWithSidebar = () => {
 
   useEffect(() => {
     if (!token) {
-      console.log('No token found, redirecting to login');
       setIsRedirecting(true);
       navigate('/login');
+      toast('Please login to your account to continue');
     }
   }, [token]);
 
   if (isRedirecting) {
     return (
       <h1
-        className="text-center text-white app-flex"
+        className="text-center text-white text-4xl app-flex"
         style={{ height: '100vh' }}
       >
         Redirecting...

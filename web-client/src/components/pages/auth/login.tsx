@@ -18,7 +18,8 @@ import axios from 'axios';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { Method } from '@/utils/constants';
 import { useMutation } from '@tanstack/react-query';
-import { LoginResponseSchema } from '@/components/pages/auth/validation';
+import { AuthResponseSchema } from '@/components/pages/auth/validation';
+import { toast } from 'sonner';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +31,12 @@ const LoginPage = () => {
 
   const { mutate: loginFn } = useMutation({
     mutationFn: (body: { email: string; password: string }) =>
-      request(Method.POST, '/auth/login', body, LoginResponseSchema),
+      request({
+        method: Method.POST,
+        url: '/auth/login',
+        data: body,
+        schema: AuthResponseSchema,
+      }),
     onSuccess: (res) => {
       console.log('Login successfully: ', res);
       localStorage.setItem('token', res.data.token);
@@ -51,7 +57,7 @@ const LoginPage = () => {
           }
         });
       } else {
-        console.log('Unexpected error', error);
+        toast.error('Login failed: Unexpected error occured');
       }
     },
   });
@@ -69,7 +75,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-4 w-screen h-screen px-20 py-15 bg-background dark:bg-background">
+    <div className="grid grid-cols-12 gap-4 max-w-screen min-h-screen px-20 py-15 bg-background dark:bg-background">
       <div className="col-start-1 col-span-5 flex flex-col justify-start">
         <LogoMint className="w-40 h-24 pl-6" />
         <Card className="bg-transparent border-0 shadow-none h-full justify-center">
@@ -88,7 +94,7 @@ const LoginPage = () => {
                   </Label>
                   <Input
                     id="email"
-                    placeholder="Enter your email"
+                    placeholder="Email"
                     value={emailInput}
                     onChange={(e) => {
                       setEmailInput(e.target.value);
@@ -104,7 +110,7 @@ const LoginPage = () => {
                   <div className="flex flex-col justify-center relative">
                     <Input
                       id="password"
-                      placeholder="Enter your password"
+                      placeholder="Password"
                       type={showPassword ? 'text' : 'password'}
                       value={passwordInput}
                       onChange={(e) => {
