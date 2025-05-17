@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
+import { times, zip } from 'remeda';
 
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -169,7 +170,9 @@ describe('ApplicationService', () => {
       const application_A1 =
         await ApplicationRepository.createApplication(mockApplication_A1);
       await ApplicationRepository.createApplication(mockApplication_B);
-      const applications = await ApplicationService.getApplications(userId_A);
+      const applications = await ApplicationService.getApplications({
+        userId: userId_A,
+      });
 
       expect(applications).to.be.an('array').that.have.lengthOf(2);
       expect(applications.map((application) => application.id)).to.have.members(
@@ -188,7 +191,9 @@ describe('ApplicationService', () => {
         applicationId: application_A1.id,
         userId: userId_A,
       });
-      const applications = await ApplicationService.getApplications(userId_A);
+      const applications = await ApplicationService.getApplications({
+        userId: userId_A,
+      });
 
       expect(applications).to.be.an('array').that.have.lengthOf(1);
       expect(applications[0]?.id).to.equal(application_A0.id);
@@ -196,7 +201,9 @@ describe('ApplicationService', () => {
 
     it('should return no application if authorized user has no application', async () => {
       await ApplicationRepository.createApplication(mockApplication_B);
-      const applications = await ApplicationService.getApplications(userId_A);
+      const applications = await ApplicationService.getApplications({
+        userId: userId_A,
+      });
 
       expect(applications).to.be.an('array').that.have.lengthOf(0);
     });
@@ -303,7 +310,7 @@ describe('ApplicationService', () => {
             referrer: 'Khoa',
             portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
-            status: ApplicationStatus.OFFER,
+            status: ApplicationStatus.OFFERED,
           },
         })
       ).eventually.fulfilled;
@@ -319,7 +326,7 @@ describe('ApplicationService', () => {
             referrer: 'Khoa',
             portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
-            status: ApplicationStatus.OFFER,
+            status: ApplicationStatus.OFFERED,
           },
         }
       );
@@ -330,7 +337,7 @@ describe('ApplicationService', () => {
         referrer: 'Khoa',
         portalLink: 'abc.com',
         interest: InterestLevel.HIGH,
-        status: ApplicationStatus.OFFER,
+        status: ApplicationStatus.OFFERED,
       });
     });
   });
@@ -614,6 +621,121 @@ describe('ApplicationService', () => {
         userId: userId_A,
       });
       assert(!foundApplication);
+    });
+  });
+
+  describe('getApplicationsCountByStatus', () => {
+    const updatedStatus = [
+      ApplicationStatus.SUBMITTED,
+      ApplicationStatus.WITHDRAWN,
+      ApplicationStatus.OFFERED,
+      ApplicationStatus.OFFERED,
+      ApplicationStatus.REJECTED,
+    ] as const;
+
+    it('should return an object with all application status count of 0 if no applications exist for the user', async () => {
+      const result =
+        await ApplicationService.getApplicationsCountByStatus(userId_A);
+
+      assert(result);
+      expect(result).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 0,
+        [ApplicationStatus.WITHDRAWN]: 0,
+        [ApplicationStatus.OFFERED]: 0,
+        [ApplicationStatus.REJECTED]: 0,
+        [ApplicationStatus.INTERVIEWING]: 0,
+        [ApplicationStatus.OA]: 0,
+      });
+    });
+
+    it('should return correct counts grouped by status for the user', async () => {
+      const applications = await Promise.all(
+        times(updatedStatus.length, () =>
+          ApplicationRepository.createApplication({
+            jobPostingId: getNewMongoId(),
+            userId: userId_A,
+          })
+        )
+      );
+      await Promise.all(
+        zip(applications, updatedStatus).map(([application, status]) =>
+          ApplicationRepository.updateApplicationById({
+            userId: userId_A,
+            applicationId: application.id,
+            updatedMetadata: {
+              status,
+            },
+          })
+        )
+      );
+
+      const result =
+        await ApplicationService.getApplicationsCountByStatus(userId_A);
+
+      assert(result);
+      expect(result).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 1,
+        [ApplicationStatus.WITHDRAWN]: 1,
+        [ApplicationStatus.OFFERED]: 2,
+        [ApplicationStatus.REJECTED]: 1,
+        [ApplicationStatus.INTERVIEWING]: 0,
+        [ApplicationStatus.OA]: 0,
+      });
+    });
+
+    it('should exclude soft-deleted applications from the count', async () => {
+      await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: userId_A,
+      });
+      const applicationToDelete = await ApplicationRepository.createApplication(
+        {
+          jobPostingId: getNewMongoId(),
+          userId: userId_A,
+        }
+      );
+
+      await ApplicationRepository.deleteApplicationById({
+        userId: userId_A,
+        applicationId: applicationToDelete.id,
+      });
+
+      const result =
+        await ApplicationService.getApplicationsCountByStatus(userId_A);
+
+      assert(result);
+      expect(result).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 1,
+        [ApplicationStatus.WITHDRAWN]: 0,
+        [ApplicationStatus.OFFERED]: 0,
+        [ApplicationStatus.REJECTED]: 0,
+        [ApplicationStatus.INTERVIEWING]: 0,
+        [ApplicationStatus.OA]: 0,
+      });
+    });
+
+    it('should return counts only for the specified user', async () => {
+      await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: userId_A,
+      });
+      await ApplicationRepository.createApplication({
+        jobPostingId: getNewMongoId(),
+        userId: userId_B,
+      });
+
+      const result =
+        await ApplicationService.getApplicationsCountByStatus(userId_A);
+
+      assert(result);
+      expect(result).to.deep.equal({
+        [ApplicationStatus.SUBMITTED]: 1,
+        [ApplicationStatus.WITHDRAWN]: 0,
+        [ApplicationStatus.OFFERED]: 0,
+        [ApplicationStatus.REJECTED]: 0,
+        [ApplicationStatus.INTERVIEWING]: 0,
+        [ApplicationStatus.OA]: 0,
+      });
     });
   });
 });

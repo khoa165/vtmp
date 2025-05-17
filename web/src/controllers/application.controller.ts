@@ -30,6 +30,23 @@ const ApplicationStatusUpdateSchema = z
   })
   .strict({ message: 'Only allow updating status' });
 
+const ApplicationFilterSchema = z
+  .object({
+    status: z
+      .nativeEnum(ApplicationStatus, {
+        message: 'Invalid application status',
+      })
+      .optional(),
+  })
+  .strict({
+    message: 'Only allow filtering by status',
+  })
+  .transform((data: object) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
+  );
+
 const ApplicationMetadataUpdateSchema = z
   .object({
     note: z.string().optional(),
@@ -68,7 +85,11 @@ export const ApplicationController = {
   getApplications: async (req: Request, res: Response) => {
     const userId = getUserFromRequest(req).user.id;
 
-    const applications = await ApplicationService.getApplications(userId);
+    const filters = ApplicationFilterSchema.parse(req.query);
+    const applications = await ApplicationService.getApplications({
+      userId,
+      filters,
+    });
 
     res.status(200).json({
       message: 'Applications retrieved successfully',
@@ -145,6 +166,18 @@ export const ApplicationController = {
     res.status(200).json({
       message: 'Application deleted successfully',
       data: deletedApplication,
+    });
+  },
+
+  getApplicationsCountByStatus: async (req: Request, res: Response) => {
+    const userId = getUserFromRequest(req).user.id;
+
+    const applicationsCountByStatus =
+      await ApplicationService.getApplicationsCountByStatus(userId);
+
+    res.status(200).json({
+      message: 'Applications count by status retrieved successfully',
+      data: applicationsCountByStatus,
     });
   },
 };

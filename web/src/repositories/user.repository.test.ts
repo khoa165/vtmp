@@ -7,7 +7,7 @@ import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { IUser } from '@/models/user.model';
 import { UserRole } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
-import * as R from 'remeda';
+import { omit } from 'remeda';
 
 describe('UserRepository', () => {
   useMongoDB();
@@ -106,7 +106,7 @@ describe('UserRepository', () => {
       const userFoundByEmail = await UserRepository.getUserByEmail(user.email);
       assert(userFoundByEmail);
       expect(userFoundByEmail).to.deep.include(
-        R.omit(mockOneUser, ['encryptedPassword'])
+        omit(mockOneUser, ['encryptedPassword'])
       );
       expect(userFoundByEmail).to.not.have.property('encryptedPassword');
     });
@@ -118,7 +118,7 @@ describe('UserRepository', () => {
       );
       assert(userFoundByEmail);
       expect(userFoundByEmail).to.deep.include(
-        R.omit(mockOneUser, ['encryptedPassword'])
+        omit(mockOneUser, ['encryptedPassword'])
       );
       expect(userFoundByEmail).to.not.have.property('encryptedPassword');
     });
@@ -129,7 +129,7 @@ describe('UserRepository', () => {
       });
       assert(userFoundByEmail);
       expect(userFoundByEmail).to.deep.include(
-        R.omit(mockOneUser, ['encryptedPassword'])
+        omit(mockOneUser, ['encryptedPassword'])
       );
       expect(userFoundByEmail).to.not.have.property('encryptedPassword');
     });
@@ -165,7 +165,7 @@ describe('UserRepository', () => {
       const userFoundById = await UserRepository.getUserById(user.id);
       assert(userFoundById);
       expect(userFoundById).to.deep.include(
-        R.omit(mockOneUser, ['encryptedPassword'])
+        omit(mockOneUser, ['encryptedPassword'])
       );
       expect(userFoundById).to.not.have.property('encryptedPassword');
     });
@@ -174,7 +174,7 @@ describe('UserRepository', () => {
       const userFoundById = await UserRepository.getUserById(user.id, {});
       assert(userFoundById);
       expect(userFoundById).to.deep.include(
-        R.omit(mockOneUser, ['encryptedPassword'])
+        omit(mockOneUser, ['encryptedPassword'])
       );
       expect(userFoundById).to.not.have.property('encryptedPassword');
     });
@@ -185,7 +185,7 @@ describe('UserRepository', () => {
       });
       assert(userFoundById);
       expect(userFoundById).to.deep.include(
-        R.omit(mockOneUser, ['encryptedPassword'])
+        omit(mockOneUser, ['encryptedPassword'])
       );
       expect(userFoundById).to.not.have.property('encryptedPassword');
     });

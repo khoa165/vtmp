@@ -12,15 +12,23 @@ import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
-import { submitLink } from '@/components/pages/application-tracker/links/queries';
 import { toast } from 'sonner';
+import { Method } from '@/utils/constants';
+import { request } from '@/utils/api';
+import { SubmitLinkResponseSchema } from '@/components/pages/application-tracker/links/validation';
 
 export const SubmitLink = () => {
   const [linkInput, setLinkInput] = useState('');
   const [submitLinkError, setSubmitLinkError] = useState([]);
 
   const { mutate: submitLinkFn } = useMutation({
-    mutationFn: submitLink,
+    mutationFn: (body: { url: string }) =>
+      request({
+        method: Method.POST,
+        url: '/links',
+        data: body,
+        schema: SubmitLinkResponseSchema,
+      }),
     onSuccess: (res) => {
       console.log('Success in useMutation submitLink');
       toast.success(res.message);
@@ -39,7 +47,7 @@ export const SubmitLink = () => {
   });
 
   const handleSubmit = async () => {
-    submitLinkFn(linkInput);
+    submitLinkFn({ url: linkInput });
   };
 
   return (

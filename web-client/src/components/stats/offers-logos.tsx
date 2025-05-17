@@ -1,9 +1,9 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { useOffersData } from 'src/hooks/useOffersData';
+import { useOffersData } from '@/hooks/useOffersData';
 import { Row, Col } from 'reactstrap';
 import { chunk, debounce, slice, sortBy } from 'lodash';
-import { CompanyLogo } from 'src/components/layout/company-logo';
-import { CompanyMetadataWithOffers } from 'src/types';
+import { CompanyLogo } from '@/components/layout/company-logo';
+import { CompanyMetadataWithOffers } from '@/types';
 import { useWindowSize } from 'usehooks-ts';
 
 export const OfferLogos = () => {
