@@ -8,7 +8,7 @@ export const loadInterviews = async (
   users: IUser[],
   applications: IApplication[]
 ) => {
-  const SOON_DAYS = 180;
+  const MAX_DAYS_FROM_REF_DATE = 180;
   const weightedNumInterviews = [
     { weight: 99, value: 0 },
     { weight: 0.6, value: 1 },
@@ -32,7 +32,7 @@ export const loadInterviews = async (
       ),
       status: faker.helpers.enumValue(InterviewStatus),
       interviewOnDate: faker.date.soon({
-        days: SOON_DAYS,
+        days: MAX_DAYS_FROM_REF_DATE,
         refDate: application.appliedOnDate,
       }),
     };
