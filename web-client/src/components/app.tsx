@@ -15,8 +15,7 @@ import { TreeContainer } from '@/components/tree';
 import { Mentorship2025Apply } from '@/components/apply';
 import { Mentorship2025Proposal } from './proposal';
 import { Playground } from '@/components/playground';
-import LoginPage from '@/components/authentication/login';
-import SignUpPage from './authentication/signup';
+import LoginPage from '@/components/pages/auth/login';
 import { PageWithSidebar } from '@/components/layout/page-with-sidebar';
 import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
 import { UserInvitationPage } from '@/components/pages/admins/users/user-invitation';
@@ -75,10 +74,9 @@ export const App = () => {
             <Route path="/user-invitation" element={<UserInvitationPage />} />
             <Route path="/application-tracker" element={<ApplicationsPage />} />
           </Route>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/*" element={<>404</>} />
         </Route>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/*" element={<>404</>} />
       </Routes>
     </Router>
   );

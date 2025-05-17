@@ -11,53 +11,68 @@ import { Checkbox } from '@/components/base/checkbox';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
 import React, { useState } from 'react';
-import LogoMint from '../../assets/images/logo-full-mint.svg?react';
+import LogoMint from '@/assets/images/logo-full-mint.svg?react';
 import { EyeOff, Eye } from 'lucide-react';
-import { api } from '@/utils/axios';
+import { request } from '@/utils/api';
 import axios from 'axios';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
+import { Method } from '@/utils/constants';
+import { useMutation } from '@tanstack/react-query';
+import { LoginResponseSchema } from '@/components/pages/auth/validation';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [emailErrors, setEmailErrors] = useState<string[]>([]);
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const navigate = useNavigatePreserveQueryParams();
 
-  const handleLogin = async () => {
-    setEmailError('');
-    setPasswordError('');
-    try {
-      const res = await api.post('/auth/login', {
-        email: emailInput,
-        password: passwordInput,
-      });
-      console.log('Login response:', res.data);
-      navigate('/home');
-    } catch (error: unknown) {
+  const { mutate: loginFn } = useMutation({
+    mutationFn: (body: { email: string; password: string }) =>
+      request(Method.POST, '/auth/login', body, LoginResponseSchema),
+    onSuccess: (res) => {
+      console.log('Login successfully: ', res);
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+      navigate('/application-tracker');
+    },
+    onError: (error) => {
+      console.log('Error in useMutation login', error);
       if (axios.isAxiosError(error) && error.response) {
         error.response.data.errors.forEach((err: { message: string }) => {
           if (
-            err.message.toLocaleLowerCase().includes('email') ||
-            err.message.toLocaleLowerCase().includes('user')
+            err.message.toLowerCase().includes('email') ||
+            err.message.toLowerCase().includes('user')
           ) {
-            setEmailError(err.message);
-          } else if (err.message.includes('password')) {
-            setPasswordError(err.message);
+            setEmailErrors([err.message]);
+          } else if (err.message.toLowerCase().includes('password')) {
+            setPasswordErrors([err.message]);
           }
         });
       } else {
         console.log('Unexpected error', error);
       }
+    },
+  });
+
+  const handleLogin = async () => {
+    if (!emailInput) {
+      setEmailErrors(['Email is required']);
+      return;
     }
+    if (!passwordInput) {
+      setPasswordErrors(['Password is required']);
+      return;
+    }
+    loginFn({ email: emailInput, password: passwordInput });
   };
 
   return (
-    <div className="grid grid-cols-12 gap-4 w-screen h-screen px-20 py-15">
+    <div className="grid grid-cols-12 gap-4 w-screen h-screen px-20 py-15 bg-background dark:bg-background">
       <div className="col-start-1 col-span-5 flex flex-col justify-start">
-        <LogoMint className="w-80 h-32 mb-[56px] pl-6" />
-        <Card className="bg-transparent border-0 h-full justify-center">
+        <LogoMint className="w-40 h-24 pl-6" />
+        <Card className="bg-transparent border-0 shadow-none h-full justify-center">
           <CardHeader>
             <CardTitle className="text-4xl font-bold">Sign In</CardTitle>
             <CardDescription className="text-2xl">
@@ -77,15 +92,10 @@ const LoginPage = () => {
                     value={emailInput}
                     onChange={(e) => {
                       setEmailInput(e.target.value);
-                      setEmailError('');
+                      setEmailErrors([]);
                     }}
-                    className={
-                      emailError ? 'border-(--vtmp-orange) border-2' : ''
-                    }
+                    errors={emailErrors}
                   />
-                  {emailError && (
-                    <p className="text-(--vtmp-orange) my-2">{emailError}</p>
-                  )}
                 </div>
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="password" className="pb-2">
@@ -99,27 +109,20 @@ const LoginPage = () => {
                       value={passwordInput}
                       onChange={(e) => {
                         setPasswordInput(e.target.value);
-                        setPasswordError('');
+                        setPasswordErrors([]);
                       }}
-                      className={
-                        passwordError ? 'border-(--vtmp-orange) border-2' : ''
-                      }
+                      errors={passwordErrors}
+                      className="pr-10"
                     />
                     <Button
                       variant="ghost"
-                      className="absolute right-2 hover:bg-transparent dark:hover:bg-transparent"
+                      className="absolute top-0 right-1 hover:bg-transparent dark:hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
+                      z-index={1}
                     >
-                      {showPassword ? (
-                        <EyeOff className="absolute right-2" />
-                      ) : (
-                        <Eye className="absolute right-2" />
-                      )}
+                      {showPassword ? <Eye /> : <EyeOff />}
                     </Button>
                   </div>
-                  {passwordError && (
-                    <p className="text-(--vtmp-orange) my-2">{passwordError}</p>
-                  )}
                 </div>
               </div>
             </form>
