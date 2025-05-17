@@ -193,3 +193,10 @@ export enum Department {
   SWE = 'SWE',
   PD = 'PD',
 }
+
+export enum JobTitle {
+  SOFTWARE_ENGINEER = 'SOFTWARE_ENGINEER',
+  DATA_SCIENTIST = 'DATA_SCIENTIST',
+  PRODUCT_DESIGNER = 'PRODUCT_DESIGNER',
+  DATA_ENGINEER = 'DATA_ENGINEER',
+}
