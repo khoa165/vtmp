@@ -57,8 +57,6 @@ export const dashboardTableColumns = ({
   {
     accessorKey: 'datePosted',
     header: ({ column }) => {
-      // TODO-(QuangMinhNguyen27405/dsmai): Add arrow up when sorting ascending and down when descending
-      // and updown if we are sorting by a different column
       return (
         <div className="flex items-center">
           <span>Date Posted</span>
@@ -76,7 +74,7 @@ export const dashboardTableColumns = ({
     },
     cell: ({ row }) => {
       const isoDate = row.getValue<Date>('datePosted');
-      const date = new Date(isoDate);
+      const date = isoDate ? new Date(isoDate) : new Date();
       return <span>{format(date, 'MM/dd/yyyy')}</span>;
     },
   },
