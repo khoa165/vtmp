@@ -5,7 +5,9 @@ import React from 'react';
 export const JobPostingsPage = () => {
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold text-foreground">Welcome back, {}.</h1>
+      <h1 className="text-3xl font-bold text-foreground">
+        Welcome back, UserName.
+      </h1>
       <SummaryBar />
       <JobPostingsContainer />
     </div>

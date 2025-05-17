@@ -16,8 +16,8 @@ export const HeaderSorting = ({ column, headerName }) => {
     <div className="flex items-center">
       <span>{headerName}</span>
       <Button
-        variant="ghost"
-        className="p-0 ml-0 w-fit"
+        variant="outline"
+        className="p-0 ml-0 w-fit h-fit cursor-pointer hover:text-inherit"
         size="sm"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
