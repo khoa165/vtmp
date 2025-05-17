@@ -84,7 +84,7 @@ const SignUpPage = () => {
         schema: AuthResponseSchema,
       }),
     onSuccess: (res) => {
-      console.log(res.data);
+      console.log(res);
       resetState();
       navigate('/');
     },
@@ -230,8 +230,9 @@ const SignUpPage = () => {
 
                     <Button
                       variant="ghost"
-                      className="absolute right-2 hover:bg-transparent dark:hover:bg-transparent"
+                      className="absolute top-0 right-1 hover:bg-transparent dark:hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
+                      z-index={1}
                     >
                       {showPassword ? (
                         <Eye className="absolute right-2" />
@@ -290,10 +291,11 @@ const SignUpPage = () => {
                     />
                     <Button
                       variant="ghost"
-                      className="absolute right-2 hover:bg-transparent dark:hover:bg-transparent"
+                      className="absolute top-0 right-1 hover:bg-transparent dark:hover:bg-transparent"
                       onClick={() => {
                         setShowConfirmPassword(!showConfirmPassword);
                       }}
+                      z-index={1}
                     >
                       {showConfirmPassword ? (
                         <Eye className="absolute right-2" />
