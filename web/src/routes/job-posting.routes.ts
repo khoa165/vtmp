@@ -15,6 +15,5 @@ JobPostingRoutes.delete(
 );
 JobPostingRoutes.get(
   '/not-applied',
-  authenticate,
   wrappedHandlers([JobPostingController.getJobPostingsUserHasNotAppliedTo])
 );

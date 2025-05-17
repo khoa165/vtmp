@@ -101,9 +101,7 @@ describe('JobPostingController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
-
-      const errors = res.body.errors;
-      expect(errors[0].message).to.equal('Job posting not found');
+      expect(res.body.errors[0].message).to.equal('Job posting not found');
     });
 
     it('should return a updated job posting', async () => {
@@ -128,7 +126,7 @@ describe('JobPostingController', () => {
         .send({ jobTitle: 'Invalid Test' })
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expect(res.status).to.equal(400);
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Invalid job ID format');
     });
 
@@ -138,7 +136,7 @@ describe('JobPostingController', () => {
         .send({ jobTitle: 123 })
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expect(res.status).to.equal(400);
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Invalid job title format');
     });
 
@@ -148,7 +146,7 @@ describe('JobPostingController', () => {
         .send({ userId: 'test' })
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expect(res.status).to.equal(400);
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal(
         'field is not allowed to update'
       );
@@ -162,9 +160,7 @@ describe('JobPostingController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
-
-      const errors = res.body.errors;
-      expect(errors[0].message).to.equal('Job posting not found');
+      expect(res.body.errors[0].message).to.equal('Job posting not found');
     });
 
     it('should return a deleted job posting', async () => {
@@ -187,7 +183,9 @@ describe('JobPostingController', () => {
       const res = await request(app).delete(
         `/api/job-postings/${jobPostings[0]?.id}`
       );
-      expect(res.status).to.equal(401);
+
+      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Unauthorized');
     });
 
     it('should return 400 for invalid job posting ID format', async () => {
@@ -195,7 +193,7 @@ describe('JobPostingController', () => {
         .delete('/api/job-postings/invalid-id-format')
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expect(res.status).to.equal(400);
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Invalid job ID format');
     });
 
@@ -208,7 +206,7 @@ describe('JobPostingController', () => {
         .delete(`/api/job-postings/${jobPostings[1]?.id}`)
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expect(res.status).to.equal(404);
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Job posting not found');
     });
   });

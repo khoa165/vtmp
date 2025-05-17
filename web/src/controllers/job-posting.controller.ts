@@ -21,7 +21,7 @@ const JobPostingUpdateSchema = z
       .string({ invalid_type_error: 'Invalid company name format' })
       .optional(),
     location: z
-      .enum([JobPostingLocation.US, JobPostingLocation.CANADA], {
+      .nativeEnum(JobPostingLocation, {
         invalid_type_error: 'Invalid Location format',
       })
       .optional(),
