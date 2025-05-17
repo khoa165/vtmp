@@ -1,6 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/base/checkbox';
-import { Link } from 'lucide-react';
 import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import {
@@ -84,24 +83,13 @@ export const applicationsTableColumns = ({
     header: 'Portal Link',
     cell: ({ row }) => {
       return (
-        <a
-          href={row.original.portalLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center underline hover:text-primary"
-        >
+        <a href={row.original.portalLink} className="text-blue-500 underline">
           {row.original.portalLink}
-          <Link className="ml-1 h-4 w-4" />
         </a>
       );
     },
   },
-  {
-    accessorKey: 'interest',
-    header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Interest" />;
-    },
-  },
+  { accessorKey: 'interest', header: 'Interest' },
   { accessorKey: 'referrer', header: 'Referrer' },
   { accessorKey: 'note', header: 'Note' },
   {
