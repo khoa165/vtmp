@@ -18,7 +18,7 @@ import axios from 'axios';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { Method } from '@/utils/constants';
 import { useMutation } from '@tanstack/react-query';
-import { LoginResponseSchema } from '@/components/pages/auth/validation';
+import { AuthResponseSchema } from '@/components/pages/auth/validation';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +30,7 @@ const LoginPage = () => {
 
   const { mutate: loginFn } = useMutation({
     mutationFn: (body: { email: string; password: string }) =>
-      request(Method.POST, '/auth/login', body, LoginResponseSchema),
+      request(Method.POST, '/auth/login', body, AuthResponseSchema),
     onSuccess: (res) => {
       console.log('Login successfully: ', res);
       localStorage.setItem('token', res.data.token);
@@ -69,7 +69,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-4 w-screen h-screen px-20 py-15 bg-background dark:bg-background">
+    <div className="grid grid-cols-12 gap-4 max-w-screen min-h-screen px-20 py-15 bg-background dark:bg-background">
       <div className="col-start-1 col-span-5 flex flex-col justify-start">
         <LogoMint className="w-40 h-24 pl-6" />
         <Card className="bg-transparent border-0 shadow-none h-full justify-center">

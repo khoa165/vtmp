@@ -9,14 +9,16 @@ import {
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
 import { useState } from 'react';
-import LogoMint from '../../assets/images/logo-full-mint.svg?react';
+import LogoMint from '@/assets/images/logo-full-mint.svg?react';
 import { EyeOff, Eye, TriangleAlert } from 'lucide-react';
 import { Check } from 'lucide-react';
-import { api } from '@/utils/axios';
 import axios from 'axios';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { useMutation } from '@tanstack/react-query';
-import { AuthResponseSchema } from '@/components/authentication/validation';
+import { request } from '@/utils/api';
+import { AuthResponseSchema } from '@/components/pages/auth/validation';
+import { Method } from '@/utils/constants';
+import { cn } from '@/lib/utils';
 
 const passwordMessage = [
   '1. Password length is in range 8-20',
@@ -26,7 +28,6 @@ const passwordMessage = [
   '5. At least 1 number',
 ];
 
-const passwordStrengthColor = ['--vtmp-orange', '--vtmp-green'];
 const passwordStrength = ['Weak', 'Strong'];
 
 const isPasswordValid = (password: string) =>
@@ -40,44 +41,48 @@ const isPasswordValid = (password: string) =>
 const SignUpPage = () => {
   const emailInput = 'Email2@viettech.com';
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [passwordInput, setPasswordInput] = useState('');
-  const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
-  const [firstNameInput, setFirstNameInput] = useState('');
-  const [lastNameInput, setLastNameInput] = useState('');
-  const [isPasswordStrong, setIsPasswordStrong] = useState(false);
-  const [firstNameError, setFirstNameError] = useState('');
-  const [lastNameError, setLastNameError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
+  const [passwordInput, setPasswordInput] = useState<string>('');
+  const [confirmPasswordInput, setConfirmPasswordInput] = useState<string>('');
+  const [firstNameInput, setFirstNameInput] = useState<string>('');
+  const [lastNameInput, setLastNameInput] = useState<string>('');
+  const [isPasswordStrong, setIsPasswordStrong] = useState<boolean>(false);
+  const [firstNameError, setFirstNameError] = useState<string[]>([]);
+  const [lastNameError, setLastNameError] = useState<string[]>([]);
+  const [emailError, setEmailError] = useState<string[]>([]);
+  const [passwordError, setPasswordError] = useState<string[]>([]);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string[]>(
+    []
+  );
   const navigate = useNavigatePreserveQueryParams();
-
-  const signUp = async () => {
-    const res = await api.post('/auth/signup', {
-      firstName: firstNameInput,
-      lastName: lastNameInput,
-      email: emailInput,
-      password: passwordInput,
-    });
-    console.log(res.data);
-    return AuthResponseSchema.parse(res.data);
-  };
 
   const resetState = () => {
     setPasswordInput('');
     setConfirmPasswordInput('');
     setFirstNameInput('');
     setLastNameInput('');
-    setFirstNameError('');
-    setLastNameError('');
-    setPasswordError('');
-    setConfirmPasswordError('');
+    setFirstNameError([]);
+    setLastNameError([]);
+    setPasswordError([]);
+    setEmailError([]);
+    setConfirmPasswordError([]);
   };
 
   const { mutate: signUpFn } = useMutation({
-    mutationFn: signUp,
+    mutationFn: (body: {
+      firstName: string;
+      lastName: string;
+      email: string;
+      password: string;
+    }) =>
+      request({
+        method: Method.POST,
+        url: '/auth/signup',
+        data: body,
+        schema: AuthResponseSchema,
+      }),
     onSuccess: (res) => {
       console.log(res.data);
       resetState();
@@ -90,15 +95,14 @@ const SignUpPage = () => {
             err.message.toLocaleLowerCase().includes('email') ||
             err.message.toLocaleLowerCase().includes('user')
           ) {
-            setEmailError(err.message);
+            setEmailError([err.message]);
           }
 
           if (err.message.toLocaleLowerCase().includes('password')) {
-            setPasswordError(err.message);
+            setPasswordError([err.message]);
             setPasswordInput('');
-            setConfirmPasswordError('');
+            setConfirmPasswordError([]);
           }
-          console.log(err.message);
         });
       } else {
         console.log('Unexpected error', error);
@@ -115,20 +119,25 @@ const SignUpPage = () => {
     ) {
       setConfirmPasswordError(
         confirmPasswordInput !== passwordInput || !passwordInput
-          ? 'Password does not match'
-          : ''
+          ? ['Password does not match']
+          : []
       );
-      setPasswordError(!passwordInput ? 'Required' : '');
-      setFirstNameError(!firstNameInput ? 'Required' : '');
-      setLastNameError(!lastNameInput ? 'Required' : '');
+      setPasswordError(!passwordInput ? ['Required'] : []);
+      setFirstNameError(!firstNameInput ? ['Required'] : []);
+      setLastNameError(!lastNameInput ? ['Required'] : []);
       return;
     }
 
-    signUpFn();
+    signUpFn({
+      firstName: firstNameInput,
+      lastName: lastNameInput,
+      email: emailInput,
+      password: passwordInput,
+    });
   };
 
   return (
-    <div className="grid grid-cols-12 gap-4 w-screen h-screen px-20 py-15">
+    <div className="grid grid-cols-12 max-w-screen min-h-screen gap-4 px-20 py-15">
       <div className="col-start-1 col-span-6">
         <div className="magic-pattern px-15 py-15 rounded-[33px]">
           <div className="relative h-full w-xs">
@@ -164,17 +173,10 @@ const SignUpPage = () => {
                       value={firstNameInput}
                       onChange={(e) => {
                         setFirstNameInput(e.target.value);
-                        setFirstNameError('');
+                        setFirstNameError([]);
                       }}
-                      className={
-                        firstNameError ? 'border-2 border-(--vtmp-orange)' : ''
-                      }
+                      errors={firstNameError}
                     />
-                    {firstNameError && (
-                      <p className="text-(--vtmp-orange) my-2">
-                        {firstNameError}
-                      </p>
-                    )}
                   </div>
                   <div className="flex-1 flex-col space-y-1.5">
                     <Label htmlFor="name" className="pb-2">
@@ -186,17 +188,10 @@ const SignUpPage = () => {
                       value={lastNameInput}
                       onChange={(e) => {
                         setLastNameInput(e.target.value);
-                        setLastNameError('');
+                        setLastNameError([]);
                       }}
-                      className={
-                        lastNameError ? 'border-2 border-(--vtmp-orange)' : ''
-                      }
+                      errors={lastNameError}
                     />
-                    {lastNameError && (
-                      <p className="text-(--vtmp-orange) my-2">
-                        {lastNameError}
-                      </p>
-                    )}
                   </div>
                 </div>
                 <div className="flex flex-col space-y-1.5">
@@ -208,19 +203,14 @@ const SignUpPage = () => {
                     placeholder="Email"
                     value={emailInput}
                     disabled={true}
-                    className={
-                      emailError ? 'border-2 border-(--vtmp-orange)' : ''
-                    }
+                    errors={emailError}
                   />
-                  {emailError && (
-                    <p className="text-(--vtmp-orange) my-2">{emailError}</p>
-                  )}
                 </div>
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="password" className="pb-2">
                     Password
                   </Label>
-                  <div className="flex flex-col justify-center relative">
+                  <div className="flex flex-col justify-center relative space-y-1.5">
                     <Input
                       id="password"
                       placeholder="Password"
@@ -228,12 +218,14 @@ const SignUpPage = () => {
                       value={passwordInput}
                       onChange={(e) => {
                         setPasswordInput(e.target.value);
-                        setIsPasswordStrong(isPasswordValid(e.target.value));
-                        setPasswordError('');
+                        const passwordStrength = isPasswordValid(
+                          e.target.value
+                        );
+                        setIsPasswordStrong(passwordStrength);
+                        setPasswordError([]);
                       }}
-                      className={
-                        passwordError ? 'border-2 border-(--vtmp-orange)' : ''
-                      }
+                      errors={passwordError}
+                      className="pr-10"
                     />
 
                     <Button
@@ -250,10 +242,17 @@ const SignUpPage = () => {
                   </div>
 
                   {!passwordInput ? (
-                    <p className="text-(--vtmp-orange) my-2">{passwordError}</p>
+                    <></>
                   ) : (
                     <div
-                      className={`flex flex-row gap-4 border-2 border-(${passwordStrengthColor[+isPasswordStrong]}) rounded-md text-(${passwordStrengthColor[+isPasswordStrong]}) p-3 mt-2`}
+                      className={cn(
+                        `flex flex-row gap-4 border-2 } rounded-md  p-3 mt-2`,
+                        {
+                          'border-vtmp-orange text-vtmp-orange':
+                            !isPasswordStrong,
+                          'border-vtmp-green text-vtmp-green': isPasswordStrong,
+                        }
+                      )}
                     >
                       {!isPasswordStrong ? (
                         <TriangleAlert size={20} strokeWidth={2} />
@@ -277,7 +276,7 @@ const SignUpPage = () => {
                   <Label htmlFor="password" className="pb-2">
                     Confirm Password
                   </Label>
-                  <div className="flex flex-col justify-center relative">
+                  <div className="flex flex-col justify-center relative space-y-1.5">
                     <Input
                       id="confirmPassword"
                       placeholder="Confirm Password"
@@ -285,13 +284,9 @@ const SignUpPage = () => {
                       value={confirmPasswordInput}
                       onChange={(e) => {
                         setConfirmPasswordInput(e.target.value);
-                        setConfirmPasswordError('');
+                        setConfirmPasswordError([]);
                       }}
-                      className={
-                        confirmPasswordError
-                          ? 'border-2 border-(--vtmp-orange)'
-                          : ''
-                      }
+                      errors={confirmPasswordError}
                     />
                     <Button
                       variant="ghost"
@@ -307,11 +302,6 @@ const SignUpPage = () => {
                       )}
                     </Button>
                   </div>
-                  {confirmPasswordError && (
-                    <p className="text-(--vtmp-orange) my-2">
-                      {confirmPasswordError}
-                    </p>
-                  )}
                 </div>
               </div>
             </form>
@@ -329,7 +319,13 @@ const SignUpPage = () => {
 
             <div className="flex flex-row items-center gap-1 mt-2">
               <span>Already have an account?</span>
-              <Button variant="link" className="font-bold p-0 h-auto">
+              <Button
+                onClick={() => {
+                  navigate('/login');
+                }}
+                variant="link"
+                className="font-bold p-0 h-auto"
+              >
                 Sign In
               </Button>
             </div>

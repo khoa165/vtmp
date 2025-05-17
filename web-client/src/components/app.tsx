@@ -23,6 +23,7 @@ import { JobPostingPage } from '@/components/pages/application-tracker/job-posti
 import { PageWithToast } from '@/components/layout/page-with-toast';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
+import SignUpPage from '@/components/pages/auth/signup';
 
 export const App = () => {
   useEffect(() => {
@@ -75,6 +76,7 @@ export const App = () => {
             <Route path="/application-tracker" element={<ApplicationsPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
           <Route path="/*" element={<>404</>} />
         </Route>
       </Routes>

@@ -19,18 +19,22 @@ export const PageWithSidebar = () => {
     }
   }, [token]);
 
-  if (isRedirecting) {
-    return (
-      <h1
-        className="text-center text-white app-flex"
-        style={{ height: '100vh' }}
-      >
-        Redirecting...
-      </h1>
-    );
-  }
+  // if (isRedirecting) {
+  //   return (
+  //     <h1
+  //       className="text-center text-white app-flex"
+  //       style={{ height: '100vh' }}
+  //     >
+  //       Redirecting...
+  //     </h1>
+  //   );
+  // }
 
-  return (
+  return isRedirecting ? (
+    <h1 className="text-center text-white app-flex" style={{ height: '100vh' }}>
+      Redirecting...
+    </h1>
+  ) : (
     <SidebarProvider defaultOpen={state}>
       <InternalToolsSidebar />
       <main className="flex-1">

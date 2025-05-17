@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-export const LoginResponseSchema = z.object({
+export const AuthResponseSchema = z.object({
+  message: z.string(),
   data: z.object({
     token: z.string(),
     user: z.object({
