@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ApplicationStatusCard } from '@/components/pages/application-tracker/applications/application-status-card';
 import { Skeleton } from '@/components/base/skeleton';
 import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
+import { toast } from 'sonner';
 
 export const ApplicationStatusContainer = ({
   setApplicationFilter,
@@ -15,7 +16,6 @@ export const ApplicationStatusContainer = ({
 
   const {
     isLoading,
-    isError,
     error,
     data: ApplicationsCountByStatus,
   } = useGetApplicationsCountByStatus();
@@ -30,8 +30,10 @@ export const ApplicationStatusContainer = ({
     );
   }
 
-  if (isError) {
+  if (error) {
     console.error('Error fetching application count data:', error);
+    // TODO-dsmai: need to add toast here
+    toast.error('An error has occured');
     throw error;
   }
 

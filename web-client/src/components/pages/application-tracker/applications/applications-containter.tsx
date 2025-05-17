@@ -9,6 +9,7 @@ import { useMemo, useState } from 'react';
 import { SortingState } from '@tanstack/react-table';
 import { Skeleton } from '@/components/base/skeleton';
 import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
+import { toast } from 'sonner';
 
 export const ApplicationsContainer = ({
   applicationFilter,
@@ -17,7 +18,6 @@ export const ApplicationsContainer = ({
 }): React.JSX.Element | null => {
   const {
     isLoading,
-    isError,
     error,
     data: applicationsData,
   } = useGetApplications(applicationFilter);
@@ -47,8 +47,10 @@ export const ApplicationsContainer = ({
     );
   }
 
-  if (isError) {
+  if (error) {
     console.error('Error fetching applications data:', error);
+    // TODO-dsmai: need to add toast here
+    toast.error('An error has occured');
     throw error;
   }
 
