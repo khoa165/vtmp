@@ -260,6 +260,7 @@ describe('InvitationController', () => {
         ...mockOneInvitation,
         expiryDate: subDays(Date.now(), 2),
       });
+      const expectedExpiryDate = addDays(Date.now(), 7);
 
       const res = await request(app)
         .post('/api/invitations')
@@ -285,7 +286,7 @@ describe('InvitationController', () => {
       const timeDiff = Math.abs(
         differenceInSeconds(
           invitationWithNewExpiryDate.expiryDate,
-          addDays(Date.now(), 7)
+          expectedExpiryDate
         )
       );
       expect(timeDiff).to.lessThan(3);
