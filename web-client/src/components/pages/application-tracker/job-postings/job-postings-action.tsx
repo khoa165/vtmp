@@ -16,24 +16,20 @@ export const JobPostingsAction = ({
   createApplicationFn: (body: { jobPostingId: string }) => void;
 }) => {
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() =>
-              createApplicationFn({ jobPostingId: jobPosting._id })
-            }
-          >
-            Create Application
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem
+          onClick={() => createApplicationFn({ jobPostingId: jobPosting._id })}
+        >
+          Create Application
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
