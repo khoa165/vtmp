@@ -3,6 +3,7 @@ import { IInterview } from '@/models/interview.model';
 
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 import { ResourceNotFoundError } from '@/utils/errors';
+import { ApplicationRepository } from '@/repositories/application.repository';
 
 export const InterviewService = {
   createInterview: async ({
@@ -20,12 +21,25 @@ export const InterviewService = {
     interviewOnDate: Date;
     note?: string;
   }): Promise<IInterview> => {
+    const application = await ApplicationRepository.getApplicationById({
+      applicationId,
+      userId,
+    });
+
+    if (!application) {
+      throw new ResourceNotFoundError('Application not found', {
+        applicationId,
+        userId,
+      });
+    }
+
     return InterviewRepository.createInterview({
       applicationId,
       userId,
       type,
       ...(status !== undefined && { status }),
       interviewOnDate,
+      companyName: application.companyName,
       ...(note !== undefined && { note }),
     });
   },
@@ -36,7 +50,7 @@ export const InterviewService = {
   }: {
     interviewId: string;
     userId: string;
-  }): Promise<IInterview> => {
+  }): Promise<IInterview | null> => {
     const interview = await InterviewRepository.getInterviewById({
       interviewId,
       userId,
@@ -61,7 +75,7 @@ export const InterviewService = {
       status?: InterviewStatus;
       companyName?: string;
     };
-  }): Promise<IInterview[]> => {
+  }): Promise<IInterview[] | null> => {
     return InterviewRepository.getInterviews({ filters });
   },
 
@@ -78,7 +92,7 @@ export const InterviewService = {
       interviewOnDate?: Date;
       note?: string;
     };
-  }): Promise<IInterview> => {
+  }): Promise<IInterview | null> => {
     const updatedInterview = await InterviewRepository.updateInterviewById({
       interviewId,
       userId,
@@ -101,7 +115,7 @@ export const InterviewService = {
   }: {
     interviewId: string;
     userId: string;
-  }): Promise<IInterview> => {
+  }): Promise<IInterview | null> => {
     const deletedInterview = await InterviewRepository.deleteInterviewById({
       interviewId,
       userId,
