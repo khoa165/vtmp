@@ -12,6 +12,7 @@ export enum HTTPMethod {
   POST = 'POST',
   PUT = 'PUT',
   DELETE = 'DELETE',
+  PATCH = 'PATCH',
 }
 
 interface IAuthMiddlewareTest {
@@ -49,8 +50,8 @@ export const runDefaultAuthMiddlewareTests = ({
   body = {},
 }: IAuthMiddlewareTest) => {
   describe(`AuthMiddleware: ${method} ${route}`, () => {
+    const callDynamicReq = request(app)[toLowerCase(method)];
     it('should Unauthorized for no token', async () => {
-      const callDynamicReq = request(app)[toLowerCase(method)];
       const res = await callDynamicReq(route)
         .send(body)
         .set('Accept', 'application/json')
@@ -61,7 +62,6 @@ export const runDefaultAuthMiddlewareTests = ({
     });
 
     it('should throw Unauthorized for wrong token', async () => {
-      const callDynamicReq = request(app)[toLowerCase(method)];
       const res = await callDynamicReq(route)
         .send(body)
         .set('Accept', 'application/json')
