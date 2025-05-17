@@ -166,7 +166,7 @@ export enum Method {
   DELETE = 'DELETE',
 }
 
-export const statusColorMap = {
+export const StatusToColorMapping: Record<ApplicationStatus, string> = {
   [ApplicationStatus.SUBMITTED]: 'bg-[#A2BFF0]',
   [ApplicationStatus.OA]: 'bg-[#F49DFF]',
   [ApplicationStatus.INTERVIEWING]: 'bg-[#F8FF6A]',
