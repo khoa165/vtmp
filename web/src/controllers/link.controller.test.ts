@@ -81,9 +81,7 @@ describe('LinkController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-
-      const errors = res.body.errors;
-      expect(errors[0].message).to.equal('URL is required');
+      expect(res.body.errors[0].message).to.equal('URL is required');
     });
 
     it('should return a link', async () => {
@@ -108,9 +106,7 @@ describe('LinkController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
-
-      const errors = res.body.errors;
-      expect(errors[0].message).to.equal('Link not found');
+      expect(res.body.errors[0].message).to.equal('Link not found');
     });
 
     it('should return a rejected link', async () => {
@@ -218,7 +214,6 @@ describe('LinkController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.status).to.equal(400);
       expect(res.body.errors[0].message).to.include('Invalid link status');
     });
 
@@ -228,7 +223,6 @@ describe('LinkController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.status).to.equal(400);
       expect(res.body.errors[0].message).to.include(
         'Only allow filtering by given fields'
       );
@@ -240,7 +234,6 @@ describe('LinkController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.status).to.equal(400);
       expect(res.body.errors[0].message).to.include(
         'Only allow filtering by given fields'
       );
@@ -256,7 +249,6 @@ describe('LinkController', () => {
         .set('Authorization', `Bearer ${mockToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.status).to.equal(400);
       expect(res.body.errors[0].message).to.include('Invalid url');
     });
 
