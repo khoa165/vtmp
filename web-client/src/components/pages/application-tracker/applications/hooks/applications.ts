@@ -11,15 +11,15 @@ import { ApplicationStatus } from '@vtmp/common/constants';
 import axios from 'axios';
 
 export const useGetApplications = (
-  filter: { status?: ApplicationStatus } = {}
+  applicationFilter: { status?: ApplicationStatus } = {}
 ) =>
   useQuery({
-    queryKey: [QueryKey.GET_APPLICATIONS, filter],
+    queryKey: [QueryKey.GET_APPLICATIONS, applicationFilter],
     queryFn: () =>
       request({
         method: Method.GET,
         url: '/applications',
-        data: filter,
+        data: applicationFilter,
         schema: ApplicationsResponseSchema,
         options: { includeOnlyDataField: true },
       }),

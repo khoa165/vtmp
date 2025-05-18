@@ -24,7 +24,7 @@ import { ApplicationStatus } from '@vtmp/common/constants';
 import { formatStatus } from '@/utils/helpers';
 import { StatusDot } from '@/components/base/status-dot';
 
-const handleOfferedSelected = () => {
+const celebrateOffered = (): void => {
   const end = Date.now() + 3 * 1000; // 3 seconds
   const colors = ['#a786ff', '#fd8bbc', '#eca184', '#f8deb1'];
 
@@ -144,7 +144,7 @@ export const CellApplicationStatus = ({
                 key={index}
                 onClick={() => {
                   if (dropdownStatus === ApplicationStatus.OFFERED) {
-                    handleOfferedSelected();
+                    celebrateOffered();
                   }
                   updateApplicationStatusFn({
                     applicationId: application._id,
