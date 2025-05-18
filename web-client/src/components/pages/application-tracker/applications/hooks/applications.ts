@@ -21,7 +21,7 @@ export const useGetApplications = (
         url: '/applications',
         data: applicationFilter,
         schema: ApplicationsResponseSchema,
-        options: { includeOnlyDataField: true },
+        options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
 
@@ -33,7 +33,7 @@ export const useGetApplicationsCountByStatus = () =>
         method: Method.GET,
         url: '/applications/count-by-status',
         schema: ApplicationsCountByStatusSchema,
-        options: { includeOnlyDataField: true },
+        options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
 
@@ -46,6 +46,7 @@ export const useDeleteApplication = () => {
         method: Method.DELETE,
         url: `/applications/${applicationId}`,
         schema: ApplicationResponseSchema,
+        options: { requireAuth: true },
       }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
@@ -85,6 +86,7 @@ export const useUpdateApplicationStatus = () => {
         url: `/applications/${applicationId}/updateStatus`,
         data: body,
         schema: ApplicationResponseSchema,
+        options: { requireAuth: true },
       }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
