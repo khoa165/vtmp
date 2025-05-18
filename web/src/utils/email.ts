@@ -51,9 +51,9 @@ export class EmailService {
 
 let emailServiceInstance: EmailService | null = null;
 
-export function getEmailService(): EmailService {
+export const getEmailService = (): EmailService => {
   if (!emailServiceInstance) {
     emailServiceInstance = new EmailService();
   }
   return emailServiceInstance;
-}
+};
