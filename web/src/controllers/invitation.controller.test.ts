@@ -23,7 +23,7 @@ import { differenceInSeconds } from 'date-fns/fp/differenceInSeconds';
 import { AuthService } from '@/services/auth.service';
 import bcrypt from 'bcryptjs';
 import sinon from 'sinon';
-import { emailService } from '@/services/invitation.service';
+import { getEmailService } from '@/utils/email';
 
 describe('InvitationController', () => {
   useMongoDB();
@@ -32,6 +32,7 @@ describe('InvitationController', () => {
 
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+    const emailService = getEmailService();
     const sendEmailStub = sinon
       .stub(emailService, 'sendEmail')
       .callsFake(async () => {

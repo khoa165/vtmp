@@ -2,7 +2,7 @@ import { EnvConfig } from '@/config/env';
 import { IInvitation } from '@/models/invitation.model';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
-import { EmailService } from '@/utils/email';
+import { getEmailService } from '@/utils/email';
 import {
   DuplicateResourceError,
   ForbiddenError,
@@ -13,8 +13,6 @@ import { InvitationStatus } from '@vtmp/common/constants';
 import { addDays, isBefore } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
-
-export const emailService = new EmailService();
 
 const DecodedJWTSchema = z.object({
   receiverEmail: z.string().email(),
@@ -81,12 +79,12 @@ export const InvitationService = {
       token = latestPendingInvitation.token;
     }
 
-    const emailTemplate = emailService.getInvitationEmailTemplate(
+    const emailTemplate = getEmailService().getInvitationEmailTemplate(
       receiverName,
       receiverEmail,
       token
     );
-    await emailService.sendEmail(emailTemplate);
+    await getEmailService().sendEmail(emailTemplate);
     return newInvitation;
   },
 

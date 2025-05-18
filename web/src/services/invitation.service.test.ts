@@ -21,7 +21,7 @@ import jwt from 'jsonwebtoken';
 import { describe } from 'mocha';
 import * as R from 'remeda';
 import sinon from 'sinon';
-import { emailService } from '@/services/invitation.service';
+import { getEmailService } from '@/utils/email';
 
 describe('InvitationService', () => {
   useMongoDB();
@@ -33,6 +33,7 @@ describe('InvitationService', () => {
 
   beforeEach(() => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+    const emailService = getEmailService();
     const sendEmailStub = sinon
       .stub(emailService, 'sendEmail')
       .callsFake(async () => {
