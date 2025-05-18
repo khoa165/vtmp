@@ -20,7 +20,6 @@ import { addDays, differenceInSeconds, subDays } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import { describe } from 'mocha';
 import * as R from 'remeda';
-import sinon from 'sinon';
 import { getEmailService } from '@/utils/email';
 
 describe('InvitationService', () => {
@@ -34,15 +33,11 @@ describe('InvitationService', () => {
   beforeEach(() => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
     const emailService = getEmailService();
-    const sendEmailStub = sinon
+    const sendEmailStub = sandbox
       .stub(emailService, 'sendEmail')
       .callsFake(async () => {
         expect(sendEmailStub.calledOnce).to.equal(true);
       });
-  });
-
-  afterEach(() => {
-    sinon.restore();
   });
 
   const mockOneInvitation = {

@@ -47,8 +47,5 @@
       "prettier --write --config .prettierrc",
       "eslint --fix --config eslint.config.js"
     ]
-  },
-  "dependencies": {
-    "sinon": "^20.0.0"
   }
 }

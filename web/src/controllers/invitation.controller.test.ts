@@ -22,7 +22,6 @@ import { omit } from 'remeda';
 import { differenceInSeconds } from 'date-fns/fp/differenceInSeconds';
 import { AuthService } from '@/services/auth.service';
 import bcrypt from 'bcryptjs';
-import sinon from 'sinon';
 import { getEmailService } from '@/utils/email';
 
 describe('InvitationController', () => {
@@ -33,7 +32,7 @@ describe('InvitationController', () => {
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
     const emailService = getEmailService();
-    const sendEmailStub = sinon
+    const sendEmailStub = sandbox
       .stub(emailService, 'sendEmail')
       .callsFake(async () => {
         expect(sendEmailStub.calledOnce).to.equal(true);
@@ -54,10 +53,6 @@ describe('InvitationController', () => {
         password: 'test password',
       })
     ).token;
-  });
-
-  afterEach(() => {
-    sinon.restore();
   });
 
   const nextWeek = addDays(Date.now(), 7);
