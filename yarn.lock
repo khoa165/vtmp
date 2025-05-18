@@ -5199,7 +5199,6 @@ __metadata:
     multer: "npm:^1.4.5-lts.1"
     nodemailer: "npm:^6.10.1"
     remeda: "npm:^2.21.2"
-    sinon: "npm:^20.0.0"
     supertest: "npm:^7.1.0"
     ts-loader: "npm:^9.5.2"
     ts-node: "npm:^10.9.2"
