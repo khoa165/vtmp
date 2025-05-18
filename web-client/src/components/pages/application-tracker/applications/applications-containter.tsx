@@ -9,7 +9,7 @@ import { useMemo, useState } from 'react';
 import { SortingState } from '@tanstack/react-table';
 import { Skeleton } from '@/components/base/skeleton';
 import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
-import { toast } from 'sonner';
+import { CustomError } from '@/utils/errors';
 
 export const ApplicationsContainer = ({
   applicationFilter,
@@ -48,10 +48,7 @@ export const ApplicationsContainer = ({
   }
 
   if (error) {
-    console.error('Error fetching applications data:', error);
-    // TODO-dsmai: need to add toast here
-    toast.error('An error has occured');
-    throw error;
+    throw new CustomError('Error fetching applications data');
   }
 
   if (!applicationsData || applicationsData.length === 0) {

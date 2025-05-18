@@ -2,9 +2,7 @@ import { ApplicationStatusContainer } from '@/components/pages/application-track
 import { ApplicationsContainer } from '@/components/pages/application-tracker/applications/applications-containter';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import { useState } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
-import { ErrorBoundaryWrapper } from '@/components/base/error-boundary-wrapper';
-import { logError } from '@/utils/errors';
+import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
 
 export interface ApplicationsFilter {
   status?: ApplicationStatus;
@@ -15,28 +13,15 @@ export const ApplicationsPage = () => {
     useState<ApplicationsFilter>({});
   return (
     <div className="w-full h-full p-10">
-      <ErrorBoundary
-        FallbackComponent={(props) => (
-          <ErrorBoundaryWrapper
-            {...props}
-            customText="Application Status Cards"
-          />
-        )}
-        onError={logError}
-      >
+      <ErrorBoundaryWrapper customText="Application Status Cards">
         <ApplicationStatusContainer
           setApplicationFilter={setApplicationFilter}
         />
-      </ErrorBoundary>
+      </ErrorBoundaryWrapper>
 
-      <ErrorBoundary
-        FallbackComponent={(props) => (
-          <ErrorBoundaryWrapper {...props} customText="Application Table" />
-        )}
-        onError={logError}
-      >
+      <ErrorBoundaryWrapper customText="Application Table">
         <ApplicationsContainer applicationFilter={applicationFilter} />
-      </ErrorBoundary>
+      </ErrorBoundaryWrapper>
     </div>
   );
 };
