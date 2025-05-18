@@ -23,12 +23,11 @@ export const useGetJobPostingsInADay = () => {
   return useQuery({
     queryKey: [QueryKey.GET_JOB_POSTINGS_IN_ADAY],
     queryFn: async () => {
-      const response = await request(
-        Method.GET,
-        '/job-postings/not-applied-last-24h',
-        null,
-        JobPostingsResponseSchema
-      );
+      const response = await request({
+        method: Method.GET,
+        url: '/job-postings/not-applied-last-24h',
+        schema: JobPostingsResponseSchema,
+      });
       return response.data;
     },
   });
