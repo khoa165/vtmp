@@ -22,6 +22,8 @@ import { omit } from 'remeda';
 import { differenceInSeconds } from 'date-fns/fp/differenceInSeconds';
 import { AuthService } from '@/services/auth.service';
 import bcrypt from 'bcryptjs';
+import sinon from 'sinon';
+import { emailService } from '@/utils/email';
 
 describe('InvitationController', () => {
   useMongoDB();
@@ -30,6 +32,11 @@ describe('InvitationController', () => {
 
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+    const sendEmailStub = sinon
+      .stub(emailService, 'sendEmail')
+      .callsFake(async () => {
+        expect(sendEmailStub.calledOnce).to.equal(true);
+      });
 
     const encryptedPassword = await bcrypt.hash('test password', 10);
     const mockUser = {
@@ -46,6 +53,10 @@ describe('InvitationController', () => {
         password: 'test password',
       })
     ).token;
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 
   const nextWeek = addDays(Date.now(), 7);

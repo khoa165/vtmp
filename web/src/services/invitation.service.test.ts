@@ -95,7 +95,7 @@ describe('InvitationService', () => {
     });
   });
 
-  describe.only('sendInvitation', () => {
+  describe('sendInvitation', () => {
     it('should return error message when user associated with invitation receiver email already exists', async () => {
       const mockUser = {
         firstName: 'Admin',
