@@ -64,9 +64,8 @@ describe('Interview Repository', () => {
       jobPostingData: mockJobPosting_Google,
     });
 
-    if (!metaJobPosting || !googleJobPosting) {
-      throw new Error('Failed to create job posting');
-    }
+    assert(metaJobPosting, 'Failed to create Meta job posting');
+    assert(googleJobPosting, 'Failed to create Google job posting');
 
     metaApplication_A = await ApplicationRepository.createApplication({
       jobPostingId: metaJobPosting.id,
@@ -257,6 +256,8 @@ describe('Interview Repository', () => {
       });
 
       assert(interviews);
+      assert(interview_A0);
+      assert(interview_A1);
       expect(interviews).to.be.an('array').that.have.lengthOf(2);
       expect(interviews.map((interview) => interview.id)).to.have.members([
         interview_A0.id,

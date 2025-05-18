@@ -64,9 +64,8 @@ describe('InterviewService', () => {
       jobPostingData: mockJobPosting_Google,
     });
 
-    if (!metaJobPosting || !googleJobPosting) {
-      throw new Error('Failed to create job posting');
-    }
+    assert(metaJobPosting, 'Failed to create Meta job posting');
+    assert(googleJobPosting, 'Failed to create Google job posting');
 
     metaApplication_A = await ApplicationRepository.createApplication({
       jobPostingId: metaJobPosting.id,
