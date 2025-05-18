@@ -48,3 +48,5 @@ export class EmailService {
     await this.transporter.sendMail(mailOptions);
   }
 }
+
+export const emailService = new EmailService();

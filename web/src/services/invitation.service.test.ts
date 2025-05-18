@@ -20,18 +20,29 @@ import { addDays, differenceInSeconds, subDays } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import { describe } from 'mocha';
 import * as R from 'remeda';
+import sinon from 'sinon';
+import { emailService } from '@/utils/email';
 
 describe('InvitationService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
-  beforeEach(() => {
-    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
-  });
-
   const nextWeek = addDays(Date.now(), 7);
   const mockMenteeName = 'Mentee Viettech';
   const mockAdminId = getNewMongoId();
+
+  beforeEach(() => {
+    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+    const sendEmailStub = sinon
+      .stub(emailService, 'sendEmail')
+      .callsFake(async () => {
+        expect(sendEmailStub.calledOnce).to.equal(true);
+      });
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
 
   const mockOneInvitation = {
     receiverEmail: 'mentee@viettech.com',
@@ -84,7 +95,7 @@ describe('InvitationService', () => {
     });
   });
 
-  describe('sendInvitation', () => {
+  describe.only('sendInvitation', () => {
     it('should return error message when user associated with invitation receiver email already exists', async () => {
       const mockUser = {
         firstName: 'Admin',

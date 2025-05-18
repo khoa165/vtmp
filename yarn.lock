@@ -13659,6 +13659,7 @@ __metadata:
     husky: "npm:^9.1.7"
     lint-staged: "npm:^15.5.0"
     prettier: "npm:^3.5.3"
+    sinon: "npm:^20.0.0"
     tsx: "npm:^4.19.3"
     typescript: "npm:^5.8.2"
     typescript-eslint: "npm:^8.26.0"
