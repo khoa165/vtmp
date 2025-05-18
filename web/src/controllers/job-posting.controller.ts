@@ -46,6 +46,7 @@ export const JobPostingController = {
 
   getJobPostingsUserHasNotAppliedTo: async (req: Request, res: Response) => {
     const userId = getUserFromRequest(req).user.id;
+    // const userId = '68110356bd157e78f5a2137e';
 
     const jobPostings =
       await JobPostingService.getJobPostingsUserHasNotAppliedTo(userId);
@@ -53,6 +54,19 @@ export const JobPostingController = {
     res.status(200).json({
       message: 'Job postings retrieved successfully',
       data: jobPostings,
+    });
+  },
+
+  getJobPostingsInADay: async (req: Request, res: Response) => {
+    const userId = getUserFromRequest(req).user.id;
+    // const userId = '68110356bd157e78f5a2137e';
+
+    const jobPostingsInADay =
+      await JobPostingService.getJobPostingsInADay(userId);
+
+    res.status(200).json({
+      message: 'Job postings retrieved successfully',
+      data: jobPostingsInADay,
     });
   },
 };

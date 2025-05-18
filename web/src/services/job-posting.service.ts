@@ -31,4 +31,8 @@ export const JobPostingService = {
   getJobPostingsUserHasNotAppliedTo: async (userId: string) => {
     return JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userId);
   },
+
+  getJobPostingsInADay: async (userId: string) => {
+    return JobPostingRepository.getJobPostingsInADay(userId);
+  },
 };

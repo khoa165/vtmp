@@ -21,6 +21,21 @@ export const useGetJobPostings = () => {
   });
 };
 
+export const useGetJobPostingsInADay = () => {
+  return useQuery({
+    queryKey: [QueryKey.GET_JOB_POSTINGS_IN_ADAY],
+    queryFn: async () => {
+      const response = await request(
+        Method.GET,
+        '/job-postings/not-applied-last-24h',
+        null,
+        JobPostingsResponseSchema
+      );
+      return response.data;
+    },
+  });
+};
+
 export const useCreateApplication = () => {
   const queryClient = useQueryClient();
 

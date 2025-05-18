@@ -83,7 +83,8 @@ export const ApplicationController = {
   },
 
   getApplications: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    // const userId = getUserFromRequest(req).user.id;
+    const userId = '68110356bd157e78f5a2137e';
 
     const filters = ApplicationFilterSchema.parse(req.query);
     const applications = await ApplicationService.getApplications({
@@ -113,7 +114,8 @@ export const ApplicationController = {
   },
 
   updateApplicationStatus: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    // const userId = getUserFromRequest(req).user.id;
+    const userId = '68110356bd157e78f5a2137e';
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
     const { updatedStatus } = ApplicationStatusUpdateSchema.parse(req.body);
 
@@ -155,7 +157,8 @@ export const ApplicationController = {
   },
 
   deleteApplication: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    // const userId = getUserFromRequest(req).user.id;
+    const userId = '68110356bd157e78f5a2137e';
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
 
     const deletedApplication = await ApplicationService.deleteApplicationById({
@@ -170,7 +173,8 @@ export const ApplicationController = {
   },
 
   getApplicationsCountByStatus: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    // const userId = getUserFromRequest(req).user.id;
+    const userId = '68110356bd157e78f5a2137e';
 
     const applicationsCountByStatus =
       await ApplicationService.getApplicationsCountByStatus(userId);
