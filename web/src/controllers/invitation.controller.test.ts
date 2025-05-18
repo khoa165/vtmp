@@ -23,7 +23,7 @@ import { differenceInSeconds } from 'date-fns/fp/differenceInSeconds';
 import { AuthService } from '@/services/auth.service';
 import bcrypt from 'bcryptjs';
 import sinon from 'sinon';
-import { emailService } from '@/utils/email';
+import { emailService } from '@/services/invitation.service';
 
 describe('InvitationController', () => {
   useMongoDB();

@@ -21,7 +21,7 @@ import jwt from 'jsonwebtoken';
 import { describe } from 'mocha';
 import * as R from 'remeda';
 import sinon from 'sinon';
-import { emailService } from '@/utils/email';
+import { emailService } from '@/services/invitation.service';
 
 describe('InvitationService', () => {
   useMongoDB();

@@ -2,7 +2,7 @@ import { EnvConfig } from '@/config/env';
 import { IInvitation } from '@/models/invitation.model';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
-import { emailService } from '@/utils/email';
+import { EmailService } from '@/utils/email';
 import {
   DuplicateResourceError,
   ForbiddenError,
@@ -13,6 +13,8 @@ import { InvitationStatus } from '@vtmp/common/constants';
 import { addDays, isBefore } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
+
+export const emailService = new EmailService();
 
 const DecodedJWTSchema = z.object({
   receiverEmail: z.string().email(),
