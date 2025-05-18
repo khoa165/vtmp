@@ -5,7 +5,21 @@ import { Router } from 'express';
 
 export const AuthRoutes = Router();
 
-AuthRoutes.post('/login', wrappedHandlers([AuthController.login]));
+AuthRoutes.post(
+  '/login',
+  /* #swagger.requestBody = {
+        required: true,
+        content: {
+          "application/json": {
+            "schema": {
+              $ref: "#/components/schemas/LoginRequest"
+            }
+          }
+        }
+      }
+  */
+  wrappedHandlers([AuthController.login])
+);
 AuthRoutes.post('/signup', wrappedHandlers([AuthController.signup])); // sign up
 AuthRoutes.post(
   '/validate',

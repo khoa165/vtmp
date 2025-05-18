@@ -40,6 +40,8 @@
     "@types/node": "^22.13.9",
     "@types/nodemailer": "^6",
     "@types/supertest": "^6.0.3",
+    "@types/swagger-jsdoc": "^6",
+    "@types/swagger-ui-express": "^4.1.8",
     "chai": "^5.2.0",
     "chai-as-promised": "^8.0.1",
     "cross-env": "^7.0.3",
@@ -47,6 +49,10 @@
     "mongodb-memory-server": "^10.1.4",
     "sinon": "^20.0.0",
     "supertest": "^7.1.0",
+    "swagger-autogen": "^2.23.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-dist": "^5.21.0",
+    "swagger-ui-express": "^5.0.1",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.11",
@@ -58,6 +64,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
     "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000",
-    "seed": "tsx src/seeds/index.ts"
+    "seed": "tsx src/seeds/index.ts",
+    "swagger": "tsx src/swagger/swagger.ts"
   }
 }

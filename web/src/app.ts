@@ -6,6 +6,8 @@ import dotenv from 'dotenv';
 import { connectDB } from '@/config/database';
 import routes from '@/routes/index';
 import { routeErrorHandler } from '@/middlewares/utils';
+import swaggerUi from 'swagger-ui-express';
+import swaggerFile from '@/swagger/swagger-output.json';
 
 dotenv.config();
 
@@ -21,6 +23,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors()); // Enable CORS
 app.use(helmet()); // Secure HTTP headers
 app.use(morgan('dev')); // Logging HTTP requests
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.get('/', (_req: Request, res: Response) => {
   res.status(200).send('Server is running');
