@@ -4,6 +4,7 @@ import { InternalToolsSidebar } from '@/components/layout/internal-tools-sidebar
 import { SidebarProvider } from '@/components/base/sidebar';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { toast } from 'sonner';
+import Redirecting from '@/components/base/redirect';
 export const PageWithSidebar = () => {
   const open = document.cookie.split('=')[1];
   const state = open === 'true';
@@ -21,14 +22,7 @@ export const PageWithSidebar = () => {
   }, [token]);
 
   if (isRedirecting) {
-    return (
-      <h1
-        className="text-center text-white text-4xl app-flex"
-        style={{ height: '100vh' }}
-      >
-        Redirecting...
-      </h1>
-    );
+    return <Redirecting />;
   }
 
   return (
