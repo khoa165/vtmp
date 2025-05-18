@@ -12,6 +12,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
+  OnChangeFn,
 } from '@tanstack/react-table';
 import {
   Table,
@@ -37,12 +38,14 @@ interface DataTableProps<TData, TValue> {
 export function ApplicationsTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  sorting,
+  setSorting,
+}: DataTableProps<TData, TValue> & {
+  sorting: SortingState;
+  setSorting: OnChangeFn<SortingState>;
+}) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-
   const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
@@ -106,7 +109,7 @@ export function ApplicationsTable<TData, TValue>({
         <Table>
           <TableHeader className="bg-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id} className="text-background">
@@ -128,9 +131,10 @@ export function ApplicationsTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  className="border-white"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-foreground">
+                    <TableCell key={cell.id} className="text-foreground py-4">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

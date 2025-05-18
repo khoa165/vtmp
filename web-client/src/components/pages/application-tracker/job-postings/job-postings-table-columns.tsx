@@ -1,10 +1,10 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/base/checkbox';
-import { Button } from 'reactstrap';
-import { ArrowUpDown, Link } from 'lucide-react';
+import { Link } from 'lucide-react';
 import { format } from 'date-fns';
 import { IJobPosting } from '@/components/pages/application-tracker/job-postings/validations';
 import { JobPostingsAction } from '@/components/pages/application-tracker/job-postings/job-postings-action';
+import { HeaderSorting } from '@/components/pages/application-tracker/applications/header';
 
 export const jobPostingsTableColumns = ({
   createApplicationFn,
@@ -21,7 +21,7 @@ export const jobPostingsTableColumns = ({
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className="border border-background hover:bg-background"
+        className="ml-4 border border-background hover:bg-background"
       />
     ),
     cell: ({ row }) => (
@@ -29,18 +29,23 @@ export const jobPostingsTableColumns = ({
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="ml-4"
       />
     ),
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: '_id',
-    header: 'ID',
+    accessorKey: 'companyName',
+    header: ({ column }) => {
+      return <HeaderSorting column={column} headerName="Company" />;
+    },
   },
   {
     accessorKey: 'jobTitle',
-    header: 'Position',
+    header: ({ column }) => {
+      return <HeaderSorting column={column} headerName="Position" />;
+    },
     cell: ({ row }) => {
       // // TODO-(QuangMinhNguyen27405): Modify column width for better visibility
       return (
@@ -57,33 +62,20 @@ export const jobPostingsTableColumns = ({
     },
   },
   {
-    accessorKey: 'companyName',
-    header: 'Company',
-  },
-  {
     accessorKey: 'location',
-    header: 'Location',
+    header: ({ column }) => {
+      return <HeaderSorting column={column} headerName="Location" />;
+    },
   },
   {
     accessorKey: 'datePosted',
     header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="flex items-center"
-        >
-          Date Posted
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
+      return <HeaderSorting column={column} headerName="Date Posted" />;
     },
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('datePosted');
       const date = new Date(isoDate);
-      return (
-        <div className="px-4 text-left">{format(date, 'MMM d, yyyy')}</div>
-      );
+      return <div>{format(date, 'MMM d, yyyy')}</div>;
     },
   },
   {

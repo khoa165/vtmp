@@ -1,4 +1,4 @@
-import { ApplicationStatus, LinkStatus } from '@vtmp/common/constants';
+import { ApplicationStatus } from '@vtmp/common/constants';
 
 const statusColorMapping = {
   [ApplicationStatus.SUBMITTED]: 'bg-[#A2BFF0]',
@@ -7,15 +7,9 @@ const statusColorMapping = {
   [ApplicationStatus.OFFERED]: 'bg-[#A3F890]',
   [ApplicationStatus.WITHDRAWN]: 'bg-[#CAAB94]',
   [ApplicationStatus.REJECTED]: 'bg-[#FEB584]',
-  [LinkStatus.PENDING]: 'bg-[#A2BFF0]',
-  [LinkStatus.APPROVED]: 'bg-[#A3F890]',
 };
 
-export const StatusDot = ({
-  status,
-}: {
-  status: ApplicationStatus | LinkStatus;
-}) => {
+export const StatusDot = ({ status }: { status: ApplicationStatus }) => {
   const color = statusColorMapping[status];
   return (
     <div

@@ -9,15 +9,13 @@ import axios from 'axios';
 export const useGetJobPostings = () => {
   return useQuery({
     queryKey: [QueryKey.GET_JOB_POSTINGS],
-    queryFn: async () => {
-      const response = await request(
-        Method.GET,
-        '/job-postings/not-applied',
-        null,
-        JobPostingsResponseSchema
-      );
-      return response.data;
-    },
+    queryFn: () =>
+      request({
+        method: Method.GET,
+        url: '/job-postings/not-applied',
+        schema: JobPostingsResponseSchema,
+        options: { includeOnlyDataField: true },
+      }),
   });
 };
 
@@ -41,7 +39,12 @@ export const useCreateApplication = () => {
 
   return useMutation({
     mutationFn: (body: { jobPostingId: string }) =>
-      request(Method.POST, `/applications`, body, ApplicationResponseSchema),
+      request({
+        method: Method.POST,
+        url: '/applications',
+        data: body,
+        schema: ApplicationResponseSchema,
+      }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_JOB_POSTINGS],
