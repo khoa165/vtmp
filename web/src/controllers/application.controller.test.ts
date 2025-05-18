@@ -26,7 +26,7 @@ import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
   runUserLogin,
-} from '@/controllers/authMiddleware.controller.testutils';
+} from '@/testutils/authMiddleware.controller.testutils';
 
 describe('ApplicationController', () => {
   useMongoDB();
@@ -49,7 +49,6 @@ describe('ApplicationController', () => {
     runDefaultAuthMiddlewareTests({
       route: '/api/applications',
       method: HTTPMethod.POST,
-      token: mockUserToken,
       body: { jobPostingId: getNewMongoId() },
     });
 
@@ -163,7 +162,6 @@ describe('ApplicationController', () => {
     runDefaultAuthMiddlewareTests({
       route: '/api/applications',
       method: HTTPMethod.GET,
-      token: mockUserToken,
     });
 
     it('should return all application objects that belong to the authorized user', async () => {
@@ -232,7 +230,6 @@ describe('ApplicationController', () => {
     runDefaultAuthMiddlewareTests({
       route: `/api/applications/${getNewMongoId()}`,
       method: HTTPMethod.POST,
-      token: mockUserToken,
     });
 
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
@@ -335,7 +332,6 @@ describe('ApplicationController', () => {
     runDefaultAuthMiddlewareTests({
       route: `/api/applications/${getNewMongoId()}/updateStatus`,
       method: HTTPMethod.PUT,
-      token: mockUserToken,
     });
 
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
@@ -488,7 +484,6 @@ describe('ApplicationController', () => {
     runDefaultAuthMiddlewareTests({
       route: `/api/applications/${getNewMongoId()}`,
       method: HTTPMethod.PUT,
-      token: mockUserToken,
     });
 
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
@@ -596,7 +591,6 @@ describe('ApplicationController', () => {
     runDefaultAuthMiddlewareTests({
       route: `/api/applications/${getNewMongoId()}`,
       method: HTTPMethod.DELETE,
-      token: mockUserToken,
     });
 
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
@@ -687,7 +681,6 @@ describe('ApplicationController', () => {
     runDefaultAuthMiddlewareTests({
       route: `/api/applications/count-by-status`,
       method: HTTPMethod.PUT,
-      token: mockUserToken,
     });
 
     it('should return correct counts grouped by status for the authorized user', async () => {

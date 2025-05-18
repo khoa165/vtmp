@@ -18,7 +18,6 @@ export enum HTTPMethod {
 interface IAuthMiddlewareTest {
   route: string;
   method: HTTPMethod;
-  token?: string;
   body?: object;
 }
 
