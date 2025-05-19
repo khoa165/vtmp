@@ -1,4 +1,4 @@
-export enum ApplicationStatus { //
+export enum ApplicationStatus {
   SUBMITTED = 'SUBMITTED',
   OA = 'OA',
   INTERVIEWING = 'INTERVIEWING',
