@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/base/button';
 import { IDashBoardLink } from '@/components/pages/admins/dashboard/validation';
 import { format } from 'date-fns';
@@ -63,10 +63,12 @@ export const dashboardTableColumns = ({
         <span>Date Posted</span>
         <Button
           variant="outline"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => {
+            column.toggleSorting(column.getIsSorted() === 'asc');
+          }}
           className="w-fit h-fit cursor-pointer hover:text-inherit"
         >
-          <ArrowUpDown />
+          {column.getIsSorted() === 'asc' ? <ArrowUp /> : <ArrowDown />}
         </Button>
       </div>
     ),

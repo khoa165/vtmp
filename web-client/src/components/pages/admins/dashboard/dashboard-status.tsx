@@ -62,7 +62,7 @@ export const LinkStatusCards = ({
         return (
           <Card
             key={status}
-            className={`bg-transparent cursor-pointer transition-colors duration-200 ${cardStyle}`}
+            className={`bg-transparent cursor-pointer transition-colors duration-200 ${cardStyle} active:bg-gray-400`}
             onClick={() => handleStatusClick(status)}
             aria-pressed={isSelected}
           >
