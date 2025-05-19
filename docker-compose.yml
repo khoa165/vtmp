@@ -4,7 +4,8 @@ services:
   web:
     container_name: server
     build:
-      context: ./web
+      context: .
+      dockerfile: web/Dockerfile
     ports:
       - '8000:8000'
     environment:
