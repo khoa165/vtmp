@@ -40,52 +40,55 @@ describe('Interview Repository', () => {
     userId_A = getNewMongoId();
     userId_B = getNewMongoId();
 
-    const mockJobPosting_Meta = {
-      linkId: getNewMongoId(),
-      url: 'http://meta.com/job-posting',
-      jobTitle: 'Software Engineer',
-      companyName: 'Meta',
-      submittedBy: getNewMongoId(),
-    };
+    const mockJobPostingData = [
+      {
+        linkId: getNewMongoId(),
+        url: 'http://meta.com/job-posting',
+        jobTitle: 'Software Engineer',
+        companyName: 'Meta',
+        submittedBy: getNewMongoId(),
+      },
+      {
+        linkId: getNewMongoId(),
+        url: 'http://google.com/job-posting',
+        jobTitle: 'Software Engineer',
+        companyName: 'Google',
+        submittedBy: getNewMongoId(),
+      },
+    ];
 
-    const mockJobPosting_Google = {
-      linkId: getNewMongoId(),
-      url: 'http://google.com/job-posting',
-      jobTitle: 'Software Engineer',
-      companyName: 'Google',
-      submittedBy: getNewMongoId(),
-    };
+    const [metaJobPosting, googleJobPosting] = await Promise.all(
+      mockJobPostingData.map(
+        (data) =>
+          JobPostingRepository.createJobPosting({
+            jobPostingData: data,
+          }) as Promise<{ id: string }>
+      )
+    );
+    assert(metaJobPosting && googleJobPosting, 'Failed to create job postings');
 
-    const metaJobPosting = await JobPostingRepository.createJobPosting({
-      jobPostingData: mockJobPosting_Meta,
-    });
+    const nestedApplications = await Promise.all(
+      [userId_A, userId_B].map(
+        (userId) =>
+          Promise.all([
+            ApplicationRepository.createApplication({
+              jobPostingId: metaJobPosting.id,
+              userId,
+            }),
+            ApplicationRepository.createApplication({
+              jobPostingId: googleJobPosting.id,
+              userId,
+            }),
+          ]) as Promise<[IApplication, IApplication]>
+      )
+    );
 
-    const googleJobPosting = await JobPostingRepository.createJobPosting({
-      jobPostingData: mockJobPosting_Google,
-    });
-
-    assert(metaJobPosting, 'Failed to create Meta job posting');
-    assert(googleJobPosting, 'Failed to create Google job posting');
-
-    metaApplication_A = await ApplicationRepository.createApplication({
-      jobPostingId: metaJobPosting.id,
-      userId: userId_A,
-    });
-
-    googleApplication_A = await ApplicationRepository.createApplication({
-      jobPostingId: googleJobPosting.id,
-      userId: userId_A,
-    });
-
-    metaApplication_B = await ApplicationRepository.createApplication({
-      jobPostingId: metaJobPosting.id,
-      userId: userId_B,
-    });
-
-    googleApplication_B = await ApplicationRepository.createApplication({
-      jobPostingId: googleJobPosting.id,
-      userId: userId_B,
-    });
+    assert(
+      nestedApplications[0] && nestedApplications[1],
+      'Failed to create applications'
+    );
+    [metaApplication_A, googleApplication_A] = nestedApplications[0];
+    [metaApplication_B, googleApplication_B] = nestedApplications[1];
 
     mockInterview_A0 = {
       applicationId: metaApplication_A.id,
