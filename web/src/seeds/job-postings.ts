@@ -1,24 +1,24 @@
 import { IJobPosting, JobPostingModel } from '@/models/job-posting.model';
 import { ILink } from '@/models/link.model';
 import { faker } from '@faker-js/faker';
-import { CompanyName, JobPostingRegion } from '@vtmp/common/constants';
+import {
+  CompanyName,
+  JobPostingRegion,
+  JobTitle,
+} from '@vtmp/common/constants';
+import { formatEnumName } from '@vtmp/common/utils';
 
 export const loadJobPostings = async (
   links: ILink[]
 ): Promise<IJobPosting[]> => {
-  const formatCompanyName = (name: string) => {
-    return name
-      .toLowerCase()
-      .split('_')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
+  const RECENT_DAYS = 90;
 
   const newJobPostings = links.map((link) => ({
     linkId: link._id,
     url: link.url,
-    jobTitle: faker.person.jobTitle(),
-    companyName: formatCompanyName(faker.helpers.enumValue(CompanyName)),
+    jobTitle: formatEnumName(faker.helpers.enumValue(JobTitle)),
+    companyName: formatEnumName(faker.helpers.enumValue(CompanyName)),
+    datePosted: faker.date.recent({ days: RECENT_DAYS }),
     location: faker.helpers.enumValue(JobPostingRegion),
   }));
 
