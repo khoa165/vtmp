@@ -7,10 +7,10 @@ import { filterUndefinedAttributes } from '@/utils/helpers';
 const LinkSchema = z.object({
   url: z
     .string({ required_error: 'URL is required' })
-    .url({ message: 'Invalid URL' }),
+    .url({ message: 'Invalid url' }),
 });
 
-const JobPostingAdditionalSchema = z
+const JobPostingDataSchema = z
   .object({
     jobTitle: z
       .string({ required_error: 'Job Title is required' })
@@ -46,14 +46,14 @@ const JobPostingAdditionalSchema = z
   .transform(filterUndefinedAttributes);
 
 const LinkIdSchema = z.object({
-  linkId: z.string(),
+  linkId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid job ID format'),
 });
 
 const LinkFilterSchema = z
   .object({
     status: z
       .nativeEnum(LinkStatus, {
-        message: 'Invalid application status',
+        message: 'Invalid link status',
       })
       .optional(),
   })
@@ -92,7 +92,7 @@ export const LinkController = {
 
   approveLink: async (req: Request, res: Response) => {
     const parsedLink = LinkIdSchema.parse(req.params);
-    const parsedAdminAddOn = JobPostingAdditionalSchema.parse(req.body);
+    const parsedAdminAddOn = JobPostingDataSchema.parse(req.body);
 
     const approvedLink = await LinkService.approveLinkAndCreateJobPosting(
       parsedLink.linkId,
