@@ -1,72 +1,85 @@
 import { Card } from '@/components/base/card';
 import { StatusDot } from '@/components/base/status-dot';
+import { Skeleton } from '@/components/base/skeleton';
 import { useGetLinksCountByStatus } from '@/components/pages/admins/dashboard/hooks/dashboard';
-import { titleCase } from '@/utils/helpers';
+import { formatStatus } from '@/utils/helpers';
 import { LinkStatus } from '@vtmp/common/constants';
 import { useState } from 'react';
 
-export const LinkStatusCards = ({ setFilter }): React.JSX.Element | null => {
+interface LinkStatusCardsProps {
+  setLinksFilter: (filter: { status?: LinkStatus }) => void;
+}
+
+export const LinkStatusCards = ({
+  setLinksFilter,
+}: LinkStatusCardsProps): React.JSX.Element | null => {
   const [selectedStatus, setSelectedStatus] = useState<LinkStatus | null>(null);
 
   const {
     isLoading,
     isError,
     error,
-    data: LinksCountByStatus,
+    data: linksCountByStatus,
   } = useGetLinksCountByStatus();
 
-  if (isLoading) {
-    console.log('Links count loading...');
-    return <span>Loading links count data...</span>;
-  }
+  const allStatuses = Object.values(LinkStatus);
 
-  if (isError) {
-    console.error('Error fetching application count data:', error);
-    return (
-      <span>Error: {error.message || 'Failed to load summary data.'}</span>
-    );
-  }
-
-  const allDisplayedStatus = Object.values(LinkStatus);
-
-  // What I want to do: I want register when I click on the status box
-  // it has to reinvalidate GET_APPLICATIONS queryKey and refetch useGetApplications with filter being the status selected
   const handleStatusClick = (status: LinkStatus) => {
-    // If the already existing status match the new status
     if (selectedStatus === status) {
       setSelectedStatus(null);
-      setFilter({});
+      setLinksFilter({});
     } else {
       setSelectedStatus(status);
-      setFilter({ status });
+      setLinksFilter({ status });
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-5 gap-4 w-full mb-6 max-md:grid-rows-6">
+        {[...Array(3)].map((_, i) => (
+          <Skeleton key={i} className="w-full h-[8rem] rounded-xl" />
+        ))}
+      </div>
+    );
+  }
+
+  if (isError) {
+    console.error('Error fetching link count data:', error);
+    return (
+      <span>Error: {error?.message ?? 'Failed to load status summary.'}</span>
+    );
+  }
+
   return (
-    <div className={`grid grid-cols-3 w-full gap-4 max-md:grid-rows-6`}>
-      {allDisplayedStatus.map((displayedStatus, index) => (
-        <Card
-          key={index}
-          className={`bg-transparent h-fit cursor-pointer transition-colors duration-200 ${
-            selectedStatus === displayedStatus
-              ? 'bg-[#FEFEFE] text-[#333333]'
-              : 'hover:bg-[#FEFEFE] hover:text-[#333333]'
-          }`}
-          onClick={() => handleStatusClick(displayedStatus)}
-        >
-          <section className="flex flex-col items-center justify-center">
-            <div className="text-[2rem] max-lg:text-[1rem] font-bold">
-              {LinksCountByStatus?.[displayedStatus]}
-            </div>
-            <div className="flex flex-row items-center gap-2">
-              <StatusDot status={displayedStatus} />
-              <span className="font-bold max-lg:text-[0.7rem] text-wrap">
-                {titleCase(displayedStatus)}
-              </span>
-            </div>
-          </section>
-        </Card>
-      ))}
+    <div className="grid grid-cols-3 gap-4 w-full max-md:grid-rows-6">
+      {allStatuses.map((status) => {
+        const isSelected = selectedStatus === status;
+        const cardStyle = isSelected
+          ? 'bg-[#FEFEFE] text-[#333333]'
+          : 'hover:bg-[#FEFEFE] hover:text-[#333333]';
+
+        return (
+          <Card
+            key={status}
+            className={`bg-transparent cursor-pointer transition-colors duration-200 ${cardStyle}`}
+            onClick={() => handleStatusClick(status)}
+            aria-pressed={isSelected}
+          >
+            <section className="flex flex-col items-center justify-center py-4">
+              <div className="text-[2rem] font-bold max-lg:text-[1rem]">
+                {linksCountByStatus?.[status] ?? 0}
+              </div>
+              <div className="flex items-center gap-2">
+                <StatusDot status={status} />
+                <span className="font-bold text-wrap max-lg:text-[0.7rem]">
+                  {formatStatus(status)}
+                </span>
+              </div>
+            </section>
+          </Card>
+        );
+      })}
     </div>
   );
 };

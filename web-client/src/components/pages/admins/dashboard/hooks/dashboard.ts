@@ -5,24 +5,51 @@ import { toast } from 'sonner';
 import {
   DashBoardLinksResponseSchema,
   JobPostingResponseSchema,
+  JobPostingData,
   LinksCountByStatusSchema,
 } from '@/components/pages/admins/dashboard/validation';
 import axios from 'axios';
 import { LinkStatus } from '@vtmp/common/constants';
 
-export const useGetDashBoardLinks = (filter: { status?: LinkStatus } = {}) => {
-  return useQuery({
+const API_ENDPOINTS = {
+  GET_DASHBOARD_LINKS: '/links',
+  GET_LINKS_COUNT_BY_STATUS: '/links/count-by-status',
+  APPROVE_LINK: (id: string) => `/links/${id}/approve`,
+  REJECT_LINK: (id: string) => `/links/${id}/reject`,
+};
+
+const handleDashBoardMutationError = (error: Error) => {
+  const messages =
+    axios.isAxiosError(error) && error.response?.data?.errors
+      ? error.response.data.errors.map((e) => e.message)
+      : ['Unexpected error occurred'];
+
+  toast.error(messages.join('\n'), {
+    style: { whiteSpace: 'pre-line' },
+  });
+};
+
+const invalidateDashboardQueries = (
+  queryClient: ReturnType<typeof useQueryClient>
+) => {
+  queryClient.invalidateQueries({ queryKey: [QueryKey.GET_DASHBOARD_LINKS] });
+  queryClient.invalidateQueries({
+    queryKey: [QueryKey.GET_LINKS_COUNT_BY_STATUS],
+  });
+};
+
+export const useGetDashBoardLinks = (filter: { status?: LinkStatus } = {}) =>
+  useQuery({
     queryKey: [QueryKey.GET_DASHBOARD_LINKS, filter],
     queryFn: () =>
       request({
         method: Method.GET,
-        url: '/links',
-        schema: DashBoardLinksResponseSchema,
+        url: API_ENDPOINTS.GET_DASHBOARD_LINKS,
         data: filter,
+        schema: DashBoardLinksResponseSchema,
         options: { includeOnlyDataField: true },
       }),
   });
-};
 
 export const useGetLinksCountByStatus = () =>
   useQuery({
@@ -30,7 +57,7 @@ export const useGetLinksCountByStatus = () =>
     queryFn: () =>
       request({
         method: Method.GET,
-        url: '/links/count-by-status',
+        url: API_ENDPOINTS.GET_LINKS_COUNT_BY_STATUS,
         schema: LinksCountByStatusSchema,
         options: { includeOnlyDataField: true },
       }),
@@ -45,34 +72,19 @@ export const useApproveDashBoardLink = () => {
       newUpdate,
     }: {
       linkId: string;
-      newUpdate: object;
+      newUpdate: JobPostingData;
     }) =>
       request({
         method: Method.POST,
-        url: `/links/${linkId}/approve`,
+        url: API_ENDPOINTS.APPROVE_LINK(linkId),
         data: newUpdate,
         schema: JobPostingResponseSchema,
       }),
     onSuccess: (res) => {
-      queryClient.invalidateQueries({
-        queryKey: [QueryKey.GET_DASHBOARD_LINKS],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [QueryKey.GET_LINKS_COUNT_BY_STATUS],
-      });
+      invalidateDashboardQueries(queryClient);
       toast.success(res.message);
     },
-    onError: (error: unknown) => {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessages = error.response.data.errors.map(
-          (err) => err.message
-        );
-        toast.error(errorMessages.join('\n'));
-      } else {
-        console.log(error);
-        toast.error('Unexpected error');
-      }
-    },
+    onError: handleDashBoardMutationError,
   });
 };
 
@@ -83,27 +95,13 @@ export const useRejectDashBoardLink = () => {
     mutationFn: ({ linkId }: { linkId: string }) =>
       request({
         method: Method.POST,
-        url: `/links/${linkId}/reject`,
+        url: API_ENDPOINTS.REJECT_LINK(linkId),
         schema: JobPostingResponseSchema,
       }),
     onSuccess: (res) => {
-      queryClient.invalidateQueries({
-        queryKey: [QueryKey.GET_DASHBOARD_LINKS],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [QueryKey.GET_LINKS_COUNT_BY_STATUS],
-      });
+      invalidateDashboardQueries(queryClient);
       toast.success(res.message);
     },
-    onError: (error: unknown) => {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessages = error.response.data.errors.map(
-          (err) => err.message
-        );
-        toast.error(errorMessages.join('\n'));
-      } else {
-        toast.error('Unexpected error');
-      }
-    },
+    onError: handleDashBoardMutationError,
   });
 };

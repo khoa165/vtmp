@@ -1,15 +1,13 @@
-import { Button } from '@/components/base/button';
-import { Input } from '@/components/base/input';
 import { useState } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
-  flexRender,
   SortingState,
   VisibilityState,
+  flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
@@ -21,6 +19,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/base/table';
+import { Input } from '@/components/base/input';
+import { Button } from '@/components/base/button';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -42,9 +42,7 @@ export function DashBoardTable<TData, TValue>({
     { id: 'datePosted', desc: true },
   ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-
   const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
@@ -52,10 +50,10 @@ export function DashBoardTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
@@ -66,20 +64,25 @@ export function DashBoardTable<TData, TValue>({
     },
   });
 
+  const companyColumn = table.getColumn('companyName');
+
   return (
     <div>
+      {/* Header controls */}
       <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter companies..."
-          value={table.getColumn('companyName')?.getFilterValue() as string}
-          onChange={(event) =>
-            table.getColumn('companyName')?.setFilterValue(event.target.value)
-          }
+          value={(companyColumn?.getFilterValue() as string) ?? ''}
+          onChange={(e) => companyColumn?.setFilterValue(e.target.value)}
           className="max-w-sm"
         />
+
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Button variant="outline" className="ml-auto text-white">
+            <Button
+              variant="outline"
+              className="ml-auto text-white cursor-pointer"
+            >
               Columns <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
@@ -87,49 +90,44 @@ export function DashBoardTable<TData, TValue>({
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
       <div className="rounded-md overflow-hidden border border-foreground h-fit">
         <Table className="hover:bg-none">
-          <TableHeader className="bg-foreground sticky">
+          <TableHeader className="bg-foreground sticky top-0 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} className="text-background">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} className="text-background">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
+                  data-state={row.getIsSelected() ? 'selected' : undefined}
                   className="hover:bg-transparent"
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -155,6 +153,7 @@ export function DashBoardTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+
       <div className="flex items-center justify-end space-x-2 py-4 text-white">
         <Button
           variant="outline"

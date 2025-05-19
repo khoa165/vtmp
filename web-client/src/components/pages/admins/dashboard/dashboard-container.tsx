@@ -5,42 +5,62 @@ import {
   useGetDashBoardLinks,
   useRejectDashBoardLink,
 } from '@/components/pages/admins/dashboard/hooks/dashboard';
-export const DashBoardContainer = ({ filter }) => {
+import { Skeleton } from '@/components/base/skeleton';
+import { useMemo } from 'react';
+import { LinkStatus } from '@vtmp/common/constants';
+
+interface DashBoardContainerProps {
+  linksFilter?: { status?: LinkStatus };
+}
+
+export const DashBoardContainer = ({
+  linksFilter,
+}: DashBoardContainerProps) => {
   const {
     isLoading,
     isError,
     error,
     data: linksData,
-  } = useGetDashBoardLinks(filter);
+  } = useGetDashBoardLinks(linksFilter);
+
   const { mutate: approveDashBoardLinkFn } = useApproveDashBoardLink();
   const { mutate: rejectDashBoardLinkFn } = useRejectDashBoardLink();
+
+  const columns = useMemo(
+    () =>
+      dashboardTableColumns({
+        approveDashBoardLinkFn,
+        rejectDashBoardLinkFn,
+      }),
+    [linksData, approveDashBoardLinkFn, rejectDashBoardLinkFn]
+  );
+
   if (isLoading) {
-    // TODO-(QuangMinhNguyen27405/dsmai): Remove this console log in production and add a loading spinner
-    console.log('Loading links data...');
-    return <span>Loading links data...</span>;
+    return (
+      <>
+        <div className="flex items-center justify-between py-4">
+          <Skeleton className="h-10 w-[24rem] rounded-md" />
+          <Skeleton className="h-10 w-[8rem] rounded-md" />
+        </div>
+        <Skeleton className="h-[32rem] w-full rounded-xl" />
+      </>
+    );
   }
 
   if (isError) {
-    // TODO-(QuangMinhNguyen27405/dsmai) : Remove this and add a toast error message. Add react-error-boundary
     console.error('Error fetching links data:', error);
-    // return (
-    //   <span>Error: {error.message || 'Failed to load applications data.'}</span>
-    // );
-    return null;
+    return (
+      <p className="text-red-500">
+        Failed to load data. Please try again later.
+      </p>
+    );
   }
 
   if (!linksData || linksData.length === 0) {
-    // TODO-(QuangMinhNguyen27405/dsmai): Replace `return null` with an empty state message or component
-    // we shouldn't just return null when mentee has no application yet
-    return null;
+    return (
+      <p className="text-center text-muted-foreground">No links to display.</p>
+    );
   }
-  return (
-    <DashBoardTable
-      columns={dashboardTableColumns({
-        approveDashBoardLinkFn,
-        rejectDashBoardLinkFn,
-      })}
-      data={linksData}
-    />
-  );
+
+  return <DashBoardTable columns={columns} data={linksData} />;
 };

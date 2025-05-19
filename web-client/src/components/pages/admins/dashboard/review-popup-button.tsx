@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { format } from 'date-fns';
 import { Button } from '@/components/base/button';
 import {
   Dialog,
@@ -8,119 +10,151 @@ import {
   DialogTrigger,
 } from '@/components/base/dialog';
 import { Label } from '@/components/base/label';
-import ReviewPopupInput from '@/components/pages/admins/dashboard/review-popup-input';
 import { Textarea } from '@/components/base/textarea';
-import { useState } from 'react';
+import ReviewPopupInput from '@/components/pages/admins/dashboard/review-popup-input';
+import { JobPostingRegion } from '@vtmp/common/constants';
+import { JobPostingData } from '@/components/pages/admins/dashboard/validation';
+
+interface ReviewPopupButtonProps {
+  currentLink: {
+    _id: string;
+  } & JobPostingData;
+  approveDashBoardLinkFn: ({
+    linkId,
+    newUpdate,
+  }: {
+    linkId: string;
+    newUpdate: JobPostingData;
+  }) => void;
+  rejectDashBoardLinkFn: ({ linkId }: { linkId: string }) => void;
+}
 
 export const ReviewPopupButton = ({
-  linkId,
-  url,
-  companyName,
-  jobTitle,
-  location,
-  datePosted,
-  jobDescription,
+  currentLink,
   approveDashBoardLinkFn,
   rejectDashBoardLinkFn,
-}) => {
+}: ReviewPopupButtonProps) => {
+  const {
+    _id: linkId,
+    url = '',
+    companyName = '',
+    jobTitle = '',
+    location = JobPostingRegion.US,
+    datePosted,
+    jobDescription = '',
+  } = currentLink;
+
+  const [urlValue, setUrl] = useState<string>(url);
+  const [companyNameValue, setCompanyNameValue] = useState<string>(companyName);
+  const [jobTitleValue, setJobTitleValue] = useState<string>(jobTitle);
+  const [currentCountry, setCurrentCountry] = useState<string>(location);
+  const [datePostedValue, setDatePostedValue] = useState<string>(
+    datePosted ? format(new Date(datePosted), 'MM/dd/yyyy') : ''
+  );
   const [jobDescriptionValue, setJobDescriptionValue] =
-    useState(jobDescription);
-  const [currentCountry, setCurrentCountry] = useState(location);
-  const [urlValue, setUrl] = useState(url);
-  const [jobTitleValue, setJobTitleValue] = useState(jobTitle);
-  const [companyNameValue, setCompanyNameValue] = useState(companyName);
-  const [datePostedValue, setDatePostedValue] = useState(datePosted);
+    useState<string>(jobDescription);
+
+  const handleApprove = () => {
+    approveDashBoardLinkFn({
+      linkId,
+      newUpdate: {
+        url: urlValue,
+        companyName: companyNameValue,
+        jobTitle: jobTitleValue,
+        location: currentCountry,
+        datePosted: datePostedValue,
+        jobDescription: jobDescriptionValue,
+      },
+    });
+  };
+
+  const handleReject = () => {
+    rejectDashBoardLinkFn({ linkId });
+  };
 
   return (
     <Dialog>
-      <DialogTrigger className="cursor-pointer">
-        <Button variant="outline" className="cursor-pointer text-white">
+      <DialogTrigger asChild>
+        <Button variant="outline" className="text-white cursor-pointer">
           Review
         </Button>
       </DialogTrigger>
       <DialogContent className="w-fit text-white border-none">
         <DialogHeader>
-          <DialogTitle>
-            <span className="text-2xl font-bold">Review Link Submission</span>
+          <DialogTitle className="text-2xl font-bold">
+            Review Link Submission
           </DialogTitle>
         </DialogHeader>
+
         <ReviewPopupInput
-          label={'URL'}
-          placeHolder={'URL'}
+          label="URL"
+          placeHolder="URL"
           value={urlValue}
           setValue={setUrl}
+          id="url"
         />
+
         <div className="grid grid-cols-2 gap-4">
           <ReviewPopupInput
-            label={'Job Title'}
-            placeHolder={'Job Title'}
+            label="Job Title"
+            placeHolder="Job Title"
             value={jobTitleValue}
             setValue={setJobTitleValue}
+            id="job-title"
           />
           <ReviewPopupInput
-            label={'Company Name'}
-            placeHolder={'Company Name'}
+            label="Company Name"
+            placeHolder="Company Name"
             value={companyNameValue}
             setValue={setCompanyNameValue}
+            id="company-name"
           />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <ReviewPopupInput
-            label={'Country'}
-            placeHolder={'US/CANADA'}
-            value={currentCountry}
-            setValue={setCurrentCountry}
-          />
-          <ReviewPopupInput
-            label={'Date Posted'}
-            placeHolder={'MM/dd/yyyy'}
-            value={datePostedValue}
-            setValue={setDatePostedValue}
-          />
-        </div>
-        <div className="flex flex-col items-start gap-2">
-          <Label htmlFor="username" className="text-right">
-            Job Description
-          </Label>
-          <Textarea
-            placeholder="Type job description here."
-            value={jobDescriptionValue}
-            onChange={(e) => {
-              setJobDescriptionValue(e.target.value);
-            }}
-          />
-        </div>
-        <div className="flex flex-col items-start gap-2">
-          <Label htmlFor="username" className="text-right">
-            Admin Note
-          </Label>
-          <Textarea placeholder="Type your message here." />
         </div>
 
-        <DialogFooter className="flex-row justify-center items-center gap-4">
+        <div className="grid grid-cols-2 gap-4">
+          <ReviewPopupInput
+            label="Country"
+            placeHolder="US/CANADA"
+            value={currentCountry}
+            setValue={setCurrentCountry}
+            id="country"
+          />
+          <ReviewPopupInput
+            label="Date Posted"
+            placeHolder="MM/dd/yyyy"
+            value={datePostedValue}
+            setValue={setDatePostedValue}
+            id="date-posted"
+          />
+        </div>
+
+        <div className="flex flex-col items-start gap-2">
+          <Label htmlFor="job-description">Job Description</Label>
+          <Textarea
+            id="job-description"
+            placeholder="Type job description here."
+            value={jobDescriptionValue}
+            onChange={(e) => setJobDescriptionValue(e.target.value)}
+          />
+        </div>
+
+        <div className="flex flex-col items-start gap-2">
+          <Label htmlFor="admin-note">Admin Note</Label>
+          <Textarea id="admin-note" placeholder="Type your message here." />
+        </div>
+
+        <DialogFooter className="flex-row justify-center items-center gap-4 mt-4">
           <Button
-            type="submit"
             variant="outline"
+            onClick={handleApprove}
             className="cursor-pointer"
-            onClick={() => {
-              const newUpdate = {
-                jobDescription: jobDescriptionValue,
-                url: urlValue,
-                companyName: companyNameValue,
-                jobTitle: jobTitleValue,
-                location: currentCountry,
-                datePosted: datePostedValue,
-              };
-              approveDashBoardLinkFn({ linkId, newUpdate });
-            }}
           >
             Approve
           </Button>
           <Button
-            type="submit"
             variant="outline"
+            onClick={handleReject}
             className="cursor-pointer"
-            onClick={() => rejectDashBoardLinkFn({ linkId })}
           >
             Reject
           </Button>

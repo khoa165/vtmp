@@ -2,20 +2,23 @@ import { Request, Response } from 'express';
 import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
 import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
+import { filterUndefinedAttributes } from '@/utils/helpers';
 
 const LinkSchema = z.object({
-  url: z.string({ required_error: 'URL is required' }).url(),
+  url: z
+    .string({ required_error: 'URL is required' })
+    .url({ message: 'Invalid URL' }),
 });
-
-const filterUndefinedAttributes = (data: object) =>
-  Object.fromEntries(
-    Object.entries(data).filter(([, value]) => value !== undefined)
-  );
 
 const JobPostingAdditionalSchema = z
   .object({
-    jobTitle: z.string({ required_error: 'Job Title is required' }),
-    companyName: z.string({ required_error: 'Company Name is required' }),
+    jobTitle: z
+      .string({ required_error: 'Job Title is required' })
+      .min(1, { message: 'Job Title cannot be empty' }),
+
+    companyName: z
+      .string({ required_error: 'Company Name is required' })
+      .min(1, { message: 'Company Name cannot be empty' }),
     location: z.nativeEnum(JobPostingRegion, {
       message: 'Invalid location',
     }),
@@ -23,11 +26,22 @@ const JobPostingAdditionalSchema = z
     adminNote: z.string().optional(),
     datePosted: z
       .string()
-      .optional()
-      .transform((isoDate) => {
-        if (!isoDate) return undefined;
-        return new Date(isoDate);
-      }),
+      .regex(/^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/, {
+        message: 'Date must be in MM/dd/yyyy format',
+      })
+      .transform((str) => new Date(str))
+      .refine(
+        (date) => {
+          const now = new Date();
+          const threeMonthsAgo = new Date();
+          threeMonthsAgo.setMonth(now.getMonth() - 2);
+          return date >= threeMonthsAgo && date <= now;
+        },
+        {
+          message: 'Date must be within the last 2 months',
+        }
+      )
+      .optional(),
   })
   .transform(filterUndefinedAttributes);
 

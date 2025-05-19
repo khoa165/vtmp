@@ -1,19 +1,33 @@
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-const ReviewPopupInput = ({ label, placeHolder, setValue, value }) => {
+
+interface ReviewPopupInputProps {
+  label: string;
+  placeHolder: string;
+  value: string;
+  setValue: (value: string) => void;
+  id?: string;
+}
+
+const ReviewPopupInput = ({
+  label,
+  placeHolder,
+  value,
+  setValue,
+  id = 'review-input',
+}: ReviewPopupInputProps) => {
   return (
     <div className="flex flex-col items-start gap-2">
-      <Label htmlFor="username" className="text-right">
+      <Label htmlFor={id} className="text-right">
         {label}
       </Label>
       <Input
-        id="username"
+        id={id}
+        name={id}
         className="col-span-3"
         placeholder={placeHolder}
         value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-        }}
+        onChange={({ target }) => setValue(target.value)}
         required
       />
     </div>

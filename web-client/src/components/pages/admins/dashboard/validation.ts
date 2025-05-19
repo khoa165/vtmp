@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
 
-const DashBoardLinkSchema = z.object({
+export const DashBoardLinkSchema = z.object({
   _id: z.string(),
   url: z.string().url(),
   status: z.string(),
@@ -22,16 +22,14 @@ export const DashBoardLinksResponseSchema = z.object({
   data: z.array(DashBoardLinkSchema),
 });
 
-export const DashBoardLinkResponseSchema = z.object({
+export const SingleDashBoardLinkResponseSchema = z.object({
   message: z.string(),
   data: DashBoardLinkSchema,
 });
 
 export const JobPostingResponseSchema = z.object({
   message: z.string(),
-  data: DashBoardLinkSchema.omit({
-    status: true,
-  }),
+  data: DashBoardLinkSchema.omit({ status: true }),
 });
 
 export const LinksCountByStatusSchema = z.object({
@@ -44,3 +42,11 @@ export const LinksCountByStatusSchema = z.object({
 });
 
 export type IDashBoardLink = z.infer<typeof DashBoardLinkSchema>;
+export interface JobPostingData {
+  url?: string;
+  companyName?: string;
+  jobTitle?: string;
+  location?: string;
+  datePosted?: string;
+  jobDescription?: string;
+}
