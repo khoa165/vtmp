@@ -68,7 +68,6 @@ export function DashBoardTable<TData, TValue>({
 
   return (
     <div>
-      {/* Header controls */}
       <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter companies..."

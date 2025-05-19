@@ -1,7 +1,7 @@
 import { ILink, LinkModel } from '@/models/link.model';
 import { faker } from '@faker-js/faker';
 import { CompanyName, JobPostingRegion } from '@vtmp/common/constants';
-import { LinkStatus } from '../../../packages/common/src/constants/enums';
+import { LinkStatus } from '@vtmp/common/constants';
 
 export const loadLinks = async (count: number): Promise<ILink[]> => {
   const formatCompanyName = (name: string) => {
