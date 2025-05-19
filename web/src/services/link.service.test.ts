@@ -11,7 +11,7 @@ import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { ILink } from '@/models/link.model';
 
-describe.only('LinkService', () => {
+describe('LinkService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
