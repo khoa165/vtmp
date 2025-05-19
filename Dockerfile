@@ -34,9 +34,8 @@ WORKDIR /usr/app
 
 COPY --from=builder /usr/app/web /usr/app/web
 COPY --from=builder /usr/app/node_modules /usr/app/node_modules
-COPY --from=builder /usr/app/packages /usr/app/packages
-# COPY package.json yarn.lock ./
+COPY --from=builder /usr/app/packages/ /usr/app/packages/
 
 WORKDIR /usr/app/web
 EXPOSE 8000
-CMD ["yarn", "dev"]
+CMD ["yarn", "start"]
