@@ -61,7 +61,7 @@ export const InterviewService = {
       status?: InterviewStatus;
       companyName?: string;
     };
-  }): Promise<IInterview[] | null> => {
+  }): Promise<IInterview[]> => {
     return InterviewRepository.getInterviews({ filters });
   },
 

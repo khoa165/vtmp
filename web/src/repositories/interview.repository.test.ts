@@ -13,7 +13,7 @@ import { IApplication } from '@/models/application.model';
 describe('Interview Repository', () => {
   useMongoDB();
 
-  interface MockInterview {
+  type MockInterview = {
     applicationId: string;
     userId: string;
     type: InterviewType[];
@@ -40,53 +40,55 @@ describe('Interview Repository', () => {
     userId_A = getNewMongoId();
     userId_B = getNewMongoId();
 
-    const mockJobPosting_Meta = {
-      linkId: getNewMongoId(),
-      url: 'http://meta.com/job-posting',
-      jobTitle: 'Software Engineer',
-      companyName: 'Meta',
-      submittedBy: getNewMongoId(),
-    };
+    const mockJobPostingData = [
+      {
+        linkId: getNewMongoId(),
+        url: 'http://meta.com/job-posting',
+        jobTitle: 'Software Engineer',
+        companyName: 'Meta',
+        submittedBy: getNewMongoId(),
+      },
+      {
+        linkId: getNewMongoId(),
+        url: 'http://google.com/job-posting',
+        jobTitle: 'Software Engineer',
+        companyName: 'Google',
+        submittedBy: getNewMongoId(),
+      },
+    ];
 
-    const mockJobPosting_Google = {
-      linkId: getNewMongoId(),
-      url: 'http://google.com/job-posting',
-      jobTitle: 'Software Engineer',
-      companyName: 'Google',
-      submittedBy: getNewMongoId(),
-    };
+    const [metaJobPosting, googleJobPosting] = await Promise.all(
+      mockJobPostingData.map(
+        (data) =>
+          JobPostingRepository.createJobPosting({
+            jobPostingData: data,
+          }) as Promise<{ id: string }>
+      )
+    );
+    assert(metaJobPosting && googleJobPosting, 'Failed to create job postings');
 
-    const metaJobPosting = await JobPostingRepository.createJobPosting({
-      jobPostingData: mockJobPosting_Meta,
-    });
+    const nestedApplications = await Promise.all(
+      [userId_A, userId_B].map(
+        (userId) =>
+          Promise.all([
+            ApplicationRepository.createApplication({
+              jobPostingId: metaJobPosting.id,
+              userId,
+            }),
+            ApplicationRepository.createApplication({
+              jobPostingId: googleJobPosting.id,
+              userId,
+            }),
+          ]) as Promise<[IApplication, IApplication]>
+      )
+    );
 
-    const googleJobPosting = await JobPostingRepository.createJobPosting({
-      jobPostingData: mockJobPosting_Google,
-    });
-
-    if (!metaJobPosting || !googleJobPosting) {
-      throw new Error('Failed to create job posting');
-    }
-
-    metaApplication_A = await ApplicationRepository.createApplication({
-      jobPostingId: metaJobPosting.id,
-      userId: userId_A,
-    });
-
-    googleApplication_A = await ApplicationRepository.createApplication({
-      jobPostingId: googleJobPosting.id,
-      userId: userId_A,
-    });
-
-    metaApplication_B = await ApplicationRepository.createApplication({
-      jobPostingId: metaJobPosting.id,
-      userId: userId_B,
-    });
-
-    googleApplication_B = await ApplicationRepository.createApplication({
-      jobPostingId: googleJobPosting.id,
-      userId: userId_B,
-    });
+    assert(
+      nestedApplications[0] && nestedApplications[1],
+      'Failed to create applications'
+    );
+    [metaApplication_A, googleApplication_A] = nestedApplications[0];
+    [metaApplication_B, googleApplication_B] = nestedApplications[1];
 
     mockInterview_A0 = {
       applicationId: metaApplication_A.id,
@@ -146,8 +148,11 @@ describe('Interview Repository', () => {
 
   describe('getInterviewById', () => {
     it('should return null if the interview does not exist', async () => {
-      await InterviewRepository.createInterview(mockInterview_A0);
-      await InterviewRepository.createInterview(mockInterview_A1);
+      await Promise.all(
+        [mockInterview_A0, mockInterview_A1].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interview = await InterviewRepository.getInterviewById({
         interviewId: getNewMongoId(),
@@ -158,9 +163,13 @@ describe('Interview Repository', () => {
     });
 
     it('should return null if the interview does not belong to the user', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      await InterviewRepository.createInterview(mockInterview_B0);
+      const [interview_A0] = await Promise.all(
+        [mockInterview_A0, mockInterview_B0].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A0);
 
       const interview = await InterviewRepository.getInterviewById({
         interviewId: interview_A0.id,
@@ -221,10 +230,14 @@ describe('Interview Repository', () => {
     });
 
     it('should not include soft-deleted interviews belong to the provided userId', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      const interview_A1 =
-        await InterviewRepository.createInterview(mockInterview_A1);
+      const [interview_A0, interview_A1] = await Promise.all(
+        [mockInterview_A0, mockInterview_A1].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A0);
+      assert(interview_A1);
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
@@ -244,11 +257,11 @@ describe('Interview Repository', () => {
     });
 
     it('should return only interviews belonging to the provided userId', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      const interview_A1 =
-        await InterviewRepository.createInterview(mockInterview_A1);
-      await InterviewRepository.createInterview(mockInterview_B0);
+      const [interview_A0, interview_A1] = await Promise.all(
+        [mockInterview_A0, mockInterview_A1, mockInterview_B0].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
@@ -257,6 +270,8 @@ describe('Interview Repository', () => {
       });
 
       assert(interviews);
+      assert(interview_A0);
+      assert(interview_A1);
       expect(interviews).to.be.an('array').that.have.lengthOf(2);
       expect(interviews.map((interview) => interview.id)).to.have.members([
         interview_A0.id,
@@ -279,10 +294,15 @@ describe('Interview Repository', () => {
     });
 
     it('should not include soft-deleted interviews when filtering by applicationId', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      const interview_A2 =
-        await InterviewRepository.createInterview(mockInterview_A2);
+      const [interview_A0, interview_A2] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A0);
+      assert(interview_A2);
+
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
         userId: userId_A,
@@ -302,11 +322,11 @@ describe('Interview Repository', () => {
     });
 
     it('should return only the interviews belonging to the applicationId', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      const interview_A2 =
-        await InterviewRepository.createInterview(mockInterview_A2);
-      await InterviewRepository.createInterview(mockInterview_A1);
+      const [interview_A0, interview_A2] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2, mockInterview_A1].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
@@ -315,6 +335,8 @@ describe('Interview Repository', () => {
         },
       });
 
+      assert(interview_A0);
+      assert(interview_A2);
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(2);
       expect(interviews.map((interview) => interview.id)).to.have.members([
@@ -324,9 +346,11 @@ describe('Interview Repository', () => {
     });
 
     it('should return only interviews with the given status when no applicationId is provided', async () => {
-      await InterviewRepository.createInterview(mockInterview_A0);
-      const interview_A2 =
-        await InterviewRepository.createInterview(mockInterview_A2);
+      const [interview_A2] = await Promise.all(
+        [mockInterview_A2, mockInterview_A0].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
@@ -335,6 +359,7 @@ describe('Interview Repository', () => {
         },
       });
 
+      assert(interview_A2);
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(1);
       assert(interviews[0]);
@@ -357,8 +382,11 @@ describe('Interview Repository', () => {
     });
 
     it('should return an empty array when filtering by a companyName that no interview has', async () => {
-      await InterviewRepository.createInterview(mockInterview_A0);
-      await InterviewRepository.createInterview(mockInterview_A2);
+      await Promise.all(
+        [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
@@ -371,12 +399,11 @@ describe('Interview Repository', () => {
     });
 
     it('should return interviews of all users with the provided companyName', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      const interview_A2 =
-        await InterviewRepository.createInterview(mockInterview_A2);
-      const interview_B1 =
-        await InterviewRepository.createInterview(mockInterview_B1);
+      const [interview_A0, interview_A2, interview_B1] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
@@ -384,6 +411,9 @@ describe('Interview Repository', () => {
         },
       });
 
+      assert(interview_A0);
+      assert(interview_A2);
+      assert(interview_B1);
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(3);
       expect(interviews.map((interview) => interview.id)).to.have.members([
@@ -394,12 +424,13 @@ describe('Interview Repository', () => {
     });
 
     it('should not include soft-deleted interviews when filter by companyName', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      const interview_A2 =
-        await InterviewRepository.createInterview(mockInterview_A2);
-      const interview_B1 =
-        await InterviewRepository.createInterview(mockInterview_B1);
+      const [interview_A0, interview_A2, interview_B1] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A0);
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
@@ -413,6 +444,8 @@ describe('Interview Repository', () => {
       });
 
       assert(interviews);
+      assert(interview_A2);
+      assert(interview_B1);
       expect(interviews).to.be.an('array').that.have.lengthOf(2);
       expect(interviews.map((interview) => interview.id)).to.have.members([
         interview_A2.id,
@@ -421,9 +454,11 @@ describe('Interview Repository', () => {
     });
 
     it('should return only the interviews belonging to the userId and applicationId that have the provided status', async () => {
-      await InterviewRepository.createInterview(mockInterview_A0);
-      const interview_A2 =
-        await InterviewRepository.createInterview(mockInterview_A2);
+      const [interview_A0, interview_A2] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
@@ -434,6 +469,8 @@ describe('Interview Repository', () => {
       });
 
       assert(interviews);
+      assert(interview_A0);
+      assert(interview_A2);
       expect(interviews).to.be.an('array').that.have.lengthOf(1);
       assert(interviews[0]);
       expect(interviews[0].id).to.equal(interview_A2.id);
@@ -516,10 +553,14 @@ describe('Interview Repository', () => {
 
   describe('updateInterviewsWithStatus', () => {
     it('should not update status of soft-deleted interviews', async () => {
-      const interview_A1 =
-        await InterviewRepository.createInterview(mockInterview_A1);
-      const interview_A2 =
-        await InterviewRepository.createInterview(mockInterview_A2);
+      const [interview_A1, interview_A2] = await Promise.all(
+        [mockInterview_A1, mockInterview_A2].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A1);
+      assert(interview_A2);
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A1.id,
@@ -571,12 +612,15 @@ describe('Interview Repository', () => {
     });
 
     it('should only update status of valid interviews of authorized user', async () => {
-      const interview_A1 =
-        await InterviewRepository.createInterview(mockInterview_A1);
-      const interview_A2 =
-        await InterviewRepository.createInterview(mockInterview_A2);
-      const interview_B0 =
-        await InterviewRepository.createInterview(mockInterview_B0);
+      const [interview_A1, interview_A2, interview_B0] = await Promise.all(
+        [mockInterview_A1, mockInterview_A2, mockInterview_B0].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A1);
+      assert(interview_A2);
+      assert(interview_B0);
 
       const interviewUpdateResult =
         await InterviewRepository.updateInterviewsWithStatus({
