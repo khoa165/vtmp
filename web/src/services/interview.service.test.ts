@@ -237,9 +237,14 @@ describe('InterviewService', () => {
     });
 
     it('should not include soft-deleted interviews belong to the provided userId', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      await InterviewRepository.createInterview(mockInterview_A1);
+      const [interview_A0] = await Promise.all(
+        [mockInterview_A0, mockInterview_A1, mockInterview_B0].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A0);
+
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
         userId: userId_A,
@@ -260,17 +265,19 @@ describe('InterviewService', () => {
     });
 
     it('should return only interviews belonging to the provided userId', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      const interview_A1 =
-        await InterviewRepository.createInterview(mockInterview_A1);
-      await InterviewRepository.createInterview(mockInterview_B0);
+      const [interview_A0, interview_A1] = await Promise.all(
+        [mockInterview_A0, mockInterview_A1, mockInterview_B0].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewService.getInterviews({
         filters: { userId: userId_A },
       });
 
       assert(interviews);
+      assert(interview_A0);
+      assert(interview_A1);
       expect(interviews).to.be.an('array').that.have.lengthOf(2);
       expect(interviews.map((interview) => interview.id)).to.have.members([
         interview_A0.id,
@@ -279,8 +286,11 @@ describe('InterviewService', () => {
     });
 
     it('should return empty array when filtering by an applicationId with no interviews', async () => {
-      await InterviewRepository.createInterview(mockInterview_A0);
-      await InterviewRepository.createInterview(mockInterview_A1);
+      await Promise.all(
+        [mockInterview_A0, mockInterview_A1].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewService.getInterviews({
         filters: {
@@ -294,9 +304,14 @@ describe('InterviewService', () => {
     });
 
     it('should not include soft-deleted interviews when filtering by applicationId', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      await InterviewRepository.createInterview(mockInterview_A2);
+      const [interview_A0] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A0);
+
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
         userId: userId_A,
@@ -320,11 +335,11 @@ describe('InterviewService', () => {
     });
 
     it('should return only the interviews belonging to the applicationId', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      const interview_A2 =
-        await InterviewRepository.createInterview(mockInterview_A2);
-      await InterviewRepository.createInterview(mockInterview_B0);
+      const [interview_A0, interview_A2] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewService.getInterviews({
         filters: {
@@ -334,6 +349,8 @@ describe('InterviewService', () => {
       });
 
       assert(interviews);
+      assert(interview_A0);
+      assert(interview_A2);
       expect(interviews).to.be.an('array').that.have.lengthOf(2);
       expect(interviews.map((interview) => interview.id)).to.have.members([
         interview_A0.id,
@@ -342,8 +359,11 @@ describe('InterviewService', () => {
     });
 
     it('should return only interviews with the given status when no applicationId is provided', async () => {
-      await InterviewRepository.createInterview(mockInterview_A0);
-      await InterviewRepository.createInterview(mockInterview_A1);
+      await Promise.all(
+        [mockInterview_A0, mockInterview_A1].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewService.getInterviews({
         filters: {
@@ -364,8 +384,11 @@ describe('InterviewService', () => {
     });
 
     it('should return an empty array when filtering by a status that no interview has', async () => {
-      await InterviewRepository.createInterview(mockInterview_A0);
-      await InterviewRepository.createInterview(mockInterview_A1);
+      await Promise.all(
+        [mockInterview_A0, mockInterview_A1].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewService.getInterviews({
         filters: {
@@ -379,8 +402,11 @@ describe('InterviewService', () => {
     });
 
     it('should return an empty array when filtering by a companyName that no interview has', async () => {
-      await InterviewRepository.createInterview(mockInterview_A0);
-      await InterviewRepository.createInterview(mockInterview_A2);
+      await Promise.all(
+        [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewService.getInterviews({
         filters: {
@@ -393,12 +419,11 @@ describe('InterviewService', () => {
     });
 
     it('should return interviews of all users belongs to the provided companyName', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      const interview_A2 =
-        await InterviewRepository.createInterview(mockInterview_A2);
-      const interview_B1 =
-        await InterviewRepository.createInterview(mockInterview_B1);
+      const [interview_A0, interview_A2, interview_B1] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewService.getInterviews({
         filters: {
@@ -407,6 +432,9 @@ describe('InterviewService', () => {
       });
 
       assert(interviews);
+      assert(interview_A0);
+      assert(interview_A2);
+      assert(interview_B1);
       expect(interviews).to.be.an('array').that.have.lengthOf(3);
       expect(interviews.map((interview) => interview.id)).to.have.members([
         interview_A0.id,
@@ -416,12 +444,13 @@ describe('InterviewService', () => {
     });
 
     it('should not include soft-deleted interviews when filter by companyName', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-      const interview_A2 =
-        await InterviewRepository.createInterview(mockInterview_A2);
-      const interview_B1 =
-        await InterviewRepository.createInterview(mockInterview_B1);
+      const [interview_A0, interview_A2, interview_B1] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A0);
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
@@ -434,6 +463,8 @@ describe('InterviewService', () => {
         },
       });
 
+      assert(interview_A2);
+      assert(interview_B1);
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(2);
       expect(interviews.map((interview) => interview.id)).to.have.members([
@@ -443,9 +474,11 @@ describe('InterviewService', () => {
     });
 
     it('should return only the interviews belonging to the applicationId that have the provided status', async () => {
-      await InterviewRepository.createInterview(mockInterview_A0);
-      await InterviewRepository.createInterview(mockInterview_A1);
-      await InterviewRepository.createInterview(mockInterview_B0);
+      await Promise.all(
+        [mockInterview_A0, mockInterview_A1, mockInterview_B0].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
 
       const interviews = await InterviewService.getInterviews({
         filters: {
