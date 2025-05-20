@@ -13,6 +13,10 @@ export const roleToPermissionMapping: Record<UserRole, Permission[]> = {
     Permission.MANAGE_INVITATION,
 
     Permission.VIEW_APPLICATION,
+
+    Permission.VIEW_INTERVIEW,
+    Permission.VIEW_INTERVIEW_STATS,
+    Permission.MANAGE_INTERVIEW,
   ],
   [UserRole.MODERATOR]: [
     Permission.VIEW_JOB_LINK,
@@ -21,6 +25,8 @@ export const roleToPermissionMapping: Record<UserRole, Permission[]> = {
 
     Permission.VIEW_JOB_POSTING,
     Permission.MANAGE_JOB_POSTING,
+
+    Permission.VIEW_INTERVIEW,
   ],
   [UserRole.USER]: [
     Permission.VIEW_APPLICATION,
@@ -29,5 +35,8 @@ export const roleToPermissionMapping: Record<UserRole, Permission[]> = {
     Permission.CREATE_JOB_LINK,
 
     Permission.VIEW_JOB_POSTING,
+
+    Permission.VIEW_INTERVIEW,
+    Permission.MANAGE_INTERVIEW,
   ],
 };

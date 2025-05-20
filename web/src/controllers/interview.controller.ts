@@ -22,11 +22,15 @@ const InterviewCreateSchema = z.object({
     }),
   type: z.array(z.nativeEnum(InterviewType), {
     required_error: 'Interview type is required',
+    invalid_type_error: 'Invalid interview type format',
   }),
   status: z.nativeEnum(InterviewStatus).optional(),
-  interviewOnDate: z.coerce.date({
-    required_error: 'Interview date is required',
-  }),
+  interviewOnDate: z
+    .string({ required_error: 'Interview date is required' })
+    .refine((str) => !isNaN(Date.parse(str)), {
+      message: 'Interview date is required',
+    })
+    .transform((str) => new Date(str)),
   note: z.string().optional(),
 });
 
@@ -37,7 +41,23 @@ const InterviewUpdateSchema = z.object({
   note: z.string().optional(),
 });
 
-const InterviewFilterQuerySchema = z
+const InterviewApplicationFilter = z.object({
+  applicationId: z
+    .string()
+    .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: 'Invalid application ID format',
+    }),
+});
+
+const InterviewCompanyFilter = z
+  .object({
+    companyName: z.string({ required_error: 'Company Name is required' }),
+  })
+  .transform((data) =>
+    Object.fromEntries(Object.entries(data).filter(([, v]) => v != undefined))
+  );
+
+const AdminInterviewFilter = z
   .object({
     applicationId: z
       .string()
@@ -45,12 +65,16 @@ const InterviewFilterQuerySchema = z
         message: 'Invalid application ID format',
       })
       .optional(),
-    status: z.nativeEnum(InterviewStatus).optional(),
+    userId: z
+      .string()
+      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: 'Invalid user ID format',
+      })
+      .optional(),
     companyName: z.string().optional(),
   })
-  .strict()
   .transform((data) =>
-    Object.fromEntries(Object.entries(data).filter(([, v]) => v !== undefined))
+    Object.fromEntries(Object.entries(data).filter(([, v]) => v != undefined))
   );
 
 export const InterviewController = {
@@ -84,16 +108,35 @@ export const InterviewController = {
     });
   },
 
-  getInterviews: async (req: Request, res: Response) => {
+  getInterviewsByApplicationId: async (req: Request, res: Response) => {
+    const filters = InterviewApplicationFilter.parse(req.params);
     const userId = getUserFromRequest(req).user.id;
-    const filters = InterviewFilterQuerySchema.parse(req.query);
 
     const interviews = await InterviewService.getInterviews({
-      filters: {
-        ...filters,
-        userId,
-      },
+      filters: { ...filters, userId },
     });
+
+    res.status(200).json({
+      message: 'Interviews retrieved successfully',
+      data: interviews,
+    });
+  },
+
+  getInterviewsByCompanyName: async (req: Request, res: Response) => {
+    const filters = InterviewCompanyFilter.parse(req.query);
+
+    const interviews = await InterviewService.getInterviews({ filters });
+
+    res.status(200).json({
+      message: 'Interviews retrieved successfully',
+      data: interviews,
+    });
+  },
+
+  getInterviews: async (req: Request, res: Response) => {
+    const filters = AdminInterviewFilter.parse(req.query);
+
+    const interviews = await InterviewService.getInterviews({ filters });
 
     res.status(200).json({
       message: 'Interviews retrieved successfully',

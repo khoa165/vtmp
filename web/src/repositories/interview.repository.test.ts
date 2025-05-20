@@ -13,7 +13,7 @@ import { IApplication } from '@/models/application.model';
 describe('Interview Repository', () => {
   useMongoDB();
 
-  type MockInterview = {
+  interface MockInterview {
     applicationId: string;
     userId: string;
     type: InterviewType[];
