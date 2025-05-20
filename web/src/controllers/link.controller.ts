@@ -3,6 +3,7 @@ import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
 import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
 import { filterUndefinedAttributes } from '@/utils/helpers';
+import { MONGO_OBJECT_ID_REGEX } from '@/constants/validations';
 
 const LinkSchema = z.object({
   url: z
@@ -46,7 +47,7 @@ const JobPostingDataSchema = z
   .transform(filterUndefinedAttributes);
 
 const LinkIdSchema = z.object({
-  linkId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid job ID format'),
+  linkId: z.string().regex(MONGO_OBJECT_ID_REGEX, 'Invalid job ID format'),
 });
 
 const LinkFilterSchema = z
