@@ -6,6 +6,9 @@ import dotenv from 'dotenv';
 import { connectDB } from '@/config/database';
 import routes from '@/routes/index';
 import { routeErrorHandler } from '@/middlewares/utils';
+import mongoSanitize from 'express-mongo-sanitize';
+import rateLimitMiddleware from '@/middlewares/rateLimit.middleware';
+import { xss } from 'express-xss-sanitizer';
 
 dotenv.config();
 
@@ -16,11 +19,14 @@ connectDB();
 
 // Global middlewares
 app.use(cors());
+app.use(mongoSanitize());
+app.use(xss());
 app.use(express.json()); // Parse JSON requests
 app.use(express.urlencoded({ extended: true }));
 app.use(cors()); // Enable CORS
 app.use(helmet()); // Secure HTTP headers
 app.use(morgan('dev')); // Logging HTTP requests
+app.use(rateLimitMiddleware);
 
 app.get('/', (_req: Request, res: Response) => {
   res.status(200).send('Server is running');
