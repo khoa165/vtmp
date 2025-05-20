@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors()); // Enable CORS
 app.use(helmet()); // Secure HTTP headers
 app.use(morgan('dev')); // Logging HTTP requests
-app.use(rateLimitMiddleware);
+app.use(rateLimitMiddleware());
 
 app.get('/', (_req: Request, res: Response) => {
   res.status(200).send('Server is running');
