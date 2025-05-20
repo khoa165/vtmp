@@ -21,6 +21,7 @@ import jwt from 'jsonwebtoken';
 import { describe } from 'mocha';
 import * as R from 'remeda';
 import { getEmailService } from '@/utils/email';
+import { SinonStub } from 'sinon';
 
 describe('InvitationService', () => {
   useMongoDB();
@@ -29,15 +30,11 @@ describe('InvitationService', () => {
   const nextWeek = addDays(Date.now(), 7);
   const mockMenteeName = 'Mentee Viettech';
   const mockAdminId = getNewMongoId();
-
+  const emailService = getEmailService();
+  let sendEmailStub: SinonStub;
   beforeEach(() => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
-    const emailService = getEmailService();
-    const sendEmailStub = sandbox
-      .stub(emailService, 'sendEmail')
-      .callsFake(async () => {
-        expect(sendEmailStub.calledOnce).to.equal(true);
-      });
+    sendEmailStub = sandbox.stub(emailService, 'sendEmail').resolves();
   });
 
   const mockOneInvitation = {
@@ -140,6 +137,7 @@ describe('InvitationService', () => {
           mockAdminId
         )
       ).eventually.fulfilled.and.to.be.null;
+      expect(sendEmailStub.calledOnce).to.equal(true);
     });
 
     it('should not throw error and return null when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
@@ -154,6 +152,7 @@ describe('InvitationService', () => {
           mockAdminId
         )
       ).eventually.fulfilled.and.to.be.null;
+      expect(sendEmailStub.calledOnce).to.equal(true);
     });
 
     it('should update invitation to new expiry date when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
@@ -184,6 +183,7 @@ describe('InvitationService', () => {
         )
       );
       expect(timeDiff).to.lessThan(3);
+      expect(sendEmailStub.calledOnce).to.equal(true);
     });
 
     it('should not throw error when no Pending invitations associated with receiver email exist', async () => {
@@ -194,6 +194,7 @@ describe('InvitationService', () => {
           mockAdminId
         )
       ).eventually.fulfilled;
+      expect(sendEmailStub.calledOnce).to.equal(true);
     });
 
     it('should return newly created invitation when no Pending invitations associated with receiver email exist', async () => {
@@ -209,6 +210,7 @@ describe('InvitationService', () => {
         sender: toMongoId(mockAdminId),
         status: InvitationStatus.PENDING,
       });
+      expect(sendEmailStub.calledOnce).to.equal(true);
     });
   });
 
