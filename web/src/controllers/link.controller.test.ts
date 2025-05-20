@@ -73,7 +73,7 @@ describe('LinkController', () => {
     linkId = googleLink.id;
   });
 
-  describe('submitLink', () => {
+  describe('POST /links', () => {
     it('should return error message for submitting link with not exist url', async () => {
       const res = await request(app)
         .post('/api/links')
@@ -98,7 +98,7 @@ describe('LinkController', () => {
     });
   });
 
-  describe('rejectLink', () => {
+  describe('POST /links/:id/reject', () => {
     it('should return error message for rejecting not exist link', async () => {
       const res = await request(app)
         .post(`/api/links/${getNewMongoId()}/reject`)
@@ -122,7 +122,7 @@ describe('LinkController', () => {
     });
   });
 
-  describe('approveLink', () => {
+  describe('POST /links/:id/approve', () => {
     it('should return error message for approving with not exist link', async () => {
       const res = await request(app)
         .post(`/api/links/${getNewMongoId()}/approve`)
@@ -156,7 +156,7 @@ describe('LinkController', () => {
     });
   });
 
-  describe('getLinkCountByStatus', () => {
+  describe('GET /links/count-by-status', () => {
     it('should return 1 link for pending status', async () => {
       const res = await request(app)
         .get('/api/links/count-by-status')
@@ -206,7 +206,7 @@ describe('LinkController', () => {
     });
   });
 
-  describe('getLinks', () => {
+  describe('GET /links', () => {
     it('should return 400 when an invalid status is provided', async () => {
       const res = await request(app)
         .get('/api/links?status=INVALID_STATUS')
