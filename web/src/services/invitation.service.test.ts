@@ -154,6 +154,7 @@ describe('InvitationService', () => {
         ...mockOneInvitation,
         expiryDate: subDays(Date.now(), 2),
       });
+      const expectedExpiryDate = addDays(Date.now(), 7);
       await InvitationService.sendInvitation(
         mockMenteeName,
         mockOneInvitation.receiverEmail,
@@ -172,7 +173,7 @@ describe('InvitationService', () => {
       const timeDiff = Math.abs(
         differenceInSeconds(
           invitationWithNewExpiryDate.expiryDate,
-          addDays(Date.now(), 7)
+          expectedExpiryDate
         )
       );
       expect(timeDiff).to.lessThan(3);

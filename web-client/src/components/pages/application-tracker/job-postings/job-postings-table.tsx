@@ -1,6 +1,5 @@
 import { Button } from '@/components/base/button';
 import { Input } from '@/components/base/input';
-import { useState } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -29,13 +28,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/base/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function ApplicationsTable<TData, TValue>({
+export function JobPostingsTable<TData, TValue>({
   columns,
   data,
   sorting,

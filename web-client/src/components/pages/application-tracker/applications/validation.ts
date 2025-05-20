@@ -30,5 +30,19 @@ export const ApplicationResponseSchema = z.object({
   data: ApplicationSchema,
 });
 
+export const ApplicationsCountByStatusSchema = z.object({
+  message: z.string(),
+  data: z
+    .object({
+      [ApplicationStatus.SUBMITTED]: z.number(),
+      [ApplicationStatus.OA]: z.number(),
+      [ApplicationStatus.INTERVIEWING]: z.number(),
+      [ApplicationStatus.OFFERED]: z.number(),
+      [ApplicationStatus.REJECTED]: z.number(),
+      [ApplicationStatus.WITHDRAWN]: z.number(),
+    })
+    .strict(),
+});
+
 export type IApplications = z.infer<typeof ApplicationsResponseSchema>['data'];
 export type IApplication = z.infer<typeof ApplicationSchema>;
