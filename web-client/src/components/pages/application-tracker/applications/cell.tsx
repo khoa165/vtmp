@@ -23,6 +23,7 @@ import confetti from 'canvas-confetti';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import { formatStatus } from '@/utils/helpers';
 import { StatusDot } from '@/components/base/status-dot';
+import { StatusToColorMapping } from '@/utils/constants';
 
 const celebrateOffered = (): void => {
   const end = Date.now() + 3 * 1000; // 3 seconds
@@ -131,7 +132,10 @@ export const CellApplicationStatus = ({
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Button variant="outline" size="sm">
-            <StatusDot status={application.status} />
+            <StatusDot
+              status={application.status}
+              colorMapping={StatusToColorMapping}
+            />
             {formatStatus(application.status)}
             <ChevronDown />
           </Button>
