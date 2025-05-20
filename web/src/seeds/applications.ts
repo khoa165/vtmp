@@ -8,7 +8,7 @@ export const loadApplications = async (
   users: IUser[],
   jobPostings: IJobPosting[]
 ): Promise<IApplication[]> => {
-  const RECENT_DAYS = 90;
+  const MAX_DAYS_FROM_REF_DATE = 30;
   const MIN_JOB_POSTINGS_RATIO = 0.5;
   const MAX_JOB_POSTINGS_RATIO = 1.0;
   const allApplications: Partial<IApplication>[] = [];
@@ -29,8 +29,9 @@ export const loadApplications = async (
     referrer: faker.person.firstName(),
     portalLink: formatPortalLink(jobPosting.companyName),
     interest: faker.helpers.enumValue(InterestLevel),
-    appliedOnDate: faker.date.recent({
-      days: RECENT_DAYS,
+    appliedOnDate: faker.date.soon({
+      days: MAX_DAYS_FROM_REF_DATE,
+      refDate: jobPosting.datePosted ?? new Date(),
     }),
   });
 

@@ -5,30 +5,50 @@ import {
   useDeleteApplication,
   useUpdateApplicationStatus,
 } from '@/components/pages/application-tracker/applications/hooks/applications';
+import { useMemo, useState } from 'react';
+import { SortingState } from '@tanstack/react-table';
+import { Skeleton } from '@/components/base/skeleton';
+import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
+import { CustomError } from '@/utils/errors';
 
-export const ApplicationsContainer = (): React.JSX.Element | null => {
+export const ApplicationsContainer = ({
+  applicationFilter,
+}: {
+  applicationFilter: ApplicationsFilter;
+}): React.JSX.Element | null => {
   const {
     isLoading,
-    isError,
     error,
     data: applicationsData,
-  } = useGetApplications();
+  } = useGetApplications(applicationFilter);
   const { mutate: deleteApplicationFn } = useDeleteApplication();
   const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
 
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const columns = useMemo(
+    () =>
+      applicationsTableColumns({
+        deleteApplicationFn,
+        updateApplicationStatusFn,
+      }),
+    [deleteApplicationFn, updateApplicationStatusFn]
+  );
+
   if (isLoading) {
-    // TODO-(QuangMinhNguyen27405/dsmai): Remove this console log in production and add a loading spinner
-    console.log('Loading applications data...');
-    return <span>Loading applications data...</span>;
+    return (
+      <>
+        <div className="flex items-center justify-between py-4">
+          <Skeleton className="h-10 w-[24rem] rounded-md" />
+          <Skeleton className="h-10 w-[8rem] rounded-md" />
+        </div>
+        <Skeleton className="h-[32rem] w-full rounded-xl" />
+      </>
+    );
   }
 
-  if (isError) {
-    // TODO-(QuangMinhNguyen27405/dsmai) : Remove this and add a toast error message. Add react-error-boundary
-    console.error('Error fetching applications data:', error);
-    // return (
-    //   <span>Error: {error.message || 'Failed to load applications data.'}</span>
-    // );
-    return null;
+  if (error) {
+    throw new CustomError('Error fetching applications data');
   }
 
   if (!applicationsData || applicationsData.length === 0) {
@@ -39,11 +59,10 @@ export const ApplicationsContainer = (): React.JSX.Element | null => {
 
   return (
     <ApplicationsTable
-      columns={applicationsTableColumns({
-        deleteApplicationFn,
-        updateApplicationStatusFn,
-      })}
+      columns={columns}
       data={applicationsData}
+      sorting={sorting}
+      setSorting={setSorting}
     />
   );
 };
