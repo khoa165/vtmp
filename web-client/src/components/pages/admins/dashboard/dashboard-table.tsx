@@ -75,7 +75,6 @@ export function DashBoardTable<TData, TValue>({
           onChange={(e) => companyColumn?.setFilterValue(e.target.value)}
           className="max-w-sm"
         />
-
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button

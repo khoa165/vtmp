@@ -18,7 +18,7 @@ const API_ENDPOINTS = {
   REJECT_LINK: (id: string) => `/links/${id}/reject`,
 };
 
-const handleDashBoardMutationError = (error: Error) => {
+const handleDashBoardMutationError = (error: unknown) => {
   const messages =
     axios.isAxiosError(error) && error.response?.data?.errors
       ? error.response.data.errors.map((e) => e.message)

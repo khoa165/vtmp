@@ -1,12 +1,11 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/base/button';
 import { IDashBoardLink } from '@/components/pages/admins/dashboard/validation';
 import { format } from 'date-fns';
 import { ReviewPopupButton } from '@/components/pages/admins/dashboard/review-popup-button';
 import { StatusDot } from '@/components/base/status-dot';
-import { LinkStatus } from '@vtmp/common/constants';
 import { JobPostingData } from './validation';
+import { HeaderSorting } from '@/components/base/header';
 
 interface DashboardTableColumnsProps {
   approveDashBoardLinkFn: ({
@@ -24,7 +23,8 @@ export const dashboardTableColumns = ({
   rejectDashBoardLinkFn,
 }: DashboardTableColumnsProps): ColumnDef<IDashBoardLink>[] => [
   {
-    header: 'URL',
+    accessorKey: 'url',
+    header: () => <div className="ml-4">URL</div>,
     cell: ({ row }) => {
       const { url } = row.original;
       return (
@@ -32,7 +32,7 @@ export const dashboardTableColumns = ({
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-500 underline cursor-pointer"
+          className="text-blue-500 underline cursor-pointer ml-4"
         >
           {url}
         </a>
@@ -41,17 +41,16 @@ export const dashboardTableColumns = ({
   },
   {
     accessorKey: 'companyName',
-    header: 'Company Name',
+    header: 'Company',
   },
   {
     accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => {
-      const status = row.original.status;
       return (
         <Button variant="outline">
-          <StatusDot status={LinkStatus[status as keyof typeof LinkStatus]} />
-          <span className="ml-2">{status}</span>
+          <StatusDot status={row.original.status} />
+          <span className="ml-2">{row.original.status}</span>
         </Button>
       );
     },
@@ -59,23 +58,12 @@ export const dashboardTableColumns = ({
   {
     accessorKey: 'datePosted',
     header: ({ column }) => (
-      <div className="flex items-center">
-        <span>Date Posted</span>
-        <Button
-          variant="outline"
-          onClick={() => {
-            column.toggleSorting(column.getIsSorted() === 'asc');
-          }}
-          className="w-fit h-fit cursor-pointer hover:text-inherit"
-        >
-          {column.getIsSorted() === 'asc' ? <ArrowUp /> : <ArrowDown />}
-        </Button>
-      </div>
+      <HeaderSorting column={column} headerName="Date Posted" />
     ),
     cell: ({ row }) => {
-      const rawDate = row.getValue<Date>('datePosted');
-      const formatted = rawDate ? format(new Date(rawDate), 'MM/dd/yyyy') : '-';
-      return <span>{formatted}</span>;
+      const isoDate = row.getValue<string>('datePosted');
+      const date = new Date(isoDate);
+      return <div>{format(date, 'MMM d, yyyy')}</div>;
     },
   },
   {

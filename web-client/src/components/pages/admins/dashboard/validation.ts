@@ -4,7 +4,9 @@ import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
 export const DashBoardLinkSchema = z.object({
   _id: z.string(),
   url: z.string().url(),
-  status: z.string(),
+  status: z.nativeEnum(LinkStatus, {
+    message: 'Invalid link status',
+  }),
   submittedOn: z.string().optional(),
   jobTitle: z.string().optional(),
   companyName: z.string().optional(),

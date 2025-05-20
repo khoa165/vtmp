@@ -7,7 +7,7 @@ import {
   CellApplicationStatus,
 } from '@/components/pages/application-tracker/applications/cell';
 import { format } from 'date-fns';
-import { HeaderSorting } from '@/components/pages/application-tracker/applications/header';
+import { HeaderSorting } from '@/components/base/header';
 
 export const applicationsTableColumns = ({
   deleteApplicationFn,
