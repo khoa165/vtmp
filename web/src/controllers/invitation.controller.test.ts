@@ -29,11 +29,11 @@ describe('InvitationController', () => {
   useMongoDB();
   const sandbox = useSandbox();
   let mockToken: string;
-  const emailService = getEmailService();
   let sendEmailStub: SinonStub;
 
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+    const emailService = getEmailService();
     sendEmailStub = sandbox.stub(emailService, 'sendEmail').resolves();
 
     const encryptedPassword = await bcrypt.hash('test password', 10);

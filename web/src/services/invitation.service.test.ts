@@ -30,10 +30,10 @@ describe('InvitationService', () => {
   const nextWeek = addDays(Date.now(), 7);
   const mockMenteeName = 'Mentee Viettech';
   const mockAdminId = getNewMongoId();
-  const emailService = getEmailService();
   let sendEmailStub: SinonStub;
   beforeEach(() => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+    const emailService = getEmailService();
     sendEmailStub = sandbox.stub(emailService, 'sendEmail').resolves();
   });
 
