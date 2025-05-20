@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ApplicationStatusCard } from '@/components/pages/application-tracker/applications/application-status-card';
 import { Skeleton } from '@/components/base/skeleton';
 import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
+import { CustomError } from '@/utils/errors';
 
 export const ApplicationStatusContainer = ({
   setApplicationFilter,
@@ -15,7 +16,6 @@ export const ApplicationStatusContainer = ({
 
   const {
     isLoading,
-    isError,
     error,
     data: ApplicationsCountByStatus,
   } = useGetApplicationsCountByStatus();
@@ -30,13 +30,8 @@ export const ApplicationStatusContainer = ({
     );
   }
 
-  if (isError) {
-    // TODO-(QuangMinhNguyen27405/dsmai) : Remove this and add a toast error message. Add react-error-boundary
-    console.error('Error fetching application count data:', error);
-    // return (
-    //   <span>Error: {error.message || 'Failed to load summary data.'}</span>
-    // );
-    return null;
+  if (error) {
+    throw new CustomError('Error fetching applications status count');
   }
 
   const allDisplayedStatus = Object.values(ApplicationStatus).filter(
@@ -54,9 +49,7 @@ export const ApplicationStatusContainer = ({
   };
 
   if (allDisplayedStatus.length === 0) {
-    //TODO-dsmai: Remove this and add reacr-error-boundary to handle this case
-    console.log('No status available to display');
-    return null;
+    throw new Error('No status available to display');
   }
 
   return (
