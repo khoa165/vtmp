@@ -6,6 +6,7 @@ import { ReviewPopupButton } from '@/components/pages/admins/dashboard/review-po
 import { StatusDot } from '@/components/base/status-dot';
 import { JobPostingData } from './validation';
 import { HeaderSorting } from '@/components/base/header';
+import { StatusToColorMapping } from '@/utils/constants';
 
 interface DashboardTableColumnsProps {
   approveDashBoardLinkFn: ({
@@ -49,7 +50,10 @@ export const dashboardTableColumns = ({
     cell: ({ row }) => {
       return (
         <Button variant="outline">
-          <StatusDot status={row.original.status} />
+          <StatusDot
+            status={row.original.status}
+            colorMapping={StatusToColorMapping}
+          />
           <span className="ml-2">{row.original.status}</span>
         </Button>
       );

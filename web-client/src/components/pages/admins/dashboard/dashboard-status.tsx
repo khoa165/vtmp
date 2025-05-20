@@ -5,6 +5,7 @@ import { useGetLinksCountByStatus } from '@/components/pages/admins/dashboard/ho
 import { formatStatus } from '@/utils/helpers';
 import { LinkStatus } from '@vtmp/common/constants';
 import { useState } from 'react';
+import { StatusToColorMapping } from '@/utils/constants';
 
 interface LinkStatusCardsProps {
   setLinksFilter: (filter: { status?: LinkStatus }) => void;
@@ -71,7 +72,10 @@ export const LinkStatusCards = ({
                 {linksCountByStatus?.[status] ?? 0}
               </div>
               <div className="flex items-center gap-2">
-                <StatusDot status={status} />
+                <StatusDot
+                  status={status}
+                  colorMapping={StatusToColorMapping}
+                />
                 <span className="font-bold text-wrap max-lg:text-[0.7rem]">
                   {formatStatus(status)}
                 </span>
