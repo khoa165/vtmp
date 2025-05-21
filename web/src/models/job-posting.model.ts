@@ -1,5 +1,9 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { JobPostingLocation } from '@vtmp/common/constants';
+import {
+  Department,
+  JobPostingLocation,
+  OfferType,
+} from '@vtmp/common/constants';
 
 export interface IJobPosting extends Document {
   _id: Types.ObjectId;
@@ -9,6 +13,8 @@ export interface IJobPosting extends Document {
   jobTitle: string;
   companyName: string;
   location: JobPostingLocation;
+  departmentStatus: Department;
+  type: OfferType;
   datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
@@ -42,6 +48,16 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
       type: String,
       enum: Object.values(JobPostingLocation),
       default: JobPostingLocation.US,
+    },
+    departmentStatus: {
+      type: String,
+      enum: Object.values(Department),
+      default: Department.SWE,
+    },
+    type: {
+      type: String,
+      enum: Object.values(OfferType),
+      default: OfferType.INTERNSHIP,
     },
     datePosted: {
       type: Date,

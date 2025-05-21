@@ -18,3 +18,11 @@ JobPostingRoutes.get(
   authenticate,
   wrappedHandlers([JobPostingController.getJobPostingsUserHasNotAppliedTo])
 );
+
+// JobPostingRoutes.post(
+//   '/not-applied/filter',
+//   authenticate,
+//   wrappedHandlers([
+//     JobPostingController.getJobPostingsUserHasNotAppliedToWithFilter,
+//   ])
+// );

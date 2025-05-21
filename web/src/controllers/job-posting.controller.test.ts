@@ -20,7 +20,7 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 
-describe('JobPostingController', () => {
+describe.only('JobPostingController', () => {
   useMongoDB();
   const sandbox = useSandbox();
 

@@ -2,6 +2,15 @@ import { JobPostingModel, IJobPosting } from '@/models/job-posting.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
 import { ClientSession } from 'mongoose';
 
+// interface JobFilter {
+//   jobTitle?: string;
+//   companyName?: string;
+//   location?: string;
+//   datePosted?: Date;
+//   type?: string;
+//   departmentStatus?: string;
+// }
+
 export const JobPostingRepository = {
   createJobPosting: async ({
     jobPostingData,
@@ -71,11 +80,60 @@ export const JobPostingRepository = {
           deletedAt: null,
         },
       },
-      {
-        $project: {
-          userApplication: 0,
-        },
-      },
     ]);
   },
+
+  //   getJobPostingsUserHasNotAppliedToWithFilter: async (
+  //     userId: string,
+  //     filter: JobFilter
+  //   ): Promise<IJobPosting[]> => {
+  //     // declare it's a string-keyed object
+  //     const dynamicMatch: Record<string, any> = {
+  //       deletedAt: null,
+  //     };
+
+  //     if (filter.jobTitle) dynamicMatch.jobTitle = filter.jobTitle;
+  //     if (filter.companyName) dynamicMatch.companyName = filter.companyName;
+  //     if (filter.location) dynamicMatch.location = filter.location;
+  //     if (filter.datePosted)
+  //       dynamicMatch.datePosted = { $gte: filter.datePosted };
+  //     if (filter.type) dynamicMatch.type = filter.type;
+  //     if (filter.departmentStatus) dynamicMatch.type = filter.departmentStatus;
+
+  //     return JobPostingModel.aggregate([
+  //       {
+  //         // Perform a filtered join between JobPosting and Application collection
+  //         $lookup: {
+  //           from: 'applications',
+  //           let: { jobId: '$_id' },
+  //           pipeline: [
+  //             {
+  //               $match: {
+  //                 $expr: {
+  //                   $and: [
+  //                     { $eq: ['$jobPostingId', '$$jobId'] },
+  //                     { $eq: ['$userId', toMongoId(userId)] },
+  //                     { $eq: ['$deletedAt', null] },
+  //                   ],
+  //                 },
+  //               },
+  //             },
+  //           ],
+  //           as: 'userApplication',
+  //         },
+  //       },
+  //       {
+  //         $match: {
+  //           dynamicMatch,
+  //           userApplication: { $size: 0 },
+  //           deletedAt: null,
+  //         },
+  //       },
+  //       {
+  //         $project: {
+  //           userApplication: 0,
+  //         },
+  //       },
+  //     ]);
+  //   },
 };
