@@ -1,10 +1,12 @@
 import rateLimit from 'express-rate-limit';
 import { slowDown } from 'express-slow-down';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 const rateLimitMiddleware = () => {
   if (process.env.NODE_ENV === 'test') {
-    return [];
+    return (_req: Request, _res: Response, next: NextFunction) => {
+      next();
+    };
   }
   return [
     slowDown({
