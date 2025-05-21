@@ -10,13 +10,8 @@ import {
 } from '@/components/pages/admins/dashboard/validation';
 import axios from 'axios';
 import { LinkStatus } from '@vtmp/common/constants';
-
-const API_ENDPOINTS = {
-  GET_DASHBOARD_LINKS: '/links',
-  GET_LINKS_COUNT_BY_STATUS: '/links/count-by-status',
-  APPROVE_LINK: (id: string) => `/links/${id}/approve`,
-  REJECT_LINK: (id: string) => `/links/${id}/reject`,
-};
+import { API_ENDPOINTS } from '@/utils/constants';
+import { getEndPointWithId } from '@/utils/helpers';
 
 const handleDashBoardMutationError = (error: unknown) => {
   const messages =
@@ -38,14 +33,20 @@ const invalidateDashboardQueries = (
   });
 };
 
-export const useGetDashBoardLinks = (filter: { status?: LinkStatus } = {}) =>
+const getApproveLinkAPI = (linkId: string) =>
+  getEndPointWithId(API_ENDPOINTS.APPROVE_LINK, linkId);
+
+const getRejectLinkAPI = (linkId: string) =>
+  getEndPointWithId(API_ENDPOINTS.REJECT_LINK, linkId);
+
+export const useGetDashBoardLinks = (filter?: { status?: LinkStatus }) =>
   useQuery({
     queryKey: [QueryKey.GET_DASHBOARD_LINKS, filter],
     queryFn: () =>
       request({
         method: Method.GET,
         url: API_ENDPOINTS.GET_DASHBOARD_LINKS,
-        data: filter,
+        data: filter?.status ? filter : {},
         schema: DashBoardLinksResponseSchema,
         options: { includeOnlyDataField: true },
       }),
@@ -76,7 +77,7 @@ export const useApproveDashBoardLink = () => {
     }) =>
       request({
         method: Method.POST,
-        url: API_ENDPOINTS.APPROVE_LINK(linkId),
+        url: getApproveLinkAPI(linkId),
         data: newUpdate,
         schema: JobPostingResponseSchema,
       }),
@@ -95,7 +96,7 @@ export const useRejectDashBoardLink = () => {
     mutationFn: ({ linkId }: { linkId: string }) =>
       request({
         method: Method.POST,
-        url: API_ENDPOINTS.REJECT_LINK(linkId),
+        url: getRejectLinkAPI(linkId),
         schema: JobPostingResponseSchema,
       }),
     onSuccess: (res) => {

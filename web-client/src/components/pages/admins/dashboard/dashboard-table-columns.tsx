@@ -24,21 +24,9 @@ export const dashboardTableColumns = ({
   rejectDashBoardLinkFn,
 }: DashboardTableColumnsProps): ColumnDef<IDashBoardLink>[] => [
   {
-    accessorKey: 'url',
-    header: () => <div className="ml-4">URL</div>,
-    cell: ({ row }) => {
-      const { url } = row.original;
-      return (
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 underline cursor-pointer ml-4"
-        >
-          {url}
-        </a>
-      );
-    },
+    accessorKey: 'jobTitle',
+    header: () => <div className="ml-4">Job Title</div>,
+    cell: ({ row }) => <div className="ml-4">{row.original.jobTitle}</div>,
   },
   {
     accessorKey: 'companyName',

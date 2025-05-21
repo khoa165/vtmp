@@ -51,4 +51,5 @@ export interface JobPostingData {
   location?: string;
   datePosted?: string;
   jobDescription?: string;
+  adminNote?: string;
 }

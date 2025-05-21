@@ -18,7 +18,6 @@ export const DashBoardContainer = ({
 }: DashBoardContainerProps) => {
   const {
     isLoading,
-    isError,
     error,
     data: linksData,
   } = useGetDashBoardLinks(linksFilter);
@@ -47,7 +46,7 @@ export const DashBoardContainer = ({
     );
   }
 
-  if (isError) {
+  if (error) {
     console.error('Error fetching links data:', error);
     return (
       <p className="text-red-500">

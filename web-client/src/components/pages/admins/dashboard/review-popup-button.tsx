@@ -36,35 +36,26 @@ export const ReviewPopupButton = ({
 }: ReviewPopupButtonProps) => {
   const {
     _id: linkId,
-    url = '',
-    companyName = '',
-    jobTitle = '',
-    location = JobPostingRegion.US,
+    url,
+    companyName,
+    jobTitle,
+    location,
     datePosted,
-    jobDescription = '',
+    jobDescription,
   } = currentLink;
-
-  const [urlValue, setUrl] = useState<string>(url);
-  const [companyNameValue, setCompanyNameValue] = useState<string>(companyName);
-  const [jobTitleValue, setJobTitleValue] = useState<string>(jobTitle);
-  const [currentCountry, setCurrentCountry] = useState<string>(location);
-  const [datePostedValue, setDatePostedValue] = useState<string>(
-    datePosted ? format(new Date(datePosted), 'MM/dd/yyyy') : ''
-  );
-  const [jobDescriptionValue, setJobDescriptionValue] =
-    useState<string>(jobDescription);
-
+  const [reviewForm, setReviewForm] = useState<JobPostingData>({
+    url: url ?? '',
+    companyName: companyName ?? '',
+    jobTitle: jobTitle ?? '',
+    location: location ?? JobPostingRegion.US,
+    datePosted: datePosted ? format(new Date(datePosted), 'MM/dd/yyyy') : '',
+    jobDescription: jobDescription ?? '',
+    adminNote: '',
+  });
   const handleApprove = () => {
     approveDashBoardLinkFn({
       linkId,
-      newUpdate: {
-        url: urlValue,
-        companyName: companyNameValue,
-        jobTitle: jobTitleValue,
-        location: currentCountry,
-        datePosted: datePostedValue,
-        jobDescription: jobDescriptionValue,
-      },
+      newUpdate: reviewForm,
     });
   };
 
@@ -89,8 +80,9 @@ export const ReviewPopupButton = ({
         <ReviewPopupInput
           label="URL"
           placeHolder="URL"
-          value={urlValue}
-          setValue={setUrl}
+          fieldInForm="url"
+          reviewForm={reviewForm}
+          setReviewForm={setReviewForm}
           id="url"
         />
 
@@ -98,15 +90,17 @@ export const ReviewPopupButton = ({
           <ReviewPopupInput
             label="Job Title"
             placeHolder="Job Title"
-            value={jobTitleValue}
-            setValue={setJobTitleValue}
+            fieldInForm="jobTitle"
+            reviewForm={reviewForm}
+            setReviewForm={setReviewForm}
             id="job-title"
           />
           <ReviewPopupInput
             label="Company Name"
             placeHolder="Company Name"
-            value={companyNameValue}
-            setValue={setCompanyNameValue}
+            fieldInForm="companyName"
+            reviewForm={reviewForm}
+            setReviewForm={setReviewForm}
             id="company-name"
           />
         </div>
@@ -115,15 +109,17 @@ export const ReviewPopupButton = ({
           <ReviewPopupInput
             label="Country"
             placeHolder="US/CANADA"
-            value={currentCountry}
-            setValue={setCurrentCountry}
+            fieldInForm="location"
+            reviewForm={reviewForm}
+            setReviewForm={setReviewForm}
             id="country"
           />
           <ReviewPopupInput
             label="Date Posted"
             placeHolder="MM/dd/yyyy"
-            value={datePostedValue}
-            setValue={setDatePostedValue}
+            fieldInForm="datePosted"
+            reviewForm={reviewForm}
+            setReviewForm={setReviewForm}
             id="date-posted"
           />
         </div>
@@ -133,14 +129,29 @@ export const ReviewPopupButton = ({
           <Textarea
             id="job-description"
             placeholder="Type job description here."
-            value={jobDescriptionValue}
-            onChange={(e) => setJobDescriptionValue(e.target.value)}
+            value={reviewForm.jobDescription}
+            onChange={(e) =>
+              setReviewForm(() => ({
+                ...reviewForm,
+                jobDescription: e.target.value,
+              }))
+            }
           />
         </div>
 
         <div className="flex flex-col items-start gap-2">
           <Label htmlFor="admin-note">Admin Note</Label>
-          <Textarea id="admin-note" placeholder="Type your message here." />
+          <Textarea
+            id="admin-note"
+            placeholder="Type your message here."
+            value={reviewForm.adminNote}
+            onChange={(e) =>
+              setReviewForm(() => ({
+                ...reviewForm,
+                adminNote: e.target.value,
+              }))
+            }
+          />
         </div>
 
         <DialogFooter className="flex-row justify-center items-center gap-4 mt-4">

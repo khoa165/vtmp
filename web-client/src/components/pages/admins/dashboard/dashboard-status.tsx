@@ -18,7 +18,6 @@ export const LinkStatusCards = ({
 
   const {
     isLoading,
-    isError,
     error,
     data: linksCountByStatus,
   } = useGetLinksCountByStatus();
@@ -45,11 +44,9 @@ export const LinkStatusCards = ({
     );
   }
 
-  if (isError) {
+  if (error) {
     console.error('Error fetching link count data:', error);
-    return (
-      <span>Error: {error?.message ?? 'Failed to load status summary.'}</span>
-    );
+    return <span>Error: {error.message}</span>;
   }
 
   return (
