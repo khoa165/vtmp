@@ -229,7 +229,7 @@ describe('ApplicationController', () => {
 
     runDefaultAuthMiddlewareTests({
       route: `/api/applications/${getNewMongoId()}`,
-      method: HTTPMethod.POST,
+      method: HTTPMethod.GET,
     });
 
     it('should return error message with 400 status code if applicationId param is invalid', async () => {
@@ -680,7 +680,7 @@ describe('ApplicationController', () => {
 
     runDefaultAuthMiddlewareTests({
       route: `/api/applications/count-by-status`,
-      method: HTTPMethod.PUT,
+      method: HTTPMethod.GET,
     });
 
     it('should return correct counts grouped by status for the authorized user', async () => {
