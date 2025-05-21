@@ -22,14 +22,19 @@ import { omit } from 'remeda';
 import { differenceInSeconds } from 'date-fns/fp/differenceInSeconds';
 import { AuthService } from '@/services/auth.service';
 import bcrypt from 'bcryptjs';
+import { getEmailService } from '@/utils/email';
+import { SinonStub } from 'sinon';
 
 describe('InvitationController', () => {
   useMongoDB();
   const sandbox = useSandbox();
   let mockToken: string;
+  let sendEmailStub: SinonStub;
 
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+    const emailService = getEmailService();
+    sendEmailStub = sandbox.stub(emailService, 'sendEmail').resolves();
 
     const encryptedPassword = await bcrypt.hash('test password', 10);
     const mockUser = {
@@ -290,6 +295,7 @@ describe('InvitationController', () => {
         )
       );
       expect(timeDiff).to.lessThan(3);
+      expect(sendEmailStub.calledOnce).to.equal(true);
     });
 
     it('should return newly created invitation when no Pending invitations associated with receiver email exist', async () => {
@@ -310,6 +316,7 @@ describe('InvitationController', () => {
       });
 
       expect(String(res.body.data.sender)).to.equal(mockAdminId);
+      expect(sendEmailStub.calledOnce).to.equal(true);
     });
   });
 
