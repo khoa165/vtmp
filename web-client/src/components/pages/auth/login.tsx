@@ -46,16 +46,22 @@ const LoginPage = () => {
     onError: (error) => {
       console.log('Error in useMutation login', error);
       if (axios.isAxiosError(error) && error.response) {
-        error.response.data.errors.forEach((err: { message: string }) => {
-          if (
-            err.message.toLowerCase().includes('email') ||
-            err.message.toLowerCase().includes('user')
-          ) {
-            setEmailErrors([err.message]);
-          } else if (err.message.toLowerCase().includes('password')) {
-            setPasswordErrors([err.message]);
-          }
-        });
+        setEmailErrors(
+          error.response.data.errors
+            .filter(
+              (err: { message: string }) =>
+                err.message.toLowerCase().includes('email') ||
+                err.message.toLowerCase().includes('user')
+            )
+            .map((err: { message: string }) => err.message)
+        );
+        setPasswordErrors(
+          error.response.data.errors
+            .filter((err: { message: string }) =>
+              err.message.toLowerCase().includes('password')
+            )
+            .map((err: { message: string }) => err.message)
+        );
       } else {
         toast.error('Login failed: Unexpected error occured');
       }
