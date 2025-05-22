@@ -190,6 +190,7 @@ describe('LinkService', () => {
           status: LinkStatus.APPROVED,
         });
         const links = await LinkService.getLinks();
+
         expect(links).to.be.an('array').that.have.lengthOf(3);
         expect(links.map((link) => link.status)).to.deep.equal([
           LinkStatus.APPROVED,
