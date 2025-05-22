@@ -7,13 +7,13 @@ import { Permission } from '@vtmp/common/constants';
 
 export const ApplicationRoutes = Router();
 
-ApplicationRoutes.use(wrappedHandlers([authenticate]));
+ApplicationRoutes.use(
+  wrappedHandlers([authenticate, hasPermission(Permission.MANAGE_APPLICATION)])
+);
+
 ApplicationRoutes.post(
   '/',
-  wrappedHandlers([
-    hasPermission(Permission.MANAGE_APPLICATION),
-    ApplicationController.createApplication,
-  ])
+  wrappedHandlers([ApplicationController.createApplication])
 );
 ApplicationRoutes.get(
   '/',
