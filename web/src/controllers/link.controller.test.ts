@@ -17,7 +17,7 @@ import bcrypt from 'bcryptjs';
 import { AuthService } from '@/services/auth.service';
 import { UserRepository } from '@/repositories/user.repository';
 
-describe.only('LinkController', () => {
+describe('LinkController', () => {
   useMongoDB();
   const sandbox = useSandbox();
 

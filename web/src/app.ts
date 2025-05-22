@@ -6,9 +6,9 @@ import dotenv from 'dotenv';
 import { connectDB } from '@/config/database';
 import routes from '@/routes/index';
 import { routeErrorHandler } from '@/middlewares/utils';
-import mongoSanitize from 'express-mongo-sanitize';
-import rateLimitMiddleware from '@/middlewares/rateLimit.middleware';
+import rateLimitMiddleware from '@/middlewares/rate-limit.middleware';
 import { xss } from 'express-xss-sanitizer';
+import { SanitizeMiddileWare } from '@/middlewares/sanitize.middleware';
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ connectDB();
 
 // Global middlewares
 app.use(cors());
-app.use(mongoSanitize());
+app.use(SanitizeMiddileWare());
 app.use(xss());
 app.use(express.json()); // Parse JSON requests
 app.use(express.urlencoded({ extended: true }));
