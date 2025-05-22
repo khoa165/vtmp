@@ -1,16 +1,9 @@
 import { Request, Response } from 'express';
 import { AuthService } from '@/services/auth.service';
 import { z } from 'zod';
-import { BadRequestError } from '@/utils/errors';
+import { InternalServerError } from '@/utils/errors';
 
-const signupSchema = z
-  .object({
-    firstName: z.string({ required_error: 'Firstname is required' }),
-    lastName: z.string({ required_error: 'Lastname is required' }),
-    email: z
-      .string({ required_error: 'Email is required' })
-      .email({ message: 'Invalid email address' }),
-    password: z
+const passwordSchema = z
       .string({ required_error: 'Password is required' })
       .min(8, { message: 'Password must be between 8 and 20 characters' })
       .max(20, { message: 'Password must be between 8 and 20 characters' })
@@ -55,7 +48,16 @@ const signupSchema = z
           });
           return;
         }
-      }),
+      });
+
+const signupSchema = z
+  .object({
+    firstName: z.string({ required_error: 'Firstname is required' }),
+    lastName: z.string({ required_error: 'Lastname is required' }),
+    email: z
+      .string({ required_error: 'Email is required' })
+      .email({ message: 'Invalid email address' }),
+    password: passwordSchema,
   })
   .strict();
 
@@ -66,60 +68,15 @@ const loginSchema = z.object({
   password: z.string({ required_error: 'Password is required' }),
 });
 
-const forgotPasswordSchema = z.object({
+const requestPasswordResetSchema = z.object({
   email: z
-    .string({ required_error: 'Email is required ' })
-    .email({ message: 'Invalid email address ' }),
+    .string({ required_error: 'Email is required' })
+    .email({ message: 'Invalid email address' }),
 });
 
 const resetPasswordSchema = z.object({
   token: z.string({ required_error: 'Token is required' }),
-  newPassword: z
-    .string({ required_error: 'Password is required' })
-    .min(8, { message: 'Password must be between 8 and 20 characters' })
-    .max(20, { message: 'Password must be between 8 and 20 characters' })
-    .superRefine((password, context) => {
-      const containsUppercase = /[A-Z]/.test(password);
-
-      if (!containsUppercase) {
-        context.addIssue({
-          code: 'custom',
-          message: 'Password requires at least 1 uppercase letter',
-        });
-        return;
-      }
-
-      const containsLowercase = /[a-z]/.test(password);
-
-      if (!containsLowercase) {
-        context.addIssue({
-          code: 'custom',
-          message: 'Password requires at least 1 lowercase letter',
-        });
-        return;
-      }
-
-      const containsSpecialChar = /[`!@#$%^&?]/.test(password);
-
-      if (!containsSpecialChar) {
-        context.addIssue({
-          code: 'custom',
-          message:
-            'Password requires at least 1 special character in [!, @, #, $, %, ^, &, ?]',
-        });
-        return;
-      }
-
-      const containsDigit = /[0-9]/.test(password);
-
-      if (!containsDigit) {
-        context.addIssue({
-          code: 'custom',
-          message: 'Password requires at least 1 digit',
-        });
-        return;
-      }
-    }),
+  newPassword: passwordSchema,
 });
 
 export const AuthController = {
@@ -135,25 +92,27 @@ export const AuthController = {
     res.status(200).json({ data: { token } });
   },
 
-  forgotPassword: async (req: Request, res: Response) => {
-    const validatedBody = forgotPasswordSchema.parse(req.body);
-    await AuthService.forgotPassword(validatedBody);
+  requestPasswordReset: async (req: Request, res: Response) => {
+    const validatedBody = requestPasswordResetSchema.parse(req.body);
+    const reqPasswordReset = await AuthService.requestPasswordReset(validatedBody);
     res.status(200).json({
-      data: {
-        message:
-          'If the account exists with this email, you will receive a password reset link via email',
-      },
+      data: { reqPasswordReset },
+      message: 'If the account exists with this email, you will receive a password reset link via email',
+    
     });
   },
 
   resetPassword: async (req: Request, res: Response) => {
-    const { token } = req.params;
+    const { token, newPassword } = resetPasswordSchema.parse(req.body);
     if (!token) {
-      throw new BadRequestError('Reset token is required');
+      throw new InternalServerError('Reset token is required', {
+        context: 'resetPassword',
+        input: req.body
+      });
     }
-    const validatedBody = resetPasswordSchema.parse(req.body);
-    await AuthService.resetPassword({ token, newPassword: validatedBody.newPassword});
+    const reset = await AuthService.resetPassword({ token, newPassword});
     res.status(200).json({
+      data: { reset },
       message: 'Password has been reset successfully',
     });
   },

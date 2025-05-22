@@ -7,10 +7,10 @@ export const AuthRoutes = Router();
 AuthRoutes.post('/login', wrappedHandlers([AuthController.login]));
 AuthRoutes.post('/signup', wrappedHandlers([AuthController.signup])); // sign up
 AuthRoutes.post(
-  '/forgotpassword',
-  wrappedHandlers([AuthController.forgotPassword])
+  '/request-password-reset',
+  wrappedHandlers([AuthController.requestPasswordReset])
 );
 AuthRoutes.patch(
-  '/resetpassword/:token',
+  '/reset-password',
   wrappedHandlers([AuthController.resetPassword])
 );

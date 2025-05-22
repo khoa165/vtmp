@@ -14,6 +14,8 @@ import {
 import { assert } from 'console';
 import { UserRole } from '@vtmp/common/constants';
 import { expect } from 'chai';
+import { JWTUtils } from '@/utils/jwt';
+import { EmailService } from '@/utils/email';
 
 describe('AuthService', () => {
   useMongoDB();
@@ -119,6 +121,121 @@ describe('AuthService', () => {
       const user = await AuthService.signup(userData);
       assert(user);
       expect(user.role).to.equal(UserRole.USER);
+    });
+  });
+
+  describe('requestPasswordReset', () => {
+    it('should throw error for user not found', async () => {
+      const userData = {
+        email: 'fake@gmail.com',
+      };
+      await expect(
+        AuthService.requestPasswordReset(userData)
+      ).eventually.rejectedWith(ResourceNotFoundError);
+    });
+    it('should send password reset email successfully', async () => {
+      const encryptedPassword = await bcrypt.hash('test password', 10);
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@gmail.com',
+        encryptedPassword,
+      };
+      await UserRepository.createUser(mockUser);
+
+      const sendEmailStub = sandbox
+        .stub(EmailService.prototype, 'sendEmail')
+        .resolves();
+
+      await expect(AuthService.requestPasswordReset({ email: mockUser.email }))
+        .eventually.fulfilled;
+
+      expect(sendEmailStub.calledOnce).to.be.true;
+    });
+  });
+
+  describe('resetPassword', () => {
+    let resetToken: string;
+    let userId: string;
+
+    beforeEach(async () => {
+      const encryptedPassword = await bcrypt.hash('oldpassword', 10);
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'testreset@gmail.com',
+        encryptedPassword,
+      };
+      const user = await UserRepository.createUser(mockUser);
+      userId = user._id.toString();
+
+      resetToken = JWTUtils.createTokenWithPayload(
+        {
+          id: userId,
+          purpose: 'password_reset',
+        },
+        {
+          expiresIn: '10m',
+        }
+      );
+    });
+
+    it('should throw error for invalid token purpose', async () => {
+      const invalidToken = JWTUtils.createTokenWithPayload(
+        { id: userId, purpose: 'login' },
+        { expiresIn: '10m' }
+      );
+      await expect(
+        AuthService.resetPassword({
+          token: invalidToken,
+          newPassword: 'newpassword',
+        })
+      ).eventually.rejectedWith(UnauthorizedError);
+    });
+
+    it('should throw error for expired token', async () => {
+      const expiredToken = JWTUtils.createTokenWithPayload(
+        { id: userId, purpose: 'password_reset' },
+        { expiresIn: '-1s' }
+      );
+      await expect(
+        AuthService.resetPassword({
+          token: expiredToken,
+          newPassword: 'newpassword',
+        })
+      ).eventually.rejectedWith(UnauthorizedError);
+    });
+
+    it('should reset password successfully', async () => {
+      const resetpassData = await AuthService.resetPassword({
+        token: resetToken,
+        newPassword: 'newpassword',
+      });
+      assert(resetpassData);
+      expect(resetpassData.success).to.be.true;
+
+      const updatedUser = await UserRepository.getUserById(userId, {
+        includePasswordField: true,
+      });
+      expect(updatedUser).to.not.be.null;
+      const isPasswordMatch = await bcrypt.compare(
+        'newpassword',
+        updatedUser!.encryptedPassword
+      );
+      expect(isPasswordMatch).to.be.true;
+    });
+
+    it('should throw error for user not found', async () => {
+      const invalidToken = JWTUtils.createTokenWithPayload(
+        { id: 'non_existing_id', purpose: 'password_reset' },
+        { expiresIn: '10m' }
+      );
+      await expect(
+        AuthService.resetPassword({
+          token: invalidToken,
+          newPassword: 'newpassword',
+        })
+      ).eventually.rejectedWith(ResourceNotFoundError);
     });
   });
 });

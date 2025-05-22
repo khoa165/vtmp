@@ -17,3 +17,4 @@ export const JWTUtils = {
     return schema.parse(decoded);
   },
 };
+

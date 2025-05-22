@@ -4,12 +4,9 @@ import {
   DuplicateResourceError,
   UnauthorizedError,
   ResourceNotFoundError,
-  BadRequestError,
-  InternalServerError,
 } from '@/utils/errors';
 import { JWTUtils } from '@/utils/jwt';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
 
 export const AuthService = {
   signup: async ({
@@ -70,46 +67,31 @@ export const AuthService = {
     return token;
   },
 
-  forgotPassword: async ({ email }: { email: string }) => {
+  requestPasswordReset: async ({ email }: { email: string }) => {
     const user = await UserRepository.getUserByEmail(email);
     if (!user) {
       throw new ResourceNotFoundError('User not found', { email });
     }
 
-    if (user.resetTokenExpiry && user.resetToken && user.resetTokenExpiry > new Date()) {
-      await UserRepository.updateUserById(user._id.toString(), {
-        resetToken: undefined,
-        resetTokenExpiry: undefined,
-      });
-    }
+    const resetToken = JWTUtils.createTokenWithPayload(
+      { 
+        id: user._id.toString(),
+        purpose: 'password_reset' 
+      },
+      {
+        expiresIn: '10m',
+      }
+    );
+    
+    console.log(`Password reset token for ${email}: ${resetToken}`);
 
-    const token = crypto.randomBytes(32).toString('hex');
-    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
-    const expiredTime = new Date(Date.now() + 10 * 60 * 1000);
-
-    console.log(`Password reset token for ${email}: ${token}`);
-
-    try {
-      await UserRepository.updateUserById(user._id.toString(), {
-        resetToken: hashedToken,
-        resetTokenExpiry: expiredTime,
-      });
-
-      // send email with reset link
-      const emailService = new EmailService();
-      const emailTemplate = emailService.getPasswordResetTemplate(
-        `${user.firstName} ${user.lastName}`,
-        user.email,
-        token
-      );
-      await emailService.sendEmail(emailTemplate);
-    } catch (error) {
-      await UserRepository.updateUserById(user._id.toString(), {
-        resetToken: undefined,
-        resetTokenExpiry: undefined,
-      });
-      throw new InternalServerError('Failed to send password reset email', { error });
-    }
+    const emailService = new EmailService();
+    const emailTemplate = emailService.getPasswordResetTemplate(
+      `${user.firstName} ${user.lastName}`,
+      user.email,
+      resetToken
+    );
+    await emailService.sendEmail(emailTemplate);
   },
 
   resetPassword: async ({
@@ -119,15 +101,47 @@ export const AuthService = {
     token: string;
     newPassword: string;
   }) => {
-    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
-    const user = await UserRepository.getUserByEmail('', {
+    type ResetTokenPayload = {
+      id: string;
+      purpose: string;
+      exp: number;
+    };
+
+    const decoded = JWTUtils.decodeAndParseToken<ResetTokenPayload>(
+      token, 
+      {
+        parse: (data: unknown) => {
+          const payload = data as ResetTokenPayload;
+          return {
+            id: payload.id,
+            purpose: payload.purpose || '',
+            exp: payload.exp || 0,
+          }
+        }
+      }
+    );
+
+    if (decoded.purpose !== 'password_reset') {
+      throw new UnauthorizedError('Invalid token type for password reset', {
+        context: 'resetPassword',
+        tokenType: decoded.purpose
+      });
+    }
+
+    if (Date.now() >= decoded.exp*1000) {
+      throw new UnauthorizedError('Token expired', { token })
+    }
+
+    const user = await UserRepository.getUserById(decoded.id, {
       includePasswordField: true,
-      resetToken: hashedToken,
     });
 
-    if (!user || !user.resetTokenExpiry || user.resetTokenExpiry < new Date()) {
-      throw new BadRequestError('Invalid or expired token');
+    if (!user) {
+      throw new ResourceNotFoundError('User not found', {
+        userId: decoded.id,
+        context: 'resetPassword'
+      });
     }
 
     const saltRounds = 10;
@@ -135,8 +149,9 @@ export const AuthService = {
 
     await UserRepository.updateUserById(user._id.toString(), {
       encryptedPassword,
-      resetToken: undefined,
-      resetTokenExpiry: undefined,
+      passwordChangedAt: new Date(),
     });
+
+    return { success: true };
   },
 };

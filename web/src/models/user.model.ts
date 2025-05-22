@@ -9,8 +9,8 @@ export interface IUser extends Document {
   encryptedPassword: string;
   role: UserRole;
   deletedAt?: Date;
-  resetToken?: string;
-  resetTokenExpiry?: Date;
+  passwordChangedAt?: Date;
+  
 }
 
 const UserSchema = new mongoose.Schema<IUser>(
@@ -40,12 +40,9 @@ const UserSchema = new mongoose.Schema<IUser>(
     deletedAt: {
       type: Date,
     },
-    resetToken: {
-      type: String,
-    },
-    resetTokenExpiry: {
+    passwordChangedAt: {
       type: Date,
-    },
+    }
   },
   { timestamps: true }
 );
