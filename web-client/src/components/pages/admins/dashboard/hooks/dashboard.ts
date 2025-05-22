@@ -40,7 +40,7 @@ export const useGetDashBoardLinks = (filter?: { status?: LinkStatus }) =>
         url: API_ENDPOINTS.GET_DASHBOARD_LINKS,
         data: filter?.status ? filter : {},
         schema: DashBoardLinksResponseSchema,
-        options: { includeOnlyDataField: true },
+        options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
 
@@ -52,7 +52,7 @@ export const useGetLinksCountByStatus = () =>
         method: Method.GET,
         url: API_ENDPOINTS.GET_LINKS_COUNT_BY_STATUS,
         schema: LinksCountByStatusSchema,
-        options: { includeOnlyDataField: true },
+        options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
 
@@ -72,6 +72,7 @@ export const useApproveDashBoardLink = () => {
         url: API_ENDPOINTS.APPROVE_LINK(linkId),
         data: newUpdate,
         schema: JobPostingResponseSchema,
+        options: { requireAuth: true },
       }),
     onSuccess: (res) => {
       invalidateDashboardQueries(queryClient);
@@ -90,6 +91,7 @@ export const useRejectDashBoardLink = () => {
         method: Method.POST,
         url: API_ENDPOINTS.REJECT_LINK(linkId),
         schema: JobPostingResponseSchema,
+        options: { requireAuth: true },
       }),
     onSuccess: (res) => {
       invalidateDashboardQueries(queryClient);

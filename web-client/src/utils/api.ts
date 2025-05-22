@@ -18,7 +18,9 @@ interface RequestBaseArgs<T> {
 // Define an interface that defines 2 overloads for the request function
 interface IRequest {
   <T extends { data: object }>(
-    args: RequestBaseArgs<T> & { options: { includeOnlyDataField: true } }
+    args: RequestBaseArgs<T> & {
+      options: { includeOnlyDataField: true; requireAuth?: boolean };
+    }
   ): Promise<T['data']>;
 
   <T extends { data: object }>(

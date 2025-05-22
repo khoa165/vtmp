@@ -6,6 +6,7 @@ import { formatStatus } from '@/utils/helpers';
 import { LinkStatus } from '@vtmp/common/constants';
 import { useState } from 'react';
 import { StatusToColorMapping } from '@/utils/constants';
+import { CustomError } from '@/utils/errors';
 
 interface LinkStatusCardsProps {
   setLinksFilter: (filter: { status?: LinkStatus }) => void;
@@ -45,8 +46,7 @@ export const LinkStatusCards = ({
   }
 
   if (error) {
-    console.error('Error fetching link count data:', error);
-    return <span>Error: {error.message}</span>;
+    throw new CustomError('Error fetching links status count');
   }
 
   return (

@@ -8,7 +8,7 @@ import {
 import { Skeleton } from '@/components/base/skeleton';
 import { useMemo } from 'react';
 import { LinkStatus } from '@vtmp/common/constants';
-
+import { CustomError } from '@/utils/errors';
 interface DashBoardContainerProps {
   linksFilter?: { status?: LinkStatus };
 }
@@ -47,12 +47,7 @@ export const DashBoardContainer = ({
   }
 
   if (error) {
-    console.error('Error fetching links data:', error);
-    return (
-      <p className="text-red-500">
-        Failed to load data. Please try again later.
-      </p>
-    );
+    throw new CustomError('Error fetching links data');
   }
 
   if (!linksData || linksData.length === 0) {
