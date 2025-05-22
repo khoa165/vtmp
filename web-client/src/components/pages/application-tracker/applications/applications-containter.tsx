@@ -9,6 +9,7 @@ import { useMemo, useState } from 'react';
 import { SortingState } from '@tanstack/react-table';
 import { Skeleton } from '@/components/base/skeleton';
 import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
+import { CustomError } from '@/utils/errors';
 
 export const ApplicationsContainer = ({
   applicationFilter,
@@ -17,7 +18,6 @@ export const ApplicationsContainer = ({
 }): React.JSX.Element | null => {
   const {
     isLoading,
-    isError,
     error,
     data: applicationsData,
   } = useGetApplications(applicationFilter);
@@ -47,13 +47,8 @@ export const ApplicationsContainer = ({
     );
   }
 
-  if (isError) {
-    // TODO-(QuangMinhNguyen27405/dsmai) : Remove this and add a toast error message. Add react-error-boundary
-    console.error('Error fetching applications data:', error);
-    // return (
-    //   <span>Error: {error.message || 'Failed to load applications data.'}</span>
-    // );
-    return null;
+  if (error) {
+    throw new CustomError('Error fetching applications data');
   }
 
   if (!applicationsData || applicationsData.length === 0) {

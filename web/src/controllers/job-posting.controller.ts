@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { JobPostingService } from '@/services/job-posting.service';
-import { JobPostingLocation } from '@vtmp/common/constants';
+import { JobPostingRegion } from '@vtmp/common/constants';
 import { getUserFromRequest } from '@/middlewares/utils';
 import { parse } from 'date-fns';
 
@@ -21,7 +21,7 @@ const JobPostingUpdateSchema = z
       .string({ invalid_type_error: 'Invalid company name format' })
       .optional(),
     location: z
-      .nativeEnum(JobPostingLocation, {
+      .nativeEnum(JobPostingRegion, {
         invalid_type_error: 'Invalid Location format',
       })
       .optional(),
