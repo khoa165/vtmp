@@ -3,7 +3,7 @@ import { ILink } from '@/models/link.model';
 import { faker } from '@faker-js/faker';
 import {
   CompanyName,
-  JobPostingLocation,
+  JobPostingRegion,
   JobTitle,
 } from '@vtmp/common/constants';
 import { formatEnumName } from '@vtmp/common/utils';
@@ -19,7 +19,7 @@ export const loadJobPostings = async (
     jobTitle: formatEnumName(faker.helpers.enumValue(JobTitle)),
     companyName: formatEnumName(faker.helpers.enumValue(CompanyName)),
     datePosted: faker.date.recent({ days: RECENT_DAYS }),
-    location: faker.helpers.enumValue(JobPostingLocation),
+    location: faker.helpers.enumValue(JobPostingRegion),
   }));
 
   const jobPostings = await JobPostingModel.insertMany(newJobPostings);
