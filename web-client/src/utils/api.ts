@@ -17,20 +17,18 @@ interface RequestBaseArgs<T> {
 
 // Define an interface that defines 2 overloads for the request function
 interface IRequest {
-  <T extends { data: object; message: string }>(
+  <T extends { data: object }>(
     args: RequestBaseArgs<T> & { options: { includeOnlyDataField: true } }
   ): Promise<T['data']>;
 
-  <T extends { data: object; message: string }>(
+  <T extends { data: object }>(
     args: RequestBaseArgs<T> & {
       options?: { includeOnlyDataField?: false | undefined };
     }
   ): Promise<T>;
 }
 
-export const request: IRequest = async <
-  T extends { data: object; message: string },
->({
+export const request: IRequest = async <T extends { data: object }>({
   method,
   url,
   data = {},
