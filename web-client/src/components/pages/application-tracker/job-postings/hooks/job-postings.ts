@@ -51,3 +51,31 @@ export const useCreateApplication = () => {
     },
   });
 };
+
+// export const useFilter = () => {
+//   const queryClient = useQueryClient();
+
+//   return useMutation({
+//     mutationFn: (body: { filter: Object }) =>
+//       request({
+//         method: Method.POST,
+//         url: '/not-applied/filter',
+//         data: body,
+//         schema: ApplicationResponseSchema,
+//       }),
+//     onSuccess: (res) => {
+
+//       toast.success(res.message);
+//     },
+//     onError: (error: unknown) => {
+//       if (axios.isAxiosError(error) && error.response) {
+//         const errorMessages = error.response.data.errors.map(
+//           (err) => err.message
+//         );
+//         toast.error(errorMessages.join('\n'));
+//       } else {
+//         toast.error('Unexpected error');
+//       }
+//     },
+//   });
+// };

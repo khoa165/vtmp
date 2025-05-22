@@ -32,13 +32,13 @@ export const JobPostingService = {
     return JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userId);
   },
 
-  //   getJobPostingsUserHasNotAppliedToWithFilter: async (
-  //     userId: string,
-  //     filter: object
-  //   ) => {
-  //     return JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
-  //       userId,
-  //       filter
-  //     );
-  //   },
+  // getJobPostingsUserHasNotAppliedToWithFilter: async (
+  //   userId: string,
+  //   filter: object
+  // ) => {
+  //   return JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
+  //     userId,
+  //     filter
+  //   );
+  // },
 };

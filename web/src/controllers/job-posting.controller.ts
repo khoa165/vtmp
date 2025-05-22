@@ -61,24 +61,23 @@ export const JobPostingController = {
       data: jobPostings,
     });
   },
+
+  //   getJobPostingsUserHasNotAppliedToWithFilter: async (
+  //     req: Request,
+  //     res: Response
+  //   ) => {
+  //     const userId = getUserFromRequest(req).user.id;
+  //     const filter = filterSchema.parse(req.body);
+
+  //     const jobPostings =
+  //       await JobPostingService.getJobPostingsUserHasNotAppliedToWithFilter(
+  //         userId,
+  //         filter
+  //       );
+
+  //     res.status(200).json({
+  //       message: 'Job postings retrieved successfully',
+  //       data: jobPostings,
+  //     });
+  //   },
 };
-
-//   getJobPostingsUserHasNotAppliedToWithFilter: async (
-//     req: Request,
-//     res: Response
-//   ) => {
-//     const userId = getUserFromRequest(req).user.id;
-//     const filter = filterSchema.parse(req.query);
-
-//     const jobPostings =
-//       await JobPostingService.getJobPostingsUserHasNotAppliedToWithFilter(
-//         userId,
-//         filter
-//       );
-
-//     res.status(200).json({
-//       message: 'Job postings retrieved successfully',
-//       data: jobPostings,
-//     });
-//   },
-// };

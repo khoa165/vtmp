@@ -1,8 +1,8 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 import {
-  Department,
+  // Department,
   JobPostingLocation,
-  OfferType,
+  // OfferType,
 } from '@vtmp/common/constants';
 
 export interface IJobPosting extends Document {
@@ -13,13 +13,22 @@ export interface IJobPosting extends Document {
   jobTitle: string;
   companyName: string;
   location: JobPostingLocation;
-  departmentStatus: Department;
-  type: OfferType;
+  // departmentStatus: Department;
+  // type: OfferType;
   datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
   submittedBy?: Types.ObjectId;
   deletedAt?: Date;
+}
+// extend Document?
+export interface JobFilter {
+  jobTitle?: string;
+  companyName?: string;
+  location?: string;
+  datePosted?: Date;
+  //   type?: string;
+  //   departmentStatus?: string;
 }
 
 const JobPostingSchema = new mongoose.Schema<IJobPosting>(
@@ -49,16 +58,16 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
       enum: Object.values(JobPostingLocation),
       default: JobPostingLocation.US,
     },
-    departmentStatus: {
-      type: String,
-      enum: Object.values(Department),
-      default: Department.SWE,
-    },
-    type: {
-      type: String,
-      enum: Object.values(OfferType),
-      default: OfferType.INTERNSHIP,
-    },
+    // departmentStatus: {
+    //   type: String,
+    //   enum: Object.values(Department),
+    //   default: Department.SWE,
+    // },
+    // type: {
+    //   type: String,
+    //   enum: Object.values(OfferType),
+    //   default: OfferType.INTERNSHIP,
+    // },
     datePosted: {
       type: Date,
     },
@@ -78,6 +87,13 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
   },
   { timestamps: true }
 );
+
+// export const Filter = new mongoose.Schema<JobFilter>({
+//   jobTitle: { type: String },
+//   companyName: { type: String },
+//   location: { type: String },
+//   datePosted: { type: String },
+// });
 
 export const JobPostingModel = mongoose.model<IJobPosting>(
   'JobPosting',
