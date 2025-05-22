@@ -183,10 +183,3 @@ export const StatusToColorMapping: Record<
   [LinkStatus.PENDING]: 'bg-[#A2BFF0]',
   [LinkStatus.APPROVED]: 'bg-[#A3F890]',
 };
-
-export const API_ENDPOINTS = {
-  GET_DASHBOARD_LINKS: '/links',
-  GET_LINKS_COUNT_BY_STATUS: '/links/count-by-status',
-  APPROVE_LINK: `/links/:linkId/approve`,
-  REJECT_LINK: `/links/:linkId/reject`,
-};
