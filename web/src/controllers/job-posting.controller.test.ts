@@ -83,28 +83,6 @@ describe('JobPostingController', () => {
       method: HTTPMethod.PUT,
     });
 
-    it('should return error message for no job posting found', async () => {
-      const res = await request(app)
-        .put(`/api/job-postings/${getNewMongoId()}`)
-        .send(newJobPostingUpdate)
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
-
-      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Job posting not found');
-    });
-
-    it('should return a updated job posting', async () => {
-      const res = await request(app)
-        .put(`/api/job-postings/${jobPostings[0]?.id}`)
-        .send(newJobPostingUpdate)
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
-
-      expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.deep.include(newJobPostingUpdate);
-    });
-
     it('should return 400 for invalid job posting ID format', async () => {
       const res = await request(app)
         .put('/api/job-postings/invalid-id')
@@ -136,37 +114,34 @@ describe('JobPostingController', () => {
         'field is not allowed to update'
       );
     });
-  });
 
-  describe('DELETE /job-postings/:jobId', () => {
-    runDefaultAuthMiddlewareTests({
-      route: `/api/job-postings/${getNewMongoId()}`,
-      method: HTTPMethod.DELETE,
-    });
-
-    it('should return an error message for no job posting found', async () => {
+    it('should return error message for no job posting found', async () => {
       const res = await request(app)
-        .delete(`/api/job-postings/${getNewMongoId()}`)
+        .put(`/api/job-postings/${getNewMongoId()}`)
+        .send(newJobPostingUpdate)
+        .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Job posting not found');
     });
 
-    it('should return a deleted job posting', async () => {
+    it('should return a updated job posting', async () => {
       const res = await request(app)
-        .delete(`/api/job-postings/${jobPostings[0]?.id}`)
+        .put(`/api/job-postings/${jobPostings[0]?.id}`)
+        .send(newJobPostingUpdate)
+        .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.have.property('deletedAt');
+      expect(res.body.data).to.deep.include(newJobPostingUpdate);
+    });
+  });
 
-      const deletedJobPosting = res.body.data;
-      const timeDiff = differenceInSeconds(
-        deletedJobPosting.deletedAt,
-        new Date()
-      );
-      expect(timeDiff).to.lessThan(3);
+  describe('DELETE /job-postings/:jobId', () => {
+    runDefaultAuthMiddlewareTests({
+      route: `/api/job-postings/${getNewMongoId()}`,
+      method: HTTPMethod.DELETE,
     });
 
     it('should return 401 if no auth token is provided', async () => {
@@ -198,6 +173,31 @@ describe('JobPostingController', () => {
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Job posting not found');
+    });
+
+    it('should return an error message for no job posting found', async () => {
+      const res = await request(app)
+        .delete(`/api/job-postings/${getNewMongoId()}`)
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Job posting not found');
+    });
+
+    it('should return a deleted job posting', async () => {
+      const res = await request(app)
+        .delete(`/api/job-postings/${jobPostings[0]?.id}`)
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.have.property('deletedAt');
+
+      const deletedJobPosting = res.body.data;
+      const timeDiff = differenceInSeconds(
+        deletedJobPosting.deletedAt,
+        new Date()
+      );
+      expect(timeDiff).to.lessThan(3);
     });
   });
 
