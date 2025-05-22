@@ -13,6 +13,7 @@ export const JobPostingRepository = {
     const jobPostings = await JobPostingModel.create([jobPostingData], {
       session: session ?? null,
     });
+
     return jobPostings[0];
   },
 
