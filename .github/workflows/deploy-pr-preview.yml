@@ -1,0 +1,98 @@
+name: PR Preview
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  detect-changes:
+    runs-on: ubtuntu latest
+    # outputs:
+    #   backend_changed: ${{ steps.filter.outputs.backend }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine changed folder
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - 'web/**'
+            frontend:
+              - 'web-client/**'
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'yarn'
+
+      - name: Use latest yarn version
+        run: yarn set version stable
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build packages/common
+        run: yarn workspace @vtmp/common build
+
+      - name: Build backend
+        run: yarn workspace @vtmp/web build
+
+      - name: Build frontend
+        run: yarn workspace @vtmp/web-client build
+
+      - name: Deploy backend preview
+        if: steps.changes.outputs.backend == 'true'
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BRANCH_NAME: ${{ github.head_ref }}
+        run: |
+          # Deploy backend preview using Render API
+          curl -X POST https://api.render.com/v1/services \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "type": "web_service",
+              "name": "preview-backend-pr-${PR_NUMBER}",
+              "repo": "https://github.com/${{ github.repository }}",
+              "branch": "${BRANCH_NAME}",
+              "env": "node",
+              "buildCommand": "yarn install",
+              "startCommand": "yarn start"
+            }'
+
+      - name: Deploy frontend preview
+        if: steps.changes.outputs.frontend == 'true'
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BRANCH_NAME: ${{ github.head_ref }}
+        run: |
+          # Determine backend URL
+          if [ "${{ steps.changes.outputs.backend }}" == "true" ]; then
+            BACKEND_URL="https://preview-backend-pr-${PR_NUMBER}.onrender.com"
+          else
+            BACKEND_URL="https://staging-backend.onrender.com"
+          fi
+
+          # Deploy frontend preview using Render API
+          curl -X POST https://api.render.com/v1/services \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "type": "static_site",
+              "name": "preview-frontend-pr-${PR_NUMBER}",
+              "repo": "https://github.com/${{ github.repository }}",
+              "branch": "${BRANCH_NAME}",
+              "buildCommand": "yarn build",
+              "publishPath": "dist",
+              "envVars": [
+                {
+                  "key": "VITE_BACKEND_URL",
+                  "value": "'"$BACKEND_URL"'"
+                }
+              ]
+            }'
