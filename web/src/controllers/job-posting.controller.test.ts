@@ -1,16 +1,12 @@
 import assert from 'assert';
-import bcrypt from 'bcryptjs';
 import request from 'supertest';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
-
 import app from '@/app';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { IJobPosting } from '@/models/job-posting.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
-import { UserRepository } from '@/repositories/user.repository';
-import { AuthService } from '@/services/auth.service';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
