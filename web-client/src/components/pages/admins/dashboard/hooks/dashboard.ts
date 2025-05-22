@@ -9,9 +9,7 @@ import {
   LinksCountByStatusSchema,
 } from '@/components/pages/admins/dashboard/validation';
 import axios from 'axios';
-import { LinkStatus } from '@vtmp/common/constants';
-import { API_ENDPOINTS } from '@/utils/constants';
-import { getEndPointWithId } from '@/utils/helpers';
+import { LinkStatus, API_ENDPOINTS } from '@vtmp/common/constants';
 
 const handleDashBoardMutationError = (error: unknown) => {
   const messages =
@@ -32,12 +30,6 @@ const invalidateDashboardQueries = (
     queryKey: [QueryKey.GET_LINKS_COUNT_BY_STATUS],
   });
 };
-
-const getApproveLinkAPI = (linkId: string) =>
-  getEndPointWithId(API_ENDPOINTS.APPROVE_LINK, linkId);
-
-const getRejectLinkAPI = (linkId: string) =>
-  getEndPointWithId(API_ENDPOINTS.REJECT_LINK, linkId);
 
 export const useGetDashBoardLinks = (filter?: { status?: LinkStatus }) =>
   useQuery({
@@ -77,7 +69,7 @@ export const useApproveDashBoardLink = () => {
     }) =>
       request({
         method: Method.POST,
-        url: getApproveLinkAPI(linkId),
+        url: API_ENDPOINTS.APPROVE_LINK(linkId),
         data: newUpdate,
         schema: JobPostingResponseSchema,
       }),
@@ -96,7 +88,7 @@ export const useRejectDashBoardLink = () => {
     mutationFn: ({ linkId }: { linkId: string }) =>
       request({
         method: Method.POST,
-        url: getRejectLinkAPI(linkId),
+        url: API_ENDPOINTS.REJECT_LINK(linkId),
         schema: JobPostingResponseSchema,
       }),
     onSuccess: (res) => {
