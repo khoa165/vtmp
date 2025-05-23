@@ -19,6 +19,7 @@ import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQuery
 import { Method } from '@/utils/constants';
 import { useMutation } from '@tanstack/react-query';
 import { AuthResponseSchema } from '@/components/pages/auth/validation';
+import { toast } from 'sonner';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +31,12 @@ const LoginPage = () => {
 
   const { mutate: loginFn } = useMutation({
     mutationFn: (body: { email: string; password: string }) =>
-      request(Method.POST, '/auth/login', body, AuthResponseSchema),
+      request({
+        method: Method.POST,
+        url: '/auth/login',
+        data: body,
+        schema: AuthResponseSchema,
+      }),
     onSuccess: (res) => {
       console.log('Login successfully: ', res);
       localStorage.setItem('token', res.data.token);
@@ -40,18 +46,24 @@ const LoginPage = () => {
     onError: (error) => {
       console.log('Error in useMutation login', error);
       if (axios.isAxiosError(error) && error.response) {
-        error.response.data.errors.forEach((err: { message: string }) => {
-          if (
-            err.message.toLowerCase().includes('email') ||
-            err.message.toLowerCase().includes('user')
-          ) {
-            setEmailErrors([err.message]);
-          } else if (err.message.toLowerCase().includes('password')) {
-            setPasswordErrors([err.message]);
-          }
-        });
+        setEmailErrors(
+          error.response.data.errors
+            .filter(
+              (err: { message: string }) =>
+                err.message.toLowerCase().includes('email') ||
+                err.message.toLowerCase().includes('user')
+            )
+            .map((err: { message: string }) => err.message)
+        );
+        setPasswordErrors(
+          error.response.data.errors
+            .filter((err: { message: string }) =>
+              err.message.toLowerCase().includes('password')
+            )
+            .map((err: { message: string }) => err.message)
+        );
       } else {
-        console.log('Unexpected error', error);
+        toast.error('Login failed: Unexpected error occured');
       }
     },
   });
@@ -88,7 +100,7 @@ const LoginPage = () => {
                   </Label>
                   <Input
                     id="email"
-                    placeholder="Enter your email"
+                    placeholder="Email"
                     value={emailInput}
                     onChange={(e) => {
                       setEmailInput(e.target.value);
@@ -104,7 +116,7 @@ const LoginPage = () => {
                   <div className="flex flex-col justify-center relative">
                     <Input
                       id="password"
-                      placeholder="Enter your password"
+                      placeholder="Password"
                       type={showPassword ? 'text' : 'password'}
                       value={passwordInput}
                       onChange={(e) => {
