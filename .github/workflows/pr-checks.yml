@@ -10,13 +10,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - uses: ./.github/actions/common-setups
+      - name: Use common setups action
+        uses: ./.github/actions/common-setups
 
   build-web:
     # needs: build-common
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/actions/common-setups
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/common-setups
       - name: Build web
         run: yarn workspace @vtmp/web build
 
@@ -24,8 +28,10 @@ jobs:
     # needs: build-web
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/actions/common-setups
-
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/common-setups
       - name: Run test
         run: yarn workspace @vtmp/web test
 
@@ -33,8 +39,10 @@ jobs:
     # needs: build-common
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/actions/common-setups
-
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/common-setups
       - name: Build web
         run: yarn workspace @vtmp/web-client build
 
