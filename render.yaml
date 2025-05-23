@@ -4,6 +4,7 @@ services:
     name: vtmp-api-staging
     runtime: node
     repo: https://github.com/khoa165/vtmp
+    branch: main
     plan: free
     envVars:
       - key: MONGO_URI
@@ -33,6 +34,7 @@ services:
     name: vtmp-frontend-staging
     runtime: static
     repo: https://github.com/khoa165/vtmp
+    branch: main
     envVars:
       - key: VITE_API_URL
         sync: false
