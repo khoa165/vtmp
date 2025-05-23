@@ -8,7 +8,7 @@ import {
 } from '@/components/base/card';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LogoMint from '@/assets/images/logo-full-mint.svg?react';
 import { EyeOff, Eye, TriangleAlert } from 'lucide-react';
 import { Check } from 'lucide-react';
@@ -16,10 +16,14 @@ import axios from 'axios';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { useMutation } from '@tanstack/react-query';
 import { request } from '@/utils/api';
-import { AuthResponseSchema } from '@/components/pages/auth/validation';
+import {
+  AuthResponseSchema,
+  InvitationResponseSchema,
+} from '@/components/pages/auth/validation';
 import { Method } from '@/utils/constants';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { useLocation } from 'react-router-dom';
 
 const passwordMessage = [
   '1. Password length is in range 8-20',
@@ -40,6 +44,44 @@ const isPasswordValid = (password: string) =>
   /[0-9]/.test(password);
 
 const SignUpPage = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const token = queryParams.get('token');
+
+  const { mutate: validateTokenFn } = useMutation({
+    mutationFn: (body: { token: string }) =>
+      request({
+        method: Method.POST,
+        url: '/auth/validate',
+        data: body,
+        schema: InvitationResponseSchema,
+      }),
+    onSuccess: (res) => {
+      console.log(res);
+      resetState();
+    },
+    onError: (error) => {
+      if (axios.isAxiosError(error) && error.response) {
+        error.response.data.errors.forEach((err: { message: string }) => {
+          if (err.message.toLocaleLowerCase() === 'Invitation has expired') {
+            toast.error('Invitation has expired');
+          }
+
+          if (err.message.toLocaleLowerCase().includes('jwt')) {
+            toast.error('The Invitation is invalid');
+          }
+        });
+      } else {
+        toast.error('Signup failed: Unexpected error occured');
+      }
+      navigate('/404');
+    },
+  });
+
+  useEffect(() => {
+    validateTokenFn({ token: token ? token : '' });
+  }, []);
+
   const emailInput = 'Email2@viettech.com';
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
