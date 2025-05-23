@@ -28,6 +28,7 @@ export const SubmitLink = () => {
         url: '/links',
         data: body,
         schema: SubmitLinkResponseSchema,
+        options: { requireAuth: true },
       }),
     onSuccess: (res) => {
       console.log('Success in useMutation submitLink');
