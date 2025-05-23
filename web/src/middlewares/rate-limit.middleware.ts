@@ -12,7 +12,7 @@ export const rateLimitMiddleware = () => {
   return [
     slowDown({
       windowMs: 15 * 60 * 1000,
-      delayAfter: 1,
+      delayAfter: 500,
       delayMs: () => 2000,
     }),
 
