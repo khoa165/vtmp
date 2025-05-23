@@ -1,0 +1,59 @@
+# Exported from Render on 2025-05-23T15:02:17Z
+services:
+  - type: web
+    name: vtmp-api-staging
+    runtime: node
+    repo: https://github.com/khoa165/vtmp
+    plan: free
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: VTMP_WEB_URL
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: GMAIL_EMAIL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: PORT
+        sync: false
+    region: oregon
+    buildCommand:
+      yarn install && yarn workspace @vtmp/common build && yarn workspace
+      @vtmp/web build
+    startCommand: yarn workspace @vtmp/web start
+    autoDeployTrigger: commit
+    buildFilter:
+      ignoredPaths:
+        - web-client/**
+
+  - type: web
+    name: vtmp-frontend-staging
+    runtime: static
+    repo: https://github.com/khoa165/vtmp
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+      - key: SKIP_INSTALL_DEPS
+        sync: false
+      - key: NODE_ENV
+        sync: false
+      - key: VITE_VTMP_2023_INTERVIEWS_CSV
+        sync: false
+      - key: VITE_VTMP_2024_INTERVIEWS_CSV
+        sync: false
+      - key: VITE_STATSIG_CLIENT_SDK_KEY
+        sync: false
+    buildCommand:
+      yarn install && yarn workspace @vtmp/common build && yarn workspace
+      @vtmp/web-client build
+    staticPublishPath: ./web-client/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    autoDeployTrigger: commit
+    previews:
+      generation: automatic
+version: '1'
