@@ -3,7 +3,7 @@ import { slowDown } from 'express-slow-down';
 import { NextFunction, Request, Response } from 'express';
 import { handleError } from '@/utils/errors';
 
-const rateLimitMiddleware = () => {
+export const rateLimitMiddleware = () => {
   if (process.env.NODE_ENV === 'test') {
     return (_req: Request, _res: Response, next: NextFunction) => {
       next();
@@ -32,5 +32,3 @@ const rateLimitMiddleware = () => {
     }),
   ];
 };
-
-export default rateLimitMiddleware;
