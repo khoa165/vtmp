@@ -1,10 +1,10 @@
-import { JobPostingMetaData } from '@/services/link/validations';
-import { LinkDeduplicatorRepo } from '@/repositories/link/link-deduplicator.repository';
+import { LinkRepository } from '@/repositories/link.repository';
+import { DuplicateResourceError } from '@/utils/errors';
 export class LinkDeduplicatorService {
-  static async checkDuplicate(metadata: JobPostingMetaData): Promise<void> {
-    const foundLink = await LinkDeduplicatorRepo.findLinkByUrl(metadata.url);
+  static async checkDuplicate(url: string): Promise<void> {
+    const foundLink = await LinkRepository.getLinkByUrl(url);
     if (foundLink) {
-      throw new Error('Duplicate link found');
+      throw new DuplicateResourceError('Duplicate link found', { url });
     }
   }
 }

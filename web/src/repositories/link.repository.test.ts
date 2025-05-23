@@ -203,4 +203,19 @@ describe('LinkRepository', () => {
       });
     });
   });
+
+  describe("getLinkByUrl", () => {
+    it("should be able to get link by url", async () => {
+      const link = await LinkRepository.getLinkByUrl(googleLink.url);
+
+      assert(link);
+      expect(link).to.deep.include(mockLinkData);
+    });
+
+    it("should return null when no link exists with given url", async () => {
+      const link = await LinkRepository.getLinkByUrl("nonexistent.com");
+
+      assert(!link);
+    });
+  })
 });
