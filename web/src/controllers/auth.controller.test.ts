@@ -354,7 +354,7 @@ describe('AuthController', () => {
       );        
     });
   });
-
+  
   describe('PATCH /auth/reset-password', () => {
     let resetToken: string;
     let userId: string;
