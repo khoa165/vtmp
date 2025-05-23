@@ -8,6 +8,8 @@ jobs:
   build-common:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - uses: ./.github/actions/common-setups
 
   build-web:
