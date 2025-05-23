@@ -27,6 +27,7 @@ services:
     buildFilter:
       ignoredPaths:
         - web-client/**
+    healthCheckPath: /health
 
   - type: web
     name: vtmp-frontend-staging
