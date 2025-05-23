@@ -15,10 +15,9 @@ const app: Express = express();
 connectDB();
 
 // Global middlewares
-app.use(cors());
+app.use(cors()); // Enable CORS
 app.use(express.json()); // Parse JSON requests
 app.use(express.urlencoded({ extended: true }));
-app.use(cors()); // Enable CORS
 app.use(helmet()); // Secure HTTP headers
 app.use(morgan('dev')); // Logging HTTP requests
 

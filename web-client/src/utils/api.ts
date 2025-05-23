@@ -2,7 +2,7 @@ import { Method } from '@/utils/constants';
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -18,7 +18,9 @@ interface RequestBaseArgs<T> {
 // Define an interface that defines 2 overloads for the request function
 interface IRequest {
   <T extends { data: object }>(
-    args: RequestBaseArgs<T> & { options: { includeOnlyDataField: true } }
+    args: RequestBaseArgs<T> & {
+      options: { includeOnlyDataField: true; requireAuth?: boolean };
+    }
   ): Promise<T['data']>;
 
   <T extends { data: object }>(
