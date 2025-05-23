@@ -8,11 +8,12 @@ import { LinkService } from '@/services/link.service';
 export class LinkProcessorService {
   static async processLink(rawUrl: string): Promise<void> {
     const validUrl = await LinkValidatorService.validateLink(rawUrl);
-    const normalizedUrl =
-      await LinkNormalizerService.normalizeProcess(validUrl);
     const metaData: JobPostingMetaData =
-      await ExtractMetadataService.extractMetadata(normalizedUrl);
-    await LinkDeduplicatorService.checkDuplicate(metaData);
+      await ExtractMetadataService.extractMetadata(validUrl);
+    const normalizedUrl = await LinkNormalizerService.normalizeProcess(
+      metaData.url
+    );
+    await LinkDeduplicatorService.checkDuplicate(normalizedUrl);
     LinkService.submitLink(rawUrl);
   }
 }
