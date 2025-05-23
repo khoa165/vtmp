@@ -9,9 +9,9 @@ export const InterviewService = {
     applicationId,
     userId,
     type,
-    status,
-    interviewOnDate,
-    note,
+    status = InterviewStatus.PENDING,
+    interviewOnDate = new Date(),
+    note = '',
   }: {
     applicationId: string;
     userId: string;
@@ -24,9 +24,9 @@ export const InterviewService = {
       applicationId,
       userId,
       type,
-      ...(status !== undefined && { status }),
+      status,
       interviewOnDate,
-      ...(note !== undefined && { note }),
+      note,
     });
   },
 
