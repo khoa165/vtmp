@@ -13,7 +13,7 @@ import { IApplication } from '@/models/application.model';
 describe('Interview Repository', () => {
   useMongoDB();
 
-  type MockInterview = {
+  interface MockInterview {
     applicationId: string;
     userId: string;
     type: InterviewType[];
@@ -58,28 +58,26 @@ describe('Interview Repository', () => {
     ];
 
     const [metaJobPosting, googleJobPosting] = await Promise.all(
-      mockJobPostingData.map(
-        (data) =>
-          JobPostingRepository.createJobPosting({
-            jobPostingData: data,
-          }) as Promise<{ id: string }>
+      mockJobPostingData.map((data) =>
+        JobPostingRepository.createJobPosting({
+          jobPostingData: data,
+        })
       )
     );
     assert(metaJobPosting && googleJobPosting, 'Failed to create job postings');
 
     const nestedApplications = await Promise.all(
-      [userId_A, userId_B].map(
-        (userId) =>
-          Promise.all([
-            ApplicationRepository.createApplication({
-              jobPostingId: metaJobPosting.id,
-              userId,
-            }),
-            ApplicationRepository.createApplication({
-              jobPostingId: googleJobPosting.id,
-              userId,
-            }),
-          ]) as Promise<[IApplication, IApplication]>
+      [userId_A, userId_B].map((userId) =>
+        Promise.all([
+          ApplicationRepository.createApplication({
+            jobPostingId: metaJobPosting.id,
+            userId,
+          }),
+          ApplicationRepository.createApplication({
+            jobPostingId: googleJobPosting.id,
+            userId,
+          }),
+        ])
       )
     );
 
