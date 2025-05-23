@@ -279,4 +279,176 @@ describe('JobPostingRepository', () => {
       ).to.have.members([jobPosting3?.id, jobPosting4?.id]);
     });
   });
+
+  describe.only('getJobPostingsUserHasNotAppliedToWithFilter', () => {
+    const userIdA = getNewMongoId();
+    // const userIdB = getNewMongoId();
+    const mockCompanyName = 'Example Company 1';
+    const mockJobTitle = 'Software Engineer 2';
+    let jobPostings: (IJobPosting | undefined)[];
+
+    const mockMultipleJobPostings = [
+      {
+        linkId: getNewObjectId(),
+        url: 'http://example1.com/job-posting',
+        jobTitle: 'Software Engineer 1',
+        companyName: mockCompanyName,
+        submittedBy: getNewObjectId(),
+      },
+      {
+        linkId: getNewObjectId(),
+        url: 'http://example2.com/job-posting',
+        jobTitle: mockJobTitle,
+        companyName: mockCompanyName,
+        submittedBy: getNewObjectId(),
+      },
+      {
+        linkId: getNewObjectId(),
+        url: 'http://example3.com/job-posting',
+        jobTitle: 'Software Engineer 3',
+        companyName: 'Example Company 3',
+        submittedBy: getNewObjectId(),
+      },
+      {
+        linkId: getNewObjectId(),
+        url: 'http://example4.com/job-posting',
+        jobTitle: 'Software Engineer 4',
+        companyName: 'Example Company 4',
+        submittedBy: getNewObjectId(),
+      },
+    ];
+
+    beforeEach(async () => {
+      jobPostings = await Promise.all(
+        mockMultipleJobPostings.map((jobPosting) =>
+          JobPostingRepository.createJobPosting({
+            jobPostingData: jobPosting,
+          })
+        )
+      );
+    });
+
+    it('should return an empty array when the user has already applied to all filtered job postings', async () => {
+      await Promise.all(
+        jobPostings.map((jobPosting) =>
+          ApplicationRepository.createApplication({
+            jobPostingId: jobPosting?.id,
+            userId: userIdA,
+          })
+        )
+      );
+      const jobsNotAppliedByUserA =
+        await JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
+          userIdA,
+          {
+            companyName: mockCompanyName,
+          }
+        );
+
+      expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should return job postings not applied by user that match the filter criteria', async () => {
+      const jobsNotAppliedByUserAWithFilterLocation =
+        await JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
+          userIdA,
+          {
+            companyName: mockCompanyName,
+          }
+        );
+
+      expect(jobsNotAppliedByUserAWithFilterLocation)
+        .to.be.an('array')
+        .that.have.lengthOf(2);
+    });
+
+    it('should return only the job postings not applied by the user and matching the company name filter', async () => {
+      const [jobPosting1, jobPosting2] = jobPostings;
+      const jobsNotAppliedByUserAWithFilterLocation =
+        await JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
+          userIdA,
+          {
+            companyName: mockCompanyName,
+          }
+        );
+
+      expect(jobsNotAppliedByUserAWithFilterLocation)
+        .to.be.an('array')
+        .that.have.lengthOf(2);
+      jobsNotAppliedByUserAWithFilterLocation.forEach((job) => {
+        assert(job);
+      });
+      expect(
+        jobsNotAppliedByUserAWithFilterLocation.map((job) =>
+          job._id?.toString()
+        )
+      ).to.have.members([jobPosting1?.id, jobPosting2?.id]);
+    });
+
+    it('should returns job postings not applied by user after applying to one, matching the filter criteria', async () => {
+      const [jobPosting1] = jobPostings;
+      await ApplicationRepository.createApplication({
+        jobPostingId: jobPosting1?.id,
+        userId: userIdA,
+      });
+      const jobsNotAppliedByUserAWithFilterLocation =
+        await JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
+          userIdA,
+          {
+            companyName: mockCompanyName,
+          }
+        );
+
+      expect(jobsNotAppliedByUserAWithFilterLocation)
+        .to.be.an('array')
+        .that.have.lengthOf(1);
+      assert(jobsNotAppliedByUserAWithFilterLocation[0]);
+      expect(jobsNotAppliedByUserAWithFilterLocation[0].jobTitle).to.equal(
+        mockJobTitle
+      );
+    });
+
+    it('should return empty array when filter by field with no matching postings', async () => {
+      const mockTitle = 'PD';
+      const jobsNotAppliedByUserAWithFilterLocation =
+        await JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
+          userIdA,
+          {
+            jobTitle: mockTitle,
+          }
+        );
+
+      expect(jobsNotAppliedByUserAWithFilterLocation)
+        .to.be.an('array')
+        .that.have.lengthOf(0);
+    });
+
+    it('should return all job postings that user has not applied to. Should not exclude job postings applied by another user', async () => {
+      const [jobPosting1, jobPosting2] = jobPostings;
+      await ApplicationRepository.createApplication({
+        jobPostingId: jobPosting1?.id,
+        userId: userIdA,
+      });
+      // await ApplicationRepository.createApplication({
+      //   jobPostingId: jobPosting2?.id,
+      //   userId: userIdB,
+      // });
+
+      const jobsNotAppliedByUserAWithFilterLocation =
+        await JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
+          userIdA,
+          {
+            companyName: mockCompanyName,
+          }
+        );
+
+      expect(jobsNotAppliedByUserAWithFilterLocation)
+        .to.be.an('array')
+        .that.have.lengthOf(1);
+      assert(jobsNotAppliedByUserAWithFilterLocation[0]);
+      expect(jobsNotAppliedByUserAWithFilterLocation[0]?.id).to.equal(
+        jobPosting2?.id
+      );
+    });
+  });
 });

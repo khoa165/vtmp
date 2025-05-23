@@ -1,15 +1,10 @@
-import { JobPostingModel, IJobPosting } from '@/models/job-posting.model';
+import {
+  JobPostingModel,
+  IJobPosting,
+  JobFilter,
+} from '@/models/job-posting.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
 import { ClientSession } from 'mongoose';
-
-// interface JobFilter {
-//   jobTitle?: string;
-//   companyName?: string;
-//   location?: string;
-//   datePosted?: Date;
-//   type?: string;
-//   departmentStatus?: string;
-// }
 
 export const JobPostingRepository = {
   createJobPosting: async ({
@@ -83,57 +78,53 @@ export const JobPostingRepository = {
     ]);
   },
 
-  //   getJobPostingsUserHasNotAppliedToWithFilter: async (
-  //     userId: string,
-  //     filter: JobFilter
-  //   ): Promise<IJobPosting[]> => {
-  //     // declare it's a string-keyed object
-  //     const dynamicMatch: Record<string, any> = {
-  //       deletedAt: null,
-  //     };
+  getJobPostingsUserHasNotAppliedToWithFilter: async (
+    userId: string,
+    filter: JobFilter
+  ): Promise<IJobPosting[]> => {
+    // declare it's a string-keyed object
+    const dynamicMatch: Record<string, unknown> = {};
 
-  //     if (filter.jobTitle) dynamicMatch.jobTitle = filter.jobTitle;
-  //     if (filter.companyName) dynamicMatch.companyName = filter.companyName;
-  //     if (filter.location) dynamicMatch.location = filter.location;
-  //     if (filter.datePosted)
-  //       dynamicMatch.datePosted = { $gte: filter.datePosted };
-  //     if (filter.type) dynamicMatch.type = filter.type;
-  //     if (filter.departmentStatus) dynamicMatch.type = filter.departmentStatus;
+    if (filter.jobTitle) dynamicMatch.jobTitle = filter.jobTitle;
+    if (filter.companyName) dynamicMatch.companyName = filter.companyName;
+    if (filter.location) dynamicMatch.location = filter.location;
+    if (filter.datePosted)
+      dynamicMatch.datePosted = { $gte: filter.datePosted };
 
-  //     return JobPostingModel.aggregate([
-  //       {
-  //         // Perform a filtered join between JobPosting and Application collection
-  //         $lookup: {
-  //           from: 'applications',
-  //           let: { jobId: '$_id' },
-  //           pipeline: [
-  //             {
-  //               $match: {
-  //                 $expr: {
-  //                   $and: [
-  //                     { $eq: ['$jobPostingId', '$$jobId'] },
-  //                     { $eq: ['$userId', toMongoId(userId)] },
-  //                     { $eq: ['$deletedAt', null] },
-  //                   ],
-  //                 },
-  //               },
-  //             },
-  //           ],
-  //           as: 'userApplication',
-  //         },
-  //       },
-  //       {
-  //         $match: {
-  //           dynamicMatch,
-  //           userApplication: { $size: 0 },
-  //           deletedAt: null,
-  //         },
-  //       },
-  //       {
-  //         $project: {
-  //           userApplication: 0,
-  //         },
-  //       },
-  //     ]);
-  //   },
+    return JobPostingModel.aggregate([
+      {
+        // Perform a filtered join between JobPosting and Application collection
+        $lookup: {
+          from: 'applications',
+          let: { jobId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$jobPostingId', '$$jobId'] },
+                    { $eq: ['$userId', toMongoId(userId)] },
+                    { $eq: ['$deletedAt', null] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: 'userApplication',
+        },
+      },
+      {
+        $match: {
+          ...dynamicMatch,
+          userApplication: { $size: 0 },
+          deletedAt: null,
+        },
+      },
+      {
+        $project: {
+          userApplication: 0,
+        },
+      },
+    ]);
+  },
 };
