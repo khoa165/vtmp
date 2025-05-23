@@ -14,7 +14,7 @@ export const useGetJobPostings = () => {
         method: Method.GET,
         url: '/job-postings/not-applied',
         schema: JobPostingsResponseSchema,
-        options: { includeOnlyDataField: true },
+        options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
 };
@@ -29,6 +29,7 @@ export const useCreateApplication = () => {
         url: '/applications',
         data: body,
         schema: ApplicationResponseSchema,
+        options: { requireAuth: true },
       }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
