@@ -19,6 +19,7 @@ import { request } from '@/utils/api';
 import { AuthResponseSchema } from '@/components/pages/auth/validation';
 import { Method } from '@/utils/constants';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const passwordMessage = [
   '1. Password length is in range 8-20',
@@ -85,8 +86,10 @@ const SignUpPage = () => {
       }),
     onSuccess: (res) => {
       console.log(res);
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
       resetState();
-      navigate('/');
+      navigate('/application-tracker');
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response) {
@@ -105,7 +108,7 @@ const SignUpPage = () => {
           }
         });
       } else {
-        console.log('Unexpected error', error);
+        toast.error('Signup failed: Unexpected error occured');
       }
     },
   });
