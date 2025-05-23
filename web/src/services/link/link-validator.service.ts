@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class */
 export class LinkValidatorService {
   private static async resolveRedirects(rawUrl: string): Promise<string> {
     return Promise.resolve(rawUrl);

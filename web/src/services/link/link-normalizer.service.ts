@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class */
 export class LinkNormalizerService {
   private static isValidFormat(url: string): void {
     console.log(url);

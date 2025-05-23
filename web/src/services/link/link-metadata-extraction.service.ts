@@ -1,6 +1,5 @@
 import { JobPostingRegion } from '@vtmp/common/constants';
 import { JobPostingMetaData } from '@/services/link/validations';
-/* eslint-disable @typescript-eslint/no-extraneous-class */
 export class ExtractMetadataService {
   static async extractMetadata(url: string): Promise<JobPostingMetaData> {
     return Promise.resolve({
