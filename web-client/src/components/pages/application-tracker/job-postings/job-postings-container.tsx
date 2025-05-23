@@ -24,9 +24,6 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
     [createApplicationFn]
   );
 
-  // const [filter, setFilter] = useState('');
-  // const [data, setData] = useState('');
-
   if (isLoading) {
     return (
       <>
