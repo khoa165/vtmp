@@ -31,14 +31,4 @@ export const JobPostingService = {
   getJobPostingsUserHasNotAppliedTo: async (userId: string) => {
     return JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userId);
   },
-
-  // getJobPostingsUserHasNotAppliedToWithFilter: async (
-  //   userId: string,
-  //   filter: object
-  // ) => {
-  //   return JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
-  //     userId,
-  //     filter
-  //   );
-  // },
 };

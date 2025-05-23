@@ -20,12 +20,6 @@ const JobIdSchema = z.object({
   jobId: z.string(),
 });
 
-// const filterSchema = z.object({
-//   jobTitle: z.string().optional(),
-//   companyName: z.string().optional(),
-//   location: z.string().optional(),
-//   datePosted: z.coerce.date().optional(),
-// });
 export const JobPostingController = {
   updateJobPosting: async (req: Request, res: Response) => {
     const { jobId } = JobIdSchema.parse(req.params);
@@ -61,23 +55,4 @@ export const JobPostingController = {
       data: jobPostings,
     });
   },
-
-  //   getJobPostingsUserHasNotAppliedToWithFilter: async (
-  //     req: Request,
-  //     res: Response
-  //   ) => {
-  //     const userId = getUserFromRequest(req).user.id;
-  //     const filter = filterSchema.parse(req.body);
-
-  //     const jobPostings =
-  //       await JobPostingService.getJobPostingsUserHasNotAppliedToWithFilter(
-  //         userId,
-  //         filter
-  //       );
-
-  //     res.status(200).json({
-  //       message: 'Job postings retrieved successfully',
-  //       data: jobPostings,
-  //     });
-  //   },
 };

@@ -1,9 +1,5 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import {
-  // Department,
-  JobPostingLocation,
-  // OfferType,
-} from '@vtmp/common/constants';
+import { JobPostingLocation } from '@vtmp/common/constants';
 
 export interface IJobPosting extends Document {
   _id: Types.ObjectId;
@@ -13,15 +9,13 @@ export interface IJobPosting extends Document {
   jobTitle: string;
   companyName: string;
   location: JobPostingLocation;
-  // departmentStatus: Department;
-  // type: OfferType;
   datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
   submittedBy?: Types.ObjectId;
   deletedAt?: Date;
 }
-// extend Document?
+
 export interface JobFilter {
   jobTitle?: string;
   companyName?: string;
