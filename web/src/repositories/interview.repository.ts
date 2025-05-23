@@ -7,9 +7,9 @@ export const InterviewRepository = {
     applicationId,
     userId,
     type,
-    status,
-    interviewOnDate,
-    note,
+    status = InterviewStatus.PENDING,
+    interviewOnDate = new Date(),
+    note = '',
   }: {
     applicationId: string;
     userId: string;
