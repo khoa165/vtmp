@@ -23,7 +23,7 @@ services:
       yarn install && yarn workspace @vtmp/common build && yarn workspace
       @vtmp/web build
     startCommand: yarn workspace @vtmp/web start
-    autoDeployTrigger: checksPass
+    autoDeployTrigger: commit
     buildFilter:
       ignoredPaths:
         - web-client/**
