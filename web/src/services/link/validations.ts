@@ -1,6 +1,6 @@
 import { JobPostingRegion } from '@vtmp/common/constants';
 export type JobPostingMetaData = {
-  url?: string;
+  url: string;
   jobTitle?: string;
   companyName?: string;
   location?: JobPostingRegion;
