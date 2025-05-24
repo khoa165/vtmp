@@ -5,7 +5,14 @@ import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 import { ResourceNotFoundError } from '@/utils/errors';
 
 export const InterviewService = {
-  createInterview: async (interviewData: {
+  createInterview: async ({
+    applicationId,
+    userId,
+    type,
+    status = InterviewStatus.PENDING,
+    interviewOnDate = new Date(),
+    note = '',
+  }: {
     applicationId: string;
     userId: string;
     type: InterviewType[];
@@ -13,7 +20,14 @@ export const InterviewService = {
     interviewOnDate: Date;
     note?: string;
   }): Promise<IInterview> => {
-    return InterviewRepository.createInterview(interviewData);
+    return InterviewRepository.createInterview({
+      applicationId,
+      userId,
+      type,
+      status,
+      interviewOnDate,
+      note,
+    });
   },
 
   getInterviewById: async ({
