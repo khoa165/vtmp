@@ -4,15 +4,19 @@ import { IUser } from '@/models/user.model';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 import { faker } from '@faker-js/faker';
 
-export const loadApplications = async (
-  users: IUser[],
-  jobPostings: IJobPosting[]
-): Promise<IApplication[]> => {
+export const loadApplications = async ({
+  users,
+  jobPostings,
+  minApplicationsCountPerUser,
+  maxApplicationsCountPerUser,
+}: {
+  users: IUser[];
+  jobPostings: IJobPosting[];
+  minApplicationsCountPerUser: number;
+  maxApplicationsCountPerUser: number;
+}): Promise<IApplication[]> => {
   const MAX_DAYS_FROM_REF_DATE = 30;
-  const MIN_JOB_POSTINGS_RATIO = 0.5;
-  const MAX_JOB_POSTINGS_RATIO = 1.0;
   const allApplications: Partial<IApplication>[] = [];
-  const numJobPostings: number = jobPostings.length;
 
   const formatPortalLink = (companyName: string): string => {
     const formattedName = companyName.toLowerCase().replace(/\s+/g, '');
@@ -37,8 +41,8 @@ export const loadApplications = async (
 
   for (const user of users) {
     const randomShuffledJobPostings = faker.helpers.arrayElements(jobPostings, {
-      min: Math.floor(numJobPostings * MIN_JOB_POSTINGS_RATIO),
-      max: Math.floor(numJobPostings * MAX_JOB_POSTINGS_RATIO),
+      min: Math.min(minApplicationsCountPerUser, jobPostings.length),
+      max: Math.min(maxApplicationsCountPerUser, jobPostings.length),
     });
     for (const jobPosting of randomShuffledJobPostings) {
       allApplications.push(generateApplicationData(user, jobPosting));
@@ -48,6 +52,6 @@ export const loadApplications = async (
   const applications = await Promise.all(
     allApplications.map((app) => ApplicationModel.create(app))
   );
-  console.log(`Successfully seeded ${allApplications.length} applications.`);
+  console.log(`Successfully seeded ${applications.length} applications.`);
   return applications;
 };

@@ -69,7 +69,7 @@ export function ApplicationsTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex items-center justify-between py-4">
+      <section className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter companies..."
           value={table.getColumn('companyName')?.getFilterValue() as string}
@@ -80,7 +80,10 @@ export function ApplicationsTable<TData, TValue>({
         />
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Button variant="outline" className="ml-auto">
+            <Button
+              variant="outline"
+              className="ml-auto text-foreground hover:text-background hover:bg-foreground"
+            >
               Columns <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
@@ -104,8 +107,8 @@ export function ApplicationsTable<TData, TValue>({
               })}
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
-      <div className="rounded-md overflow-hidden border border-foreground">
+      </section>
+      <section className="rounded-md overflow-hidden border border-foreground">
         <Table>
           <TableHeader className="bg-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -155,13 +158,14 @@ export function ApplicationsTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      </section>
+      <section className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          className="text-foreground hover:text-background hover:bg-foreground"
         >
           Previous
         </Button>
@@ -170,10 +174,11 @@ export function ApplicationsTable<TData, TValue>({
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
+          className="text-foreground hover:text-background hover:bg-foreground"
         >
           Next
         </Button>
-      </div>
+      </section>
     </>
   );
 }
