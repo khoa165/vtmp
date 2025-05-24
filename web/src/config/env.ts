@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
+import { ENVIRONMENT } from '@/constants/enums';
 
 dotenv.config();
 
@@ -10,6 +11,7 @@ const configSchema = z.object({
   GMAIL_EMAIL: z.string(),
   GMAIL_APP_PASSWORD: z.string(),
   VTMP_WEB_URL: z.string(),
+  SEED_ENV: z.nativeEnum(ENVIRONMENT).default(ENVIRONMENT.DEV),
 });
 
 export const EnvConfig = {
