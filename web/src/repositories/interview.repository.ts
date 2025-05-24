@@ -14,9 +14,9 @@ export const InterviewRepository = {
     applicationId: string;
     userId: string;
     type: InterviewType[];
-    status?: InterviewStatus | undefined;
+    status?: InterviewStatus;
     interviewOnDate: Date;
-    note?: string | undefined;
+    note?: string;
   }): Promise<IInterview> => {
     return InterviewModel.create({
       applicationId,
@@ -72,10 +72,10 @@ export const InterviewRepository = {
     interviewId: string;
     userId: string;
     updatedMetadata: {
-      type?: InterviewType[] | undefined;
-      status?: InterviewStatus | undefined;
-      interviewOnDate?: Date | undefined;
-      note?: string | undefined;
+      type?: InterviewType[];
+      status?: InterviewStatus;
+      interviewOnDate?: Date;
+      note?: string;
     };
   }): Promise<IInterview | null> => {
     return InterviewModel.findOneAndUpdate(

@@ -16,9 +16,9 @@ export const InterviewService = {
     applicationId: string;
     userId: string;
     type: InterviewType[];
-    status?: InterviewStatus | undefined;
+    status?: InterviewStatus;
     interviewOnDate: Date;
-    note?: string | undefined;
+    note?: string;
   }): Promise<IInterview> => {
     return InterviewRepository.createInterview({
       applicationId,
@@ -73,10 +73,10 @@ export const InterviewService = {
     interviewId: string;
     userId: string;
     updatedMetadata: {
-      type?: InterviewType[] | undefined;
-      status?: InterviewStatus | undefined;
-      interviewOnDate?: Date | undefined;
-      note?: string | undefined;
+      type?: InterviewType[];
+      status?: InterviewStatus;
+      interviewOnDate?: Date;
+      note?: string;
     };
   }): Promise<IInterview | null> => {
     const updatedInterview = await InterviewRepository.updateInterviewById({
