@@ -160,7 +160,7 @@ describe('InterviewController', () => {
       applicationId: metaApplication_A.id,
       userId: userId_A,
       type: [InterviewType.CODE_REVIEW],
-      interviewOnDate: new Date('2025-06-07'),
+      interviewOnDate: new Date('2025-07-07'),
       note: 'Good job',
     };
 
@@ -175,9 +175,9 @@ describe('InterviewController', () => {
     mockInterview_B1 = {
       applicationId: metaApplication_B.id,
       userId: userId_B,
-      type: [InterviewType.CODE_REVIEW],
+      type: [InterviewType.PROJECT_WALKTHROUGH],
       interviewOnDate: new Date('2025-06-07'),
-      status: InterviewStatus.PENDING,
+      status: InterviewStatus.PASSED,
     };
   });
 
@@ -264,6 +264,7 @@ describe('InterviewController', () => {
         .get(endpoint(interview.id))
         .set('Authorization', `Bearer ${mockToken_B}`);
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Interview not found');
     });
 
     it('should return interview with the given interviewId that belongs to the authorized user', async () => {
@@ -301,7 +302,7 @@ describe('InterviewController', () => {
       expect(res.body.errors[0].message).to.equal('Forbidden');
     });
 
-    it('returns all interviews (no filter)', async () => {
+    it('returns all interviews when no filter is applied', async () => {
       const interviews = await Promise.all(
         [mockInterview_A0, mockInterview_A1, mockInterview_B0].map(
           (mockInterview) => InterviewRepository.createInterview(mockInterview)
@@ -316,7 +317,7 @@ describe('InterviewController', () => {
       expect(returnedIds).to.have.members(interviews.map((i) => i.id));
     });
 
-    it('should not return soft-deleted interviews (no filter)', async () => {
+    it('should not return soft-deleted interviews when no filter is applied', async () => {
       const [interview_A0, interview_A1, interview_B0] = await Promise.all(
         [mockInterview_A0, mockInterview_A1, mockInterview_B0].map(
           (mockInterview) => InterviewRepository.createInterview(mockInterview)
@@ -372,7 +373,7 @@ describe('InterviewController', () => {
 
     it('should return interviews that have the provided applicationId', async () => {
       const [interview_A0, interview_A2] = await Promise.all(
-        [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
+        [mockInterview_A0, mockInterview_A2, mockInterview_A1].map(
           (mockInterview) => InterviewRepository.createInterview(mockInterview)
         )
       );
@@ -392,6 +393,8 @@ describe('InterviewController', () => {
     const endpoint = (name: string) =>
       `/api/interviews/by-company/?companyName=${name}`;
 
+    const companyName = 'Meta';
+
     it('should return error message with status code 400 if query.companyName missing', async () => {
       await InterviewRepository.createInterview(mockInterview_A0);
 
@@ -404,17 +407,18 @@ describe('InterviewController', () => {
 
     it('should return an empty array if no interviews found', async () => {
       const res = await request(app)
-        .get(endpoint('Meta'))
+        .get(endpoint(companyName))
         .set('Authorization', `Bearer ${mockToken_A}`);
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
     });
 
     it('should return interviews with the given companyName', async () => {
-      const [interview_A0, interview_A2] = await Promise.all(
+      const [interview_A0, interview_A2, interview_B1] = await Promise.all(
         [
           mockInterview_A0,
           mockInterview_A2,
+          mockInterview_B1,
           mockInterview_A1,
           mockInterview_B0,
         ].map((mockInterview) =>
@@ -422,13 +426,19 @@ describe('InterviewController', () => {
         )
       );
 
-      assert(interview_A0 && interview_A2, 'Failed to create interviews');
+      assert(
+        interview_A0 && interview_A2 && interview_B1,
+        'Failed to create interviews'
+      );
 
       const res = await request(app)
-        .get(endpoint('Meta'))
+        .get(endpoint(companyName))
         .set('Authorization', `Bearer ${mockToken_B}`);
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(2);
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(3);
+      expect(
+        res.body.data.map((interview: IInterview) => interview._id)
+      ).to.have.members([interview_A0.id, interview_A2.id, interview_B1.id]);
     });
   });
 
@@ -450,6 +460,7 @@ describe('InterviewController', () => {
         .set('Authorization', `Bearer ${mockToken_A}`)
         .send({ note: 'update' });
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Interview not found');
     });
 
     it('should return an error message with status code 404 if the interview does not belong to the authorized user', async () => {
@@ -461,6 +472,7 @@ describe('InterviewController', () => {
         .set('Authorization', `Bearer ${mockToken_B}`)
         .send({ note: 'update' });
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Interview not found');
     });
 
     it('should return the successfully updated interview object', async () => {

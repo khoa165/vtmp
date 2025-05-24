@@ -31,7 +31,7 @@ const InterviewCreateSchema = z
     interviewOnDate: z
       .string({ required_error: 'Interview date is required' })
       .refine((str) => !isNaN(Date.parse(str)), {
-        message: 'Interview date is required',
+        message: 'Interview valid date format',
       })
       .transform((str) => new Date(str)),
     note: z.string().optional(),
