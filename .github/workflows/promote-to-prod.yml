@@ -1,4 +1,0 @@
-name: Promote Staging to Production
-
-on:
-  schedule:
