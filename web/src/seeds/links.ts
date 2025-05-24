@@ -7,6 +7,6 @@ export const loadLinks = async (count: number): Promise<ILink[]> => {
   }));
 
   const links = await LinkModel.insertMany(newLinks);
-  console.log(`Successfully seeded ${count} links.`);
+  console.log(`Successfully seeded ${links.length} links.`);
   return links;
 };
