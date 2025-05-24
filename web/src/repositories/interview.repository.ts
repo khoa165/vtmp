@@ -3,14 +3,7 @@ import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 import { ClientSession, UpdateResult } from 'mongoose';
 
 export const InterviewRepository = {
-  createInterview: async ({
-    applicationId,
-    userId,
-    type,
-    status = InterviewStatus.PENDING,
-    interviewOnDate = new Date(),
-    note = '',
-  }: {
+  createInterview: async (interviewData: {
     applicationId: string;
     userId: string;
     type: InterviewType[];
@@ -19,12 +12,7 @@ export const InterviewRepository = {
     note?: string;
   }): Promise<IInterview> => {
     return InterviewModel.create({
-      applicationId,
-      userId,
-      type,
-      status,
-      interviewOnDate,
-      note,
+      interviewData,
     });
   },
 
