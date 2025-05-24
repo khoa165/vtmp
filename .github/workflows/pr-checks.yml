@@ -72,31 +72,3 @@ jobs:
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           workingDir: web-client
-
-  deploy-backend-staging:
-    runs-on: ubuntu-latest
-    needs: [test-web]
-    steps:
-      - name: Deploy backend
-        uses: johnbeynon/render-deploy-action@v0.0.8
-        with:
-          # service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
-          # api-key: ${{ secrets.MY_RENDER_API_KEY }}
-          # wait-for-success: true
-          service-id: srv-d0gh4j49c44c73fijrhg
-          api-key: rnd_HXEigZ7BFAmtWIY16itxhqpJ13u9
-          wait-for-success: true
-
-  deploy-frontend-staging:
-    runs-on: ubuntu-latest
-    needs: [build-web-client]
-    steps:
-      - name: Deploy frontend
-        uses: johnbeynon/render-deploy-action@v0.0.8
-        with:
-          # service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
-          # api-key: ${{ secrets.MY_RENDER_API_KEY }}
-          # wait-for-success: true
-          service-id: srv-d0gh6hre5dus73acuv9g
-          api-key: rnd_HXEigZ7BFAmtWIY16itxhqpJ13u9
-          wait-for-success: true

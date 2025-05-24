@@ -2,6 +2,35 @@ name: Deploy to Staging
 
 on:
   push:
-    branches: main
+    branches:
+      - main
 
-job:
+jobs:
+  test-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/common-setups
+      - name: Run test
+        run: yarn workspace @vtmp/web test
+
+  deploy-backend-staging:
+    needs: [test-web]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy backend
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.RENDER_BACKEND_STAGING_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
+
+  deploy-frontend-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy frontend
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.RENDER_FRONTEND_STAGING_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
