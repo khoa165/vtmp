@@ -14,7 +14,6 @@ jobs:
         uses: ./.github/actions/common-setups
 
   build-web:
-    # needs: build-common
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -25,7 +24,6 @@ jobs:
         run: yarn workspace @vtmp/web build
 
   test-web:
-    # needs: build-web
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -36,7 +34,6 @@ jobs:
         run: yarn workspace @vtmp/web test
 
   build-web-client:
-    # needs: build-common
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -47,7 +44,6 @@ jobs:
         run: yarn workspace @vtmp/web-client build
 
   chromatic:
-    # needs: build-web-client
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
