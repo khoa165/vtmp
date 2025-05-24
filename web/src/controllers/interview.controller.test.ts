@@ -24,6 +24,7 @@ import { IInterview } from '@/models/interview.model';
 import { IApplication } from '@/models/application.model';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ApplicationRepository } from '@/repositories/application.repository';
+import { omit } from 'remeda';
 
 describe('InterviewController', () => {
   useMongoDB();
@@ -187,6 +188,7 @@ describe('InterviewController', () => {
       const res = await request(app)
         .post(url)
         .set('Authorization', `Bearer ${mockToken_A}`)
+        .set('Accept', 'application/json')
         .send({});
       expectErrorsArray({ res, statusCode: 400, errorsCount: 3 });
       expect(res.body.errors).to.deep.include.members([
@@ -200,6 +202,7 @@ describe('InterviewController', () => {
       const res = await request(app)
         .post(url)
         .set('Authorization', `Bearer ${mockToken_A}`)
+        .set('Accept', 'application/json')
         .send({
           applicationId: 'not-an-valid-id',
           type: [InterviewType.CODE_REVIEW],
@@ -215,7 +218,8 @@ describe('InterviewController', () => {
       const res = await request(app)
         .post(url)
         .set('Authorization', `Bearer ${mockToken_A}`)
-        .send(mockInterview_A2);
+        .set('Accept', 'application/json')
+        .send(omit(mockInterview_A2, ['userId']));
 
       expectSuccessfulResponse({ res, statusCode: 201 });
       expect(res.body.data).to.deep.include({

@@ -6,55 +6,76 @@ import { InterviewService } from '@/services/interview.service';
 import { getUserFromRequest } from '@/middlewares/utils';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 
-const InterviewIdParamsSchema = z.object({
-  interviewId: z
-    .string({ required_error: 'Interview ID is required' })
-    .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: 'Invalid interview ID format',
-    }),
-});
+const InterviewIdParamsSchema = z
+  .object({
+    interviewId: z
+      .string({ required_error: 'Interview ID is required' })
+      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: 'Invalid interview ID format',
+      }),
+  })
+  .strict();
 
-const InterviewCreateSchema = z.object({
-  applicationId: z
-    .string({ required_error: 'Application ID is required' })
-    .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: 'Invalid application ID format',
+const InterviewCreateSchema = z
+  .object({
+    applicationId: z
+      .string({ required_error: 'Application ID is required' })
+      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: 'Invalid application ID format',
+      }),
+    type: z.array(z.nativeEnum(InterviewType), {
+      required_error: 'Interview type is required',
+      invalid_type_error: 'Invalid interview type format',
     }),
-  type: z.array(z.nativeEnum(InterviewType), {
-    required_error: 'Interview type is required',
-    invalid_type_error: 'Invalid interview type format',
-  }),
-  status: z.nativeEnum(InterviewStatus).optional(),
-  interviewOnDate: z
-    .string({ required_error: 'Interview date is required' })
-    .refine((str) => !isNaN(Date.parse(str)), {
-      message: 'Interview date is required',
-    })
-    .transform((str) => new Date(str)),
-  note: z.string().optional(),
-});
+    status: z.nativeEnum(InterviewStatus).optional(),
+    interviewOnDate: z
+      .string({ required_error: 'Interview date is required' })
+      .refine((str) => !isNaN(Date.parse(str)), {
+        message: 'Interview date is required',
+      })
+      .transform((str) => new Date(str)),
+    note: z.string().optional(),
+  })
+  .strict();
 
-const InterviewUpdateSchema = z.object({
-  type: z.array(z.nativeEnum(InterviewType)).optional(),
-  status: z.nativeEnum(InterviewStatus).optional(),
-  interviewOnDate: z.coerce.date().optional(),
-  note: z.string().optional(),
-});
+const InterviewUpdateSchema = z
+  .object({
+    type: z.array(z.nativeEnum(InterviewType)).optional(),
+    status: z.nativeEnum(InterviewStatus).optional(),
+    interviewOnDate: z.coerce.date().optional(),
+    note: z.string().optional(),
+  })
+  .strict()
+  .transform((data: object) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
+  );
 
-const InterviewApplicationFilter = z.object({
-  applicationId: z
-    .string()
-    .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-      message: 'Invalid application ID format',
-    }),
-});
+const InterviewApplicationFilter = z
+  .object({
+    applicationId: z
+      .string()
+      .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+        message: 'Invalid application ID format',
+      }),
+  })
+  .strict()
+  .transform((data: object) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
+  );
 
 const InterviewCompanyFilter = z
   .object({
     companyName: z.string({ required_error: 'Company Name is required' }),
   })
-  .transform((data) =>
-    Object.fromEntries(Object.entries(data).filter(([, v]) => v != undefined))
+  .strict()
+  .transform((data: object) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
   );
 
 const AdminInterviewFilter = z
@@ -73,8 +94,10 @@ const AdminInterviewFilter = z
       .optional(),
     companyName: z.string().optional(),
   })
-  .transform((data) =>
-    Object.fromEntries(Object.entries(data).filter(([, v]) => v != undefined))
+  .transform((data: object) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
   );
 
 export const InterviewController = {
