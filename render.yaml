@@ -1,0 +1,30 @@
+# Exported from Render on 2025-05-25T03:55:52Z
+services:
+  - type: web
+    name: vtmp
+    runtime: docker
+    repo: https://github.com/khoa165/vtmp
+    branch: dson/docker-web
+    plan: free
+    envVars:
+      - key: VTMP_WEB_URL
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: GMAIL_EMAIL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: PORT
+        sync: false
+      - key: MONGO_URI
+        sync: false
+    region: oregon
+    healthCheckPath: /health
+    dockerContext: .
+    dockerfilePath: ./web/Dockerfile
+    autoDeployTrigger: commit
+    buildFilter:
+      ignoredPaths:
+        - web-client/**
+version: '1'
