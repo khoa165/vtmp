@@ -44,7 +44,7 @@ export const AuthService = {
     const token = JWTUtils.createTokenWithPayload(
       { id: user._id.toString() },
       {
-        expiresIn: '1h',
+        expiresIn: '2w',
       }
     );
 

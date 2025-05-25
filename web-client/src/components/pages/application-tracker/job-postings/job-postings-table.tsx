@@ -21,14 +21,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/base/table';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/base/dropdown-menu';
-import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -78,35 +72,7 @@ export function JobPostingsTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button
-              variant="outline"
-              className="ml-auto text-foreground hover:text-background hover:bg-foreground"
-            >
-              Columns <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <ColumnVisibilityConfiguration table={table} />
       </section>
       <section className="rounded-md overflow-hidden border border-foreground">
         <Table>

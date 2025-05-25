@@ -9,6 +9,7 @@ import {
 } from '@/components/pages/application-tracker/applications/cell';
 import { format } from 'date-fns';
 import { HeaderSorting } from '@/components/pages/application-tracker/applications/header';
+import { ApplicationInterestColumn } from '@/components/pages/application-tracker/applications/application-interest-column';
 
 export const applicationsTableColumns = ({
   deleteApplicationFn,
@@ -100,6 +101,9 @@ export const applicationsTableColumns = ({
     accessorKey: 'interest',
     header: ({ column }) => {
       return <HeaderSorting column={column} headerName="Interest" />;
+    },
+    cell: ({ row }) => {
+      return <ApplicationInterestColumn interest={row.original.interest} />;
     },
   },
   { accessorKey: 'referrer', header: 'Referrer' },
