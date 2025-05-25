@@ -28,12 +28,7 @@ const InterviewCreateSchema = z
       invalid_type_error: 'Invalid interview type format',
     }),
     status: z.nativeEnum(InterviewStatus).optional(),
-    interviewOnDate: z
-      .string({ required_error: 'Interview date is required' })
-      .refine((str) => !isNaN(Date.parse(str)), {
-        message: 'Interview valid date format',
-      })
-      .transform((str) => new Date(str)),
+    interviewOnDate: z.coerce.date(),
     note: z.string().optional(),
   })
   .strict();
@@ -46,7 +41,7 @@ const InterviewUpdateSchema = z
     note: z.string().optional(),
   })
   .strict()
-  .transform((data: object) =>
+  .transform((data) =>
     Object.fromEntries(
       Object.entries(data).filter(([, value]) => value !== undefined)
     )
@@ -61,7 +56,7 @@ const InterviewApplicationFilter = z
       }),
   })
   .strict()
-  .transform((data: object) =>
+  .transform((data) =>
     Object.fromEntries(
       Object.entries(data).filter(([, value]) => value !== undefined)
     )
@@ -72,7 +67,7 @@ const InterviewCompanyFilter = z
     companyName: z.string({ required_error: 'Company Name is required' }),
   })
   .strict()
-  .transform((data: object) =>
+  .transform((data) =>
     Object.fromEntries(
       Object.entries(data).filter(([, value]) => value !== undefined)
     )
@@ -94,7 +89,7 @@ const AdminInterviewFilter = z
       .optional(),
     companyName: z.string().optional(),
   })
-  .transform((data: object) =>
+  .transform((data) =>
     Object.fromEntries(
       Object.entries(data).filter(([, value]) => value !== undefined)
     )

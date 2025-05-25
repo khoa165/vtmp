@@ -194,7 +194,7 @@ describe('InterviewController', () => {
       expect(res.body.errors).to.deep.include.members([
         { message: 'Application ID is required' },
         { message: 'Interview type is required' },
-        { message: 'Interview date is required' },
+        { message: 'Invalid date' },
       ]);
     });
 
