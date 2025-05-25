@@ -26,7 +26,8 @@
     "docker-build-backend": "docker build -f web/Dockerfile -t vtmp-backend .",
     "docker-run-backend": "docker run --env-file ./web/.env  --rm -it -p 8000:8000 vtmp-backend",
     "docker-build-frontend": "docker build -f web-client/Dockerfile -t vtmp-frontend .",
-    "docker-run-frontend": "docker run --env-file ./web-client/.env -it -p 3000:3000 vtmp-frontend"
+    "docker-run-frontend": "docker run --env-file ./web-client/.env -it -p 3000:3000 vtmp-frontend",
+    "docker-seed": "docker compose exec web yarn seed"
   },
   "workspaces": [
     "packages/common",
