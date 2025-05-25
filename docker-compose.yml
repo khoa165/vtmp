@@ -6,16 +6,17 @@ services:
     build:
       context: .
       dockerfile: web/Dockerfile
+    command: yarn dev # override the default 'CMD ["yarn", "start"]' in web/Dockerfile. This is for hot-reloading in dev mode
     ports:
       - '8000:8000'
     env_file:
       - ./web/.env
-    # environment:
-    #   - MONGODB_URI=mongodb://mongo:27017/vtmp
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/vtmp-db # This will override the MONGO_URI loaded above
     depends_on:
       - mongo
     volumes:
-      - ./web/src:/app/src
+      - ./web/src:/app/web/src # This is a bind mount. "./web/src" is relative to the directory where "docker compose up" is run
 
   web-client:
     container_name: client
