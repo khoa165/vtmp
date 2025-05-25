@@ -1,5 +1,5 @@
 import { JobPostingRegion } from '@vtmp/common/constants';
-export type JobPostingMetaData = {
+export type LinkMetaData = {
   url: string;
   jobTitle?: string;
   companyName?: string;

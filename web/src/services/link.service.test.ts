@@ -45,14 +45,17 @@ describe('LinkService', () => {
 
   describe('submitLink', () => {
     it('should be able to create new link with expected fields', async () => {
-      const URL = 'google.com';
-      const link = await LinkService.submitLink(URL);
+      const timeDiff = differenceInSeconds(new Date(), googleLink.submittedOn);
 
-      const timeDiff = differenceInSeconds(new Date(), link.submittedOn);
-
-      expect(link.url).to.equal(URL);
-      expect(link.status).to.equal(LinkStatus.PENDING);
+      expect(googleLink.url).to.equal(mockLinkData.url);
+      expect(googleLink.status).to.equal(LinkStatus.PENDING);
       expect(timeDiff).to.lessThan(3);
+    });
+
+    it('should throw error when link with same url already exists', async () => {
+      await expect(
+        LinkService.submitLink(mockLinkData.url)
+      ).eventually.rejectedWith('Duplicate Url');
     });
   });
 
@@ -202,7 +205,6 @@ describe('LinkService', () => {
 
     describe('when filter is provided', () => {
       it('should return empty array when no links exist with given status', async () => {
-        await LinkRepository.createLink(mockLinkData);
         const links = await LinkService.getLinks({
           status: LinkStatus.APPROVED,
         });

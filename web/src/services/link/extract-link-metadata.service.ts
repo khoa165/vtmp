@@ -1,7 +1,7 @@
 import { JobPostingRegion } from '@vtmp/common/constants';
-import { JobPostingMetaData } from '@/services/link/validations';
-export class ExtractMetadataService {
-  static async extractMetadata(url: string): Promise<JobPostingMetaData> {
+import { LinkMetaData } from '@/services/link/link.types';
+export class ExtractLinkMetadataService {
+  static async extractMetadata(url: string): Promise<LinkMetaData> {
     return Promise.resolve({
       url: url,
       jobTitle: 'Software Engineer',

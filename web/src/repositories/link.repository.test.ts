@@ -145,7 +145,6 @@ describe('LinkRepository', () => {
 
     describe('when filter is provided', () => {
       it('should return empty array when no links exist with given status', async () => {
-        await LinkRepository.createLink(mockLinkData);
         const links = await LinkRepository.getLinks({
           status: LinkStatus.APPROVED,
         });

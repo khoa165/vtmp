@@ -26,9 +26,9 @@ export class LinkNormalizerService {
     console.log(url);
     return '';
   }
-  private static standardizeUrl(originalUrl: string): string {
-    this.isValidFormat(originalUrl);
-    let standardizedUrl = this.removeFormatting(originalUrl);
+  private static standardizeUrl(url: string): string {
+    this.isValidFormat(url);
+    let standardizedUrl = this.removeFormatting(url);
     standardizedUrl = this.removeWWW(standardizedUrl);
     standardizedUrl = this.lowercaseDomainAndPath(standardizedUrl);
     standardizedUrl = this.removeTrailingSlash(standardizedUrl);
@@ -38,7 +38,7 @@ export class LinkNormalizerService {
     return standardizedUrl;
   }
 
-  static async normalizeProcess(originalUrl: string): Promise<string> {
-    return this.standardizeUrl(originalUrl);
+  static async normalizeLink(url: string): Promise<string> {
+    return this.standardizeUrl(url);
   }
 }
