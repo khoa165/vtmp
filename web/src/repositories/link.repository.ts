@@ -48,4 +48,8 @@ export const LinkRepository = {
   getLinks: async (filters: { status?: LinkStatus } = {}): Promise<ILink[]> => {
     return LinkModel.find(filters).lean();
   },
+
+  getLinkByUrl: async (url: string): Promise<ILink | null> => {
+    return LinkModel.findOne({ url }).lean();
+  },
 };

@@ -20,6 +20,7 @@ const LinkSchema = new mongoose.Schema<ILink>(
     url: {
       type: String,
       required: true,
+      unique: true,
     },
     status: {
       type: String,

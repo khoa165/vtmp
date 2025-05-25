@@ -1,12 +1,16 @@
 import { LinkStatus } from '@vtmp/common/constants';
 import { LinkRepository } from '@/repositories/link.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { ResourceNotFoundError } from '@/utils/errors';
+import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
 
 export const LinkService = {
   submitLink: async (url: string) => {
-    return LinkRepository.createLink({ url });
+    try {
+      return await LinkRepository.createLink({ url });
+    } catch {
+      throw new DuplicateResourceError('Duplicate url', { url });
+    }
   },
 
   approveLinkAndCreateJobPosting: async (
