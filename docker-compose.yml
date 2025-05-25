@@ -8,19 +8,24 @@ services:
       dockerfile: web/Dockerfile
     ports:
       - '8000:8000'
-    environment:
-      - MONGODB_URI=mongodb://mongo:27017/vtmp
+    env_file:
+      - ./web/.env
+    # environment:
+    #   - MONGODB_URI=mongodb://mongo:27017/vtmp
     depends_on:
       - mongo
     volumes:
-      - ./web/src:/usr/app/src
+      - ./web/src:/app/src
 
   web-client:
     container_name: client
     build:
-      context: ./web-client
+      context: .
+      dockerfile: web-client/Dockerfile
     ports:
       - '3000:3000'
+    env_file:
+      - ./web-client/.env
     depends_on:
       - web
 

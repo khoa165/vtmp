@@ -8,7 +8,7 @@ COPY packages ./packages
 COPY web ./web
 
 # Build steps:
-RUN yarn install
+RUN yarn install --immutable
 RUN yarn workspace @vtmp/common build
 RUN yarn workspace @vtmp/web build
 
