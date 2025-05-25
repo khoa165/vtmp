@@ -9,7 +9,7 @@ export const LinkService = {
     try {
       return await LinkRepository.createLink({ url });
     } catch {
-      throw new DuplicateResourceError('duplicate url', { url });
+      throw new DuplicateResourceError('Duplicate url', { url });
     }
   },
 
