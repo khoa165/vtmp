@@ -20,7 +20,7 @@ AuthRoutes.post(
   */
   wrappedHandlers([AuthController.login])
 );
-AuthRoutes.post('/signup', wrappedHandlers([AuthController.signup])); // sign up
+AuthRoutes.post('/signup', wrappedHandlers([AuthController.signup]));
 AuthRoutes.post(
   '/validate',
   wrappedHandlers([InvitationController.validateInvitation])
