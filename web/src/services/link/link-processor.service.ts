@@ -14,6 +14,6 @@ export class LinkProcessorService {
       metaData.url
     );
     await LinkDeduplicatorService.checkDuplicate(normalizedUrl);
-    LinkService.submitLink(url);
+    await LinkService.submitLink(url);
   }
 }

@@ -3,6 +3,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { LinkRepository } from '@/repositories/link.repository';
 import { ILink } from '@/models/link.model';
 import { LinkDeduplicatorService } from '@/services/link/link-deduplicator.service';
+import { DuplicateResourceError } from '@/utils/errors';
 
 describe('LinkDeduplicatorService', () => {
   useMongoDB();
@@ -23,13 +24,13 @@ describe('LinkDeduplicatorService', () => {
 
       await expect(
         LinkDeduplicatorService.checkDuplicate(newLink.url)
-      ).to.be.rejectedWith('Duplicate link found');
+      ).to.be.rejectedWith(DuplicateResourceError);
     });
 
     it('should not throw error when link does not exist', async () => {
       await expect(
         LinkDeduplicatorService.checkDuplicate('nonexistent.com')
-      ).to.not.be.rejectedWith('Duplicate link found');
+      ).to.not.be.rejectedWith(DuplicateResourceError);
     });
   });
 });

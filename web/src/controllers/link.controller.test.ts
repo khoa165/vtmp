@@ -104,7 +104,7 @@ describe('LinkController', () => {
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
 
-      expectErrorsArray({ res, statusCode: 500, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Duplicate Url');
     });
   });

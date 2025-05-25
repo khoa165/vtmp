@@ -5,7 +5,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { LinkService } from '@/services/link.service';
 import assert from 'assert';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
-import { ResourceNotFoundError } from '@/utils/errors';
+import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import { LinkRepository } from '@/repositories/link.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useSandbox } from '@/testutils/sandbox.testutil';
@@ -55,7 +55,7 @@ describe('LinkService', () => {
     it('should throw error when link with same url already exists', async () => {
       await expect(
         LinkService.submitLink(mockLinkData.url)
-      ).eventually.rejectedWith('Duplicate Url');
+      ).eventually.rejectedWith(DuplicateResourceError);
     });
   });
 
