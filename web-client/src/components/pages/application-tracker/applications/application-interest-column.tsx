@@ -6,22 +6,28 @@ interface ApplicationInterestColumnProps {
   interest: InterestLevel;
 }
 
-const getInterestIcon = (interest: InterestLevel) => {
-  switch (interest) {
-    case InterestLevel.LOW:
-      return <ChevronsDown />;
-    case InterestLevel.MEDIUM:
-      return <ChevronUp />;
-    case InterestLevel.HIGH:
-      return <ChevronsUp />;
-    default:
-      return <ChevronsUp />;
-  }
+type ChevronIcon = typeof ChevronsUp | typeof ChevronsDown | typeof ChevronUp;
+const InterestLevelToIconMapping: Record<InterestLevel, ChevronIcon> = {
+  [InterestLevel.HIGH]: ChevronsUp,
+  [InterestLevel.MEDIUM]: ChevronUp,
+  [InterestLevel.LOW]: ChevronsDown,
+};
+
+const InterestLevelToColorMapping: Record<InterestLevel, string> = {
+  [InterestLevel.HIGH]: 'text-vtmp-orange',
+  [InterestLevel.MEDIUM]: 'text-vtmp-yellow',
+  [InterestLevel.LOW]: 'text-vtmp-blue',
 };
 
 export const ApplicationInterestColumn = ({
   interest,
 }: ApplicationInterestColumnProps) => {
-  const interestIcon = getInterestIcon(interest);
-  return <div className="flex items-center gap-2">{interestIcon}</div>;
+  const InterestIcon = InterestLevelToIconMapping[interest];
+  return (
+    <div className="flex items-center gap-2">
+      <InterestIcon
+        className={`w-8 h-8 ${InterestLevelToColorMapping[interest]}`}
+      />
+    </div>
+  );
 };

@@ -47,12 +47,14 @@ export const applicationsTableColumns = ({
     ),
     enableSorting: false,
     enableHiding: false,
+    enableResizing: false,
   },
   {
     accessorKey: 'companyName',
     header: ({ column }) => {
       return <HeaderSorting column={column} headerName="Company" />;
     },
+    enableResizing: true,
   },
   {
     accessorKey: 'status',
@@ -68,6 +70,7 @@ export const applicationsTableColumns = ({
         />
       );
     },
+    enableResizing: true,
   },
   {
     accessorKey: 'appliedOnDate',
@@ -79,6 +82,7 @@ export const applicationsTableColumns = ({
       const date = new Date(isoDate);
       return <div>{format(date, 'MMM d, yyyy')}</div>;
     },
+    enableResizing: true,
   },
   {
     accessorKey: 'portalLink',
@@ -96,6 +100,7 @@ export const applicationsTableColumns = ({
         </a>
       );
     },
+    enableResizing: true,
   },
   {
     accessorKey: 'interest',
@@ -105,9 +110,10 @@ export const applicationsTableColumns = ({
     cell: ({ row }) => {
       return <ApplicationInterestColumn interest={row.original.interest} />;
     },
+    enableResizing: true,
   },
-  { accessorKey: 'referrer', header: 'Referrer' },
-  { accessorKey: 'note', header: 'Note' },
+  { accessorKey: 'referrer', header: 'Referrer', enableResizing: true },
+  { accessorKey: 'note', header: 'Note', enableResizing: true },
   {
     id: 'actions',
     enableHiding: false,

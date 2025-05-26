@@ -22,15 +22,16 @@ export function ColumnVisibilityConfiguration<TData>({
   );
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button
-          variant="outline"
-          className="ml-auto text-foreground hover:text-background hover:bg-foreground"
-        >
+      <DropdownMenuTrigger style={{ userSelect: 'none' }}>
+        <Button variant="outline" className="text-foreground">
           Configure columns visibility <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent
+        align="end"
+        className="bg-background"
+        style={{ width: '100%' }}
+      >
         {columns.map((column) => {
           return (
             <DropdownMenuCheckboxItem
