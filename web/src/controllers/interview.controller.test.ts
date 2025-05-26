@@ -35,7 +35,7 @@ describe('InterviewController', () => {
   interface MockInterview {
     applicationId: string;
     userId: string;
-    type: InterviewType[];
+    types: InterviewType[];
     interviewOnDate: Date;
     status?: InterviewStatus;
     note?: string;
@@ -141,7 +141,7 @@ describe('InterviewController', () => {
     mockInterview_A0 = {
       applicationId: metaApplication_A.id,
       userId: userId_A,
-      type: [InterviewType.CODE_REVIEW],
+      types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PASSED,
       note: 'Lets crush it',
@@ -150,7 +150,7 @@ describe('InterviewController', () => {
     mockInterview_A1 = {
       applicationId: googleApplication_A.id,
       userId: userId_A,
-      type: [InterviewType.CODE_REVIEW],
+      types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.FAILED,
       note: 'Nice try',
@@ -159,7 +159,7 @@ describe('InterviewController', () => {
     mockInterview_A2 = {
       applicationId: metaApplication_A.id,
       userId: userId_A,
-      type: [InterviewType.CODE_REVIEW],
+      types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-07-07'),
       note: 'Good job',
     };
@@ -167,7 +167,7 @@ describe('InterviewController', () => {
     mockInterview_B0 = {
       applicationId: googleApplication_B.id,
       userId: userId_B,
-      type: [InterviewType.CODE_REVIEW],
+      types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PENDING,
     };
@@ -175,7 +175,7 @@ describe('InterviewController', () => {
     mockInterview_B1 = {
       applicationId: metaApplication_B.id,
       userId: userId_B,
-      type: [InterviewType.PROJECT_WALKTHROUGH],
+      types: [InterviewType.PROJECT_WALKTHROUGH],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PASSED,
     };
@@ -193,7 +193,7 @@ describe('InterviewController', () => {
       expectErrorsArray({ res, statusCode: 400, errorsCount: 3 });
       expect(res.body.errors).to.deep.include.members([
         { message: 'Application ID is required' },
-        { message: 'Interview type is required' },
+        { message: 'Interview types is required' },
         { message: 'Invalid date' },
       ]);
     });
@@ -205,7 +205,7 @@ describe('InterviewController', () => {
         .set('Accept', 'application/json')
         .send({
           applicationId: 'not-an-valid-id',
-          type: [InterviewType.CODE_REVIEW],
+          types: [InterviewType.CODE_REVIEW],
           interviewOnDate: new Date().toISOString(),
         });
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
@@ -529,7 +529,7 @@ describe('InterviewController', () => {
       const created = await InterviewRepository.createInterview({
         applicationId: getNewMongoId(),
         userId: userId_A,
-        type: [InterviewType.DEBUGGING],
+        types: [InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
       });
       const res = await request(app)
