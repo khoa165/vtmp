@@ -7,14 +7,10 @@ on:
 
 jobs:
   test-web:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Use common setups action
-        uses: ./.github/actions/common-setups
-      - name: Run test
-        run: yarn workspace @vtmp/web test
+    uses: ./.github/workflows/test-web.yml
+
+  build-web-client:
+    uses: ./.github/workflows/build-web-client.yml
 
   deploy-backend-staging:
     needs: [test-web]
@@ -27,6 +23,7 @@ jobs:
           api-key: ${{ secrets.RENDER_API_KEY }}
 
   deploy-frontend-staging:
+    needs: [build-web-client]
     runs-on: ubuntu-latest
     steps:
       - name: Deploy frontend
