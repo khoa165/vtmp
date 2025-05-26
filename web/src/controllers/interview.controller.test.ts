@@ -25,6 +25,10 @@ import { IApplication } from '@/models/application.model';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { omit } from 'remeda';
+import {
+  runDefaultAuthMiddlewareTests,
+  HTTPMethod,
+} from '@/testutils/authMiddleware.controller.testutils';
 
 describe('InterviewController', () => {
   useMongoDB();
@@ -184,6 +188,16 @@ describe('InterviewController', () => {
   describe('POST /api/interviews', () => {
     const url = '/api/interviews';
 
+    runDefaultAuthMiddlewareTests({
+      route: url,
+      method: HTTPMethod.POST,
+      body: {
+        applicationId: getNewMongoId(),
+        types: [InterviewType.CODE_REVIEW],
+        interviewOnDate: new Date().toISOString(),
+      },
+    });
+
     it('should return error message with 400 status code if request body schema is invalid', async () => {
       const res = await request(app)
         .post(url)
@@ -234,6 +248,11 @@ describe('InterviewController', () => {
 
   describe('GET /api/interviews/:interviewId', () => {
     const endpoint = (id: string) => `/api/interviews/${id}`;
+
+    runDefaultAuthMiddlewareTests({
+      route: endpoint(getNewMongoId()),
+      method: HTTPMethod.GET,
+    });
     let interview: IInterview;
 
     beforeEach(async () => {
@@ -279,6 +298,11 @@ describe('InterviewController', () => {
 
   describe('GET /api/interviews', () => {
     const url = '/api/interviews';
+
+    runDefaultAuthMiddlewareTests({
+      route: url,
+      method: HTTPMethod.GET,
+    });
 
     it('return an empty array when none exist', async () => {
       const res = await request(app)
@@ -445,6 +469,11 @@ describe('InterviewController', () => {
   describe('PUT /api/interviews/:interviewId', () => {
     const endpoint = (id: string) => `/api/interviews/${id}`;
 
+    runDefaultAuthMiddlewareTests({
+      route: endpoint(getNewMongoId()),
+      method: HTTPMethod.PUT,
+    });
+
     it('should return an error message with status code 400 if the interviewId is not valid', async () => {
       const res = await request(app)
         .put(endpoint('not-a-valid-id'))
@@ -498,6 +527,11 @@ describe('InterviewController', () => {
 
   describe('DELETE /api/interviews/:interviewId', () => {
     const endpoint = (id: string) => `/api/interviews/${id}`;
+
+    runDefaultAuthMiddlewareTests({
+      route: endpoint(getNewMongoId()),
+      method: HTTPMethod.DELETE,
+    });
 
     it('should return an error message with status code 400 if the interviewId is not valid', async () => {
       const res = await request(app)
