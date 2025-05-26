@@ -131,12 +131,19 @@ export const CellApplicationStatus = ({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <Button variant="outline" size="sm">
-            <StatusDot
-              status={application.status}
-              colorMapping={StatusToColorMapping}
-            />
-            {formatStatus(application.status)}
+          <Button
+            variant="outline"
+            justify="between"
+            size="sm"
+            className="w-[170px] text-left"
+          >
+            <div className="flex items-center gap-2">
+              <StatusDot
+                status={application.status}
+                colorMapping={StatusToColorMapping}
+              />
+              {formatStatus(application.status)}
+            </div>
             <ChevronDown />
           </Button>
         </DropdownMenuTrigger>
