@@ -7,7 +7,7 @@ import { differenceInSeconds } from 'date-fns';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { IJobPosting } from '@/models/job-posting.model';
-import { JobPostingLocation } from '@vtmp/common/constants';
+import { JobPostingRegion } from '@vtmp/common/constants';
 
 describe('JobPostingRepository', () => {
   useMongoDB();
@@ -303,7 +303,7 @@ describe('JobPostingRepository', () => {
         jobTitle: mockJobTitle,
         companyName: mockCompanyName,
         submittedBy: getNewObjectId(),
-        location: JobPostingLocation.CANADA,
+        location: JobPostingRegion.CANADA,
       },
       {
         linkId: getNewObjectId(),
@@ -342,6 +342,7 @@ describe('JobPostingRepository', () => {
           })
         )
       );
+
       const jobsNotAppliedByUserA =
         await JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
           userIdA,
@@ -382,6 +383,7 @@ describe('JobPostingRepository', () => {
         jobPostingId: jobPosting1?.id,
         userId: userIdA,
       });
+
       const jobsNotAppliedByUserAWithFilterLocation =
         await JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
           userIdA,
@@ -400,6 +402,7 @@ describe('JobPostingRepository', () => {
     });
 
     it('should returns job postings not applied by user after applying to one, matching the filter with date', async () => {
+      const jobPosting3 = jobPostings[2];
       const jobs =
         await JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
           userIdA,
@@ -410,6 +413,7 @@ describe('JobPostingRepository', () => {
 
       expect(jobs).to.be.an('array').that.have.lengthOf(1);
       assert(jobs[0]);
+      expect(jobs[0]?._id.toString()).to.equal(jobPosting3?.id);
     });
 
     it('should return empty array when filter by field with no matching postings', async () => {
@@ -464,7 +468,7 @@ describe('JobPostingRepository', () => {
           {
             companyName: mockCompanyName,
             jobTitle: mockJobTitle,
-            location: JobPostingLocation.CANADA,
+            location: JobPostingRegion.CANADA,
           }
         );
 
@@ -479,7 +483,6 @@ describe('JobPostingRepository', () => {
 
     it('should not exclude a job posting from the returned array, if the user applied to that job posting, but later deleted the application associated with it', async () => {
       const [, jobPosting2] = jobPostings;
-
       const applications = await Promise.all(
         jobPostings.map((jobPosting) =>
           ApplicationRepository.createApplication({
