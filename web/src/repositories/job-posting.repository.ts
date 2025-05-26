@@ -44,80 +44,61 @@ export const JobPostingRepository = {
     ).lean();
   },
 
-  getJobPostingsUserHasNotAppliedTo: async (
-    userId: string
-  ): Promise<IJobPosting[]> => {
-    return JobPostingModel.aggregate([
-      {
-        // Perform a filtered join between JobPosting and Application collection
-        $lookup: {
-          from: 'applications',
-          let: { jobId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$jobPostingId', '$$jobId'] },
-                    { $eq: ['$userId', toMongoId(userId)] },
-                    { $eq: ['$deletedAt', null] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'userApplication',
-        },
-      },
-      {
-        $match: {
-          userApplication: { $size: 0 },
-          deletedAt: null,
-        },
-      },
-    ]);
-  },
-
-  getJobPostingsUserHasNotAppliedToWithFilter: async (
-    userId: string,
-    filter: JobFilter
-  ): Promise<IJobPosting[]> => {
-    // declare it's a string-keyed object
+  getJobPostingsUserHasNotAppliedTo: async ({
+    userId,
+    filter,
+  }: {
+    userId: string;
+    filter?: JobFilter;
+  }): Promise<IJobPosting[]> => {
     const dynamicMatch: Record<string, unknown> = {};
 
-    if (filter.jobTitle) dynamicMatch.jobTitle = filter.jobTitle;
-    if (filter.companyName) dynamicMatch.companyName = filter.companyName;
-    if (filter.location) dynamicMatch.location = filter.location;
-    if (filter.datePosted)
-      dynamicMatch.datePosted = { $gte: filter.datePosted };
+    if (filter?.jobTitle) dynamicMatch.jobTitle = filter.jobTitle;
+    if (filter?.companyName) dynamicMatch.companyName = filter.companyName;
+    if (filter?.location) dynamicMatch.location = filter.location;
+    if (filter?.postingDateRangeStart || filter?.postingDateRangeEnd) {
+      const datePostedFilter: Record<string, Date> = {};
+
+      if (filter.postingDateRangeStart) {
+        datePostedFilter.$gte = filter.postingDateRangeStart;
+      }
+      if (filter.postingDateRangeEnd) {
+        datePostedFilter.$lte = filter.postingDateRangeEnd;
+      }
+
+      dynamicMatch.datePosted = datePostedFilter;
+    }
 
     return JobPostingModel.aggregate([
-      {
-        // Perform a filtered join between JobPosting and Application collection
-        $lookup: {
-          from: 'applications',
-          let: { jobId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$jobPostingId', '$$jobId'] },
-                    { $eq: ['$userId', toMongoId(userId)] },
-                    { $eq: ['$deletedAt', null] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'userApplication',
-        },
-      },
       {
         $match: {
           ...dynamicMatch,
-          userApplication: { $size: 0 },
           deletedAt: null,
+        },
+      },
+      {
+        $lookup: {
+          from: 'applications',
+          let: { jobId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$jobPostingId', '$$jobId'] },
+                    { $eq: ['$userId', toMongoId(userId)] },
+                    { $eq: ['$deletedAt', null] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: 'userApplication',
+        },
+      },
+      {
+        $match: {
+          userApplication: { $size: 0 },
         },
       },
       {
