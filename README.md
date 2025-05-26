@@ -63,7 +63,7 @@ yarn dev
 With Docker
 
 - Make sure you have Docker Desktop installed and running.
-- From repo root:
+- From repo root. After the first time, you won't need the `--build` flag:
 
 ```
 docker compose up --build
@@ -79,6 +79,11 @@ yarn docker-seed
 
 - To connect to the local mongo container and inspect data, first download MongoDB Compass: https://www.mongodb.com/try/download/compass
 - After installation, in the GUI, create a connection to `mongodb://localhost:27017`
+- To stop the containers, `Ctrl + C` from the terminal. If you want to delete the containers, use:
+
+```
+docker compose down
+```
 
 ## Contributing
 
