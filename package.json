@@ -16,6 +16,7 @@
     "dev": "concurrently \"yarn workspace @vtmp/web-client dev\" \"yarn workspace @vtmp/web dev\" \"yarn workspace @vtmp/common dev\"",
     "cc": "cookiecutter -c=cookiecutter/cookiecutter.config.js",
     "pp": "yarn install --immutable && yarn workspace @vtmp/common build",
+    "seed": "yarn workspace @vtmp/web seed",
     "blog": "tsx ./scripts/generate-metadata.ts",
     "lint": "yarn eslint .",
     "test": "yarn workspace @vtmp/common build && yarn workspace @vtmp/web run test",
