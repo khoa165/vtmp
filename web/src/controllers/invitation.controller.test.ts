@@ -29,12 +29,12 @@ describe('InvitationController', () => {
   useMongoDB();
   const sandbox = useSandbox();
   let mockToken: string;
-  // let sendEmailStub: SinonStub;
+  let sendEmailStub: SinonStub;
 
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
-    // const emailService = getEmailService();
-    // sendEmailStub = sandbox.stub(emailService, 'sendEmail').resolves();
+    const emailService = getEmailService();
+    sendEmailStub = sandbox.stub(emailService, 'sendEmail').resolves();
 
     const encryptedPassword = await bcrypt.hash('test password', 10);
     const mockUser = {
@@ -58,7 +58,7 @@ describe('InvitationController', () => {
   const mockAdminId = getNewMongoId();
 
   const mockOneInvitation = {
-    receiverEmail: 'duykha121314888@gmail.com',
+    receiverEmail: 'mentee@viettech.com',
     sender: mockAdminId,
     token: 'token-for-invitation',
     expiryDate: nextWeek,
@@ -144,7 +144,7 @@ describe('InvitationController', () => {
     });
   });
 
-  describe.only('POST /invitations', () => {
+  describe('POST /invitations', () => {
     it('should throw Unauthorized for no token', async () => {
       const res = await request(app)
         .post('/api/invitations')
@@ -295,7 +295,7 @@ describe('InvitationController', () => {
         )
       );
       expect(timeDiff).to.lessThan(3);
-      // expect(sendEmailStub.calledOnce).to.equal(true);
+      expect(sendEmailStub.calledOnce).to.equal(true);
     });
 
     it('should return newly created invitation when no Pending invitations associated with receiver email exist', async () => {
@@ -316,7 +316,7 @@ describe('InvitationController', () => {
       });
 
       expect(String(res.body.data.sender)).to.equal(mockAdminId);
-      // expect(sendEmailStub.calledOnce).to.equal(true);
+      expect(sendEmailStub.calledOnce).to.equal(true);
     });
   });
 
