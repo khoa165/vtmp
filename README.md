@@ -56,17 +56,29 @@ git clone git@github.com:khoa165/vtmp.git
 Without Docker
 
 ```bash
-yarn install
+yarn pp
 yarn dev
 ```
 
-With Docker (might be out of dated at the moment)
+With Docker
+
+- Make sure you have Docker Desktop installed and running.
+- From repo root:
 
 ```
 docker compose up --build
 ```
 
 This will start the application on `http://localhost:3000` and the server on `http://localhost:8000`.
+
+- Once the containers (server, client, and mongo) are up and running, you can seed the database. From root:
+
+```
+yarn docker-seed
+```
+
+- To connect to the local mongo container and inspect data, first download MongoDB Compass: https://www.mongodb.com/try/download/compass
+- After installation, in the GUI, create a connection to `mongodb://localhost:27017`
 
 ## Contributing
 

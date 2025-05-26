@@ -16,7 +16,9 @@ services:
     depends_on:
       - mongo
     volumes:
-      - ./web/src:/app/web/src # This is a bind mount. "./web/src" is relative to the directory where "docker compose up" is run
+      # This creates bind mount between local ./web/src and the container's /app/web/src
+      # "./web/src" is relative to root (where the command "docker compose up" is run)
+      - ./web/src:/app/web/src
 
   web-client:
     container_name: client
