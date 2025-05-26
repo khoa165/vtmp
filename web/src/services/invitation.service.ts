@@ -85,7 +85,7 @@ export const InvitationService = {
       token
     );
     await getEmailService().sendEmail(emailTemplate);
-    return newInvitation;
+    return newInvitation || latestPendingInvitation;
   },
 
   revokeInvitation: async (invitationId: string) => {

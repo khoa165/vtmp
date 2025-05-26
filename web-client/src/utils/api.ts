@@ -17,6 +17,7 @@ api.interceptors.response.use(
       toast.error(error.response?.data.message);
       return Promise.reject();
     }
+    return Promise.reject(error);
   }
 );
 interface RequestBaseArgs<T> {
