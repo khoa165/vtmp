@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  test:
+  test-coverage:
     name: Run tests and collect coverage
     runs-on: ubuntu-latest
     steps:
