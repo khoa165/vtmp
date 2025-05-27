@@ -10,21 +10,15 @@ import {
 } from '@/components/base/card';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-import axios from 'axios';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { Method } from '@/utils/constants';
-import { request } from '@/utils/api';
-import { SendInvitationResponseSchema } from '@/components/pages/admins/invitations/validation';
 import { UserRole } from '@vtmp/common/constants';
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/base/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
-import { set } from 'lodash';
+import { useSendInvitation } from '@/components/pages/admins/invitations/hooks/invitations';
 
 export const SendInvitationPage = () => {
   const [nameInput, setNameInput] = useState('');
@@ -32,65 +26,17 @@ export const SendInvitationPage = () => {
   const [roleInput, setRoleInput] = useState(UserRole.USER);
   const [nameErrors, setNameErrors] = useState<string[]>([]);
   const [emailErrors, setEmailErrors] = useState<string[]>([]);
-  const [sendInvitationErrors, setSendInvitationErrors] = useState([]);
+  const [sendInvitationErrors, setSendInvitationErrors] = useState<string[]>(
+    []
+  );
 
-  const { mutate: sendInvitationFn } = useMutation({
-    mutationFn: (body: {
-      receiverName: string;
-      receiverEmail: string;
-      senderId: string;
-      role?: UserRole;
-    }) =>
-      request({
-        method: Method.POST,
-        url: '/invitations',
-        data: body,
-        schema: SendInvitationResponseSchema,
-        options: { requireAuth: true },
-      }),
-    onSuccess: (res) => {
-      console.log('Success in useMutation sendInvitation');
-      toast.success('Invitation sent successfully!');
-      setSendInvitationErrors([]);
-      setEmailErrors([]);
-      setNameErrors([]);
-      setNameInput('');
-      setEmailInput('');
-      setRoleInput(UserRole.USER);
-    },
-    onError: (error) => {
-      console.log('error', error);
-      console.log('Error in useMutation sendInvitation');
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessages = error.response.data.errors.map(
-          (e: { message: string }) => e.message
-        );
-        const { emailRelatedErrors, otherErrors } = errorMessages.reduce(
-          (
-            acc: { emailRelatedErrors: string[]; otherErrors: string[] },
-            errMsg: string
-          ) => {
-            if (
-              errMsg.toLowerCase().includes('email') ||
-              errMsg.toLowerCase().includes('user')
-            ) {
-              acc.emailRelatedErrors.push(errMsg);
-            } else {
-              acc.otherErrors.push(errMsg);
-            }
-            return acc;
-          },
-          { emailRelatedErrors: [], otherErrors: [] }
-        );
-        setEmailErrors(emailRelatedErrors);
-        setSendInvitationErrors(otherErrors);
-        console.log('Email errors', emailRelatedErrors);
-        console.log('Other errors', otherErrors);
-      } else {
-        console.log('Unexpected error', error);
-        toast.error('Sending invitation failed: Unexpected error occured');
-      }
-    },
+  const { mutate: sendInvitationFn } = useSendInvitation({
+    setSendInvitationErrors,
+    setEmailErrors,
+    setNameErrors,
+    setNameInput,
+    setEmailInput,
+    setRoleInput,
   });
 
   const userString = localStorage.getItem('user');
@@ -114,7 +60,7 @@ export const SendInvitationPage = () => {
 
   return (
     <div className="grid grid-cols-12 gap-4 px-20 py-15">
-      <div className="col-start-1 col-span-5 flex flex-col justify-start">
+      <div className="col-start-1 col-span-6 flex flex-col justify-start">
         <Card className="bg-transparent border-0 shadow-none h-full justify-center">
           <CardHeader>
             <CardTitle className="text-4xl font-bold">
@@ -146,7 +92,7 @@ export const SendInvitationPage = () => {
                 </div>
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="email" className="pb-2">
-                    Email
+                    Receiver Email
                   </Label>
                   <Input
                     id="email"
@@ -177,16 +123,19 @@ export const SendInvitationPage = () => {
                         <ChevronDown />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
+                    <DropdownMenuContent
+                      onCloseAutoFocus={(e) => e.preventDefault()}
+                    >
                       {Object.values(UserRole).map((dropdownRole, index) => (
-                        <DropdownMenuItem
+                        <DropdownMenuCheckboxItem
                           key={index}
                           onClick={() => {
                             setRoleInput(dropdownRole);
                           }}
+                          checked={roleInput === dropdownRole}
                         >
                           {dropdownRole}
-                        </DropdownMenuItem>
+                        </DropdownMenuCheckboxItem>
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
