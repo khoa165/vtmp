@@ -1,0 +1,16 @@
+# Define a Github Actions reusable workflow
+name: Build web-client
+
+on:
+  workflow_call:
+
+jobs:
+  build-web-client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/common-setups
+      - name: Build web-client
+        run: yarn workspace @vtmp/web-client build

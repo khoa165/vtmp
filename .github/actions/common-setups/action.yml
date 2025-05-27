@@ -1,0 +1,23 @@
+name: Common setup
+description: Common setup steps for all jobs
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Use Node.js 22.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+        cache: 'yarn'
+
+    - name: Use latest yarn version
+      run: yarn set version stable
+      shell: bash
+
+    - name: Install dependencies
+      run: yarn install --immutable
+      shell: bash
+
+    - name: Build common package
+      run: yarn workspace @vtmp/common build
+      shell: bash
