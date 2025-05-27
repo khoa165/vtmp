@@ -15,6 +15,7 @@ import {
 import { UserRole } from '@vtmp/common/constants';
 import { JWTUtils } from '@/utils/jwt';
 import assert from 'assert';
+import { JWT_TOKEN_TYPE } from '@/constants/enums';
 
 describe('AuthController', () => {
   useMongoDB();
@@ -372,13 +373,17 @@ describe('AuthController', () => {
 
       const user = await UserRepository.createUser(mockUser);
       userId = user._id.toString();
-      const exp = Math.floor(Date.now() / 1000) + 10 * 60;
 
-      resetToken = JWTUtils.createTokenWithPayload({
-        id: userId,
-        purpose: 'password_reset',
-        exp,
-      });
+      resetToken = JWTUtils.createTokenWithPayload(
+        {
+          id: userId,
+          email: user.email,
+          purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
+        },
+        {
+          expiresIn: '10m',
+        }
+      );
     });
 
     it('should return error message for password being too short', async () => {
@@ -486,7 +491,7 @@ describe('AuthController', () => {
       assert(updatedUser);
       const isPasswordCorrect = await bcrypt.compare(
         'Newpassword@123',
-        updatedUser!.encryptedPassword
+        updatedUser.encryptedPassword
       );
 
       assert(isPasswordCorrect);

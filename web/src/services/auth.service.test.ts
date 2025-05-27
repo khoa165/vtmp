@@ -185,6 +185,7 @@ describe('AuthService', () => {
       resetToken = JWTUtils.createTokenWithPayload(
         {
           id: userId,
+          email: mockUser.email,
           purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
         },
         {
@@ -195,7 +196,7 @@ describe('AuthService', () => {
 
     it('should throw error for invalid token purpose', async () => {
       const invalidToken = JWTUtils.createTokenWithPayload(
-        { id: userId, purpose: 'login' },
+        { id: userId, email: 'test@gmail.com', purpose: 'login' },
         { expiresIn: '10m' }
       );
       await expect(
@@ -208,7 +209,11 @@ describe('AuthService', () => {
 
     it('should throw error for expired token', async () => {
       const expiredToken = JWTUtils.createTokenWithPayload(
-        { id: userId, purpose: JWT_TOKEN_TYPE.RESET_PASSWORD },
+        {
+          id: userId,
+          email: 'test@gmail.com',
+          purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
+        },
         { expiresIn: '-1s' }
       );
       await expect(
@@ -221,7 +226,11 @@ describe('AuthService', () => {
 
     it('should throw error for user not found', async () => {
       const invalidToken = JWTUtils.createTokenWithPayload(
-        { id: getNewMongoId(), purpose: JWT_TOKEN_TYPE.RESET_PASSWORD },
+        {
+          id: getNewMongoId(),
+          email: 'test@gmail.com',
+          purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
+        },
         { expiresIn: '10m' }
       );
       await expect(
@@ -258,7 +267,7 @@ describe('AuthService', () => {
 
       const isPasswordMatch = await bcrypt.compare(
         'newpassword',
-        userFromDB!.encryptedPassword
+        userFromDB.encryptedPassword
       );
       assert(isPasswordMatch);
     });

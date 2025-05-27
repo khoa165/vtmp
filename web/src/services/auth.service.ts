@@ -13,8 +13,8 @@ import { z } from 'zod';
 
 const ResetTokenPayloadSchema = z.object({
   id: z.string(),
+  email: z.string().email(),
   purpose: z.literal(JWT_TOKEN_TYPE.RESET_PASSWORD),
-  exp: z.number(),
 });
 
 export const AuthService = {
