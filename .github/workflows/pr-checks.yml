@@ -19,6 +19,7 @@ jobs:
     uses: ./.github/workflows/build-web-client.yml
 
   chromatic:
+    if: ${{ contains(github.event.pull_request.files.*.path, 'web-client/src/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
