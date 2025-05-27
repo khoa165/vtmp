@@ -17,17 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy backend
-        uses: johnbeynon/render-deploy-action@v0.0.8
-        with:
-          service-id: ${{ secrets.RENDER_BACKEND_STAGING_SERVICE_ID }}
-          api-key: ${{ secrets.RENDER_API_KEY }}
+        run: curl ${{ secrets.RENDER_STAGING_BACKEND_DEPLOY_HOOK }}
 
   deploy-frontend-staging:
     needs: [build-web-client]
     runs-on: ubuntu-latest
     steps:
       - name: Deploy frontend
-        uses: johnbeynon/render-deploy-action@v0.0.8
-        with:
-          service-id: ${{ secrets.RENDER_FRONTEND_STAGING_SERVICE_ID }}
-          api-key: ${{ secrets.RENDER_API_KEY }}
+        run: curl ${{ secrets.RENDER_STAGING_FRONTEND_DEPLOY_HOOK }}
