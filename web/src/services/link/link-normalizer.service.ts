@@ -1,32 +1,32 @@
-export class LinkNormalizerService {
-  private static isValidFormat(url: string): void {
+export const LinkNormalizerService = {
+  isValidFormat(url: string): void {
     console.log(url);
-  }
-  private static removeFormatting(url: string): string {
-    console.log(url);
-    return '';
-  }
-  private static removeWWW(url: string): string {
+  },
+  removeFormatting(url: string): string {
     console.log(url);
     return '';
-  }
-  private static lowercaseDomainAndPath(url: string): string {
+  },
+  removeWWW(url: string): string {
     console.log(url);
     return '';
-  }
-  private static removeTrailingSlash(url: string): string {
+  },
+  lowercaseDomainAndPath(url: string): string {
     console.log(url);
     return '';
-  }
-  private static removeAnalyticQueryAndFragment(url: string): string {
+  },
+  removeTrailingSlash(url: string): string {
     console.log(url);
     return '';
-  }
-  private static stripDefaultPorts(url: string): string {
+  },
+  removeAnalyticQueryAndFragment(url: string): string {
     console.log(url);
     return '';
-  }
-  private static standardizeUrl(url: string): string {
+  },
+  stripDefaultPorts(url: string): string {
+    console.log(url);
+    return '';
+  },
+  standardizeUrl(url: string): string {
     this.isValidFormat(url);
     let standardizedUrl = this.removeFormatting(url);
     standardizedUrl = this.removeWWW(standardizedUrl);
@@ -36,9 +36,8 @@ export class LinkNormalizerService {
     standardizedUrl = this.stripDefaultPorts(standardizedUrl);
 
     return standardizedUrl;
-  }
-
-  static async normalizeLink(url: string): Promise<string> {
+  },
+  normalizeLink(url: string): string {
     return this.standardizeUrl(url);
-  }
-}
+  },
+};
