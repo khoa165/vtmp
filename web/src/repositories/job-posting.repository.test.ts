@@ -7,7 +7,7 @@ import { differenceInSeconds } from 'date-fns';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { IJobPosting } from '@/models/job-posting.model';
-import { JobPostingRegion, JobTitle, OfferType } from '@vtmp/common/constants';
+import { JobPostingRegion, JobFunction, JobType } from '@vtmp/common/constants';
 
 describe('JobPostingRepository', () => {
   useMongoDB();
@@ -519,8 +519,8 @@ describe('JobPostingRepository', () => {
         {
           userId: userIdA,
           filter: {
-            jobFunction: JobTitle.SOFTWARE_ENGINEER,
-            jobType: OfferType.INTERNSHIP,
+            jobFunction: JobFunction.SOFTWARE_ENGINEER,
+            jobType: JobType.INTERNSHIP,
           },
         }
       );
