@@ -28,8 +28,17 @@ export const JobPostingService = {
     return deletedJobPosting;
   },
 
-  getJobPostingsUserHasNotAppliedTo: async (userId: string) => {
-    return JobPostingRepository.getJobPostingsUserHasNotAppliedTo(userId);
+  getJobPostingsUserHasNotAppliedTo: async ({
+    userId,
+    filter,
+  }: {
+    userId: string;
+    filter?: object;
+  }) => {
+    return JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
+      userId: userId,
+      filter: filter ?? {},
+    });
   },
 
   getJobPostingsUserHasNotAppliedToWithFilter: async (

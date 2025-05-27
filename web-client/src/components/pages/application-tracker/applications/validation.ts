@@ -30,13 +30,6 @@ export const ApplicationResponseSchema = z.object({
   data: ApplicationSchema,
 });
 
-export const FilterSchema = z.object({
-  jobTitle: z.string().optional(),
-  companyName: z.string().optional(),
-  location: z.string().optional(),
-  datePosted: z.coerce.date().optional(),
-});
-
 export const ApplicationsCountByStatusSchema = z.object({
   message: z.string(),
   data: z
