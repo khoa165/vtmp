@@ -26,10 +26,9 @@ import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { omit } from 'remeda';
 import {
-  runDefaultAuthMiddlewareTests,
   HTTPMethod,
-} from '@/testutils/authMiddleware.controller.testutils';
-
+  runDefaultAuthMiddlewareTests,
+} from '@/testutils/auth.testutils';
 describe('InterviewController', () => {
   useMongoDB();
   const sandbox = useSandbox();
