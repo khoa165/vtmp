@@ -25,7 +25,7 @@ import bcrypt from 'bcryptjs';
 import { getEmailService } from '@/utils/email';
 import { SinonStub } from 'sinon';
 
-describe.only('InvitationController', () => {
+describe('InvitationController', () => {
   useMongoDB();
   const sandbox = useSandbox();
   let mockToken: string;

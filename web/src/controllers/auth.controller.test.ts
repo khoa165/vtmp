@@ -14,7 +14,7 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { UserRole } from '@vtmp/common/constants';
 import { JWTUtils } from '@/utils/jwt';
-import { assert } from 'console';
+import assert from 'assert';
 
 describe('AuthController', () => {
   useMongoDB();
@@ -356,7 +356,7 @@ describe('AuthController', () => {
       );
     });
   });
-  
+
   describe('PATCH /auth/reset-password', () => {
     let resetToken: string;
     let userId: string;
@@ -489,7 +489,7 @@ describe('AuthController', () => {
         updatedUser!.encryptedPassword
       );
 
-      expect(isPasswordCorrect).to.be.true;
+      assert(isPasswordCorrect);
     });
   });
 });

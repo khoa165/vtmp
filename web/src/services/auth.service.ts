@@ -8,7 +8,14 @@ import {
 import { JWTUtils } from '@/utils/jwt';
 import bcrypt from 'bcryptjs';
 import { omit } from 'remeda';
-import { ResetTokenPayloadSchema } from '@/controllers/auth.controller';
+import { JWT_TOKEN_TYPE } from '@/constants/enums';
+import { z } from 'zod';
+
+const ResetTokenPayloadSchema = z.object({
+  id: z.string(),
+  purpose: z.literal(JWT_TOKEN_TYPE.RESET_PASSWORD),
+  exp: z.number(),
+});
 
 export const AuthService = {
   signup: async ({
@@ -89,7 +96,7 @@ export const AuthService = {
       {
         id: user._id.toString(),
         email: user.email,
-        purpose: 'password_reset',
+        purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
       },
       {
         expiresIn: '10m',
@@ -116,17 +123,6 @@ export const AuthService = {
       token,
       ResetTokenPayloadSchema
     );
-
-    if (decoded.purpose !== 'password_reset') {
-      throw new UnauthorizedError('Invalid token type for password reset', {
-        context: 'resetPassword',
-        tokenType: decoded.purpose,
-      });
-    }
-
-    if (Date.now() >= decoded.exp * 1000) {
-      throw new UnauthorizedError('Token expired', { token });
-    }
 
     const user = await UserRepository.getUserById(decoded.id, {
       includePasswordField: true,
