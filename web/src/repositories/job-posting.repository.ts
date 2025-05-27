@@ -85,7 +85,7 @@ export const JobPostingRepository = {
     return JobPostingModel.aggregate([
       {
         $match: {
-          createdAt: { $gte: twentyFourHoursAgo },
+          datePosted: { $gte: twentyFourHoursAgo },
           deletedAt: null,
         },
       },

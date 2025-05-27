@@ -83,8 +83,7 @@ export const ApplicationController = {
   },
 
   getApplications: async (req: Request, res: Response) => {
-    // const userId = getUserFromRequest(req).user.id;
-    const userId = '68110356bd157e78f5a2137e';
+    const userId = getUserFromRequest(req).user.id;
 
     const filters = ApplicationFilterSchema.parse(req.query);
     const applications = await ApplicationService.getApplications({
