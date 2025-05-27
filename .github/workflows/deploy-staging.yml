@@ -1,9 +1,10 @@
-name: Deploy to Staging
+name: Deploy to staging
 
 on:
   push:
     branches:
       - main
+      - dson/docker-web
 
 jobs:
   test-web:
