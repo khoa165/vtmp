@@ -13,7 +13,6 @@ import {
 } from '@/utils/errors';
 import { assert } from 'console';
 import { UserRole } from '@vtmp/common/constants';
-import { IUser } from '@/models/user.model';
 import { expect } from 'chai';
 import { JWTUtils } from '@/utils/jwt';
 import { EmailService } from '@/utils/email';
