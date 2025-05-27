@@ -40,14 +40,4 @@ export const JobPostingService = {
       filter: filter ?? {},
     });
   },
-
-  getJobPostingsUserHasNotAppliedToWithFilter: async (
-    userId: string,
-    filter: object
-  ) => {
-    return JobPostingRepository.getJobPostingsUserHasNotAppliedToWithFilter(
-      userId,
-      filter
-    );
-  },
 };

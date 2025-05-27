@@ -263,12 +263,13 @@ describe('JobPostingService', () => {
     });
   });
 
-  describe('getJobPostingsUserHasNotAppliedToWithFilter', () => {
+  describe('getJobPostingsUserHasNotAppliedTo With Filter', () => {
     const userIdA = getNewMongoId();
     const userIdB = getNewMongoId();
     const mockCompanyName = 'Example Company 1';
     const mockJobTitle = 'Software Engineer 2';
-    const mockDate = new Date('2023-12-31');
+    const mockStartDate = new Date('2023-12-31');
+    const mockEndDate = new Date('2025-1-1');
     let jobPostings: (IJobPosting | undefined)[];
 
     const mockMultipleJobPostings = [
@@ -293,7 +294,7 @@ describe('JobPostingService', () => {
         jobTitle: 'Software Engineer 3',
         companyName: 'Example Company 3',
         submittedBy: getNewObjectId(),
-        datePosted: new Date('2024-01-01'),
+        datePosted: new Date('2024-05-01'),
       },
       {
         linkId: getNewObjectId(),
@@ -323,26 +324,24 @@ describe('JobPostingService', () => {
         )
       );
 
-      const jobs =
-        await JobPostingService.getJobPostingsUserHasNotAppliedToWithFilter(
-          userIdA,
-          {
-            companyName: mockCompanyName,
-          }
-        );
+      const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+        userId: userIdA,
+        filter: {
+          companyName: mockCompanyName,
+        },
+      });
 
       expect(jobs).to.be.an('array').that.has.lengthOf(0);
     });
 
     it('should return only the job postings not applied by the user and matching the company name filter', async () => {
       const [jobPosting1, jobPosting2] = jobPostings;
-      const jobs =
-        await JobPostingService.getJobPostingsUserHasNotAppliedToWithFilter(
-          userIdA,
-          {
-            companyName: mockCompanyName,
-          }
-        );
+      const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+        userId: userIdA,
+        filter: {
+          companyName: mockCompanyName,
+        },
+      });
 
       expect(jobs).to.be.an('array').that.has.lengthOf(2);
       expect(jobs.map((job) => job._id?.toString())).to.have.members([
@@ -358,13 +357,12 @@ describe('JobPostingService', () => {
         userId: userIdA,
       });
 
-      const jobs =
-        await JobPostingService.getJobPostingsUserHasNotAppliedToWithFilter(
-          userIdA,
-          {
-            companyName: mockCompanyName,
-          }
-        );
+      const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+        userId: userIdA,
+        filter: {
+          companyName: mockCompanyName,
+        },
+      });
 
       expect(jobs).to.be.an('array').that.has.lengthOf(1);
       assert(jobs[0]);
@@ -373,26 +371,25 @@ describe('JobPostingService', () => {
 
     it('should return job postings matching the date filter', async () => {
       const jobPosting3 = jobPostings[2];
-      const jobs =
-        await JobPostingService.getJobPostingsUserHasNotAppliedToWithFilter(
-          userIdA,
-          {
-            datePosted: mockDate,
-          }
-        );
+      const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+        userId: userIdA,
+        filter: {
+          postingDateRangeStart: mockStartDate,
+          postingDateRangeEnd: mockEndDate,
+        },
+      });
 
       expect(jobs).to.be.an('array').that.has.lengthOf(1);
       expect(jobs[0]?._id.toString()).to.equal(jobPosting3?.id);
     });
 
     it('should return an empty array when filter by field with no matching postings', async () => {
-      const jobs =
-        await JobPostingService.getJobPostingsUserHasNotAppliedToWithFilter(
-          userIdA,
-          {
-            jobTitle: 'PD',
-          }
-        );
+      const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+        userId: userIdA,
+        filter: {
+          jobTitle: 'PD',
+        },
+      });
 
       expect(jobs).to.be.an('array').that.has.lengthOf(0);
     });
@@ -408,13 +405,12 @@ describe('JobPostingService', () => {
         userId: userIdB,
       });
 
-      const jobs =
-        await JobPostingService.getJobPostingsUserHasNotAppliedToWithFilter(
-          userIdA,
-          {
-            companyName: mockCompanyName,
-          }
-        );
+      const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+        userId: userIdA,
+        filter: {
+          companyName: mockCompanyName,
+        },
+      });
 
       expect(jobs).to.be.an('array').that.has.lengthOf(1);
       expect(jobs[0]?._id.toString()).to.equal(jobPosting1?.id);
@@ -422,15 +418,14 @@ describe('JobPostingService', () => {
 
     it('should return job postings matching jobTitle, companyName, and location', async () => {
       const [, jobPosting2] = jobPostings;
-      const jobs =
-        await JobPostingService.getJobPostingsUserHasNotAppliedToWithFilter(
-          userIdA,
-          {
-            companyName: mockCompanyName,
-            jobTitle: mockJobTitle,
-            location: JobPostingRegion.CANADA,
-          }
-        );
+      const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+        userId: userIdA,
+        filter: {
+          companyName: mockCompanyName,
+          jobTitle: mockJobTitle,
+          location: JobPostingRegion.CANADA,
+        },
+      });
 
       expect(jobs).to.be.an('array').that.has.lengthOf(1);
       expect(jobs[0]?._id.toString()).to.equal(jobPosting2?.id);
@@ -452,14 +447,13 @@ describe('JobPostingService', () => {
         userId: userIdA,
       });
 
-      const jobs =
-        await JobPostingService.getJobPostingsUserHasNotAppliedToWithFilter(
-          userIdA,
-          {
-            companyName: mockCompanyName,
-            jobTitle: mockJobTitle,
-          }
-        );
+      const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+        userId: userIdA,
+        filter: {
+          companyName: mockCompanyName,
+          jobTitle: mockJobTitle,
+        },
+      });
 
       expect(jobs).to.be.an('array').that.has.lengthOf(1);
       expect(jobs[0]?._id.toString()).to.equal(jobPosting2?.id);
