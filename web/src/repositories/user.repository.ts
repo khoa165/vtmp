@@ -49,7 +49,6 @@ export const UserRepository = {
       email?: string;
       encryptedPassword?: string;
       role?: UserRole;
-      passwordChangedAt: Date;
     }
   ): Promise<IUser | null> => {
     return UserModel.findOneAndUpdate(

@@ -14,6 +14,7 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { UserRole } from '@vtmp/common/constants';
 import { JWTUtils } from '@/utils/jwt';
+import { assert } from 'console';
 
 describe('AuthController', () => {
   useMongoDB();
@@ -327,7 +328,8 @@ describe('AuthController', () => {
           firstName: 'admin',
           lastName: 'viettech',
           password: 'Test!123',
-        }).set('Accept', 'application/json');
+        })
+        .set('Accept', 'application/json');
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Email is required');
     });
@@ -337,9 +339,9 @@ describe('AuthController', () => {
         .post('/api/auth/request-password-reset')
         .send({ email: 'invalid-email' })
         .set('Accept', 'application/json');
-      
+
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Invalid email');
+      expect(res.body.errors[0].message).to.equal('Invalid email address');
     });
 
     it('should return success message for valid email', async () => {
@@ -350,8 +352,8 @@ describe('AuthController', () => {
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.message).to.equal(
-        'If the account exists with this email, you will receive a password reset link via email.'
-      );        
+        'If the account exists with this email, you will receive a password reset link via email'
+      );
     });
   });
   
@@ -371,45 +373,20 @@ describe('AuthController', () => {
       const user = await UserRepository.createUser(mockUser);
       userId = user._id.toString();
       const exp = Math.floor(Date.now() / 1000) + 10 * 60;
-      
+
       resetToken = JWTUtils.createTokenWithPayload({
         id: userId,
         purpose: 'password_reset',
         exp,
-      })
-
-    });
-
-    it('should reset password successfully', async () => {
-      const res = await request(app)
-        .patch('/api/auth/reset-password')
-        .send({ token: resetToken, newPassword: 'newpassword@123' })
-        .set('Accept', 'application/json');
-
-      expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.message).to.equal('Password has been reset successfully');
-
-      const updatedUser = await UserRepository.getUserById(userId, {
-        includePasswordField: true,
       });
-
-      expect(updatedUser).to.not.be.null;
-      const isPasswordCorrect = await bcrypt.compare(
-        'newpassword@123',
-        updatedUser!.encryptedPassword
-      );
-
-      expect(isPasswordCorrect).to.be.true;
     });
 
     it('should return error message for password being too short', async () => {
       const res = await request(app)
-        .post('/api/auth/signup')
+        .patch('/api/auth/reset-password')
         .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'vT1?',
+          token: resetToken,
+          newPassword: 'vT1?',
         })
         .set('Accept', 'application/json');
 
@@ -421,12 +398,10 @@ describe('AuthController', () => {
 
     it('should return error message for password being too long', async () => {
       const res = await request(app)
-        .post('/api/auth/signup')
+        .patch('/api/auth/reset-password')
         .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'Thisisasuperlongpasswordthatcouldbeshortened!123',
+          token: resetToken,
+          newPassword: 'Thisisasuperlongpasswordthatcouldbeshortened!123',
         })
         .set('Accept', 'application/json');
 
@@ -438,13 +413,8 @@ describe('AuthController', () => {
 
     it('should return error message for password having no special characters', async () => {
       const res = await request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'Test1234',
-        })
+        .patch('/api/auth/reset-password')
+        .send({ token: resetToken, newPassword: 'Test1234' })
         .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
@@ -455,13 +425,8 @@ describe('AuthController', () => {
 
     it('should return error message for password having no uppercase characters', async () => {
       const res = await request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'test123!',
-        })
+        .patch('/api/auth/reset-password')
+        .send({ token: resetToken, newPassword: 'test123!' })
         .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
@@ -472,13 +437,8 @@ describe('AuthController', () => {
 
     it('should return error message for password having no lowercase characters', async () => {
       const res = await request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'TEST!123',
-        })
+        .patch('/api/auth/reset-password')
+        .send({ token: resetToken, newPassword: 'TEST!123' })
         .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
@@ -489,13 +449,8 @@ describe('AuthController', () => {
 
     it('should return error message for password having no digit', async () => {
       const res = await request(app)
-        .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'Test!!!@@',
-        })
+        .patch('/api/auth/reset-password')
+        .send({ token: resetToken, newPassword: 'Test!!!@@' })
         .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
@@ -503,7 +458,38 @@ describe('AuthController', () => {
         'Password requires at least 1 digit'
       );
     });
+
+    it('should return error for missing token', async () => {
+      const res = await request(app)
+        .patch('/api/auth/reset-password')
+        .send({ newPassword: 'Testpass@1234' })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Token is required');
+    });
+
+    it('should reset password successfully', async () => {
+      const res = await request(app)
+        .patch('/api/auth/reset-password')
+        .send({ token: resetToken, newPassword: 'Newpassword@123' })
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.have.property('reset');
+      expect(res.body.message).to.equal('Password has been reset successfully');
+
+      const updatedUser = await UserRepository.getUserById(userId, {
+        includePasswordField: true,
+      });
+
+      assert(updatedUser);
+      const isPasswordCorrect = await bcrypt.compare(
+        'Newpassword@123',
+        updatedUser!.encryptedPassword
+      );
+
+      expect(isPasswordCorrect).to.be.true;
+    });
   });
 });
-
-

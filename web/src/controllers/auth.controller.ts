@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthService } from '@/services/auth.service';
 import { z } from 'zod';
-import { InternalServerError } from '@/utils/errors';
 
 const passwordSchema = z
       .string({ required_error: 'Password is required' })
@@ -79,6 +78,12 @@ const resetPasswordSchema = z.object({
   newPassword: passwordSchema,
 });
 
+export const ResetTokenPayloadSchema = z.object({
+  id: z.string(),
+  purpose: z.literal('password_reset'),
+  exp: z.number(),
+});
+
 export const AuthController = {
   signup: async (req: Request, res: Response) => {
     const validatedBody = signupSchema.parse(req.body);
@@ -104,13 +109,7 @@ export const AuthController = {
 
   resetPassword: async (req: Request, res: Response) => {
     const { token, newPassword } = resetPasswordSchema.parse(req.body);
-    if (!token) {
-      throw new InternalServerError('Reset token is required', {
-        context: 'resetPassword',
-        input: req.body
-      });
-    }
-    const reset = await AuthService.resetPassword({ token, newPassword});
+    const reset = await AuthService.resetPassword({ token, newPassword });
     res.status(200).json({
       data: { reset },
       message: 'Password has been reset successfully',

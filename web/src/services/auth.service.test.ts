@@ -9,13 +9,17 @@ import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import {
   DuplicateResourceError,
   ResourceNotFoundError,
-  UnauthorizedError,
+  UnauthorizedError
 } from '@/utils/errors';
 import { assert } from 'console';
 import { UserRole } from '@vtmp/common/constants';
+import { IUser } from '@/models/user.model';
 import { expect } from 'chai';
 import { JWTUtils } from '@/utils/jwt';
 import { EmailService } from '@/utils/email';
+import { Types } from 'mongoose';
+import { ZodError } from 'zod';
+import jwt from 'jsonwebtoken';
 
 describe('AuthService', () => {
   useMongoDB();
@@ -125,14 +129,25 @@ describe('AuthService', () => {
   });
 
   describe('requestPasswordReset', () => {
+    let sendEmailStub: sinon.SinonStub;
+
+    beforeEach(async () => {
+      sendEmailStub = sandbox
+        .stub(EmailService.prototype, 'sendEmail')
+        .resolves();
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
     it('should throw error for user not found', async () => {
-      const userData = {
-        email: 'fake@gmail.com',
-      };
+      const userData = { email: 'fake@gmail.com' };
       await expect(
         AuthService.requestPasswordReset(userData)
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
+
     it('should send password reset email successfully', async () => {
       const encryptedPassword = await bcrypt.hash('test password', 10);
       const mockUser = {
@@ -142,10 +157,6 @@ describe('AuthService', () => {
         encryptedPassword,
       };
       await UserRepository.createUser(mockUser);
-
-      const sendEmailStub = sandbox
-        .stub(EmailService.prototype, 'sendEmail')
-        .resolves();
 
       await expect(AuthService.requestPasswordReset({ email: mockUser.email }))
         .eventually.fulfilled;
@@ -190,7 +201,7 @@ describe('AuthService', () => {
           token: invalidToken,
           newPassword: 'newpassword',
         })
-      ).eventually.rejectedWith(UnauthorizedError);
+      ).eventually.rejectedWith(ZodError);
     });
 
     it('should throw error for expired token', async () => {
@@ -203,31 +214,14 @@ describe('AuthService', () => {
           token: expiredToken,
           newPassword: 'newpassword',
         })
-      ).eventually.rejectedWith(UnauthorizedError);
-    });
-
-    it('should reset password successfully', async () => {
-      const resetpassData = await AuthService.resetPassword({
-        token: resetToken,
-        newPassword: 'newpassword',
-      });
-      assert(resetpassData);
-      expect(resetpassData.success).to.be.true;
-
-      const updatedUser = await UserRepository.getUserById(userId, {
-        includePasswordField: true,
-      });
-      expect(updatedUser).to.not.be.null;
-      const isPasswordMatch = await bcrypt.compare(
-        'newpassword',
-        updatedUser!.encryptedPassword
-      );
-      expect(isPasswordMatch).to.be.true;
+      ).eventually.rejectedWith(jwt.TokenExpiredError);
     });
 
     it('should throw error for user not found', async () => {
+      const invalidUserId = new Types.ObjectId().toString();
+
       const invalidToken = JWTUtils.createTokenWithPayload(
-        { id: 'non_existing_id', purpose: 'password_reset' },
+        { id: invalidUserId, purpose: 'password_reset' },
         { expiresIn: '10m' }
       );
       await expect(
@@ -236,6 +230,33 @@ describe('AuthService', () => {
           newPassword: 'newpassword',
         })
       ).eventually.rejectedWith(ResourceNotFoundError);
+    });
+
+    it('should throw error if the new password is the same as the old one',async () => {
+      await expect(
+        AuthService.resetPassword({
+          token: resetToken,
+          newPassword: 'oldpassword',
+        })
+      ).eventually.rejectedWith(DuplicateResourceError, 'New password can not be similar as the old password.');
+    })
+
+    it('should reset password successfully', async () => {
+      const updatedUser = await AuthService.resetPassword({
+        token: resetToken,
+        newPassword: 'newpassword',
+      });
+      expect(updatedUser).to.have.property('email', 'testreset@gmail.com');
+
+      const userFromDB = await UserRepository.getUserById(userId, {
+        includePasswordField: true,
+      });
+      expect(userFromDB).to.not.be.null;
+      const isPasswordMatch = await bcrypt.compare(
+        'newpassword',
+        userFromDB!.encryptedPassword
+      );
+      expect(isPasswordMatch).to.be.true;
     });
   });
 });

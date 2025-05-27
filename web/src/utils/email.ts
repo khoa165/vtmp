@@ -37,8 +37,8 @@ export class EmailService {
       body: `<h1>Reset Your Password</h1>
       <p> Hi ${name}, </p>
       <p>We received a request to reset your password for your VTMP account. To proceed, please click the link below:</p>
-      <a href="${link}" target="_blank">Reset Password</a>
-      <p>This link will expire in 10 minutes for security reason and please DO NOT SHARE IT with anyone.</p>`,
+      <a href=${link} target="_blank">Reset Password</a>
+      <p>For security reason, this link will expire in 10 minutes and please DO NOT SHARE IT with anyone.</p>`,
     };
   }
 

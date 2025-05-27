@@ -7,6 +7,7 @@ import {
 } from '@/utils/errors';
 import { JWTUtils } from '@/utils/jwt';
 import bcrypt from 'bcryptjs';
+import { ResetTokenPayloadSchema } from '@/controllers/auth.controller';
 
 export const AuthService = {
   signup: async ({
@@ -76,6 +77,7 @@ export const AuthService = {
     const resetToken = JWTUtils.createTokenWithPayload(
       { 
         id: user._id.toString(),
+        email: user.email,
         purpose: 'password_reset' 
       },
       {
@@ -83,8 +85,6 @@ export const AuthService = {
       }
     );
     
-    console.log(`Password reset token for ${email}: ${resetToken}`);
-
     const emailService = new EmailService();
     const emailTemplate = emailService.getPasswordResetTemplate(
       `${user.firstName} ${user.lastName}`,
@@ -102,25 +102,7 @@ export const AuthService = {
     newPassword: string;
   }) => {
 
-    type ResetTokenPayload = {
-      id: string;
-      purpose: string;
-      exp: number;
-    };
-
-    const decoded = JWTUtils.decodeAndParseToken<ResetTokenPayload>(
-      token, 
-      {
-        parse: (data: unknown) => {
-          const payload = data as ResetTokenPayload;
-          return {
-            id: payload.id,
-            purpose: payload.purpose || '',
-            exp: payload.exp || 0,
-          }
-        }
-      }
-    );
+    const decoded = JWTUtils.decodeAndParseToken(token, ResetTokenPayloadSchema);
 
     if (decoded.purpose !== 'password_reset') {
       throw new UnauthorizedError('Invalid token type for password reset', {
@@ -144,14 +126,21 @@ export const AuthService = {
       });
     }
 
+    const isSamePassword = await bcrypt.compare(newPassword, user.encryptedPassword);
+    if (isSamePassword) {
+      throw new DuplicateResourceError('New password can not be similar as the old password.', {
+        context: 'resetPassword',
+        userId: user._id.toString()
+      });
+    }
+
     const saltRounds = 10;
     const encryptedPassword = await bcrypt.hash(newPassword, saltRounds);
 
-    await UserRepository.updateUserById(user._id.toString(), {
-      encryptedPassword,
-      passwordChangedAt: new Date(),
+    const updatedUser = await UserRepository.updateUserById(user._id.toString(), {
+      encryptedPassword
     });
 
-    return { success: true };
+    return updatedUser;
   },
 };
