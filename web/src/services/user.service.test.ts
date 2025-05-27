@@ -5,7 +5,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { UserRepository } from '@/repositories/user.repository';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { assert } from 'console';
+import assert from 'assert';
 import { UserRole } from '@vtmp/common/constants';
 import { IUser } from '@/models/user.model';
 
