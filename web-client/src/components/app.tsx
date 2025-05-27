@@ -14,7 +14,7 @@ import { PageWithNavigation } from '@/components/layout/page-with-navigation';
 import { TreeContainer } from '@/components/tree';
 import { Mentorship2025Apply } from '@/components/apply';
 import { Mentorship2025Proposal } from './proposal';
-import { Playground } from '@/components/playground';
+import LoginPage from '@/components/pages/auth/login';
 import { PageWithSidebar } from '@/components/layout/page-with-sidebar';
 import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
 import { UserInvitationPage } from '@/components/pages/admins/users/user-invitation';
@@ -62,19 +62,18 @@ export const App = () => {
             )}
             <Route path="/projects" element={<ProjectsContainer />} />
             <Route path="/stats/*" element={<StatsContainer />} />
-            <Route path="/playground" element={<Playground />} />
           </Route>
         </Route>
         <Route element={<PageWithToast />}>
-          <Route path="/playground" element={<Playground />} />
           <Route element={<PageWithSidebar />}>
             <Route path="/link-sharing" element={<LinksPage />} />
             <Route path="/job-postings" element={<JobPostingsPage />} />
             <Route path="/user-invitation" element={<UserInvitationPage />} />
             <Route path="/application-tracker" element={<ApplicationsPage />} />
           </Route>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/*" element={<>404</>} />
         </Route>
-        <Route path="/*" element={<>404</>} />
       </Routes>
     </Router>
   );

@@ -9,7 +9,7 @@ const JobPostingUpdateSchema = z.object({
   url: z.string().url().optional(),
   jobTitle: z.string().optional(),
   companyName: z.string().optional(),
-  location: z.enum([JobPostingRegion.US, JobPostingRegion.CANADA]).optional(),
+  location: z.nativeEnum(JobPostingRegion).optional(),
   datePosted: z.coerce.date().optional(),
   jobDescription: z.string().optional(),
   adminNote: z.string().optional(),
