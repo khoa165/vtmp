@@ -1,12 +1,16 @@
 import { LinkStatus } from '@vtmp/common/constants';
 import { LinkRepository } from '@/repositories/link.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { ResourceNotFoundError } from '@/utils/errors';
+import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
 
 export const LinkService = {
   submitLink: async (url: string) => {
-    return LinkRepository.createLink(url);
+    try {
+      return await LinkRepository.createLink({ url });
+    } catch {
+      throw new DuplicateResourceError('Duplicate url', { url });
+    }
   },
 
   approveLinkAndCreateJobPosting: async (
@@ -61,7 +65,17 @@ export const LinkService = {
     return updatedLink;
   },
 
-  getPendingLinks: async () => {
-    return LinkRepository.getLinksByStatus(LinkStatus.PENDING);
+  getLinkCountByStatus: async () => {
+    const linksCountByStatus = await LinkRepository.getLinkCountByStatus();
+    return Object.fromEntries(
+      Object.keys(LinkStatus).map((status) => [
+        status,
+        linksCountByStatus[status] || 0,
+      ])
+    );
+  },
+
+  getLinks: async (filters: { status?: LinkStatus } = {}) => {
+    return LinkRepository.getLinks(filters);
   },
 };

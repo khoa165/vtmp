@@ -59,8 +59,14 @@ export const ApplicationService = {
     });
   },
 
-  getApplications: async (userId: string): Promise<IApplication[]> => {
-    return ApplicationRepository.getApplications(userId);
+  getApplications: async ({
+    userId,
+    filters = {},
+  }: {
+    userId: string;
+    filters?: { status?: ApplicationStatus };
+  }): Promise<IApplication[]> => {
+    return ApplicationRepository.getApplications({ userId, filters });
   },
 
   getApplicationById: async ({
@@ -154,8 +160,7 @@ export const ApplicationService = {
         });
 
       const pendingInterviews = await InterviewRepository.getInterviews({
-        userId,
-        filters: { applicationId, status: InterviewStatus.PENDING },
+        filters: { userId, applicationId, status: InterviewStatus.PENDING },
         session,
       });
 
@@ -201,8 +206,7 @@ export const ApplicationService = {
 
     // call getInterviews to get an array to check if this app has interviews
     const interviews = await InterviewRepository.getInterviews({
-      userId,
-      filters: { applicationId },
+      filters: { userId, applicationId },
     });
     if (interviews.length > 0) {
       throw new ForbiddenError(

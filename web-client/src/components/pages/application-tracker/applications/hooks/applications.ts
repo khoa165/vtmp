@@ -5,39 +5,55 @@ import { toast } from 'sonner';
 import {
   ApplicationsResponseSchema,
   ApplicationResponseSchema,
+  ApplicationsCountByStatusSchema,
 } from '@/components/pages/application-tracker/applications/validation';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import axios from 'axios';
 
-export const useGetApplications = () => {
-  return useQuery({
-    queryKey: [QueryKey.GET_APPLICATIONS],
-    queryFn: async () => {
-      const response = await request(
-        Method.GET,
-        '/applications',
-        null,
-        ApplicationsResponseSchema
-      );
-      return response.data;
-    },
+export const useGetApplications = (
+  applicationFilter: { status?: ApplicationStatus } = {}
+) =>
+  useQuery({
+    queryKey: [QueryKey.GET_APPLICATIONS, applicationFilter],
+    queryFn: () =>
+      request({
+        method: Method.GET,
+        url: '/applications',
+        data: applicationFilter,
+        schema: ApplicationsResponseSchema,
+        options: { includeOnlyDataField: true, requireAuth: true },
+      }),
   });
-};
+
+export const useGetApplicationsCountByStatus = () =>
+  useQuery({
+    queryKey: [QueryKey.GET_APPLICATIONS_COUNT_BY_STATUS],
+    queryFn: () =>
+      request({
+        method: Method.GET,
+        url: '/applications/count-by-status',
+        schema: ApplicationsCountByStatusSchema,
+        options: { includeOnlyDataField: true, requireAuth: true },
+      }),
+  });
 
 export const useDeleteApplication = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (applicationId: string) =>
-      request(
-        Method.DELETE,
-        `/applications/${applicationId}`,
-        null,
-        ApplicationResponseSchema
-      ),
+      request({
+        method: Method.DELETE,
+        url: `/applications/${applicationId}`,
+        schema: ApplicationResponseSchema,
+        options: { requireAuth: true },
+      }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_APPLICATIONS_COUNT_BY_STATUS],
       });
       toast.success(res.message);
     },
@@ -65,15 +81,19 @@ export const useUpdateApplicationStatus = () => {
       applicationId: string;
       body: { updatedStatus: ApplicationStatus };
     }) =>
-      request(
-        Method.PUT,
-        `/applications/${applicationId}/updateStatus`,
-        body,
-        ApplicationResponseSchema
-      ),
+      request({
+        method: Method.PUT,
+        url: `/applications/${applicationId}/updateStatus`,
+        data: body,
+        schema: ApplicationResponseSchema,
+        options: { requireAuth: true },
+      }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_APPLICATIONS_COUNT_BY_STATUS],
       });
       toast.success(res.message);
     },

@@ -1,14 +1,18 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 import { LinkStatus } from '@vtmp/common/constants';
-
+import { JobPostingRegion } from '@vtmp/common/constants';
 export interface ILink extends Document {
   _id: Types.ObjectId;
   url: string;
-  status?: LinkStatus;
+  status: LinkStatus;
   submittedOn: Date;
-  submittedBy?: Types.ObjectId;
+  jobTitle?: string;
   companyName?: string;
-  userNote?: string;
+  location: JobPostingRegion;
+  datePosted?: Date;
+  jobDescription?: string;
+  submittedBy?: Types.ObjectId;
+  deletedAt?: Date;
 }
 
 const LinkSchema = new mongoose.Schema<ILink>(
@@ -16,6 +20,7 @@ const LinkSchema = new mongoose.Schema<ILink>(
     url: {
       type: String,
       required: true,
+      unique: true,
     },
     status: {
       type: String,
@@ -26,17 +31,29 @@ const LinkSchema = new mongoose.Schema<ILink>(
       type: Date,
       default: Date.now,
     },
-
+    jobTitle: {
+      type: String,
+    },
+    companyName: {
+      type: String,
+    },
+    location: {
+      type: String,
+      enum: Object.values(JobPostingRegion),
+      default: JobPostingRegion.US,
+    },
+    datePosted: {
+      type: Date,
+    },
+    jobDescription: {
+      type: String,
+    },
     submittedBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-
-    companyName: {
-      type: String,
-    },
-    userNote: {
-      type: String,
+    deletedAt: {
+      type: Date,
     },
   },
   { timestamps: true }

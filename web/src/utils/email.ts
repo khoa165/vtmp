@@ -61,3 +61,12 @@ export class EmailService {
     await this.transporter.sendMail(mailOptions);
   }
 }
+
+let emailServiceInstance: EmailService | null = null;
+
+export const getEmailService = (): EmailService => {
+  if (!emailServiceInstance) {
+    emailServiceInstance = new EmailService();
+  }
+  return emailServiceInstance;
+};

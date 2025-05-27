@@ -1,5 +1,5 @@
 import { UserRepository } from '@/repositories/user.repository';
-import { EmailService } from '@/utils/email';
+import { getEmailService } from '@/utils/email';
 import {
   DuplicateResourceError,
   UnauthorizedError,
@@ -7,6 +7,7 @@ import {
 } from '@/utils/errors';
 import { JWTUtils } from '@/utils/jwt';
 import bcrypt from 'bcryptjs';
+import { omit } from 'remeda';
 import { ResetTokenPayloadSchema } from '@/controllers/auth.controller';
 
 export const AuthService = {
@@ -35,12 +36,21 @@ export const AuthService = {
     const saltRounds = 10;
     const encryptedPassword = await bcrypt.hash(password, saltRounds);
 
-    return UserRepository.createUser({
+    const user = await UserRepository.createUser({
       firstName,
       lastName,
       email,
       encryptedPassword,
     });
+
+    const token = JWTUtils.createTokenWithPayload(
+      { id: user._id.toString() },
+      {
+        expiresIn: '2w',
+      }
+    );
+
+    return { token, user: omit(user.toObject(), ['encryptedPassword']) };
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {
@@ -62,10 +72,11 @@ export const AuthService = {
     const token = JWTUtils.createTokenWithPayload(
       { id: user._id.toString() },
       {
-        expiresIn: '1h',
+        expiresIn: '2w',
       }
     );
-    return token;
+
+    return { token, user: omit(user, ['encryptedPassword']) };
   },
 
   requestPasswordReset: async ({ email }: { email: string }) => {
@@ -75,17 +86,17 @@ export const AuthService = {
     }
 
     const resetToken = JWTUtils.createTokenWithPayload(
-      { 
+      {
         id: user._id.toString(),
         email: user.email,
-        purpose: 'password_reset' 
+        purpose: 'password_reset',
       },
       {
         expiresIn: '10m',
       }
     );
-    
-    const emailService = new EmailService();
+
+    const emailService = getEmailService();
     const emailTemplate = emailService.getPasswordResetTemplate(
       `${user.firstName} ${user.lastName}`,
       user.email,
@@ -101,18 +112,20 @@ export const AuthService = {
     token: string;
     newPassword: string;
   }) => {
-
-    const decoded = JWTUtils.decodeAndParseToken(token, ResetTokenPayloadSchema);
+    const decoded = JWTUtils.decodeAndParseToken(
+      token,
+      ResetTokenPayloadSchema
+    );
 
     if (decoded.purpose !== 'password_reset') {
       throw new UnauthorizedError('Invalid token type for password reset', {
         context: 'resetPassword',
-        tokenType: decoded.purpose
+        tokenType: decoded.purpose,
       });
     }
 
-    if (Date.now() >= decoded.exp*1000) {
-      throw new UnauthorizedError('Token expired', { token })
+    if (Date.now() >= decoded.exp * 1000) {
+      throw new UnauthorizedError('Token expired', { token });
     }
 
     const user = await UserRepository.getUserById(decoded.id, {
@@ -122,24 +135,33 @@ export const AuthService = {
     if (!user) {
       throw new ResourceNotFoundError('User not found', {
         userId: decoded.id,
-        context: 'resetPassword'
+        context: 'resetPassword',
       });
     }
 
-    const isSamePassword = await bcrypt.compare(newPassword, user.encryptedPassword);
+    const isSamePassword = await bcrypt.compare(
+      newPassword,
+      user.encryptedPassword
+    );
     if (isSamePassword) {
-      throw new DuplicateResourceError('New password can not be similar as the old password.', {
-        context: 'resetPassword',
-        userId: user._id.toString()
-      });
+      throw new DuplicateResourceError(
+        'New password can not be similar as the old password.',
+        {
+          context: 'resetPassword',
+          userId: user._id.toString(),
+        }
+      );
     }
 
     const saltRounds = 10;
     const encryptedPassword = await bcrypt.hash(newPassword, saltRounds);
 
-    const updatedUser = await UserRepository.updateUserById(user._id.toString(), {
-      encryptedPassword
-    });
+    const updatedUser = await UserRepository.updateUserById(
+      user._id.toString(),
+      {
+        encryptedPassword,
+      }
+    );
 
     return updatedUser;
   },

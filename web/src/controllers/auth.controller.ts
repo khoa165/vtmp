@@ -87,14 +87,15 @@ export const ResetTokenPayloadSchema = z.object({
 export const AuthController = {
   signup: async (req: Request, res: Response) => {
     const validatedBody = signupSchema.parse(req.body);
-    const token = await AuthService.signup(validatedBody);
-    res.status(200).json({ data: { token } });
+    const { token, user } = await AuthService.signup(validatedBody);
+    res.status(200).json({ data: { token, user } });
   },
 
   login: async (req: Request, res: Response) => {
     const validatedBody = loginSchema.parse(req.body);
-    const token = await AuthService.login(validatedBody);
-    res.status(200).json({ data: { token } });
+    const { token, user } = await AuthService.login(validatedBody);
+
+    res.status(200).json({ data: { token, user } });
   },
 
   requestPasswordReset: async (req: Request, res: Response) => {

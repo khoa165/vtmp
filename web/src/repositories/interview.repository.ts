@@ -43,22 +43,21 @@ export const InterviewRepository = {
   },
 
   getInterviews: async ({
-    userId,
-    filters,
+    filters = {},
     session,
   }: {
-    userId: string;
-    filters?: {
+    filters: {
+      userId?: string;
       applicationId?: string;
       status?: InterviewStatus;
+      companyName?: string;
     };
     session?: ClientSession;
   }): Promise<IInterview[]> => {
     return InterviewModel.find(
       {
-        userId,
         deletedAt: null,
-        ...(filters || {}),
+        ...filters,
       },
       null,
       session ? { session } : {}

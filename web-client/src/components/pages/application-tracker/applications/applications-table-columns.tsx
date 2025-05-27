@@ -1,20 +1,15 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/base/checkbox';
-import { ArrowUpDown, ChevronDown } from 'lucide-react';
-import { Button } from '@/components/base/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/base/dropdown-menu';
+import { Link } from 'lucide-react';
 import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 import { ApplicationStatus } from '@vtmp/common/constants';
-import { ApplicationsAction } from '@/components/pages/application-tracker/applications/applications-action';
+import {
+  CellActions,
+  CellApplicationStatus,
+} from '@/components/pages/application-tracker/applications/cell';
 import { format } from 'date-fns';
-
-// TODO-(QuangMinhNguyen27405/dsmai): General => Add arrow up when sorting ascending and down when descending
-// and updown if we are sorting by a different column
+import { HeaderSorting } from '@/components/pages/application-tracker/applications/header';
+import { ApplicationInterestColumn } from '@/components/pages/application-tracker/applications/application-interest-column';
 
 export const applicationsTableColumns = ({
   deleteApplicationFn,
@@ -39,6 +34,7 @@ export const applicationsTableColumns = ({
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
+        className="ml-4"
       />
     ),
     cell: ({ row }) => (
@@ -46,92 +42,85 @@ export const applicationsTableColumns = ({
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="ml-4"
       />
     ),
     enableSorting: false,
     enableHiding: false,
+    enableResizing: false,
   },
   {
     accessorKey: 'companyName',
-    header: 'Company',
+    header: ({ column }) => {
+      return <HeaderSorting column={column} headerName="Company" />;
+    },
+    enableResizing: true,
   },
   {
     accessorKey: 'status',
     header: ({ column }) => {
-      // TODO-(QuangMinhNguyen27405/dsmai): Add arrow up when sorting ascending and down when descending
-      // and updown if we are sorting by a different column
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Status
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
+      return <HeaderSorting column={column} headerName="Status" />;
     },
     cell: ({ row }) => {
       const application = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="outline">
-              {application.status} <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {Object.values(ApplicationStatus).map((status, index) => (
-              <DropdownMenuItem
-                key={index}
-                onClick={() => {
-                  updateApplicationStatusFn({
-                    applicationId: application._id,
-                    body: { updatedStatus: status },
-                  });
-                }}
-              >
-                {status}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <CellApplicationStatus
+          application={application}
+          updateApplicationStatusFn={updateApplicationStatusFn}
+        />
       );
     },
+    enableResizing: true,
   },
   {
     accessorKey: 'appliedOnDate',
     header: ({ column }) => {
-      // TODO-(QuangMinhNguyen27405/dsmai): Add arrow up when sorting ascending and down when descending
-      // and updown if we are sorting by a different column
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Date Applied
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
+      return <HeaderSorting column={column} headerName="Date Applied" />;
     },
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('appliedOnDate');
       const date = new Date(isoDate);
+      return <div>{format(date, 'MMM d, yyyy')}</div>;
+    },
+    enableResizing: true,
+  },
+  {
+    accessorKey: 'portalLink',
+    header: 'Portal Link',
+    cell: ({ row }) => {
       return (
-        <div className="px-4 text-left">{format(date, 'MMM d, yyyy')}</div>
+        <a
+          href={row.original.portalLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center underline hover:text-primary"
+        >
+          {row.original.portalLink}
+          <Link className="ml-1 h-4 w-4" />
+        </a>
       );
     },
+    enableResizing: true,
   },
-  { accessorKey: 'portalLink', header: 'Portal Link' },
-  { accessorKey: 'interest', header: 'Interest' },
-  { accessorKey: 'referrer', header: 'Referrer' },
-  { accessorKey: 'note', header: 'Note' },
+  {
+    accessorKey: 'interest',
+    header: ({ column }) => {
+      return <HeaderSorting column={column} headerName="Interest" />;
+    },
+    cell: ({ row }) => {
+      return <ApplicationInterestColumn interest={row.original.interest} />;
+    },
+    enableResizing: true,
+  },
+  { accessorKey: 'referrer', header: 'Referrer', enableResizing: true },
+  { accessorKey: 'note', header: 'Note', enableResizing: true },
   {
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
       const application = row.original;
       return (
-        <ApplicationsAction
+        <CellActions
           application={application}
           deleteApplicationFn={deleteApplicationFn}
         />
