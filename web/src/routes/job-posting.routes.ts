@@ -21,5 +21,6 @@ JobPostingRoutes.get(
 
 JobPostingRoutes.get(
   '/not-applied-last-24h',
+  authenticate,
   wrappedHandlers([JobPostingController.getJobPostingsInADay])
 );

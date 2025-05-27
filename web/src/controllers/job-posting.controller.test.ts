@@ -36,6 +36,7 @@ describe('JobPostingController', () => {
       jobTitle: 'Software Engineer 1',
       companyName: 'Example Company 1',
       submittedBy: getNewObjectId(),
+      datePosted: new Date(Date.now() - 24 * 60 * 20 * 1000),
     },
     {
       linkId: getNewObjectId(),
@@ -43,6 +44,7 @@ describe('JobPostingController', () => {
       jobTitle: 'Software Engineer 2',
       companyName: 'Example Company 2',
       submittedBy: getNewObjectId(),
+      datePosted: new Date(Date.now() - 24 * 20 * 20 * 1000),
     },
     {
       linkId: getNewObjectId(),
@@ -50,6 +52,7 @@ describe('JobPostingController', () => {
       jobTitle: 'Software Engineer 3',
       companyName: 'Example Company 3',
       submittedBy: getNewObjectId(),
+      datePosted: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
     },
     {
       linkId: getNewObjectId(),
@@ -57,6 +60,7 @@ describe('JobPostingController', () => {
       jobTitle: 'Software Engineer 4',
       companyName: 'Example Company 4',
       submittedBy: getNewObjectId(),
+      datePosted: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
     },
   ];
 
@@ -256,6 +260,100 @@ describe('JobPostingController', () => {
       expect(res.body.data.map((job: IJobPosting) => job._id)).to.have.members([
         jobPosting3?.id,
         jobPosting4?.id,
+      ]);
+    });
+  });
+
+  describe('getJobPostingsInADay', () => {
+    it('should return an empty array if user has applied to all job postings in a day', async () => {
+      await Promise.all(
+        jobPostings.map((jobPosting) =>
+          ApplicationRepository.createApplication({
+            jobPostingId: jobPosting?.id,
+            userId: userIdA,
+          })
+        )
+      );
+
+      const res = await request(app)
+        .get('/api/job-postings/not-applied-last-24h')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.has.lengthOf(0);
+    });
+
+    it('should return all job postings in a day if user has not applied to any', async () => {
+      const [jobPosting1, jobPosting2] = jobPostings;
+      const res = await request(app)
+        .get('/api/job-postings/not-applied-last-24h')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.has.lengthOf(2);
+      expect(res.body.data.map((job: IJobPosting) => job._id)).to.have.members([
+        jobPosting1?.id,
+        jobPosting2?.id,
+      ]);
+    });
+
+    it('should exclude soft-deleted job postings from results', async () => {
+      const [jobPosting1, jobPosting2] = jobPostings;
+
+      await JobPostingRepository.deleteJobPostingById(jobPosting1?.id);
+
+      const res = await request(app)
+        .get('/api/job-postings/not-applied-last-24h')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data[0]._id).to.equal(jobPosting2?.id);
+    });
+
+    it('should not exclude job postings the user applied to and later deleted the application', async () => {
+      const applications = await Promise.all(
+        jobPostings.map((jobPosting) =>
+          ApplicationRepository.createApplication({
+            jobPostingId: jobPosting?.id,
+            userId: userIdA,
+          })
+        )
+      );
+
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: applications[0]?.id,
+        userId: userIdA,
+      });
+
+      const res = await request(app)
+        .get('/api/job-postings/not-applied-last-24h')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data[0]._id).to.equal(jobPostings[0]?.id);
+    });
+
+    it('should include job postings applied by another user', async () => {
+      const [jobPosting1, jobPosting2] = jobPostings;
+      await ApplicationRepository.createApplication({
+        jobPostingId: jobPostings[0]?.id,
+        userId: userIdB,
+      });
+
+      const res = await request(app)
+        .get('/api/job-postings/not-applied-last-24h')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.has.lengthOf(2);
+      expect(res.body.data.map((job: IJobPosting) => job._id)).to.have.members([
+        jobPosting1?.id,
+        jobPosting2?.id,
       ]);
     });
   });
