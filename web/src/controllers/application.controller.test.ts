@@ -26,7 +26,7 @@ import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
   runUserLogin,
-} from '@/testutils/authMiddleware.controller.testutils';
+} from '@/testutils/auth.testutils';
 
 describe('ApplicationController', () => {
   useMongoDB();
