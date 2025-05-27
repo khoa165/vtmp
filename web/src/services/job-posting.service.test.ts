@@ -251,4 +251,127 @@ describe('JobPostingService', () => {
       ).to.have.members([jobPosting3?.id, jobPosting4?.id]);
     });
   });
+
+  describe('getJobPostingInADay', () => {
+    const userIdA = getNewMongoId();
+    const userIdB = getNewMongoId();
+    let jobPostings: (IJobPosting | undefined)[];
+
+    const mockMultipleJobPostings = [
+      {
+        linkId: getNewObjectId(),
+        url: 'http://example1.com/job-posting',
+        jobTitle: 'Software Engineer 1',
+        companyName: 'Example Company 1',
+        submittedBy: getNewObjectId(),
+        datePosted: new Date(Date.now() - 24 * 60 * 20 * 1000),
+      },
+      {
+        linkId: getNewObjectId(),
+        url: 'http://example2.com/job-posting',
+        jobTitle: 'Software Engineer 2',
+        companyName: 'Example Company 2',
+        submittedBy: getNewObjectId(),
+        datePosted: new Date(Date.now() - 24 * 20 * 20 * 1000),
+      },
+      {
+        linkId: getNewObjectId(),
+        url: 'http://example3.com/job-posting',
+        jobTitle: 'Software Engineer 3',
+        companyName: 'Example Company 3',
+        submittedBy: getNewObjectId(),
+        datePosted: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      },
+    ];
+
+    beforeEach(async () => {
+      jobPostings = await Promise.all(
+        mockMultipleJobPostings.map((jobPosting) =>
+          JobPostingRepository.createJobPosting({
+            jobPostingData: jobPosting,
+          })
+        )
+      );
+    });
+
+    it('should return an array of job posting in a day', async () => {
+      const [jobPosting1, jobPosting2] = jobPostings;
+      const jobsInAday = await JobPostingService.getJobPostingsInADay(userIdA);
+
+      expect(jobsInAday).to.be.an('array').that.have.lengthOf(2);
+      expect(jobsInAday.map((jobs) => jobs._id?.toString())).to.have.members([
+        jobPosting1?.id,
+        jobPosting2?.id,
+      ]);
+    });
+
+    it('should return an empty array if user has applied to all available job postings in a day', async () => {
+      await Promise.all(
+        jobPostings.map((jobPosting) =>
+          ApplicationRepository.createApplication({
+            jobPostingId: jobPosting?.id,
+            userId: userIdA,
+          })
+        )
+      );
+
+      const jobsInADay = await JobPostingService.getJobPostingsInADay(userIdA);
+      expect(jobsInADay).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should not include job postings that are soft-deleted', async () => {
+      const [jobPosting1, jobPosting2] = jobPostings;
+      await JobPostingRepository.deleteJobPostingById(jobPosting1?.id);
+
+      const jobsInADay = await JobPostingService.getJobPostingsInADay(userIdA);
+
+      expect(jobsInADay).to.be.an('array').that.have.lengthOf(1);
+      expect(jobsInADay[0]?._id.toString()).to.equal(jobPosting2?.id);
+    });
+
+    it('should include job postings applied to by another user', async () => {
+      const [jobPosting1, jobPosting2] = jobPostings;
+
+      await ApplicationRepository.createApplication({
+        jobPostingId: jobPosting1?.id,
+        userId: userIdB,
+      });
+      await ApplicationRepository.createApplication({
+        jobPostingId: jobPosting2?.id,
+        userId: userIdB,
+      });
+
+      const jobsInAday = await JobPostingService.getJobPostingsInADay(userIdA);
+
+      expect(jobsInAday).to.be.an('array').that.have.lengthOf(2);
+      expect(jobsInAday.map((jobs) => jobs._id?.toString())).to.have.members([
+        jobPosting1?.id,
+        jobPosting2?.id,
+      ]);
+    });
+
+    it('should not exclude job postings the user applied to and later deleted the application', async () => {
+      const applications = await Promise.all(
+        jobPostings.map((jobPosting) =>
+          ApplicationRepository.createApplication({
+            jobPostingId: jobPosting?.id,
+            userId: userIdA,
+          })
+        )
+      );
+
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: applications[0]?.id,
+        userId: userIdA,
+      });
+
+      const jobsNotAppliedByUserA =
+        await JobPostingService.getJobPostingsInADay(userIdA);
+
+      expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
+      expect(jobsNotAppliedByUserA[0]?._id?.toString()).to.equal(
+        jobPostings[0]?.id
+      );
+    });
+  });
 });
