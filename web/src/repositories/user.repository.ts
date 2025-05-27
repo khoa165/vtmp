@@ -22,7 +22,6 @@ export const UserRepository = {
       includePasswordField?: boolean;
     }
   ): Promise<IUser | null> => {
-
     return UserModel.findOne(
       { email, deletedAt: null },
       options?.includePasswordField ? {} : { encryptedPassword: 0 }
