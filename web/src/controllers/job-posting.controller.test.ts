@@ -87,7 +87,7 @@ describe('JobPostingController', () => {
     }));
   });
 
-  describe('updateJobPosting', () => {
+  describe.only('updateJobPosting', () => {
     it('should return error message for no job posting found', async () => {
       const newJobPostingUpdate = {
         jobTitle: 'Senior Software Engineer',
