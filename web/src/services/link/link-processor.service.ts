@@ -5,8 +5,8 @@ import { ExtractLinkMetadataService } from '@/services/link/extract-link-metadat
 import { LinkDeduplicatorService } from '@/services/link/link-deduplicator.service';
 import { LinkService } from '@/services/link.service';
 
-export class LinkProcessorService {
-  static async processLink(url: string): Promise<void> {
+export const LinkProcessorService = {
+  async processLink(url: string): Promise<void> {
     const validUrl = await LinkValidatorService.validateLink(url);
     const metaData: LinkMetaData =
       await ExtractLinkMetadataService.extractMetadata(validUrl);
@@ -15,5 +15,5 @@ export class LinkProcessorService {
     );
     await LinkDeduplicatorService.checkDuplicate(normalizedUrl);
     await LinkService.submitLink(url);
-  }
-}
+  },
+};
