@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { SortingState } from '@tanstack/react-table';
-import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
 import { InvitationTable } from '@/components/pages/admins/users/invitation-dashboard/invitation-table';
 import { invitationsTableColumns } from '@/components/pages/admins/users/invitation-dashboard/invitations-table-columns';
 import { InvitationStatus } from '@vtmp/common/constants';

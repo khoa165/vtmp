@@ -11,26 +11,40 @@ export const invitationsTableColumns = (): ColumnDef<IInvitationSchema>[] => [
   {
     accessorKey: 'receiverEmail',
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Send To" />;
+      return (
+        <div className="flex justify-center">
+          <HeaderSorting column={column} headerName="Send To" />
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      const invitation = row.original;
+      return (
+        <div className="flex justify-center">{invitation.receiverEmail}</div>
+      );
     },
     enableResizing: true,
   },
   {
     accessorKey: 'status',
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Status" />;
+      return (
+        <div className="flex justify-center">
+          <HeaderSorting column={column} headerName="Status" />{' '}
+        </div>
+      );
     },
     cell: ({ row }) => {
       const invitation = row.original;
       return (
-        <div>
+        <div className="flex justify-center">
           <Button
             variant="outline"
             justify="between"
             size="sm"
-            className="w-[170px] text-left"
+            className="w-[170px] flex justify-center"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2  text-center">
               <StatusDot
                 status={invitation.status}
                 colorMapping={InvitationStatusToColorMapping}
@@ -46,13 +60,35 @@ export const invitationsTableColumns = (): ColumnDef<IInvitationSchema>[] => [
   {
     accessorKey: 'expiryDate',
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Expiry Date" />;
+      return (
+        <div className="flex justify-center">
+          <HeaderSorting column={column} headerName="Expiry Date" />
+        </div>
+      );
     },
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('expiryDate');
       const date = new Date(isoDate);
-      return <div>{format(date, 'MMM d, yyyy')}</div>;
+      return (
+        <div className="flex justify-center">{format(date, 'MMM d, yyyy')}</div>
+      );
     },
     enableResizing: true,
+  },
+  {
+    id: 'actions',
+    enableHiding: false,
+    cell: () => {
+      return (
+        <div className="flex justify-center gap-1">
+          <Button justify="between" size="sm" className="bg-[#FEB584]">
+            Revoke
+          </Button>
+          <Button justify="between" size="sm" className="bg-[#E1FFFA]">
+            Resend
+          </Button>
+        </div>
+      );
+    },
   },
 ];
