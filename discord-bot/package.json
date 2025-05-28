@@ -1,0 +1,10 @@
+{
+  "name": "@vtmp/discord-bot",
+  "packageManager": "yarn@4.8.1",
+  "devDependencies": {
+    "@types/node": "^22.15.24",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
