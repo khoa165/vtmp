@@ -2,6 +2,7 @@ import {
   InterviewType,
   MentorshipRole,
   ApplicationStatus,
+  InvitationStatus,
 } from '@vtmp/common/constants';
 
 export const rolePriority: Record<MentorshipRole, number> = {
@@ -175,3 +176,11 @@ export const StatusToColorMapping: Record<ApplicationStatus, string> = {
   [ApplicationStatus.WITHDRAWN]: 'bg-[#CAAB94]',
   [ApplicationStatus.REJECTED]: 'bg-[#FEB584]',
 };
+
+export const InvitationStatusToColorMapping: Record<InvitationStatus, string> =
+  {
+    [InvitationStatus.ACCEPTED]: 'bg-[#A3F890]',
+    [InvitationStatus.EXPIRED]: 'bg-[#CAAB94]',
+    [InvitationStatus.PENDING]: 'bg-[#F8FF6A]',
+    [InvitationStatus.REVOKED]: 'bg-[#FEB584]',
+  };

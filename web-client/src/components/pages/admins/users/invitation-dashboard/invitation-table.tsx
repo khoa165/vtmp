@@ -66,10 +66,10 @@ export function InvitationTable<TData, TValue>({
     <>
       <section className="flex items-center justify-between py-4">
         <Input
-          placeholder="Filter companies..."
-          value={table.getColumn('companyName')?.getFilterValue() as string}
+          placeholder="Filter Receiver Email"
+          value={table.getColumn('receiverEmail')?.getFilterValue() as string}
           onChange={(event) =>
-            table.getColumn('companyName')?.setFilterValue(event.target.value)
+            table.getColumn('receiverEmail')?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

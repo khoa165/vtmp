@@ -1,15 +1,11 @@
 import { useMemo, useState } from 'react';
 import { SortingState } from '@tanstack/react-table';
 import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
-import { InvitationTable } from '@/components/pages/admins/users/invitation-table';
-import { invitationsTableColumns } from '@/components/pages/admins/users/invitations-table-columns';
+import { InvitationTable } from '@/components/pages/admins/users/invitation-dashboard/invitation-table';
+import { invitationsTableColumns } from '@/components/pages/admins/users/invitation-dashboard/invitations-table-columns';
 import { InvitationStatus } from '@vtmp/common/constants';
 
-export const InvitationContainer = ({
-  applicationFilter,
-}: {
-  applicationFilter: ApplicationsFilter;
-}): React.JSX.Element | null => {
+export const InvitationContainer = (): React.JSX.Element | null => {
   // TODO: Nam works on the API
   //   const {
   //     isLoading,
@@ -57,9 +53,24 @@ export const InvitationContainer = ({
       columns={columns}
       data={[
         {
-          receiverEmail: 'mentee@viettech.com',
+          receiverEmail: 'nam@viettech.com',
           status: InvitationStatus.PENDING,
+          expiryDate: '2025-04-26',
+        },
+        {
+          receiverEmail: 'kha@viettech.com',
+          status: InvitationStatus.ACCEPTED,
           expiryDate: '2025-05-26',
+        },
+        {
+          receiverEmail: 'son@viettech.com',
+          status: InvitationStatus.EXPIRED,
+          expiryDate: '2025-03-26',
+        },
+        {
+          receiverEmail: 'khoa@viettech.com',
+          status: InvitationStatus.REVOKED,
+          expiryDate: '2025-12-26',
         },
       ]}
       sorting={sorting}
