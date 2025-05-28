@@ -4,6 +4,7 @@ import {
   JobFilter,
 } from '@/models/job-posting.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
+import escapeStringRegexp from 'escape-string-regexp';
 import { ClientSession } from 'mongoose';
 
 export const JobPostingRepository = {
@@ -53,8 +54,18 @@ export const JobPostingRepository = {
   }): Promise<IJobPosting[]> => {
     const dynamicMatch: Record<string, unknown> = {};
 
-    if (filter?.jobTitle) dynamicMatch.jobTitle = filter.jobTitle;
-    if (filter?.companyName) dynamicMatch.companyName = filter.companyName;
+    if (filter?.jobTitle) {
+      dynamicMatch.jobTitle = {
+        $regex: escapeStringRegexp(filter.jobTitle),
+        $options: 'i',
+      };
+    }
+    if (filter?.companyName) {
+      dynamicMatch.companyName = {
+        $regex: escapeStringRegexp(filter.companyName),
+        $options: 'i',
+      };
+    }
     if (filter?.location) dynamicMatch.location = filter.location;
     if (filter?.postingDateRangeStart || filter?.postingDateRangeEnd) {
       const datePostedFilter: Record<string, Date> = {};

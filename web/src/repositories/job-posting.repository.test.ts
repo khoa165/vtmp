@@ -294,8 +294,8 @@ describe('JobPostingRepository', () => {
   describe('getJobPostingsUserHasNotAppliedTo with Filter', () => {
     const userIdA = getNewMongoId();
     const userIdB = getNewMongoId();
-    const mockCompanyName = 'Example Company 1';
-    const mockJobTitle = 'Software Engineer 2';
+    const mockCompanyName = 'Company 1';
+    const mockJobTitle = 'Engineer 2';
     const mockStartDate = new Date('2023-12-31');
     const mockEnDDate = new Date('2024-05-01');
     let jobPostings: (IJobPosting | undefined)[];
@@ -305,14 +305,14 @@ describe('JobPostingRepository', () => {
         linkId: getNewObjectId(),
         url: 'http://example1.com/job-posting',
         jobTitle: 'Software Engineer 1',
-        companyName: mockCompanyName,
+        companyName: 'Example Company 1',
         submittedBy: getNewObjectId(),
       },
       {
         linkId: getNewObjectId(),
         url: 'http://example2.com/job-posting',
-        jobTitle: mockJobTitle,
-        companyName: mockCompanyName,
+        jobTitle: 'Software Engineer 2',
+        companyName: 'Example Company 1',
         submittedBy: getNewObjectId(),
         location: JobPostingRegion.CANADA,
       },
@@ -385,7 +385,7 @@ describe('JobPostingRepository', () => {
     });
 
     it('should returns job postings not applied by user after applying to one, matching the filter criteria', async () => {
-      const [jobPosting1] = jobPostings;
+      const [jobPosting1, jobPosting2] = jobPostings;
       await ApplicationRepository.createApplication({
         jobPostingId: jobPosting1?.id,
         userId: userIdA,
@@ -401,9 +401,9 @@ describe('JobPostingRepository', () => {
         .to.be.an('array')
         .that.have.lengthOf(1);
       assert(jobsNotAppliedByUserAWithFilterLocation[0]);
-      expect(jobsNotAppliedByUserAWithFilterLocation[0].jobTitle).to.equal(
-        mockJobTitle
-      );
+      expect(
+        jobsNotAppliedByUserAWithFilterLocation[0]._id.toString()
+      ).to.equal(jobPosting2?.id);
     });
 
     it('should returns job postings not applied by user after applying to one, matching the filter with date', async () => {
