@@ -15,7 +15,11 @@
     "dotenv": "^16.4.7",
     "escape-string-regexp": "^5.0.0",
     "express": "^4.21.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.5.0",
+    "express-slow-down": "^2.1.0",
     "express-validator": "^7.2.1",
+    "express-xss-sanitizer": "^2.0.0",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.15.0",
@@ -55,7 +59,7 @@
     "typescript": "^5.8.2"
   },
   "scripts": {
-    "start": "tsx src/server.ts",
+    "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
     "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
     "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000",
