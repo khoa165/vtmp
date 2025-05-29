@@ -5354,6 +5354,7 @@ __metadata:
     morgan: "npm:^1.10.0"
     multer: "npm:^1.4.5-lts.1"
     nodemailer: "npm:^6.10.1"
+    normalize-url: "npm:^8.0.1"
     remeda: "npm:^2.21.2"
     sinon: "npm:^20.0.0"
     supertest: "npm:^7.1.0"
@@ -10772,6 +10773,13 @@ __metadata:
   version: 3.0.0
   resolution: "normalize-path@npm:3.0.0"
   checksum: 10c0/e008c8142bcc335b5e38cf0d63cfd39d6cf2d97480af9abdbe9a439221fd4d749763bab492a8ee708ce7a194bb00c9da6d0a115018672310850489137b3da046
+  languageName: node
+  linkType: hard
+
+"normalize-url@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "normalize-url@npm:8.0.1"
+  checksum: 10c0/eb439231c4b84430f187530e6fdac605c5048ef4ec556447a10c00a91fc69b52d8d8298d9d608e68d3e0f7dc2d812d3455edf425e0f215993667c3183bcab1ef
   languageName: node
   linkType: hard
 
