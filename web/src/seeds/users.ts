@@ -2,6 +2,53 @@ import { IUser, UserModel } from '@/models/user.model';
 import bcrypt from 'bcryptjs';
 import { faker } from '@faker-js/faker';
 
+const specificUsers = [
+  {
+    firstName: 'Khoa',
+    lastName: 'Le',
+  },
+  {
+    firstName: 'Dang',
+    lastName: 'Son',
+  },
+  {
+    firstName: 'Quang',
+    lastName: 'Minh',
+  },
+  {
+    firstName: 'Phuc',
+    lastName: 'Jun',
+  },
+  {
+    firstName: 'An',
+    lastName: 'Tran',
+  },
+  {
+    firstName: 'Nam',
+    lastName: 'Nguyen',
+  },
+  {
+    firstName: 'Kha',
+    lastName: 'Tran',
+  },
+  {
+    firstName: 'Monica',
+    lastName: 'Huynh',
+  },
+  {
+    firstName: 'Kevin',
+    lastName: 'Doan',
+  }
+];
+
+const getEmailFromName = ({
+  firstName,
+  lastName,
+}: {
+  firstName: string;
+  lastName: string;
+}) => `${firstName.toLowerCase()}.${lastName.toLowerCase()}@vtmp.com`;
+
 export const loadUsers = async (count: number): Promise<IUser[]> => {
   const encryptedPassword = await bcrypt.hash('password', 10);
   const newUsers = Array.from({ length: count - 1 }, () => {
@@ -16,18 +63,17 @@ export const loadUsers = async (count: number): Promise<IUser[]> => {
     };
   });
 
-  const user0 = {
-    _id: '68110356bd157e78f5a2137e',
-    firstName: 'Khoa',
-    lastName: 'Le',
-    email: 'khoale@vtmp.com',
-    encryptedPassword,
-  };
-
-  const allUsers = [user0, ...newUsers];
+  const allUsers = [
+    ...newUsers,
+    ...specificUsers.map((name) => ({
+      ...name,
+      email: getEmailFromName(name),
+      encryptedPassword,
+    })),
+  ];
 
   const users = await UserModel.insertMany(allUsers);
 
-  console.log(`Successfully seeded ${count} users.`);
+  console.log(`Successfully seeded ${users.length} users.`);
   return users;
 };

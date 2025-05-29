@@ -1,0 +1,13 @@
+name: Build common
+
+on:
+  workflow_call:
+
+jobs:
+  build-common:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/common-setups
