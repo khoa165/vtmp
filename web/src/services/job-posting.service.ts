@@ -31,10 +31,10 @@ export const JobPostingService = {
 
   getJobPostingsUserHasNotAppliedTo: async ({
     userId,
-    filter,
+    filters,
   }: {
     userId: string;
-    filter?: {
+    filters?: {
       jobTitle?: string;
       companyName?: string;
       location?: string;
@@ -46,7 +46,7 @@ export const JobPostingService = {
   }) => {
     return JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
       userId: userId,
-      filter: filter ?? {},
+      filters: filters ?? {},
     });
   },
 };

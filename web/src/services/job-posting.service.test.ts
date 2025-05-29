@@ -326,7 +326,7 @@ describe('JobPostingService', () => {
 
       const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
         userId: userIdA,
-        filter: {
+        filters: {
           companyName: mockCompanyName,
         },
       });
@@ -334,11 +334,11 @@ describe('JobPostingService', () => {
       expect(jobs).to.be.an('array').that.has.lengthOf(0);
     });
 
-    it('should return only the job postings not applied by the user and matching the company name filter', async () => {
+    it('should return only the job postings not applied by the user and matching the company name filters', async () => {
       const [jobPosting1, jobPosting2] = jobPostings;
       const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
         userId: userIdA,
-        filter: {
+        filters: {
           companyName: mockCompanyName,
         },
       });
@@ -350,7 +350,7 @@ describe('JobPostingService', () => {
       ]);
     });
 
-    it('should return job postings not applied by user after applying to one, matching the filter criteria', async () => {
+    it('should return job postings not applied by user after applying to one, matching the filters criteria', async () => {
       const [jobPosting1, jobPosting2] = jobPostings;
       await ApplicationRepository.createApplication({
         jobPostingId: jobPosting1?.id,
@@ -359,7 +359,7 @@ describe('JobPostingService', () => {
 
       const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
         userId: userIdA,
-        filter: {
+        filters: {
           companyName: mockCompanyName,
         },
       });
@@ -369,11 +369,11 @@ describe('JobPostingService', () => {
       expect(jobs[0]._id.toString()).to.equal(jobPosting2?.id);
     });
 
-    it('should return job postings matching the date filter', async () => {
+    it('should return job postings matching the date filters', async () => {
       const jobPosting3 = jobPostings[2];
       const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
         userId: userIdA,
-        filter: {
+        filters: {
           postingDateRangeStart: mockStartDate,
           postingDateRangeEnd: mockEndDate,
         },
@@ -383,10 +383,10 @@ describe('JobPostingService', () => {
       expect(jobs[0]?._id.toString()).to.equal(jobPosting3?.id);
     });
 
-    it('should return an empty array when filter by field with no matching postings', async () => {
+    it('should return an empty array when filters by field with no matching postings', async () => {
       const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
         userId: userIdA,
-        filter: {
+        filters: {
           jobTitle: 'PD',
         },
       });
@@ -407,7 +407,7 @@ describe('JobPostingService', () => {
 
       const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
         userId: userIdA,
-        filter: {
+        filters: {
           companyName: mockCompanyName,
         },
       });
@@ -420,7 +420,7 @@ describe('JobPostingService', () => {
       const [, jobPosting2] = jobPostings;
       const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
         userId: userIdA,
-        filter: {
+        filters: {
           companyName: mockCompanyName,
           jobTitle: mockJobTitle,
           location: JobPostingRegion.CANADA,
@@ -449,7 +449,7 @@ describe('JobPostingService', () => {
 
       const jobs = await JobPostingService.getJobPostingsUserHasNotAppliedTo({
         userId: userIdA,
-        filter: {
+        filters: {
           companyName: mockCompanyName,
           jobTitle: mockJobTitle,
         },
