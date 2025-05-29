@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
 import { ICommand } from '@/commands/commands';
 
-export const pingCommand: ICommand = {
+export const ping: ICommand = {
   data: new SlashCommandBuilder()
     .setName('ping')
     .setDescription('Replies with Pong!'),

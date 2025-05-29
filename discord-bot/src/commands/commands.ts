@@ -3,7 +3,7 @@ import {
   SlashCommandBuilder,
   InteractionResponse,
 } from 'discord.js';
-import { pingCommand } from './utility/ping';
+import { ping } from './utility/ping';
 
 export interface ICommand {
   data: SlashCommandBuilder;
@@ -13,5 +13,5 @@ export interface ICommand {
 }
 
 export const commands: Record<string, ICommand> = {
-  pingCommand,
+  ping,
 };

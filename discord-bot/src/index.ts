@@ -1,10 +1,10 @@
-import { Client, GatewayIntentBits, Interaction } from 'discord.js';
+import { Client, GatewayIntentBits } from 'discord.js';
 import { EnvConfig } from '@/config/env';
-import { commands } from '@/commands/commands';
+import { ready, interactionCreate } from '@/events/event-handlers';
 
 const token = EnvConfig.get().DISCORD_TOKEN;
 
-const client = new Client({
+const client: Client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -12,41 +12,47 @@ const client = new Client({
   ],
 });
 
-client.once('ready', () => {
-  console.log('Discord bot is ready! 🤖');
-});
+const eventHandlers = [ready, interactionCreate];
 
-client.on('interactionCreate', async (interaction: Interaction) => {
-  console.log('hello');
-  if (!interaction.isChatInputCommand()) {
-    console.log(1);
-    return;
+for (const eventHandler of eventHandlers) {
+  if (eventHandler.once) {
+    client.once(eventHandler.name, (...args) => eventHandler.execute(...args));
+  } else {
+    client.on(eventHandler.name, (...args) => eventHandler.execute(...args));
   }
+}
 
-  const command = commands[interaction.commandName];
-  console.log(command);
-  if (!command) {
-    console.log(2);
-    return;
-  }
+// client.once(Events.ClientReady, () => {
+//   console.log('Discord bot is ready! 🤖');
+// });
 
-  try {
-    await command.execute(interaction);
-  } catch (error: unknown) {
-    console.error(error);
-    if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({
-        content: 'There was an error executing this command!',
-        ephemeral: true,
-      });
-    } else {
-      await interaction.reply({
-        content: 'There was an error executing this command!',
-        ephemeral: true,
-      });
-    }
-  }
-});
+// client.on(Events.InteractionCreate, async (interaction: Interaction) => {
+//   // Check if this is slash command
+//   if (!interaction.isChatInputCommand()) return;
+
+//   const command = commands[interaction.commandName];
+//   if (!command) {
+//     console.log(`No command matching ${interaction.commandName} was found.`);
+//     return;
+//   }
+
+//   try {
+//     await command.execute(interaction);
+//   } catch (error: unknown) {
+//     console.error(error);
+//     if (interaction.replied || interaction.deferred) {
+//       await interaction.followUp({
+//         content: 'There was an error executing this command!',
+//         flags: MessageFlags.Ephemeral,
+//       });
+//     } else {
+//       await interaction.reply({
+//         content: 'There was an error executing this command!',
+//         flags: MessageFlags.Ephemeral,
+//       });
+//     }
+//   }
+// });
 
 // client.on('messageCreate', (message) => {
 //   if (message.author.bot) return;
