@@ -36,7 +36,7 @@ export enum InvitationStatus {
   REVOKED = 'REVOKED',
 }
 
-export enum JobPostingLocation {
+export enum JobPostingRegion {
   US = 'US',
   CANADA = 'CANADA',
 }
@@ -192,4 +192,24 @@ export enum ProgramRole {
 export enum Department {
   SWE = 'SWE',
   PD = 'PD',
+}
+
+export enum JobTitle {
+  SOFTWARE_ENGINEER = 'SOFTWARE_ENGINEER',
+  DATA_SCIENTIST = 'DATA_SCIENTIST',
+  PRODUCT_DESIGNER = 'PRODUCT_DESIGNER',
+  DATA_ENGINEER = 'DATA_ENGINEER',
+}
+
+export enum JobFunction {
+  SOFTWARE_ENGINEER = 'SOFTWARE_ENGINEER',
+  DATA_SCIENTIST = 'DATA_SCIENTIST',
+  PRODUCT_DESIGNER = 'PRODUCT_DESIGNER',
+  DATA_ENGINEER = 'DATA_ENGINEER',
+}
+
+export enum JobType {
+  INTERNSHIP = 'INTERNSHIP',
+  NEW_GRAD = 'NEW_GRAD',
+  INDUSTRY = 'INDUSTRY',
 }

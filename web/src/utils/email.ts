@@ -29,6 +29,19 @@ export class EmailService {
     };
   }
 
+  getPasswordResetTemplate(name: string, email: string, token: string) {
+    const link = `${EnvConfig.get().VTMP_WEB_URL}/reset-password?token=${token}`;
+    return {
+      email,
+      subject: 'Reset Your Password',
+      body: `<h1>Reset Your Password</h1>
+      <p> Hi ${name}, </p>
+      <p>We received a request to reset your password for your VTMP account. To proceed, please click the link below:</p>
+      <a href=${link} target="_blank">Reset Password</a>
+      <p>For security reason, this link will expire in 10 minutes and please DO NOT SHARE IT with anyone.</p>`,
+    };
+  }
+
   async sendEmail({
     email,
     subject,
@@ -48,3 +61,12 @@ export class EmailService {
     await this.transporter.sendMail(mailOptions);
   }
 }
+
+let emailServiceInstance: EmailService | null = null;
+
+export const getEmailService = (): EmailService => {
+  if (!emailServiceInstance) {
+    emailServiceInstance = new EmailService();
+  }
+  return emailServiceInstance;
+};

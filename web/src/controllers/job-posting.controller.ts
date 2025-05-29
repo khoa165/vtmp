@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { JobPostingService } from '@/services/job-posting.service';
-import { JobPostingLocation } from '@vtmp/common/constants';
+import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
 import { getUserFromRequest } from '@/middlewares/utils';
 
 const JobPostingUpdateSchema = z.object({
@@ -9,9 +9,7 @@ const JobPostingUpdateSchema = z.object({
   url: z.string().url().optional(),
   jobTitle: z.string().optional(),
   companyName: z.string().optional(),
-  location: z
-    .enum([JobPostingLocation.US, JobPostingLocation.CANADA])
-    .optional(),
+  location: z.nativeEnum(JobPostingRegion).optional(),
   datePosted: z.coerce.date().optional(),
   jobDescription: z.string().optional(),
   adminNote: z.string().optional(),
@@ -19,6 +17,23 @@ const JobPostingUpdateSchema = z.object({
 const JobIdSchema = z.object({
   jobId: z.string(),
 });
+
+const FilterSchema = z
+  .object({
+    jobTitle: z.string().optional(),
+    companyName: z.string().optional(),
+    location: z.nativeEnum(JobPostingRegion).optional(),
+    jobFunction: z.nativeEnum(JobFunction).optional(),
+    jobType: z.nativeEnum(JobType).optional(),
+    postingDateRangeStart: z.coerce.date().optional(),
+    postingDateRangeEnd: z.coerce.date().optional(),
+  })
+  .strict()
+  .transform((data) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
+  );
 
 export const JobPostingController = {
   updateJobPosting: async (req: Request, res: Response) => {
@@ -46,9 +61,13 @@ export const JobPostingController = {
 
   getJobPostingsUserHasNotAppliedTo: async (req: Request, res: Response) => {
     const userId = getUserFromRequest(req).user.id;
+    const filterData = FilterSchema.parse(req.body);
 
     const jobPostings =
-      await JobPostingService.getJobPostingsUserHasNotAppliedTo(userId);
+      await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+        userId: userId,
+        filters: filterData,
+      });
 
     res.status(200).json({
       message: 'Job postings retrieved successfully',

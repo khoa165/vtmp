@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { JobPostingLocation } from '@vtmp/common/constants';
+import { JobPostingRegion, JobFunction, JobType } from '@vtmp/common/constants';
 
 export interface IJobPosting extends Document {
   _id: Types.ObjectId;
@@ -8,12 +8,24 @@ export interface IJobPosting extends Document {
   url: string;
   jobTitle: string;
   companyName: string;
-  location: JobPostingLocation;
+  location: JobPostingRegion;
   datePosted?: Date;
   jobDescription?: string;
   adminNote?: string;
   submittedBy?: Types.ObjectId;
   deletedAt?: Date;
+  jobFunction: JobFunction;
+  jobType: JobType;
+}
+
+export interface JobFilter {
+  jobTitle?: string;
+  companyName?: string;
+  location?: string;
+  jobFunction?: JobFunction;
+  jobType?: JobType;
+  postingDateRangeStart?: Date;
+  postingDateRangeEnd?: Date;
 }
 
 const JobPostingSchema = new mongoose.Schema<IJobPosting>(
@@ -40,8 +52,8 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
     },
     location: {
       type: String,
-      enum: Object.values(JobPostingLocation),
-      default: JobPostingLocation.US,
+      enum: Object.values(JobPostingRegion),
+      default: JobPostingRegion.US,
     },
     datePosted: {
       type: Date,
@@ -58,6 +70,16 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
     },
     deletedAt: {
       type: Date,
+    },
+    jobFunction: {
+      type: String,
+      enum: Object.values(JobFunction),
+      default: JobFunction.SOFTWARE_ENGINEER,
+    },
+    jobType: {
+      type: String,
+      enum: Object.values(JobType),
+      default: JobType.INTERNSHIP,
     },
   },
   { timestamps: true }
