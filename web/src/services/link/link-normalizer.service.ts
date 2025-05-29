@@ -3,32 +3,9 @@ import normalizeUrl from 'normalize-url';
 export const LinkNormalizerService = {
   removeFormatting(url: string): string {
     //remove quotes, brackets, parentheses wrap around link
-    return url.trim().replace(/^[<"'([{`}\])>]+|[>)"'}\][`<({]+$/g, '');
-  },
-
-  removeAnalyticQueryAndFragment(url: string): string {
-    return normalizeUrl(url, {
-      sortQueryParameters: false,
-      stripHash: true,
-      removeQueryParameters: [
-        'utm_source',
-        'utm_medium',
-        'utm_campaign',
-        'utm_term',
-        'utm_content',
-        'fbclid',
-        'gclid',
-        'msclkid',
-        'ref',
-        'source',
-        'mc_cid',
-        'mc_eid',
-        'yclid',
-        'dclid',
-        '_ga',
-        '_gl',
-      ],
-    });
+    return url
+      .trim()
+      .replace(/^[\s<>"'`\\/()[\]{}]+|[\s<>"'`\\/()[\]{}]+$/g, '');
   },
 
   removePorts(url: string): string {
@@ -64,6 +41,7 @@ export const LinkNormalizerService = {
       ],
     });
   },
+
   normalizeLink(url: string): string {
     const standardizedUrl = this.standardizeUrl(url);
     const urlObject = new URL(standardizedUrl);
