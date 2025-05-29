@@ -19,6 +19,11 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import { JobPostingRegion, UserRole } from '@vtmp/common/constants';
+import {
+  HTTPMethod,
+  runDefaultAuthMiddlewareTests,
+} from '@/testutils/auth.testutils';
 
 describe('JobPostingController', () => {
   useMongoDB();
@@ -43,6 +48,7 @@ describe('JobPostingController', () => {
       jobTitle: 'Software Engineer 2',
       companyName: 'Example Company 2',
       submittedBy: getNewObjectId(),
+      location: JobPostingRegion.CANADA,
     },
     {
       linkId: getNewObjectId(),
@@ -50,6 +56,7 @@ describe('JobPostingController', () => {
       jobTitle: 'Software Engineer 3',
       companyName: 'Example Company 3',
       submittedBy: getNewObjectId(),
+      datePosted: new Date('2024-05-01'),
     },
     {
       linkId: getNewObjectId(),
@@ -57,6 +64,7 @@ describe('JobPostingController', () => {
       jobTitle: 'Software Engineer 4',
       companyName: 'Example Company 4',
       submittedBy: getNewObjectId(),
+      datePosted: new Date('2023-7-31'),
     },
   ];
 
@@ -78,6 +86,7 @@ describe('JobPostingController', () => {
       lastName: 'viettech',
       email: 'test@gmail.com',
       encryptedPassword,
+      role: UserRole.ADMIN,
     };
 
     userIdA = (await UserRepository.createUser(mockUser)).id;
@@ -87,7 +96,19 @@ describe('JobPostingController', () => {
     }));
   });
 
-  describe.only('updateJobPosting', () => {
+  describe('updateJobPosting', () => {
+    const jobPostingUpdateBody = {
+      jobTitle: 'Senior Software Engineer',
+      companyName: 'Updated Company',
+      jobDescription: 'This is an updated job description.',
+    };
+
+    runDefaultAuthMiddlewareTests({
+      route: `/api/job-postings/${getNewMongoId()}`,
+      method: HTTPMethod.PUT,
+      body: jobPostingUpdateBody,
+    });
+
     it('should return error message for no job posting found', async () => {
       const newJobPostingUpdate = {
         jobTitle: 'Senior Software Engineer',
@@ -97,6 +118,7 @@ describe('JobPostingController', () => {
       const res = await request(app)
         .put(`/api/job-postings/${getNewMongoId()}`)
         .send(newJobPostingUpdate)
+        .set('Authorization', `Bearer ${mockToken}`)
         .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
@@ -114,6 +136,7 @@ describe('JobPostingController', () => {
       const res = await request(app)
         .put(`/api/job-postings/${jobPostings[0]?.id}`)
         .send(newJobPostingUpdate)
+        .set('Authorization', `Bearer ${mockToken}`)
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
@@ -122,10 +145,16 @@ describe('JobPostingController', () => {
   });
 
   describe('deleteJobPosting', () => {
+    runDefaultAuthMiddlewareTests({
+      route: `/api/job-postings/${getNewMongoId()}`,
+      method: HTTPMethod.DELETE,
+    });
+
     it('should return an error message for no job posting found', async () => {
-      const res = await request(app).delete(
-        `/api/job-postings/${getNewMongoId()}`
-      );
+      const res = await request(app)
+        .delete(`/api/job-postings/${getNewMongoId()}`)
+        .set('Authorization', `Bearer ${mockToken}`)
+        .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
 
@@ -134,9 +163,10 @@ describe('JobPostingController', () => {
     });
 
     it('should return a deleted job posting', async () => {
-      const res = await request(app).delete(
-        `/api/job-postings/${jobPostings[0]?.id}`
-      );
+      const res = await request(app)
+        .delete(`/api/job-postings/${jobPostings[0]?.id}`)
+        .set('Authorization', `Bearer ${mockToken}`)
+        .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('deletedAt');
@@ -151,6 +181,11 @@ describe('JobPostingController', () => {
   });
 
   describe('getJobPostingsUserHasNotAppliedTo', () => {
+    runDefaultAuthMiddlewareTests({
+      route: `/api/job-postings/not-applied`,
+      method: HTTPMethod.GET,
+    });
+
     it('should return an empty array if user has applied to all available job postings in the system', async () => {
       await Promise.all(
         jobPostings.map((jobPosting) =>
@@ -257,6 +292,155 @@ describe('JobPostingController', () => {
         jobPosting3?.id,
         jobPosting4?.id,
       ]);
+    });
+  });
+
+  describe('getJobPostingsUserHasNotAppliedTo with Filter', () => {
+    runDefaultAuthMiddlewareTests({
+      route: `/api/job-postings/not-applied`,
+      method: HTTPMethod.POST,
+      body: {},
+    });
+
+    it('should return an empty array if user has applied to all available job postings in the system', async () => {
+      const mockCompany = 'Company';
+      await Promise.all(
+        jobPostings.map((jobPosting) =>
+          ApplicationRepository.createApplication({
+            jobPostingId: jobPosting?.id,
+            userId: userIdA,
+          })
+        )
+      );
+
+      const res = await request(app)
+        .post('/api/job-postings/not-applied')
+        .send({ companyName: mockCompany })
+        .set('Authorization', `Bearer ${mockToken}`)
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should return only the job postings not applied by the user and matching the company name filter', async () => {
+      const mockCompany = 'Company 1';
+      const jobPosting1 = jobPostings[0];
+
+      const res = await request(app)
+        .post('/api/job-postings/not-applied')
+        .send({ companyName: mockCompany })
+        .set('Authorization', `Bearer ${mockToken}`)
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data[0]._id).to.equal(jobPosting1?.id);
+    });
+
+    it('should return job postings not applied by user after applying to one, matching the filter criteria', async () => {
+      const mockCompany = 'Company';
+      const [jobPosting1, jobPosting2, jobPosting3, jobPosting4] = jobPostings;
+
+      await ApplicationRepository.createApplication({
+        jobPostingId: jobPosting1?.id,
+        userId: userIdA,
+      });
+      await ApplicationRepository.createApplication({
+        jobPostingId: jobPosting2?.id,
+        userId: userIdA,
+      });
+
+      const res = await request(app)
+        .post('/api/job-postings/not-applied')
+        .send({ companyName: mockCompany })
+        .set('Authorization', `Bearer ${mockToken}`)
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(2);
+      expect(res.body.data.map((job: IJobPosting) => job._id)).to.have.members([
+        jobPosting3?.id,
+        jobPosting4?.id,
+      ]);
+    });
+
+    it('should return job postings matching the date filter', async () => {
+      const jobPosting3 = jobPostings[2];
+      const mockStartDate = new Date('2023-12-31');
+      const mockEndDate = new Date('2025-1-1');
+
+      const res = await request(app)
+        .post('/api/job-postings/not-applied')
+        .send({
+          postingDateRangeStart: mockStartDate,
+          postingDateRangeEnd: mockEndDate,
+        })
+        .set('Authorization', `Bearer ${mockToken}`)
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data[0]._id).to.equal(jobPosting3?.id);
+    });
+
+    it('should return an empty array when filter by field with no matching postings', async () => {
+      const res = await request(app)
+        .post('/api/job-postings/not-applied')
+        .send({ companyName: 'PD' })
+        .set('Authorization', `Bearer ${mockToken}`)
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should return job postings matching jobTitle, companyName, and location', async () => {
+      const jobPosting2 = jobPostings[1];
+      const mockCompany = 'Company 2';
+      const mockJobTitle = 'Engineer 2';
+      const res = await request(app)
+        .post('/api/job-postings/not-applied')
+        .send({
+          companyName: mockCompany,
+          jobTitle: mockJobTitle,
+          location: JobPostingRegion.CANADA,
+        })
+        .set('Authorization', `Bearer ${mockToken}`)
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data[0]._id).to.equal(jobPosting2?.id);
+    });
+
+    it.only('should return job posting if user deleted the application', async () => {
+      const mockCompany = 'Company';
+      const jobPosting2 = jobPostings[1];
+      const applications = await Promise.all(
+        jobPostings.map((jobPosting) =>
+          ApplicationRepository.createApplication({
+            jobPostingId: jobPosting?.id,
+            userId: userIdA,
+          })
+        )
+      );
+      await ApplicationRepository.deleteApplicationById({
+        applicationId: applications[1]?.id,
+        userId: userIdA,
+      });
+
+      const res = await request(app)
+        .post('/api/job-postings/not-applied')
+        .send({
+          companyName: mockCompany,
+        })
+        .set('Authorization', `Bearer ${mockToken}`)
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data[0]._id).to.equal(jobPosting2?.id);
     });
   });
 });
