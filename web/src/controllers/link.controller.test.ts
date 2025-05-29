@@ -9,7 +9,7 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { LinkRepository } from '@/repositories/link.repository';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
-import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
+import { JobPostingRegion, LinkStatus, UserRole } from '@vtmp/common/constants';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
@@ -17,6 +17,10 @@ import bcrypt from 'bcryptjs';
 import { AuthService } from '@/services/auth.service';
 import { UserRepository } from '@/repositories/user.repository';
 import { ILink } from '@/models/link.model';
+import {
+  HTTPMethod,
+  runDefaultAuthMiddlewareTests,
+} from '@/testutils/auth.testutils';
 
 describe('LinkController', () => {
   useMongoDB();
@@ -58,6 +62,7 @@ describe('LinkController', () => {
       lastName: 'viettech',
       email: 'test@gmail.com',
       encryptedPassword,
+      role: UserRole.ADMIN,
     };
 
     await UserRepository.createUser(mockUser);
@@ -74,6 +79,12 @@ describe('LinkController', () => {
   });
 
   describe('POST /links', () => {
+    runDefaultAuthMiddlewareTests({
+      route: '/api/links',
+      method: HTTPMethod.POST,
+      body: { url: 'https://example.com' },
+    });
+
     it('should return error message for submitting link with not exist url', async () => {
       const res = await request(app)
         .post('/api/links')
@@ -110,6 +121,11 @@ describe('LinkController', () => {
   });
 
   describe('POST /links/:id/reject', () => {
+    runDefaultAuthMiddlewareTests({
+      route: `/api/links/${getNewMongoId()}/reject`,
+      method: HTTPMethod.POST,
+    });
+
     it('should return error message for rejecting not exist link', async () => {
       const res = await request(app)
         .post(`/api/links/${getNewMongoId()}/reject`)
@@ -134,6 +150,16 @@ describe('LinkController', () => {
   });
 
   describe('POST /links/:id/approve', () => {
+    runDefaultAuthMiddlewareTests({
+      route: `/api/links/${getNewMongoId()}/approve`,
+      method: HTTPMethod.POST,
+      body: {
+        url: 'https://facebook.com',
+        jobTitle: 'Software Engineer Intern',
+        companyName: 'Example Company',
+      },
+    });
+
     it('should return error message for approving with not exist link', async () => {
       const res = await request(app)
         .post(`/api/links/${getNewMongoId()}/approve`)
@@ -168,6 +194,11 @@ describe('LinkController', () => {
   });
 
   describe('GET /links/count-by-status', () => {
+    runDefaultAuthMiddlewareTests({
+      route: '/api/links/count-by-status',
+      method: HTTPMethod.GET,
+    });
+
     it('should return 1 link for pending status', async () => {
       const res = await request(app)
         .get('/api/links/count-by-status')
@@ -218,6 +249,11 @@ describe('LinkController', () => {
   });
 
   describe('GET /links', () => {
+    runDefaultAuthMiddlewareTests({
+      route: '/api/links',
+      method: HTTPMethod.GET,
+    });
+
     it('should return 400 when an invalid status is provided', async () => {
       const res = await request(app)
         .get('/api/links?status=INVALID_STATUS')
