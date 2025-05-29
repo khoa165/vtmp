@@ -1,11 +1,9 @@
-import { ApplicationStatus } from '@vtmp/common/constants';
-
-export const StatusDot = ({
+export const StatusDot = <T extends string>({
   status,
   colorMapping,
 }: {
-  status: ApplicationStatus;
-  colorMapping: Record<ApplicationStatus, string>;
+  status: T;
+  colorMapping: Record<T, string>;
 }) => {
   const color = colorMapping[status];
   return (
