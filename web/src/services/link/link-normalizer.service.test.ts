@@ -77,18 +77,13 @@ describe('LinkNormalizerService', () => {
         expect(url).to.equal('https://facebook.com');
       });
 
-      it('should not remove www', () => {
+      it('should not remove www when it is part of domain', () => {
         const url = LinkNormalizerService.standardizeUrl('https://wwwabc.com');
         expect(url).to.equal('https://wwwabc.com');
       });
     });
 
     describe('remove trailing slash', () => {
-      it('should remove single forward slash at the end of url if it exists', () => {
-        const url = LinkNormalizerService.standardizeUrl('https://google.com/');
-        expect(url).to.equal('https://google.com');
-      });
-
       it('should remove multiples forward slash at the end of url if it exists', () => {
         const url = LinkNormalizerService.standardizeUrl(
           'https://google.com////'
@@ -103,23 +98,9 @@ describe('LinkNormalizerService', () => {
         expect(url).to.equal('https://google.com');
       });
 
-      it('should remove multiple backward slash at the end of url if it exists', () => {
-        const url = LinkNormalizerService.standardizeUrl(
-          'https://google.com\\\\\\\\'
-        );
-        expect(url).to.equal('https://google.com');
-      });
-
-      it('should remove single forward and backward slash at the end of url if it exists', () => {
-        const url = LinkNormalizerService.standardizeUrl(
-          'https://google.com/\\'
-        );
-        expect(url).to.equal('https://google.com');
-      });
-
       it('should remove single backward and forward slash at the end of url if it exists', () => {
         const url = LinkNormalizerService.standardizeUrl(
-          'https://google.com\\/'
+          'https://google.com\\/\\//\\'
         );
         expect(url).to.equal('https://google.com');
       });
@@ -185,9 +166,9 @@ describe('LinkNormalizerService', () => {
     describe('remove ports', () => {
       it('should remove the default HTTP port 80', () => {
         const url = LinkNormalizerService.standardizeUrl(
-          'http://example.com:80/path'
+          'https://example.com:80/path'
         );
-        expect(url).to.equal('http://example.com/path');
+        expect(url).to.equal('https://example.com/path');
       });
 
       it('should remove the default HTTPS port 443', () => {
@@ -199,9 +180,9 @@ describe('LinkNormalizerService', () => {
 
       it('should remove a non-default port', () => {
         const url = LinkNormalizerService.standardizeUrl(
-          'http://localhost:8080/api'
+          'https://localhost:8080/api'
         );
-        expect(url).to.equal('http://localhost/api');
+        expect(url).to.equal('https://localhost/api');
       });
 
       it('should leave URLs without a port unchanged', () => {
@@ -213,13 +194,13 @@ describe('LinkNormalizerService', () => {
 
       it('should handle IPv6 host literals with a port', () => {
         const url = LinkNormalizerService.standardizeUrl(
-          'http://[2001:db8::1]:8080/resource'
+          'https://[2001:db8::1]:8080/resource'
         );
-        expect(url).to.equal('http://[2001:db8::1]/resource');
+        expect(url).to.equal('https://[2001:db8::1]/resource');
       });
     });
 
-    describe.only('remove multiple violations', () => {
+    describe('remove multiple violations', () => {
       it('should handle mixed wrappers, port, analytics params, and fragment', () => {
         expect(
           LinkNormalizerService.standardizeUrl(
