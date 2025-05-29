@@ -1,4 +1,5 @@
 # Exported from Render on 2025-05-23T15:02:17Z
+# Render blueprint for Staging environment
 services:
   - type: web
     name: vtmp-api-staging
@@ -60,7 +61,7 @@ services:
         destination: /index.html
     autoDeployTrigger: off
     previews:
-      generation: manual
+      generation: off # Disable service previews
     buildFilter:
       ignoredPaths:
         - web/**
