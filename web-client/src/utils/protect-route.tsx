@@ -1,6 +1,14 @@
 import React, { useEffect } from 'react';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { UserRole } from '@vtmp/common/constants';
+import { z } from 'zod';
+
+const UserSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  role: z.nativeEnum(UserRole),
+  email: z.string().email(),
+});
 
 export const ProtectedRoute = ({
   children,
@@ -9,9 +17,15 @@ export const ProtectedRoute = ({
   children: React.ReactNode;
   roles: UserRole[];
 }) => {
-  const rawUser = localStorage.getItem('user');
-  const user = rawUser ? JSON.parse(rawUser) : null;
+  let rawUser = localStorage.getItem('user');
   const navigate = useNavigatePreserveQueryParams();
+
+  if (!rawUser) {
+    rawUser = '';
+    navigate('/login');
+  }
+
+  const user = UserSchema.parse(JSON.parse(rawUser));
 
   useEffect(() => {
     if (!roles.some((role) => user.role.includes(role))) {

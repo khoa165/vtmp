@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   ShieldUser,
   ExternalLink,
@@ -50,8 +50,12 @@ export const InternalToolsSidebar = () => {
     },
   ];
 
-  const visibleItems = items.filter((item) =>
-    item.roles.some((role) => user.role.includes(role))
+  const visibleItems = useMemo(
+    () =>
+      items.filter((item) =>
+        item.roles.some((role) => user.role.includes(role))
+      ),
+    [user, items]
   );
 
   return (
