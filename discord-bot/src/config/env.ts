@@ -7,6 +7,7 @@ const configSchema = z.object({
   DISCORD_TOKEN: z.string(),
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_GUILD_ID: z.string(),
+  API_URL: z.string(),
 });
 
 export const EnvConfig = {
