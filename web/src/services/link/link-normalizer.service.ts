@@ -3,7 +3,7 @@ import normalizeUrl from 'normalize-url';
 export const LinkNormalizerService = {
   removeFormatting(url: string): string {
     //remove quotes, brackets, parentheses wrap around link
-    return url.trim().replace(/^[<"'([{]+|[>)"'}\]]+$/g, '');
+    return url.trim().replace(/^[<"'([{`}\])>]+|[>)"'}\][`<({]+$/g, '');
   },
 
   removeAnalyticQueryAndFragment(url: string): string {

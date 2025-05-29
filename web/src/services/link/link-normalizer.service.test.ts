@@ -19,8 +19,23 @@ describe('LinkNormalizerService', () => {
       const url = LinkNormalizerService.removeFormatting('<google.com>');
       expect(url).to.equal('google.com');
     });
+
     it('should remove mixed formatting characters', () => {
       const url = LinkNormalizerService.removeFormatting('<"{<google.com>}">');
+      expect(url).to.equal('google.com');
+    });
+
+    it('should remove all types of brackets', () => {
+      const url = LinkNormalizerService.removeFormatting(
+        '{(((((((}}google.com}[(<)}'
+      );
+      expect(url).to.equal('google.com');
+    });
+
+    it('should remove all types of quotations', () => {
+      const url = LinkNormalizerService.removeFormatting(
+        '"""""""```````"google.com"'
+      );
       expect(url).to.equal('google.com');
     });
   });
