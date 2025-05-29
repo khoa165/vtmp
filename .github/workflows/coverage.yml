@@ -39,6 +39,4 @@ jobs:
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v5
         with:
-          token: 9ff98a1b-6e75-49f0-b338-d0d2806b0525
-          slug: khoa165/vtmp
-          files: ./coverage/lcov.info
+          token: { { secrets.CODECOV_TOKEN } }
