@@ -6,19 +6,6 @@ export const LinkNormalizerService = {
     return url.trim().replace(/^[<"'([{]+|[>)"'}\]]+$/g, '');
   },
 
-  // removeWWW(url: string): string {
-  //   // return url.trim().replace(/www\./i, '');
-  //   return normalizeUrl(url, {
-  //     forceHttps: true,
-  //   });
-  // },
-
-  // removeTrailingSlash(url: string): string {
-  //   //remove all trailing forward and backward slashes
-  //   // return url.trim().replace(/[/\\]+$/, '');
-  //   return normalizeUrl(url);
-  // },
-
   removeAnalyticQueryAndFragment(url: string): string {
     return normalizeUrl(url, {
       sortQueryParameters: false,
@@ -51,15 +38,39 @@ export const LinkNormalizerService = {
   },
 
   standardizeUrl(url: string): string {
-    return normalizeUrl(url);
+    const removedFormat = this.removeFormatting(url);
+    return normalizeUrl(removedFormat, {
+      forceHttps: true,
+      sortQueryParameters: false,
+      stripHash: true,
+      removeExplicitPort: true,
+      removeQueryParameters: [
+        'utm_source',
+        'utm_medium',
+        'utm_campaign',
+        'utm_term',
+        'utm_content',
+        'fbclid',
+        'gclid',
+        'msclkid',
+        'ref',
+        'source',
+        'mc_cid',
+        'mc_eid',
+        'yclid',
+        'dclid',
+        '_ga',
+        '_gl',
+      ],
+    });
   },
   normalizeLink(url: string): string {
-    let standardizedUrl = this.removeFormatting(url);
-    standardizedUrl = this.removeWWW(standardizedUrl);
-    standardizedUrl = this.lowercaseDomain(standardizedUrl);
-    standardizedUrl = this.removeTrailingSlash(standardizedUrl);
-    standardizedUrl = this.removeAnalyticQueryAndFragment(standardizedUrl);
-    standardizedUrl = this.removePorts(standardizedUrl);
+    const standardizedUrl = this.standardizeUrl(url);
+    const urlObject = new URL(standardizedUrl);
+    const searchParams = new URLSearchParams(urlObject.search);
+    if (searchParams.size > 0) {
+      console.log([...searchParams.entries()]);
+    }
     return standardizedUrl;
   },
 };

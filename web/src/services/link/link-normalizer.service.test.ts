@@ -1,5 +1,7 @@
 import { expect } from 'chai';
 import { LinkNormalizerService } from '@/services/link/link-normalizer.service';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import assert from 'assert';
 
 describe('LinkNormalizerService', () => {
   describe('removeFormatting', () => {
@@ -24,19 +26,19 @@ describe('LinkNormalizerService', () => {
   });
 
   describe('standardizeUrl', () => {
-    describe('lowercaseDomainAndPath', () => {
+    describe('lower case domain', () => {
       it('should lowercase the domain and path', () => {
         const url = LinkNormalizerService.standardizeUrl(
-          'HTTP://EXAMPLE.COM/PAGE'
+          'HTTPS://EXAMPLE.COM/PAGE'
         );
-        expect(url).to.equal('http://example.com/PAGE');
+        expect(url).to.equal('https://example.com/PAGE');
       });
 
       it('should lowercase the domain but preserve the sensitive', () => {
         const url = LinkNormalizerService.standardizeUrl(
-          'HTTP://GITHUB.COM/User/Repository/Tree/MAIN'
+          'HTTPS://GITHUB.COM/User/Repository/Tree/MAIN'
         );
-        expect(url).to.equal('http://github.com/User/Repository/Tree/MAIN');
+        expect(url).to.equal('https://github.com/User/Repository/Tree/MAIN');
       });
     });
 
@@ -66,7 +68,7 @@ describe('LinkNormalizerService', () => {
       });
     });
 
-    describe('removeTrailingSlash', () => {
+    describe('remove trailing slash', () => {
       it('should remove single forward slash at the end of url if it exists', () => {
         const url = LinkNormalizerService.standardizeUrl('https://google.com/');
         expect(url).to.equal('https://google.com');
@@ -112,90 +114,131 @@ describe('LinkNormalizerService', () => {
         expect(url).to.equal('https://google.com');
       });
     });
+
+    describe('remove analytics', () => {
+      it('should remove a single utm_source parameter', () => {
+        const result = LinkNormalizerService.standardizeUrl(
+          'https://example.com/page?utm_source=google'
+        );
+        expect(result).to.equal('https://example.com/page');
+      });
+
+      it('should remove multiple analytics parameters and preserve other query params', () => {
+        const result = LinkNormalizerService.standardizeUrl(
+          'https://example.com/page?foo=bar&utm_medium=email&utm_campaign=spring&baz=qux'
+        );
+        expect(result).to.equal('https://example.com/page?foo=bar&baz=qux');
+      });
+
+      it('should remove analytics parameters regardless of position in the query string', () => {
+        const result = LinkNormalizerService.standardizeUrl(
+          'https://example.com/page?utm_term=test&foo=bar'
+        );
+        expect(result).to.equal('https://example.com/page?foo=bar');
+      });
+
+      it('should remove click identifiers like fbclid, gclid, msclkid, etc.', () => {
+        const result = LinkNormalizerService.standardizeUrl(
+          'https://example.com/?fbclid=123&utm_content=xyz&gclid=456&source=ref'
+        );
+        expect(result).to.equal('https://example.com');
+      });
+
+      it('should leave the URL unchanged if there are no analytics parameters', () => {
+        const result = LinkNormalizerService.standardizeUrl(
+          'https://example.com/page?foo=bar&baz=qux'
+        );
+        expect(result).to.equal('https://example.com/page?foo=bar&baz=qux');
+      });
+    });
+
+    describe('remove fragments', () => {
+      it('should remove the fragment identifier', () => {
+        const result = LinkNormalizerService.removeAnalyticQueryAndFragment(
+          'https://example.com/page?utm_source=google#section1'
+        );
+        expect(result).to.equal('https://example.com/page');
+      });
+
+      it('should handle a URL with no query string and just a fragment', () => {
+        const input = 'https://example.com/page#top';
+        const result =
+          LinkNormalizerService.removeAnalyticQueryAndFragment(input);
+        expect(result).to.equal('https://example.com/page');
+      });
+    });
+
+    describe('remove ports', () => {
+      it('should remove the default HTTP port 80', () => {
+        const url = LinkNormalizerService.removePorts(
+          'http://example.com:80/path'
+        );
+        expect(url).to.equal('http://example.com/path');
+      });
+
+      it('should remove the default HTTPS port 443', () => {
+        const url = LinkNormalizerService.removePorts(
+          'https://secure.example.com:443/login'
+        );
+        expect(url).to.equal('https://secure.example.com/login');
+      });
+
+      it('should remove a non-default port', () => {
+        const url = LinkNormalizerService.removePorts(
+          'http://localhost:8080/api'
+        );
+        expect(url).to.equal('http://localhost/api');
+      });
+
+      it('should leave URLs without a port unchanged', () => {
+        const url = LinkNormalizerService.removePorts(
+          'https://example.com/home'
+        );
+        expect(url).to.equal('https://example.com/home');
+      });
+
+      it('should handle IPv6 host literals with a port', () => {
+        const url = LinkNormalizerService.removePorts(
+          'http://[2001:db8::1]:8080/resource'
+        );
+        expect(url).to.equal('http://[2001:db8::1]/resource');
+      });
+    });
   });
 
-  describe('removeAnalyticQueryAndFragment', () => {
-    it('should remove a single utm_source parameter', () => {
-      const result = LinkNormalizerService.removeAnalyticQueryAndFragment(
-        'https://example.com/page?utm_source=google'
-      );
-      expect(result).to.equal('https://example.com/page');
+  describe('normalizeLink', () => {
+    const sandbox = useSandbox();
+    beforeEach(() => {
+      sandbox.restore();
     });
-
-    it('should remove multiple analytics parameters and preserve other query params', () => {
-      const result = LinkNormalizerService.removeAnalyticQueryAndFragment(
-        'https://example.com/page?foo=bar&utm_medium=email&utm_campaign=spring&baz=qux'
-      );
-      expect(result).to.equal('https://example.com/page?foo=bar&baz=qux');
-    });
-
-    it('should remove analytics parameters regardless of position in the query string', () => {
-      const result = LinkNormalizerService.removeAnalyticQueryAndFragment(
-        'https://example.com/page?utm_term=test&foo=bar'
-      );
-      expect(result).to.equal('https://example.com/page?foo=bar');
-    });
-
-    it('should remove click identifiers like fbclid, gclid, msclkid, etc.', () => {
-      const result = LinkNormalizerService.removeAnalyticQueryAndFragment(
-        'https://example.com/?fbclid=123&utm_content=xyz&gclid=456&source=ref'
-      );
-      expect(result).to.equal('https://example.com');
-    });
-
-    it('should leave the URL unchanged if there are no analytics parameters', () => {
-      const result = LinkNormalizerService.removeAnalyticQueryAndFragment(
+    it('should call standardizeUrl', () => {
+      const standardizeUrlStub = sandbox
+        .stub(LinkNormalizerService, 'standardizeUrl')
+        .returns('https://example.com');
+      LinkNormalizerService.normalizeLink(
         'https://example.com/page?foo=bar&baz=qux'
       );
-      expect(result).to.equal('https://example.com/page?foo=bar&baz=qux');
-    });
-
-    it('should remove the fragment identifier', () => {
-      const result = LinkNormalizerService.removeAnalyticQueryAndFragment(
-        'https://example.com/page?utm_source=google#section1'
+      assert(
+        standardizeUrlStub.calledWith(
+          'https://example.com/page?foo=bar&baz=qux'
+        )
       );
-      expect(result).to.equal('https://example.com/page');
     });
 
-    it('should handle a URL with no query string and just a fragment', () => {
-      const input = 'https://example.com/page#top';
-      const result =
-        LinkNormalizerService.removeAnalyticQueryAndFragment(input);
-      expect(result).to.equal('https://example.com/page');
-    });
-  });
-  describe('removePorts', () => {
-    it('should remove the default HTTP port 80', () => {
-      const url = LinkNormalizerService.removePorts(
-        'http://example.com:80/path'
+    it('should log if query params still exist', () => {
+      const logFunction = sandbox.spy(console, 'log');
+      LinkNormalizerService.normalizeLink(
+        'https://example.com/page?foo=bar&baz=qux'
       );
-      expect(url).to.equal('http://example.com/path');
+      assert(logFunction.calledOnce);
     });
 
-    it('should remove the default HTTPS port 443', () => {
-      const url = LinkNormalizerService.removePorts(
-        'https://secure.example.com:443/login'
+    it('should not log if query params still exist', () => {
+      const logFunction = sandbox.spy(console, 'log');
+      LinkNormalizerService.normalizeLink(
+        'https://example.com/page?utm_source=bar&utm_medium=qux'
       );
-      expect(url).to.equal('https://secure.example.com/login');
-    });
-
-    it('should remove a non-default port', () => {
-      const url = LinkNormalizerService.removePorts(
-        'http://localhost:8080/api'
-      );
-      expect(url).to.equal('http://localhost/api');
-    });
-
-    it('should leave URLs without a port unchanged', () => {
-      const url = LinkNormalizerService.removePorts('https://example.com/home');
-      expect(url).to.equal('https://example.com/home');
-    });
-
-    it('should handle IPv6 host literals with a port', () => {
-      const url = LinkNormalizerService.removePorts(
-        'http://[2001:db8::1]:8080/resource'
-      );
-      expect(url).to.equal('http://[2001:db8::1]/resource');
+      assert(logFunction.notCalled);
     });
   });
 });
