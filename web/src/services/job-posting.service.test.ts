@@ -166,14 +166,18 @@ describe('JobPostingService', () => {
         )
       );
       const jobsNotAppliedByUserA =
-        await JobPostingService.getJobPostingsUserHasNotAppliedTo(userIdA);
+        await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+          userId: userIdA,
+        });
 
       expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(0);
     });
 
     it('should return an exact array of job postings that matches all available job postings in the system if user has no applied to any posting', async () => {
       const jobsNotAppliedByUserA =
-        await JobPostingService.getJobPostingsUserHasNotAppliedTo(userIdA);
+        await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+          userId: userIdA,
+        });
 
       expect(jobsNotAppliedByUserA)
         .to.be.an('array')
@@ -196,7 +200,9 @@ describe('JobPostingService', () => {
       await JobPostingRepository.deleteJobPostingById(jobPosting3?.id);
 
       const jobsNotAppliedByUserA =
-        await JobPostingService.getJobPostingsUserHasNotAppliedTo(userIdA);
+        await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+          userId: userIdA,
+        });
 
       expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
       assert(jobsNotAppliedByUserA[0]);
@@ -219,7 +225,9 @@ describe('JobPostingService', () => {
         userId: userIdA,
       });
       const jobsNotAppliedByUserA =
-        await JobPostingService.getJobPostingsUserHasNotAppliedTo(userIdA);
+        await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+          userId: userIdA,
+        });
 
       expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
       assert(jobsNotAppliedByUserA[0]);
@@ -243,7 +251,9 @@ describe('JobPostingService', () => {
         userId: userIdB,
       });
       const jobsNotAppliedByUserA =
-        await JobPostingService.getJobPostingsUserHasNotAppliedTo(userIdA);
+        await JobPostingService.getJobPostingsUserHasNotAppliedTo({
+          userId: userIdA,
+        });
 
       expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(2);
       expect(

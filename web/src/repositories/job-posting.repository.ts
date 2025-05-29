@@ -1,5 +1,10 @@
-import { JobPostingModel, IJobPosting } from '@/models/job-posting.model';
+import {
+  JobPostingModel,
+  IJobPosting,
+  JobFilter,
+} from '@/models/job-posting.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
+import escapeStringRegexp from 'escape-string-regexp';
 import { ClientSession } from 'mongoose';
 
 export const JobPostingRepository = {
@@ -40,12 +45,49 @@ export const JobPostingRepository = {
     ).lean();
   },
 
-  getJobPostingsUserHasNotAppliedTo: async (
-    userId: string
-  ): Promise<IJobPosting[]> => {
+  getJobPostingsUserHasNotAppliedTo: async ({
+    userId,
+    filter,
+  }: {
+    userId: string;
+    filter?: JobFilter;
+  }): Promise<IJobPosting[]> => {
+    const dynamicMatch: Record<string, unknown> = {};
+
+    if (filter?.jobTitle) {
+      dynamicMatch.jobTitle = {
+        $regex: escapeStringRegexp(filter.jobTitle),
+        $options: 'i',
+      };
+    }
+    if (filter?.companyName) {
+      dynamicMatch.companyName = {
+        $regex: escapeStringRegexp(filter.companyName),
+        $options: 'i',
+      };
+    }
+    if (filter?.location) dynamicMatch.location = filter.location;
+    if (filter?.postingDateRangeStart || filter?.postingDateRangeEnd) {
+      const datePostedFilter: Record<string, Date> = {};
+
+      if (filter.postingDateRangeStart) {
+        datePostedFilter.$gte = filter.postingDateRangeStart;
+      }
+      if (filter.postingDateRangeEnd) {
+        datePostedFilter.$lte = filter.postingDateRangeEnd;
+      }
+
+      dynamicMatch.datePosted = datePostedFilter;
+    }
+
     return JobPostingModel.aggregate([
       {
-        // Perform a filtered join between JobPosting and Application collection
+        $match: {
+          ...dynamicMatch,
+          deletedAt: null,
+        },
+      },
+      {
         $lookup: {
           from: 'applications',
           let: { jobId: '$_id' },
@@ -68,7 +110,6 @@ export const JobPostingRepository = {
       {
         $match: {
           userApplication: { $size: 0 },
-          deletedAt: null,
         },
       },
       {
