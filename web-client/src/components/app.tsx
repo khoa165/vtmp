@@ -22,7 +22,7 @@ import { JobPostingsPage } from '@/components/pages/application-tracker/job-post
 import { PageWithToast } from '@/components/layout/page-with-toast';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
-import { UnauthorizedPage } from './pages/shared/unauthorized-page';
+import { NotFoundPage } from './pages/shared/not-found-page';
 import { ProtectedRoute } from '@/utils/protect-route';
 import { UserRole } from '@vtmp/common/constants';
 
@@ -82,8 +82,7 @@ export const App = () => {
             <Route path="/application-tracker" element={<ApplicationsPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/*" element={<>404</>} />
-          <Route path="/unauthorized" element={<UnauthorizedPage />} />
+          <Route path="/*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </Router>

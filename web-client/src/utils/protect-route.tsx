@@ -15,7 +15,7 @@ export const ProtectedRoute = ({
 
   useEffect(() => {
     if (!roles.some((role) => user.role.includes(role))) {
-      navigate('/unauthorized');
+      navigate('/404');
     }
   }, [roles, user]);
 
