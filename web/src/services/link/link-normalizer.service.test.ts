@@ -23,91 +23,94 @@ describe('LinkNormalizerService', () => {
     });
   });
 
-  describe('lowercaseDomainAndPath', () => {
-    it('should lowercase the domain and path', () => {
-      const url = LinkNormalizerService.lowercaseDomain(
-        'HTTP://EXAMPLE.COM/PAGE'
-      );
-      expect(url).to.equal('http://example.com/PAGE');
+  describe('standardizeUrl', () => {
+    describe('lowercaseDomainAndPath', () => {
+      it('should lowercase the domain and path', () => {
+        const url = LinkNormalizerService.standardizeUrl(
+          'HTTP://EXAMPLE.COM/PAGE'
+        );
+        expect(url).to.equal('http://example.com/PAGE');
+      });
+
+      it('should lowercase the domain but preserve the sensitive', () => {
+        const url = LinkNormalizerService.standardizeUrl(
+          'HTTP://GITHUB.COM/User/Repository/Tree/MAIN'
+        );
+        expect(url).to.equal('http://github.com/User/Repository/Tree/MAIN');
+      });
     });
 
-    it('should lowercase the domain but preserve the sensitive', () => {
-      const url = LinkNormalizerService.lowercaseDomain(
-        'HTTP://GITHUB.COM/User/Repository/Tree/MAIN'
-      );
-      expect(url).to.equal('http://github.com/User/Repository/Tree/MAIN');
-    });
-  });
+    describe('remove www', () => {
+      it('should remove www from url if it exists', () => {
+        const url = LinkNormalizerService.standardizeUrl('www.google.com');
+        expect(url).to.equal('https://google.com');
+      });
 
-  describe('removeWWW', () => {
-    it('should remove www from url if it exists', () => {
-      const url = LinkNormalizerService.removeWWW('www.google.com');
-      expect(url).to.equal('https://google.com');
-    });
+      it('should remove www even if it is in the middle of the url', () => {
+        const url = LinkNormalizerService.standardizeUrl(
+          'https://www.facebook.com'
+        );
+        expect(url).to.equal('https://facebook.com');
+      });
 
-    it('should remove www even if it is in the middle of the url', () => {
-      const url = LinkNormalizerService.removeWWW('https://www.facebook.com');
-      expect(url).to.equal('https://facebook.com');
-    });
+      it('should remove WWW (uppercase)', () => {
+        const url = LinkNormalizerService.standardizeUrl(
+          'https://WWW.facebook.com/'
+        );
+        expect(url).to.equal('https://facebook.com');
+      });
 
-    it('should remove WWW (uppercase)', () => {
-      const url = LinkNormalizerService.removeWWW('https://WWW.facebook.com/');
-      expect(url).to.equal('https://facebook.com');
-    });
-
-    it('should not remove www', () => {
-      const url = LinkNormalizerService.removeWWW('https://wwwabc.com');
-      expect(url).to.equal('https://wwwabc.com');
-    });
-  });
-
-  describe('removeTrailingSlash', () => {
-    it('should remove single forward slash at the end of url if it exists', () => {
-      const url = LinkNormalizerService.removeTrailingSlash(
-        'https://google.com/'
-      );
-      expect(url).to.equal('https://google.com');
+      it('should not remove www', () => {
+        const url = LinkNormalizerService.standardizeUrl('https://wwwabc.com');
+        expect(url).to.equal('https://wwwabc.com');
+      });
     });
 
-    it('should remove multiples forward slash at the end of url if it exists', () => {
-      const url = LinkNormalizerService.removeTrailingSlash(
-        'https://google.com////'
-      );
-      expect(url).to.equal('https://google.com');
-    });
+    describe('removeTrailingSlash', () => {
+      it('should remove single forward slash at the end of url if it exists', () => {
+        const url = LinkNormalizerService.standardizeUrl('https://google.com/');
+        expect(url).to.equal('https://google.com');
+      });
 
-    it('should remove single backward slash at the end of url if it exists', () => {
-      const url = LinkNormalizerService.removeTrailingSlash(
-        'https://google.com\\'
-      );
-      expect(url).to.equal('https://google.com');
-    });
+      it('should remove multiples forward slash at the end of url if it exists', () => {
+        const url = LinkNormalizerService.standardizeUrl(
+          'https://google.com////'
+        );
+        expect(url).to.equal('https://google.com');
+      });
 
-    it('should remove multiple backward slash at the end of url if it exists', () => {
-      const url = LinkNormalizerService.removeTrailingSlash(
-        'https://google.com\\\\\\\\'
-      );
-      expect(url).to.equal('https://google.com');
-    });
+      it('should remove single backward slash at the end of url if it exists', () => {
+        const url = LinkNormalizerService.standardizeUrl(
+          'https://google.com\\'
+        );
+        expect(url).to.equal('https://google.com');
+      });
 
-    it('should remove single forward and backward slash at the end of url if it exists', () => {
-      const url = LinkNormalizerService.removeTrailingSlash(
-        'https://google.com/\\'
-      );
-      expect(url).to.equal('https://google.com');
-    });
+      it('should remove multiple backward slash at the end of url if it exists', () => {
+        const url = LinkNormalizerService.standardizeUrl(
+          'https://google.com\\\\\\\\'
+        );
+        expect(url).to.equal('https://google.com');
+      });
 
-    it('should remove single backward and forward slash at the end of url if it exists', () => {
-      const url = LinkNormalizerService.removeTrailingSlash(
-        'https://google.com\\/'
-      );
-      expect(url).to.equal('https://google.com');
-    });
+      it('should remove single forward and backward slash at the end of url if it exists', () => {
+        const url = LinkNormalizerService.standardizeUrl(
+          'https://google.com/\\'
+        );
+        expect(url).to.equal('https://google.com');
+      });
 
-    it('should leave the url unchanged if there is no trailing slash', () => {
-      const url =
-        LinkNormalizerService.removeTrailingSlash('https://google.com');
-      expect(url).to.equal('https://google.com');
+      it('should remove single backward and forward slash at the end of url if it exists', () => {
+        const url = LinkNormalizerService.standardizeUrl(
+          'https://google.com\\/'
+        );
+        expect(url).to.equal('https://google.com');
+      });
+
+      it('should leave the url unchanged if there is no trailing slash', () => {
+        const url = LinkNormalizerService.standardizeUrl('https://google.com');
+        expect(url).to.equal('https://google.com');
+      });
     });
   });
 
