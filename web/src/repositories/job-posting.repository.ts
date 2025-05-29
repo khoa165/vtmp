@@ -47,34 +47,34 @@ export const JobPostingRepository = {
 
   getJobPostingsUserHasNotAppliedTo: async ({
     userId,
-    filter,
+    filters,
   }: {
     userId: string;
-    filter?: JobFilter;
+    filters?: JobFilter;
   }): Promise<IJobPosting[]> => {
     const dynamicMatch: Record<string, unknown> = {};
 
-    if (filter?.jobTitle) {
+    if (filters?.jobTitle) {
       dynamicMatch.jobTitle = {
-        $regex: escapeStringRegexp(filter.jobTitle),
+        $regex: escapeStringRegexp(filters.jobTitle),
         $options: 'i',
       };
     }
-    if (filter?.companyName) {
+    if (filters?.companyName) {
       dynamicMatch.companyName = {
-        $regex: escapeStringRegexp(filter.companyName),
+        $regex: escapeStringRegexp(filters.companyName),
         $options: 'i',
       };
     }
-    if (filter?.location) dynamicMatch.location = filter.location;
-    if (filter?.postingDateRangeStart || filter?.postingDateRangeEnd) {
+    if (filters?.location) dynamicMatch.location = filters.location;
+    if (filters?.postingDateRangeStart || filters?.postingDateRangeEnd) {
       const datePostedFilter: Record<string, Date> = {};
 
-      if (filter.postingDateRangeStart) {
-        datePostedFilter.$gte = filter.postingDateRangeStart;
+      if (filters.postingDateRangeStart) {
+        datePostedFilter.$gte = filters.postingDateRangeStart;
       }
-      if (filter.postingDateRangeEnd) {
-        datePostedFilter.$lte = filter.postingDateRangeEnd;
+      if (filters.postingDateRangeEnd) {
+        datePostedFilter.$lte = filters.postingDateRangeEnd;
       }
 
       dynamicMatch.datePosted = datePostedFilter;
