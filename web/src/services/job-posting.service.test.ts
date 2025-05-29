@@ -266,8 +266,8 @@ describe('JobPostingService', () => {
   describe('getJobPostingsUserHasNotAppliedTo With Filter', () => {
     const userIdA = getNewMongoId();
     const userIdB = getNewMongoId();
-    const mockCompanyName = 'Example Company 1';
-    const mockJobTitle = 'Software Engineer 2';
+    const mockCompanyName = 'Company 1';
+    const mockJobTitle = 'Engineer 2';
     const mockStartDate = new Date('2023-12-31');
     const mockEndDate = new Date('2025-1-1');
     let jobPostings: (IJobPosting | undefined)[];
@@ -277,14 +277,14 @@ describe('JobPostingService', () => {
         linkId: getNewObjectId(),
         url: 'http://example1.com/job-posting',
         jobTitle: 'Software Engineer 1',
-        companyName: mockCompanyName,
+        companyName: 'Example Company 1',
         submittedBy: getNewObjectId(),
       },
       {
         linkId: getNewObjectId(),
         url: 'http://example2.com/job-posting',
-        jobTitle: mockJobTitle,
-        companyName: mockCompanyName,
+        jobTitle: 'Software Engineer 2',
+        companyName: 'Example Company 1',
         submittedBy: getNewObjectId(),
         location: JobPostingRegion.CANADA,
       },
@@ -351,7 +351,7 @@ describe('JobPostingService', () => {
     });
 
     it('should return job postings not applied by user after applying to one, matching the filter criteria', async () => {
-      const [jobPosting1] = jobPostings;
+      const [jobPosting1, jobPosting2] = jobPostings;
       await ApplicationRepository.createApplication({
         jobPostingId: jobPosting1?.id,
         userId: userIdA,
@@ -366,7 +366,7 @@ describe('JobPostingService', () => {
 
       expect(jobs).to.be.an('array').that.has.lengthOf(1);
       assert(jobs[0]);
-      expect(jobs[0].jobTitle).to.equal(mockJobTitle);
+      expect(jobs[0]._id.toString()).to.equal(jobPosting2?.id);
     });
 
     it('should return job postings matching the date filter', async () => {
