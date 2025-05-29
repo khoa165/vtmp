@@ -1,4 +1,5 @@
 name: Pull Request Checks
+
 on:
   pull_request:
     branches:
@@ -6,102 +7,19 @@ on:
 
 jobs:
   build-common:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          cache: 'yarn'
-
-      - name: Use latest yarn version
-        run: yarn set version stable
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Build common package
-        run: yarn workspace @vtmp/common build
+    uses: ./.github/workflows/build-common.yml
 
   build-web:
-    # needs: build-common
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          cache: 'yarn'
-
-      - name: Use latest yarn version
-        run: yarn set version stable
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Build common package
-        run: yarn workspace @vtmp/common build
-
-      - name: Build web
-        run: yarn workspace @vtmp/web build
+    uses: ./.github/workflows/build-web.yml
 
   test-web:
-    # needs: build-web
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-
-      - name: Use latest yarn version
-        run: yarn set version stable
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Build common package
-        run: yarn workspace @vtmp/common build
-
-      - name: Run test
-        run: yarn workspace @vtmp/web test
+    uses: ./.github/workflows/test-web.yml
 
   build-web-client:
-    # needs: build-common
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          cache: 'yarn'
-
-      - name: Use latest yarn version
-        run: yarn set version stable
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Build common package
-        run: yarn workspace @vtmp/common build
-
-      - name: Build web
-        run: yarn workspace @vtmp/web-client build
+    uses: ./.github/workflows/build-web-client.yml
 
   chromatic:
-    # needs: build-web-client
+    if: ${{ contains(github.event.pull_request.files.*.path, 'web-client/src/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -109,10 +27,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 20.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: 'yarn'
 
       - name: Use latest yarn version

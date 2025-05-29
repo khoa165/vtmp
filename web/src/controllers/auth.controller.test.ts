@@ -13,6 +13,9 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { UserRole } from '@vtmp/common/constants';
+import { JWTUtils } from '@/utils/jwt';
+import assert from 'assert';
+import { JWT_TOKEN_TYPE } from '@/constants/enums';
 
 describe('AuthController', () => {
   useMongoDB();
@@ -304,6 +307,194 @@ describe('AuthController', () => {
 
       expectSuccessfulResponse({ res: resLogin, statusCode: 200 });
       expect(resLogin.body.data).to.have.property('token');
+    });
+  });
+
+  describe('POST /auth/request-password-reset', () => {
+    beforeEach(async () => {
+      const encryptedPassword = await bcrypt.hash('test password', 10);
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@gmail.com',
+        encryptedPassword,
+      };
+      await UserRepository.createUser(mockUser);
+    });
+
+    it('should return error message for missing email', async () => {
+      const res = await request(app)
+        .post('/api/auth/request-password-reset')
+        .send({
+          firstName: 'admin',
+          lastName: 'viettech',
+          password: 'Test!123',
+        })
+        .set('Accept', 'application/json');
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Email is required');
+    });
+
+    it('should return error message for invalid email', async () => {
+      const res = await request(app)
+        .post('/api/auth/request-password-reset')
+        .send({ email: 'invalid-email' })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Invalid email address');
+    });
+
+    it('should return success message for valid email', async () => {
+      const res = await request(app)
+        .post('/api/auth/request-password-reset')
+        .send({ email: 'test@gmail.com' })
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.message).to.equal(
+        'If the account exists with this email, you will receive a password reset link via email'
+      );
+    });
+  });
+
+  describe('PATCH /auth/reset-password', () => {
+    let resetToken: string;
+    let userId: string;
+
+    beforeEach(async () => {
+      const encryptedPassword = await bcrypt.hash('test password', 10);
+      const mockUser = {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'test@gmail.com',
+        encryptedPassword,
+      };
+
+      const user = await UserRepository.createUser(mockUser);
+      userId = user._id.toString();
+
+      resetToken = JWTUtils.createTokenWithPayload(
+        {
+          id: userId,
+          email: user.email,
+          purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
+        },
+        {
+          expiresIn: '10m',
+        }
+      );
+    });
+
+    it('should return error message for password being too short', async () => {
+      const res = await request(app)
+        .patch('/api/auth/reset-password')
+        .send({
+          token: resetToken,
+          newPassword: 'vT1?',
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Password must be between 8 and 20 characters'
+      );
+    });
+
+    it('should return error message for password being too long', async () => {
+      const res = await request(app)
+        .patch('/api/auth/reset-password')
+        .send({
+          token: resetToken,
+          newPassword: 'Thisisasuperlongpasswordthatcouldbeshortened!123',
+        })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Password must be between 8 and 20 characters'
+      );
+    });
+
+    it('should return error message for password having no special characters', async () => {
+      const res = await request(app)
+        .patch('/api/auth/reset-password')
+        .send({ token: resetToken, newPassword: 'Test1234' })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Password requires at least 1 special character in [!, @, #, $, %, ^, &, ?]'
+      );
+    });
+
+    it('should return error message for password having no uppercase characters', async () => {
+      const res = await request(app)
+        .patch('/api/auth/reset-password')
+        .send({ token: resetToken, newPassword: 'test123!' })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Password requires at least 1 uppercase letter'
+      );
+    });
+
+    it('should return error message for password having no lowercase characters', async () => {
+      const res = await request(app)
+        .patch('/api/auth/reset-password')
+        .send({ token: resetToken, newPassword: 'TEST!123' })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Password requires at least 1 lowercase letter'
+      );
+    });
+
+    it('should return error message for password having no digit', async () => {
+      const res = await request(app)
+        .patch('/api/auth/reset-password')
+        .send({ token: resetToken, newPassword: 'Test!!!@@' })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Password requires at least 1 digit'
+      );
+    });
+
+    it('should return error for missing token', async () => {
+      const res = await request(app)
+        .patch('/api/auth/reset-password')
+        .send({ newPassword: 'Testpass@1234' })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Token is required');
+    });
+
+    it('should reset password successfully', async () => {
+      const res = await request(app)
+        .patch('/api/auth/reset-password')
+        .send({ token: resetToken, newPassword: 'Newpassword@123' })
+        .set('Accept', 'application/json');
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.have.property('reset');
+      expect(res.body.message).to.equal('Password has been reset successfully');
+
+      const updatedUser = await UserRepository.getUserById(userId, {
+        includePasswordField: true,
+      });
+
+      assert(updatedUser);
+      const isPasswordCorrect = await bcrypt.compare(
+        'Newpassword@123',
+        updatedUser.encryptedPassword
+      );
+
+      assert(isPasswordCorrect);
     });
   });
 });
