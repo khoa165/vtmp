@@ -8,8 +8,10 @@
   "type": "module",
   "main": "dist/server.js",
   "dependencies": {
+    "@google/genai": "^1.0.1",
     "@vtmp/common": "*",
     "bcryptjs": "^3.0.2",
+    "chromedriver": "^136.0.3",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
@@ -30,6 +32,7 @@
     "nodemailer": "^6.10.1",
     "normalize-url": "^8.0.1",
     "remeda": "^2.21.2",
+    "selenium-webdriver": "^4.32.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -45,6 +48,7 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.13.9",
     "@types/nodemailer": "^6",
+    "@types/selenium-webdriver": "^4",
     "@types/supertest": "^6.0.3",
     "chai": "^5.2.0",
     "chai-as-promised": "^8.0.1",

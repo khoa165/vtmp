@@ -31,7 +31,7 @@
     "removeComments": true,
     "strictNullChecks": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "helpers/link.helpers.ts"],
   "exclude": ["node_modules", "dist"],
   "tsc-alias": {
     "verbose": false,
