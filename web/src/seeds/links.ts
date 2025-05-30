@@ -15,7 +15,7 @@ export const loadLinks = async (count: number): Promise<ILink[]> => {
     _id: faker.database.mongodbObjectId(),
     url: faker.internet.url(),
     companyName: formatCompanyName(faker.helpers.enumValue(CompanyName)),
-    datePosted: faker.date.past(),
+    datePosted: faker.date.recent({ days: 90 }),
     jobDescription: faker.lorem.paragraph(),
     jobTitle: faker.person.jobTitle(),
     location: faker.helpers.enumValue(JobPostingRegion),
