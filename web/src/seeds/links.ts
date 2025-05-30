@@ -7,7 +7,7 @@ export const loadLinks = async (count: number): Promise<ILink[]> => {
   const newLinks = Array.from({ length: count }, () => ({
     url: faker.internet.url(),
     companyName: formatEnumName(faker.helpers.enumValue(CompanyName)),
-    datePosted: faker.date.past(),
+    datePosted: faker.date.recent({ days: 90 }),
     jobDescription: faker.lorem.paragraph(),
     jobTitle: faker.person.jobTitle(),
     location: faker.helpers.enumValue(JobPostingRegion),
