@@ -15,6 +15,7 @@ import {
 } from '@tanstack/react-table';
 import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
 import { ResizableTable } from '@/components/pages/shared/resizable-table';
+import { InterviewDrawer } from '@/components/pages/application-tracker/applications/interview-drawer';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -76,7 +77,17 @@ export function ApplicationsTable<TData, TValue>({
         />
         <ColumnVisibilityConfiguration table={table} />
       </section>
-      <ResizableTable table={table} columns={columns} />
+      <ResizableTable
+        table={table}
+        columns={columns}
+        renderDrawer={({ open, onOpenChange, rowData }) => (
+          <InterviewDrawer
+            open={open}
+            onOpenChange={onOpenChange}
+            rowData={rowData}
+          />
+        )}
+      />
     </>
   );
 }
