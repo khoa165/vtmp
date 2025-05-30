@@ -9,6 +9,8 @@ const configSchema = z.object({
   DISCORD_BOT_TOKEN: z.string(),
   API_URL: z.string(),
   PORT: z.preprocess(Number, z.number().positive().finite()),
+  LOGIN_EMAIL: z.string().email(),
+  LOGIN_PASSWORD: z.string(),
 });
 
 export const EnvConfig = {

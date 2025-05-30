@@ -8,10 +8,8 @@ import {
 } from 'slash-create';
 import { z } from 'zod';
 
-const API_URL = EnvConfig.get().API_URL;
-
 const api = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: `${EnvConfig.get().API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -19,11 +17,30 @@ const api = axios.create({
 
 const urlSchema = z.string().url();
 
+let jwtToken: string;
+
+const email = EnvConfig.get().LOGIN_EMAIL;
+const password = EnvConfig.get().LOGIN_PASSWORD;
+
+const getJwtToken = async () => {
+  if (jwtToken) return jwtToken;
+
+  const response = await api.request({
+    method: 'POST',
+    url: '/auth/login',
+    data: { email, password },
+  });
+
+  jwtToken = response.data.token;
+  console.log(jwtToken);
+  return jwtToken;
+};
+
 export class PingCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
       name: 'ping',
-      description: 'Replies with Pong!',
+      description: 'Ping the bot!',
     });
   }
 
@@ -58,10 +75,14 @@ export class ShareLinkCommand extends SlashCommand {
     }
 
     try {
+      const token = await getJwtToken();
       const response = await api.request({
         method: 'POST',
         url: '/links',
         data: { url: parsed_url.data },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.status === 201) {
