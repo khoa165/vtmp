@@ -5245,11 +5245,14 @@ __metadata:
   dependencies:
     "@types/cors": "npm:^2.8.17"
     "@types/express": "npm:^5"
+    "@types/morgan": "npm:^1.9.9"
     "@types/node": "npm:^22.15.24"
     axios: "npm:^1.9.0"
     cors: "npm:^2.8.5"
     dotenv: "npm:^16.5.0"
     express: "npm:^5.1.0"
+    helmet: "npm:^8.1.0"
+    morgan: "npm:^1.10.0"
     slash-create: "npm:^6.4.1"
     tsc-alias: "npm:^1.8.16"
     tsx: "npm:^4.19.4"
@@ -8516,7 +8519,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"helmet@npm:^8.0.0":
+"helmet@npm:^8.0.0, helmet@npm:^8.1.0":
   version: 8.1.0
   resolution: "helmet@npm:8.1.0"
   checksum: 10c0/94d3a7ebc88dbda1421635bdf33f00724adb5252269e93c5ab296ec0db11336d01265659ad3739ab1a1e881fb23a686ff7e788aac6a5fb929285134f157df763
