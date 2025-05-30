@@ -36,7 +36,7 @@ export class PingCommand extends SlashCommand {
 export class ShareLinkCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
-      name: 'share',
+      name: 'share-link',
       description: 'Share a job posting url',
       options: [
         {
