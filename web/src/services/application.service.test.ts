@@ -452,8 +452,8 @@ describe('ApplicationService', () => {
           )
         );
       const pendingInterviewsBefore = await InterviewRepository.getInterviews({
-        userId: userId_A,
         filters: {
+          userId: userId_A,
           applicationId: application_A0.id,
           status: InterviewStatus.PENDING,
         },
@@ -469,8 +469,8 @@ describe('ApplicationService', () => {
       expect(updatedApplication.status).to.equal(ApplicationStatus.REJECTED);
 
       const failedInterviews = await InterviewRepository.getInterviews({
-        userId: userId_A,
         filters: {
+          userId: userId_A,
           applicationId: application_A0.id,
           status: InterviewStatus.FAILED,
         },
@@ -488,8 +488,8 @@ describe('ApplicationService', () => {
       expect(passedInterview.status).to.equal(InterviewStatus.PASSED);
 
       const pendingInterviewsAfter = await InterviewRepository.getInterviews({
-        userId: userId_A,
         filters: {
+          userId: userId_A,
           applicationId: application_A0.id,
           status: InterviewStatus.PENDING,
         },

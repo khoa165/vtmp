@@ -11,14 +11,12 @@ import { formatEnumName } from '@vtmp/common/utils';
 export const loadJobPostings = async (
   links: ILink[]
 ): Promise<IJobPosting[]> => {
-  const RECENT_DAYS = 90;
-
   const newJobPostings = links.map((link) => ({
     linkId: link._id,
     url: link.url,
     jobTitle: formatEnumName(faker.helpers.enumValue(JobTitle)),
     companyName: formatEnumName(faker.helpers.enumValue(CompanyName)),
-    datePosted: faker.date.recent({ days: RECENT_DAYS }),
+    datePosted: faker.date.recent({ days: 90 }),
     location: faker.helpers.enumValue(JobPostingRegion),
   }));
 

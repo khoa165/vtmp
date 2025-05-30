@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import { toLowerCase } from 'remeda';
 import { UserRepository } from '@/repositories/user.repository';
 import { AuthService } from '@/services/auth.service';
+import { UserRole } from '@vtmp/common/constants';
 
 export enum HTTPMethod {
   GET = 'GET',
@@ -24,6 +25,10 @@ interface IAuthMiddlewareTest {
 export const runUserLogin = async (): Promise<{
   mockUserId: string;
   mockUserToken: string;
+  mockAdminId: string;
+  mockAdminToken: string;
+  mockModeratorId: string;
+  mockModeratorToken: string;
 }> => {
   const encryptedPassword = await bcrypt.hash('test password', 10);
   const mockUser = {
@@ -40,7 +45,44 @@ export const runUserLogin = async (): Promise<{
     })
   ).token;
 
-  return { mockUserId, mockUserToken };
+  const mockAdmin = {
+    firstName: 'Admin',
+    lastName: 'viettech',
+    email: 'admin@gmail.com',
+    encryptedPassword,
+    role: UserRole.ADMIN,
+  };
+  const mockAdminId = (await UserRepository.createUser(mockAdmin)).id;
+  const mockAdminToken = (
+    await AuthService.login({
+      email: mockAdmin.email,
+      password: 'test password',
+    })
+  ).token;
+
+  const mockModerator = {
+    firstName: 'Moderator',
+    lastName: 'viettech',
+    email: 'moderator@gmail.com',
+    encryptedPassword,
+    role: UserRole.MODERATOR,
+  };
+  const mockModeratorId = (await UserRepository.createUser(mockModerator)).id;
+  const mockModeratorToken = (
+    await AuthService.login({
+      email: mockModerator.email,
+      password: 'test password',
+    })
+  ).token;
+
+  return {
+    mockUserId,
+    mockUserToken,
+    mockAdminId,
+    mockAdminToken,
+    mockModeratorId,
+    mockModeratorToken,
+  };
 };
 
 export const runDefaultAuthMiddlewareTests = ({
