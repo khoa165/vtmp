@@ -15,7 +15,7 @@ export const roleToPermissionMapping: Record<UserRole, Permission[]> = {
     Permission.VIEW_APPLICATION,
 
     Permission.VIEW_INTERVIEW,
-    Permission.VIEW_ALL_INTERVIEW,
+    Permission.VIEW_ALL_DATA,
     Permission.MANAGE_INTERVIEW,
   ],
   [UserRole.MODERATOR]: [

@@ -303,7 +303,7 @@ describe('InterviewController', () => {
       method: HTTPMethod.GET,
     });
 
-    it('return an empty array when none exist', async () => {
+    it('should return an empty array when none exist', async () => {
       const res = await request(app)
         .get(url)
         .set('Authorization', `Bearer ${mockToken_A}`);
@@ -311,7 +311,7 @@ describe('InterviewController', () => {
       expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('returns an error message when accessed by an user without the required role (no filter)', async () => {
+    it('should return an error message when accessed by an user without the required role (no filter)', async () => {
       await Promise.all(
         [mockInterview_A0, mockInterview_A1, mockInterview_B0].map(
           (mockInterview) => InterviewRepository.createInterview(mockInterview)

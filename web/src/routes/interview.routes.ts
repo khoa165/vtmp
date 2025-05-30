@@ -26,7 +26,7 @@ InterviewRoutes.get(
 InterviewRoutes.get(
   '/',
   wrappedHandlers([
-    hasPermission(Permission.VIEW_ALL_INTERVIEW),
+    hasPermission(Permission.VIEW_ALL_DATA),
     InterviewController.getInterviews,
   ])
 );
