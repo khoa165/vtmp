@@ -31,7 +31,7 @@ const getJwtToken = async () => {
     data: { email, password },
   });
 
-  jwtToken = response.data.token;
+  jwtToken = response.data.data.token;
   console.log('Login response object: ', response);
   console.log('JWT Token is: ', jwtToken);
   return jwtToken;
