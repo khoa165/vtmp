@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(helmet()); // Secure HTTP headers
 app.use(morgan('dev')); // Logging HTTP requests
 
-const creator = new SlashCreator({
+export const creator = new SlashCreator({
   applicationID: EnvConfig.get().DISCORD_APPLICATION_ID,
   publicKey: EnvConfig.get().DISCORD_PUBLIC_KEY,
   token: EnvConfig.get().DISCORD_BOT_TOKEN,
@@ -26,7 +26,7 @@ creator.registerCommands([
   new ShareLinkCommand(creator),
 ]);
 
-creator.syncCommands();
+// creator.syncCommands();
 
 app.get('/', (_req: Request, res: Response) => {
   res.status(200).send('Discord service is running');
