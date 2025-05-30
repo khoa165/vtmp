@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
-import { ENVIRONMENT } from '@/constants/enums';
+import { ENVIRONMENT } from '@/controllers/constants/enums';
 
 dotenv.config();
 

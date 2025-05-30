@@ -8,7 +8,7 @@ import {
 import { JWTUtils } from '@/utils/jwt';
 import bcrypt from 'bcryptjs';
 import { omit } from 'remeda';
-import { JWT_TOKEN_TYPE } from '@/constants/enums';
+import { JWT_TOKEN_TYPE } from '@/controllers/constants/enums';
 import { z } from 'zod';
 
 const ResetTokenPayloadSchema = z.object({

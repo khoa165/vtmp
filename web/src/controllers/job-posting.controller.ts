@@ -7,9 +7,7 @@ import { parse } from 'date-fns';
 
 const JobPostingUpdateSchema = z
   .object({
-    externalPostingId: z
-      .string({ invalid_type_error: 'Invalid external posting ID format' })
-      .optional(),
+    externalPostingId: z.string().optional(),
     url: z
       .string({ invalid_type_error: 'URL must be a string' })
       .url('Invalid URL format')

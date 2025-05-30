@@ -15,7 +15,7 @@ import {
 import { UserRole } from '@vtmp/common/constants';
 import { JWTUtils } from '@/utils/jwt';
 import assert from 'assert';
-import { JWT_TOKEN_TYPE } from '@/constants/enums';
+import { JWT_TOKEN_TYPE } from '@/controllers/constants/enums';
 
 describe('AuthController', () => {
   useMongoDB();

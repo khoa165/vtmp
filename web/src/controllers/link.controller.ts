@@ -3,7 +3,7 @@ import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
 import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
 import { parse } from 'date-fns';
-import { MONGO_OBJECT_ID_REGEX } from '@/constants/validations';
+import { MONGO_OBJECT_ID_REGEX } from '@/controllers/constants/validations';
 
 const LinkSchema = z.object({
   url: z.string({ required_error: 'URL is required' }).url(),
