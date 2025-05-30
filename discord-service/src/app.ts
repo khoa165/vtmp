@@ -10,6 +10,7 @@ import { EnvConfig } from '@/config/env';
 const app: Express = express();
 
 app.use(cors());
+app.use(express.json());
 app.use(helmet()); // Secure HTTP headers
 app.use(morgan('dev')); // Logging HTTP requests
 
