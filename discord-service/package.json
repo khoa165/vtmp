@@ -29,7 +29,6 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
-    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
-    "sync": "node dist/sync.js"
+    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json"
   }
 }
