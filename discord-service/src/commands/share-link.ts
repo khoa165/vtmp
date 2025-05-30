@@ -39,15 +39,22 @@ export class ShareLinkCommand extends SlashCommand {
       console.log('Reponse object after submit link: ', response);
 
       if (response.status === 201) {
-        return ctx.send(
-          `✅ Job link shared successfully!\n[View job posting](${parsed_url.data})`
-        );
+        return ctx.send({
+          content: `✅ Job link shared successfully!\n[View job posting](${parsed_url.data})`,
+          ephemeral: false,
+        });
       } else {
-        return ctx.send('❌ Failed to share job link.');
+        return ctx.send({
+          content: '❌ Failed to share job link.',
+          ephemeral: true,
+        });
       }
     } catch (error: unknown) {
       console.error(error);
-      return ctx.send('❌ An error occurred while sharing the job link.');
+      return ctx.send({
+        content: '❌ An error occurred while sharing the job link.',
+        ephemeral: true,
+      });
     }
   };
 }
