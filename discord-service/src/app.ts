@@ -3,7 +3,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { SlashCreator, ExpressServer } from 'slash-create';
-import { PingCommand, ShareLinkCommand } from '@/commands';
+import { ShareLinkCommand } from '@/commands/share-link';
+import { PingCommand } from '@/commands/ping';
 import { EnvConfig } from '@/config/env';
 
 const app: Express = express();
