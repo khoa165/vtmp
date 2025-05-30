@@ -1,0 +1,8 @@
+import app from '@/app';
+import { EnvConfig } from '@/config/env';
+
+const PORT = EnvConfig.get().PORT || 8080;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
