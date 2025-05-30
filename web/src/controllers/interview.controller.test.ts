@@ -370,7 +370,7 @@ describe('InterviewController', () => {
     const endpoint = (appId: string) =>
       `/api/interviews/by-application/${appId}`;
 
-    it('400 when applicationId malformed', async () => {
+    it('should return 400 when applicationId malformed', async () => {
       const res = await request(app)
         .get(endpoint('not-a-valid-id'))
         .set('Authorization', `Bearer ${mockToken_A}`);
