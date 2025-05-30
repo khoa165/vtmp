@@ -22,8 +22,20 @@ const post = <ReqBody, Response>(body: ReqBody): Response => {
 
 post<MyData, MyResponse>({ name: 'test generics' });
 
-const UpperCaseFunction = () => {
+// Custom rule of lowercase function name
+const UpperCaseVariable = 'UPPERCASE';
+console.log('UpperCaseVariable', UpperCaseVariable);
+
+const upperCaseFunction = () => {
   console.log('this is a function with uppercase');
 };
 
-UpperCaseFunction();
+upperCaseFunction();
+upperCaseFunction();
+upperCaseFunction();
+upperCaseFunction();
+upperCaseFunction();
+upperCaseFunction();
+upperCaseFunction();
+upperCaseFunction();
+upperCaseFunction();

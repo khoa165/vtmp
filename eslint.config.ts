@@ -2,7 +2,7 @@
 import globals from 'globals';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import { customPlugin } from './custom-plugin';
+import { customPlugin } from './custom-eslint';
 
 export default tseslint.config(
   eslint.configs.recommended, /// recommended Eslint rules
@@ -23,6 +23,7 @@ export default tseslint.config(
       '@typescript-eslint/no-non-null-assertion': 'warn',
       'customPlugin/explicit-generics': ['error', { functionNames: ['post'] }],
       'customPlugin/lowercase-function': 'error',
+      'curly': 'error',
     },
   },
   { ignores: ['cookiecutter/', 'scripts/'] }

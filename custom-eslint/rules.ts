@@ -57,7 +57,7 @@ export const explicitGenerics = createRule<Options, MessageIds>({
   },
 });
 
-export const lowercaseFunction = createRule({
+export const lowercaseFunction = createRule<[], 'lowercase'>({
   name: 'lowercase-function',
   meta: {
     docs: {
@@ -72,21 +72,55 @@ export const lowercaseFunction = createRule({
   },
   defaultOptions: [],
   create(context) {
+    // Track renamed functions: old name -> new name
+    const renamedFunctions = new Map<string, string>();
+
     return {
       VariableDeclarator(node) {
-        if (node.id != null && node.id.type === 'Identifier') {
-          if (/^[A-Z]/.test(node.id.name)) {
+        if (
+          node.id != null &&
+          node.id.type === 'Identifier' &&
+          node.init &&
+          (node.init.type === 'FunctionExpression' ||
+            node.init.type === 'ArrowFunctionExpression')
+        ) {
+          const identifier = node.id;
+          if (/^[A-Z]/.test(identifier.name)) {
+            const newName =
+              identifier.name.charAt(0).toLowerCase() +
+              identifier.name.slice(1);
+            renamedFunctions.set(identifier.name, newName);
+
             context.report({
               messageId: 'lowercase',
-              node: node.id,
+              node: identifier,
               fix(fixer) {
-                return fixer.replaceText(
-                  node.id,
-                  node.id.name.charAt(0).toLowerCase() + node.id.name.slice(1)
-                );
+                return fixer.replaceText(identifier, newName);
               },
             });
           }
+        }
+      },
+      // Add a new visitor for all identifiers
+      Identifier(node) {
+        // Skip if this is the declaration we already handled
+        if (
+          node.parent?.type === 'VariableDeclarator' &&
+          node === node.parent.id
+        ) {
+          return;
+        }
+
+        // Check if this identifier matches any renamed function
+        const newName = renamedFunctions.get(node.name);
+        if (newName) {
+          context.report({
+            messageId: 'lowercase',
+            node: node,
+            fix(fixer) {
+              return fixer.replaceText(node, newName);
+            },
+          });
         }
       },
     };
