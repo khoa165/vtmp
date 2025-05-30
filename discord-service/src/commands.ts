@@ -32,7 +32,8 @@ const getJwtToken = async () => {
   });
 
   jwtToken = response.data.token;
-  console.log(jwtToken);
+  console.log('Login response object: ', response);
+  console.log('JWT Token is: ', jwtToken);
   return jwtToken;
 };
 
@@ -84,6 +85,7 @@ export class ShareLinkCommand extends SlashCommand {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log('Reponse object after submit link: ', response);
 
       if (response.status === 201) {
         return ctx.send(
