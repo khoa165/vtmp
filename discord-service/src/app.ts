@@ -26,7 +26,9 @@ creator.registerCommands([
   new ShareLinkCommand(creator),
 ]);
 
-creator.syncCommands();
+creator.syncCommands().then(() => {
+  console.log('Slash commands synced!');
+});
 
 app.get('/', (_req: Request, res: Response) => {
   res.status(200).send('Discord service is running');
