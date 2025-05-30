@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   ShieldUser,
   ExternalLink,
@@ -19,29 +19,44 @@ import {
 import { VTMPLogo } from '@/components/base/vtmp-logo';
 import { Avatar } from '@/components/base/avatar';
 import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
+import { UserRole } from '@vtmp/common/constants';
 export const InternalToolsSidebar = () => {
+  const rawUser = localStorage.getItem('user');
+  const user = rawUser ? JSON.parse(rawUser) : null;
   const items = [
     {
       title: 'Users',
       url: '/user-invitation',
       icon: ShieldUser,
+      roles: [UserRole.ADMIN],
     },
     {
       title: 'Links',
       url: '/link-sharing',
       icon: ExternalLink,
+      roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
     },
     {
       title: 'Jobs',
       url: '/job-postings',
       icon: LayoutDashboard,
+      roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
     },
     {
       title: 'Applications',
       url: '/application-tracker',
       icon: BriefcaseBusiness,
+      roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
     },
   ];
+
+  const visibleItems = useMemo(
+    () =>
+      items.filter((item) =>
+        item.roles.some((role) => user.role.includes(role))
+      ),
+    [user, items]
+  );
 
   return (
     <Sidebar collapsible="icon" variant="sidebar">
@@ -58,7 +73,7 @@ export const InternalToolsSidebar = () => {
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
-              {items.map((item) => (
+              {visibleItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>
