@@ -13,7 +13,6 @@ import {
   Header,
   Table as TanstackTable,
 } from '@tanstack/react-table';
-import { useState } from 'react';
 
 const ColumnResizer = <TData, TValue>({
   header,
@@ -40,30 +39,14 @@ const ColumnResizer = <TData, TValue>({
 interface ResizableTableProps<TData, TValue> {
   table: TanstackTable<TData>;
   columns: ColumnDef<TData, TValue>[];
-  renderDrawer: (props: {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    rowData: TData | null;
-  }) => React.ReactNode;
+  handleRowClick?: (rowData: TData) => void;
 }
 
 export function ResizableTable<TData, TValue>({
   table,
   columns,
-  renderDrawer,
+  handleRowClick,
 }: ResizableTableProps<TData, TValue>) {
-  const [selectedRow, setIsSelectedRow] = useState<TData | null>(null);
-  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
-
-  const handleTriggerContentDrawer = () => {
-    setIsOpenDrawer(!isOpenDrawer);
-  };
-
-  const handleRowClick = (rowData: TData) => {
-    setIsSelectedRow(rowData);
-    handleTriggerContentDrawer();
-  };
-
   return (
     <>
       <section className="rounded-md border border-foreground">
@@ -98,8 +81,7 @@ export function ResizableTable<TData, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className="border-white"
-                    onClick={() => handleRowClick(row.original)}
+                    onClick={() => handleRowClick?.(row.original)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="text-foreground py-4">
@@ -145,11 +127,6 @@ export function ResizableTable<TData, TValue>({
           Next
         </Button>
       </section>
-      {renderDrawer({
-        open: isOpenDrawer,
-        onOpenChange: setIsOpenDrawer,
-        rowData: selectedRow,
-      })}
     </>
   );
 }

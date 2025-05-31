@@ -35,6 +35,17 @@ export function ApplicationsTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [selectedRow, setIsSelectedRow] = useState<TData | null>(null);
+  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
+
+  const handleTriggerContentDrawer = () => {
+    setIsOpenDrawer(!isOpenDrawer);
+  };
+
+  const handleRowClick = (rowData: TData) => {
+    setIsSelectedRow(rowData);
+    handleTriggerContentDrawer();
+  };
 
   const table = useReactTable({
     data,
@@ -80,13 +91,12 @@ export function ApplicationsTable<TData, TValue>({
       <ResizableTable
         table={table}
         columns={columns}
-        renderDrawer={({ open, onOpenChange, rowData }) => (
-          <InterviewDrawer
-            open={open}
-            onOpenChange={onOpenChange}
-            rowData={rowData}
-          />
-        )}
+        handleRowClick={handleRowClick}
+      />
+      <InterviewDrawer
+        open={isOpenDrawer}
+        onOpenChange={setIsOpenDrawer}
+        rowData={selectedRow}
       />
     </>
   );
