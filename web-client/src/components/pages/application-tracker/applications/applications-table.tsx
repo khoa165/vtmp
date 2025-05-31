@@ -16,13 +16,14 @@ import {
 import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
 import { ResizableTable } from '@/components/pages/shared/resizable-table';
 import { InterviewDrawer } from '@/components/pages/application-tracker/applications/interview-drawer';
+import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function ApplicationsTable<TData, TValue>({
+export function ApplicationsTable<TData extends IApplication, TValue>({
   columns,
   data,
   sorting,
@@ -35,14 +36,13 @@ export function ApplicationsTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [selectedRow, setIsSelectedRow] = useState<TData | null>(null);
-  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
 
+  const [selectedRow, setIsSelectedRow] = useState<IApplication>();
+  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const handleTriggerContentDrawer = () => {
     setIsOpenDrawer(!isOpenDrawer);
   };
-
-  const handleRowClick = (rowData: TData) => {
+  const handleRowClick = (rowData: IApplication) => {
     setIsSelectedRow(rowData);
     handleTriggerContentDrawer();
   };
@@ -96,7 +96,7 @@ export function ApplicationsTable<TData, TValue>({
       <InterviewDrawer
         open={isOpenDrawer}
         onOpenChange={setIsOpenDrawer}
-        rowData={selectedRow}
+        applicationId={selectedRow?._id || null}
       />
     </>
   );

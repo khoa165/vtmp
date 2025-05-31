@@ -23,6 +23,7 @@ export const useGetApplications = (
         schema: ApplicationsResponseSchema,
         options: { includeOnlyDataField: true, requireAuth: true },
       }),
+    staleTime: 1000 * 20,
   });
 
 export const useGetApplicationsCountByStatus = () =>
@@ -35,7 +36,23 @@ export const useGetApplicationsCountByStatus = () =>
         schema: ApplicationsCountByStatusSchema,
         options: { includeOnlyDataField: true, requireAuth: true },
       }),
+    staleTime: 1000 * 20,
   });
+
+export const useGetApplicationById = (applicationId: string) => {
+  return useQuery({
+    queryKey: [QueryKey.GET_APPLICATION_BY_ID, applicationId],
+    queryFn: () =>
+      request({
+        method: Method.GET,
+        url: `/applications/${applicationId}`,
+        schema: ApplicationResponseSchema,
+        options: { includeOnlyDataField: true, requireAuth: true },
+      }),
+    enabled: !!applicationId,
+    staleTime: 1000 * 20,
+  });
+};
 
 export const useDeleteApplication = () => {
   const queryClient = useQueryClient();
