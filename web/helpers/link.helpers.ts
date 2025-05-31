@@ -1,7 +1,4 @@
-import { InternalServerError } from '@/utils/errors';
-import ExcelJS from 'exceljs';
-
-export const formatJobDescription = (description: {
+const formatJobDescription = (description: {
   responsibility: string;
   requirement: string;
   prefferred: string;
@@ -26,27 +23,13 @@ export const formatJobDescription = (description: {
       '\n' + formatSection('Preferred Qualifications', description.prefferred);
   }
 
-  return result.trim();
+  return result.length > 0 ? '\n' + result.trim() : '';
 };
 
-export const extractLinkMetaDatPrompt = async (extractedText: string) => {
-  const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.readFile(
-    `C://AProgramming//vtmp//web//src//data//vtmp-training-data.xlsx`
-  );
-  const workSheet = workbook.getWorksheet(1);
-
-  if (!workSheet) {
-    throw new InternalServerError('Worksheet not found', {});
-  }
-  let examples: string[] = [];
-  workSheet.eachRow((row, rowNumber) => {
-    const values = row.values as ExcelJS.CellValue[];
-    examples.push(`
-Example of the job posting ${rowNumber}: ${values[1]}\n
-Example of the output with the correct information and format ${rowNumber}: ${values[2]}
-  `);
-  });
+const extractLinkMetaDatPrompt = async (
+  extractedText: string,
+  examples: string
+) => {
   const prompt = `
 ${extractedText}
 \n\n
@@ -65,8 +48,12 @@ Use the following strategy:
 - The job title and company are typically located just above this section.
 - The job description, including responsibilities and requirements, is typically located below.
 
+if you are not able to extract the information of any field, leave an empty string for that field.
+For the datePosted field, if the date is not available, return an empty string, otherwise format it into mm/dd/yyyy format.
+For the location, if it is a state or city belongs to United States, return US, if they belong to Canada, return CANADA, otherwise return the country name.
+
 Here are examples of job postings and their expected output format.\n
-${examples.join('\n\n')}
+${examples}
 Return the extracted information with the following format:
 {
   "jobTitle": string,
@@ -81,10 +68,9 @@ Return the extracted information with the following format:
   }
 }
 
-if you are not able to extract the information, return an empty string for each field.
-For the datePosted field, if the date is not available, return an empty string, otherwise format it into mm/dd/yyyy format.
-For the location, if it is a state or city belongs to United States, return US, if they belong to Canada, return CANADA, otherwise return the country name.
 `;
 
   return prompt;
 };
+
+export { extractLinkMetaDatPrompt, formatJobDescription };
