@@ -29,7 +29,10 @@ export class ShareLinkCommand extends SlashCommand {
     const url: string = ctx.options.url;
     const parsed_url = urlSchema.safeParse(url);
     if (!parsed_url.success) {
-      return ctx.send('❌ Please provide a valid URL');
+      return ctx.send({
+        content: '❌ Please provide a valid URL',
+        ephemeral: true,
+      });
     }
 
     try {
@@ -41,7 +44,6 @@ export class ShareLinkCommand extends SlashCommand {
       if (response.status === 201) {
         return ctx.send({
           content: `✅ Job link shared successfully!\n[View job posting](${parsed_url.data})`,
-          ephemeral: false,
         });
       } else {
         return ctx.send({
