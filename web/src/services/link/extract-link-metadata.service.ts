@@ -3,17 +3,10 @@ import {
   formatJobDescription,
 } from '@/helpers/link.helpers';
 import { LinkMetaData } from '@/types/link.types';
-import {
-  By,
-  WebDriver,
-  WebElement,
-  Builder,
-  Browser,
-} from 'selenium-webdriver';
 import { GenerateContentResponse } from '@google/genai';
-import chrome from 'selenium-webdriver/chrome';
 import { GoogleGenAI } from '@google/genai';
 import { ResourceNotFoundError } from '@/utils/errors';
+import puppeteer, { Browser, Page } from 'puppeteer';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = process.env.Google_Gemini_API_KEY;
@@ -23,21 +16,6 @@ const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
     });
   }
   return new GoogleGenAI({ apiKey: geminiApiKey });
-};
-
-const getSeleniumWebDriver = async (): Promise<WebDriver> => {
-  const options: chrome.Options = new chrome.Options();
-  options.addArguments(
-    '--headless',
-    '--disable-gpu',
-    '--no-sandbox',
-    '--disable-dev-shm-usage'
-  );
-
-  return new Builder()
-    .forBrowser(Browser.CHROME)
-    .setChromeOptions(options)
-    .build();
 };
 
 const generateMetaData = async (
@@ -76,23 +54,18 @@ const generateMetaData = async (
 };
 
 const scrapeWebsite = async (url: string): Promise<string> => {
-  let driver: WebDriver | undefined;
-  try {
-    driver = await getSeleniumWebDriver();
-    await driver.get(url);
-    await driver.wait(async () => {
-      const readyState = await driver?.executeScript(
-        'return document.readyState'
-      );
-      return readyState === 'complete';
-    }, 10000);
-    const bodyElement: WebElement = await driver.findElement(By.css('body'));
-    const jobPostingText = await bodyElement.getText();
+  const browser: Browser = await puppeteer.launch({ headless: true });
+  const page: Page = await browser.newPage();
 
-    return jobPostingText;
-  } finally {
-    await driver?.quit();
-  }
+  await page.goto(url, { waitUntil: 'networkidle2' });
+
+  const bodyText: string = await page.$eval(
+    'body',
+    (el: HTMLBodyElement) => el.innerText
+  );
+
+  await browser.close();
+  return bodyText;
 };
 
 const ExtractLinkMetadataService = {

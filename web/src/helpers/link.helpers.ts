@@ -48,7 +48,7 @@ if you are not able to extract the information of any field, leave an empty stri
 For the datePosted field, if the date is not available, return an empty string, otherwise format it into mm/dd/yyyy format.
 For the location, if it is a state or city belongs to United States, return US, if they belong to Canada, return CANADA, otherwise return the country name.
 
-Do not explain your answer
+Do not explain your answer.
 Return the extracted information with the following format:
 {
   "jobTitle": string,
