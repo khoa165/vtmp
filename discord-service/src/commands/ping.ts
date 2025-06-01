@@ -9,7 +9,6 @@ export class PingCommand extends SlashCommand {
   }
 
   override run = async (ctx: CommandContext) => {
-    console.log(ctx.user);
     return ctx.send({
       content: `Hello, ${ctx.user.username}`,
       ephemeral: true,

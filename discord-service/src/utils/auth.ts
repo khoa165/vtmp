@@ -23,8 +23,6 @@ const getJwtToken = async () => {
   });
 
   jwtToken = response.data.data.token;
-  console.log('Login response object: ', response);
-  console.log('JWT Token is: ', jwtToken);
   return jwtToken;
 };
 
@@ -45,7 +43,6 @@ export const postWithAuthRetry = async (url: string, data: { url: string }) => {
       error.response &&
       error.response.status === 401
     ) {
-      console.log('Error response: ', error.response);
       jwtToken = undefined; // Clear token and retry
       token = await getJwtToken();
       return await api.request({

@@ -39,7 +39,6 @@ export class ShareLinkCommand extends SlashCommand {
       const response = await postWithAuthRetry('/links', {
         url: parsed_url.data,
       });
-      console.log('Reponse object after submit link: ', response);
 
       if (response.status === 201) {
         return ctx.send({

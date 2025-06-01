@@ -19,4 +19,4 @@ COPY --from=builder /app/discord-service/package.json /app/discord-service/packa
 
 WORKDIR /app/discord-service
 EXPOSE 4000
-CMD [ "yarn", "start" ]
+CMD ["yarn", "start"]

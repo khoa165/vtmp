@@ -18,6 +18,31 @@ services:
       # "./web/src" is relative to root (where the command "docker compose up" is run)
       - ./web/src:/app/web/src
 
+  discord-service:
+    container_name: discord
+    build:
+      context: .
+      dockerfile: discord-service/Dockerfile
+    ports:
+      - '4000:4000'
+    env_file:
+      - ./discord-service/.env
+    environment:
+      - API_URL=http://web:8000
+    depends_on:
+      - web
+    volumes:
+      - ./discord-service/src:/app/discord-service/src
+
+  ngrok:
+    container_name: ngrok
+    image: ngrok/ngrok:latest
+    env_file:
+      - ./discord-service/.env
+    command: http --domain=expert-evolving-bengal.ngrok-free.app discord-service:4000
+    depends_on:
+      - discord-service
+
   web-client:
     container_name: client
     build:
