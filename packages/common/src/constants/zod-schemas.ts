@@ -20,3 +20,10 @@ export const discordConfigSchema = z.object({
   LOGIN_EMAIL: z.string().email(),
   LOGIN_PASSWORD: z.string(),
 });
+
+export const clientConfigSchema = z.object({
+  VITE_STATSIG_CLIENT_SDK_KEY: z.string(),
+  VITE_VTMP_2024_INTERVIEWS_CSV: z.string(),
+  VITE_VTMP_2023_INTERVIEWS_CSV: z.string(),
+  VITE_API_URL: z.string(),
+});
