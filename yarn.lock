@@ -5220,6 +5220,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@vtmp/common@workspace:packages/common"
   dependencies:
+    remeda: "npm:^2.22.5"
     typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
@@ -5247,6 +5248,7 @@ __metadata:
     "@types/express": "npm:^5"
     "@types/morgan": "npm:^1.9.9"
     "@types/node": "npm:^22.15.24"
+    "@vtmp/common": "npm:*"
     axios: "npm:^1.9.0"
     cors: "npm:^2.8.5"
     dotenv: "npm:^16.5.0"
@@ -12132,6 +12134,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"remeda@npm:^2.22.5":
+  version: 2.22.5
+  resolution: "remeda@npm:2.22.5"
+  dependencies:
+    type-fest: "npm:^4.40.1"
+  checksum: 10c0/90f0d02453e9fadbd36ab559edd9319946ddb779762d3b03b67b6de20355e66255d42263627a894057e1c73b25d58d2c89a66a157ac85bea6106a6f257275234
+  languageName: node
+  linkType: hard
+
 "require-directory@npm:^2.1.1":
   version: 2.1.1
   resolution: "require-directory@npm:2.1.1"
@@ -13620,6 +13631,13 @@ __metadata:
   version: 4.40.0
   resolution: "type-fest@npm:4.40.0"
   checksum: 10c0/b39d4da6f9a154e3db7e714cd05ccf56b53f4f0bbf74dd294cb6be4921b16ecca5cb00cb81b53ab621a31c8e8509c74b5101895ada47af9de368a317d24538a3
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:^4.40.1":
+  version: 4.41.0
+  resolution: "type-fest@npm:4.41.0"
+  checksum: 10c0/f5ca697797ed5e88d33ac8f1fec21921839871f808dc59345c9cf67345bfb958ce41bd821165dbf3ae591cedec2bf6fe8882098dfdd8dc54320b859711a2c1e4
   languageName: node
   linkType: hard
 
