@@ -26,11 +26,7 @@ const formatJobDescription = (description: {
   return result.length > 0 ? '\n' + result.trim() : '';
 };
 
-const extractLinkMetaDatPrompt = async (
-  extractedText: string,
-  examples: string
-) => {
-  const prompt = `
+const extractLinkMetaDatPrompt = async (extractedText: string) => `
 ${extractedText}
 \n\n
 Given the string above, can you extract the part of the string that is the actual content of the primary job posting?
@@ -52,8 +48,7 @@ if you are not able to extract the information of any field, leave an empty stri
 For the datePosted field, if the date is not available, return an empty string, otherwise format it into mm/dd/yyyy format.
 For the location, if it is a state or city belongs to United States, return US, if they belong to Canada, return CANADA, otherwise return the country name.
 
-Here are examples of job postings and their expected output format.\n
-${examples}
+Do not explain your answer
 Return the extracted information with the following format:
 {
   "jobTitle": string,
@@ -69,8 +64,5 @@ Return the extracted information with the following format:
 }
 
 `;
-
-  return prompt;
-};
 
 export { extractLinkMetaDatPrompt, formatJobDescription };

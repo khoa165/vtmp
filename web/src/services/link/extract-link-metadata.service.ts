@@ -1,7 +1,7 @@
 import {
   extractLinkMetaDatPrompt,
   formatJobDescription,
-} from 'helpers/link.helpers';
+} from '@/helpers/link.helpers';
 import { LinkMetaData } from '@/types/link.types';
 import {
   By,
@@ -14,7 +14,6 @@ import { GenerateContentResponse } from '@google/genai';
 import chrome from 'selenium-webdriver/chrome';
 import { GoogleGenAI } from '@google/genai';
 import { ResourceNotFoundError } from '@/utils/errors';
-import ExcelJS from 'exceljs';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = process.env.Google_Gemini_API_KEY;
@@ -28,8 +27,8 @@ const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
 
 const getSeleniumWebDriver = async (): Promise<WebDriver> => {
   const options: chrome.Options = new chrome.Options();
-  options.addArguments('--headless');
   options.addArguments(
+    '--headless',
     '--disable-gpu',
     '--no-sandbox',
     '--disable-dev-shm-usage'
@@ -41,33 +40,12 @@ const getSeleniumWebDriver = async (): Promise<WebDriver> => {
     .build();
 };
 
-const getPromptExamples = async (): Promise<string> => {
-  const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.readFile(
-    `C://AProgramming//vtmp//web//src//data//vtmp-training-data.xlsx`
-  );
-  const workSheet = workbook.getWorksheet(1);
-
-  if (!workSheet) {
-    throw new ResourceNotFoundError('Worksheet not found', {});
-  }
-  const examples: string[] = [];
-  workSheet.eachRow((row, rowNumber) => {
-    const values = row.values as ExcelJS.CellValue[];
-    examples.push(`
-Example of the job posting ${rowNumber}: ${values[1]}\n
-Example of the output with the correct information and format ${rowNumber}: ${values[2]}
-  `);
-  });
-  return examples.join('\n\n');
-};
 const generateMetaData = async (
   extractedText: string,
   url: string
 ): Promise<LinkMetaData | { url: string }> => {
   const genAI = await getGoogleGenAI();
-  const examples = await getPromptExamples();
-  const prompt = await extractLinkMetaDatPrompt(extractedText, examples);
+  const prompt = await extractLinkMetaDatPrompt(extractedText);
 
   const response: GenerateContentResponse = await genAI.models.generateContent({
     model: 'gemini-2.0-flash',
@@ -123,8 +101,10 @@ const ExtractLinkMetadataService = {
   ): Promise<LinkMetaData | { url: string }> => {
     try {
       const extractedText = await scrapeWebsite(url);
+      console.log(extractedText);
       return generateMetaData(extractedText, url);
-    } catch {
+    } catch (e) {
+      console.log(e);
       return { url };
     }
   },
