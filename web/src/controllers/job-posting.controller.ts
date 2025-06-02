@@ -66,7 +66,7 @@ export const JobPostingController = {
     const jobPostings =
       await JobPostingService.getJobPostingsUserHasNotAppliedTo({
         userId: userId,
-        filter: filterData,
+        filters: filterData,
       });
 
     res.status(200).json({
