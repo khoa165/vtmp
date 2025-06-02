@@ -29,6 +29,7 @@ export default tseslint.config(
             './web/tsconfig.json',
             './web-client/tsconfig.json',
             './packages/common/tsconfig.json',
+            './custom-eslint/tsconfig.json',
           ],
           noWarnOnMultipleProjects: true,
         },
