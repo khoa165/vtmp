@@ -1,8 +1,8 @@
-import { explicitGenerics, lowercaseFunction } from './rules';
+import { lowercaseFunction, wrappedHandlersInRouter } from './rules';
 
 export const customPlugin = {
   rules: {
-    'explicit-generics': explicitGenerics,
     'lowercase-function': lowercaseFunction,
+    'wrapped-handlers-in-router': wrappedHandlersInRouter,
   },
 };

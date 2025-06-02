@@ -1,63 +1,10 @@
 import { ESLintUtils } from '@typescript-eslint/utils';
 
-type MessageIds = 'default';
-
-type Options = { functionNames: string[] }[];
-
 const createRule = ESLintUtils.RuleCreator(
   (name) => `https://example.com/rule/${name}`
 );
 
-export const explicitGenerics = createRule<Options, MessageIds>({
-  name: 'explicit-generics',
-  meta: {
-    docs: {
-      description:
-        'Enforces that certain functions must have their TypeScript generics inputs be provided',
-    },
-    messages: {
-      default: "'{{callee}}' should include generics in function call",
-    },
-    type: 'problem',
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          functionNames: {
-            type: 'array',
-            items: [
-              {
-                type: 'string',
-              },
-            ],
-            uniqueItems: true,
-          },
-        },
-      },
-    ],
-  },
-  defaultOptions: [],
-  create(context) {
-    return {
-      CallExpression(node) {
-        if (
-          node.callee.type === 'Identifier' &&
-          context.options[0]!.functionNames.includes(node.callee.name)
-        ) {
-          if (!node.typeArguments) {
-            context.report({
-              messageId: 'default',
-              data: { callee: node.callee.name },
-              node: node.callee,
-            });
-          }
-        }
-      },
-    };
-  },
-});
-
-export const lowercaseFunction = createRule<[], 'lowercase'>({
+export const lowercaseFunction = createRule({
   name: 'lowercase-function',
   meta: {
     docs: {
@@ -72,7 +19,6 @@ export const lowercaseFunction = createRule<[], 'lowercase'>({
   },
   defaultOptions: [],
   create(context) {
-    // Track renamed functions: old name -> new name
     const renamedFunctions = new Map<string, string>();
 
     return {
@@ -121,6 +67,75 @@ export const lowercaseFunction = createRule<[], 'lowercase'>({
               return fixer.replaceText(node, newName);
             },
           });
+        }
+      },
+    };
+  },
+});
+
+export const wrappedHandlersInRouter = createRule<[], 'wrapped'>({
+  name: 'wrapped-handlers-in-router',
+  meta: {
+    docs: {
+      description: 'Route handlers should be wrapped in wrappedHandlers',
+    },
+    messages: {
+      wrapped: 'Route handlers must be wrapped in wrappedHandlers function',
+    },
+    type: 'problem',
+    schema: [],
+    fixable: 'code',
+  },
+  defaultOptions: [],
+  create(context) {
+    return {
+      CallExpression(node) {
+        if (
+          node.callee.type === 'MemberExpression' &&
+          node.callee.property.type === 'Identifier' &&
+          ['get', 'post', 'put', 'delete', 'patch', 'use'].includes(
+            node.callee.property.name
+          )
+        ) {
+          const startIndex = node.callee.property.name !== 'use' ? 1 : 0;
+          const allHandlers: string[] = [];
+          const needsFixingIdxs = [];
+
+          for (let i = startIndex; i < node.arguments.length; i++) {
+            const arg = node.arguments[i];
+            if (
+              arg.type === 'CallExpression' &&
+              arg.callee.type === 'Identifier' &&
+              arg.callee.name === 'wrappedHandlers'
+            ) {
+              const wrappedArg = arg.arguments[0];
+              if (wrappedArg.type === 'ArrayExpression') {
+                wrappedArg.elements.forEach((el) => {
+                  if (el) allHandlers.push(context.sourceCode.getText(el));
+                });
+              }
+              continue;
+            }
+
+            allHandlers.push(context.sourceCode.getText(arg));
+            needsFixingIdxs.push(i);
+          }
+          if (needsFixingIdxs.length > 0) {
+            needsFixingIdxs.forEach((idx) => {
+              context.report({
+                node: node.arguments[idx],
+                messageId: 'wrapped',
+                fix(fixer) {
+                  const firstNode = node.arguments[startIndex];
+                  const lastNode = node.arguments[node.arguments.length - 1];
+                  return fixer.replaceTextRange(
+                    [firstNode.range[0], lastNode.range[1]],
+                    `wrappedHandlers([${allHandlers.join(', ')}])`
+                  );
+                },
+              });
+            });
+          }
         }
       },
     };

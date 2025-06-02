@@ -1,7 +1,10 @@
 // @ts-check
-import globals from 'globals';
 import eslint from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
+import importPlugin from 'eslint-plugin-import';
+import globals from 'globals';
 import tseslint from 'typescript-eslint';
+
 import { customPlugin } from './custom-eslint';
 
 export default tseslint.config(
@@ -16,14 +19,60 @@ export default tseslint.config(
     },
     plugins: {
       customPlugin,
+      import: importPlugin,
+      stylistic,
+    },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: [
+            './web/tsconfig.json',
+            './web-client/tsconfig.json',
+            './packages/common/tsconfig.json',
+          ],
+          noWarnOnMultipleProjects: true,
+        },
+        node: true,
+      },
     },
   },
   {
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'warn',
-      'customPlugin/explicit-generics': ['error', { functionNames: ['post'] }],
-      'customPlugin/lowercase-function': 'error',
-      'curly': 'error',
+      'customPlugin/wrapped-handlers-in-router': 'error',
+      'stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
+      'import/no-unresolved': 'error',
+      // 'import/no-default-export': 'error',
+      'import/no-duplicates': 'error',
+      'import/newline-after-import': ['error', { count: 1 }],
+      'import/order': [
+        'error',
+        {
+          groups: ['external', 'builtin', 'internal'],
+          pathGroups: [
+            {
+              pattern: '@vtmp/common/**',
+              group: 'internal',
+            },
+            {
+              pattern: '@/**',
+              group: 'internal',
+            },
+          ],
+          pathGroupsExcludedImportTypes: ['internal'],
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+          'newlines-between': 'always',
+        },
+      ],
+    },
+  },
+  {
+    files: ['web/src/app.ts'],
+    rules: {
+      'import/no-default-export': 'off',
     },
   },
   { ignores: ['cookiecutter/', 'scripts/'] }
