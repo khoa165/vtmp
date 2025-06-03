@@ -2,35 +2,59 @@ import { Router } from 'express';
 import { ApplicationController } from '@/controllers/application.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
 import { wrappedHandlers } from '@/middlewares/utils';
+import { hasPermission } from '@/middlewares/authorization.middleware';
+import { Permission } from '@vtmp/common/constants';
 
 export const ApplicationRoutes = Router();
 
 ApplicationRoutes.use(wrappedHandlers([authenticate]));
-ApplicationRoutes.post(
-  '/',
-  wrappedHandlers([ApplicationController.createApplication])
-);
+
 ApplicationRoutes.get(
   '/',
-  wrappedHandlers([ApplicationController.getApplications])
+  wrappedHandlers([
+    hasPermission(Permission.VIEW_APPLICATION),
+    ApplicationController.getApplications,
+  ])
 );
 ApplicationRoutes.get(
   '/count-by-status',
-  wrappedHandlers([ApplicationController.getApplicationsCountByStatus])
+  wrappedHandlers([
+    hasPermission(Permission.VIEW_APPLICATION),
+    ApplicationController.getApplicationsCountByStatus,
+  ])
 );
 ApplicationRoutes.get(
   '/:applicationId',
-  wrappedHandlers([ApplicationController.getApplicationById])
+  wrappedHandlers([
+    hasPermission(Permission.VIEW_APPLICATION),
+    ApplicationController.getApplicationById,
+  ])
+);
+ApplicationRoutes.post(
+  '/',
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_APPLICATION),
+    ApplicationController.createApplication,
+  ])
 );
 ApplicationRoutes.put(
   '/:applicationId/updateStatus',
-  wrappedHandlers([ApplicationController.updateApplicationStatus])
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_APPLICATION),
+    ApplicationController.updateApplicationStatus,
+  ])
 );
 ApplicationRoutes.put(
   '/:applicationId',
-  wrappedHandlers([ApplicationController.updateApplicationMetadata])
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_APPLICATION),
+    ApplicationController.updateApplicationMetadata,
+  ])
 );
 ApplicationRoutes.delete(
   '/:applicationId',
-  wrappedHandlers([ApplicationController.deleteApplication])
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_APPLICATION),
+    ApplicationController.deleteApplication,
+  ])
 );

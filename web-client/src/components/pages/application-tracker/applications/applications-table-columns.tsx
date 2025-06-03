@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/base/checkbox';
+import { Link } from 'lucide-react';
 import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import {
@@ -8,6 +9,7 @@ import {
 } from '@/components/pages/application-tracker/applications/cell';
 import { format } from 'date-fns';
 import { HeaderSorting } from '@/components/pages/application-tracker/applications/header';
+import { ApplicationInterestColumn } from '@/components/pages/application-tracker/applications/application-interest-column';
 
 export const applicationsTableColumns = ({
   deleteApplicationFn,
@@ -32,6 +34,7 @@ export const applicationsTableColumns = ({
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
+        className="ml-4"
       />
     ),
     cell: ({ row }) => (
@@ -39,16 +42,19 @@ export const applicationsTableColumns = ({
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="ml-4"
       />
     ),
     enableSorting: false,
     enableHiding: false,
+    enableResizing: false,
   },
   {
     accessorKey: 'companyName',
     header: ({ column }) => {
       return <HeaderSorting column={column} headerName="Company" />;
     },
+    enableResizing: true,
   },
   {
     accessorKey: 'status',
@@ -64,6 +70,7 @@ export const applicationsTableColumns = ({
         />
       );
     },
+    enableResizing: true,
   },
   {
     accessorKey: 'appliedOnDate',
@@ -73,15 +80,40 @@ export const applicationsTableColumns = ({
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('appliedOnDate');
       const date = new Date(isoDate);
+      return <div>{format(date, 'MMM d, yyyy')}</div>;
+    },
+    enableResizing: true,
+  },
+  {
+    accessorKey: 'portalLink',
+    header: 'Portal Link',
+    cell: ({ row }) => {
       return (
-        <div className="px-4 text-left">{format(date, 'MMM d, yyyy')}</div>
+        <a
+          href={row.original.portalLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center underline hover:text-primary"
+        >
+          {row.original.portalLink}
+          <Link className="ml-1 h-4 w-4" />
+        </a>
       );
     },
+    enableResizing: true,
   },
-  { accessorKey: 'portalLink', header: 'Portal Link' },
-  { accessorKey: 'interest', header: 'Interest' },
-  { accessorKey: 'referrer', header: 'Referrer' },
-  { accessorKey: 'note', header: 'Note' },
+  {
+    accessorKey: 'interest',
+    header: ({ column }) => {
+      return <HeaderSorting column={column} headerName="Interest" />;
+    },
+    cell: ({ row }) => {
+      return <ApplicationInterestColumn interest={row.original.interest} />;
+    },
+    enableResizing: true,
+  },
+  { accessorKey: 'referrer', header: 'Referrer', enableResizing: true },
+  { accessorKey: 'note', header: 'Note', enableResizing: true },
   {
     id: 'actions',
     enableHiding: false,

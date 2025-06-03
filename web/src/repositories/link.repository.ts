@@ -3,7 +3,7 @@ import { Types, ClientSession } from 'mongoose';
 import { LinkStatus } from '@vtmp/common/constants';
 
 export const LinkRepository = {
-  createLink: async (linkData: object): Promise<ILink> => {
+  createLink: async (linkData: { url: string }): Promise<ILink> => {
     return LinkModel.create(linkData);
   },
 
@@ -45,7 +45,11 @@ export const LinkRepository = {
     return groupCountByStatus;
   },
 
-  getLinks: async (filters?: object): Promise<ILink[]> => {
-    return LinkModel.find(filters ?? {}).lean();
+  getLinks: async (filters: { status?: LinkStatus } = {}): Promise<ILink[]> => {
+    return LinkModel.find(filters).lean();
+  },
+
+  getLinkByUrl: async (url: string): Promise<ILink | null> => {
+    return LinkModel.findOne({ url }).lean();
   },
 };

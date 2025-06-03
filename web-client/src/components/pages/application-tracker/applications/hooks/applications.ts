@@ -11,17 +11,17 @@ import { ApplicationStatus } from '@vtmp/common/constants';
 import axios from 'axios';
 
 export const useGetApplications = (
-  filter: { status?: ApplicationStatus } = {}
+  applicationFilter: { status?: ApplicationStatus } = {}
 ) =>
   useQuery({
-    queryKey: [QueryKey.GET_APPLICATIONS, filter],
+    queryKey: [QueryKey.GET_APPLICATIONS, applicationFilter],
     queryFn: () =>
       request({
         method: Method.GET,
         url: '/applications',
-        data: filter,
+        data: applicationFilter,
         schema: ApplicationsResponseSchema,
-        options: { includeOnlyDataField: true },
+        options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
 
@@ -33,7 +33,7 @@ export const useGetApplicationsCountByStatus = () =>
         method: Method.GET,
         url: '/applications/count-by-status',
         schema: ApplicationsCountByStatusSchema,
-        options: { includeOnlyDataField: true },
+        options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
 
@@ -46,6 +46,7 @@ export const useDeleteApplication = () => {
         method: Method.DELETE,
         url: `/applications/${applicationId}`,
         schema: ApplicationResponseSchema,
+        options: { requireAuth: true },
       }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
@@ -85,6 +86,7 @@ export const useUpdateApplicationStatus = () => {
         url: `/applications/${applicationId}/updateStatus`,
         data: body,
         schema: ApplicationResponseSchema,
+        options: { requireAuth: true },
       }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({

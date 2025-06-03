@@ -21,10 +21,11 @@ import { IApplication } from '@/components/pages/application-tracker/application
 import { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { ApplicationStatus } from '@vtmp/common/constants';
-import { titleCase } from '@/utils/helpers';
+import { formatStatus } from '@/utils/helpers';
 import { StatusDot } from '@/components/base/status-dot';
+import { StatusToColorMapping } from '@/utils/constants';
 
-const handleOfferedSelected = () => {
+const celebrateOffered = (): void => {
   const end = Date.now() + 3 * 1000; // 3 seconds
   const colors = ['#a786ff', '#fd8bbc', '#eca184', '#f8deb1'];
 
@@ -130,11 +131,19 @@ export const CellApplicationStatus = ({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <Button variant="outline">
-            <StatusDot status={application.status} />
-            {application.status === ApplicationStatus.OA
-              ? application.status
-              : titleCase(application.status)}
+          <Button
+            variant="outline"
+            justify="between"
+            size="sm"
+            className="w-[170px] text-left"
+          >
+            <div className="flex items-center gap-2">
+              <StatusDot
+                status={application.status}
+                colorMapping={StatusToColorMapping}
+              />
+              {formatStatus(application.status)}
+            </div>
             <ChevronDown />
           </Button>
         </DropdownMenuTrigger>
@@ -146,7 +155,7 @@ export const CellApplicationStatus = ({
                 key={index}
                 onClick={() => {
                   if (dropdownStatus === ApplicationStatus.OFFERED) {
-                    handleOfferedSelected();
+                    celebrateOffered();
                   }
                   updateApplicationStatusFn({
                     applicationId: application._id,
@@ -154,9 +163,7 @@ export const CellApplicationStatus = ({
                   });
                 }}
               >
-                {dropdownStatus === ApplicationStatus.OA
-                  ? dropdownStatus
-                  : titleCase(dropdownStatus)}
+                {formatStatus(dropdownStatus)}
               </DropdownMenuItem>
             ))}
         </DropdownMenuContent>
