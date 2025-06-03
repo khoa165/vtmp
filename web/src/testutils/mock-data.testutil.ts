@@ -1,4 +1,4 @@
-import { ENVIRONMENT } from '@/constants/enums';
+import { Environment } from '@vtmp/common/constants';
 
 export const MOCK_ENV = {
   PORT: 8000,
@@ -7,5 +7,5 @@ export const MOCK_ENV = {
   GMAIL_EMAIL: 'vtmpwebsite2025@gmail.com',
   GMAIL_APP_PASSWORD: 'azpj ibvt glaf ebcy',
   VTMP_WEB_URL: 'viettechmentorship.com',
-  SEED_ENV: ENVIRONMENT.DEV,
+  SEED_ENV: Environment.DEV,
 };
