@@ -30,7 +30,7 @@ describe.only('LinkController', () => {
   let googleLink: ILink;
 
   const mockLinkData = {
-    url: 'google.com',
+    url: 'https://google.com',
     jobTitle: 'Software Engineer',
     companyName: 'Google',
     submittedBy: getNewMongoId(),
@@ -55,7 +55,7 @@ describe.only('LinkController', () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
     ({ mockUserToken } = await runUserLogin());
 
-    url = 'google.com';
+    url = 'https://google.com';
     googleLink = await LinkRepository.createLink(mockLinkData);
 
     linkId = googleLink.id;
@@ -89,6 +89,17 @@ describe.only('LinkController', () => {
       expect(res.body.message).to.equal(
         'Link has been submitted successfully.'
       );
+    });
+
+    it('should throw an Error when submitting exist url', async () => {
+      const res = await request(app)
+        .post('/api/links')
+        .send({ url: googleLink.url })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockToken}`);
+
+      expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Duplicate url');
     });
   });
 

@@ -26,7 +26,7 @@ import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
   runUserLogin,
-} from '@/testutils/authMiddleware.controller.testutils';
+} from '@/testutils/auth.testutils';
 
 describe('ApplicationController', () => {
   useMongoDB();
@@ -308,15 +308,15 @@ describe('ApplicationController', () => {
 
     const multipleInterviews = [
       {
-        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
+        types: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
       },
       {
-        type: [InterviewType.PRACTICAL_CODING, InterviewType.TRIVIA_CONCEPT],
+        types: [InterviewType.PRACTICAL_CODING, InterviewType.TRIVIA_CONCEPT],
         interviewOnDate: new Date(),
       },
       {
-        type: [InterviewType.OVERALL_BEHAVIORAL],
+        types: [InterviewType.OVERALL_BEHAVIORAL],
         interviewOnDate: new Date(),
         status: InterviewStatus.PASSED,
       },
@@ -438,8 +438,8 @@ describe('ApplicationController', () => {
       expect(res.body.data).to.have.property('status', 'REJECTED');
 
       const interviews = await InterviewRepository.getInterviews({
-        userId: mockUserId,
         filters: {
+          userId: mockUserId,
           applicationId: application.id,
           status: InterviewStatus.FAILED,
         },
@@ -636,7 +636,7 @@ describe('ApplicationController', () => {
       await InterviewRepository.createInterview({
         applicationId: application.id,
         userId: mockUserId,
-        type: [InterviewType.CODE_REVIEW],
+        types: [InterviewType.CODE_REVIEW],
         interviewOnDate: new Date(),
       });
 

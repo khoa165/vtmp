@@ -13,11 +13,9 @@ const ApplicationSchema = z.object({
   note: z.string().optional(),
   referrer: z.string().optional(),
   portalLink: z.string().optional(),
-  interest: z
-    .nativeEnum(InterestLevel, {
-      message: 'Invalid interest level',
-    })
-    .optional(),
+  interest: z.nativeEnum(InterestLevel, {
+    message: 'Invalid interest level',
+  }),
 });
 
 export const ApplicationsResponseSchema = z.object({

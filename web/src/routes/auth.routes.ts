@@ -11,3 +11,11 @@ AuthRoutes.post(
   '/validate',
   wrappedHandlers([InvitationController.validateInvitation])
 );
+AuthRoutes.post(
+  '/request-password-reset',
+  wrappedHandlers([AuthController.requestPasswordReset])
+);
+AuthRoutes.patch(
+  '/reset-password',
+  wrappedHandlers([AuthController.resetPassword])
+);

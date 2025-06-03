@@ -10,12 +10,17 @@ export const loadInterviews = async (
 ) => {
   const MAX_DAYS_FROM_REF_DATE = 180;
   const weightedNumInterviews = [
-    { weight: 99, value: 0 },
-    { weight: 0.6, value: 1 },
-    { weight: 0.2, value: 2 },
-    { weight: 0.1, value: 3 },
+    { weight: 96, value: 0 },
+    { weight: 1.6, value: 1 },
+    { weight: 1.2, value: 2 },
+    { weight: 1.1, value: 3 },
     { weight: 0.09, value: 4 },
     { weight: 0.01, value: 5 },
+  ];
+  const weightedInterviewTypesCount = [
+    { weight: 50, value: 1 },
+    { weight: 40, value: 2 },
+    { weight: 10, value: 3 },
   ];
   const allInterviews: Partial<IInterview>[] = [];
 
@@ -26,9 +31,9 @@ export const loadInterviews = async (
     return {
       userId: user._id,
       applicationId: application._id,
-      type: faker.helpers.arrayElements(
+      types: faker.helpers.arrayElements(
         Object.values(InterviewType),
-        faker.number.int({ min: 1, max: 2 })
+        faker.helpers.weightedArrayElement(weightedInterviewTypesCount)
       ),
       status: faker.helpers.enumValue(InterviewStatus),
       interviewOnDate: faker.date.soon({
