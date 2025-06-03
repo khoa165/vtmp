@@ -23,7 +23,7 @@ import {
   runUserLogin,
 } from '@/testutils/auth.testutils';
 
-describe.only('LinkController', () => {
+describe('LinkController', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
