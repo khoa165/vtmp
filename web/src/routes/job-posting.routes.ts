@@ -10,11 +10,11 @@ JobPostingRoutes.get(
   wrappedHandlers([JobPostingController.getJobPostingById])
 );
 JobPostingRoutes.put(
-  '/:jobId',
+  '/:jobPostingId',
   wrappedHandlers([JobPostingController.updateJobPosting])
 );
 JobPostingRoutes.delete(
-  '/:jobId',
+  '/:jobPostingId',
   wrappedHandlers([JobPostingController.deleteJobPosting])
 );
 JobPostingRoutes.get(
