@@ -90,7 +90,9 @@ describe('JobPostingController', () => {
         .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Invalid job ID format');
+      expect(res.body.errors[0].message).to.equal(
+        'Invalid job posting ID format'
+      );
     });
 
     it('should return 400 for invalid job title type', async () => {
@@ -159,7 +161,9 @@ describe('JobPostingController', () => {
         .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Invalid job ID format');
+      expect(res.body.errors[0].message).to.equal(
+        'Invalid job posting ID format'
+      );
     });
 
     it('should return 404 if job posting was already deleted', async () => {

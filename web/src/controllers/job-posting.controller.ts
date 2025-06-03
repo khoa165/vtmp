@@ -4,6 +4,7 @@ import { JobPostingService } from '@/services/job-posting.service';
 import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
 import { getUserFromRequest } from '@/middlewares/utils';
 import { parse } from 'date-fns';
+import mongoose from 'mongoose';
 
 const JobPostingUpdateSchema = z
   .object({
@@ -46,8 +47,12 @@ const JobPostingUpdateSchema = z
     )
   );
 
-const JobIdSchema = z.object({
-  jobId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid job ID format'),
+const JobPostingIdParamSchema = z.object({
+  jobPostingId: z
+    .string({ required_error: 'Job posting ID is required' })
+    .refine((id) => mongoose.Types.ObjectId.isValid(id), {
+      message: 'Invalid job posting ID format',
+    }),
 });
 
 const FilterSchema = z
@@ -69,11 +74,11 @@ const FilterSchema = z
 
 export const JobPostingController = {
   updateJobPosting: async (req: Request, res: Response) => {
-    const { jobId } = JobIdSchema.parse(req.params);
+    const { jobPostingId } = JobPostingIdParamSchema.parse(req.params);
     const jobPostingData = JobPostingUpdateSchema.parse(req.body);
 
     const updatedJobPosting = await JobPostingService.updateJobPostingById(
-      jobId,
+      jobPostingId,
       jobPostingData
     );
     res.status(200).json({
@@ -82,10 +87,10 @@ export const JobPostingController = {
   },
 
   deleteJobPosting: async (req: Request, res: Response) => {
-    const { jobId } = JobIdSchema.parse(req.params);
+    const { jobPostingId } = JobPostingIdParamSchema.parse(req.params);
 
     const deletedJobPosting =
-      await JobPostingService.deleteJobPostingById(jobId);
+      await JobPostingService.deleteJobPostingById(jobPostingId);
     res.status(200).json({
       data: deletedJobPosting,
     });
