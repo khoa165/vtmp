@@ -20,9 +20,10 @@ import { ILink } from '@/models/link.model';
 import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
+  runUserLogin,
 } from '@/testutils/auth.testutils';
 
-describe('LinkController', () => {
+describe.only('LinkController', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
@@ -30,6 +31,7 @@ describe('LinkController', () => {
   let url: string;
   let mockToken: string;
   let googleLink: ILink;
+  let mockUserToken: string;
 
   const mockLinkData = {
     url: 'https://google.com',
@@ -60,10 +62,12 @@ describe('LinkController', () => {
     const mockUser = {
       firstName: 'admin',
       lastName: 'viettech',
-      email: 'test@gmail.com',
+      email: 'test1@gmail.com',
       encryptedPassword,
       role: UserRole.ADMIN,
     };
+
+    ({ mockUserToken } = await runUserLogin());
 
     await UserRepository.createUser(mockUser);
     const { token } = await AuthService.login({
@@ -351,6 +355,33 @@ describe('LinkController', () => {
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data[0].url).to.equal(url);
       expect(res.body.data[0].status).to.equal(LinkStatus.APPROVED);
+    });
+  });
+  describe('Test Authentication for Link Permission', () => {
+    it('should throw ForbiddenError when user try to approve link', async () => {
+      const res = await request(app)
+        .post(`/api/links/${linkId}/approve`)
+        .send({
+          url: 'https://facebook.com',
+          jobTitle: 'Software Engineer Intern',
+          companyName: 'Example Company',
+          location: JobPostingRegion.US,
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Forbidden');
+    });
+
+    it('should throw ForbiddenError when user try to reject link', async () => {
+      const res = await request(app)
+        .post(`/api/links/${getNewMongoId()}/reject`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Forbidden');
     });
   });
 });
