@@ -35,6 +35,10 @@ const specificUsers = [
     firstName: 'Monica',
     lastName: 'Huynh',
   },
+  {
+    firstName: 'Kevin',
+    lastName: 'Doan',
+  },
 ];
 
 const getEmailFromName = ({

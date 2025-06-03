@@ -22,6 +22,10 @@ import { JobPostingsPage } from '@/components/pages/application-tracker/job-post
 import { PageWithToast } from '@/components/layout/page-with-toast';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
+import { DashBoardPage } from '@/components/pages/admins/dashboard/dashboard-page';
+import { NotFoundPage } from './pages/shared/not-found-page';
+import { ProtectedRoute } from '@/utils/protect-route';
+import { UserRole } from '@vtmp/common/constants';
 
 export const App = () => {
   useEffect(() => {
@@ -68,11 +72,19 @@ export const App = () => {
           <Route element={<PageWithSidebar />}>
             <Route path="/link-sharing" element={<LinksPage />} />
             <Route path="/job-postings" element={<JobPostingsPage />} />
-            <Route path="/user-invitation" element={<UserInvitationPage />} />
+            <Route
+              path="/user-invitation"
+              element={
+                <ProtectedRoute roles={[UserRole.ADMIN]}>
+                  <UserInvitationPage />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/application-tracker" element={<ApplicationsPage />} />
+            <Route path="/admin/dashboard" element={<DashBoardPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/*" element={<>404</>} />
+          <Route path="/*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </Router>
