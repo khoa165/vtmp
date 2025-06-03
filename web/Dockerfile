@@ -7,18 +7,10 @@ COPY package.json yarn.lock ./
 COPY packages ./packages
 COPY web ./web
 
-# Install dependencies:
-RUN yarn install --immutable
-
 # Build steps:
+RUN yarn install --immutable
 RUN yarn workspace @vtmp/common build
 RUN yarn workspace @vtmp/web build
-
-# Prune devDependencies from the final node_modules if in production only
-ARG NODE_ENV=production
-RUN if [ "$NODE_ENV" = "production" ]; then \
-      yarn install --production --immutable --ignore-scripts; \
-    fi
 
 # 2nd stage: Final runtime image
 FROM node:22-alpine

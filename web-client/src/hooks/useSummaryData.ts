@@ -3,7 +3,6 @@ import { offerCompanies } from '@/data/companies';
 import { mentorshipPeople } from '@/data/people';
 import { uniq } from 'lodash';
 import { useEffect, useState } from 'react';
-import { EnvConfig } from '@/config/env';
 
 const parseData = (data: string) => {
   const rows = data.split(/\r?\n/).slice(5);
@@ -52,18 +51,18 @@ export const useSummaryData = () => {
       let invitationsCount = 0;
       let interviewsCount = 0;
 
-      if (EnvConfig.get().VITE_VTMP_2023_INTERVIEWS_CSV) {
+      if (import.meta.env.VITE_VTMP_2023_INTERVIEWS_CSV) {
         const res = await axios.get(
-          EnvConfig.get().VITE_VTMP_2023_INTERVIEWS_CSV
+          import.meta.env.VITE_VTMP_2023_INTERVIEWS_CSV
         );
 
         const { invitations, interviews } = parseData(res.data);
         invitationsCount += invitations;
         interviewsCount += interviews;
       }
-      if (EnvConfig.get().VITE_VTMP_2024_INTERVIEWS_CSV) {
+      if (import.meta.env.VITE_VTMP_2024_INTERVIEWS_CSV) {
         const res = await axios.get(
-          EnvConfig.get().VITE_VTMP_2024_INTERVIEWS_CSV
+          import.meta.env.VITE_VTMP_2024_INTERVIEWS_CSV
         );
 
         const { invitations, interviews } = parseData(res.data);

@@ -10,7 +10,6 @@ import {
 } from '@/types';
 import { MentorshipYear } from '@/utils/constants';
 import { parseInterviewRecords } from '@/utils/parse';
-import { EnvConfig } from '@/config/env';
 
 export const useInterviewData = () => {
   const [data, setData] = useState<MergedInterviewData>({
@@ -31,9 +30,9 @@ export const useInterviewData = () => {
       const dataRecords: Partial<
         Record<MentorshipYear, InterviewRecordsPerCompany[]>
       > = {};
-      if (EnvConfig.get().VITE_VTMP_2023_INTERVIEWS_CSV) {
+      if (import.meta.env.VITE_VTMP_2023_INTERVIEWS_CSV) {
         const res = await axios.get(
-          EnvConfig.get().VITE_VTMP_2023_INTERVIEWS_CSV
+          import.meta.env.VITE_VTMP_2023_INTERVIEWS_CSV
         );
         const { data: interviewData2023, ...remaining } = parseInterviewRecords(
           res.data,
@@ -45,9 +44,9 @@ export const useInterviewData = () => {
         dataObj.totalInvitationsCount += remaining.totalInvitationsCount;
         unmergedDatesWithCount.push(remaining.datesWithCount);
       }
-      if (EnvConfig.get().VITE_VTMP_2024_INTERVIEWS_CSV) {
+      if (import.meta.env.VITE_VTMP_2024_INTERVIEWS_CSV) {
         const res = await axios.get(
-          EnvConfig.get().VITE_VTMP_2024_INTERVIEWS_CSV
+          import.meta.env.VITE_VTMP_2024_INTERVIEWS_CSV
         );
         const { data: interviewData2024, ...remaining } = parseInterviewRecords(
           res.data,

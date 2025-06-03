@@ -9,7 +9,7 @@ import { loadApplications } from '@/seeds/applications';
 import mongoose from 'mongoose';
 import { loadInterviews } from '@/seeds/interviews';
 import { EnvConfig } from '@/config/env';
-import { Environment } from '@vtmp/common/constants';
+import { ENVIRONMENT } from '@/constants/enums';
 
 dotenv.config();
 connectDB();
@@ -28,9 +28,9 @@ const defaultConfiguration: SeedCountConfiguration = {
   maxApplicationsCountPerUser: 30,
 };
 
-const allConfigurations: Partial<Record<Environment, SeedCountConfiguration>> =
+const allConfigurations: Partial<Record<ENVIRONMENT, SeedCountConfiguration>> =
   {
-    [Environment.STAGING]: {
+    [ENVIRONMENT.STAGING]: {
       usersCount: 50,
       linksCount: 500,
       minApplicationsCountPerUser: 100,
@@ -47,9 +47,7 @@ const runSeeds = async () => {
     linksCount,
     minApplicationsCountPerUser,
     maxApplicationsCountPerUser,
-  } =
-    allConfigurations[EnvConfig.get().SEED_ENV as keyof typeof Environment] ??
-    defaultConfiguration;
+  } = allConfigurations[EnvConfig.get().SEED_ENV] ?? defaultConfiguration;
 
   const users = await loadUsers(usersCount);
   const links = await loadLinks(linksCount);
