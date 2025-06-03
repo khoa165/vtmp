@@ -31,10 +31,13 @@ describe('JobPostingRepository', () => {
   });
 
   describe('getJobPostingById', () => {
-    it('should be able to find a job post by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
+    let newJobPosting: IJobPosting | undefined;
+    beforeEach(async () => {
+      newJobPosting = await JobPostingRepository.createJobPosting({
         jobPostingData: mockJobPosting,
       });
+    });
+    it('should be able to find a job post by id', async () => {
       assert(newJobPosting);
 
       const foundJobPosting = await JobPostingRepository.getJobPostingById(
@@ -46,9 +49,6 @@ describe('JobPostingRepository', () => {
     });
 
     it('should return null if trying to get soft-deleted job posting', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       await JobPostingRepository.deleteJobPostingById(newJobPosting.id);
@@ -61,17 +61,19 @@ describe('JobPostingRepository', () => {
   });
 
   describe('updateJobPostingById', () => {
-    it('should be able to update detail of a job post by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
+    let newJobPosting: IJobPosting | undefined;
+    const newUpdate = {
+      jobTitle: 'Senior Software Engineer',
+      companyName: 'Updated Company',
+      jobDescription: 'This is an updated job description.',
+    };
+    beforeEach(async () => {
+      newJobPosting = await JobPostingRepository.createJobPosting({
         jobPostingData: mockJobPosting,
       });
+    });
+    it('should be able to update detail of a job post by id', async () => {
       assert(newJobPosting);
-
-      const newUpdate = {
-        jobTitle: 'Senior Software Engineer',
-        companyName: 'Updated Company',
-        jobDescription: 'This is an updated job description.',
-      };
 
       const updatedJobPosting = await JobPostingRepository.updateJobPostingById(
         newJobPosting.id,
@@ -82,18 +84,9 @@ describe('JobPostingRepository', () => {
     });
 
     it('should return null if trying to update soft-deleted job posting', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       await JobPostingRepository.deleteJobPostingById(newJobPosting.id);
-
-      const newUpdate = {
-        jobTitle: 'Senior Software Engineer',
-        companyName: 'Updated Company',
-        jobDescription: 'This is an updated job description.',
-      };
       const updatedJobPosting = await JobPostingRepository.updateJobPostingById(
         newJobPosting.id,
         newUpdate
@@ -104,10 +97,13 @@ describe('JobPostingRepository', () => {
   });
 
   describe('deleteJobPostingById', () => {
-    it('should be able to set a delete-timestamp for a job posting by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
+    let newJobPosting: IJobPosting | undefined;
+    beforeEach(async () => {
+      newJobPosting = await JobPostingRepository.createJobPosting({
         jobPostingData: mockJobPosting,
       });
+    });
+    it('should be able to set a delete-timestamp for a job posting by id', async () => {
       assert(newJobPosting);
 
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(
@@ -124,9 +120,6 @@ describe('JobPostingRepository', () => {
     });
 
     it('should return null if trying to set a delete-timestamp for soft-deleted job posting', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       await JobPostingRepository.deleteJobPostingById(newJobPosting.id);
