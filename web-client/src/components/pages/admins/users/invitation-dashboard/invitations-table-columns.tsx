@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { HeaderSorting } from '@/components/pages/application-tracker/applications/header';
+import { HeaderSorting } from '@/components/base/header';
 import { IInvitationSchema } from '@/components/pages/admins/users/invitation-dashboard/validation';
 import { Button } from '@/components/base/button';
 import { capitalize } from 'remeda';
@@ -30,7 +30,7 @@ export const invitationsTableColumns = (): ColumnDef<IInvitationSchema>[] => [
     header: ({ column }) => {
       return (
         <div className="flex justify-center">
-          <HeaderSorting column={column} headerName="Status" />{' '}
+          <HeaderSorting column={column} headerName="Status" />
         </div>
       );
     },
