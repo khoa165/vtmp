@@ -1,43 +1,54 @@
-export const LinkNormalizerService = {
-  isValidFormat(url: string): void {
-    console.log(url);
-  },
-  removeFormatting(url: string): string {
-    console.log(url);
-    return '';
-  },
-  removeWWW(url: string): string {
-    console.log(url);
-    return '';
-  },
-  lowercaseDomainAndPath(url: string): string {
-    console.log(url);
-    return '';
-  },
-  removeTrailingSlash(url: string): string {
-    console.log(url);
-    return '';
-  },
-  removeAnalyticQueryAndFragment(url: string): string {
-    console.log(url);
-    return '';
-  },
-  stripDefaultPorts(url: string): string {
-    console.log(url);
-    return '';
-  },
-  standardizeUrl(url: string): string {
-    this.isValidFormat(url);
-    let standardizedUrl = this.removeFormatting(url);
-    standardizedUrl = this.removeWWW(standardizedUrl);
-    standardizedUrl = this.lowercaseDomainAndPath(standardizedUrl);
-    standardizedUrl = this.removeTrailingSlash(standardizedUrl);
-    standardizedUrl = this.removeAnalyticQueryAndFragment(standardizedUrl);
-    standardizedUrl = this.stripDefaultPorts(standardizedUrl);
+import normalizeUrl from 'normalize-url';
 
-    return standardizedUrl;
+export const LinkNormalizerService = {
+  removeFormatting(url: string): string {
+    //remove quotes, brackets, parentheses wrap around link
+    return url
+      .trim()
+      .replace(/^[\s<>"'`\\/()[\]{}]+|[\s<>"'`\\/()[\]{}]+$/g, '');
   },
+
+  removePorts(url: string): string {
+    return normalizeUrl(url, {
+      removeExplicitPort: true,
+    });
+  },
+
+  standardizeUrl(url: string): string {
+    const removedFormat = this.removeFormatting(url);
+    return normalizeUrl(removedFormat, {
+      forceHttps: true,
+      sortQueryParameters: false,
+      stripHash: true,
+      removeExplicitPort: true,
+      removeQueryParameters: [
+        'utm_source',
+        'utm_medium',
+        'utm_campaign',
+        'utm_term',
+        'utm_content',
+        'fbclid',
+        'gclid',
+        'msclkid',
+        'ref',
+        'source',
+        'mc_cid',
+        'mc_eid',
+        'yclid',
+        'dclid',
+        '_ga',
+        '_gl',
+      ],
+    });
+  },
+
   normalizeLink(url: string): string {
-    return this.standardizeUrl(url);
+    const standardizedUrl = this.standardizeUrl(url);
+    const urlObject = new URL(standardizedUrl);
+    const searchParams = new URLSearchParams(urlObject.search);
+    if (searchParams.size > 0) {
+      console.log([...searchParams.entries()]);
+    }
+    return standardizedUrl;
   },
 };
