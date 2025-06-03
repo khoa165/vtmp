@@ -330,7 +330,7 @@ describe('JobPostingController', () => {
         jobPostings.map((jobPosting) =>
           ApplicationRepository.createApplication({
             jobPostingId: jobPosting?.id,
-            userId: userIdA,
+            userId: mockUserId,
           })
         )
       );
@@ -338,7 +338,7 @@ describe('JobPostingController', () => {
       const res = await request(app)
         .get('/api/job-postings/not-applied-last-24h')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.has.lengthOf(0);
@@ -349,7 +349,7 @@ describe('JobPostingController', () => {
       const res = await request(app)
         .get('/api/job-postings/not-applied-last-24h')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.has.lengthOf(2);
@@ -367,7 +367,7 @@ describe('JobPostingController', () => {
       const res = await request(app)
         .get('/api/job-postings/not-applied-last-24h')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data[0]._id).to.equal(jobPosting2?.id);
@@ -378,20 +378,20 @@ describe('JobPostingController', () => {
         jobPostings.map((jobPosting) =>
           ApplicationRepository.createApplication({
             jobPostingId: jobPosting?.id,
-            userId: userIdA,
+            userId: mockUserId,
           })
         )
       );
 
       await ApplicationRepository.deleteApplicationById({
         applicationId: applications[0]?.id,
-        userId: userIdA,
+        userId: mockUserId,
       });
 
       const res = await request(app)
         .get('/api/job-postings/not-applied-last-24h')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data[0]._id).to.equal(jobPostings[0]?.id);
@@ -407,7 +407,7 @@ describe('JobPostingController', () => {
       const res = await request(app)
         .get('/api/job-postings/not-applied-last-24h')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.has.lengthOf(2);
