@@ -78,7 +78,7 @@ describe('JobPostingController', () => {
   });
   describe('GET /job-postings/id/:jobId', () => {
     runDefaultAuthMiddlewareTests({
-      route: `/api/job-postings/${getNewMongoId()}`,
+      route: `/api/job-postings/id/${getNewMongoId()}`,
       method: HTTPMethod.GET,
     });
 
