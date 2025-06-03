@@ -14,7 +14,7 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
@@ -34,32 +34,32 @@ describe('JobPostingController', () => {
   };
   const mockMultipleJobPostings = [
     {
-      linkId: getNewObjectId(),
+      linkId: getNewMongoId(),
       url: 'http://example1.com/job-posting',
       jobTitle: 'Software Engineer 1',
       companyName: 'Example Company 1',
-      submittedBy: getNewObjectId(),
+      submittedBy: getNewMongoId(),
     },
     {
-      linkId: getNewObjectId(),
+      linkId: getNewMongoId(),
       url: 'http://example2.com/job-posting',
       jobTitle: 'Software Engineer 2',
       companyName: 'Example Company 2',
-      submittedBy: getNewObjectId(),
+      submittedBy: getNewMongoId(),
     },
     {
-      linkId: getNewObjectId(),
+      linkId: getNewMongoId(),
       url: 'http://example3.com/job-posting',
       jobTitle: 'Software Engineer 3',
       companyName: 'Example Company 3',
-      submittedBy: getNewObjectId(),
+      submittedBy: getNewMongoId(),
     },
     {
-      linkId: getNewObjectId(),
+      linkId: getNewMongoId(),
       url: 'http://example4.com/job-posting',
       jobTitle: 'Software Engineer 4',
       companyName: 'Example Company 4',
-      submittedBy: getNewObjectId(),
+      submittedBy: getNewMongoId(),
     },
   ];
 
@@ -76,7 +76,41 @@ describe('JobPostingController', () => {
     );
     assert(jobPostings);
   });
+  describe('GET /job-postings/id/:jobId', () => {
+    runDefaultAuthMiddlewareTests({
+      route: `/api/job-postings/${getNewMongoId()}`,
+      method: HTTPMethod.GET,
+    });
 
+    it('should return 400 for invalid job posting ID format', async () => {
+      const res = await request(app)
+        .get('/api/job-postings/id/invalid-id')
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Invalid job ID format');
+    });
+
+    it('should return error message for no job posting found', async () => {
+      const res = await request(app)
+        .get(`/api/job-postings/id/${getNewMongoId()}`)
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+
+      const errors = res.body.errors;
+      expect(errors[0].message).to.equal('Job posting not found');
+    });
+
+    it('should return a job posting', async () => {
+      const res = await request(app)
+        .get(`/api/job-postings/id/${jobPostings[0]?.id}`)
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.deep.include(mockMultipleJobPostings[0]);
+    });
+  });
   describe('PUT /job-postings/:jobId', () => {
     runDefaultAuthMiddlewareTests({
       route: `/api/job-postings/${getNewMongoId()}`,
