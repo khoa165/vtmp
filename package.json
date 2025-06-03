@@ -33,7 +33,6 @@
     "packages/common",
     "web-client",
     "web",
-    "discord-bot",
     "discord-service"
   ],
   "devDependencies": {
