@@ -88,7 +88,9 @@ describe('JobPostingController', () => {
         .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Invalid job ID format');
+      expect(res.body.errors[0].message).to.equal(
+        'Invalid job posting ID format'
+      );
     });
 
     it('should return error message for no job posting found', async () => {

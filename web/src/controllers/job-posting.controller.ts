@@ -74,8 +74,8 @@ const FilterSchema = z
 
 export const JobPostingController = {
   getJobPostingById: async (req: Request, res: Response) => {
-    const { jobId } = JobIdSchema.parse(req.params);
-    const jobPosting = await JobPostingService.getJobPostingById(jobId);
+    const { jobPostingId } = JobPostingIdParamSchema.parse(req.params);
+    const jobPosting = await JobPostingService.getJobPostingById(jobPostingId);
 
     res.status(200).json({
       data: jobPosting,

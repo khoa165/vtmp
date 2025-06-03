@@ -6,7 +6,7 @@ import { authenticate } from '@/middlewares/auth.middleware';
 export const JobPostingRoutes = Router();
 JobPostingRoutes.use(wrappedHandlers([authenticate]));
 JobPostingRoutes.get(
-  '/id/:jobId',
+  '/id/:jobPostingId',
   wrappedHandlers([JobPostingController.getJobPostingById])
 );
 JobPostingRoutes.put(
