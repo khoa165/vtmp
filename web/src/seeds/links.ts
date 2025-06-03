@@ -2,22 +2,16 @@ import { ILink, LinkModel } from '@/models/link.model';
 import { faker } from '@faker-js/faker';
 import { CompanyName, JobPostingRegion } from '@vtmp/common/constants';
 import { LinkStatus } from '@vtmp/common/constants';
-
+import { formatEnumName } from '@vtmp/common/utils';
+import { JobTitle } from '@vtmp/common/constants';
 export const loadLinks = async (count: number): Promise<ILink[]> => {
-  const formatCompanyName = (name: string) => {
-    return name
-      .toLowerCase()
-      .split('_')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
   const newLinks = Array.from({ length: count }, () => ({
     _id: faker.database.mongodbObjectId(),
     url: faker.internet.url(),
-    companyName: formatCompanyName(faker.helpers.enumValue(CompanyName)),
-    datePosted: faker.date.past(),
+    companyName: formatEnumName(faker.helpers.enumValue(CompanyName)),
+    jobTitle: formatEnumName(faker.helpers.enumValue(JobTitle)),
+    datePosted: faker.date.recent({ days: 90 }),
     jobDescription: faker.lorem.paragraph(),
-    jobTitle: faker.person.jobTitle(),
     location: faker.helpers.enumValue(JobPostingRegion),
     status: faker.helpers.enumValue(LinkStatus),
   }));

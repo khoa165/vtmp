@@ -18,7 +18,7 @@ interface ReviewPopupInputProps {
   id: string;
 }
 
-const ReviewPopupInput = ({
+export const ReviewPopupInput = ({
   label,
   placeHolder,
   reviewForm,
@@ -45,5 +45,3 @@ const ReviewPopupInput = ({
     </div>
   );
 };
-
-export default ReviewPopupInput;

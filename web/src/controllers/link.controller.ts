@@ -14,12 +14,12 @@ const LinkSchema = z.object({
 const JobPostingDataSchema = z
   .object({
     jobTitle: z
-      .string({ required_error: 'Job Title is required' })
-      .min(1, { message: 'Job Title cannot be empty' }),
+      .string({ required_error: 'Job title is required' })
+      .min(1, { message: 'Job title cannot be empty' }),
 
     companyName: z
-      .string({ required_error: 'Company Name is required' })
-      .min(1, { message: 'Company Name cannot be empty' }),
+      .string({ required_error: 'Company name is required' })
+      .min(1, { message: 'Company name cannot be empty' }),
     location: z.nativeEnum(JobPostingRegion, {
       message: 'Invalid location',
     }),
@@ -35,7 +35,7 @@ const JobPostingDataSchema = z
         (date) => {
           const now = new Date();
           const threeMonthsAgo = new Date();
-          threeMonthsAgo.setMonth(now.getMonth() - 2);
+          threeMonthsAgo.setMonth(now.getMonth() - 3);
           return date >= threeMonthsAgo && date <= now;
         },
         {

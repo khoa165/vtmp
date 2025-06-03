@@ -11,7 +11,7 @@ import {
 } from '@/components/base/dialog';
 import { Label } from '@/components/base/label';
 import { Textarea } from '@/components/base/textarea';
-import ReviewPopupInput from '@/components/pages/admins/dashboard/review-popup-input';
+import { ReviewPopupInput } from '@/components/pages/admins/dashboard/review-popup-input';
 import { JobPostingRegion } from '@vtmp/common/constants';
 import { JobPostingData } from '@/components/pages/admins/dashboard/validation';
 
