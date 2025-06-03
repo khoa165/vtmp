@@ -6,7 +6,7 @@ export interface IInterview extends Document {
   _id: Types.ObjectId;
   applicationId: Types.ObjectId;
   userId: Types.ObjectId;
-  type: InterviewType[];
+  types: InterviewType[];
   status: InterviewStatus;
   interviewOnDate: Date;
   companyName?: string;
@@ -24,7 +24,7 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
     ref: 'User',
     required: true,
   },
-  type: {
+  types: {
     type: [String],
     enum: Object.values(InterviewType),
     required: true,
