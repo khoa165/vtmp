@@ -1,0 +1,55 @@
+import { z } from 'zod';
+import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
+
+export const DashBoardLinkSchema = z.object({
+  _id: z.string(),
+  url: z.string().url(),
+  status: z.nativeEnum(LinkStatus, {
+    message: 'Invalid link status',
+  }),
+  submittedOn: z.string().optional(),
+  jobTitle: z.string().optional(),
+  companyName: z.string().optional(),
+  location: z
+    .nativeEnum(JobPostingRegion, {
+      message: 'Invalid job location',
+    })
+    .optional(),
+  datePosted: z.string().optional(),
+  jobDescription: z.string().optional(),
+});
+
+export const DashBoardLinksResponseSchema = z.object({
+  message: z.string(),
+  data: z.array(DashBoardLinkSchema),
+});
+
+export const SingleDashBoardLinkResponseSchema = z.object({
+  message: z.string(),
+  data: DashBoardLinkSchema,
+});
+
+export const JobPostingResponseSchema = z.object({
+  message: z.string(),
+  data: DashBoardLinkSchema.omit({ status: true }),
+});
+
+export const LinksCountByStatusSchema = z.object({
+  message: z.string(),
+  data: z.object({
+    [LinkStatus.PENDING]: z.number(),
+    [LinkStatus.APPROVED]: z.number(),
+    [LinkStatus.REJECTED]: z.number(),
+  }),
+});
+
+export type IDashBoardLink = z.infer<typeof DashBoardLinkSchema>;
+export interface JobPostingData {
+  url?: string;
+  companyName?: string;
+  jobTitle?: string;
+  location?: string;
+  datePosted?: string;
+  jobDescription?: string;
+  adminNote?: string;
+}

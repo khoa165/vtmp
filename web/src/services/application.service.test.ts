@@ -348,18 +348,18 @@ describe('ApplicationService', () => {
     const multipleInterviews = [
       {
         userId: userId_A,
-        type: [InterviewType.CODE_REVIEW, InterviewType.SYSTEM_DESIGN],
+        types: [InterviewType.CODE_REVIEW, InterviewType.SYSTEM_DESIGN],
         interviewOnDate: new Date(),
         status: InterviewStatus.PASSED,
       },
       {
         userId: userId_A,
-        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
+        types: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
       },
       {
         userId: userId_A,
-        type: [InterviewType.PROJECT_WALKTHROUGH],
+        types: [InterviewType.PROJECT_WALKTHROUGH],
         interviewOnDate: new Date(),
       },
     ];
@@ -401,7 +401,7 @@ describe('ApplicationService', () => {
       await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
-        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
+        types: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
       });
 
@@ -417,7 +417,7 @@ describe('ApplicationService', () => {
       await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
-        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
+        types: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
         status: InterviewStatus.UPCOMING,
       });
@@ -501,7 +501,7 @@ describe('ApplicationService', () => {
       const pendingInterview1 = await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
-        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
+        types: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
       });
 
@@ -572,14 +572,14 @@ describe('ApplicationService', () => {
       await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
-        type: [InterviewType.CODE_REVIEW, InterviewType.SYSTEM_DESIGN],
+        types: [InterviewType.CODE_REVIEW, InterviewType.SYSTEM_DESIGN],
         interviewOnDate: new Date(),
         status: InterviewStatus.PASSED,
       });
       await InterviewRepository.createInterview({
         applicationId: application_A0.id,
         userId: userId_A,
-        type: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
+        types: [InterviewType.CRITICAL_THINKING, InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
       });
 

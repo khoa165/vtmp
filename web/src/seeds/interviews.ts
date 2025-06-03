@@ -31,7 +31,7 @@ export const loadInterviews = async (
     return {
       userId: user._id,
       applicationId: application._id,
-      type: faker.helpers.arrayElements(
+      types: faker.helpers.arrayElements(
         Object.values(InterviewType),
         faker.helpers.weightedArrayElement(weightedInterviewTypesCount)
       ),
