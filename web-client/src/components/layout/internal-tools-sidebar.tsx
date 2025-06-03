@@ -53,9 +53,7 @@ export const InternalToolsSidebar = () => {
   const visibleItems = useMemo(
     () =>
       items.filter((item) =>
-        item.roles.some(
-          (role) => Array.isArray(user.role) && user.role.includes(role)
-        )
+        item.roles.some((role) => user.role.includes(role))
       ),
     [user, items]
   );
