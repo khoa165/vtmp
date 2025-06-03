@@ -4,7 +4,6 @@ import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
-  VisibilityState,
   getCoreRowModel,
   getPaginationRowModel,
   getFilteredRowModel,
@@ -30,7 +29,6 @@ export function InvitationTable<TData, TValue>({
   setSorting: OnChangeFn<SortingState>;
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
   const [rowSelection, setRowSelection] = useState({});
 
@@ -43,7 +41,6 @@ export function InvitationTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
     onColumnSizingChange: setColumnSizing,
     onRowSelectionChange: setRowSelection,
     enableColumnResizing: true,
@@ -51,7 +48,6 @@ export function InvitationTable<TData, TValue>({
     state: {
       sorting,
       columnFilters,
-      columnVisibility,
       columnSizing,
       rowSelection,
     },

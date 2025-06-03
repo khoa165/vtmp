@@ -42,7 +42,7 @@ export const invitationsTableColumns = (): ColumnDef<IInvitationSchema>[] => [
             variant="outline"
             justify="between"
             size="sm"
-            className="w-[170px] flex justify-center"
+            className="w-[170px]"
           >
             <div className="flex items-center gap-2  text-center">
               <StatusDot
@@ -67,7 +67,7 @@ export const invitationsTableColumns = (): ColumnDef<IInvitationSchema>[] => [
       );
     },
     cell: ({ row }) => {
-      const isoDate = row.getValue<string>('expiryDate');
+      const isoDate = row.original.expiryDate;
       const date = new Date(isoDate);
       return (
         <div className="flex justify-center">{format(date, 'MMM d, yyyy')}</div>
@@ -81,7 +81,7 @@ export const invitationsTableColumns = (): ColumnDef<IInvitationSchema>[] => [
     cell: () => {
       return (
         <div className="flex justify-center gap-1">
-          <Button justify="between" size="sm" className="bg-[#FEB584]">
+          <Button justify="between" size="sm" className="bg-(--vtmp-orange)">
             Revoke
           </Button>
           <Button justify="between" size="sm" className="bg-[#E1FFFA]">

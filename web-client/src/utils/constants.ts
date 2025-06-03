@@ -187,8 +187,8 @@ export const StatusToColorMapping: Record<
 
 export const InvitationStatusToColorMapping: Record<InvitationStatus, string> =
   {
-    [InvitationStatus.ACCEPTED]: 'bg-[#A3F890]',
-    [InvitationStatus.EXPIRED]: 'bg-[#CAAB94]',
-    [InvitationStatus.PENDING]: 'bg-[#F8FF6A]',
-    [InvitationStatus.REVOKED]: 'bg-[#FEB584]',
+    [InvitationStatus.ACCEPTED]: 'bg-(--vtmp-green)',
+    [InvitationStatus.EXPIRED]: 'bg-(--vtmp-brown)',
+    [InvitationStatus.PENDING]: 'bg-(--vtmp-yellow)',
+    [InvitationStatus.REVOKED]: 'bg-(--vtmp-orange)',
   };
