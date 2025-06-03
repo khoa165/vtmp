@@ -414,7 +414,7 @@ describe('JobPostingController', () => {
       expect(res.body.data[0]._id).to.equal(jobPosting2?.id);
     });
 
-    it.only('should return job posting if user deleted the application', async () => {
+    it('should return job posting if user deleted the application', async () => {
       const mockCompany = 'Company';
       const jobPosting2 = jobPostings[1];
       const applications = await Promise.all(
