@@ -1,6 +1,6 @@
 import { lowercaseFunction, wrappedHandlersInRouter } from './rules';
 
-export const customPlugin = {
+export const customEslintRules = {
   rules: {
     'lowercase-function': lowercaseFunction,
     'wrapped-handlers-in-router': wrappedHandlersInRouter,
