@@ -61,11 +61,10 @@ describe('LinkController', () => {
     };
 
     await UserRepository.createUser(mockUser);
-    const { token } = await AuthService.login({
+    ({ token: mockToken } = await AuthService.login({
       email: mockUser.email,
       password: 'test password',
-    });
-    mockToken = token;
+    }));
 
     url = 'https://google.com';
     googleLink = await LinkRepository.createLink(mockLinkData);
@@ -189,11 +188,6 @@ describe('LinkController', () => {
       await Promise.all(
         mockMultipleLinks.map((link) => LinkRepository.createLink(link))
       );
-
-      await LinkRepository.updateLinkStatus({
-        id: googleLink.id,
-        status: LinkStatus.REJECTED,
-      });
 
       await LinkRepository.updateLinkStatus({
         id: linkId,

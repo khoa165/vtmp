@@ -2,52 +2,49 @@ import { Request, Response } from 'express';
 import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
 import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
-import { parse } from 'date-fns';
+import { filterUndefinedAttributes } from '@/utils/helpers';
 import { MONGO_OBJECT_ID_REGEX } from '@/constants/validations';
 
 const LinkSchema = z.object({
-  url: z.string({ required_error: 'URL is required' }).url(),
+  url: z
+    .string({ required_error: 'URL is required' })
+    .url({ message: 'Invalid url' }),
 });
+
 const JobPostingDataSchema = z
   .object({
-    url: z.string().url({ message: 'Invalid URL format' }),
-    jobTitle: z.string({
-      required_error: 'Job title is required',
-      invalid_type_error: 'Invalid job title format',
+    jobTitle: z
+      .string({ required_error: 'Job title is required' })
+      .min(1, { message: 'Job title cannot be empty' }),
+
+    companyName: z
+      .string({ required_error: 'Company name is required' })
+      .min(1, { message: 'Company name cannot be empty' }),
+    location: z.nativeEnum(JobPostingRegion, {
+      message: 'Invalid location',
     }),
-    companyName: z.string({
-      required_error: 'Company name is required',
-      invalid_type_error: 'Invalid company name format',
-    }),
-    location: z
-      .nativeEnum(JobPostingRegion, {
-        message: 'Invalid job location',
-      })
-      .optional(),
+    jobDescription: z.string().optional(),
+    adminNote: z.string().optional(),
     datePosted: z
       .string()
-      .transform((val) => parse(val, 'MM/dd/yyyy', new Date()))
-      .refine((val) => !isNaN(val.getTime()), {
-        message: 'Invalid date posted format',
+      .regex(/^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/, {
+        message: 'Date must be in MM/dd/yyyy format',
       })
-      .optional(),
-    jobDescription: z
-      .string({ invalid_type_error: 'Invalid job description format' })
-      .optional(),
-    adminNote: z
-      .string({ invalid_type_error: 'Invalid admin note format format' })
-      .optional(),
-    submittedBy: z
-      .string()
-      .regex(/^[0-9a-fA-F]{24}$/, 'Invalid link ID format')
+      .transform((str) => new Date(str))
+      .refine(
+        (date) => {
+          const now = new Date();
+          const threeMonthsAgo = new Date();
+          threeMonthsAgo.setMonth(now.getMonth() - 3);
+          return date >= threeMonthsAgo && date <= now;
+        },
+        {
+          message: 'Date must be within the last 2 months',
+        }
+      )
       .optional(),
   })
-  .strict({ message: 'Some fields are not valid' })
-  .transform((data: object) =>
-    Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== undefined)
-    )
-  );
+  .transform(filterUndefinedAttributes);
 
 const LinkIdSchema = z.object({
   linkId: z.string().regex(MONGO_OBJECT_ID_REGEX, 'Invalid job ID format'),
@@ -64,11 +61,7 @@ const LinkFilterSchema = z
   .strict({
     message: 'Only allow filtering by given fields',
   })
-  .transform((data: object) =>
-    Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== undefined)
-    )
-  );
+  .transform(filterUndefinedAttributes);
 
 export const LinkController = {
   submitLink: async (req: Request, res: Response) => {
