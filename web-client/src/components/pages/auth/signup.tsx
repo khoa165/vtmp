@@ -17,7 +17,11 @@ import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQuery
 import { useMutation } from '@tanstack/react-query';
 import { request } from '@/utils/api';
 import { AuthResponseSchema } from '@/components/pages/auth/validation';
-import { Method } from '@/utils/constants';
+import {
+  MAX_PASSWORD_LENGTH,
+  Method,
+  MIN_PASSWORD_LENGTH,
+} from '@/utils/constants';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -29,11 +33,14 @@ const passwordMessage = [
   '5. At least 1 number',
 ];
 
-const passwordStrength = ['Weak', 'Strong'];
+enum PasswordStrengthLabel {
+  Weak = 'Weak',
+  Strong = 'Strong',
+}
 
 const isPasswordValid = (password: string) =>
-  password.length >= 8 &&
-  password.length <= 20 &&
+  password.length >= MIN_PASSWORD_LENGTH &&
+  password.length <= MAX_PASSWORD_LENGTH &&
   /[A-Z]/.test(password) &&
   /[a-z]/.test(password) &&
   /[!@#$%^&?]/.test(password) &&
@@ -266,7 +273,10 @@ const SignUpPage = () => {
 
                       <div>
                         <div className="font-bold pb-2">
-                          {passwordStrength[+isPasswordStrong]} Password
+                          {isPasswordStrong
+                            ? PasswordStrengthLabel.Strong
+                            : PasswordStrengthLabel.Weak}{' '}
+                          Password
                         </div>
                         {passwordMessage.map((message) => (
                           <div className="">{message}</div>
