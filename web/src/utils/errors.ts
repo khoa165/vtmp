@@ -12,11 +12,6 @@ export abstract class ApplicationSpecificError extends Error {
     this.statusCode = statusCode;
   }
 }
-export class BadRequestError extends ApplicationSpecificError {
-  constructor(message: string, metadata: object) {
-    super(message, metadata, 400);
-  }
-}
 
 export class ResourceNotFoundError extends ApplicationSpecificError {
   constructor(message: string, metadata: object) {
