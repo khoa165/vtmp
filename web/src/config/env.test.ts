@@ -9,7 +9,7 @@ describe('Config', () => {
   before(() => {
     env = JSON.parse(JSON.stringify(process.env));
     Object.keys(process.env).forEach((key) => {
-      process.env[key] = undefined;
+      delete process.env[key];
     });
   });
 
