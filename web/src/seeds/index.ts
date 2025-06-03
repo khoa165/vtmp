@@ -9,7 +9,7 @@ import { loadApplications } from '@/seeds/applications';
 import mongoose from 'mongoose';
 import { loadInterviews } from '@/seeds/interviews';
 import { EnvConfig } from '@/config/env';
-import { ENVIRONMENT } from '@/controllers/constants/enums';
+import { ENVIRONMENT } from '@/constants/enums';
 
 dotenv.config();
 connectDB();

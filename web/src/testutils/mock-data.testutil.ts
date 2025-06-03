@@ -1,4 +1,4 @@
-import { ENVIRONMENT } from '@/controllers/constants/enums';
+import { ENVIRONMENT } from '@/constants/enums';
 
 export const MOCK_ENV = {
   PORT: 8000,

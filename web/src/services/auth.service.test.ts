@@ -18,7 +18,7 @@ import { JWTUtils } from '@/utils/jwt';
 import { EmailService } from '@/utils/email';
 import { ZodError } from 'zod';
 import jwt from 'jsonwebtoken';
-import { JWT_TOKEN_TYPE } from '@/controllers/constants/enums';
+import { JWT_TOKEN_TYPE } from '@/constants/enums';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 describe('AuthService', () => {
