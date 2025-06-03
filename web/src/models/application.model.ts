@@ -75,3 +75,10 @@ export const ApplicationModel = mongoose.model<IApplication>(
   'Application',
   ApplicationSchema
 );
+
+ApplicationSchema.index({
+  companyName: 1,
+  status: 1,
+  appliedOnDate: -1,
+  _id: 1,
+});
