@@ -64,7 +64,6 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
     "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000",
-    "seed": "tsx src/seeds/index.ts",
-    "lint": "npx eslint ../custom-plugin/script.ts"
+    "seed": "tsx src/seeds/index.ts"
   }
 }
