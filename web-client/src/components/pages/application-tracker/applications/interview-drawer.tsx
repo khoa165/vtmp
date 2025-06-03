@@ -9,7 +9,8 @@ import {
   DrawerTitle,
 } from '@/components/base/drawer';
 import { useGetApplicationById } from '@/components/pages/application-tracker/applications/hooks/applications';
-import { ExternalLink } from 'lucide-react';
+import { format } from 'date-fns';
+import { Clock, ExternalLink, MapPin, Briefcase, LinkIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface InterviewDrawer {
@@ -41,31 +42,59 @@ export function InterviewDrawer({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent side="bottom">
-        <div className="mx-auto w-full max-w-2xl h-[75vh] p-6 text-foreground">
+        <div className="mx-auto w-full max-w-5xl h-[75vh] p-6 text-foreground">
           <DrawerHeader>
-            <DrawerTitle className="text-2xl font-bold">
+            <DrawerTitle className="mb-3 text-4xl font-bold">
               <Link
                 to={applicationData?.portalLink || '#'}
-                className="flex items-center"
+                className="flex items-center "
               >
-                {applicationData?.companyName || 'Company Name'}
+                {applicationData?.jobTitle}
                 <ExternalLink className="ml-2 h-5 w-5" />
               </Link>
             </DrawerTitle>
-            <DrawerDescription className="mt-1 flex items-center space-x-2">
-              <div className="font-medium">{applicationData?.companyName}</div>
-            </DrawerDescription>
-          </DrawerHeader>
-          <div className="p-4 pb-0">
-            <div className="flex items-center justify-center space-x-2">
-              <div className="flex-1 text-center">
-                <div className="text-7xl font-bold tracking-tighter">{}</div>
-                <div className="text-muted-foreground text-[0.70rem] uppercase">
-                  {applicationData ? JSON.stringify(applicationData) : ''}
+            <DrawerDescription className="flex flex-col space-x-2">
+              <div className="mb-5 text-xl font-bold text-foreground">
+                {applicationData?.companyName}
+              </div>
+
+              <div className="flex items-center justify-between space-x-4 mb-4">
+                <div className="flex flex-wrap gap-2">
+                  <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium">
+                    <Briefcase className="h-4 w-4 mr-1" />{' '}
+                    {applicationData?.jobTitle}
+                  </span>
+                  <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium">
+                    <MapPin className="h-4 w-4 mr-1" /> {}
+                  </span>
+                  <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium">
+                    <Clock className="h-4 w-4 mr-1" />{' '}
+                    {applicationData?.appliedOnDate
+                      ? format(
+                          new Date(applicationData.appliedOnDate),
+                          'MMM d, yyyy'
+                        )
+                      : ''}
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <Button className="bg-foreground text-background">
+                    + Share interview note
+                  </Button>
+                  <Button variant="secondary" className="flex items-center">
+                    <LinkIcon className="mr-2 h-4 w-4" /> View community
+                    insights
+                  </Button>
                 </div>
               </div>
+            </DrawerDescription>
+          </DrawerHeader>
+
+          <div className="p-4 pb-0">
+            <div className="flex items-center justify-center space-x-2">
+              <div className="flex-1 text-center"></div>
             </div>
-            <div className="mt-3 h-[120px]"></div>
           </div>
           <DrawerFooter>
             <Button>Submit</Button>
