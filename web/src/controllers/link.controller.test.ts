@@ -18,15 +18,15 @@ import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
   runUserLogin,
-} from '@/testutils/authMiddleware.controller.testutils';
-
-describe.only('LinkController', () => {
+} from '@/testutils/auth.testutils';
+describe('LinkController', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
   let linkId: string;
   let url: string;
   let mockUserToken: string;
+  let mockAdminToken: string;
   let googleLink: ILink;
 
   const mockLinkData = {
@@ -53,7 +53,7 @@ describe.only('LinkController', () => {
 
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
-    ({ mockUserToken } = await runUserLogin());
+    ({ mockUserToken, mockAdminToken } = await runUserLogin());
 
     url = 'https://google.com';
     googleLink = await LinkRepository.createLink(mockLinkData);
@@ -96,7 +96,7 @@ describe.only('LinkController', () => {
         .post('/api/links')
         .send({ url: googleLink.url })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Duplicate url');
@@ -113,7 +113,7 @@ describe.only('LinkController', () => {
       const res = await request(app)
         .post(`/api/links/${getNewMongoId()}/reject`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Link not found');
@@ -123,7 +123,7 @@ describe.only('LinkController', () => {
       const res = await request(app)
         .post(`/api/links/${linkId}/reject`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data.url).to.equal(url);
@@ -148,7 +148,7 @@ describe.only('LinkController', () => {
           location: JobPostingRegion.CANADA,
         })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Link not found');
     });
@@ -163,7 +163,7 @@ describe.only('LinkController', () => {
           location: JobPostingRegion.US,
         })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.message).to.equal('Link has been approved!');
@@ -181,7 +181,7 @@ describe.only('LinkController', () => {
       const res = await request(app)
         .get('/api/links/count-by-status')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.message).to.equal(
@@ -207,7 +207,7 @@ describe.only('LinkController', () => {
       const res = await request(app)
         .get('/api/links/count-by-status')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.message).to.equal(
@@ -231,7 +231,7 @@ describe.only('LinkController', () => {
       const res = await request(app)
         .get('/api/links?status=INVALID_STATUS')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.include('Invalid link status');
@@ -240,7 +240,7 @@ describe.only('LinkController', () => {
     it('should return 400 when query contains fields other than status', async () => {
       const res = await request(app)
         .get('/api/links?status=APPROVED&extraField=notAllowed')
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.include(
@@ -251,7 +251,7 @@ describe.only('LinkController', () => {
     it('should return 400 when unknown field is used without status', async () => {
       const res = await request(app)
         .get('/api/links?unexpectedField=value')
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.include(
@@ -266,7 +266,7 @@ describe.only('LinkController', () => {
           url: '',
           jobTitle: 'Software Engineer',
         })
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.include('Invalid url');
@@ -280,7 +280,7 @@ describe.only('LinkController', () => {
       const res = await request(app)
         .get(`/api/links?status=${LinkStatus.APPROVED}`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
@@ -298,7 +298,7 @@ describe.only('LinkController', () => {
       const res = await request(app)
         .get('/api/links')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
 
@@ -319,7 +319,7 @@ describe.only('LinkController', () => {
       const res = await request(app)
         .get(`/api/links?status=${LinkStatus.APPROVED}`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data[0].url).to.equal(url);

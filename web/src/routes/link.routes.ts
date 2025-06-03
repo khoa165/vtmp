@@ -6,11 +6,10 @@ import { Permission } from '@vtmp/common/constants';
 import { hasPermission } from '@/middlewares/authorization.middleware';
 
 export const LinkRoutes = Router();
-
+LinkRoutes.use(wrappedHandlers([authenticate]));
 LinkRoutes.post(
   '/',
   wrappedHandlers([
-    authenticate,
     hasPermission(Permission.CREATE_JOB_LINK),
     LinkController.submitLink,
   ])
@@ -18,7 +17,6 @@ LinkRoutes.post(
 LinkRoutes.get(
   '/',
   wrappedHandlers([
-    authenticate,
     hasPermission(Permission.VIEW_JOB_LINK),
     LinkController.getLinks,
   ])
@@ -26,7 +24,6 @@ LinkRoutes.get(
 LinkRoutes.get(
   '/count-by-status',
   wrappedHandlers([
-    authenticate,
     hasPermission(Permission.VIEW_JOB_LINK),
     LinkController.getLinkCountByStatus,
   ])
@@ -34,7 +31,6 @@ LinkRoutes.get(
 LinkRoutes.post(
   '/:linkId/approve',
   wrappedHandlers([
-    authenticate,
     hasPermission(Permission.MANAGE_JOB_LINK),
     LinkController.approveLink,
   ])
@@ -42,7 +38,6 @@ LinkRoutes.post(
 LinkRoutes.post(
   '/:linkId/reject',
   wrappedHandlers([
-    authenticate,
     hasPermission(Permission.MANAGE_JOB_LINK),
     LinkController.rejectLink,
   ])
