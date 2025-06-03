@@ -18,7 +18,7 @@ describe('InterviewService', () => {
   interface MockInterview {
     applicationId: string;
     userId: string;
-    type: InterviewType[];
+    types: InterviewType[];
     interviewOnDate: Date;
     status?: InterviewStatus;
     note?: string;
@@ -93,7 +93,7 @@ describe('InterviewService', () => {
     mockInterview_A0 = {
       applicationId: metaApplication_A.id,
       userId: userId_A,
-      type: [InterviewType.CODE_REVIEW],
+      types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PASSED,
     };
@@ -101,7 +101,7 @@ describe('InterviewService', () => {
     mockInterview_A1 = {
       applicationId: googleApplication_A.id,
       userId: userId_A,
-      type: [InterviewType.CODE_REVIEW],
+      types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.FAILED,
     };
@@ -109,14 +109,14 @@ describe('InterviewService', () => {
     mockInterview_A2 = {
       applicationId: metaApplication_A.id,
       userId: userId_A,
-      type: [InterviewType.CODE_REVIEW],
+      types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
     };
 
     mockInterview_B0 = {
       applicationId: googleApplication_B.id,
       userId: userId_B,
-      type: [InterviewType.CODE_REVIEW],
+      types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PENDING,
     };
@@ -124,7 +124,7 @@ describe('InterviewService', () => {
     mockInterview_B1 = {
       applicationId: metaApplication_B.id,
       userId: userId_B,
-      type: [InterviewType.CODE_REVIEW],
+      types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PENDING,
     };
