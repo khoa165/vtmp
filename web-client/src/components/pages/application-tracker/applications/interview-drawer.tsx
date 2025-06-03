@@ -9,6 +9,8 @@ import {
   DrawerTitle,
 } from '@/components/base/drawer';
 import { useGetApplicationById } from '@/components/pages/application-tracker/applications/hooks/applications';
+import { ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface InterviewDrawer {
   open: boolean;
@@ -39,10 +41,20 @@ export function InterviewDrawer({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent side="bottom">
-        <div className="mx-auto w-full max-w-sm h-[70vh]">
+        <div className="mx-auto w-full max-w-2xl h-[75vh] p-6 text-foreground">
           <DrawerHeader>
-            <DrawerTitle>Application Detail</DrawerTitle>
-            <DrawerDescription>Set your daily activity goal.</DrawerDescription>
+            <DrawerTitle className="text-2xl font-bold">
+              <Link
+                to={applicationData?.portalLink || '#'}
+                className="flex items-center"
+              >
+                {applicationData?.companyName || 'Company Name'}
+                <ExternalLink className="ml-2 h-5 w-5" />
+              </Link>
+            </DrawerTitle>
+            <DrawerDescription className="mt-1 flex items-center space-x-2">
+              <div className="font-medium">{applicationData?.companyName}</div>
+            </DrawerDescription>
           </DrawerHeader>
           <div className="p-4 pb-0">
             <div className="flex items-center justify-center space-x-2">

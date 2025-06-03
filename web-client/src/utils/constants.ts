@@ -158,7 +158,7 @@ export enum QueryKey {
   GET_APPLICATIONS = '/api/applications',
   GET_JOB_POSTINGS = '/api//job-postings/not-applied',
   GET_APPLICATIONS_COUNT_BY_STATUS = '/api/applications/countByStatus',
-  GET_APPLICATION_BY_ID = 'GET_APPLICATION_BY_ID',
+  GET_APPLICATION_BY_ID = '/api/applications/:id',
 }
 
 export enum Method {
