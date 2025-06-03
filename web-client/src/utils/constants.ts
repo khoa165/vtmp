@@ -2,6 +2,7 @@ import {
   InterviewType,
   MentorshipRole,
   ApplicationStatus,
+  LinkStatus,
 } from '@vtmp/common/constants';
 
 export const rolePriority: Record<MentorshipRole, number> = {
@@ -159,6 +160,8 @@ export enum QueryKey {
   GET_JOB_POSTINGS = '/api/job-postings/not-applied',
   GET_JOB_POSTINGS_IN_ADAY = '/api/job-postings/not-applied-last-24h',
   GET_APPLICATIONS_COUNT_BY_STATUS = '/api/applications/countByStatus',
+  GET_DASHBOARD_LINKS = '/api/links/getLinks',
+  GET_LINKS_COUNT_BY_STATUS = '/api/links/count-by-status',
 }
 
 export enum Method {
@@ -168,11 +171,16 @@ export enum Method {
   DELETE = 'DELETE',
 }
 
-export const StatusToColorMapping: Record<ApplicationStatus, string> = {
+export const StatusToColorMapping: Record<
+  ApplicationStatus | LinkStatus,
+  string
+> = {
   [ApplicationStatus.SUBMITTED]: 'bg-[#A2BFF0]',
   [ApplicationStatus.OA]: 'bg-[#F49DFF]',
   [ApplicationStatus.INTERVIEWING]: 'bg-[#F8FF6A]',
   [ApplicationStatus.OFFERED]: 'bg-[#A3F890]',
   [ApplicationStatus.WITHDRAWN]: 'bg-[#CAAB94]',
   [ApplicationStatus.REJECTED]: 'bg-[#FEB584]',
+  [LinkStatus.PENDING]: 'bg-[#A2BFF0]',
+  [LinkStatus.APPROVED]: 'bg-[#A3F890]',
 };
