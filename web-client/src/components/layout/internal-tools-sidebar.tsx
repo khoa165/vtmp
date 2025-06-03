@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   ShieldUser,
   ExternalLink,
@@ -20,9 +20,29 @@ import { VTMPLogo } from '@/components/base/vtmp-logo';
 import { Avatar } from '@/components/base/avatar';
 import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
 import { UserRole } from '@vtmp/common/constants';
+import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
+import { Link } from 'react-router-dom';
+
 export const InternalToolsSidebar = () => {
+  interface IUser {
+    role: UserRole;
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  }
+
   const rawUser = localStorage.getItem('user');
-  const user = rawUser ? JSON.parse(rawUser) : null;
+  const user: IUser | null = rawUser && JSON.parse(rawUser);
+
+  const navigate = useNavigatePreserveQueryParams();
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user]);
+
   const items = [
     {
       title: 'Users',
@@ -52,9 +72,11 @@ export const InternalToolsSidebar = () => {
 
   const visibleItems = useMemo(
     () =>
-      items.filter((item) =>
-        item.roles.some((role) => user.role.includes(role))
-      ),
+      user
+        ? items.filter((item) =>
+            item.roles.some((role) => user.role.includes(role))
+          )
+        : [],
     [user, items]
   );
 
@@ -66,20 +88,24 @@ export const InternalToolsSidebar = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/application-tracker" className="w-full">
+                  <Link
+                    to="/application-tracker"
+                    className="w-full"
+                    aria-label="Home"
+                  >
                     <VTMPLogo />
                     <JobTrackrLogo />
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
               {visibleItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url} aria-label={item.title}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
