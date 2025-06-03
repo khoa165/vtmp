@@ -23,6 +23,7 @@ export const rules = {
               messageId: 'noRequire',
               fix(fixer) {
                 const moduleName = node.arguments[0].value;
+                const declaration = node.parent.parent;
 
                 if (node.parent.id.type === 'ObjectPattern') {
                   const valueKey = node.parent.id.properties.map(
@@ -35,7 +36,6 @@ export const rules = {
                   );
                 } else {
                   const varName = node.parent.id.name;
-                  const declaration = node.parent.parent;
                   return fixer.replaceText(
                     declaration,
                     `import ${varName} from '${moduleName}';`
