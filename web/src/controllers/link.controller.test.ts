@@ -130,6 +130,16 @@ describe('LinkController', () => {
       method: HTTPMethod.POST,
     });
 
+    it('should throw ForbiddenError when user try to reject link', async () => {
+      const res = await request(app)
+        .post(`/api/links/${getNewMongoId()}/reject`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Forbidden');
+    });
+
     it('should return error message for rejecting not exist link', async () => {
       const res = await request(app)
         .post(`/api/links/${getNewMongoId()}/reject`)
@@ -162,6 +172,22 @@ describe('LinkController', () => {
         jobTitle: 'Software Engineer Intern',
         companyName: 'Example Company',
       },
+    });
+
+    it('should throw ForbiddenError when user try to approve link', async () => {
+      const res = await request(app)
+        .post(`/api/links/${linkId}/approve`)
+        .send({
+          url: 'https://facebook.com',
+          jobTitle: 'Software Engineer Intern',
+          companyName: 'Example Company',
+          location: JobPostingRegion.US,
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Forbidden');
     });
 
     it('should return error message for approving with not exist link', async () => {
@@ -355,33 +381,6 @@ describe('LinkController', () => {
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data[0].url).to.equal(url);
       expect(res.body.data[0].status).to.equal(LinkStatus.APPROVED);
-    });
-  });
-  describe('Test Authentication for Link Permission', () => {
-    it('should throw ForbiddenError when user try to approve link', async () => {
-      const res = await request(app)
-        .post(`/api/links/${linkId}/approve`)
-        .send({
-          url: 'https://facebook.com',
-          jobTitle: 'Software Engineer Intern',
-          companyName: 'Example Company',
-          location: JobPostingRegion.US,
-        })
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
-
-      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.eq('Forbidden');
-    });
-
-    it('should throw ForbiddenError when user try to reject link', async () => {
-      const res = await request(app)
-        .post(`/api/links/${getNewMongoId()}/reject`)
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockUserToken}`);
-
-      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.eq('Forbidden');
     });
   });
 });
