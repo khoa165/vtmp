@@ -30,10 +30,3 @@ JobPostingRoutes.get(
     JobPostingController.getJobPostingsUserHasNotAppliedTo,
   ])
 );
-JobPostingRoutes.post(
-  '/not-applied',
-  wrappedHandlers([
-    hasPermission(Permission.MANAGE_JOB_POSTING),
-    JobPostingController.getJobPostingsUserHasNotAppliedTo,
-  ])
-);

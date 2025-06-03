@@ -298,7 +298,7 @@ describe('JobPostingController', () => {
   describe('getJobPostingsUserHasNotAppliedTo with Filter', () => {
     runDefaultAuthMiddlewareTests({
       route: `/api/job-postings/not-applied`,
-      method: HTTPMethod.POST,
+      method: HTTPMethod.GET,
       body: {},
     });
 
@@ -314,8 +314,8 @@ describe('JobPostingController', () => {
       );
 
       const res = await request(app)
-        .post('/api/job-postings/not-applied')
-        .send({ companyName: mockCompany })
+        .get('/api/job-postings/not-applied')
+        .query({ companyName: mockCompany })
         .set('Authorization', `Bearer ${mockToken}`)
         .set('Accept', 'application/json');
 
@@ -328,8 +328,8 @@ describe('JobPostingController', () => {
       const jobPosting1 = jobPostings[0];
 
       const res = await request(app)
-        .post('/api/job-postings/not-applied')
-        .send({ companyName: mockCompany })
+        .get('/api/job-postings/not-applied')
+        .query({ companyName: mockCompany })
         .set('Authorization', `Bearer ${mockToken}`)
         .set('Accept', 'application/json');
 
@@ -352,8 +352,8 @@ describe('JobPostingController', () => {
       });
 
       const res = await request(app)
-        .post('/api/job-postings/not-applied')
-        .send({ companyName: mockCompany })
+        .get('/api/job-postings/not-applied')
+        .query({ companyName: mockCompany })
         .set('Authorization', `Bearer ${mockToken}`)
         .set('Accept', 'application/json');
 
@@ -371,8 +371,8 @@ describe('JobPostingController', () => {
       const mockEndDate = new Date('2025-1-1');
 
       const res = await request(app)
-        .post('/api/job-postings/not-applied')
-        .send({
+        .get('/api/job-postings/not-applied')
+        .query({
           postingDateRangeStart: mockStartDate,
           postingDateRangeEnd: mockEndDate,
         })
@@ -386,8 +386,8 @@ describe('JobPostingController', () => {
 
     it('should return an empty array when filter by field with no matching postings', async () => {
       const res = await request(app)
-        .post('/api/job-postings/not-applied')
-        .send({ companyName: 'PD' })
+        .get('/api/job-postings/not-applied')
+        .query({ companyName: 'PD' })
         .set('Authorization', `Bearer ${mockToken}`)
         .set('Accept', 'application/json');
 
@@ -400,8 +400,8 @@ describe('JobPostingController', () => {
       const mockCompany = 'Company 2';
       const mockJobTitle = 'Engineer 2';
       const res = await request(app)
-        .post('/api/job-postings/not-applied')
-        .send({
+        .get('/api/job-postings/not-applied')
+        .query({
           companyName: mockCompany,
           jobTitle: mockJobTitle,
           location: JobPostingRegion.CANADA,
@@ -431,8 +431,8 @@ describe('JobPostingController', () => {
       });
 
       const res = await request(app)
-        .post('/api/job-postings/not-applied')
-        .send({
+        .get('/api/job-postings/not-applied')
+        .query({
           companyName: mockCompany,
         })
         .set('Authorization', `Bearer ${mockToken}`)
