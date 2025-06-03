@@ -1,5 +1,10 @@
-import { JobPostingModel, IJobPosting } from '@/models/job-posting.model';
+import {
+  JobPostingModel,
+  IJobPosting,
+  JobFilter,
+} from '@/models/job-posting.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
+import escapeStringRegexp from 'escape-string-regexp';
 import { ClientSession } from 'mongoose';
 
 export const JobPostingRepository = {
@@ -40,12 +45,49 @@ export const JobPostingRepository = {
     ).lean();
   },
 
-  getJobPostingsUserHasNotAppliedTo: async (
-    userId: string
-  ): Promise<IJobPosting[]> => {
+  getJobPostingsUserHasNotAppliedTo: async ({
+    userId,
+    filters,
+  }: {
+    userId: string;
+    filters?: JobFilter;
+  }): Promise<IJobPosting[]> => {
+    const dynamicMatch: Record<string, unknown> = {};
+
+    if (filters?.jobTitle) {
+      dynamicMatch.jobTitle = {
+        $regex: escapeStringRegexp(filters.jobTitle),
+        $options: 'i',
+      };
+    }
+    if (filters?.companyName) {
+      dynamicMatch.companyName = {
+        $regex: escapeStringRegexp(filters.companyName),
+        $options: 'i',
+      };
+    }
+    if (filters?.location) dynamicMatch.location = filters.location;
+    if (filters?.postingDateRangeStart || filters?.postingDateRangeEnd) {
+      const datePostedFilter: Record<string, Date> = {};
+
+      if (filters.postingDateRangeStart) {
+        datePostedFilter.$gte = filters.postingDateRangeStart;
+      }
+      if (filters.postingDateRangeEnd) {
+        datePostedFilter.$lte = filters.postingDateRangeEnd;
+      }
+
+      dynamicMatch.datePosted = datePostedFilter;
+    }
+
     return JobPostingModel.aggregate([
       {
-        // Perform a filtered join between JobPosting and Application collection
+        $match: {
+          ...dynamicMatch,
+          deletedAt: null,
+        },
+      },
+      {
         $lookup: {
           from: 'applications',
           let: { jobId: '$_id' },
@@ -68,7 +110,6 @@ export const JobPostingRepository = {
       {
         $match: {
           userApplication: { $size: 0 },
-          deletedAt: null,
         },
       },
       {
