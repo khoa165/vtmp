@@ -25,9 +25,8 @@ describe('LinkController', () => {
 
   let linkId: string;
   let url: string;
-  let mockUserToken: string;
-  let mockAdminToken: string;
   let googleLink: ILink;
+  let mockUserToken: string, mockAdminToken: string;
 
   const mockLinkData = {
     url: 'https://google.com',
@@ -109,6 +108,16 @@ describe('LinkController', () => {
       method: HTTPMethod.POST,
     });
 
+    it('should throw ForbiddenError when user try to reject link', async () => {
+      const res = await request(app)
+        .post(`/api/links/${getNewMongoId()}/reject`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Forbidden');
+    });
+
     it('should return error message for rejecting not exist link', async () => {
       const res = await request(app)
         .post(`/api/links/${getNewMongoId()}/reject`)
@@ -136,6 +145,27 @@ describe('LinkController', () => {
     runDefaultAuthMiddlewareTests({
       route: `/api/links/${linkId}/approve`,
       method: HTTPMethod.POST,
+      body: {
+        url: 'https://facebook.com',
+        jobTitle: 'Software Engineer Intern',
+        companyName: 'Example Company',
+      },
+    });
+
+    it('should throw ForbiddenError when user try to approve link', async () => {
+      const res = await request(app)
+        .post(`/api/links/${linkId}/approve`)
+        .send({
+          url: 'https://facebook.com',
+          jobTitle: 'Software Engineer Intern',
+          companyName: 'Example Company',
+          location: JobPostingRegion.US,
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Forbidden');
     });
 
     it('should return error message for approving with not exist link', async () => {
