@@ -1,0 +1,71 @@
+import { ColumnDef } from '@tanstack/react-table';
+import { Button } from '@/components/base/button';
+import { IDashBoardLink } from '@/components/pages/admins/dashboard/validation';
+import { format } from 'date-fns';
+import { ReviewPopupButton } from '@/components/pages/admins/dashboard/review-popup-button';
+import { StatusDot } from '@/components/base/status-dot';
+import { JobPostingData } from './validation';
+import { HeaderSorting } from '@/components/base/header';
+import { StatusToColorMapping } from '@/utils/constants';
+
+interface DashboardTableColumnsProps {
+  approveDashBoardLinkFn: ({
+    linkId,
+    newUpdate,
+  }: {
+    linkId: string;
+    newUpdate: JobPostingData;
+  }) => void;
+  rejectDashBoardLinkFn: ({ linkId }: { linkId: string }) => void;
+}
+
+export const dashboardTableColumns = ({
+  approveDashBoardLinkFn,
+  rejectDashBoardLinkFn,
+}: DashboardTableColumnsProps): ColumnDef<IDashBoardLink>[] => [
+  {
+    accessorKey: 'jobTitle',
+    header: () => <div className="ml-4">Job Title</div>,
+    cell: ({ row }) => <div className="ml-4">{row.original.jobTitle}</div>,
+  },
+  {
+    accessorKey: 'companyName',
+    header: 'Company',
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: ({ row }) => {
+      return (
+        <Button variant="outline">
+          <StatusDot
+            status={row.original.status}
+            colorMapping={StatusToColorMapping}
+          />
+          <span className="ml-2">{row.original.status}</span>
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'datePosted',
+    header: ({ column }) => (
+      <HeaderSorting column={column} headerName="Date Posted" />
+    ),
+    cell: ({ row }) => {
+      const isoDate = row.getValue<string>('datePosted');
+      const date = new Date(isoDate);
+      return <div>{format(date, 'MMM d, yyyy')}</div>;
+    },
+  },
+  {
+    header: 'Review',
+    cell: ({ row }) => (
+      <ReviewPopupButton
+        currentLink={row.original}
+        approveDashBoardLinkFn={approveDashBoardLinkFn}
+        rejectDashBoardLinkFn={rejectDashBoardLinkFn}
+      />
+    ),
+  },
+];

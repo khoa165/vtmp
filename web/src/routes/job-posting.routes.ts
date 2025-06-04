@@ -10,14 +10,14 @@ export const JobPostingRoutes = Router();
 JobPostingRoutes.use(wrappedHandlers([authenticate]));
 
 JobPostingRoutes.put(
-  '/:jobId',
+  '/:jobPostingId',
   wrappedHandlers([
     hasPermission(Permission.MANAGE_JOB_POSTING),
     JobPostingController.updateJobPosting,
   ])
 );
 JobPostingRoutes.delete(
-  '/:jobId',
+  '/:jobPostingId',
   wrappedHandlers([
     hasPermission(Permission.MANAGE_JOB_POSTING),
     JobPostingController.deleteJobPosting,
