@@ -54,5 +54,8 @@
       "prettier --write --config .prettierrc",
       "eslint --fix --config eslint.config.js"
     ]
+  },
+  "dependencies": {
+    "axios": "^1.9.0"
   }
 }
