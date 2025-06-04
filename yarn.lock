@@ -5184,7 +5184,6 @@ __metadata:
   dependencies:
     remeda: "npm:^2.22.5"
     typescript: "npm:^5.8.3"
-    zod: "npm:^3.25.46"
   languageName: unknown
   linkType: soft
 
@@ -5276,7 +5275,6 @@ __metadata:
     vite-plugin-svgr: "npm:^4.3.0"
     vite-tsconfig-paths: "npm:^5.1.4"
     vitest: "npm:^3.1.1"
-    zod: "npm:^3.24.2"
   languageName: unknown
   linkType: soft
 
@@ -5331,7 +5329,6 @@ __metadata:
     tsc-alias: "npm:^1.8.11"
     tsx: "npm:^4.19.3"
     typescript: "npm:^5.8.2"
-    zod: "npm:^3.24.2"
   languageName: unknown
   linkType: soft
 
@@ -13872,6 +13869,7 @@ __metadata:
     tsx: "npm:^4.19.3"
     typescript: "npm:^5.8.2"
     typescript-eslint: "npm:^8.26.0"
+    zod: "npm:^3.25.51"
   languageName: unknown
   linkType: soft
 
@@ -14206,17 +14204,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.24.2":
-  version: 3.24.3
-  resolution: "zod@npm:3.24.3"
-  checksum: 10c0/ab0369810968d0329a1a141e9418e01e5c9c2a4905cbb7cb7f5a131d6e9487596e1400e21eeff24c4a8ee28dacfa5bd6103893765c055b7a98c2006a5a4fc68d
-  languageName: node
-  linkType: hard
-
-"zod@npm:^3.25.46":
-  version: 3.25.49
-  resolution: "zod@npm:3.25.49"
-  checksum: 10c0/2b70269b18abcd9b8d282ed6361a327a71d9a91433d3add02c4ab69750a271d97675145b393ccc968b5d61360d8d4000180fbc8a347dc186320b9e118c7a1df9
+"zod@npm:^3.25.51":
+  version: 3.25.51
+  resolution: "zod@npm:3.25.51"
+  checksum: 10c0/6fc708a45b0d44282c18da4c93f4d42336a884a42487031b40bacb7e8c5a2e539b7993d3ccba75f445df78050f05ff4e34110ffe03d2c3fcbe557c7fe7c1350a
   languageName: node
   linkType: hard
 

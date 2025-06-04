@@ -13,7 +13,6 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "remeda": "^2.22.5",
-    "zod": "^3.25.46"
+    "remeda": "^2.22.5"
   }
 }
