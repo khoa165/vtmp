@@ -45,8 +45,9 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.0.0",
     "prettier": "^3.5.3",
+    "syncpack": "^13.0.4",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.2",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.26.0"
   },
   "lint-staged": {
@@ -54,8 +55,5 @@
       "prettier --write --config .prettierrc",
       "eslint --fix --config eslint.config.js"
     ]
-  },
-  "dependencies": {
-    "zod": "^3.25.51"
   }
 }
