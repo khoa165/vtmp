@@ -4064,7 +4064,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^22.13.9, @types/node@npm:^22.14.1":
+"@types/node@npm:*, @types/node@npm:^22.14.1":
   version: 22.15.1
   resolution: "@types/node@npm:22.15.1"
   dependencies:
@@ -5192,7 +5192,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vtmp/common@npm:*, @vtmp/common@workspace:^, @vtmp/common@workspace:packages/common":
+"@vtmp/common@npm:1.0.0, @vtmp/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@vtmp/common@workspace:packages/common"
   dependencies:
@@ -5248,7 +5248,7 @@ __metadata:
     "@visx/visx": "npm:^3.10.2"
     "@vitejs/plugin-react-swc": "npm:^3.8.1"
     "@vitest/coverage-v8": "npm:^3.1.1"
-    "@vtmp/common": "workspace:^"
+    "@vtmp/common": "npm:1.0.0"
     aos: "npm:^2.3.4"
     axios: "npm:^1.7.7"
     bootstrap: "npm:^5.2.3"
@@ -5275,7 +5275,7 @@ __metadata:
     reactstrap: "npm:^9.1.8"
     recharts: "npm:^2.13.0"
     rehype-raw: "npm:^7.0.0"
-    remeda: "npm:^2.21.2"
+    remeda: "npm:^2.22.5"
     sass: "npm:^1.69.6"
     sonner: "npm:^2.0.3"
     statsig-react: "npm:^2.0.0"
@@ -5283,7 +5283,7 @@ __metadata:
     tailwind-merge: "npm:^3.1.0"
     tailwindcss: "npm:^4.1.3"
     tw-animate-css: "npm:^1.2.5"
-    typescript: "npm:^5.4.5"
+    typescript: "npm:^5.8.3"
     use-image: "npm:^1.1.1"
     usehooks-ts: "npm:^3.1.0"
     vite: "npm:^6.2.5"
@@ -5308,10 +5308,10 @@ __metadata:
     "@types/mocha": "npm:^10.0.10"
     "@types/mongoose": "npm:^5.11.97"
     "@types/morgan": "npm:^1.9.9"
-    "@types/node": "npm:^22.13.9"
+    "@types/node": "npm:^22.14.1"
     "@types/nodemailer": "npm:^6"
     "@types/supertest": "npm:^6.0.3"
-    "@vtmp/common": "npm:*"
+    "@vtmp/common": "npm:1.0.0"
     bcryptjs: "npm:^3.0.2"
     chai: "npm:^5.2.0"
     chai-as-promised: "npm:^8.0.1"
@@ -5337,14 +5337,14 @@ __metadata:
     multer: "npm:^1.4.5-lts.1"
     nodemailer: "npm:^6.10.1"
     normalize-url: "npm:^8.0.1"
-    remeda: "npm:^2.21.2"
+    remeda: "npm:^2.22.5"
     sinon: "npm:^20.0.0"
     supertest: "npm:^7.1.0"
     ts-loader: "npm:^9.5.2"
     ts-node: "npm:^10.9.2"
     tsc-alias: "npm:^1.8.11"
     tsx: "npm:^4.19.3"
-    typescript: "npm:^5.8.2"
+    typescript: "npm:^5.8.3"
     zod: "npm:^3.25.51"
   languageName: unknown
   linkType: soft
@@ -12061,15 +12061,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remeda@npm:^2.21.2":
-  version: 2.21.3
-  resolution: "remeda@npm:2.21.3"
-  dependencies:
-    type-fest: "npm:^4.39.1"
-  checksum: 10c0/ba63d70e95e92cdd843c3497f0a9be1039644d586f56ea62ff3e7736e3981932c6e999c3670c81623bac48944fd03ea52f43566143460924f44b6522759f6e51
-  languageName: node
-  linkType: hard
-
 "remeda@npm:^2.22.5":
   version: 2.22.5
   resolution: "remeda@npm:2.22.5"
@@ -13539,13 +13530,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^4.39.1":
-  version: 4.40.0
-  resolution: "type-fest@npm:4.40.0"
-  checksum: 10c0/b39d4da6f9a154e3db7e714cd05ccf56b53f4f0bbf74dd294cb6be4921b16ecca5cb00cb81b53ab621a31c8e8509c74b5101895ada47af9de368a317d24538a3
-  languageName: node
-  linkType: hard
-
 "type-fest@npm:^4.40.1":
   version: 4.41.0
   resolution: "type-fest@npm:4.41.0"
@@ -13584,7 +13568,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.4.5, typescript@npm:^5.8.2, typescript@npm:^5.8.3":
+"typescript@npm:^5.8.3":
   version: 5.8.3
   resolution: "typescript@npm:5.8.3"
   bin:
@@ -13594,7 +13578,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.4.5#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.8.2#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
   version: 5.8.3
   resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
   bin:
@@ -14193,7 +14177,7 @@ __metadata:
     prettier: "npm:^3.5.3"
     syncpack: "npm:^13.0.4"
     tsx: "npm:^4.19.3"
-    typescript: "npm:^5.8.2"
+    typescript: "npm:^5.8.3"
     typescript-eslint: "npm:^8.26.0"
   languageName: unknown
   linkType: soft
