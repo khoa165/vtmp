@@ -1,5 +1,3 @@
-import chromium from '@sparticuz/chromium';
-import pLimit from 'p-limit';
 import puppeteer, { Browser, Page } from 'puppeteer-core';
 import retry from 'retry';
 
@@ -129,6 +127,11 @@ export const WebScrapingService = {
               scrapedText: bodyText,
             });
           } catch (error: unknown) {
+            // At failfure stage, need to add fields like status, failureStage
+            // For `status`, it is particularly important because we need to determine whether it is:
+            // LinkStatus.PENDING_RETRY => if attemptsCount < 3 (or some const number)
+            // LinkStatus.PIPELINE_FAILED => if attemptsCount == 3 (or some const number)
+
             logError(error);
             const errMessage = error instanceof Error ? error.message : '';
 

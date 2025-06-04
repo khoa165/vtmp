@@ -1,4 +1,5 @@
-import { IUser, UserModel } from '@/models/user.model';
+import { IUser, UserModel } from '@vtmp/mongo/models';
+
 import { SystemRole } from '@vtmp/common/constants';
 
 export const UserRepository = {
@@ -40,6 +41,16 @@ export const UserRepository = {
     ).lean();
   },
 
+  getUserByName: async (name: {
+    firstName: string;
+    lastName: string;
+  }): Promise<IUser | null> => {
+    return UserModel.findOne({
+      ...name,
+      role: SystemRole.USER,
+    }).lean();
+  },
+
   updateUserById: async (
     userId: string,
     updateUserInfo: {
@@ -48,6 +59,7 @@ export const UserRepository = {
       email?: string;
       encryptedPassword?: string;
       role?: SystemRole;
+      activated?: boolean;
     }
   ): Promise<IUser | null> => {
     return UserModel.findOneAndUpdate(

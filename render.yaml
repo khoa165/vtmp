@@ -29,9 +29,7 @@ services:
       - key: NODE_ENV
         sync: false
     region: oregon
-    buildCommand:
-      yarn install && yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace
-      @vtmp/web build
+    buildCommand: yarn install && yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build && yarn workspace @vtmp/web build
     startCommand: yarn workspace @vtmp/web start
     autoDeployTrigger: off
     previews:

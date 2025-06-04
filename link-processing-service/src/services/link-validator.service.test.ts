@@ -1,10 +1,12 @@
 import { safebrowsing_v4 } from '@googleapis/safebrowsing';
+import { SubmittedLink } from '@vtmp/server-common/constants';
 import { expect } from 'chai';
 import retry from 'retry';
 
+import { EnvConfig } from '@/config/env';
 import { LinkValidatorService } from '@/services/link-validator.service';
+import { LINK_PROCESSING_MOCK_ENV } from '@/testutils/link-processing-mock-env.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
-import { SubmittedLink } from '@/types/link-processing.types';
 import { LinkValidationError } from '@/utils/errors';
 
 describe('LinkValidatorService', () => {
@@ -39,6 +41,7 @@ describe('LinkValidatorService', () => {
     sandbox.stub(console, 'warn');
     LinkValidatorService.config.resolveLinkRetryConfig = testRetryConfig;
     LinkValidatorService.config.enableVirusScan = false;
+    sandbox.stub(EnvConfig, 'get').returns(LINK_PROCESSING_MOCK_ENV);
   });
 
   afterEach(() => {
