@@ -231,11 +231,6 @@ describe('LinkController', () => {
       );
 
       await LinkRepository.updateLinkStatus({
-        id: googleLink.id,
-        status: LinkStatus.REJECTED,
-      });
-
-      await LinkRepository.updateLinkStatus({
         id: linkId,
         status: LinkStatus.APPROVED,
       });
