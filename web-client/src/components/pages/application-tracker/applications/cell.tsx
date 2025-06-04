@@ -25,7 +25,7 @@ import { formatStatus } from '@/utils/helpers';
 import { StatusDot } from '@/components/base/status-dot';
 import { StatusToColorMapping } from '@/utils/constants';
 
-const celebrateOffered = (): void => {
+export const celebrateOffered = (): void => {
   const end = Date.now() + 3 * 1000; // 3 seconds
   const colors = ['#a786ff', '#fd8bbc', '#eca184', '#f8deb1'];
 
@@ -58,9 +58,11 @@ const celebrateOffered = (): void => {
 export const CellActions = ({
   application,
   deleteApplicationFn,
+  handleOpenDetail,
 }: {
   application: IApplication;
   deleteApplicationFn: (id: string) => void;
+  handleOpenDetail: (id: string) => void;
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
@@ -78,6 +80,9 @@ export const CellActions = ({
             onClick={() => navigator.clipboard.writeText(application._id)}
           >
             Copy application ID
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleOpenDetail(application._id)}>
+            Detail
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsDialogOpen(true)}>
             Delete application

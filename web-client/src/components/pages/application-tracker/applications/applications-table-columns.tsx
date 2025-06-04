@@ -14,6 +14,7 @@ import { ApplicationInterestColumn } from '@/components/pages/application-tracke
 export const applicationsTableColumns = ({
   deleteApplicationFn,
   updateApplicationStatusFn,
+  handleOpenDetail,
 }: {
   deleteApplicationFn: (id: string) => void;
   updateApplicationStatusFn: ({
@@ -23,6 +24,7 @@ export const applicationsTableColumns = ({
     applicationId: string;
     body: { updatedStatus: ApplicationStatus };
   }) => void;
+  handleOpenDetail: (id: string) => void;
 }): ColumnDef<IApplication>[] => [
   {
     id: 'select',
@@ -123,6 +125,7 @@ export const applicationsTableColumns = ({
         <CellActions
           application={application}
           deleteApplicationFn={deleteApplicationFn}
+          handleOpenDetail={handleOpenDetail}
         />
       );
     },

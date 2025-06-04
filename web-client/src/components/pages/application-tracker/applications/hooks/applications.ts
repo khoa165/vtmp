@@ -6,6 +6,7 @@ import {
   ApplicationsResponseSchema,
   ApplicationResponseSchema,
   ApplicationsCountByStatusSchema,
+  ApplicationData,
 } from '@/components/pages/application-tracker/applications/validation';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import axios from 'axios';
@@ -108,6 +109,52 @@ export const useUpdateApplicationStatus = () => {
     onSuccess: (res) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_APPLICATION_BY_ID, res.data._id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_APPLICATIONS_COUNT_BY_STATUS],
+      });
+      toast.success(res.message);
+    },
+    onError: (error: unknown) => {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessages = error.response.data.errors.map(
+          (err) => err.message
+        );
+        toast.error(errorMessages.join('\n'));
+      } else {
+        toast.error('Unexpected error');
+      }
+    },
+  });
+};
+
+export const useUpdateApplicationMetadata = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      applicationId,
+      body,
+    }: {
+      applicationId: string;
+      body: ApplicationData;
+    }) =>
+      request({
+        method: Method.PUT,
+        url: `/applications/${applicationId}`,
+        data: body,
+        schema: ApplicationResponseSchema,
+        options: { requireAuth: true },
+      }),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_APPLICATIONS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_APPLICATION_BY_ID, res.data._id],
       });
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS_COUNT_BY_STATUS],

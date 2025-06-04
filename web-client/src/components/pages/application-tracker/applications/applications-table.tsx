@@ -28,24 +28,18 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
   data,
   sorting,
   setSorting,
+  selectedApplicationId,
+  setSelectedApplicationId,
 }: DataTableProps<TData, TValue> & {
   sorting: SortingState;
   setSorting: OnChangeFn<SortingState>;
+  selectedApplicationId: string | null;
+  setSelectedApplicationId: (id: string | null) => void;
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
   const [rowSelection, setRowSelection] = useState({});
-
-  const [selectedRow, setIsSelectedRow] = useState<IApplication>();
-  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
-  const handleTriggerContentDrawer = () => {
-    setIsOpenDrawer(!isOpenDrawer);
-  };
-  const handleRowClick = (rowData: IApplication) => {
-    setIsSelectedRow(rowData);
-    handleTriggerContentDrawer();
-  };
 
   const table = useReactTable({
     data,
@@ -88,15 +82,16 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
         />
         <ColumnVisibilityConfiguration table={table} />
       </section>
-      <ResizableTable
-        table={table}
-        columns={columns}
-        handleRowClick={handleRowClick}
-      />
+      <ResizableTable table={table} columns={columns} />
+
       <InterviewDrawer
-        open={isOpenDrawer}
-        onOpenChange={setIsOpenDrawer}
-        applicationId={selectedRow?._id || null}
+        open={!!selectedApplicationId}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedApplicationId(null);
+          }
+        }}
+        applicationId={selectedApplicationId}
       />
     </>
   );

@@ -39,13 +39,11 @@ const ColumnResizer = <TData, TValue>({
 interface ResizableTableProps<TData, TValue> {
   table: TanstackTable<TData>;
   columns: ColumnDef<TData, TValue>[];
-  handleRowClick?: (rowData: TData) => void;
 }
 
 export function ResizableTable<TData, TValue>({
   table,
   columns,
-  handleRowClick,
 }: ResizableTableProps<TData, TValue>) {
   return (
     <>
@@ -81,7 +79,6 @@ export function ResizableTable<TData, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    onClick={() => handleRowClick?.(row.original)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="text-foreground py-4">

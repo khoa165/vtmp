@@ -21,18 +21,28 @@ export const ApplicationsContainer = ({
     error,
     data: applicationsData,
   } = useGetApplications(applicationFilter);
+
   const { mutate: deleteApplicationFn } = useDeleteApplication();
   const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
 
   const [sorting, setSorting] = useState<SortingState>([]);
+
+  const [selectedApplicationId, setSelectedApplicationId] = useState<
+    string | null
+  >(null);
+
+  const handleOpenDetail = (id: string) => {
+    setSelectedApplicationId(id);
+  };
 
   const columns = useMemo(
     () =>
       applicationsTableColumns({
         deleteApplicationFn,
         updateApplicationStatusFn,
+        handleOpenDetail,
       }),
-    [deleteApplicationFn, updateApplicationStatusFn]
+    [deleteApplicationFn, updateApplicationStatusFn, handleOpenDetail]
   );
 
   if (isLoading) {
@@ -63,6 +73,8 @@ export const ApplicationsContainer = ({
       data={applicationsData}
       sorting={sorting}
       setSorting={setSorting}
+      selectedApplicationId={selectedApplicationId}
+      setSelectedApplicationId={setSelectedApplicationId}
     />
   );
 };

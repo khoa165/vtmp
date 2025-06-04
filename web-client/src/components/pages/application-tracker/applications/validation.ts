@@ -43,5 +43,12 @@ export const ApplicationsCountByStatusSchema = z.object({
     .strict(),
 });
 
+export interface ApplicationData {
+  note?: string;
+  referrer?: string;
+  portalLink?: string;
+  interest?: InterestLevel;
+}
+
 export type IApplications = z.infer<typeof ApplicationsResponseSchema>['data'];
 export type IApplication = z.infer<typeof ApplicationSchema>;
