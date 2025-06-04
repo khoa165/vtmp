@@ -28,6 +28,10 @@ describe('JobPostingController', () => {
   let userIdA: string;
   const userIdB = getNewMongoId();
   let jobPostings: (IJobPosting | undefined)[];
+  const dayExample1 = new Date(Date.now() - 24 * 60 * 20 * 1000);
+  const dayExample2 = new Date(Date.now() - 24 * 20 * 20 * 1000);
+  const dayExample3 = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+  const dayExample4 = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
 
   const mockMultipleJobPostings = [
     {
@@ -36,7 +40,7 @@ describe('JobPostingController', () => {
       jobTitle: 'Software Engineer 1',
       companyName: 'Example Company 1',
       submittedBy: getNewObjectId(),
-      datePosted: new Date(Date.now() - 24 * 60 * 20 * 1000),
+      datePosted: dayExample1,
     },
     {
       linkId: getNewObjectId(),
@@ -44,7 +48,7 @@ describe('JobPostingController', () => {
       jobTitle: 'Software Engineer 2',
       companyName: 'Example Company 2',
       submittedBy: getNewObjectId(),
-      datePosted: new Date(Date.now() - 24 * 20 * 20 * 1000),
+      datePosted: dayExample2,
     },
     {
       linkId: getNewObjectId(),
@@ -52,7 +56,7 @@ describe('JobPostingController', () => {
       jobTitle: 'Software Engineer 3',
       companyName: 'Example Company 3',
       submittedBy: getNewObjectId(),
-      datePosted: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      datePosted: dayExample3,
     },
     {
       linkId: getNewObjectId(),
@@ -60,7 +64,7 @@ describe('JobPostingController', () => {
       jobTitle: 'Software Engineer 4',
       companyName: 'Example Company 4',
       submittedBy: getNewObjectId(),
-      datePosted: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      datePosted: dayExample4,
     },
   ];
 
