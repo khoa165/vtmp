@@ -32,7 +32,7 @@ export const isHiddenRole = (
   roles: MentorshipRole[]
 ): boolean =>
   role === MentorshipRole.PROGRAM_FOUNDER ||
-  (role === MentorshipRole.SWE_LEAD &&
+  (role === MentorshipRole.SWE_PROGRAM_LEAD &&
     roles.includes(MentorshipRole.PROGRAM_LEAD));
 
 export const getGroupDisplayName = (group: MentorshipGroup): string =>

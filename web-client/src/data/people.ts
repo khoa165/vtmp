@@ -44,7 +44,6 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [
           MentorshipRole.PROGRAM_FOUNDER,
           MentorshipRole.PROGRAM_LEAD,
-          MentorshipRole.SWE_LEAD,
           MentorshipRole.SWE_MENTOR,
         ],
       },
