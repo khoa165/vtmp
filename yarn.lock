@@ -5219,7 +5219,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vtmp/common@npm:*, @vtmp/common@npm:1.0.0, @vtmp/common@workspace:packages/common":
+"@vtmp/common@npm:1.0.0, @vtmp/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@vtmp/common@workspace:packages/common"
   dependencies:
@@ -5237,7 +5237,7 @@ __metadata:
     "@types/express": "npm:^5"
     "@types/morgan": "npm:^1.9.9"
     "@types/node": "npm:^22.15.24"
-    "@vtmp/common": "npm:*"
+    "@vtmp/common": "npm:1.0.0"
     axios: "npm:^1.9.0"
     cors: "npm:^2.8.5"
     dotenv: "npm:^16.5.0"
@@ -5248,7 +5248,7 @@ __metadata:
     tsc-alias: "npm:^1.8.16"
     tsx: "npm:^4.19.4"
     typescript: "npm:^5.8.3"
-    zod: "npm:^3.25.36"
+    zod: "npm:^3.25.51"
   languageName: unknown
   linkType: soft
 
@@ -14853,13 +14853,6 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 10c0/dceb44c28578b31641e13695d200d34ec4ab3966a5729814d5445b194933c096b7ced71494ce53a0e8820685d1d010df8b2422e5bf2cdea7e469d97ffbea306f
-  languageName: node
-  linkType: hard
-
-"zod@npm:^3.25.36":
-  version: 3.25.36
-  resolution: "zod@npm:3.25.36"
-  checksum: 10c0/9ad8ca759d1a5d19c86d6e49a1bda817b3c0566ea0a8726d45994b9fcaac8d569db45a65218a7b4067ca18b07c5fc636a587a94cd05f76793174ace8b81742e3
   languageName: node
   linkType: hard
 
