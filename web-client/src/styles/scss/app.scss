@@ -44,19 +44,6 @@ hr {
   @apply border-gray-200 dark:border-gray-700;
 }
 
-#mentorship-website {
-  .navbar {
-    background-color: variables.$brand-primary-background-color !important;
-    border-bottom: 1px solid variables.$brand-light-color;
-  }
-
-  .navbar-brand,
-  .nav-item,
-  .nav-link {
-    color: variables.$brand-light-color;
-  }
-}
-
 .text-green {
   @apply text-vtmp-green;
 }

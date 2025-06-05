@@ -1,13 +1,13 @@
 import React from 'react';
 import moment from 'moment';
 import {
-  Badge,
   Card,
-  CardText,
+  CardContent,
+  CardDescription,
+  CardHeader,
   CardTitle,
-  CardSubtitle,
-  CardBody,
-} from 'reactstrap';
+} from '@/components/base/card';
+import { Badge } from '@/components/base/badge';
 import { Link } from 'react-router-dom';
 import { BlogMetadata } from '@/types';
 
@@ -20,24 +20,31 @@ export const TreeCard: React.FC<TreeCardProps> = ({
 }) => {
   return (
     <Card className="blog-card">
-      <CardBody>
-        <CardTitle tag="h5">{title}</CardTitle>
-        <CardSubtitle className="mb-3 text-muted" tag="h6">
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription className="text-muted-foreground pt-1">
           <span>{moment(date).format('MMMM Do YYYY')}</span>
           <span className="mx-2">|</span>
           <span>{authors.join(', ')}</span>
-        </CardSubtitle>
-        <CardText className="mb-1">{description} </CardText>
-        <div className="mb-3">
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="mb-1 text-sm text-muted-foreground">{description}</p>
+        <div className="mb-3 mt-2">
           {tags.map((tag) => (
-            <Badge>{tag}</Badge>
+            <Badge key={tag} variant="secondary" className="mr-1 mb-1">
+              {tag}
+            </Badge>
           ))}
         </div>
-        <Link to={`/resources/${name}`}>
+        <Link
+          to={`/resources/${name}`}
+          className="inline-flex items-center text-sm font-medium text-primary hover:underline"
+        >
           Learn more
-          <i className="bi bi-arrow-right ms-2" />
+          <i className="bi bi-arrow-right ms-1" />
         </Link>
-      </CardBody>
+      </CardContent>
     </Card>
   );
 };

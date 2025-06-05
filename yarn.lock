@@ -2178,7 +2178,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-slot@npm:1.2.2, @radix-ui/react-slot@npm:^1.2.2":
+"@radix-ui/react-slot@npm:1.2.2":
   version: 1.2.2
   resolution: "@radix-ui/react-slot@npm:1.2.2"
   dependencies:
@@ -2193,7 +2193,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-slot@npm:1.2.3":
+"@radix-ui/react-slot@npm:1.2.3, @radix-ui/react-slot@npm:^1.2.3":
   version: 1.2.3
   resolution: "@radix-ui/react-slot@npm:1.2.3"
   dependencies:
@@ -5350,7 +5350,7 @@ __metadata:
     "@radix-ui/react-navigation-menu": "npm:^1.2.13"
     "@radix-ui/react-select": "npm:^2.1.7"
     "@radix-ui/react-separator": "npm:^1.1.4"
-    "@radix-ui/react-slot": "npm:^1.2.2"
+    "@radix-ui/react-slot": "npm:^1.2.3"
     "@radix-ui/react-tooltip": "npm:^1.2.4"
     "@storybook/addon-a11y": "npm:^8.6.12"
     "@storybook/addon-controls": "npm:^8.6.12"
