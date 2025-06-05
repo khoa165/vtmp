@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { offerCompanies } from '@/data/companies';
 import { mentorshipPeople } from '@/data/people';
-import { uniq } from 'lodash';
+import { map, uniqueBy } from 'remeda';
 import { useEffect, useState } from 'react';
 import { EnvConfig } from '@/config/env';
 
@@ -17,7 +17,10 @@ const parseData = (data: string) => {
 
     const interviewsData = columns.slice(1).filter((col) => col.length > 0);
     interviews += interviewsData.length;
-    invitations += uniq(interviewsData.map((d) => d.split(' - ')[2])).length;
+    invitations += uniqueBy(
+      map(interviewsData, (d) => d.split(' - ')[2]),
+      (x) => x
+    ).length;
   });
   return { invitations, interviews };
 };
