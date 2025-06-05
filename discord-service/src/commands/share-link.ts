@@ -12,7 +12,7 @@ const urlSchema = z.string().url();
 export class ShareLinkCommand extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
-      name: 'share-link',
+      name: 's',
       description: 'Share a job posting url',
       options: [
         {
