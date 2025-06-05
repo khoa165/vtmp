@@ -247,7 +247,10 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2024,
         title: 'SWE Intern @ LinkedIn + Amazon',
-        roles: [MentorshipRole.SWE_LEAD, MentorshipRole.SWE_EXMENTEE_MENTOR],
+        roles: [
+          MentorshipRole.SWE_RISING_LEAD,
+          MentorshipRole.SWE_EXMENTEE_MENTOR,
+        ],
         offers: [
           {
             name: CompanyName.AMAZON,
