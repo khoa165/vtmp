@@ -2,7 +2,6 @@ import { useRef } from 'react';
 import { PrgramValues } from './program-values';
 import { mentorshipProgramValues } from '@/utils/values';
 import { VisualStack } from './visual-stack';
-import { Col, Row } from 'reactstrap';
 import { BannerPage } from './banner-page';
 
 export const LandingContainer = () => {
@@ -24,18 +23,18 @@ export const LandingContainer = () => {
             className="value-page-wrapper"
             id={`value-${group.keyword.toLowerCase()}`}
           >
-            <Row>
-              <Col md="6" className="visual-stack-wrapper">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full items-center">
+              <div className="visual-stack-wrapper">
                 <VisualStack activeTile={index} />
-              </Col>
-              <Col md="6" className="program-value-wrapper">
+              </div>
+              <div className="program-value-wrapper">
                 <PrgramValues
                   key={index}
                   keyword={group.keyword}
                   value={group.value}
                 />
-              </Col>
-            </Row>
+              </div>
+            </div>
             {index < mentorshipProgramValues.length - 1 && (
               <div
                 className="arrows-wrapper"

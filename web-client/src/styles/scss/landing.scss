@@ -100,23 +100,132 @@ $arrows-color-peak: #00ffaa;
     height: 100vh;
     scroll-snap-align: start;
     position: relative;
+    display: flex;
+    align-items: center;
+    padding: 2rem;
 
-    .row {
-      height: 100%;
-      padding-bottom: 100px;
+    .grid {
+      width: 100%;
+      height: auto;
     }
 
     .visual-stack-wrapper {
       position: relative;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      @media (max-width: 768px) {
+        display: none; // Hide on mobile
+      }
     }
 
     .program-value-wrapper {
       max-width: 400px;
       padding: 0 50px;
       flex-grow: 1;
+      display: flex;
+      align-items: center;
+
+      @media (max-width: 768px) {
+        max-width: 100%;
+        padding: 0 1.5rem;
+        margin: 0 auto;
+      }
 
       @include utils.resize(variables.$bootstrap-md-min, null) {
         align-self: center;
+      }
+
+      .program-value-section {
+        width: 100%;
+
+        @media (max-width: 768px) {
+          padding: 1.5rem;
+          border-radius: 1.5rem;
+          background: rgba(255, 255, 255, 0.05);
+
+          p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+          }
+
+          h1 {
+            font-size: 1.75rem;
+            text-align: center;
+            background: linear-gradient(
+              135deg,
+              variables.$viettech-green,
+              variables.$viettech-blue
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+          }
+
+          hr {
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            margin: 0.75rem 0;
+            background: linear-gradient(
+              to right,
+              transparent,
+              variables.$viettech-blue,
+              transparent
+            );
+            border: none;
+          }
+        }
+
+        p {
+          font-size: 18px;
+          line-height: 1.6;
+          color: rgba(255, 255, 255, 0.9);
+          font-weight: 400;
+        }
+
+        h1 {
+          font-size: 2.25rem;
+          font-weight: 800;
+          margin-bottom: 1rem;
+          text-align: center;
+          background: linear-gradient(
+            135deg,
+            variables.$viettech-green,
+            variables.$viettech-blue
+          );
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+        }
+
+        hr {
+          position: relative;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 60%;
+          height: 2px;
+          margin: 1rem 0;
+          background: linear-gradient(
+            to right,
+            transparent,
+            variables.$viettech-blue,
+            transparent
+          );
+          border: none;
+        }
       }
     }
 
@@ -158,10 +267,8 @@ $arrows-color-peak: #00ffaa;
       opacity: 1;
     }
 
-    .program-value-section {
-      p {
-        font-size: 18px;
-      }
+    @media (max-width: 768px) {
+      background: transparent;
     }
   }
 }

@@ -1,4 +1,4 @@
-import { countBy, sum, uniq } from 'lodash';
+import { map, uniqueBy, sumBy, countBy, flatMap, filter } from 'remeda';
 import moment from 'moment';
 import {
   DateWithCount,
@@ -107,10 +107,11 @@ export const parseInterviewRecords = (
         ).format('MMM DD');
         return { date: formattedDate, type, person };
       });
-      const invitationsCount = uniq(
-        interviewsData.map((d) => d.split(' - ')[2])
+      const invitationsCount = uniqueBy(
+        map(interviewsData, (d) => d.split(' - ')[2]),
+        (x) => x
       ).length;
-      const interviewsCount = sum(Object.values(counts));
+      const interviewsCount = sumBy(Object.values(counts), (x) => x as number);
       data.push({
         company,
         invitationsCount,
@@ -166,8 +167,12 @@ export const parseInterviewRecords = (
 };
 
 const countOfferByDate = (terms: MentorshipTerm[]) =>
-  countBy(terms.flatMap((t) => t.offers).filter(isSome), (o) =>
-    moment(o.date, 'YYYY-MM-DD').format('MMM DD')
+  countBy(
+    filter(
+      flatMap(terms, (t) => t.offers),
+      isSome
+    ),
+    (o) => moment(o.date, 'YYYY-MM-DD').format('MMM DD')
   );
 
 export const getDatesWithCountOffers = () => {

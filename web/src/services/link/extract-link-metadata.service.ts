@@ -74,11 +74,8 @@ const ExtractLinkMetadataService = {
   ): Promise<LinkMetaData | { url: string }> => {
     try {
       const extractedText = await scrapeWebsite(url);
-      console.log(extractedText);
-      //return generateMetaData(extractedText, url);
-      return { url };
-    } catch (e) {
-      console.log(e);
+      return generateMetaData(extractedText, url);
+    } catch {
       return { url };
     }
   },

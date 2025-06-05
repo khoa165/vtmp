@@ -1,22 +1,26 @@
 import React, { Fragment } from 'react';
-import { UncontrolledTooltip } from 'reactstrap';
-import { CompanyMetadataWithOffers, MentorshipOffer } from '@/types';
 import { Avatar } from '@/components/layout/avatar';
-import { chunk } from 'lodash';
+import { chunk } from 'remeda';
+import { CompanyMetadataWithOffers, MentorshipOffer } from '@/types';
 import {
-  isReturnOfferForNewGrad,
-  isReturnOfferForInternship,
   isNewGradOffer,
+  isReturnOfferForInternship,
+  isReturnOfferForNewGrad,
 } from '@/utils/data';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/base/tooltip';
 
 interface MiniCompaniesListProps {
   offersList: MentorshipOffer[];
-  prefix: string;
   companiesMetadata: Record<string, CompanyMetadataWithOffers>;
 }
+
 export const MiniCompaniesList: React.FC<MiniCompaniesListProps> = ({
   offersList,
-  prefix,
   companiesMetadata,
 }) => {
   const getOfferDisplay = (
@@ -38,18 +42,22 @@ export const MiniCompaniesList: React.FC<MiniCompaniesListProps> = ({
     <div key={index} className="flex gap-x-2">
       {ol.map((o) => (
         <Fragment key={o.name}>
-          <Avatar
-            url={companiesMetadata[o.name].logoUrl}
-            id={`${prefix}-${o.name}`}
-            alt={`Logo of ${companiesMetadata[o.name].displayName}`}
-            size="tiny"
-          />
-          <UncontrolledTooltip
-            placement="bottom"
-            target={`${prefix}-${o.name}`}
-          >
-            {getOfferDisplay(o, companiesMetadata)}
-          </UncontrolledTooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <Avatar
+                    url={companiesMetadata[o.name].logoUrl}
+                    alt={`Logo of ${companiesMetadata[o.name].displayName}`}
+                    size="tiny"
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                {getOfferDisplay(o, companiesMetadata)}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </Fragment>
       ))}
     </div>
