@@ -3,15 +3,15 @@ import { request } from '@/utils/api';
 import { Method, QueryKey } from '@/utils/constants';
 import { toast } from 'sonner';
 import {
-  DashBoardLinksResponseSchema,
+  LinksResponseSchema,
   JobPostingResponseSchema,
   JobPostingData,
   LinksCountByStatusSchema,
-} from '@/components/pages/admins/dashboard/validation';
+} from '@/components/pages/admins/links/validation';
 import axios from 'axios';
 import { LinkStatus, API_ENDPOINTS } from '@vtmp/common/constants';
 
-const handleDashBoardMutationError = (error: unknown) => {
+const handleLinkMutationError = (error: unknown) => {
   const messages =
     axios.isAxiosError(error) && error.response?.data?.errors
       ? error.response.data.errors.map((e) => e.message)
@@ -22,7 +22,7 @@ const handleDashBoardMutationError = (error: unknown) => {
   });
 };
 
-const invalidateDashboardQueries = (
+const invalidateLinkQueries = (
   queryClient: ReturnType<typeof useQueryClient>
 ) => {
   queryClient.invalidateQueries({ queryKey: [QueryKey.GET_DASHBOARD_LINKS] });
@@ -31,7 +31,7 @@ const invalidateDashboardQueries = (
   });
 };
 
-export const useGetDashBoardLinks = (filter?: { status?: LinkStatus }) =>
+export const useGetLinks = (filter?: { status?: LinkStatus }) =>
   useQuery({
     queryKey: [QueryKey.GET_DASHBOARD_LINKS, filter],
     queryFn: () =>
@@ -39,7 +39,7 @@ export const useGetDashBoardLinks = (filter?: { status?: LinkStatus }) =>
         method: Method.GET,
         url: API_ENDPOINTS.GET_DASHBOARD_LINKS,
         data: filter?.status ? filter : {},
-        schema: DashBoardLinksResponseSchema,
+        schema: LinksResponseSchema,
         options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
@@ -56,7 +56,7 @@ export const useGetLinksCountByStatus = () =>
       }),
   });
 
-export const useApproveDashBoardLink = () => {
+export const useApproveLink = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -75,14 +75,14 @@ export const useApproveDashBoardLink = () => {
         options: { requireAuth: true },
       }),
     onSuccess: (res) => {
-      invalidateDashboardQueries(queryClient);
+      invalidateLinkQueries(queryClient);
       toast.success(res.message);
     },
-    onError: handleDashBoardMutationError,
+    onError: handleLinkMutationError,
   });
 };
 
-export const useRejectDashBoardLink = () => {
+export const useRejectLink = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -94,9 +94,9 @@ export const useRejectDashBoardLink = () => {
         options: { requireAuth: true },
       }),
     onSuccess: (res) => {
-      invalidateDashboardQueries(queryClient);
+      invalidateLinkQueries(queryClient);
       toast.success(res.message);
     },
-    onError: handleDashBoardMutationError,
+    onError: handleLinkMutationError,
   });
 };
