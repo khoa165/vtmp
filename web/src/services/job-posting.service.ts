@@ -1,9 +1,21 @@
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
-import { JobFunction, JobType } from '@vtmp/common/constants';
+import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
 
 export const JobPostingService = {
-  updateJobPostingById: async (jobId: string, newUpdate: object) => {
+  updateJobPostingById: async (
+    jobId: string,
+    newUpdate: {
+      externalPostingId?: string;
+      url?: string;
+      jobTitle?: string;
+      companyName?: string;
+      location?: JobPostingRegion;
+      datePosted?: Date;
+      jobDescription?: string;
+      adminNote?: string;
+    }
+  ) => {
     const updatedJobPosting = await JobPostingRepository.updateJobPostingById(
       jobId,
       newUpdate

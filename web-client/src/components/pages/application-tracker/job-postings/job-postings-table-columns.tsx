@@ -4,7 +4,7 @@ import { Link } from 'lucide-react';
 import { format } from 'date-fns';
 import { IJobPosting } from '@/components/pages/application-tracker/job-postings/validations';
 import { JobPostingsAction } from '@/components/pages/application-tracker/job-postings/job-postings-action';
-import { HeaderSorting } from '@/components/pages/application-tracker/applications/header';
+import { HeaderSorting } from '@/components/base/header';
 
 export const jobPostingsTableColumns = ({
   createApplicationFn,
