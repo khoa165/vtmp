@@ -30,9 +30,10 @@ JobPostingRoutes.get(
     JobPostingController.getJobPostingsUserHasNotAppliedTo,
   ])
 );
-
 JobPostingRoutes.get(
   '/not-applied-last-24h',
-  authenticate,
-  wrappedHandlers([JobPostingController.getJobPostingsInADay])
+  wrappedHandlers([
+    hasPermission(Permission.VIEW_JOB_POSTING),
+    JobPostingController.getJobPostingsInADay,
+  ])
 );
