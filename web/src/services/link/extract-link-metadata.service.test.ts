@@ -3,7 +3,7 @@ import { ExtractLinkMetadataService } from '@/services/link/extract-link-metadat
 describe('ExtractLinkMetadataService', () => {
   it.only('test', async () => {
     const result = await ExtractLinkMetadataService.extractMetadata(
-      'https://careers.adobe.com/us/en/job/R147746/2025-Intern-Software-Engineer'
+      'https://www.indeed.com/jobs?l=California&from=searchOnHP%2CsearchSuggestions%2CwhatautocompleteSourceSimba%2Cwhereautocomplete&vjk=984a2429cdb6d200&advn=40459487893339'
     );
 
     console.log('result:', result);

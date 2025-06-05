@@ -37,9 +37,9 @@ const generateMetaData = async (
   const parsedResponse = JSON.parse(text);
 
   const formattedLinkMetaData: LinkMetaData = {
+    url,
     ...parsedResponse,
     jobDescription: formatJobDescription(parsedResponse.jobDescription),
-    url,
   };
 
   if (
@@ -75,7 +75,8 @@ const ExtractLinkMetadataService = {
     try {
       const extractedText = await scrapeWebsite(url);
       console.log(extractedText);
-      return generateMetaData(extractedText, url);
+      //return generateMetaData(extractedText, url);
+      return { url };
     } catch (e) {
       console.log(e);
       return { url };

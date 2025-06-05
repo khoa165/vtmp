@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { LinkStatus } from '@vtmp/common/constants';
+import { JobFunction, LinkStatus, JobType } from '@vtmp/common/constants';
 import { JobPostingRegion } from '@vtmp/common/constants';
 export interface ILink extends Document {
   _id: Types.ObjectId;
@@ -11,6 +11,8 @@ export interface ILink extends Document {
   location: JobPostingRegion;
   datePosted?: Date;
   jobDescription?: string;
+  jobFunction?: JobFunction;
+  jobType?: JobType;
   submittedBy?: Types.ObjectId;
   deletedAt?: Date;
 }
@@ -47,6 +49,16 @@ const LinkSchema = new mongoose.Schema<ILink>(
     },
     jobDescription: {
       type: String,
+    },
+    jobFunction: {
+      type: String,
+      enum: Object.values(JobFunction),
+      default: JobFunction.SOFTWARE_ENGINEER,
+    },
+    jobType: {
+      type: String,
+      enum: Object.values(JobType),
+      default: JobType.INTERNSHIP,
     },
     submittedBy: {
       type: Schema.Types.ObjectId,

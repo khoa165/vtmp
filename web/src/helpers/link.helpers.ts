@@ -1,10 +1,15 @@
+import { JobFunction, JobType } from '@vtmp/common/constants';
+
 const formatJobDescription = (description: {
   responsibility: string;
   requirement: string;
   prefferred: string;
 }): string => {
   const formatSection = (title: string, content: string) => {
-    const lines = content.split('\n').map((line) => `- ${line.trim()}`);
+    const lines = content
+      .replace(/\n\n/g, '\n')
+      .split('\n')
+      .map((line) => `- ${line.replace('-', '').trim()}`);
     return `${title}:\n${lines.join('\n')}\n`;
   };
 
@@ -29,24 +34,37 @@ const formatJobDescription = (description: {
 const extractLinkMetaDatPrompt = async (extractedText: string) => `
 ${extractedText}
 \n\n
-Given the string above, can you extract the part of the string that is the actual content of the primary job posting?
-For job title, this field will show the title of the job posting
-For company name, this field will show the name of the company that offers that job posting
-For location, this field will show the state or country where the job is located
-For date posted, this field will show the date when the job was posted
-For job description, this field include the following markdowns:
-- responsibility: this field will show the responsibilities of the job
-- requirement: this field will show the requirements of the job
-- prefferred: this field will show the preferred qualifications of the job
+You are given a raw text of a job posting. Extract the following structured fields from it:
 
-Use the following strategy:
-- Look for an “Apply” button or similar phrase (e.g., “Apply Now”, “Submit Application”).
-- The job title and company are typically located just above this section.
-- The job description, including responsibilities and requirements, is typically located below.
+jobTitle: The title of the job. It is usually located near the top of the posting, typically above or near the "Apply" section.
 
-if you are not able to extract the information of any field, leave an empty string for that field.
-For the datePosted field, if the date is not available, return an empty string, otherwise format it into mm/dd/yyyy format.
-For the location, if it is a state or city belongs to United States, return US, if they belong to Canada, return CANADA, otherwise return the country name.
+companyName: The name of the company offering the job. It is usually listed near the job title.
+
+location: The country or state where the job is located. Return:
+- "US" if it is a U.S. city or state
+- "CANADA" if it is a Canadian city or province
+- Otherwise, return the country name
+
+jobFunction: Choose the best match from this list: ${Object.values(JobFunction).join(', ')}. If none are a good fit, return "SOFTWARE_ENGINEER".
+
+jobType: Choose from: ${Object.values(JobType).join(', ')}. Use the following rules:
+- If the job title or description includes "Intern", "Co-op", "Program", or "Apprenticeship", return "INTERNSHIP".
+- If it includes "New Grad", "Entry-Level", or "Early Career", return "NEW_GRAD".
+- Otherwise, return "INDUSTRY".
+
+datePosted: The date the job was posted. If unavailable, return an empty string. If available, format as MM/DD/YYYY.
+
+jobDescription: Extract and structure the content into the following Markdown fields:
+- responsibility: List the main responsibilities or duties of the role.
+- requirement: List the required qualifications, skills, or experience.
+- preferred: List any preferred qualifications.
+
+Strategy:
+- First, find the main body of the job posting text.
+- Look for an “Apply” section or similar phrases like “Apply Now” or “Submit Application.” Job title and company are typically located just above this.
+- The job description, including responsibilities and requirements, is generally located below.
+
+If any of the above fields are not available in the input, leave them as an empty string.
 
 Do not explain your answer.
 Return the extracted information with the following format:
@@ -54,6 +72,8 @@ Return the extracted information with the following format:
   "jobTitle": string,
   "companyName": string,
   "location": string,
+  "jobFunction": string,
+  "jobType": string,
   "datePosted": string,
   "jobDescription": object 
   {

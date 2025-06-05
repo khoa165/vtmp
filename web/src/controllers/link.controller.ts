@@ -1,7 +1,12 @@
 import { Request, Response } from 'express';
 import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
-import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
+import {
+  JobFunction,
+  JobPostingRegion,
+  JobType,
+  LinkStatus,
+} from '@vtmp/common/constants';
 import { filterUndefinedAttributes } from '@/utils/helpers';
 import { MONGO_OBJECT_ID_REGEX } from '@/constants/validations';
 
@@ -23,8 +28,12 @@ const JobPostingDataSchema = z
     location: z.nativeEnum(JobPostingRegion, {
       message: 'Invalid location',
     }),
-    jobDescription: z.string().optional(),
-    adminNote: z.string().optional(),
+    jobFunction: z.nativeEnum(JobFunction, {
+      message: 'Invalid job title',
+    }),
+    jobType: z.nativeEnum(JobType, {
+      message: 'Invalid job type',
+    }),
     datePosted: z
       .string()
       .regex(/^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/, {
@@ -43,6 +52,8 @@ const JobPostingDataSchema = z
         }
       )
       .optional(),
+    jobDescription: z.string().optional(),
+    adminNote: z.string().optional(),
   })
   .transform(filterUndefinedAttributes);
 
