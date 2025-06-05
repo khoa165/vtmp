@@ -18,6 +18,9 @@ jobs:
   build-web-client:
     uses: ./.github/workflows/build-web-client.yml
 
+  run-lint:
+    uses: ./.github/workflows/lint.yml
+
   chromatic:
     if: ${{ contains(github.event.pull_request.files.*.path, 'web-client/src/') }}
     runs-on: ubuntu-latest
