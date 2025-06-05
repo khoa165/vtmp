@@ -10,7 +10,6 @@ import { CustomError } from '@/utils/errors';
 
 export const JobPostingStatusCards = (): React.JSX.Element | null => {
   const navigate = useNavigatePreserveQueryParams();
-  const linkSubmitClick = () => navigate('/link-sharing');
 
   const {
     isLoading: isLoadingInADay,
@@ -70,7 +69,7 @@ export const JobPostingStatusCards = (): React.JSX.Element | null => {
           <div className="flex flex-row items-center gap-2">
             <span
               className="max-lg:text-[0.7rem] text-wrap underline cursor-pointer inline-flex items-center gap-1"
-              onClick={linkSubmitClick}
+              onClick={() => navigate('/link-sharing')}
             >
               Share a Job Link <ExternalLink className="w-4 h-4" />
             </span>
