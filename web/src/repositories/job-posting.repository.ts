@@ -130,42 +130,4 @@ export const JobPostingRepository = {
       },
     ]);
   },
-
-  getJobPostingsInADay: async (userId: string) => {
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
-    return JobPostingModel.aggregate([
-      {
-        $match: {
-          datePosted: { $gte: twentyFourHoursAgo },
-          deletedAt: null,
-        },
-      },
-      {
-        $lookup: {
-          from: 'applications',
-          let: { jobId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$jobPostingId', '$$jobId'] },
-                    { $eq: ['$userId', toMongoId(userId)] },
-                    { $eq: ['$deletedAt', null] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'userApplication',
-        },
-      },
-      {
-        $match: {
-          userApplication: { $size: 0 },
-        },
-      },
-    ]);
-  },
 };

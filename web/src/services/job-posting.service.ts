@@ -61,8 +61,4 @@ export const JobPostingService = {
       filters: filters ?? {},
     });
   },
-
-  getJobPostingsInADay: async (userId: string) => {
-    return JobPostingRepository.getJobPostingsInADay(userId);
-  },
 };
