@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useOffersData } from '@/hooks/useOffersData';
-import { sortBy } from 'lodash';
+import { sortBy } from 'remeda';
 import { CompanyLogo } from '@/components/layout/company-logo';
 import { CompanyMetadataWithOffers } from '@/types';
 
@@ -8,10 +8,11 @@ export const OfferLogos = () => {
   const populatedData = useOffersData();
   const data = useMemo(
     () =>
-      sortBy(Object.values(populatedData), [
-        (d: CompanyMetadataWithOffers) => -d.offersCountTotal,
-        (d: CompanyMetadataWithOffers) => d.displayName.toLowerCase(),
-      ]),
+      sortBy(
+        Object.values(populatedData),
+        [(d: CompanyMetadataWithOffers) => d.offersCountTotal, 'desc'],
+        [(d: CompanyMetadataWithOffers) => d.displayName.toLowerCase(), 'asc']
+      ),
     [populatedData]
   );
 

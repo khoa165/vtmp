@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useOffersData } from '@/hooks/useOffersData';
-import { sortBy } from 'lodash';
+import { sortBy } from 'remeda';
 import { CompanyLogo } from '@/components/layout/company-logo';
 import { CompanyMetadataWithOffers } from '@/types';
 import { useSummaryData } from '@/hooks/useSummaryData';
@@ -16,11 +16,12 @@ export const SummaryContainer = () => {
   const populatedData = useOffersData();
   const sortedData = useMemo(
     () =>
-      sortBy(Object.values(populatedData), [
-        (d: CompanyMetadataWithOffers) => -d.offersCountTotal,
-        (d: CompanyMetadataWithOffers) => (d.isPartTimeOffer ? 1 : 0),
-        (d: CompanyMetadataWithOffers) => d.displayName.toLowerCase(),
-      ]),
+      sortBy(
+        Object.values(populatedData),
+        [(d: CompanyMetadataWithOffers) => d.offersCountTotal, 'desc'],
+        [(d: CompanyMetadataWithOffers) => (d.isPartTimeOffer ? 1 : 0), 'asc'],
+        [(d: CompanyMetadataWithOffers) => d.displayName.toLowerCase(), 'asc']
+      ),
     [populatedData]
   );
 
