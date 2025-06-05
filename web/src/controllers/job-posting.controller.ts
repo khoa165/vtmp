@@ -111,25 +111,4 @@ export const JobPostingController = {
       data: jobPostings,
     });
   },
-
-  getJobPostingsInADay: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
-
-    const now = new Date();
-    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-
-    const jobPostingsInADay =
-      await JobPostingService.getJobPostingsUserHasNotAppliedTo({
-        userId,
-        filters: {
-          postingDateRangeStart: oneDayAgo,
-          postingDateRangeEnd: now,
-        },
-      });
-
-    res.status(200).json({
-      message: 'Job postings retrieved successfully',
-      data: jobPostingsInADay,
-    });
-  },
 };

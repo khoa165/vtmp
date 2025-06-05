@@ -5,6 +5,7 @@ import { JobPostingsResponseSchema } from '@/components/pages/application-tracke
 import { ApplicationResponseSchema } from '@/components/pages/application-tracker/applications/validation';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { sub } from 'date-fns';
 
 export const useGetJobPostings = () => {
   return useQuery({
@@ -25,7 +26,11 @@ export const useGetJobPostingsInADay = () => {
     queryFn: () =>
       request({
         method: Method.GET,
-        url: '/job-postings/not-applied-last-24h',
+        data: {
+          postingDateRangeStart: sub(Date.now(), { days: 1 }),
+          postingDateRangeEnd: new Date(),
+        },
+        url: '/job-postings/not-applied',
         schema: JobPostingsResponseSchema,
         options: {
           includeOnlyDataField: true,
