@@ -6,14 +6,14 @@ export const InterviewRepository = {
   createInterview: async ({
     applicationId,
     userId,
-    type,
+    types,
     status,
     interviewOnDate,
     note,
   }: {
     applicationId: string;
     userId: string;
-    type: InterviewType[];
+    types: InterviewType[];
     status?: InterviewStatus;
     interviewOnDate: Date;
     note?: string;
@@ -21,7 +21,7 @@ export const InterviewRepository = {
     return InterviewModel.create({
       applicationId,
       userId,
-      type,
+      types,
       status,
       interviewOnDate,
       note,
@@ -43,20 +43,19 @@ export const InterviewRepository = {
   },
 
   getInterviews: async ({
-    userId,
     filters = {},
     session,
   }: {
-    userId: string;
-    filters?: {
+    filters: {
+      userId?: string;
       applicationId?: string;
       status?: InterviewStatus;
+      companyName?: string;
     };
     session?: ClientSession;
   }): Promise<IInterview[]> => {
     return InterviewModel.find(
       {
-        userId,
         deletedAt: null,
         ...filters,
       },
@@ -73,7 +72,7 @@ export const InterviewRepository = {
     interviewId: string;
     userId: string;
     updatedMetadata: {
-      type?: InterviewType[];
+      types?: InterviewType[];
       status?: InterviewStatus;
       interviewOnDate?: Date;
       note?: string;

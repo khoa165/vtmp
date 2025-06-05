@@ -1,10 +1,20 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
 import { InternalToolsSidebar } from '@/components/layout/internal-tools-sidebar';
 import { SidebarProvider } from '@/components/base/sidebar';
+import { toast } from 'sonner';
+
 export const PageWithSidebar = () => {
   const open = document.cookie.split('=')[1];
   const state = open === 'true';
+
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    toast.warning('Please login to your account to continue');
+    return <Navigate to="/login?redirected=true" />;
+  }
+
   return (
     <SidebarProvider defaultOpen={state}>
       <InternalToolsSidebar />

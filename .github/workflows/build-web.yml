@@ -1,0 +1,16 @@
+# Define a Github Actions reusable workflow
+name: Build web
+
+on:
+  workflow_call:
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/common-setups
+      - name: Build web
+        run: yarn workspace @vtmp/web build

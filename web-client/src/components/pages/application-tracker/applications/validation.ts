@@ -13,11 +13,9 @@ const ApplicationSchema = z.object({
   note: z.string().optional(),
   referrer: z.string().optional(),
   portalLink: z.string().optional(),
-  interest: z
-    .nativeEnum(InterestLevel, {
-      message: 'Invalid interest level',
-    })
-    .optional(),
+  interest: z.nativeEnum(InterestLevel, {
+    message: 'Invalid interest level',
+  }),
 });
 
 export const ApplicationsResponseSchema = z.object({
@@ -28,6 +26,20 @@ export const ApplicationsResponseSchema = z.object({
 export const ApplicationResponseSchema = z.object({
   message: z.string(),
   data: ApplicationSchema,
+});
+
+export const ApplicationsCountByStatusSchema = z.object({
+  message: z.string(),
+  data: z
+    .object({
+      [ApplicationStatus.SUBMITTED]: z.number(),
+      [ApplicationStatus.OA]: z.number(),
+      [ApplicationStatus.INTERVIEWING]: z.number(),
+      [ApplicationStatus.OFFERED]: z.number(),
+      [ApplicationStatus.REJECTED]: z.number(),
+      [ApplicationStatus.WITHDRAWN]: z.number(),
+    })
+    .strict(),
 });
 
 export type IApplications = z.infer<typeof ApplicationsResponseSchema>['data'];
