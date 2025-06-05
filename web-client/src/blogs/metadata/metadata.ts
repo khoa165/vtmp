@@ -1,5 +1,23 @@
 import { BlogMetadata } from '@/types';
 
+import path_2023_04_30_developer_productivity from '@/blogs/content/vtmp-2023/2023-04-30-developer-productivity.md';
+import path_2023_04_30_tools_for_team from '@/blogs/content/vtmp-2023/2023-04-30-tools-for-team.md';
+import path_2023_04_30_using_git from '@/blogs/content/vtmp-2023/2023-04-30-using-git.md';
+import path_2023_07_30_mentorship_half_way_reflection from '@/blogs/content/vtmp-2023/2023-07-30-mentorship-half-way-reflection.md';
+import path_2023_08_15_team1_2023 from '@/blogs/content/vtmp-2023/2023-08-15-team1-2023.md';
+import path_2023_08_15_team2_2023 from '@/blogs/content/vtmp-2023/2023-08-15-team2-2023.md';
+import path_2023_08_15_team3_2023 from '@/blogs/content/vtmp-2023/2023-08-15-team3-2023.md';
+import path_2023_12_15_summary_2023 from '@/blogs/content/vtmp-2023/2023-12-15-summary-2023.md';
+import path_2024_03_22_technical_workshops_2024 from '@/blogs/content/vtmp-2024/2024-03-22-technical-workshops-2024.md';
+import path_2024_04_05_hunt_for_job from '@/blogs/content/vtmp-2024/2024-04-05-hunt-for-job.md';
+import path_2024_11_08_conference_tips from '@/blogs/content/vtmp-2024/2024-11-08-conference-tips.md';
+import path_2024_11_21_advanced_group_project from '@/blogs/content/vtmp-2024/2024-11-21-advanced-group-project.md';
+import path_2024_11_23_review_vtmp_experience from '@/blogs/content/vtmp-2024/2024-11-23-review-vtmp-experience.md';
+import path_2024_12_02_i_wish_i_knew from '@/blogs/content/vtmp-2024/2024-12-02-i-wish-i-knew.md';
+import path_2024_12_07_summary_2024 from '@/blogs/content/vtmp-2024/2024-12-07-summary-2024.md';
+import path_2025_03_02_env_setup_mac from '@/blogs/content/vtmp-2025/2025-03-02-env-setup-mac.md';
+import path_2025_03_02_env_setup_windows from '@/blogs/content/vtmp-2025/2025-03-02-env-setup-windows.md';
+
 export const allBlogsMetadata: BlogMetadata[] = [
   {
     title: 'Developer productivity hacks',
@@ -11,8 +29,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Khoa Le'],
     contributors: [],
     tags: ['technical'],
-    filepath:
-      './src/blogs/content/vtmp-2023/2023-04-30-developer-productivity.md',
+    filepath: path_2023_04_30_developer_productivity,
   },
   {
     title: 'Tools for team',
@@ -24,7 +41,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Khoa Le'],
     contributors: [],
     tags: ['tools'],
-    filepath: './src/blogs/content/vtmp-2023/2023-04-30-tools-for-team.md',
+    filepath: path_2023_04_30_tools_for_team,
   },
   {
     title: 'Using Git for collaboration',
@@ -37,7 +54,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Khoa Le'],
     contributors: [],
     tags: ['technical'],
-    filepath: './src/blogs/content/vtmp-2023/2023-04-30-using-git.md',
+    filepath: path_2023_04_30_using_git,
   },
   {
     title: 'Mentorship half-way look back',
@@ -50,8 +67,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Khoa Le'],
     contributors: [],
     tags: ['reflection'],
-    filepath:
-      './src/blogs/content/vtmp-2023/2023-07-30-mentorship-half-way-reflection.md',
+    filepath: path_2023_07_30_mentorship_half_way_reflection,
   },
   {
     title: 'Team 1 project - 2023',
@@ -63,7 +79,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Hieu Vuong'],
     contributors: ['Quan Le', 'Trang Vu', 'Thanh Nguyen'],
     tags: ['project'],
-    filepath: './src/blogs/content/vtmp-2023/2023-08-15-team1-2023.md',
+    filepath: path_2023_08_15_team1_2023,
   },
   {
     title: 'Team 2 project - 2023',
@@ -75,7 +91,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Khue Tang'],
     contributors: ['Phuong Cao', 'Ngoc Doan', 'Cuong Nguyen'],
     tags: ['project'],
-    filepath: './src/blogs/content/vtmp-2023/2023-08-15-team2-2023.md',
+    filepath: path_2023_08_15_team2_2023,
   },
   {
     title: 'Team 3 project - 2023',
@@ -87,7 +103,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Robin Hoang'],
     contributors: ['Jenny Quach', 'Dang Pham', 'Phuoc Ong'],
     tags: ['project'],
-    filepath: './src/blogs/content/vtmp-2023/2023-08-15-team3-2023.md',
+    filepath: path_2023_08_15_team3_2023,
   },
   {
     title: 'Viet Tech 2023 summary',
@@ -99,7 +115,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Khoa Le'],
     contributors: [],
     tags: ['reflection', 'announcement'],
-    filepath: './src/blogs/content/vtmp-2023/2023-12-15-summary-2023.md',
+    filepath: path_2023_12_15_summary_2023,
   },
   {
     title: 'Technical workshops 2024',
@@ -110,8 +126,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Khoa Le'],
     contributors: [],
     tags: ['resources'],
-    filepath:
-      './src/blogs/content/vtmp-2024/2024-03-22-technical-workshops-2024.md',
+    filepath: path_2024_03_22_technical_workshops_2024,
   },
   {
     title: "How to hunt for job - A beginner's view",
@@ -124,7 +139,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Quan Le'],
     contributors: [],
     tags: ['reflection', 'advice'],
-    filepath: './src/blogs/content/vtmp-2024/2024-04-05-hunt-for-job.md',
+    filepath: path_2024_04_05_hunt_for_job,
   },
   {
     title: 'Kinh nghiệm để có 3 interviews tại GHC',
@@ -137,12 +152,12 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Quynh Tran'],
     contributors: [],
     tags: ['reflection', 'advice'],
-    filepath: './src/blogs/content/vtmp-2024/2024-11-08-conference-tips.md',
+    filepath: path_2024_11_08_conference_tips,
   },
   {
     title: 'How did we go beyond CRUD in a personal project?',
     description:
-      'Hello everyone, I’m Hoang, a mentee of the Viet Tech Mentorship Program (cohort 2024). This past summer, my team worked on a project called Cupid. Initially, we struggled to figure out how to make Cupid more than just a basic web app. Thanks to the dedicated guidance from our project advisors — Khoa Le and Nick Doan — we were able to elevate Cupid to the next level.',
+      "Hello everyone, I'm Hoang, a mentee of the Viet Tech Mentorship Program (cohort 2024). This past summer, my team worked on a project called Cupid. Initially, we struggled to figure out how to make Cupid more than just a basic web app. Thanks to the dedicated guidance from our project advisors — Khoa Le and Nick Doan — we were able to elevate Cupid to the next level.",
     banner:
       'https://res.cloudinary.com/khoa165/image/upload/v1740992775/viettech/cupid.jpg',
     name: '2024-11-21-advanced-group-project',
@@ -150,8 +165,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Hoang Nguyen'],
     contributors: ['Ha Linh', 'Khanh Linh', 'Huu Khang'],
     tags: ['reflection', 'technical'],
-    filepath:
-      './src/blogs/content/vtmp-2024/2024-11-21-advanced-group-project.md',
+    filepath: path_2024_11_21_advanced_group_project,
   },
   {
     title: 'Trải Nghiệm Tham Gia Viet Tech Mentorship Program',
@@ -164,8 +178,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Van Nguyen'],
     contributors: [],
     tags: ['reflection'],
-    filepath:
-      './src/blogs/content/vtmp-2024/2024-11-23-review-vtmp-experience.md',
+    filepath: path_2024_11_23_review_vtmp_experience,
   },
   {
     title: 'Mấy điều nhỏ nhặt em ước mình biết sớm hơn khi apply internship',
@@ -178,7 +191,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Trang Do', 'Ngoc Anh'],
     contributors: [],
     tags: ['reflection', 'advice'],
-    filepath: './src/blogs/content/vtmp-2024/2024-12-02-i-wish-i-knew.md',
+    filepath: path_2024_12_02_i_wish_i_knew,
   },
   {
     title: 'Viet Tech 2024 summary',
@@ -191,7 +204,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Khoa Le'],
     contributors: [],
     tags: ['reflection', 'announcement'],
-    filepath: './src/blogs/content/vtmp-2024/2024-12-07-summary-2024.md',
+    filepath: path_2024_12_07_summary_2024,
   },
   {
     title: 'Environment Setup for MacOS',
@@ -204,7 +217,7 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Hoang Nguyen'],
     contributors: ['Phuc Khang'],
     tags: ['setup', 'tools'],
-    filepath: './src/blogs/content/vtmp-2025/2025-03-02-env-setup-mac.md',
+    filepath: path_2025_03_02_env_setup_mac,
   },
   {
     title: 'Environment Setup for Windows',
@@ -217,6 +230,6 @@ export const allBlogsMetadata: BlogMetadata[] = [
     authors: ['Phuc Khang'],
     contributors: ['Hoang Nguyen'],
     tags: ['setup', 'tools'],
-    filepath: './src/blogs/content/vtmp-2025/2025-03-02-env-setup-windows.md',
+    filepath: path_2025_03_02_env_setup_windows,
   },
 ];
