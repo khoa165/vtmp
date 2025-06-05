@@ -6,6 +6,8 @@ export interface IApplication extends Document {
   _id: Types.ObjectId;
   jobPostingId: Types.ObjectId;
   companyName?: string;
+  jobTitle?: string;
+  location?: string;
   userId: Types.ObjectId;
   hasApplied: boolean;
   status: ApplicationStatus;
@@ -24,6 +26,12 @@ const ApplicationSchema = new mongoose.Schema<IApplication>({
     required: true,
   },
   companyName: {
+    type: String,
+  },
+  jobTitle: {
+    type: String,
+  },
+  location: {
     type: String,
   },
   userId: {
@@ -68,6 +76,8 @@ ApplicationSchema.pre('save', async function () {
   const jobPosting = await JobPostingModel.findById(this.jobPostingId);
   if (jobPosting) {
     this.companyName = jobPosting.companyName;
+    this.jobTitle = jobPosting.jobTitle;
+    this.location = jobPosting.location;
   }
 });
 
