@@ -73,13 +73,19 @@ export const StatsPage: React.FC<StatsPageProps> = ({ type }) => {
           <OfferLogos />
         </TabPanel>
         <TabPanel value={type} type={StatsType.TIMELINE}>
-          <Timeline datesWithCount={interviewData.datesWithCount} />
+          <div className="flex justify-center">
+            <Timeline datesWithCount={interviewData.datesWithCount} />
+          </div>
         </TabPanel>
         <TabPanel value={type} type={StatsType.OFFERS}>
-          <OffersBarChart count={count} data={data} />
+          <div className="flex justify-center">
+            <OffersBarChart count={count} data={data} />
+          </div>
         </TabPanel>
         <TabPanel value={type} type={StatsType.INTERVIEWS}>
-          <InterviewsBarChart data={interviewData} />
+          <div className="flex justify-center">
+            <InterviewsBarChart data={interviewData} />
+          </div>
         </TabPanel>
       </div>
     </>

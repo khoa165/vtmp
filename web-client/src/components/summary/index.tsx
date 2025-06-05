@@ -1,10 +1,8 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useOffersData } from '@/hooks/useOffersData';
-import { Row, Col } from 'reactstrap';
-import { chunk, debounce, slice, sortBy } from 'lodash';
+import { sortBy } from 'lodash';
 import { CompanyLogo } from '@/components/layout/company-logo';
 import { CompanyMetadataWithOffers } from '@/types';
-import { useWindowSize } from 'usehooks-ts';
 import { useSummaryData } from '@/hooks/useSummaryData';
 import { useQuery } from '@tanstack/react-query';
 import { getSummaryData } from '@/fetch-data/summary';
@@ -19,102 +17,37 @@ export const SummaryContainer = () => {
   const sortedData = useMemo(
     () =>
       sortBy(Object.values(populatedData), [
-        (d) => -d.offersCountTotal,
-        (d) => (d.isPartTimeOffer ? 1 : 0),
-        (d) => d.displayName.toLowerCase(),
+        (d: CompanyMetadataWithOffers) => -d.offersCountTotal,
+        (d: CompanyMetadataWithOffers) => (d.isPartTimeOffer ? 1 : 0),
+        (d: CompanyMetadataWithOffers) => d.displayName.toLowerCase(),
       ]),
     [populatedData]
   );
-
-  const { width: windowWidth } = useWindowSize();
-
-  const getColumnsCount = useCallback(() => {
-    if (windowWidth >= 1200) {
-      return 6;
-    } else if (windowWidth >= 768) {
-      return 4;
-    } else {
-      return 2;
-    }
-  }, [windowWidth]);
-
-  const [dataChunks, setDataChunks] = useState<CompanyMetadataWithOffers[][]>(
-    chunk(sortedData, getColumnsCount())
-  );
-  const [halfSize, setHalfSize] = useState(getColumnsCount() / 2);
-
-  useEffect(() => {
-    const respliceData = () => {
-      const newHalfSize = getColumnsCount() / 2;
-      if (newHalfSize !== halfSize) {
-        setDataChunks(chunk(sortedData, newHalfSize * 2));
-        setHalfSize(newHalfSize);
-      }
-    };
-    const debounceRespliceData = debounce(respliceData, 300);
-
-    debounceRespliceData();
-  }, [windowWidth, sortedData, halfSize, getColumnsCount]);
 
   const summaryData = useSummaryData();
 
   if (isLoading) {
     console.log('Loading summary data...');
-    // return <span>Loading summary data...</span>;
   }
 
   if (isError) {
     console.error('Error fetching summary data:', error);
-    // return (
-    //   <span>Error: {error.message || 'Failed to load summary data.'}</span>
-    // );
   }
 
   return (
-    <div id="summary-container">
-      <Row>
-        <Col lg="7">
-          <Row className="align-items-start">
-            {dataChunks.map((row, index) => {
-              return (
-                <Fragment key={index}>
-                  <Col xs="6">
-                    <Row>
-                      {slice(row, 0, halfSize).map((company) => (
-                        <Col
-                          md="6"
-                          xl="4"
-                          className="mb-4"
-                          key={company.displayName}
-                        >
-                          <CompanyLogo company={company} maxHeight={84} />
-                        </Col>
-                      ))}
-                    </Row>
-                  </Col>
-                  <Col xs="6">
-                    {row.length > halfSize && (
-                      <Row>
-                        {slice(row, halfSize).map((company) => (
-                          <Col
-                            md="6"
-                            xl="4"
-                            className="mb-4"
-                            key={company.displayName}
-                          >
-                            <CompanyLogo company={company} maxHeight={84} />
-                          </Col>
-                        ))}
-                      </Row>
-                    )}
-                  </Col>
-                </Fragment>
-              );
-            })}
-          </Row>
-        </Col>
-        <Col lg="5">
-          <div className="summary-right-panel">
+    <div id="summary-container" className="container mx-auto py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 px-2 sm:px-4 lg:px-8">
+        <div className="lg:col-span-7">
+          <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4 items-start">
+            {sortedData.map((company) => (
+              <div key={company.displayName} className="w-full">
+                <CompanyLogo company={company} maxHeight={84} />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="hidden lg:block lg:col-span-5">
+          <div className="summary-right-panel p-6 rounded-2xl">
             <div className="left">
               <h4>
                 <span>{data?.conversations ?? 1}</span>conversation back in 2022
@@ -180,8 +113,8 @@ export const SummaryContainer = () => {
               </h4>
             </div>
           </div>
-        </Col>
-      </Row>
+        </div>
+      </div>
     </div>
   );
 };

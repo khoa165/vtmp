@@ -41,7 +41,7 @@ html {
 }
 
 hr {
-  border-color: variables.$brand-light-color;
+  @apply border-gray-200 dark:border-gray-700;
 }
 
 #mentorship-website {
@@ -58,36 +58,33 @@ hr {
 }
 
 .text-green {
-  color: variables.$mentorship-primary-green;
+  @apply text-vtmp-green;
 }
 
 .app-flex {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
+  @apply flex justify-center items-center gap-2;
 
   &.af-right {
-    justify-content: end;
+    @apply justify-end;
   }
 
   &.col {
-    flex-direction: column;
-    display: flex;
+    @apply flex-col;
 
     &.af-left {
-      align-items: flex-start;
+      @apply items-start;
     }
   }
 
   &.medium-gap {
-    gap: 4px;
+    @apply gap-1;
   }
+
   &.small-gap {
-    gap: 2px;
+    @apply gap-0.5;
   }
 
   &.stretch {
-    align-items: stretch;
+    @apply items-stretch;
   }
 }
