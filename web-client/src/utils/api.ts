@@ -1,9 +1,10 @@
+import { EnvConfig } from '@/config/env';
 import { Method } from '@/utils/constants';
 import axios from 'axios';
 import { toast } from 'sonner';
 
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+  baseURL: `${EnvConfig.get().VITE_API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
