@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { LinkController } from '@/controllers/link.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
 import { wrappedHandlers } from '@/middlewares/utils';
+import { hasPermission } from '@/middlewares/authorization.middleware';
+import { Permission } from '@vtmp/common/constants';
 
 export const LinkRoutes = Router();
 
@@ -14,9 +16,15 @@ LinkRoutes.get(
 );
 LinkRoutes.post(
   '/:linkId/approve',
-  wrappedHandlers([LinkController.approveLink])
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_JOB_LINK),
+    LinkController.approveLink,
+  ])
 );
 LinkRoutes.post(
   '/:linkId/reject',
-  wrappedHandlers([LinkController.rejectLink])
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_JOB_LINK),
+    LinkController.rejectLink,
+  ])
 );

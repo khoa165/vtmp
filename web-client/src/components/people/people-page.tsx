@@ -108,58 +108,69 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
   };
 
   return (
-    <div id="people-page">
-      <div className="people-page-controls">
-        <Autocomplete
-          className="role-control flex-fill"
-          multiple
-          options={DEFAULT_ROLES}
-          getOptionLabel={(option) =>
-            getRoleDisplayName(option as MentorshipRole)
-          }
-          renderInput={(params) => <TextField {...params} label="Role" />}
-          renderOption={(props, option, { selected }) => {
-            const { key, ...optionProps } = props;
-            return (
-              <li key={key} {...optionProps}>
-                <Checkbox
-                  icon={icon}
-                  checkedIcon={checkedIcon}
-                  style={{ marginRight: 8 }}
-                  checked={selected}
-                />
-                {getRoleDisplayName(option as MentorshipRole)}
-              </li>
-            );
-          }}
-          defaultValue={filteredRoles}
-          onChange={onChangeGroup}
-        />
-        <div className="break d-block d-xl-none"></div>
-        <Autocomplete
-          className="year-control"
-          sx={{ width: 125 }}
-          options={mentorshipYears}
-          getOptionLabel={(option) => yearDisplay(option)}
-          renderInput={(params) => <TextField {...params} label="Year" />}
-          defaultValue={year}
-          onChange={onChangeYear}
-          disableClearable
-        />
-        <Autocomplete
-          className="sort-control"
-          sx={{ width: 140 }}
-          options={Object.keys(PeopleSortColumn)}
-          getOptionLabel={(option) => peopleSortColumnDisplayName[option]}
-          renderInput={(params) => <TextField {...params} label="Sort" />}
-          defaultValue={sortColumn}
-          onChange={onChangeSort}
-          disableClearable
-        />
-        <div className="direction-control">
-          <Button variant="outlined" onClick={onToggleSortDirection}>
-            {sortDescending ? <FaArrowDownWideShort /> : <FaArrowUpWideShort />}
-          </Button>
+    <div id="people-page" className="px-[10vw] py-5">
+      <div className="flex flex-wrap items-center justify-between gap-4 md:gap-1 mb-8">
+        <div className="w-full lg:flex-1">
+          <Autocomplete
+            className="role-control"
+            multiple
+            options={DEFAULT_ROLES}
+            getOptionLabel={(option) =>
+              getRoleDisplayName(option as MentorshipRole)
+            }
+            renderInput={(params) => <TextField {...params} label="Role" />}
+            renderOption={(props, option, { selected }) => {
+              const { key, ...optionProps } = props;
+              return (
+                <li key={key} {...optionProps}>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    style={{ marginRight: 8 }}
+                    checked={selected}
+                  />
+                  {getRoleDisplayName(option as MentorshipRole)}
+                </li>
+              );
+            }}
+            defaultValue={filteredRoles}
+            onChange={onChangeGroup}
+          />
+        </div>
+        <div className="flex flex-1 flex-wrap items-center justify-end gap-4 lg:flex-none">
+          <Autocomplete
+            className="year-control flex-1 lg:flex-none"
+            sx={{ width: { lg: 125 } }}
+            options={mentorshipYears}
+            getOptionLabel={(option) => yearDisplay(option)}
+            renderInput={(params) => <TextField {...params} label="Year" />}
+            defaultValue={year}
+            onChange={onChangeYear}
+            disableClearable
+          />
+          <Autocomplete
+            className="sort-control flex-1 lg:flex-none"
+            sx={{ width: { lg: 140 } }}
+            options={Object.keys(PeopleSortColumn)}
+            getOptionLabel={(option) => peopleSortColumnDisplayName[option]}
+            renderInput={(params) => <TextField {...params} label="Sort" />}
+            defaultValue={sortColumn}
+            onChange={onChangeSort}
+            disableClearable
+          />
+          <div className="direction-control w-[52px]">
+            <Button
+              variant="outlined"
+              onClick={onToggleSortDirection}
+              className="!h-[52px] !min-w-[52px] !w-full"
+            >
+              {sortDescending ? (
+                <FaArrowDownWideShort />
+              ) : (
+                <FaArrowUpWideShort />
+              )}
+            </Button>
+          </div>
         </div>
       </div>
       {totalOffers >= 10 && (

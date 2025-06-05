@@ -1,66 +1,95 @@
-import React, { Fragment, useState } from 'react';
-import {
-  Collapse,
-  Navbar as BootstrapNavbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-} from 'reactstrap';
+import React from 'react';
 import { useGate } from 'statsig-react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/base/button';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from '@/components/base/navigation-menu';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/base/sheet';
+import { Menu } from 'lucide-react';
 
 export const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(!isOpen);
-
   const { value: show_experimental_features, isLoading } = useGate(
     'show_experimental_features'
   );
 
+  const navItems = [
+    { href: '/', label: 'Home' },
+    { href: '/summary', label: 'Summary' },
+    { href: '/people', label: 'People' },
+    { href: '/resources', label: 'Resources' },
+    ...(!isLoading && show_experimental_features
+      ? [{ href: '/projects', label: 'Projects' }]
+      : []),
+    { href: '/stats', label: 'Stats' },
+  ];
+
   return (
-    <BootstrapNavbar expand="md" container>
-      <NavbarBrand href="/">
-        <img
-          alt="Viet Tech logo"
-          src="https://res.cloudinary.com/khoa165/image/upload/v1718192551/viettech/VTMP_logo.png"
-          style={{
-            height: 40,
-            width: 40,
-            marginRight: 15,
-          }}
-          className="inline"
-        />
-        Viet Tech Mentorship Program
-      </NavbarBrand>
-      <NavbarToggler onClick={toggle} color="white" />
-      <Collapse isOpen={isOpen} navbar>
-        <Nav className="me-auto" navbar></Nav>
-        <Nav className="ms-auto" navbar>
-          <NavItem>
-            <NavLink href="/">Home</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink href="/summary">Summary</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink href="/people">People</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink href="/resources">Resources</NavLink>
-          </NavItem>
-          {!isLoading && show_experimental_features && (
-            <Fragment>
-              <NavItem>
-                <NavLink href="/projects">Projects</NavLink>
-              </NavItem>
-            </Fragment>
-          )}
-          <NavItem>
-            <NavLink href="/stats">Stats</NavLink>
-          </NavItem>
-        </Nav>
-      </Collapse>
-    </BootstrapNavbar>
+    <nav className="w-full border-b border-white/10 bg-transparent">
+      <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="flex items-center space-x-2">
+          <img
+            alt="Viet Tech logo"
+            src="https://res.cloudinary.com/khoa165/image/upload/v1718192551/viettech/VTMP_logo.png"
+            className="h-10 w-10"
+          />
+          <span className="hidden font-bold text-white sm:inline-block">
+            Viet Tech Mentorship Program
+          </span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:block">
+          <NavigationMenu className="bg-transparent">
+            <NavigationMenuList>
+              {navItems.map((item) => (
+                <NavigationMenuItem key={item.href}>
+                  <NavigationMenuLink
+                    href={item.href}
+                    className="group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white transition-colors focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-white/10"
+                  >
+                    {item.label}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+
+        {/* Mobile Navigation */}
+        <div className="md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                className="px-0 text-white hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+              >
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="right"
+              className="bg-[#05162d] border-l border-white/10 p-0"
+            >
+              <div className="flex flex-col px-6 py-8">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    className="flex w-full items-center py-4 text-base font-medium text-white hover:text-viettech-green transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+    </nav>
   );
 };
