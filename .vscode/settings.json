@@ -24,10 +24,12 @@
   },
   "search.exclude": {
     "**/dist": true,
-    "**/node_modules": true
+    "**/node_modules": true,
+    "**/.yarn": true
   },
   "files.exclude": {
     "**/dist": true,
-    "**/node_modules": true
+    "**/node_modules": true,
+    "**/.yarn": true
   }
 }

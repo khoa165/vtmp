@@ -1,6 +1,6 @@
 import { mentorshipPeople } from '../data/people';
 import { rolePriority } from './constants';
-import { min } from 'lodash';
+import { map, first } from 'remeda';
 import { MentorshipOffer, MentorshipPerson } from '@/types';
 import { groupDisplayName, roleDisplayName } from './displayName';
 import {
@@ -32,7 +32,7 @@ export const isHiddenRole = (
   roles: MentorshipRole[]
 ): boolean =>
   role === MentorshipRole.PROGRAM_FOUNDER ||
-  (role === MentorshipRole.SWE_LEAD &&
+  (role === MentorshipRole.SWE_PROGRAM_LEAD &&
     roles.includes(MentorshipRole.PROGRAM_LEAD));
 
 export const getGroupDisplayName = (group: MentorshipGroup): string =>
@@ -110,7 +110,11 @@ export const isReturnOfferForNewGrad = (offer: MentorshipOffer) =>
 export const getPersonPriorityInYear = (
   person: MentorshipPerson,
   year: number
-): number => min(getTerm(person, year)?.roles.map(getRolePriority)) ?? 5;
+): number => {
+  const roles = getTerm(person, year)?.roles ?? [];
+  const priorities = map(roles, getRolePriority);
+  return first(priorities.sort((a, b) => a - b)) ?? 5;
+};
 
 export const DEFAULT_ROLES = [
   MentorshipRole.SWE_PROGRAM_LEAD,

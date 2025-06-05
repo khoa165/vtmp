@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { groupBy, sortBy } from 'lodash';
+import { groupBy, sortBy } from 'remeda';
 import { useEffect, useState } from 'react';
 import {
   DateWithCount,
