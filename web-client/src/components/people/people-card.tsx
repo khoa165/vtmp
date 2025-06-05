@@ -96,7 +96,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
       )}
       {(mentors || projectAdvisors) && (
         <div className="info-assignment">
-          {mentors?.length && (
+          {mentors && mentors.length > 0 && (
             <div className="flex justify-end items-center gap-x-2 mt-1">
               <MiniPeopleList peopleList={mentors} />
               <TooltipProvider>
@@ -114,7 +114,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
             </div>
           )}
 
-          {projectAdvisors?.length && (
+          {projectAdvisors && projectAdvisors.length > 0 && (
             <div className="flex items-center justify-end gap-x-2 mt-2">
               <MiniPeopleList peopleList={projectAdvisors} />
               <TooltipProvider>
@@ -132,7 +132,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
             </div>
           )}
 
-          {teamName && teammates && (
+          {teamName && teammates && teammates.length > 0 && (
             <div className="flex gap-x-2 mt-2">
               <div className="flex flex-col gap-y-2">
                 <MiniPeopleList peopleList={teammates} />
