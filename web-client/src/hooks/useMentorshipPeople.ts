@@ -5,7 +5,7 @@ import {
 } from '@/utils/data';
 import { PeopleSortColumn } from '@/utils/constants';
 import { mentorshipPeople } from '@/data/people';
-import { first, identity, sortBy, sumBy } from 'remeda';
+import { first, sortBy, sumBy } from 'remeda';
 import { MentorshipRole } from '@vtmp/common/constants';
 import { MentorshipPerson } from '@/types';
 
@@ -64,7 +64,7 @@ export const useMentorshipPeople = (
             const priorityByTerm = p.terms.map((t) =>
               getPersonPriorityInYear(p, t.year)
             );
-            const highestPriority = first(sortBy(priorityByTerm, identity));
+            const highestPriority = first(priorityByTerm.sort((a, b) => a - b));
             if (!highestPriority) {
               return 1000;
             }

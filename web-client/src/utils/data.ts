@@ -1,6 +1,6 @@
 import { mentorshipPeople } from '../data/people';
 import { rolePriority } from './constants';
-import { map, sortBy, identity, first } from 'remeda';
+import { map, first } from 'remeda';
 import { MentorshipOffer, MentorshipPerson } from '@/types';
 import { groupDisplayName, roleDisplayName } from './displayName';
 import {
@@ -113,8 +113,7 @@ export const getPersonPriorityInYear = (
 ): number => {
   const roles = getTerm(person, year)?.roles ?? [];
   const priorities = map(roles, getRolePriority);
-  const sortedPriorities = sortBy(priorities, identity);
-  return first(sortedPriorities) ?? 5;
+  return first(priorities.sort((a, b) => a - b)) ?? 5;
 };
 
 export const DEFAULT_ROLES = [

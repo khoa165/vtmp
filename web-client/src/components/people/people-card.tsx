@@ -9,7 +9,6 @@ import {
   isMenteeRole,
   isNewGradOffer,
   isHiddenRole,
-  isOrganizerRole,
   isReturnOfferForInternship,
   isReturnOfferForNewGrad,
 } from '@/utils/data';
@@ -157,14 +156,19 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
       )}
       <Avatar url={avatar} />
       <div className="p-4">
-        <h5 className="text-lg font-medium mb-2">{name}</h5>
-        {roles && isOrganizerRole(roles) && (
-          <div className="text-sm mb-2">
+        <h5
+          className="text-lg font-medium"
+          style={{ color: 'var(--mentorship-primary-green)' }}
+        >
+          {name}
+        </h5>
+        {roles && (
+          <p className="text-xs text-muted-foreground mb-2">
             {roles
               .filter((r) => !isHiddenRole(r, roles))
               .map(getRoleDisplayName)
               .join(' / ')}
-          </div>
+          </p>
         )}
         <hr className="my-3" />
         <div className="text-sm people-title">{professionalTitle}</div>
