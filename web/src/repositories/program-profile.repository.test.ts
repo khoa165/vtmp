@@ -1,11 +1,7 @@
 import { ProgramProfileRepository } from '@/repositories/program-profile.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import * as chai from 'chai';
-import chaiSubset from 'chai-subset';
-
-chai.use(chaiSubset);
-const { expect } = chai;
+import { expect } from 'chai';
 
 describe('Program-profileRepository', () => {
   useMongoDB();
