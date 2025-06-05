@@ -217,9 +217,3 @@ export enum JobType {
   NEW_GRAD = 'NEW_GRAD',
   INDUSTRY = 'INDUSTRY',
 }
-
-export enum Environment {
-  DEV = 'DEV',
-  STAGING = 'STAGING',
-  PROD = 'PROD',
-}

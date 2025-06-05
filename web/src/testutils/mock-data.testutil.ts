@@ -1,4 +1,4 @@
-import { Environment } from '@vtmp/common/constants';
+import { Environment } from '@/constants/enums';
 
 export const MOCK_ENV = {
   PORT: 8000,

@@ -27,7 +27,7 @@
     "@types/canvas-confetti": "^1.9.0",
     "@visx/visx": "^3.10.2",
     "@vitejs/plugin-react-swc": "^3.8.1",
-    "@vtmp/common": "workspace:^",
+    "@vtmp/common": "1.0.0",
     "aos": "^2.3.4",
     "axios": "^1.7.7",
     "bootstrap": "^5.2.3",
@@ -51,7 +51,7 @@
     "reactstrap": "^9.1.8",
     "recharts": "^2.13.0",
     "rehype-raw": "^7.0.0",
-    "remeda": "^2.21.2",
+    "remeda": "^2.22.5",
     "sass": "^1.69.6",
     "sonner": "^2.0.3",
     "statsig-react": "^2.0.0",
@@ -63,7 +63,7 @@
     "vite": "^6.2.5",
     "vite-plugin-svgr": "^4.3.0",
     "vite-tsconfig-paths": "^5.1.4",
-    "zod": "^3.24.2"
+    "zod": "^3.25.51"
   },
   "scripts": {
     "start": "vite",
@@ -121,7 +121,7 @@
     "eslint-plugin-storybook": "^0.12.0",
     "jsdom": "^26.0.0",
     "storybook": "^8.6.12",
-    "typescript": "^5.4.5",
+    "typescript": "^5.8.3",
     "vitest": "^3.1.1"
   }
 }

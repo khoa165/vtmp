@@ -40,7 +40,7 @@ export const useGetDashBoardLinks = (filter?: { status?: LinkStatus }) =>
         url: API_ENDPOINTS.GET_DASHBOARD_LINKS,
         data: filter?.status ? filter : {},
         schema: DashBoardLinksResponseSchema,
-        options: { includeOnlyDataField: true },
+        options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
 
@@ -52,7 +52,7 @@ export const useGetLinksCountByStatus = () =>
         method: Method.GET,
         url: API_ENDPOINTS.GET_LINKS_COUNT_BY_STATUS,
         schema: LinksCountByStatusSchema,
-        options: { includeOnlyDataField: true },
+        options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
 
