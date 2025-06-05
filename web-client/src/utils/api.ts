@@ -15,7 +15,9 @@ api.interceptors.response.use(
     const status = error.response?.status;
     if (status === 429) {
       toast.error(error.response?.data.message);
-      return Promise.reject();
+      return Promise.reject(error);
+    } else if (status === 400) {
+      return Promise.reject(error);
     }
   }
 );

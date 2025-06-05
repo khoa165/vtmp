@@ -25,7 +25,7 @@ const handleLinkMutationError = (error: unknown) => {
 const invalidateLinkQueries = (
   queryClient: ReturnType<typeof useQueryClient>
 ) => {
-  queryClient.invalidateQueries({ queryKey: [QueryKey.GET_DASHBOARD_LINKS] });
+  queryClient.invalidateQueries({ queryKey: [QueryKey.GET_LINKS] });
   queryClient.invalidateQueries({
     queryKey: [QueryKey.GET_LINKS_COUNT_BY_STATUS],
   });
@@ -33,11 +33,11 @@ const invalidateLinkQueries = (
 
 export const useGetLinks = (filter?: { status?: LinkStatus }) =>
   useQuery({
-    queryKey: [QueryKey.GET_DASHBOARD_LINKS, filter],
+    queryKey: [QueryKey.GET_LINKS, filter],
     queryFn: () =>
       request({
         method: Method.GET,
-        url: API_ENDPOINTS.GET_DASHBOARD_LINKS,
+        url: API_ENDPOINTS.GET_LINKS,
         data: filter?.status ? filter : {},
         schema: LinksResponseSchema,
         options: { includeOnlyDataField: true, requireAuth: true },
