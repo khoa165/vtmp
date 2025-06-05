@@ -4,17 +4,16 @@ import { wrappedHandlers } from '@/middlewares/utils';
 import { authenticate } from '@/middlewares/auth.middleware';
 
 export const JobPostingRoutes = Router();
-
+JobPostingRoutes.use(wrappedHandlers([authenticate]));
 JobPostingRoutes.put(
-  '/:jobId',
+  '/:jobPostingId',
   wrappedHandlers([JobPostingController.updateJobPosting])
 );
 JobPostingRoutes.delete(
-  '/:jobId',
+  '/:jobPostingId',
   wrappedHandlers([JobPostingController.deleteJobPosting])
 );
 JobPostingRoutes.get(
   '/not-applied',
-  authenticate,
   wrappedHandlers([JobPostingController.getJobPostingsUserHasNotAppliedTo])
 );
