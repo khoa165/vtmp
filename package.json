@@ -27,7 +27,8 @@
     "docker-run-backend": "docker run --env-file ./web/.env  --rm -it -p 8000:8000 vtmp/backend:local",
     "docker-build-frontend": "docker build -f web-client/Dockerfile -t vtmp/frontend:local .",
     "docker-run-frontend": "docker run --env-file ./web-client/.env -it -p 3000:3000 vtmp/frontend:local",
-    "docker-seed": "docker compose exec web yarn seed"
+    "docker-seed": "docker compose exec web yarn seed",
+    "clean": "rm -rf node_modules packages/*/node_modules web/node_modules web-client/node_modules"
   },
   "workspaces": [
     "packages/common",
@@ -45,8 +46,9 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.0.0",
     "prettier": "^3.5.3",
+    "syncpack": "^13.0.4",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.2",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.26.0"
   },
   "lint-staged": {
