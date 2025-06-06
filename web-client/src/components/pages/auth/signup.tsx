@@ -27,7 +27,7 @@ import {
 } from '@/utils/constants';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 const passwordMessage = [
   '1. Password length is in range 8-20',
@@ -51,9 +51,8 @@ const isPasswordValid = (password: string) =>
   /[0-9]/.test(password);
 
 const SignUpPage = () => {
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const token = queryParams.get('token');
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
 
   const { mutate: validateTokenFn } = useMutation({
     mutationFn: (body: { token: string }) =>
