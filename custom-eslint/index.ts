@@ -1,8 +1,7 @@
-import { lowercaseFunction, wrappedHandlersInRouter } from './rules';
+import { wrappedHandlersInRouter } from './rules';
 
 export const customEslintRules = {
   rules: {
-    'lowercase-function': lowercaseFunction,
     'wrapped-handlers-in-router': wrappedHandlersInRouter,
   },
 };
