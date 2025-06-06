@@ -48,7 +48,7 @@ const JobPostingDataSchema = z
           return date >= threeMonthsAgo && date <= now;
         },
         {
-          message: 'Date must be within the last 2 months',
+          message: 'Date must be within the last 3 months',
         }
       )
       .optional(),
