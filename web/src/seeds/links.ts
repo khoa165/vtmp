@@ -1,6 +1,6 @@
 import { ILink, LinkModel } from '@/models/link.model';
 import { faker } from '@faker-js/faker';
-import { CompanyName, JobPostingRegion } from '@vtmp/common/constants';
+import { CompanyName, LinkRegion } from '@vtmp/common/constants';
 import { LinkStatus } from '@vtmp/common/constants';
 import { formatEnumName } from '@vtmp/common/utils';
 import { JobTitle } from '@vtmp/common/constants';
@@ -11,7 +11,7 @@ export const loadLinks = async (count: number): Promise<ILink[]> => {
     jobTitle: formatEnumName(faker.helpers.enumValue(JobTitle)),
     datePosted: faker.date.recent({ days: 90 }),
     jobDescription: faker.lorem.paragraph(),
-    location: faker.helpers.enumValue(JobPostingRegion),
+    location: faker.helpers.enumValue(LinkRegion),
     status: faker.helpers.enumValue(LinkStatus),
   }));
 

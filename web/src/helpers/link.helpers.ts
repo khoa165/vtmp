@@ -1,4 +1,4 @@
-import { JobFunction, JobType } from '@vtmp/common/constants';
+import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
 
 const formatJobDescription = (description: {
   responsibility: string;
@@ -40,10 +40,7 @@ jobTitle: The title of the job. It is usually located near the top of the postin
 
 companyName: The name of the company offering the job. It is usually listed near the job title.
 
-location: The country or state where the job is located. Return:
-- "US" if it is a U.S. city or state
-- "CANADA" if it is a Canadian city or province
-- Otherwise, return the country name
+location: Choose the best match from this list: ${Object.values(LinkRegion).join(', ')}. If none are a good fit, return "OTHER".
 
 jobFunction: Choose the best match from this list: ${Object.values(JobFunction).join(', ')}. If none are a good fit, return "SOFTWARE_ENGINEER".
 

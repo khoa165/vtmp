@@ -2,7 +2,10 @@ import {
   extractLinkMetaDatPrompt,
   formatJobDescription,
 } from '@/helpers/link.helpers';
-import { LinkMetaData } from '@/types/link.types';
+import {
+  LinkMetaData,
+  LinkMetaDataSchema,
+} from '@/services/link/link-metadata-validation';
 import { GenerateContentResponse } from '@google/genai';
 import { GoogleGenAI } from '@google/genai';
 import { ResourceNotFoundError } from '@/utils/errors';
@@ -50,7 +53,7 @@ const generateMetaData = async (
     return { url };
   }
 
-  return formattedLinkMetaData;
+  return LinkMetaDataSchema.parse(formattedLinkMetaData);
 };
 
 const scrapeWebsite = async (url: string): Promise<string> => {

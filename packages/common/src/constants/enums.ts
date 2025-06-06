@@ -41,6 +41,12 @@ export enum JobPostingRegion {
   CANADA = 'CANADA',
 }
 
+export enum LinkRegion {
+  US = 'US',
+  CANADA = 'CANADA',
+  OTHER = 'OTHER',
+}
+
 export enum LinkStatus {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',

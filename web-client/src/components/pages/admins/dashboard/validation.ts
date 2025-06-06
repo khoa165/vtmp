@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
+import { LinkRegion, LinkStatus } from '@vtmp/common/constants';
 
 export const DashBoardLinkSchema = z.object({
   _id: z.string(),
@@ -11,7 +11,7 @@ export const DashBoardLinkSchema = z.object({
   jobTitle: z.string().optional(),
   companyName: z.string().optional(),
   location: z
-    .nativeEnum(JobPostingRegion, {
+    .nativeEnum(LinkRegion, {
       message: 'Invalid job location',
     })
     .optional(),
