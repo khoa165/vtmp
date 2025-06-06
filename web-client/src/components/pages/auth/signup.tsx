@@ -24,6 +24,7 @@ import {
 } from '@/utils/constants';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { omit } from 'remeda';
 
 const passwordMessage = [
   '1. Password length is in range 8-20',
@@ -46,36 +47,54 @@ const isPasswordValid = (password: string) =>
   /[!@#$%^&?]/.test(password) &&
   /[0-9]/.test(password);
 
+interface SignUpUserInput {
+  password: string;
+  confirmPassword: string;
+  firstName: string;
+  lastName: string;
+}
+interface SignUpInputErrors {
+  passwordErrors: string[];
+  confirmPasswordErrors: string[];
+  firstNameErrors: string[];
+  lastNameErrors: string[];
+}
+
 const SignUpPage = () => {
   const emailInput = 'Email2@viettech.com';
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
-  const [passwordInput, setPasswordInput] = useState<string>('');
-  const [confirmPasswordInput, setConfirmPasswordInput] = useState<string>('');
-  const [firstNameInput, setFirstNameInput] = useState<string>('');
-  const [lastNameInput, setLastNameInput] = useState<string>('');
   const [isPasswordStrong, setIsPasswordStrong] = useState<boolean>(false);
-  const [firstNameError, setFirstNameError] = useState<string[]>([]);
-  const [lastNameError, setLastNameError] = useState<string[]>([]);
   const [emailError, setEmailError] = useState<string[]>([]);
-  const [passwordError, setPasswordError] = useState<string[]>([]);
-  const [confirmPasswordError, setConfirmPasswordError] = useState<string[]>(
-    []
-  );
+  const [userInput, setUserInput] = useState<SignUpUserInput>({
+    password: '',
+    confirmPassword: '',
+    firstName: '',
+    lastName: '',
+  });
+  const [inputErrors, setInputErrors] = useState<SignUpInputErrors>({
+    passwordErrors: [],
+    confirmPasswordErrors: [],
+    firstNameErrors: [],
+    lastNameErrors: [],
+  });
   const navigate = useNavigatePreserveQueryParams();
 
   const resetState = () => {
-    setPasswordInput('');
-    setConfirmPasswordInput('');
-    setFirstNameInput('');
-    setLastNameInput('');
-    setFirstNameError([]);
-    setLastNameError([]);
-    setPasswordError([]);
-    setEmailError([]);
-    setConfirmPasswordError([]);
+    setUserInput({
+      password: '',
+      confirmPassword: '',
+      firstName: '',
+      lastName: '',
+    });
+    setInputErrors({
+      passwordErrors: [],
+      confirmPasswordErrors: [],
+      firstNameErrors: [],
+      lastNameErrors: [],
+    });
   };
 
   const { mutate: signUpFn } = useMutation({
@@ -109,9 +128,12 @@ const SignUpPage = () => {
           }
 
           if (err.message.toLocaleLowerCase().includes('password')) {
-            setPasswordError([err.message]);
-            setPasswordInput('');
-            setConfirmPasswordError([]);
+            setInputErrors({
+              ...inputErrors,
+              passwordErrors: [err.message],
+              confirmPasswordErrors: [],
+            });
+            setUserInput({ ...userInput, password: '' });
           }
         });
       } else {
@@ -122,27 +144,27 @@ const SignUpPage = () => {
 
   const handleSignup = async () => {
     if (
-      !isPasswordValid(passwordInput) ||
-      !firstNameInput ||
-      !lastNameInput ||
-      passwordInput !== confirmPasswordInput
+      !isPasswordValid(userInput.password) ||
+      !userInput.firstName ||
+      !userInput.lastName ||
+      userInput.password !== userInput.confirmPassword
     ) {
-      setConfirmPasswordError(
-        confirmPasswordInput !== passwordInput || !passwordInput
-          ? ['Password does not match']
-          : []
-      );
-      setPasswordError(!passwordInput ? ['Required'] : []);
-      setFirstNameError(!firstNameInput ? ['Required'] : []);
-      setLastNameError(!lastNameInput ? ['Required'] : []);
+      setInputErrors({
+        passwordErrors: !userInput.password ? ['Required'] : [],
+        confirmPasswordErrors:
+          userInput.password !== userInput.confirmPassword ||
+          !userInput.password
+            ? ['Password does not match']
+            : [],
+        firstNameErrors: !userInput.firstName ? ['Required'] : [],
+        lastNameErrors: !userInput.lastName ? ['Required'] : [],
+      });
       return;
     }
 
     signUpFn({
-      firstName: firstNameInput,
-      lastName: lastNameInput,
+      ...omit(userInput, ['confirmPassword']),
       email: emailInput,
-      password: passwordInput,
     });
   };
 
@@ -179,13 +201,20 @@ const SignUpPage = () => {
                     </Label>
                     <Input
                       id="firstName"
+                      name="firstName"
                       placeholder="First Name"
-                      value={firstNameInput}
+                      value={userInput.firstName}
                       onChange={(e) => {
-                        setFirstNameInput(e.target.value);
-                        setFirstNameError([]);
+                        setUserInput({
+                          ...userInput,
+                          [e.target.name]: e.target.value,
+                        });
+                        setInputErrors({
+                          ...inputErrors,
+                          [e.target.name + 'Errors']: [],
+                        });
                       }}
-                      errors={firstNameError}
+                      errors={inputErrors.firstNameErrors}
                     />
                   </div>
                   <div className="flex-1 flex-col space-y-1.5">
@@ -194,13 +223,20 @@ const SignUpPage = () => {
                     </Label>
                     <Input
                       id="lastName"
+                      name="lastName"
                       placeholder="Last Name"
-                      value={lastNameInput}
+                      value={userInput.lastName}
                       onChange={(e) => {
-                        setLastNameInput(e.target.value);
-                        setLastNameError([]);
+                        setUserInput({
+                          ...userInput,
+                          [e.target.name]: e.target.value,
+                        });
+                        setInputErrors({
+                          ...inputErrors,
+                          [e.target.name + 'Errors']: [],
+                        });
                       }}
-                      errors={lastNameError}
+                      errors={inputErrors.lastNameErrors}
                     />
                   </div>
                 </div>
@@ -223,18 +259,25 @@ const SignUpPage = () => {
                   <div className="flex flex-col justify-center relative space-y-1.5">
                     <Input
                       id="password"
+                      name="password"
                       placeholder="Password"
                       type={showPassword ? 'text' : 'password'}
-                      value={passwordInput}
+                      value={userInput.password}
                       onChange={(e) => {
-                        setPasswordInput(e.target.value);
+                        setUserInput({
+                          ...userInput,
+                          [e.target.name]: e.target.value,
+                        });
                         const passwordStrength = isPasswordValid(
                           e.target.value
                         );
                         setIsPasswordStrong(passwordStrength);
-                        setPasswordError([]);
+                        setInputErrors({
+                          ...inputErrors,
+                          [e.target.name + 'Errors']: [],
+                        });
                       }}
-                      errors={passwordError}
+                      errors={inputErrors.passwordErrors}
                       className="pr-10"
                     />
 
@@ -252,7 +295,7 @@ const SignUpPage = () => {
                     </Button>
                   </div>
 
-                  {!passwordInput ? (
+                  {!userInput.password ? (
                     <></>
                   ) : (
                     <div
@@ -293,14 +336,21 @@ const SignUpPage = () => {
                   <div className="flex flex-col justify-center relative space-y-1.5">
                     <Input
                       id="confirmPassword"
+                      name="confirmPassword"
                       placeholder="Confirm Password"
                       type={showConfirmPassword ? 'text' : 'password'}
-                      value={confirmPasswordInput}
+                      value={userInput.confirmPassword}
                       onChange={(e) => {
-                        setConfirmPasswordInput(e.target.value);
-                        setConfirmPasswordError([]);
+                        setUserInput({
+                          ...userInput,
+                          [e.target.name]: e.target.value,
+                        });
+                        setInputErrors({
+                          ...inputErrors,
+                          [e.target.name + 'Errors']: [],
+                        });
                       }}
-                      errors={confirmPasswordError}
+                      errors={inputErrors.confirmPasswordErrors}
                     />
                     <Button
                       variant="ghost"
