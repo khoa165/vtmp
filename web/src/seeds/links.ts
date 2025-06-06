@@ -6,7 +6,6 @@ import { formatEnumName } from '@vtmp/common/utils';
 import { JobTitle } from '@vtmp/common/constants';
 export const loadLinks = async (count: number): Promise<ILink[]> => {
   const newLinks = Array.from({ length: count }, () => ({
-    _id: faker.database.mongodbObjectId(),
     url: faker.internet.url(),
     companyName: formatEnumName(faker.helpers.enumValue(CompanyName)),
     jobTitle: formatEnumName(faker.helpers.enumValue(JobTitle)),

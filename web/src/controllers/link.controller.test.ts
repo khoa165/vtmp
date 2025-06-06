@@ -207,6 +207,16 @@ describe('LinkController', () => {
       method: HTTPMethod.GET,
     });
 
+    it('should throw ForbiddenError when user try to view link status', async () => {
+      const res = await request(app)
+        .get('/api/links/count-by-status')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Forbidden');
+    });
+
     it('should return 1 link for pending status', async () => {
       const res = await request(app)
         .get('/api/links/count-by-status')
@@ -255,6 +265,16 @@ describe('LinkController', () => {
     runDefaultAuthMiddlewareTests({
       route: `/api/links`,
       method: HTTPMethod.GET,
+    });
+
+    it('should throw ForbiddenError when user try to view links', async () => {
+      const res = await request(app)
+        .get('/api/links')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Forbidden');
     });
 
     it('should return 400 when an invalid status is provided', async () => {
