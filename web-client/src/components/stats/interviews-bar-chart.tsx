@@ -1,4 +1,3 @@
-import { min } from 'lodash';
 import React from 'react';
 import {
   BarChart,
@@ -28,7 +27,7 @@ export const InterviewsBarChart: React.FC<InterviewsBarChartProps> = ({
         {data.totalInterviewsCount} interviews
       </h2>
       <BarChart
-        width={min([1000, window.innerWidth - 10])}
+        width={Math.min(1000, window.innerWidth - 10)}
         height={4000}
         data={data.data}
         className="mt-4"

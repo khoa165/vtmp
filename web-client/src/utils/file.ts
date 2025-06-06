@@ -26,15 +26,11 @@ export const removeMetadata = (text: string): string => {
 };
 
 export const buildFileMetadata = (
-  filepaths: string[],
   metadata: BlogMetadata[]
 ): BlogFileMapping => {
-  const mapping = {};
-  metadata.forEach(({ name, ...props }) => {
-    mapping[name] = { name, ...props };
-  });
-  filepaths.forEach((filepath) => {
-    mapping[getFileName(filepath)].path = filepath;
+  const mapping: BlogFileMapping = {};
+  metadata.forEach((blogMeta) => {
+    mapping[blogMeta.name] = { ...blogMeta, path: blogMeta.filepath };
   });
   return mapping;
 };

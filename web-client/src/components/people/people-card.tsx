@@ -1,11 +1,4 @@
 import React, { useMemo } from 'react';
-import {
-  Card,
-  CardTitle,
-  CardSubtitle,
-  CardBody,
-  UncontrolledTooltip,
-} from 'reactstrap';
 import { FaArrowTrendUp, FaCode } from 'react-icons/fa6';
 import { RiTeamFill } from 'react-icons/ri';
 import { Avatar } from '@/components/layout/avatar';
@@ -16,7 +9,6 @@ import {
   isMenteeRole,
   isNewGradOffer,
   isHiddenRole,
-  isOrganizerRole,
   isReturnOfferForInternship,
   isReturnOfferForNewGrad,
 } from '@/utils/data';
@@ -25,6 +17,12 @@ import { MiniCompaniesList } from '@/components/layout/mini-companies-list';
 import { PeopleSortColumn } from '@/utils/constants';
 import { useSearchParams } from 'react-router-dom';
 import { projectDisplayName } from '@/utils/displayName';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/base/tooltip';
 
 interface PeopleCardProps extends React.HTMLAttributes<HTMLDivElement> {
   year: number | 'all';
@@ -39,7 +37,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
   companiesMetadata,
   sortColumn,
 }) => {
-  const { name, alias, avatar, terms, professionalTitle } = person;
+  const { name, avatar, terms, professionalTitle } = person;
   const firstTerm = useMemo(() => terms[0], [terms]);
   const isOrWasMentee = useMemo(
     () => isMenteeRole(firstTerm.roles),
@@ -84,81 +82,97 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
   );
 
   return (
-    <Card className="mentorship-people-card">
+    <div className="mentorship-people-card">
       {showOffers && (
         <div className="info-offers">
-          <CardSubtitle className="flex flex-col gap-y-2">
+          <div className="flex flex-col gap-y-2">
             <MiniCompaniesList
               offersList={currentTerm?.offers ?? []}
-              prefix={alias}
               companiesMetadata={companiesMetadata}
             />
-          </CardSubtitle>
+          </div>
         </div>
       )}
       {(mentors || projectAdvisors) && (
         <div className="info-assignment">
-          {mentors?.length && (
-            <CardSubtitle className="flex justify-end items-center gap-x-2 mt-1">
-              <MiniPeopleList peopleList={mentors} prefix={alias} />
-              <FaArrowTrendUp id={`${alias}-mentors-icon`} />
-              <UncontrolledTooltip
-                placement="bottom"
-                target={`${alias}-mentors-icon`}
-              >
-                One-on-one mentors
-              </UncontrolledTooltip>
-            </CardSubtitle>
+          {mentors && mentors.length > 0 && (
+            <div className="flex justify-end items-center gap-x-2 mt-1">
+              <MiniPeopleList peopleList={mentors} />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <FaArrowTrendUp />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    One-on-one mentors
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           )}
 
-          {projectAdvisors?.length && (
-            <CardSubtitle className="flex items-center justify-end gap-x-2 mt-2">
-              <MiniPeopleList peopleList={projectAdvisors} prefix={alias} />
-              <FaCode id={`${alias}-advisors-icon`} />
-              <UncontrolledTooltip
-                placement="bottom"
-                target={`${alias}-advisors-icon`}
-              >
-                Project technical mentors
-              </UncontrolledTooltip>
-            </CardSubtitle>
+          {projectAdvisors && projectAdvisors.length > 0 && (
+            <div className="flex items-center justify-end gap-x-2 mt-2">
+              <MiniPeopleList peopleList={projectAdvisors} />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <FaCode />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    Project technical mentors
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           )}
 
-          {teamName && teammates && (
-            <CardSubtitle className="flex gap-x-2 mt-2">
+          {teamName && teammates && teammates.length > 0 && (
+            <div className="flex gap-x-2 mt-2">
               <div className="flex flex-col gap-y-2">
-                <MiniPeopleList peopleList={teammates} prefix={alias} />
+                <MiniPeopleList peopleList={teammates} />
               </div>
               <div className="mt-1">
-                <RiTeamFill id={`${alias}-teammates-icon`} />
-                <UncontrolledTooltip
-                  placement="bottom"
-                  target={`${alias}-teammates-icon`}
-                >
-                  Teammates / {projectDisplayName[teamName]}
-                </UncontrolledTooltip>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <RiTeamFill />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      Teammates / {projectDisplayName[teamName]}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
-            </CardSubtitle>
+            </div>
           )}
         </div>
       )}
       <Avatar url={avatar} />
-      <CardBody>
-        <CardTitle>{name}</CardTitle>
-        {roles && isOrganizerRole(roles) && (
-          <CardSubtitle>
+      <div className="p-4">
+        <h5
+          className="text-lg font-medium"
+          style={{ color: 'var(--mentorship-primary-green)' }}
+        >
+          {name}
+        </h5>
+        {roles && (
+          <p className="text-xs text-muted-foreground mb-2">
             {roles
               .filter((r) => !isHiddenRole(r, roles))
               .map(getRoleDisplayName)
               .join(' / ')}
-          </CardSubtitle>
+          </p>
         )}
-        <hr />
-        <CardSubtitle className="people-title">
-          {professionalTitle}
-        </CardSubtitle>
-        {/* <CardSubtitle>{hobbies}</CardSubtitle> */}
-      </CardBody>
-    </Card>
+        <hr className="my-3" />
+        <div className="text-sm people-title">{professionalTitle}</div>
+      </div>
+    </div>
   );
 };
