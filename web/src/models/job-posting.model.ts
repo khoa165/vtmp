@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { JobPostingRegion } from '@vtmp/common/constants';
+import { JobPostingRegion, JobFunction, JobType } from '@vtmp/common/constants';
 
 export interface IJobPosting extends Document {
   _id: Types.ObjectId;
@@ -14,6 +14,18 @@ export interface IJobPosting extends Document {
   adminNote?: string;
   submittedBy?: Types.ObjectId;
   deletedAt?: Date;
+  jobFunction: JobFunction;
+  jobType: JobType;
+}
+
+export interface JobFilter {
+  jobTitle?: string;
+  companyName?: string;
+  location?: string;
+  jobFunction?: JobFunction;
+  jobType?: JobType;
+  postingDateRangeStart?: Date;
+  postingDateRangeEnd?: Date;
 }
 
 const JobPostingSchema = new mongoose.Schema<IJobPosting>(
@@ -58,6 +70,16 @@ const JobPostingSchema = new mongoose.Schema<IJobPosting>(
     },
     deletedAt: {
       type: Date,
+    },
+    jobFunction: {
+      type: String,
+      enum: Object.values(JobFunction),
+      default: JobFunction.SOFTWARE_ENGINEER,
+    },
+    jobType: {
+      type: String,
+      enum: Object.values(JobType),
+      default: JobType.INTERNSHIP,
     },
   },
   { timestamps: true }

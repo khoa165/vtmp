@@ -5,8 +5,6 @@ import { PeopleContainer } from '@/components/people';
 import { StatsContainer } from '@/components/stats';
 import { ProjectsContainer } from '@/components/projects';
 import { SummaryContainer } from '@/components/summary';
-// import { allBlogsFilepaths, allBlogsMetadata } from '@/blogs/metadata';
-// import { buildFileMetadata } from '@/utils/file';
 import { BlogFileMapping } from '@/types';
 import { LandingContainer } from '@/components/landing';
 import { BlogContainer } from '@/components/blogs';
@@ -23,6 +21,12 @@ import { PageWithToast } from '@/components/layout/page-with-toast';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
 import { SendInvitationPage } from '@/components/pages/admins/invitations/send-invitation';
+import { DashBoardPage } from '@/components/pages/admins/dashboard/dashboard-page';
+import { NotFoundPage } from './pages/shared/not-found-page';
+import { ProtectedRoute } from '@/utils/protect-route';
+import { UserRole } from '@vtmp/common/constants';
+import { buildFileMetadata } from '@/utils/file';
+import { allBlogsMetadata } from '@/blogs/metadata';
 
 export const App = () => {
   useEffect(() => {
@@ -34,10 +38,10 @@ export const App = () => {
     AOS.init();
   }, []);
 
-  const [metadata] = useState<BlogFileMapping | null>(null);
+  const [metadata, setMetadata] = useState<BlogFileMapping | null>(null);
 
   useEffect(() => {
-    // setMetadata(buildFileMetadata(allBlogsFilepaths, allBlogsMetadata));
+    setMetadata(buildFileMetadata(allBlogsMetadata));
   }, []);
 
   return (
@@ -69,15 +73,23 @@ export const App = () => {
           <Route element={<PageWithSidebar />}>
             <Route path="/link-sharing" element={<LinksPage />} />
             <Route path="/job-postings" element={<JobPostingsPage />} />
-            <Route path="/user-invitation" element={<UserInvitationPage />} />
+            <Route
+              path="/user-invitation"
+              element={
+                <ProtectedRoute roles={[UserRole.ADMIN]}>
+                  <UserInvitationPage />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/application-tracker" element={<ApplicationsPage />} />
             <Route
               path="/admin/send-invitation"
               element={<SendInvitationPage />}
             />
+            <Route path="/admin/dashboard" element={<DashBoardPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/*" element={<>404</>} />
+          <Route path="/*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </Router>

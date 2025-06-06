@@ -1,27 +1,20 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
-import { ENVIRONMENT } from '@/constants/enums';
+import { parseEnvConfig } from '@vtmp/common/utils';
+import { Environment } from '@/constants/enums';
 
 dotenv.config();
 
-const configSchema = z.object({
+const webConfigSchema = z.object({
   MONGO_URI: z.string(),
   PORT: z.preprocess(Number, z.number().positive().finite()),
   JWT_SECRET: z.string(),
   GMAIL_EMAIL: z.string(),
   GMAIL_APP_PASSWORD: z.string(),
   VTMP_WEB_URL: z.string(),
-  SEED_ENV: z.nativeEnum(ENVIRONMENT).default(ENVIRONMENT.DEV),
+  SEED_ENV: z.nativeEnum(Environment).default(Environment.DEV),
 });
 
 export const EnvConfig = {
-  get: () => {
-    const envs = configSchema.safeParse(process.env);
-    if (!envs.success) {
-      throw new Error(
-        'Environment variables are not set correctly. Please check your .env file.'
-      );
-    }
-    return envs.data;
-  },
+  get: () => parseEnvConfig({ env: process.env, schema: webConfigSchema }),
 };

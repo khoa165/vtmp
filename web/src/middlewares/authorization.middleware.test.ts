@@ -64,7 +64,7 @@ describe('hasPermission', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
-    expect(res.body.errors[0].message).to.eq('Forbidden');
+    expect(res.body.errors[0].message).to.equal('Forbidden');
   });
 
   it('should allow user to create a new application with corresponding permission', async () => {
