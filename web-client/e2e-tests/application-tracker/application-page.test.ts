@@ -92,22 +92,20 @@ test.describe('Application Table', () => {
   test('should update status via dropdown in status column', async ({
     page,
   }) => {
-    const dropdownButton = page
-      .getByTestId('application-cell-status') // assuming you're using this data-testid
-      .locator('button');
+    await page.goto('/application-tracker');
 
-    await dropdownButton.first().click(); // click the first status dropdown
+    const firstRow = page.getByTestId('application-table-row').first();
+    await firstRow
+      .getByTestId('application-cell-status')
+      .locator('button')
+      .click();
 
-    // Step 2: Select 'Offered' from the dropdown menu
-    const dropdownMenu = page.getByRole('menu');
-    const offeredOption = dropdownMenu.getByRole('menuitem', {
-      name: 'OFFERED',
-    });
-    await offeredOption.click();
+    const offeredMenuItem = page.getByRole('menuitem', { name: 'OFFERED' });
+    await expect(offeredMenuItem).toBeVisible();
+    await offeredMenuItem.click();
 
-    // Step 3: Assert that the new status text is visible in the same cell
-    await expect(
-      page.getByTestId('application-cell-status').first()
-    ).toContainText('OFFERED');
+    await expect(firstRow.getByTestId('application-cell-status')).toContainText(
+      'OFFERED'
+    );
   });
 });
