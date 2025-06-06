@@ -51,7 +51,7 @@ export const InvitationService = {
     let newInvitation: IInvitation | null = null;
     let token: string;
 
-    const [latestPendingInvitation] =
+    let [latestPendingInvitation] =
       await InvitationRepository.getInvitationsWithFilter({
         receiverEmail,
         status: InvitationStatus.PENDING,
@@ -70,10 +70,14 @@ export const InvitationService = {
       });
     } else {
       if (isBefore(latestPendingInvitation.expiryDate, Date.now())) {
-        await InvitationRepository.updateInvitationById(
-          latestPendingInvitation.id,
-          { expiryDate: addDays(Date.now(), 7) }
-        );
+        const updatedInvitation =
+          await InvitationRepository.updateInvitationById(
+            latestPendingInvitation.id,
+            { expiryDate: addDays(Date.now(), 7) }
+          );
+        if (updatedInvitation) {
+          latestPendingInvitation = updatedInvitation;
+        }
       }
 
       token = latestPendingInvitation.token;
@@ -85,7 +89,7 @@ export const InvitationService = {
       token
     );
     await getEmailService().sendEmail(emailTemplate);
-    return newInvitation;
+    return newInvitation || latestPendingInvitation;
   },
 
   revokeInvitation: async (invitationId: string) => {
