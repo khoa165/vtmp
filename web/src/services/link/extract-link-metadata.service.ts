@@ -34,7 +34,6 @@ const generateMetaData = async (
   });
 
   const text = response.text?.replace(/```json|```/g, '').trim();
-  console.log('Response from AI:', text);
   if (!text) return { url };
 
   const parsedResponse = JSON.parse(text);

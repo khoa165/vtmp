@@ -9,9 +9,7 @@ export const LinkProcessorService = {
     const validUrl = await LinkValidatorService.validateLink(url);
     const metaData: LinkMetaData | { url: string } =
       await ExtractLinkMetadataService.extractMetadata(validUrl);
-    const normalizedUrl = LinkNormalizerService.normalizeLink(
-      metaData.url ?? ''
-    );
+    const normalizedUrl = LinkNormalizerService.normalizeLink(metaData.url);
     await LinkDeduplicatorService.checkDuplicate(normalizedUrl);
     return metaData;
   },

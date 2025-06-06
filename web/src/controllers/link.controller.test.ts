@@ -186,7 +186,6 @@ describe('LinkController', () => {
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
-      console.log(res.body.errors[0].message);
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Link not found');
     });
