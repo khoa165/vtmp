@@ -17,8 +17,8 @@ export const CompanyLogo: React.FC<CompanyLogoProps> = ({
           src={company.logoUrl}
           alt={company.displayName}
           style={{
-            width: 110,
-            height: ((maxHeight ?? 110) * company.maxLogoSize) / 100,
+            maxWidth: 90,
+            maxHeight: ((maxHeight ?? 110) * company.maxLogoSize) / 100,
           }}
         />
       </div>

@@ -2,7 +2,6 @@ import { mentorshipPeople } from '@/data/people';
 import { offerCompanies } from '@/data/companies';
 import { useMemo } from 'react';
 import { CompanyMetadataWithOffers } from '@/types';
-// import { sortBy } from 'lodash';
 
 export const useOffersData = () => {
   return useMemo(() => {
