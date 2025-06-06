@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
 
-export const DashBoardLinkSchema = z.object({
+export const LinkResponseSchema = z.object({
   _id: z.string(),
   url: z.string().url(),
   status: z.nativeEnum(LinkStatus, {
@@ -19,19 +19,19 @@ export const DashBoardLinkSchema = z.object({
   jobDescription: z.string().optional(),
 });
 
-export const DashBoardLinksResponseSchema = z.object({
+export const LinksResponseSchema = z.object({
   message: z.string(),
-  data: z.array(DashBoardLinkSchema),
+  data: z.array(LinkResponseSchema),
 });
 
-export const SingleDashBoardLinkResponseSchema = z.object({
+export const SingleLinkResponseSchema = z.object({
   message: z.string(),
-  data: DashBoardLinkSchema,
+  data: LinkResponseSchema,
 });
 
 export const JobPostingResponseSchema = z.object({
   message: z.string(),
-  data: DashBoardLinkSchema.omit({ status: true }),
+  data: LinkResponseSchema.omit({ status: true }),
 });
 
 export const LinksCountByStatusSchema = z.object({
@@ -43,7 +43,7 @@ export const LinksCountByStatusSchema = z.object({
   }),
 });
 
-export type IDashBoardLink = z.infer<typeof DashBoardLinkSchema>;
+export type ILinkResponse = z.infer<typeof LinkResponseSchema>;
 export interface JobPostingData {
   url?: string;
   companyName?: string;
