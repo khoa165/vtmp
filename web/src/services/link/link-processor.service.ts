@@ -8,10 +8,10 @@ import { LinkService } from '@/services/link.service';
 export const LinkProcessorService = {
   async processLink(url: string): Promise<void> {
     const validUrl = await LinkValidatorService.validateLink(url);
-    const metaData: LinkMetaData | null =
+    const metaData: LinkMetaData | { url: string } =
       await ExtractLinkMetadataService.extractMetadata(validUrl);
-    const normalizedUrl = await LinkNormalizerService.normalizeLink(
-      metaData?.url ?? ''
+    const normalizedUrl = LinkNormalizerService.normalizeLink(
+      metaData.url ?? ''
     );
     await LinkDeduplicatorService.checkDuplicate(normalizedUrl);
     await LinkService.submitLink(url);
