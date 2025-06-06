@@ -23,10 +23,12 @@ import { PageWithToast } from '@/components/layout/page-with-toast';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
 import SignUpPage from '@/components/pages/auth/signup';
-import { DashBoardPage } from '@/components/pages/admins/dashboard/dashboard-page';
+import { AdminLinksPage } from '@/components/pages/admins/links/admin-links-page';
 import { NotFoundPage } from './pages/shared/not-found-page';
 import { ProtectedRoute } from '@/utils/protect-route';
 import { UserRole } from '@vtmp/common/constants';
+import { buildFileMetadata } from '@/utils/file';
+import { allBlogsMetadata } from '@/blogs/metadata';
 
 export const App = () => {
   useEffect(() => {
@@ -38,10 +40,10 @@ export const App = () => {
     AOS.init();
   }, []);
 
-  const [metadata] = useState<BlogFileMapping | null>(null);
+  const [metadata, setMetadata] = useState<BlogFileMapping | null>(null);
 
   useEffect(() => {
-    // setMetadata(buildFileMetadata(allBlogsFilepaths, allBlogsMetadata));
+    setMetadata(buildFileMetadata(allBlogsMetadata));
   }, []);
 
   return (
@@ -82,7 +84,7 @@ export const App = () => {
               }
             />
             <Route path="/application-tracker" element={<ApplicationsPage />} />
-            <Route path="/admin/dashboard" element={<DashBoardPage />} />
+            <Route path="/admin/links" element={<AdminLinksPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />

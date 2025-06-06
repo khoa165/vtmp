@@ -1,19 +1,20 @@
 import { Card } from '@/components/base/card';
 import { StatusDot } from '@/components/base/status-dot';
 import { Skeleton } from '@/components/base/skeleton';
-import { useGetLinksCountByStatus } from '@/components/pages/admins/dashboard/hooks/dashboard';
+import { useGetLinksCountByStatus } from '@/components/pages/admins/links/hooks/admin-links';
 import { formatStatus } from '@/utils/helpers';
 import { LinkStatus } from '@vtmp/common/constants';
 import { useState } from 'react';
 import { StatusToColorMapping } from '@/utils/constants';
+import { CustomError } from '@/utils/errors';
 
-interface LinkStatusCardsProps {
+interface AdminLinkStatusCardsProps {
   setLinksFilter: (filter: { status?: LinkStatus }) => void;
 }
 
-export const LinkStatusCards = ({
+export const AdminLinksStatusCards = ({
   setLinksFilter,
-}: LinkStatusCardsProps): React.JSX.Element | null => {
+}: AdminLinkStatusCardsProps): React.JSX.Element | null => {
   const [selectedStatus, setSelectedStatus] = useState<LinkStatus | null>(null);
 
   const {
@@ -45,8 +46,7 @@ export const LinkStatusCards = ({
   }
 
   if (error) {
-    console.error('Error fetching link count data:', error);
-    return <span>Error: {error.message}</span>;
+    throw new CustomError('Error fetching links status count');
   }
 
   return (

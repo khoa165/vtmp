@@ -3,15 +3,15 @@ import { request } from '@/utils/api';
 import { Method, QueryKey } from '@/utils/constants';
 import { toast } from 'sonner';
 import {
-  DashBoardLinksResponseSchema,
+  LinksResponseSchema,
   JobPostingResponseSchema,
   JobPostingData,
   LinksCountByStatusSchema,
-} from '@/components/pages/admins/dashboard/validation';
+} from '@/components/pages/admins/links/validation';
 import axios from 'axios';
 import { LinkStatus, API_ENDPOINTS } from '@vtmp/common/constants';
 
-const handleDashBoardMutationError = (error: unknown) => {
+const handleLinkMutationError = (error: unknown) => {
   const messages =
     axios.isAxiosError(error) && error.response?.data?.errors
       ? error.response.data.errors.map((e) => e.message)
@@ -22,25 +22,25 @@ const handleDashBoardMutationError = (error: unknown) => {
   });
 };
 
-const invalidateDashboardQueries = (
+const invalidateLinkQueries = (
   queryClient: ReturnType<typeof useQueryClient>
 ) => {
-  queryClient.invalidateQueries({ queryKey: [QueryKey.GET_DASHBOARD_LINKS] });
+  queryClient.invalidateQueries({ queryKey: [QueryKey.GET_LINKS] });
   queryClient.invalidateQueries({
     queryKey: [QueryKey.GET_LINKS_COUNT_BY_STATUS],
   });
 };
 
-export const useGetDashBoardLinks = (filter?: { status?: LinkStatus }) =>
+export const useGetLinks = (filter?: { status?: LinkStatus }) =>
   useQuery({
-    queryKey: [QueryKey.GET_DASHBOARD_LINKS, filter],
+    queryKey: [QueryKey.GET_LINKS, filter],
     queryFn: () =>
       request({
         method: Method.GET,
-        url: API_ENDPOINTS.GET_DASHBOARD_LINKS,
+        url: API_ENDPOINTS.GET_LINKS,
         data: filter?.status ? filter : {},
-        schema: DashBoardLinksResponseSchema,
-        options: { includeOnlyDataField: true },
+        schema: LinksResponseSchema,
+        options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
 
@@ -52,11 +52,11 @@ export const useGetLinksCountByStatus = () =>
         method: Method.GET,
         url: API_ENDPOINTS.GET_LINKS_COUNT_BY_STATUS,
         schema: LinksCountByStatusSchema,
-        options: { includeOnlyDataField: true },
+        options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
 
-export const useApproveDashBoardLink = () => {
+export const useApproveLink = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -72,16 +72,17 @@ export const useApproveDashBoardLink = () => {
         url: API_ENDPOINTS.APPROVE_LINK(linkId),
         data: newUpdate,
         schema: JobPostingResponseSchema,
+        options: { requireAuth: true },
       }),
     onSuccess: (res) => {
-      invalidateDashboardQueries(queryClient);
+      invalidateLinkQueries(queryClient);
       toast.success(res.message);
     },
-    onError: handleDashBoardMutationError,
+    onError: handleLinkMutationError,
   });
 };
 
-export const useRejectDashBoardLink = () => {
+export const useRejectLink = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -90,11 +91,12 @@ export const useRejectDashBoardLink = () => {
         method: Method.POST,
         url: API_ENDPOINTS.REJECT_LINK(linkId),
         schema: JobPostingResponseSchema,
+        options: { requireAuth: true },
       }),
     onSuccess: (res) => {
-      invalidateDashboardQueries(queryClient);
+      invalidateLinkQueries(queryClient);
       toast.success(res.message);
     },
-    onError: handleDashBoardMutationError,
+    onError: handleLinkMutationError,
   });
 };
