@@ -106,7 +106,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/{app,index,main}.{ts,tsx}'],
+    files: ['**/{app,index,main}.{ts,tsx}', 'eslint.config.ts'],
     rules: {
       'import/no-default-export': 'off',
     },
