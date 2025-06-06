@@ -12,9 +12,9 @@ import { ResourceNotFoundError } from '@/utils/errors';
 import puppeteer, { Browser, Page } from 'puppeteer';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
-  const geminiApiKey = process.env.Google_Gemini_API_KEY;
+  const geminiApiKey = process.env.GOOGLE_GEMINI_API_KEY;
   if (!geminiApiKey) {
-    throw new ResourceNotFoundError('Google_Gemini_API_KEY is not set', {
+    throw new ResourceNotFoundError('GOOGLE_GEMINI_API_KEY is not set', {
       key: geminiApiKey,
     });
   }

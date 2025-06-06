@@ -3,10 +3,9 @@ import { LinkValidatorService } from '@/services/link/link-validator.service';
 import { LinkMetaData } from '@/services/link/link-metadata-validation';
 import { ExtractLinkMetadataService } from '@/services/link/extract-link-metadata.service';
 import { LinkDeduplicatorService } from '@/services/link/link-deduplicator.service';
-import { LinkService } from '@/services/link.service';
 
 export const LinkProcessorService = {
-  async processLink(url: string): Promise<void> {
+  async processLink(url: string): Promise<LinkMetaData | { url: string }> {
     const validUrl = await LinkValidatorService.validateLink(url);
     const metaData: LinkMetaData | { url: string } =
       await ExtractLinkMetadataService.extractMetadata(validUrl);
@@ -14,6 +13,6 @@ export const LinkProcessorService = {
       metaData.url ?? ''
     );
     await LinkDeduplicatorService.checkDuplicate(normalizedUrl);
-    await LinkService.submitLink(url);
+    return metaData;
   },
 };
