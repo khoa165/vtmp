@@ -22,46 +22,25 @@ describe('JobPostingService', () => {
   };
 
   describe('updateJobPostingById', () => {
+    let newJobPosting: IJobPosting | undefined;
+    const newUpdate = {
+      jobTitle: 'Senior Software Engineer',
+      companyName: 'Updated Company',
+      jobDescription: 'This is an updated job description.',
+    };
+    beforeEach(async () => {
+      newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+    });
     it('should throw an error when no job posting is found', async () => {
-      const newUpdate = {
-        jobTitle: 'Senior Software Engineer',
-        companyName: 'Updated Company',
-        jobDescription: 'This is an updated job description.',
-      };
-
       await expect(
         JobPostingService.updateJobPostingById(getNewMongoId(), newUpdate)
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
-    it('should not throw an error when a job posting is found', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
-      assert(newJobPosting);
-
-      const newUpdate = {
-        jobTitle: 'Senior Software Engineer',
-        companyName: 'Updated Company',
-        jobDescription: 'This is an updated job description.',
-      };
-
-      await expect(
-        JobPostingService.updateJobPostingById(newJobPosting.id, newUpdate)
-      ).eventually.fulfilled;
-    });
-
     it('should be able to update detail of a job post by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
-
-      const newUpdate = {
-        jobTitle: 'Senior Software Engineer',
-        companyName: 'Updated Company',
-        jobDescription: 'This is an updated job description.',
-      };
 
       const updatedJobPosting = await JobPostingRepository.updateJobPostingById(
         newJobPosting.id,
@@ -70,9 +49,23 @@ describe('JobPostingService', () => {
 
       expect(updatedJobPosting).to.deep.include(newUpdate);
     });
+
+    it('should not throw an error when a job posting is found', async () => {
+      assert(newJobPosting);
+
+      await expect(
+        JobPostingService.updateJobPostingById(newJobPosting.id, newUpdate)
+      ).eventually.fulfilled;
+    });
   });
 
   describe('deleteJobPostingById', () => {
+    let newJobPosting: IJobPosting | undefined;
+    beforeEach(async () => {
+      newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+    });
     it('should throw an error when no job posting is found', async () => {
       await expect(
         JobPostingService.deleteJobPostingById(getNewMongoId())
@@ -80,9 +73,6 @@ describe('JobPostingService', () => {
     });
 
     it('should not throw an error when a job posting is found', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       await expect(JobPostingService.deleteJobPostingById(newJobPosting.id))
@@ -90,9 +80,6 @@ describe('JobPostingService', () => {
     });
 
     it('should be able to set a delete-timestamp for a job posting by id', async () => {
-      const newJobPosting = await JobPostingRepository.createJobPosting({
-        jobPostingData: mockJobPosting,
-      });
       assert(newJobPosting);
 
       const deletedJobPosting = await JobPostingRepository.deleteJobPostingById(

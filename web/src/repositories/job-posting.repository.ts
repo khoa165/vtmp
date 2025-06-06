@@ -4,7 +4,9 @@ import {
   JobFilter,
 } from '@/models/job-posting.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
+import { JobPostingRegion } from '@vtmp/common/constants';
 import escapeStringRegexp from 'escape-string-regexp';
+
 import { ClientSession } from 'mongoose';
 
 export const JobPostingRepository = {
@@ -28,7 +30,16 @@ export const JobPostingRepository = {
 
   updateJobPostingById: async (
     jobId: string,
-    newUpdate: object
+    newUpdate: {
+      externalPostingId?: string;
+      url?: string;
+      jobTitle?: string;
+      companyName?: string;
+      location?: JobPostingRegion;
+      datePosted?: Date;
+      jobDescription?: string;
+      adminNote?: string;
+    }
   ): Promise<IJobPosting | null> => {
     return JobPostingModel.findOneAndUpdate(
       { _id: jobId, deletedAt: null },

@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { mentorshipPeople } from '@/data/people';
 import { OffersBarChart } from './offers-bar-chart';
 import { useInterviewData } from '@/hooks/useInterviewData';
-import { Container } from 'reactstrap';
 import { InterviewsBarChart } from './interviews-bar-chart';
 import { Tabs, Tab, Box } from '@mui/material';
 import { StatsType } from '@/utils/constants';
@@ -59,27 +58,33 @@ export const StatsPage: React.FC<StatsPageProps> = ({ type }) => {
 
   return (
     <>
-      <Container>
+      <div className="container mx-auto px-4">
         <Tabs value={type} onChange={onChangeTab}>
           <Tab label="Logos" value={StatsType.LOGOS} />
           <Tab label="Timeline" value={StatsType.TIMELINE} />
           <Tab label="Offers" value={StatsType.OFFERS} />
           <Tab label="Interviews" value={StatsType.INTERVIEWS} />
         </Tabs>
-      </Container>
+      </div>
 
       <div id="stats-container" className="app-flex flex-column">
         <TabPanel value={type} type={StatsType.LOGOS}>
           <OfferLogos />
         </TabPanel>
         <TabPanel value={type} type={StatsType.TIMELINE}>
-          <Timeline datesWithCount={interviewData.datesWithCount} />
+          <div className="flex justify-center">
+            <Timeline datesWithCount={interviewData.datesWithCount} />
+          </div>
         </TabPanel>
         <TabPanel value={type} type={StatsType.OFFERS}>
-          <OffersBarChart count={count} data={data} />
+          <div className="flex justify-center">
+            <OffersBarChart count={count} data={data} />
+          </div>
         </TabPanel>
         <TabPanel value={type} type={StatsType.INTERVIEWS}>
-          <InterviewsBarChart data={interviewData} />
+          <div className="flex justify-center">
+            <InterviewsBarChart data={interviewData} />
+          </div>
         </TabPanel>
       </div>
     </>

@@ -19,7 +19,7 @@ import { expect } from 'chai';
 import { addDays, differenceInSeconds, subDays } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import { describe } from 'mocha';
-import * as R from 'remeda';
+import { omit } from 'remeda';
 import { getEmailService } from '@/utils/email';
 import { SinonStub } from 'sinon';
 
@@ -171,7 +171,7 @@ describe('InvitationService', () => {
         await InvitationRepository.getInvitationById(expiredInvitation.id);
       assert(invitationWithNewExpiryDate);
       expect(invitationWithNewExpiryDate.toObject()).to.deep.include(
-        R.omit({ ...mockOneInvitation, sender: toMongoId(mockAdminId) }, [
+        omit({ ...mockOneInvitation, sender: toMongoId(mockAdminId) }, [
           'expiryDate',
         ])
       );

@@ -1,9 +1,10 @@
+import { EnvConfig } from '@/config/env';
 import { Method } from '@/utils/constants';
 import axios from 'axios';
 import { toast } from 'sonner';
 
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+  baseURL: `${EnvConfig.get().VITE_API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -15,7 +16,9 @@ api.interceptors.response.use(
     const status = error.response?.status;
     if (status === 429) {
       toast.error(error.response?.data.message);
-      return Promise.reject();
+      return Promise.reject(error);
+    } else if (status === 400) {
+      return Promise.reject(error);
     }
   }
 );
