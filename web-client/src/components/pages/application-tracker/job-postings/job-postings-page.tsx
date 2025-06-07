@@ -3,9 +3,13 @@ import { JobPostingStatusCards } from '@/components/pages/application-tracker/jo
 import React from 'react';
 
 export const JobPostingsPage = () => {
+  const rawUser = localStorage.getItem('user');
+  const user = rawUser ? JSON.parse(rawUser) : null;
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold text-foreground">Welcome back, {}.</h1>
+      <h1 className="text-3xl font-bold text-foreground">
+        Welcome back, {`${user.firstName} ${user.lastName}`}.
+      </h1>
       <JobPostingStatusCards />
       <JobPostingsContainer />
     </div>

@@ -160,7 +160,7 @@ export enum QueryKey {
   GET_JOB_POSTINGS = '/api/job-postings/not-applied',
   GET_JOB_POSTINGS_IN_ADAY = '/api/job-postings/not-applied-last-24h',
   GET_APPLICATIONS_COUNT_BY_STATUS = '/api/applications/countByStatus',
-  GET_DASHBOARD_LINKS = '/api/links/getLinks',
+  GET_LINKS = '/api/links/getLinks',
   GET_LINKS_COUNT_BY_STATUS = '/api/links/count-by-status',
 }
 
