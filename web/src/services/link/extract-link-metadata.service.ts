@@ -10,6 +10,7 @@ import { GenerateContentResponse } from '@google/genai';
 import { GoogleGenAI } from '@google/genai';
 import { ResourceNotFoundError } from '@/utils/errors';
 import puppeteer, { Browser, Page } from 'puppeteer';
+import { NotRetryableError } from 'ts-retry-promise';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = process.env.GOOGLE_GEMINI_API_KEY;
@@ -59,13 +60,17 @@ const scrapeWebsite = async (url: string): Promise<string> => {
   const browser: Browser = await puppeteer.launch({ headless: true });
   const page: Page = await browser.newPage();
 
-  await page.goto(url, { waitUntil: 'networkidle2' });
+  const response = await page.goto(url, { waitUntil: 'networkidle2' });
+  if (response?.status() === 403) {
+    throw new NotRetryableError('Forbidden');
+  }
 
   const bodyText: string = await page.$eval(
     'body',
     (el: HTMLBodyElement) => el.innerText
   );
 
+  console.log('hello');
   await browser.close();
   return bodyText;
 };
@@ -74,12 +79,8 @@ const ExtractLinkMetadataService = {
   extractMetadata: async (
     url: string
   ): Promise<LinkMetaData | { url: string }> => {
-    try {
-      const extractedText = await scrapeWebsite(url);
-      return generateMetaData(extractedText, url);
-    } catch {
-      return { url };
-    }
+    const extractedText = await scrapeWebsite(url);
+    return await generateMetaData(extractedText, url);
   },
 };
 

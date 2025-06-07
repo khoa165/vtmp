@@ -42,7 +42,7 @@ const LinkSchema = new mongoose.Schema<ILink>(
     location: {
       type: String,
       enum: Object.values(LinkRegion),
-      default: LinkRegion.US,
+      default: LinkRegion.OTHER,
     },
     datePosted: {
       type: Date,

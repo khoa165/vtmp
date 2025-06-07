@@ -1,4 +1,17 @@
 import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
+import { retry } from 'ts-retry-promise';
+
+export const createRetryer = (retries = 3, timeout = 63) => {
+  const config = {
+    retries,
+    delay: 1000,
+    timeout: timeout * 1000,
+  };
+
+  return function <T>(asyncFn: () => Promise<T>): Promise<T> {
+    return retry(asyncFn, config);
+  };
+};
 
 const formatJobDescription = (description: {
   responsibility: string;

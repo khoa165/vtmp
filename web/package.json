@@ -33,6 +33,7 @@
     "normalize-url": "^8.0.1",
     "puppeteer": "^24.10.0",
     "remeda": "^2.22.5",
+    "ts-retry-promise": "^0.8.1",
     "zod": "^3.25.51"
   },
   "devDependencies": {

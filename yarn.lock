@@ -5577,6 +5577,7 @@ __metadata:
     supertest: "npm:^7.1.0"
     ts-loader: "npm:^9.5.2"
     ts-node: "npm:^10.9.2"
+    ts-retry-promise: "npm:^0.8.1"
     tsc-alias: "npm:^1.8.11"
     tsx: "npm:^4.19.3"
     typescript: "npm:^5.8.3"
@@ -14351,6 +14352,13 @@ __metadata:
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
   checksum: 10c0/5f29938489f96982a25ba650b64218e83a3357d76f7bede80195c65ab44ad279c8357264639b7abdd5d7e75fc269a83daa0e9c62fd8637a3def67254ecc9ddc2
+  languageName: node
+  linkType: hard
+
+"ts-retry-promise@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "ts-retry-promise@npm:0.8.1"
+  checksum: 10c0/69758255f9b185c6bf24da848b5b5102fa7a233c1fb04747076132799116d13eb3ec30bd35eb18bfda1522232a77b97275ad99cee9597b2449f0474d6d9261dd
   languageName: node
   linkType: hard
 
