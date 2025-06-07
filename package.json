@@ -34,7 +34,8 @@
     "packages/common",
     "web-client",
     "web",
-    "discord-service"
+    "discord-service",
+    "link-processing-service"
   ],
   "devDependencies": {
     "@eslint/js": "^9.22.0",
