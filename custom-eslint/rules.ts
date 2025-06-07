@@ -5,7 +5,7 @@ const createRule = ESLintUtils.RuleCreator(
   (name) => `https://example.com/rule/${name}`
 );
 
-export const noRequireFunctionCalls = createRule({
+export const noRequireFunctionCalls = createRule<[], 'noRequire'>({
   name: 'no-require-function-calls',
   meta: {
     type: 'problem',

@@ -1,7 +1,7 @@
 import { noRequireFunctionCalls } from './rules';
 
-export default {
-  rulesCustom: {
+export const rulesCustom = {
+  rules: {
     'no-require-function-calls': noRequireFunctionCalls,
   },
 };
