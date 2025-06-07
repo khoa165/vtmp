@@ -15,7 +15,7 @@ import { Input } from '@/components/base/input';
 import { Card, CardContent } from '@/components/base/card';
 import { Badge } from '@/components/base/badge';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '@/components/pages/application-tracker/landing/jobtrackr-landing.css';
 
 // Custom hook for intersection observer
@@ -71,6 +71,8 @@ function useCounter(end: number, duration = 2000, isActive = false) {
 }
 
 export default function JobTrackrLanding() {
+  const navigate = useNavigate();
+
   const [heroRef, heroInView] = useInView(0.1);
   const [featuresRef, featuresInView] = useInView(0.1);
   const [statsRef, statsInView] = useInView(0.3);
@@ -81,6 +83,20 @@ export default function JobTrackrLanding() {
   const appsCount = useCounter(50, 2500, statsInView);
   const successRate = useCounter(85, 2000, statsInView);
   const rating = useCounter(49, 2000, statsInView);
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1); // Remove the '#' character from the hash
+    if (hash) {
+      const element = document.getElementById(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [window.location.hash]);
+
+  const handleScrollTo = (hash: string) => {
+    window.location.hash = hash;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
@@ -103,27 +119,27 @@ export default function JobTrackrLanding() {
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#66FFCC] to-[#F8FF6A] transition-all duration-300 group-hover:w-full"></span>
           </Link>
           <Link
-            to="#pricing"
+            to="/"
             className="text-sm font-medium text-gray-600 hover:text-[#333333] transition-all duration-300 hover:scale-105 relative group"
           >
-            Pricing
+            Mentorship
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#66FFCC] to-[#F8FF6A] transition-all duration-300 group-hover:w-full"></span>
           </Link>
-          <Link
-            to="#about"
-            className="text-sm font-medium text-gray-600 hover:text-[#333333] transition-all duration-300 hover:scale-105 relative group"
+          <Button
+            className="bg-gradient-to-r from-[#66FFCC] to-[#F8FF6A] text-[#333333] hover:opacity-90 font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#66FFCC]/25"
+            onClick={() => navigate('/login')}
           >
-            About
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#66FFCC] to-[#F8FF6A] transition-all duration-300 group-hover:w-full"></span>
-          </Link>
-          <Button className="bg-gradient-to-r from-[#66FFCC] to-[#F8FF6A] text-[#333333] hover:opacity-90 font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#66FFCC]/25">
             Get Started
           </Button>
         </nav>
       </header>
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative overflow-hidden pt-32 pb-32">
+      <section
+        id="main"
+        ref={heroRef}
+        className="relative overflow-hidden pt-32 pb-32"
+      >
         {/* Artistic Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div
@@ -172,6 +188,7 @@ export default function JobTrackrLanding() {
               <Button
                 size="lg"
                 className="bg-gradient-to-r from-[#66FFCC] to-[#F8FF6A] text-[#333333] hover:opacity-90 font-semibold flex-1 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#66FFCC]/25 group"
+                onClick={() => navigate('/login')}
               >
                 Start Free Trial
                 <AnimatedArrowRight className="ml-2 w-4 h-4" />
@@ -232,32 +249,32 @@ export default function JobTrackrLanding() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                icon: AnimatedTarget,
-                title: 'Application Tracking',
+                icon: AnimatedClock,
+                title: 'Early Access',
                 description:
-                  'Keep track of every application with detailed status updates and notes.',
-                gradient: 'from-[#66FFCC] to-[#F8FF6A]',
+                  'Get early access to new job postings from your favorite companies.',
+                gradient: 'from-[#F8FF6A] to-[#FEB584]',
               },
               {
                 icon: AnimatedCalendar,
-                title: 'Interview Scheduler',
+                title: 'Application Tracking',
                 description:
-                  'Never miss an interview with smart scheduling and reminders.',
+                  'Keep track of every application with detailed status updates and notes.',
                 gradient: 'from-[#F49DFF] to-[#A2BFF0]',
               },
               {
-                icon: AnimatedTrendingUp,
-                title: 'Progress Analytics',
+                icon: AnimatedTarget,
+                title: 'Interview Insights',
                 description:
-                  'Visualize your job search progress with beautiful charts and insights.',
-                gradient: 'from-[#FEB584] to-[#F8FF6A]',
+                  'Get insights for interview preparation and improve your chances of success.',
+                gradient: 'from-[#66FFCC] to-[#F8FF6A]',
               },
               {
                 icon: AnimatedUsers,
-                title: 'Contact Management',
+                title: 'Mentorship Support',
                 description:
-                  'Build and maintain relationships with recruiters and hiring managers.',
-                gradient: 'from-[#A3F890] to-[#66FFCC]',
+                  'Get personalized advice and support from experienced professionals.',
+                gradient: 'from-[#FEB584] to-[#F8FF6A]',
               },
               {
                 icon: AnimatedBarChart,
@@ -267,11 +284,11 @@ export default function JobTrackrLanding() {
                 gradient: 'from-[#A2BFF0] to-[#F49DFF]',
               },
               {
-                icon: AnimatedClock,
-                title: 'Time Management',
+                icon: AnimatedTrendingUp,
+                title: 'Progress Analytics',
                 description:
-                  'Allocate time effectively across applications, networking, and skill building.',
-                gradient: 'from-[#F8FF6A] to-[#FEB584]',
+                  'Visualize your job search progress with beautiful charts and insights.',
+                gradient: 'from-[#A3F890] to-[#66FFCC]',
               },
             ].map((feature, index) => (
               <Card
@@ -428,45 +445,31 @@ export default function JobTrackrLanding() {
               <ul className="space-y-2 text-sm text-gray-400">
                 <li>
                   <Link
-                    to="#"
+                    to="#main"
                     className="hover:text-[#66FFCC] transition-all duration-300 hover:translate-x-1"
+                    onClick={() => handleScrollTo('#main')}
+                  >
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="#features"
+                    className="hover:text-[#66FFCC] transition-all duration-300 hover:translate-x-1"
+                    onClick={() => handleScrollTo('#features')}
                   >
                     Features
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="hover:text-[#66FFCC] transition-all duration-300 hover:translate-x-1"
-                  >
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="hover:text-[#66FFCC] transition-all duration-300 hover:translate-x-1"
-                  >
-                    Integrations
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="hover:text-[#66FFCC] transition-all duration-300 hover:translate-x-1"
-                  >
-                    API
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
+              <h4 className="font-semibold mb-4">Mentorship</h4>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li>
                   <Link
-                    to="#"
+                    to="/summary"
                     className="hover:text-[#66FFCC] transition-all duration-300 hover:translate-x-1"
                   >
                     About
@@ -474,26 +477,26 @@ export default function JobTrackrLanding() {
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/resources"
                     className="hover:text-[#66FFCC] transition-all duration-300 hover:translate-x-1"
                   >
-                    Blog
+                    Resources
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/people"
                     className="hover:text-[#66FFCC] transition-all duration-300 hover:translate-x-1"
                   >
-                    Careers
+                    People
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/stats"
                     className="hover:text-[#66FFCC] transition-all duration-300 hover:translate-x-1"
                   >
-                    Contact
+                    Achievements
                   </Link>
                 </li>
               </ul>
@@ -524,14 +527,6 @@ export default function JobTrackrLanding() {
                     className="hover:text-[#66FFCC] transition-all duration-300 hover:translate-x-1"
                   >
                     Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="hover:text-[#66FFCC] transition-all duration-300 hover:translate-x-1"
-                  >
-                    Status
                   </Link>
                 </li>
               </ul>
