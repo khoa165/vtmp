@@ -83,10 +83,21 @@ export const App = () => {
             />
             <Route path="/application-tracker" element={<ApplicationsPage />} />
             <Route
-              path="/admin/send-invitation"
-              element={<SendInvitationPage />}
+              path="/admin/links"
+              element={
+                <ProtectedRoute roles={[UserRole.ADMIN]}>
+                  <AdminLinksPage />
+                </ProtectedRoute>
+              }
             />
-            <Route path="/admin/links" element={<AdminLinksPage />} />
+            <Route
+              path="/admin/send-invitation"
+              element={
+                <ProtectedRoute roles={[UserRole.ADMIN]}>
+                  <SendInvitationPage />
+                </ProtectedRoute>
+              }
+            />
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/*" element={<NotFoundPage />} />
