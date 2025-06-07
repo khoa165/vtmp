@@ -7,6 +7,8 @@ import {
   ApplicationResponseSchema,
   ApplicationsCountByStatusSchema,
   ApplicationData,
+  InterviewsResponseSchema,
+  InterviewResponseSchema,
 } from '@/components/pages/application-tracker/applications/validation';
 import { ApplicationStatus } from '@vtmp/common/constants';
 import axios from 'axios';
@@ -169,6 +171,114 @@ export const useUpdateApplicationMetadata = () => {
         toast.error(errorMessages.join('\n'));
       } else {
         toast.error('Unexpected error');
+      }
+    },
+  });
+};
+
+export const useGetInterviewByApplicationId = (applicationId: string) => {
+  return useQuery({
+    queryKey: [QueryKey.GET_INTERVIEW_BY_APPLICATION_ID, applicationId],
+    queryFn: () =>
+      request({
+        method: Method.GET,
+        url: `/interviews/by-application/${applicationId}`,
+        schema: InterviewsResponseSchema,
+        options: { includeOnlyDataField: true, requireAuth: true },
+      }),
+    enabled: !!applicationId,
+    staleTime: 1000 * 20,
+  });
+};
+
+export const useCreateInterview = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      body,
+    }: {
+      body: {
+        applicationId: string;
+        interviewOnDate: Date;
+        types: string[];
+        status: string;
+        note?: string;
+      };
+    }) =>
+      request({
+        method: Method.POST,
+        url: '/interviews',
+        data: body,
+        schema: InterviewResponseSchema,
+        options: { requireAuth: true },
+      }),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          QueryKey.GET_INTERVIEW_BY_APPLICATION_ID,
+          res.data.applicationId,
+        ],
+      });
+      toast.success(res.message);
+    },
+    onError: (error: unknown) => {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessages = error.response.data.errors.map(
+          (err) => err.message
+        );
+        toast.error(errorMessages.join('\n'));
+      } else {
+        toast.error(
+          error instanceof Error ? error.message : 'Unexpected error'
+        );
+      }
+    },
+  });
+};
+
+export const useUpdateInterview = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      interviewId,
+      body,
+    }: {
+      interviewId: string;
+      body: {
+        interviewOnDate: Date;
+        types: string[];
+        status: string;
+        note?: string;
+      };
+    }) =>
+      request({
+        method: Method.PUT,
+        url: `/interviews/${interviewId}`,
+        data: body,
+        schema: InterviewResponseSchema,
+        options: { requireAuth: true },
+      }),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          QueryKey.GET_INTERVIEW_BY_APPLICATION_ID,
+          res.data.applicationId,
+        ],
+      });
+      toast.success(res.message);
+    },
+    onError: (error: unknown) => {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessages = error.response.data.errors.map(
+          (err) => err.message
+        );
+        toast.error(errorMessages.join('\n'));
+      } else {
+        toast.error(
+          error instanceof Error ? error.message : 'Unexpected error'
+        );
       }
     },
   });

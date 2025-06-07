@@ -29,12 +29,10 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
   sorting,
   setSorting,
   selectedApplicationId,
-  setSelectedApplicationId,
 }: DataTableProps<TData, TValue> & {
   sorting: SortingState;
   setSorting: OnChangeFn<SortingState>;
-  selectedApplicationId: string | null;
-  setSelectedApplicationId: (id: string | null) => void;
+  selectedApplicationId: string;
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -69,8 +67,10 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
     },
   });
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   return (
-    <>
+    <div className="relative">
       <section className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter companies..."
@@ -85,14 +85,10 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
       <ResizableTable table={table} columns={columns} />
 
       <InterviewDrawer
-        open={!!selectedApplicationId}
-        onOpenChange={(open) => {
-          if (!open) {
-            setSelectedApplicationId(null);
-          }
-        }}
+        open={isDrawerOpen}
+        onOpenChange={setIsDrawerOpen}
         applicationId={selectedApplicationId}
       />
-    </>
+    </div>
   );
 }

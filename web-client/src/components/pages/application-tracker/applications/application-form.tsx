@@ -1,6 +1,9 @@
 import { ApplicationData } from '@/components/pages/application-tracker/applications/validation';
 import { useEffect, useState } from 'react';
-import { ApplicationFormInput } from '@/components/pages/application-tracker/applications/application-form-input';
+import {
+  ApplicationFormInput,
+  ApplicationTextAreaInput,
+} from '@/components/pages/application-tracker/applications/application-form-input';
 import { Button } from '@/components/base/button';
 import {
   AlertDialog,
@@ -43,9 +46,9 @@ export const ApplicationForm = ({
     interest,
   } = currentApplication;
   const [applicationForm, setApplicationForm] = useState<ApplicationData>({
-    note: note,
-    referrer: referrer,
-    portalLink: portalLink,
+    note: note || '',
+    referrer: referrer || '',
+    portalLink: portalLink || '',
     interest: interest,
   });
 
@@ -53,15 +56,15 @@ export const ApplicationForm = ({
 
   useEffect(() => {
     setApplicationForm({
-      note,
-      referrer,
-      portalLink,
-      interest,
+      note: note || '',
+      referrer: referrer || '',
+      portalLink: portalLink || '',
+      interest: interest,
     });
   }, [note, referrer, portalLink, interest]);
 
   return (
-    <div className="py-6 rounded-xl">
+    <div className="mt-8 rounded-xl">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 mb-4">
         <div>
           <ApplicationFormInput
@@ -97,32 +100,31 @@ export const ApplicationForm = ({
         </div>
       </div>
       <div>
-        <ApplicationFormInput
+        <ApplicationTextAreaInput
           label="Note"
           placeHolder="Add a note about this application"
           fieldInForm="note"
           applicationForm={applicationForm}
           setApplicationForm={setApplicationForm}
           id="note"
-          textarea={true}
         />
       </div>
 
       <div className="flex justify-end gap-2 mt-6">
         <Button
-          className="bg-gray-500 hover:bg-gray-600 text-foreground font-bold py-2 px-6 rounded"
+          className="bg-gray-100 border border-red-500 text-red-500 hover:bg-gray-200 font-bold py-2 px-6 rounded shadow-sm"
           onClick={() => setIsDialogOpen(true)}
         >
           Delete
         </Button>
         <Button
-          className="bg-red-500 hover:bg-red-600 text-foreground font-bold py-2 px-6 rounded"
+          className="bg-gray-700 hover:bg-gray-600 text-foreground font-bold py-2 px-6 rounded"
           variant="secondary"
           onClick={() => {
             setApplicationForm({
-              note: note,
-              referrer: referrer,
-              portalLink: portalLink,
+              note: note || '',
+              referrer: referrer || '',
+              portalLink: portalLink || '',
               interest: interest,
             });
           }}
@@ -130,7 +132,7 @@ export const ApplicationForm = ({
           Cancel
         </Button>
         <Button
-          className="bg-blue-500 hover:bg-blue-600 text-foreground font-bold py-2 px-6 rounded"
+          className="bg-emerald-400 hover:bg-emerald-500 inset-shadow-sm inset-shadow-emerald-400/50 text-foreground font-bold py-2 px-6 rounded"
           onClick={() => {
             updateApplicationMetadataFn({
               applicationId: applicationId,
@@ -145,7 +147,9 @@ export const ApplicationForm = ({
         <AlertDialogTrigger></AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle className="text-foreground">
+              Are you absolutely sure?
+            </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete your
               application.

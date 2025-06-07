@@ -10,6 +10,7 @@ import { SortingState } from '@tanstack/react-table';
 import { Skeleton } from '@/components/base/skeleton';
 import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
 import { CustomError } from '@/utils/errors';
+import { InterviewDrawer } from '@/components/pages/application-tracker/applications/interview-drawer';
 
 export const ApplicationsContainer = ({
   applicationFilter,
@@ -26,13 +27,14 @@ export const ApplicationsContainer = ({
   const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
 
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
-  const [selectedApplicationId, setSelectedApplicationId] = useState<
-    string | null
-  >(null);
+  const [selectedApplicationId, setSelectedApplicationId] =
+    useState<string>('');
 
-  const handleOpenDetail = (id: string) => {
+  const handleOpenDrawer = (id: string) => {
     setSelectedApplicationId(id);
+    setOpenDrawer(true);
   };
 
   const columns = useMemo(
@@ -40,9 +42,9 @@ export const ApplicationsContainer = ({
       applicationsTableColumns({
         deleteApplicationFn,
         updateApplicationStatusFn,
-        handleOpenDetail,
+        handleOpenDrawer,
       }),
-    [deleteApplicationFn, updateApplicationStatusFn, handleOpenDetail]
+    [deleteApplicationFn, updateApplicationStatusFn, handleOpenDrawer]
   );
 
   if (isLoading) {
@@ -52,12 +54,13 @@ export const ApplicationsContainer = ({
           <Skeleton className="h-10 w-[24rem] rounded-md" />
           <Skeleton className="h-10 w-[8rem] rounded-md" />
         </div>
-        <Skeleton className="h-[32rem] w-full rounded-xl" />
+        <Skeleton className="h-[32rem] w-full rounded-x   l" />
       </>
     );
   }
 
   if (error) {
+    console.error('Error fetching applications data:', error);
     throw new CustomError('Error fetching applications data');
   }
 
@@ -68,13 +71,19 @@ export const ApplicationsContainer = ({
   }
 
   return (
-    <ApplicationsTable
-      columns={columns}
-      data={applicationsData}
-      sorting={sorting}
-      setSorting={setSorting}
-      selectedApplicationId={selectedApplicationId}
-      setSelectedApplicationId={setSelectedApplicationId}
-    />
+    <>
+      <ApplicationsTable
+        columns={columns}
+        data={applicationsData}
+        sorting={sorting}
+        setSorting={setSorting}
+        selectedApplicationId={selectedApplicationId}
+      />
+      <InterviewDrawer
+        open={openDrawer}
+        onOpenChange={setOpenDrawer}
+        applicationId={selectedApplicationId}
+      />
+    </>
   );
 };

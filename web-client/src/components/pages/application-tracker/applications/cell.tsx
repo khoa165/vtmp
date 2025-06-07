@@ -58,17 +58,17 @@ export const celebrateOffered = (): void => {
 export const CellActions = ({
   application,
   deleteApplicationFn,
-  handleOpenDetail,
+  handleOpenDrawer,
 }: {
   application: IApplication;
   deleteApplicationFn: (id: string) => void;
-  handleOpenDetail: (id: string) => void;
+  handleOpenDrawer: (id: string) => void;
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
             <MoreHorizontal className="h-4 w-4" />
@@ -81,7 +81,7 @@ export const CellActions = ({
           >
             Copy application ID
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleOpenDetail(application._id)}>
+          <DropdownMenuItem onClick={() => handleOpenDrawer(application._id)}>
             Detail
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsDialogOpen(true)}>
@@ -135,7 +135,7 @@ export const CellApplicationStatus = ({
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
             justify="between"

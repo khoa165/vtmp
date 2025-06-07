@@ -1,4 +1,3 @@
-import { Button } from '@/components/base/button';
 import {
   Drawer,
   DrawerContent,
@@ -15,14 +14,15 @@ import {
   useUpdateApplicationStatus,
 } from '@/components/pages/application-tracker/applications/hooks/applications';
 import { format } from 'date-fns';
-import { Clock, ExternalLink, Briefcase, LinkIcon } from 'lucide-react';
+import { Clock, ExternalLink, Briefcase, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { DrawerStatusDropDown } from '@/components/pages/application-tracker/applications/drawer-status-dropdown';
+import { InterviewList } from '@/components/pages/application-tracker/applications/interview-list';
 
 interface InterviewDrawer {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  applicationId: string | null;
+  applicationId: string;
 }
 
 export function InterviewDrawer({
@@ -31,29 +31,47 @@ export function InterviewDrawer({
   applicationId,
 }: InterviewDrawer) {
   const {
-    isLoading,
-    error,
+    isLoading: isLoadingApplication,
+    error: applicationError,
     data: applicationData,
-  } = useGetApplicationById(applicationId || '');
-
-  if (isLoading) {
-    console.log('Loading application data...');
-  }
-
-  if (error) {
-    console.error('Error fetching application data:', error);
-    return null;
-  }
+  } = useGetApplicationById(applicationId);
 
   const { mutate: updateApplicationMetadata } = useUpdateApplicationMetadata();
   const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
   const { mutate: deleteApplicationFn } = useDeleteApplication();
 
+  if (isLoadingApplication) {
+    return (
+      <Drawer open={open} onOpenChange={onOpenChange}>
+        <DrawerContent side="bottom">
+          <div className="p-6 text-destructive">
+            <p>Loading data...</p>
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
+  if (applicationError) {
+    return (
+      <Drawer open={open} onOpenChange={onOpenChange}>
+        <DrawerContent side="bottom">
+          <div className="p-6 text-destructive">
+            <p>Error loading data. Please try again later.</p>
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <ScrollArea>
-        <DrawerContent side="bottom">
-          <div className="mx-auto w-full max-w-5xl h-[80vh] p-6 text-foreground">
+      <DrawerContent
+        side="right"
+        className="min-w-xl shadow-xl shadow-emerald-950/50"
+      >
+        <ScrollArea className="h-full w-full">
+          <div className="mx-auto p-9 text-foreground">
             <DrawerHeader>
               <DrawerTitle className="mb-3 text-4xl font-bold">
                 <Link
@@ -64,10 +82,10 @@ export function InterviewDrawer({
                   <ExternalLink className="ml-1 mt-1 h-8 w-8" />
                 </Link>
               </DrawerTitle>
-              <DrawerDescription className="flex flex-col space-x-2">
-                <div className="mb-5 text-xl font-bold text-foreground">
+              <div className="flex flex-col space-x-2">
+                <DrawerDescription className="mb-5 text-xl font-bold text-foreground">
                   {applicationData?.companyName}
-                </div>
+                </DrawerDescription>
 
                 <div className="flex items-center justify-between space-x-4 mb-4">
                   <div className="flex flex-wrap gap-2">
@@ -84,6 +102,10 @@ export function InterviewDrawer({
                           )
                         : ''}
                     </span>
+                    <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium">
+                      <MapPin className="h-4 w-4 mr-1" />
+                      {applicationData?.location}
+                    </span>
                     <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium hover:bg-muted/20 hover:text-primary hover:border-primary transition">
                       {applicationData && (
                         <DrawerStatusDropDown
@@ -93,18 +115,8 @@ export function InterviewDrawer({
                       )}
                     </span>
                   </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <Button className="bg-foreground text-background">
-                      + Share interview note
-                    </Button>
-                    <Button variant="secondary" className="flex items-center">
-                      <LinkIcon className="mr-2 h-4 w-4" /> View community
-                      insights
-                    </Button>
-                  </div>
                 </div>
-              </DrawerDescription>
+              </div>
             </DrawerHeader>
 
             <ApplicationForm
@@ -119,9 +131,11 @@ export function InterviewDrawer({
               deleteApplicationFn={deleteApplicationFn}
               onOpenChange={onOpenChange}
             />
+
+            <InterviewList applicationId={applicationId} />
           </div>
-        </DrawerContent>
-      </ScrollArea>
+        </ScrollArea>
+      </DrawerContent>
     </Drawer>
   );
 }
