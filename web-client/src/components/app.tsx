@@ -21,7 +21,7 @@ import { PageWithToast } from '@/components/layout/page-with-toast';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
 import { SendInvitationPage } from '@/components/pages/admins/invitations/send-invitation';
-import { DashBoardPage } from '@/components/pages/admins/dashboard/dashboard-page';
+import { AdminLinksPage } from '@/components/pages/admins/links/admin-links-page';
 import { NotFoundPage } from './pages/shared/not-found-page';
 import { ProtectedRoute } from '@/utils/protect-route';
 import { UserRole } from '@vtmp/common/constants';
@@ -86,7 +86,7 @@ export const App = () => {
               path="/admin/send-invitation"
               element={<SendInvitationPage />}
             />
-            <Route path="/admin/dashboard" element={<DashBoardPage />} />
+            <Route path="/admin/links" element={<AdminLinksPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/*" element={<NotFoundPage />} />
