@@ -3,7 +3,7 @@ import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
 const formatJobDescription = (description: {
   responsibility: string;
   requirement: string;
-  prefferred: string;
+  preferred: string;
 }): string => {
   const formatSection = (title: string, content: string) => {
     const lines = content
@@ -23,15 +23,15 @@ const formatJobDescription = (description: {
     result += '\n' + formatSection('Requirements', description.requirement);
   }
 
-  if (description.prefferred != '') {
+  if (description.preferred != '') {
     result +=
-      '\n' + formatSection('Preferred Qualifications', description.prefferred);
+      '\n' + formatSection('Preferred Qualifications', description.preferred);
   }
 
   return result.length > 0 ? '\n' + result.trim() : '';
 };
 
-const extractLinkMetaDatPrompt = async (extractedText: string) => `
+const buildPrompt = (extractedText: string): string => `
 ${extractedText}
 \n\n
 You are given a raw text of a job posting. Extract the following structured fields from it:
@@ -61,9 +61,12 @@ Strategy:
 - Look for an “Apply” section or similar phrases like “Apply Now” or “Submit Application.” Job title and company are typically located just above this.
 - The job description, including responsibilities and requirements, is generally located below.
 
-If any of the above fields are not available in the input, leave them as an empty string.
+**Important:**
+- If any of the above fields are not available in the input, use an empty string ("").
+- Do not explain your answer.
+- Return only a single JSON object, with no extra text, markdown, or code block formatting.
+- Field names must match exactly as shown below.
 
-Do not explain your answer.
 Return the extracted information with the following format:
 {
   "jobTitle": string,
@@ -76,10 +79,9 @@ Return the extracted information with the following format:
   {
     "responsibility": string,
     "requirement": string,
-    "prefferred": string
+    "preferred": string
   }
 }
-
 `;
 
-export { extractLinkMetaDatPrompt, formatJobDescription };
+export { buildPrompt, formatJobDescription };

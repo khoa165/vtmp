@@ -1,18 +1,15 @@
 import { EnvConfig } from '@/config/env';
-import {
-  extractLinkMetaDatPrompt,
-  formatJobDescription,
-} from '@/helpers/link.helpers';
+import { buildPrompt, formatJobDescription } from '@/helpers/link.helpers';
 import {
   LinkMetaData,
   LinkMetaDataSchema,
+  RawAIResponse,
+  RawAIResponseSchema,
 } from '@/services/link-metadata-validation';
 import { GenerateContentResponse } from '@google/genai';
 import { GoogleGenAI } from '@google/genai';
 // import { ResourceNotFoundError } from '@/utils/errors';
-// import puppeteer, { Browser, Page } from 'puppeteer';
-import puppeteer, { Browser, Page } from 'puppeteer-core';
-import chromium from '@sparticuz/chromium';
+import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
@@ -24,69 +21,91 @@ const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   return new GoogleGenAI({ apiKey: geminiApiKey });
 };
 
+const parseJson = (text: string): RawAIResponse | null => {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+};
+
+const mapStringToEnum = <T extends Record<string, string>>({
+  enumObject,
+  value,
+  fallback,
+}: {
+  enumObject: T;
+  value: string;
+  fallback: T[keyof T];
+}): T[keyof T] => {
+  const match = Object.values(enumObject).find((v) => v === value);
+  if (!match) {
+    return fallback;
+  }
+  return match as T[keyof T];
+};
+
 const generateMetaData = async (
   extractedText: string,
   url: string
 ): Promise<LinkMetaData | { url: string }> => {
   const genAI = await getGoogleGenAI();
-  const prompt = await extractLinkMetaDatPrompt(extractedText);
+  const prompt = await buildPrompt(extractedText);
 
   const response: GenerateContentResponse = await genAI.models.generateContent({
     model: 'gemini-2.0-flash',
     contents: prompt,
   });
 
-  const text = response.text?.replace(/```json|```/g, '').trim();
-  if (!text) return { url };
+  // Get raw response from AI
+  const rawAIResponse = response.text?.replace(/```json|```/g, '').trim();
+  if (!rawAIResponse) return { url };
 
-  const parsedResponse = JSON.parse(text);
+  // JSON.parse it to convert to JS object if it is not null/undefined
+  const parsedAIResponse = parseJson(rawAIResponse);
 
-  const formattedLinkMetaData: LinkMetaData = {
-    url,
-    ...parsedResponse,
-    jobDescription: formatJobDescription(parsedResponse.jobDescription),
-  };
-
-  if (
-    !formattedLinkMetaData.jobTitle ||
-    !formattedLinkMetaData.companyName ||
-    !formattedLinkMetaData.jobDescription
-  ) {
+  // Validate it against zod schema
+  const validated = RawAIResponseSchema.safeParse(parsedAIResponse);
+  if (!validated.success) {
     return { url };
   }
 
-  return LinkMetaDataSchema.parse(formattedLinkMetaData);
-};
+  const validatedAIResponse = validated.data;
 
-const scrapeWebsite = async (url: string): Promise<string> => {
-  // const browser: Browser = await puppeteer.launch({ headless: true });
-  // Instead of the default Puppeteer Chrominum browser, use the Chromium browser
-  // supplied by @sparticuz/chromium libary for compatibility with serverless Lambda
-  const browser: Browser = await puppeteer.launch({
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath(),
-    headless: chromium.headless,
-  });
-  const page: Page = await browser.newPage();
+  // Convert from string to Typescript enum, had to use a separate helper function
+  const formattedLinkMetaData: LinkMetaData = {
+    url,
+    jobTitle: validatedAIResponse.jobTitle,
+    companyName: validatedAIResponse.companyName,
+    location: mapStringToEnum({
+      enumObject: LinkRegion,
+      value: validatedAIResponse.location,
+      fallback: LinkRegion.OTHER,
+    }),
+    jobFunction: mapStringToEnum({
+      enumObject: JobFunction,
+      value: validatedAIResponse.jobFunction,
+      fallback: JobFunction.SOFTWARE_ENGINEER,
+    }),
+    jobType: mapStringToEnum({
+      enumObject: JobType,
+      value: validatedAIResponse.jobType,
+      fallback: JobType.INDUSTRY,
+    }),
+    datePosted: validatedAIResponse.datePosted,
+    jobDescription: formatJobDescription(validatedAIResponse.jobDescription),
+  };
 
-  await page.goto(url, { waitUntil: 'networkidle2' }); // Make sure the page is fully loaded before proceeding
-
-  const bodyText: string = await page.$eval(
-    'body',
-    (el: HTMLBodyElement) => el.innerText
-  );
-
-  await browser.close();
-  return bodyText;
+  const result = LinkMetaDataSchema.safeParse(formattedLinkMetaData);
+  return result.success ? result.data : { url };
 };
 
 const ExtractLinkMetadataService = {
   extractMetadata: async (
-    url: string
+    url: string,
+    extractedText: string
   ): Promise<LinkMetaData | { url: string }> => {
     try {
-      const extractedText = await scrapeWebsite(url);
       return generateMetaData(extractedText, url);
     } catch {
       return { url };
@@ -94,4 +113,4 @@ const ExtractLinkMetadataService = {
   },
 };
 
-export { scrapeWebsite, generateMetaData, ExtractLinkMetadataService };
+export { generateMetaData, ExtractLinkMetadataService };

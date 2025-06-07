@@ -5485,6 +5485,7 @@ __metadata:
     "@types/aws-lambda": "npm:^8.10.149"
     "@types/node": "npm:^22.15.30"
     "@vtmp/common": "npm:1.0.0"
+    axios: "npm:^1.9.0"
     dotenv: "npm:^16.5.0"
     normalize-url: "npm:^8.0.1"
     puppeteer-core: "npm:^24.10.0"
