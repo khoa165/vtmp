@@ -70,7 +70,6 @@ const scrapeWebsite = async (url: string): Promise<string> => {
     (el: HTMLBodyElement) => el.innerText
   );
 
-  console.log('hello');
   await browser.close();
   return bodyText;
 };
