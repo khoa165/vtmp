@@ -1,3 +1,4 @@
+import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
 import { JobPostingsContainer } from '@/components/pages/application-tracker/job-postings/job-postings-container';
 import { JobPostingStatusCards } from '@/components/pages/application-tracker/job-postings/job-postings-status';
 import React from 'react';
@@ -10,8 +11,13 @@ export const JobPostingsPage = () => {
       <h1 className="text-3xl font-bold text-foreground">
         Welcome back, {`${user.firstName} ${user.lastName}`}.
       </h1>
-      <JobPostingStatusCards />
-      <JobPostingsContainer />
+      <ErrorBoundaryWrapper customText="Application Status Cards">
+        <JobPostingStatusCards />
+      </ErrorBoundaryWrapper>
+
+      <ErrorBoundaryWrapper customText="Application Status Cards">
+        <JobPostingsContainer />
+      </ErrorBoundaryWrapper>
     </div>
   );
 };
