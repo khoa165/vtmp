@@ -11,11 +11,11 @@ export const JobPostingsPage = () => {
       <h1 className="text-3xl font-bold text-foreground">
         Welcome back, {`${user.firstName} ${user.lastName}`}.
       </h1>
-      <ErrorBoundaryWrapper customText="Application Status Cards">
+      <ErrorBoundaryWrapper customText="Job Postings Status Cards">
         <JobPostingStatusCards />
       </ErrorBoundaryWrapper>
 
-      <ErrorBoundaryWrapper customText="Application Status Cards">
+      <ErrorBoundaryWrapper customText="Job Postings Table">
         <JobPostingsContainer />
       </ErrorBoundaryWrapper>
     </div>
