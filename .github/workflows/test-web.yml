@@ -3,6 +3,9 @@ name: Test web
 
 on:
   workflow_call:
+    secrets:
+      CODECOV_TOKEN:
+        required: true
 
 jobs:
   test-web:
