@@ -14,8 +14,8 @@ jobs:
 
   test-web:
     uses: ./.github/workflows/test-web.yml
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    # secrets:
+    #   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   build-web-client:
     uses: ./.github/workflows/build-web-client.yml
