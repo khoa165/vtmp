@@ -50,8 +50,10 @@ const runSeeds = async () => {
   } = allConfigurations[EnvConfig.get().SEED_ENV] ?? defaultConfiguration;
 
   const users = await loadUsers(usersCount);
-  const links = await loadLinks(linksCount);
-  const jobPostings = await loadJobPostings(links);
+  const links1 = await loadLinks(linksCount);
+  const links2 = await loadLinks(linksCount);
+  await loadJobPostings(links1);
+  const jobPostings = await loadJobPostings(links2);
   const applications = await loadApplications({
     users,
     jobPostings,
