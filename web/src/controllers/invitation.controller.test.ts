@@ -15,7 +15,6 @@ import { InvitationStatus } from '@vtmp/common/constants';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { addDays, subDays } from 'date-fns';
 import { InvitationRepository } from '@/repositories/invitation.repository';
-import assert from 'assert';
 import jwt from 'jsonwebtoken';
 import { IInvitation } from '@/models/invitation.model';
 import { omit } from 'remeda';
@@ -250,8 +249,8 @@ describe('InvitationController', () => {
       );
     });
 
-    it('should update invitation to new expiry date and return null when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
-      const expiredInvitation = await InvitationRepository.createInvitation({
+    it('should update invitation to new expiry date and return updated invitation when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
+      await InvitationRepository.createInvitation({
         ...mockOneInvitation,
         expiryDate: subDays(Date.now(), 2),
       });
@@ -268,21 +267,14 @@ describe('InvitationController', () => {
         .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      assert(!res.body.data);
 
-      const invitationWithNewExpiryDate =
-        await InvitationRepository.getInvitationById(expiredInvitation.id);
-      assert(invitationWithNewExpiryDate);
-      expect(invitationWithNewExpiryDate).to.deep.include(
+      expect(res.body.data).to.deep.include(
         omit(mockOneInvitation, ['expiryDate', 'sender'])
       );
-      expect(String(invitationWithNewExpiryDate.sender)).to.equal(mockAdminId);
+      expect(String(res.body.data.sender)).to.equal(mockAdminId);
 
       const timeDiff = Math.abs(
-        differenceInSeconds(
-          invitationWithNewExpiryDate.expiryDate,
-          expectedExpiryDate
-        )
+        differenceInSeconds(res.body.data.expiryDate, expectedExpiryDate)
       );
       expect(timeDiff).to.lessThan(3);
       expect(sendEmailStub.calledOnce).to.equal(true);
