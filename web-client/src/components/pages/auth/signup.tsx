@@ -111,7 +111,6 @@ const SignUpPage = () => {
         schema: AuthResponseSchema,
       }),
     onSuccess: (res) => {
-      console.log(res);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       resetState();
@@ -168,6 +167,17 @@ const SignUpPage = () => {
     });
   };
 
+  const inputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserInput({
+      ...userInput,
+      [e.target.name]: e.target.value,
+    });
+    setInputErrors({
+      ...inputErrors,
+      [e.target.name + 'Errors']: [],
+    });
+  };
+
   return (
     <div className="grid grid-cols-12 max-w-screen min-h-screen gap-4 px-20 py-15">
       <div className="col-start-1 col-span-6">
@@ -203,17 +213,9 @@ const SignUpPage = () => {
                       id="firstName"
                       name="firstName"
                       placeholder="First Name"
+                      required={true}
                       value={userInput.firstName}
-                      onChange={(e) => {
-                        setUserInput({
-                          ...userInput,
-                          [e.target.name]: e.target.value,
-                        });
-                        setInputErrors({
-                          ...inputErrors,
-                          [e.target.name + 'Errors']: [],
-                        });
-                      }}
+                      onChange={(e) => inputOnChange(e)}
                       errors={inputErrors.firstNameErrors}
                     />
                   </div>
@@ -225,17 +227,9 @@ const SignUpPage = () => {
                       id="lastName"
                       name="lastName"
                       placeholder="Last Name"
+                      required={true}
                       value={userInput.lastName}
-                      onChange={(e) => {
-                        setUserInput({
-                          ...userInput,
-                          [e.target.name]: e.target.value,
-                        });
-                        setInputErrors({
-                          ...inputErrors,
-                          [e.target.name + 'Errors']: [],
-                        });
-                      }}
+                      onChange={(e) => inputOnChange(e)}
                       errors={inputErrors.lastNameErrors}
                     />
                   </div>
@@ -261,21 +255,15 @@ const SignUpPage = () => {
                       id="password"
                       name="password"
                       placeholder="Password"
+                      required={true}
                       type={showPassword ? 'text' : 'password'}
                       value={userInput.password}
                       onChange={(e) => {
-                        setUserInput({
-                          ...userInput,
-                          [e.target.name]: e.target.value,
-                        });
+                        inputOnChange(e);
                         const passwordStrength = isPasswordValid(
                           e.target.value
                         );
                         setIsPasswordStrong(passwordStrength);
-                        setInputErrors({
-                          ...inputErrors,
-                          [e.target.name + 'Errors']: [],
-                        });
                       }}
                       errors={inputErrors.passwordErrors}
                       className="pr-10"
@@ -338,18 +326,10 @@ const SignUpPage = () => {
                       id="confirmPassword"
                       name="confirmPassword"
                       placeholder="Confirm Password"
+                      required={true}
                       type={showConfirmPassword ? 'text' : 'password'}
                       value={userInput.confirmPassword}
-                      onChange={(e) => {
-                        setUserInput({
-                          ...userInput,
-                          [e.target.name]: e.target.value,
-                        });
-                        setInputErrors({
-                          ...inputErrors,
-                          [e.target.name + 'Errors']: [],
-                        });
-                      }}
+                      onChange={(e) => inputOnChange(e)}
                       errors={inputErrors.confirmPasswordErrors}
                     />
                     <Button
