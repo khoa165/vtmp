@@ -147,7 +147,7 @@ const SignUpPage = () => {
     }) =>
       request({
         method: Method.POST,
-        url: '/auth/signup',
+        url: `/auth/signup?token=${token}`,
         data: body,
         schema: AuthResponseSchema,
       }),
