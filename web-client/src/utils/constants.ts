@@ -2,6 +2,7 @@ import {
   InterviewType,
   MentorshipRole,
   ApplicationStatus,
+  InvitationStatus,
   LinkStatus,
 } from '@vtmp/common/constants';
 
@@ -184,3 +185,11 @@ export const StatusToColorMapping: Record<
   [LinkStatus.PENDING]: 'bg-[#A2BFF0]',
   [LinkStatus.APPROVED]: 'bg-[#A3F890]',
 };
+
+export const InvitationStatusToColorMapping: Record<InvitationStatus, string> =
+  {
+    [InvitationStatus.ACCEPTED]: 'bg-(--vtmp-green)',
+    [InvitationStatus.EXPIRED]: 'bg-(--vtmp-brown)',
+    [InvitationStatus.PENDING]: 'bg-(--vtmp-yellow)',
+    [InvitationStatus.REVOKED]: 'bg-(--vtmp-orange)',
+  };
