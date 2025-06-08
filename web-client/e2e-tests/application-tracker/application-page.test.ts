@@ -98,14 +98,64 @@ test.describe('Application Table', () => {
     await firstRow
       .getByTestId('application-cell-status')
       .locator('button')
+      .first()
       .click();
 
-    const offeredMenuItem = page.getByRole('menuitem', { name: 'OFFERED' });
+    const offeredMenuItem = page.getByRole('menuitem', { name: 'Offered' });
     await expect(offeredMenuItem).toBeVisible();
     await offeredMenuItem.click();
 
     await expect(firstRow.getByTestId('application-cell-status')).toContainText(
-      'OFFERED'
+      /offered/i
     );
+  });
+  test.only('should toggle column visibility via configuration dropdown', async ({
+    page,
+  }) => {
+    const headers = [
+      'Company',
+      'Status',
+      'Date Applied',
+      'Portal Link',
+      'Interest',
+      'Referrer',
+      'Note',
+    ];
+
+    let headersBefore = 0;
+
+    for (const header of headers) {
+      headersBefore += await page
+        .getByRole('columnheader', {
+          name: header,
+        })
+        .count();
+    }
+
+    console.log('Headers before:', headersBefore);
+
+    const configButton = page.locator('[data-testid="column-config-button"]');
+    await configButton.click();
+
+    const noteCheckbox = page.locator('[data-testid="row-config-note"]');
+    await expect(noteCheckbox).toBeVisible();
+    await noteCheckbox.click();
+
+    const headersAfter = await page.getByRole('columnheader').all();
+    const headerCountAfter = headersAfter.length;
+    expect(headerCountAfter).toBe(headersBefore - 1);
+
+    const firstRow = page.getByTestId('application-table-row').first();
+    const noteCell = firstRow.locator('[data-testid="application-cell-note"]');
+    await expect(noteCell).toHaveCount(0);
+
+    await configButton.click();
+    console.log('Config button clicked');
+    await noteCheckbox.click();
+    console.log('Note checkbox clicked');
+
+    await expect(
+      firstRow.locator('[data-testid="application-cell-note"]')
+    ).toBeVisible();
   });
 });

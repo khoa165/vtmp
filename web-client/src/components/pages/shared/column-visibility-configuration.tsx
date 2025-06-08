@@ -23,7 +23,11 @@ export function ColumnVisibilityConfiguration<TData>({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger style={{ userSelect: 'none' }}>
-        <Button variant="outline" className="text-foreground">
+        <Button
+          variant="outline"
+          className="text-foreground"
+          data-testid="column-config-button"
+        >
           Configure columns visibility <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
@@ -39,6 +43,7 @@ export function ColumnVisibilityConfiguration<TData>({
               className="capitalize"
               checked={column.getIsVisible()}
               onCheckedChange={(value) => column.toggleVisibility(!!value)}
+              data-testid={`row-config-${column.id}`}
             >
               {column.id}
             </DropdownMenuCheckboxItem>
