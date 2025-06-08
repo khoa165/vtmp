@@ -157,10 +157,11 @@ export enum ProjectName {
 export enum QueryKey {
   SUBMIT_LINK = '/api/links',
   GET_APPLICATIONS = '/api/applications',
-  GET_JOB_POSTINGS = '/api//job-postings/not-applied',
+  GET_JOB_POSTINGS = '/api/job-postings/not-applied',
+  GET_JOB_POSTINGS_IN_ADAY = '/api/job-postings/not-applied-last-24h',
   GET_APPLICATIONS_COUNT_BY_STATUS = '/api/applications/countByStatus',
   GET_APPLICATION_BY_ID = '/api/applications/:id',
-  GET_DASHBOARD_LINKS = '/api/links/getLinks',
+  GET_LINKS = '/api/links/getLinks',
   GET_LINKS_COUNT_BY_STATUS = '/api/links/count-by-status',
   GET_INTERVIEW_BY_APPLICATION_ID = '/api/interviews/by-application/:applicationId',
 }
