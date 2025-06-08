@@ -6,6 +6,11 @@ import {
   RawAIResponse,
   RawAIResponseSchema,
 } from '@/services/link-metadata-validation';
+import {
+  AIExtractionError,
+  AIResponseEmptyError,
+  InvalidJsonError,
+} from '@/utils/errors';
 import { GenerateContentResponse } from '@google/genai';
 import { GoogleGenAI } from '@google/genai';
 // import { ResourceNotFoundError } from '@/utils/errors';
@@ -21,11 +26,11 @@ const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   return new GoogleGenAI({ apiKey: geminiApiKey });
 };
 
-const parseJson = (text: string): RawAIResponse | null => {
+const parseJson = (text: string, url: string): RawAIResponse => {
   try {
     return JSON.parse(text);
   } catch {
-    return null;
+    throw new InvalidJsonError('Invalid JSON format in AI response', { url });
   }
 };
 
@@ -48,7 +53,7 @@ const mapStringToEnum = <T extends Record<string, string>>({
 const generateMetaData = async (
   extractedText: string,
   url: string
-): Promise<LinkMetaData | { url: string }> => {
+): Promise<LinkMetaData> => {
   const genAI = await getGoogleGenAI();
   const prompt = await buildPrompt(extractedText);
 
@@ -59,18 +64,14 @@ const generateMetaData = async (
 
   // Get raw response from AI
   const rawAIResponse = response.text?.replace(/```json|```/g, '').trim();
-  if (!rawAIResponse) return { url };
+  if (!rawAIResponse)
+    throw new AIResponseEmptyError('AI response was empty', { url });
 
   // JSON.parse it to convert to JS object if it is not null/undefined
-  const parsedAIResponse = parseJson(rawAIResponse);
+  const parsedAIResponse = parseJson(rawAIResponse, url);
 
   // Validate it against zod schema
-  const validated = RawAIResponseSchema.safeParse(parsedAIResponse);
-  if (!validated.success) {
-    return { url };
-  }
-
-  const validatedAIResponse = validated.data;
+  const validatedAIResponse = RawAIResponseSchema.parse(parsedAIResponse);
 
   // Convert from string to Typescript enum, had to use a separate helper function
   const formattedLinkMetaData: LinkMetaData = {
@@ -96,21 +97,24 @@ const generateMetaData = async (
     jobDescription: formatJobDescription(validatedAIResponse.jobDescription),
   };
 
-  const result = LinkMetaDataSchema.safeParse(formattedLinkMetaData);
-  return result.success ? result.data : { url };
+  return LinkMetaDataSchema.parse(formattedLinkMetaData);
 };
 
 const ExtractLinkMetadataService = {
   extractMetadata: async (
     url: string,
     extractedText: string
-  ): Promise<LinkMetaData | { url: string }> => {
+  ): Promise<LinkMetaData> => {
     try {
       return generateMetaData(extractedText, url);
-    } catch {
-      return { url };
+    } catch (error) {
+      throw new AIExtractionError(
+        'Failed to extract metadata with AI',
+        { url },
+        { cause: error }
+      );
     }
   },
 };
 
-export { generateMetaData, ExtractLinkMetadataService };
+export { ExtractLinkMetadataService };

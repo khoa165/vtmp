@@ -1,4 +1,5 @@
 import { LinkProcessorService } from '@/services/link-processor.service';
+import { postWithAuthRetry } from '@/utils/auth';
 import {
   Context,
   APIGatewayProxyResult,
@@ -13,7 +14,19 @@ export const handler = async (
   console.log(`Context: ${JSON.stringify(context, null, 2)}`);
   const url = event.body || '';
   const processedMetadata = await LinkProcessorService.processLink(url);
-  console.log(processedMetadata);
+
+  try {
+    const response = await postWithAuthRetry('/links', processedMetadata);
+
+    if (response.status === 201) {
+      console.log('Job link and metadata deposited successfully!');
+    } else {
+      console.log('Failed to deposit job link!');
+    }
+  } catch (error: unknown) {
+    console.error('Failed to POST to /links: ', error);
+  }
+
   return {
     statusCode: 200,
     body: JSON.stringify({
