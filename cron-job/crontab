@@ -1,0 +1,2 @@
+* * * * * curl -s -X PUT http://web:8000/api/links/process >> /home/adminCron/cron.log 2>> /home/adminCron/cron-error.log
+# new line

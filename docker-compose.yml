@@ -19,6 +19,19 @@ services:
       # This creates bind mount between local ./web/src and the container's /app/web/src
       # "./web/src" is relative to root (where the command "docker compose up" is run)
       - ./web/src:/app/web/src
+  cron-job:
+    container_name: cron-worker
+    build:
+      context: .
+      dockerfile: cron-job/Dockerfile
+      args:
+        - NODE_ENV=development
+    depends_on:
+      - web
+    volumes:
+      - ./cron-job/cron.log:/home/adminCron/cron.log
+      - ./cron-job/cron-error.log:/home/adminCron/cron-error.log
+
 
   discord-service:
     container_name: discord
