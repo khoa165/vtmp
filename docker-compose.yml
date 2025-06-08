@@ -1,25 +1,64 @@
-version: '3.8'
-
 services:
   web:
     container_name: server
     build:
-      context: ./web
+      context: .
+      dockerfile: web/Dockerfile
+      args:
+        - NODE_ENV=development
+    command: yarn dev # override the default 'CMD ["yarn", "start"]' in web/Dockerfile. This is for hot-reloading in dev mode
     ports:
       - '8000:8000'
+    env_file:
+      - ./web/.env
     environment:
-      - MONGODB_URI=mongodb://mongo:27017/vtmp
+      - MONGO_URI=mongodb://mongo:27017/vtmp-db # This will override MONGO_URI loaded from .env above
     depends_on:
       - mongo
     volumes:
-      - ./web/src:/usr/app/src
+      # This creates bind mount between local ./web/src and the container's /app/web/src
+      # "./web/src" is relative to root (where the command "docker compose up" is run)
+      - ./web/src:/app/web/src
+
+  discord-service:
+    container_name: discord
+    build:
+      context: .
+      dockerfile: discord-service/Dockerfile
+      args:
+        - NODE_ENV=development
+    command: yarn dev
+    ports:
+      - '4000:4000'
+    env_file:
+      - ./discord-service/.env
+    environment:
+      - API_URL=http://web:8000
+    depends_on:
+      - web
+    volumes:
+      - ./discord-service/src:/app/discord-service/src
+
+  ngrok:
+    container_name: ngrok
+    image: ngrok/ngrok:latest
+    env_file:
+      - ./discord-service/.env
+    command: http --domain=expert-evolving-bengal.ngrok-free.app discord-service:4000
+    depends_on:
+      - discord-service
 
   web-client:
     container_name: client
     build:
-      context: ./web-client
+      context: .
+      dockerfile: web-client/Dockerfile
     ports:
       - '3000:3000'
+    env_file:
+      - ./web-client/.env
+    environment:
+      - VITE_API_URL=http://localhost:8000 # This will override VITE_API_URL loaded from .env above
     depends_on:
       - web
 

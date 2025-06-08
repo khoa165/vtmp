@@ -8,7 +8,7 @@ import {
   CellApplicationStatus,
 } from '@/components/pages/application-tracker/applications/cell';
 import { format } from 'date-fns';
-import { HeaderSorting } from '@/components/pages/application-tracker/applications/header';
+import { HeaderSorting } from '@/components/base/header';
 import { ApplicationInterestColumn } from '@/components/pages/application-tracker/applications/application-interest-column';
 
 export const applicationsTableColumns = ({

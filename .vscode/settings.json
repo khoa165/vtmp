@@ -21,5 +21,15 @@
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "search.exclude": {
+    "**/dist": true,
+    "**/node_modules": true,
+    "**/.yarn": true
+  },
+  "files.exclude": {
+    "**/dist": true,
+    "**/node_modules": true,
+    "**/.yarn": true
   }
 }

@@ -51,8 +51,11 @@ export const handleError = (error: unknown) => {
         message: issue.message,
       })),
     };
-  } else if (error instanceof jwt.JsonWebTokenError || error instanceof jwt.TokenExpiredError) {
-    const unauthorized = new UnauthorizedError(error.message, { cause: 'jwt'})
+  } else if (
+    error instanceof jwt.JsonWebTokenError ||
+    error instanceof jwt.TokenExpiredError
+  ) {
+    const unauthorized = new UnauthorizedError(error.message, { cause: 'jwt' });
     return {
       statusCode: unauthorized.statusCode,
       errors: [{ message: unauthorized.message }],

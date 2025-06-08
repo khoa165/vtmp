@@ -15,42 +15,31 @@ import { InvitationStatus } from '@vtmp/common/constants';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { addDays, subDays } from 'date-fns';
 import { InvitationRepository } from '@/repositories/invitation.repository';
-import assert from 'assert';
 import jwt from 'jsonwebtoken';
 import { IInvitation } from '@/models/invitation.model';
 import { omit } from 'remeda';
 import { differenceInSeconds } from 'date-fns/fp/differenceInSeconds';
-import { AuthService } from '@/services/auth.service';
-import bcrypt from 'bcryptjs';
 import { getEmailService } from '@/utils/email';
 import { SinonStub } from 'sinon';
+import {
+  HTTPMethod,
+  runDefaultAuthMiddlewareTests,
+  runUserLogin,
+} from '@/testutils/auth.testutils';
 
 describe('InvitationController', () => {
   useMongoDB();
   const sandbox = useSandbox();
-  let mockToken: string;
   let sendEmailStub: SinonStub;
+  let mockUserToken: string, mockAdminToken: string, mockModeratorToken: string;
 
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
     const emailService = getEmailService();
     sendEmailStub = sandbox.stub(emailService, 'sendEmail').resolves();
 
-    const encryptedPassword = await bcrypt.hash('test password', 10);
-    const mockUser = {
-      firstName: 'admin',
-      lastName: 'viettech',
-      email: 'test@gmail.com',
-      encryptedPassword,
-    };
-
-    await UserRepository.createUser(mockUser);
-    mockToken = (
-      await AuthService.login({
-        email: mockUser.email,
-        password: 'test password',
-      })
-    ).token;
+    ({ mockUserToken, mockAdminToken, mockModeratorToken } =
+      await runUserLogin());
   });
 
   const nextWeek = addDays(Date.now(), 7);
@@ -88,29 +77,28 @@ describe('InvitationController', () => {
   ];
 
   describe('GET /invitations/', () => {
-    it('should throw Unauthorized for no token', async () => {
-      const res = await request(app)
-        .get('/api/invitations')
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Unauthorized');
+    runDefaultAuthMiddlewareTests({
+      route: '/api/invitations',
+      method: HTTPMethod.GET,
     });
 
-    it('should throw Unauthorized for wrong token', async () => {
-      const res = await request(app)
-        .get('/api/invitations')
-        .set('Accept', 'application/json')
-        .set('Authorization', 'fake token');
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('jwt malformed');
+    it('should throw ForbiddenError for retrieving invitations without corresponding permission', async () => {
+      [mockUserToken, mockModeratorToken].map(async (token) => {
+        const res = await request(app)
+          .get('/api/invitations')
+          .set('Accept', 'application/json')
+          .set('Authorization', `Bearer ${token}`);
+
+        expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+        expect(res.body.errors[0].message).to.equal('Forbidden');
+      });
     });
 
     it('should return empty array when no invitations exist', async () => {
       const res = await request(app)
         .get('/api/invitations')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
@@ -126,7 +114,7 @@ describe('InvitationController', () => {
       const res = await request(app)
         .get('/api/invitations/')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data)
@@ -145,30 +133,31 @@ describe('InvitationController', () => {
   });
 
   describe('POST /invitations', () => {
-    it('should throw Unauthorized for no token', async () => {
-      const res = await request(app)
-        .post('/api/invitations')
-        .send({
-          receiverEmail: mockOneInvitation.receiverEmail,
-          senderId: mockAdminId,
-        })
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Unauthorized');
+    runDefaultAuthMiddlewareTests({
+      route: '/api/invitations',
+      method: HTTPMethod.POST,
+      body: {
+        receiverName: mockMenteeName,
+        receiverEmail: mockOneInvitation.receiverEmail,
+        senderId: mockAdminId,
+      },
     });
 
-    it('should throw Unauthorized for wrong token', async () => {
-      const res = await request(app)
-        .post('/api/invitations')
-        .send({
-          receiverEmail: mockOneInvitation.receiverEmail,
-          senderId: mockAdminId,
-        })
-        .set('Accept', 'application/json')
-        .set('Authorization', 'fake token');
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('jwt malformed');
+    it('should throw ForbiddenError for sending invitations without corresponding permission', async () => {
+      [mockUserToken, mockModeratorToken].map(async (token) => {
+        const res = await request(app)
+          .post('/api/invitations')
+          .send({
+            receiverName: mockMenteeName,
+            receiverEmail: mockOneInvitation.receiverEmail,
+            senderId: mockAdminId,
+          })
+          .set('Accept', 'application/json')
+          .set('Authorization', `Bearer ${token}`);
+
+        expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+        expect(res.body.errors[0].message).to.equal('Forbidden');
+      });
     });
 
     it('should return error for missing receiverName', async () => {
@@ -179,7 +168,7 @@ describe('InvitationController', () => {
           senderId: mockAdminId,
         })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Receiver Name is required');
@@ -193,7 +182,7 @@ describe('InvitationController', () => {
           senderId: mockAdminId,
         })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Receiver Email is required');
@@ -207,7 +196,7 @@ describe('InvitationController', () => {
           receiverEmail: mockOneInvitation.receiverEmail,
         })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('SenderId is required');
@@ -230,7 +219,7 @@ describe('InvitationController', () => {
           senderId: mockAdminId,
         })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal(
@@ -252,7 +241,7 @@ describe('InvitationController', () => {
           senderId: mockAdminId,
         })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 500, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal(
@@ -260,8 +249,8 @@ describe('InvitationController', () => {
       );
     });
 
-    it('should update invitation to new expiry date and return null when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
-      const expiredInvitation = await InvitationRepository.createInvitation({
+    it('should update invitation to new expiry date and return updated invitation when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
+      await InvitationRepository.createInvitation({
         ...mockOneInvitation,
         expiryDate: subDays(Date.now(), 2),
       });
@@ -275,24 +264,17 @@ describe('InvitationController', () => {
           senderId: mockAdminId,
         })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      assert(!res.body.data);
 
-      const invitationWithNewExpiryDate =
-        await InvitationRepository.getInvitationById(expiredInvitation.id);
-      assert(invitationWithNewExpiryDate);
-      expect(invitationWithNewExpiryDate).to.deep.include(
+      expect(res.body.data).to.deep.include(
         omit(mockOneInvitation, ['expiryDate', 'sender'])
       );
-      expect(String(invitationWithNewExpiryDate.sender)).to.equal(mockAdminId);
+      expect(String(res.body.data.sender)).to.equal(mockAdminId);
 
       const timeDiff = Math.abs(
-        differenceInSeconds(
-          invitationWithNewExpiryDate.expiryDate,
-          expectedExpiryDate
-        )
+        differenceInSeconds(res.body.data.expiryDate, expectedExpiryDate)
       );
       expect(timeDiff).to.lessThan(3);
       expect(sendEmailStub.calledOnce).to.equal(true);
@@ -307,7 +289,7 @@ describe('InvitationController', () => {
           senderId: mockAdminId,
         })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.deep.include({
@@ -321,29 +303,28 @@ describe('InvitationController', () => {
   });
 
   describe('PUT /invitations/:invitationId/revoke', () => {
-    it('should throw Unauthorized for no token', async () => {
-      const res = await request(app)
-        .put(`/api/invitations/${getNewMongoId()}/revoke`)
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Unauthorized');
+    runDefaultAuthMiddlewareTests({
+      route: `/api/invitations/${getNewMongoId()}/revoke`,
+      method: HTTPMethod.PUT,
     });
 
-    it('should throw Unauthorized for wrong token', async () => {
-      const res = await request(app)
-        .put(`/api/invitations/${getNewMongoId()}/revoke`)
-        .set('Accept', 'application/json')
-        .set('Authorization', 'fake token');
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('jwt malformed');
+    it('should throw ForbiddenError for revoking invitations without corresponding permission', async () => {
+      [mockUserToken, mockModeratorToken].map(async (token) => {
+        const res = await request(app)
+          .put(`/api/invitations/${getNewMongoId()}/revoke`)
+          .set('Accept', 'application/json')
+          .set('Authorization', `Bearer ${token}`);
+
+        expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+        expect(res.body.errors[0].message).to.eq('Forbidden');
+      });
     });
 
     it('should return error message when invitation does not exist', async () => {
       const res = await request(app)
         .put(`/api/invitations/${getNewMongoId()}/revoke`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Invitation not found');
@@ -358,7 +339,7 @@ describe('InvitationController', () => {
       const res = await request(app)
         .put(`/api/invitations/${newInvitation.id}/revoke`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal(
@@ -373,7 +354,7 @@ describe('InvitationController', () => {
       const res = await request(app)
         .put(`/api/invitations/${newInvitation.id}/revoke`)
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockToken}`);
+        .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.deep.include(
