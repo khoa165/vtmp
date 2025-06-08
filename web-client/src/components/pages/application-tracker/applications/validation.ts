@@ -56,6 +56,13 @@ export interface ApplicationData {
   interest?: InterestLevel;
 }
 
+export const applicationFormSchema = z.object({
+  note: z.string().optional(),
+  referrer: z.string().optional(),
+  portalLink: z.string().optional(),
+  interest: z.nativeEnum(InterestLevel),
+});
+
 export type IApplications = z.infer<typeof ApplicationsResponseSchema>['data'];
 export type IApplication = z.infer<typeof ApplicationSchema>;
 
