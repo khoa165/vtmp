@@ -1,6 +1,5 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/utils';
 
-//Add Nam
 const createRule = ESLintUtils.RuleCreator(
   (name) => `https://example.com/rule/${name}`
 );
@@ -65,6 +64,96 @@ export const noRequireFunctionCalls = createRule<[], 'noRequire'>({
               return null;
             },
           });
+        }
+      },
+    };
+  },
+});
+
+export const noTryInControllerOrMiddleware = createRule<[], 'noTry'>({
+  name: 'no-try-in-controller-or-middleware',
+  meta: {
+    type: 'problem',
+    docs: {
+      description: 'Disallow try/catch in controller and middleware layers',
+    },
+    schema: [],
+    messages: {
+      noTry:
+        'Do not use try/catch in controller or middleware files. Use centralized error handling instead.',
+    },
+  },
+  defaultOptions: [],
+  create(context) {
+    const filename = context.filename;
+
+    const isControllerOrMiddleware =
+      /[\\/]controller[\\/]/.test(filename) ||
+      /[\\/]middleware[\\/]/.test(filename);
+
+    return {
+      TryStatement(node: TSESTree.TryStatement) {
+        if (isControllerOrMiddleware) {
+          context.report({
+            node,
+            messageId: 'noTry',
+          });
+        }
+      },
+    };
+  },
+});
+export const enforceUppercaseEnumValues = createRule<
+  [],
+  'notUppercaseOrMismatch'
+>({
+  name: 'enforce-uppercase-enum-values',
+  meta: {
+    type: 'problem',
+    docs: {
+      description: 'Ensure enum keys and values are identical and uppercase',
+    },
+    schema: [],
+    messages: {
+      notUppercaseOrMismatch:
+        "Enum key '{{key}}' must match its value and be all uppercase.",
+    },
+    fixable: 'code',
+  },
+  defaultOptions: [],
+  create(context) {
+    return {
+      TSEnumMember(node: TSESTree.TSEnumMember) {
+        if (
+          node.id.type === 'Identifier' &&
+          node.initializer?.type === 'Literal' &&
+          typeof node.initializer.value === 'string'
+        ) {
+          const key = node.id.name;
+          const value = node.initializer.value;
+          const upperKey = key.toUpperCase();
+
+          const keyMismatch = key !== upperKey;
+          const valueMismatch = value !== upperKey;
+
+          if (keyMismatch || valueMismatch) {
+            context.report({
+              node,
+              messageId: 'notUppercaseOrMismatch',
+              data: { key },
+              fix(fixer) {
+                const fixes: ReturnType<typeof fixer.replaceText>[] = [];
+
+                fixes.push(fixer.replaceText(node.id, upperKey));
+
+                fixes.push(
+                  fixer.replaceText(node.initializer!, `'${upperKey}'`)
+                );
+
+                return fixes;
+              },
+            });
+          }
         }
       },
     };

@@ -1,3 +1,5 @@
+// @ts-check
+import boundaries from 'eslint-plugin-boundaries';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import pluginReact from 'eslint-plugin-react';
@@ -24,6 +26,7 @@ export default tseslint.config(
       globals: globals.browser,
     },
     plugins: {
+      boundaries,
       custom: rulesCustom,
       react: pluginReact,
     },
@@ -37,9 +40,34 @@ export default tseslint.config(
       ...eslint.configs.recommended.rules,
       ...tseslint.configs.recommended[0].rules,
       ...pluginReact.configs.flat.recommended.rules,
-
       // Custom rule
       'custom/no-require-function-calls': 'error',
+      'custom/no-try-in-controller-or-middleware': 'error',
+      'custom/enforce-uppercase-enum-values': 'error',
+      'boundaries/element-types': [
+        2,
+        {
+          default: 'disallow',
+          rules: [
+            {
+              from: 'repositories',
+              allow: ['models'],
+            },
+            {
+              from: 'services',
+              allow: ['repositories'],
+            },
+            {
+              from: 'controllers',
+              allow: ['services'],
+            },
+            {
+              from: 'routes',
+              allow: ['controllers'],
+            },
+          ],
+        },
+      ],
     },
   },
 
