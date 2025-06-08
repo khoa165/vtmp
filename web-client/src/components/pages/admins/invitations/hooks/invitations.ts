@@ -8,19 +8,22 @@ import axios from 'axios';
 import { toast } from 'sonner';
 
 export const useSendInvitation = ({
-  setSendInvitationErrors,
-  setEmailErrors,
-  setNameErrors,
-  setNameInput,
-  setEmailInput,
-  setRoleInput,
+  setUserInput,
+  setInputErrors,
 }: {
-  setSendInvitationErrors: React.Dispatch<React.SetStateAction<string[]>>;
-  setEmailErrors: React.Dispatch<React.SetStateAction<string[]>>;
-  setNameErrors: React.Dispatch<React.SetStateAction<string[]>>;
-  setNameInput: React.Dispatch<React.SetStateAction<string>>;
-  setEmailInput: React.Dispatch<React.SetStateAction<string>>;
-  setRoleInput: React.Dispatch<React.SetStateAction<UserRole>>;
+  setUserInput: React.Dispatch<
+    React.SetStateAction<{
+      name: string;
+      email: string;
+      role: UserRole;
+    }>
+  >;
+  setInputErrors: React.Dispatch<
+    React.SetStateAction<{
+      name: string[];
+      email: string[];
+    }>
+  >;
 }) => {
   return useMutation({
     mutationFn: (body: {
@@ -36,15 +39,15 @@ export const useSendInvitation = ({
         schema: SendInvitationResponseSchema,
         options: { requireAuth: true },
       }),
-    onSuccess: (res) => {
+    onSuccess: () => {
       console.log('Success in useMutation sendInvitation');
       toast.success('Invitation sent successfully!');
-      setSendInvitationErrors([]);
-      setEmailErrors([]);
-      setNameErrors([]);
-      setNameInput('');
-      setEmailInput('');
-      setRoleInput(UserRole.USER);
+      setInputErrors({ name: [], email: [] });
+      setUserInput({
+        name: '',
+        email: '',
+        role: UserRole.USER,
+      });
     },
     onError: (error) => {
       console.log('Error in useMutation sendInvitation');
@@ -69,8 +72,10 @@ export const useSendInvitation = ({
           },
           { emailRelatedErrors: [], otherErrors: [] }
         );
-        setEmailErrors(emailRelatedErrors);
-        setSendInvitationErrors(otherErrors);
+        setInputErrors({
+          name: otherErrors,
+          email: emailRelatedErrors,
+        });
       } else {
         console.log('Unexpected error', error);
         toast.error('Sending invitation failed: Unexpected error occured');

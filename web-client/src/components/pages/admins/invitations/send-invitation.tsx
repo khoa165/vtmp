@@ -21,39 +21,49 @@ import { ChevronDown } from 'lucide-react';
 import { useSendInvitation } from '@/components/pages/admins/invitations/hooks/invitations';
 
 export const SendInvitationPage = () => {
-  const [nameInput, setNameInput] = useState('');
-  const [emailInput, setEmailInput] = useState('');
-  const [roleInput, setRoleInput] = useState(UserRole.USER);
-  const [nameErrors, setNameErrors] = useState<string[]>([]);
-  const [emailErrors, setEmailErrors] = useState<string[]>([]);
-  const [sendInvitationErrors, setSendInvitationErrors] = useState<string[]>(
-    []
-  );
-
-  const { mutate: sendInvitationFn } = useSendInvitation({
-    setSendInvitationErrors,
-    setEmailErrors,
-    setNameErrors,
-    setNameInput,
-    setEmailInput,
-    setRoleInput,
+  const [userInput, setUserInput] = useState<{
+    name: string;
+    email: string;
+    role: UserRole;
+  }>({
+    name: '',
+    email: '',
+    role: UserRole.USER,
   });
 
-  const userString = localStorage.getItem('user');
-  const user = userString ? JSON.parse(userString) : null;
+  const [inputErrors, setInputErrors] = useState<{
+    name: string[];
+    email: string[];
+  }>({
+    name: [],
+    email: [],
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserInput({ ...userInput, [e.target.name]: e.target.value });
+    setInputErrors({ ...inputErrors, [e.target.name]: [] });
+  };
+
+  const { mutate: sendInvitationFn } = useSendInvitation({
+    setUserInput,
+    setInputErrors,
+  });
+
+  const rawUser = localStorage.getItem('user');
+  const user = rawUser ? JSON.parse(rawUser) : null;
 
   const handleSend = async () => {
-    if (!nameInput) {
-      setNameErrors(['Receiver name is required']);
+    if (!userInput.name) {
+      setInputErrors({ ...inputErrors, name: ['Receiver name is required'] });
       return;
     }
-    if (!emailInput) {
-      setEmailErrors(['Password is required']);
+    if (!userInput.email) {
+      setInputErrors({ ...inputErrors, email: ['Email is required'] });
       return;
     }
     sendInvitationFn({
-      receiverName: nameInput,
-      receiverEmail: emailInput,
+      receiverName: userInput.name,
+      receiverEmail: userInput.email,
       senderId: user._id,
     });
   };
@@ -79,15 +89,13 @@ export const SendInvitationPage = () => {
                   </Label>
                   <Input
                     id="name"
+                    name="name"
                     placeholder="Name"
                     type="text"
                     required
-                    value={nameInput}
-                    onChange={(e) => {
-                      setNameInput(e.target.value);
-                      setNameErrors([]);
-                    }}
-                    errors={nameErrors}
+                    value={userInput.name}
+                    onChange={handleInputChange}
+                    errors={inputErrors.name}
                   />
                 </div>
                 <div className="flex flex-col space-y-1.5">
@@ -96,15 +104,13 @@ export const SendInvitationPage = () => {
                   </Label>
                   <Input
                     id="email"
+                    name="email"
                     placeholder="Email"
                     type="email"
                     required
-                    value={emailInput}
-                    onChange={(e) => {
-                      setEmailInput(e.target.value);
-                      setEmailErrors([]);
-                    }}
-                    errors={emailErrors}
+                    value={userInput.email}
+                    onChange={handleInputChange}
+                    errors={inputErrors.email}
                   />
                 </div>
                 <div className="flex flex-col space-y-1.5">
@@ -119,7 +125,7 @@ export const SendInvitationPage = () => {
                         size="sm"
                         className="w-full text-left"
                       >
-                        <div>{roleInput ?? UserRole.USER}</div>
+                        <div>{userInput.role}</div>
                         <ChevronDown />
                       </Button>
                     </DropdownMenuTrigger>
@@ -130,9 +136,9 @@ export const SendInvitationPage = () => {
                         <DropdownMenuCheckboxItem
                           key={index}
                           onClick={() => {
-                            setRoleInput(dropdownRole);
+                            setUserInput({ ...userInput, role: dropdownRole });
                           }}
-                          checked={roleInput === dropdownRole}
+                          checked={userInput.role === dropdownRole}
                         >
                           {dropdownRole}
                         </DropdownMenuCheckboxItem>
