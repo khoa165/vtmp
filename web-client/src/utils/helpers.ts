@@ -1,5 +1,6 @@
 import {
   ApplicationStatus,
+  InterestLevel,
   InterviewStatus,
   InterviewType,
   LinkStatus,
@@ -8,6 +9,10 @@ import { capitalize } from 'remeda';
 
 export const formatStatus = (status: ApplicationStatus | LinkStatus) => {
   return status === ApplicationStatus.OA ? status : capitalize(status);
+};
+
+export const formatInterestLevel = (interest: InterestLevel) => {
+  return capitalize(interest);
 };
 
 export const formatInterviewType = (type: InterviewType) => {

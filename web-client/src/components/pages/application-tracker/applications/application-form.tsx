@@ -28,6 +28,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { InterestLevel } from '@vtmp/common/constants';
 import { Input } from '@/components/base/input';
 import { Textarea } from '@/components/base/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from '@/components/base/select';
+import { formatInterestLevel } from '@/utils/helpers';
+import { ApplicationInterestDropDown } from '@/components/pages/application-tracker/applications/application-interest-column';
 
 export const ApplicationForm = ({
   currentApplication,
@@ -80,11 +88,29 @@ export const ApplicationForm = ({
               <FormItem>
                 <FormLabel>Interest Level</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="Change your interest level"
-                    readOnly={!isEditing}
-                  />
+                  <Select {...field} onValueChange={field.onChange}>
+                    <SelectTrigger className="w-full h-10 rounded-lg p-2 border border-input px-3 py-2 text-sm shadow-sm">
+                      <ApplicationInterestDropDown interest={field.value} />
+                    </SelectTrigger>
+                    <SelectContent className="z-50">
+                      {Object.values(InterestLevel)
+                        .filter(
+                          (value) => value !== applicationForm.watch('interest')
+                        )
+                        .map((dropdownStatus, index) => (
+                          <SelectItem
+                            key={index}
+                            value={formatInterestLevel(
+                              dropdownStatus
+                            ).toString()}
+                          >
+                            <ApplicationInterestDropDown
+                              interest={dropdownStatus}
+                            />
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
