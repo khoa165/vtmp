@@ -7,6 +7,9 @@ declare global {
         id: string;
         role: UserRole;
       };
+      service?: {
+        role: UserRole;
+      };
     }
   }
 }

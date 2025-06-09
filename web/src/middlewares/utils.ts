@@ -9,11 +9,26 @@ interface AuthenticatedRequest extends Request {
   };
 }
 
+interface AuthenticatedServiceRequest extends Request {
+  service: {
+    role: UserRole;
+  };
+}
+
 export const getUserFromRequest = (req: Request): AuthenticatedRequest => {
   if (!req.user) {
     throw new UnauthorizedError('User is not authenticated', {});
   }
   return req as AuthenticatedRequest;
+};
+
+export const getServiceFromRequest = (
+  req: Request
+): AuthenticatedServiceRequest => {
+  if (!req.service) {
+    throw new UnauthorizedError('Service is not authenticated', {});
+  }
+  return req as AuthenticatedServiceRequest;
 };
 
 export const routeErrorHandler = (

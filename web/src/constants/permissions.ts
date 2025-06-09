@@ -39,4 +39,5 @@ export const roleToPermissionMapping: Record<UserRole, Permission[]> = {
     Permission.VIEW_INTERVIEW,
     Permission.MANAGE_INTERVIEW,
   ],
+  [UserRole.SERVICE]: [Permission.CREATE_JOB_LINK],
 };

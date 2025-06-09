@@ -5168,6 +5168,7 @@ __metadata:
   dependencies:
     "@types/cors": "npm:^2.8.17"
     "@types/express": "npm:^5"
+    "@types/jsonwebtoken": "npm:^9.0.9"
     "@types/morgan": "npm:^1.9.9"
     "@types/node": "npm:^22.15.24"
     "@vtmp/common": "npm:1.0.0"
@@ -5176,6 +5177,7 @@ __metadata:
     dotenv: "npm:^16.5.0"
     express: "npm:^5.1.0"
     helmet: "npm:^8.1.0"
+    jsonwebtoken: "npm:^9.0.2"
     morgan: "npm:^1.10.0"
     slash-create: "npm:^6.4.1"
     tsc-alias: "npm:^1.8.16"

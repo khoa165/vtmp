@@ -51,6 +51,7 @@ export enum UserRole {
   ADMIN = 'ADMIN',
   MODERATOR = 'MODERATOR',
   USER = 'USER',
+  SERVICE = 'SERVICE',
 }
 
 export enum Permission {

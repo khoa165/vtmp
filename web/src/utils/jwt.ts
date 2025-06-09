@@ -11,9 +11,18 @@ export const JWTUtils = {
 
   decodeAndParseToken: <T>(
     token: string,
-    schema: { parse: (data: unknown) => T }
+    schema: { parse: (data: unknown) => T },
+    secret: string
   ): T => {
-    const decoded = jwt.verify(token, EnvConfig.get().JWT_SECRET);
+    const verified = jwt.verify(token, secret);
+    return schema.parse(verified);
+  },
+
+  peekTokenPayload: <T>(
+    token: string,
+    schema: { parse: (data: unknown) => T }
+  ) => {
+    const decoded = jwt.decode(token);
     return schema.parse(decoded);
   },
 };

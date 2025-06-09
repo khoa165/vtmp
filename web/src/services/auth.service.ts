@@ -10,6 +10,7 @@ import bcrypt from 'bcryptjs';
 import { omit } from 'remeda';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
 import { z } from 'zod';
+import { EnvConfig } from '@/config/env';
 
 const ResetTokenPayloadSchema = z.object({
   id: z.string(),
@@ -121,7 +122,8 @@ export const AuthService = {
   }) => {
     const decoded = JWTUtils.decodeAndParseToken(
       token,
-      ResetTokenPayloadSchema
+      ResetTokenPayloadSchema,
+      EnvConfig.get().JWT_SECRET
     );
 
     const user = await UserRepository.getUserById(decoded.id, {
