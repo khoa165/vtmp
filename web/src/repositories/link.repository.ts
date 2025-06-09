@@ -1,9 +1,10 @@
 import { LinkModel, ILink } from '@/models/link.model';
 import { Types, ClientSession } from 'mongoose';
 import { LinkStatus } from '@vtmp/common/constants';
+import { LinkType } from '@/controllers/link.controller';
 
 export const LinkRepository = {
-  createLink: async (linkData: { url: string }): Promise<ILink> => {
+  createLink: async (linkData: LinkType): Promise<ILink> => {
     return LinkModel.create(linkData);
   },
 

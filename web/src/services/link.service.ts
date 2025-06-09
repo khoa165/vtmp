@@ -3,13 +3,14 @@ import { LinkRepository } from '@/repositories/link.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
+import { LinkType } from '@/controllers/link.controller';
 
 export const LinkService = {
-  submitLink: async (url: string) => {
+  submitLink: async (linkData: LinkType) => {
     try {
-      return await LinkRepository.createLink({ url });
+      return await LinkRepository.createLink(linkData);
     } catch {
-      throw new DuplicateResourceError('Duplicate url', { url });
+      throw new DuplicateResourceError('Duplicate url', { url: linkData.url });
     }
   },
 
