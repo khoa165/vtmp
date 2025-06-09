@@ -88,7 +88,11 @@ export const ApplicationForm = ({
               <FormItem>
                 <FormLabel>Interest Level</FormLabel>
                 <FormControl>
-                  <Select {...field} onValueChange={field.onChange}>
+                  <Select
+                    {...field}
+                    onValueChange={field.onChange}
+                    disabled={!isEditing}
+                  >
                     <SelectTrigger className="w-full h-10 rounded-lg p-2 border border-input px-3 py-2 text-sm shadow-sm">
                       <ApplicationInterestDropDown interest={field.value} />
                     </SelectTrigger>
@@ -123,7 +127,7 @@ export const ApplicationForm = ({
               <FormItem>
                 <FormLabel>Portal Link</FormLabel>
                 <FormControl>
-                  <Input placeholder="Add a portal link" {...field} readOnly />
+                  <Input placeholder="Add a portal link" {...field} disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -139,7 +143,7 @@ export const ApplicationForm = ({
                   <Input
                     {...field}
                     placeholder="Add a referer"
-                    readOnly={!isEditing}
+                    disabled={!isEditing}
                   />
                 </FormControl>
                 <FormMessage />
@@ -158,7 +162,7 @@ export const ApplicationForm = ({
                 <Textarea
                   {...field}
                   placeholder="Add a note about this application"
-                  readOnly={!isEditing}
+                  disabled={!isEditing}
                 />
               </FormControl>
               <FormMessage />
@@ -166,54 +170,62 @@ export const ApplicationForm = ({
           )}
         />
 
-        <div className="flex justify-end gap-2 mt-6">
-          <Button
-            type="button"
-            className="bg-gray-100 border border-red-500 text-red-500 hover:bg-gray-200 font-bold py-2 w-20 rounded shadow-sm"
-            onClick={() => setIsDialogOpen(true)}
-          >
-            Delete
-          </Button>
-          <Button
-            type="button"
-            className="bg-gray-700 hover:bg-gray-600 text-foreground font-bold py-2 w-20 rounded"
-            variant="secondary"
-            onClick={() =>
-              applicationForm.reset({
-                note: note || '',
-                referrer: referrer || '',
-                portalLink: portalLink || '',
-                interest: interest || InterestLevel.MEDIUM,
-              })
-            }
-          >
-            Cancel
-          </Button>
-          {isEditing ? (
-            <Button
-              type="submit"
-              onClick={applicationForm.handleSubmit(
-                (body: z.infer<typeof applicationFormSchema>) => {
-                  updateApplicationMetadataFn({
-                    applicationId: applicationId,
-                    body: body,
-                  });
-                  setIsEditing(false);
-                }
-              )}
-              className="bg-emerald-400 hover:bg-emerald-500 inset-shadow-sm inset-shadow-emerald-400/50 text-foreground font-bold py-2 w-20 rounded"
-            >
-              Save
-            </Button>
-          ) : (
+        <div className="flex justify-between items-center mt-6">
+          <div>
             <Button
               type="button"
-              onClick={() => setIsEditing(true)}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 w-20 rounded"
+              className="bg-gray-100 border border-red-500 text-red-500 hover:bg-gray-200 font-bold py-2 w-20 rounded shadow-sm"
+              onClick={() => setIsDialogOpen(true)}
             >
-              Edit
+              Delete
             </Button>
-          )}
+          </div>
+
+          <div className="flex gap-2">
+            {isEditing ? (
+              <>
+                <Button
+                  type="button"
+                  className="bg-gray-700 hover:bg-gray-600 text-foreground font-bold py-2 w-20 rounded"
+                  variant="secondary"
+                  onClick={() => {
+                    setIsEditing(false);
+                    applicationForm.reset({
+                      note: note || '',
+                      referrer: referrer || '',
+                      portalLink: portalLink || '',
+                      interest: interest || InterestLevel.MEDIUM,
+                    });
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  onClick={applicationForm.handleSubmit(
+                    (body: z.infer<typeof applicationFormSchema>) => {
+                      updateApplicationMetadataFn({
+                        applicationId: applicationId,
+                        body: body,
+                      });
+                      setIsEditing(false);
+                    }
+                  )}
+                  className="bg-emerald-400 hover:bg-emerald-500 inset-shadow-sm inset-shadow-emerald-400/50 text-foreground font-bold py-2 w-20 rounded"
+                >
+                  Save
+                </Button>
+              </>
+            ) : (
+              <Button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                className="bg-emerald-400 hover:bg-emerald-500 inset-shadow-sm inset-shadow-emerald-400/50 text-foreground font-bold py-2 w-20 rounded"
+              >
+                Edit
+              </Button>
+            )}
+          </div>
         </div>
       </Form>
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

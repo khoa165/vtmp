@@ -139,8 +139,8 @@ export function InterviewDrawer({
                   {applicationData?.companyName}
                 </DrawerDescription>
 
-                <div className="flex items-center justify-between space-x-4 mb-4">
-                  <div className="flex flex-wrap gap-2">
+                <div className="flex items-center justify-between space-x-4 space-y-2 mb-4">
+                  <div className="flex flex-wrap gap-1">
                     <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium">
                       <Briefcase className="h-4 w-4 mr-1" />
                       {applicationData?.jobTitle}
