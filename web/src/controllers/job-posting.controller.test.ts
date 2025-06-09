@@ -1,25 +1,27 @@
-import assert from 'assert';
-import request from 'supertest';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
+import request from 'supertest';
+
+import assert from 'assert';
+
 import app from '@/app';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { EnvConfig } from '@/config/env';
 import { IJobPosting } from '@/models/job-posting.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import { EnvConfig } from '@/config/env';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import {
-  expectErrorsArray,
-  expectSuccessfulResponse,
-} from '@/testutils/response-assertion.testutil';
-import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
   runUserLogin,
 } from '@/testutils/auth.testutils';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { useMongoDB } from '@/testutils/mongo-db.testutil';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongo-id.testutil';
+import {
+  expectErrorsArray,
+  expectSuccessfulResponse,
+} from '@/testutils/response-assertion.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
 import { JobPostingRegion } from '@vtmp/common/constants';
 
 describe('JobPostingController', () => {

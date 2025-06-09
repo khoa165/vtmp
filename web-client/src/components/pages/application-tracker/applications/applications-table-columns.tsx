@@ -1,15 +1,16 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { Checkbox } from '@/components/base/checkbox';
+import { format } from 'date-fns';
 import { Link } from 'lucide-react';
-import { IApplication } from '@/components/pages/application-tracker/applications/validation';
-import { ApplicationStatus } from '@vtmp/common/constants';
+
+import { Checkbox } from '@/components/base/checkbox';
+import { HeaderSorting } from '@/components/base/header';
+import { ApplicationInterestColumn } from '@/components/pages/application-tracker/applications/application-interest-column';
 import {
   CellActions,
   CellApplicationStatus,
 } from '@/components/pages/application-tracker/applications/cell';
-import { format } from 'date-fns';
-import { HeaderSorting } from '@/components/base/header';
-import { ApplicationInterestColumn } from '@/components/pages/application-tracker/applications/application-interest-column';
+import { IApplication } from '@/components/pages/application-tracker/applications/validation';
+import { ApplicationStatus } from '@vtmp/common/constants';
 
 export const applicationsTableColumns = ({
   deleteApplicationFn,

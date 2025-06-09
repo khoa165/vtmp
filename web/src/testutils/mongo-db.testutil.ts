@@ -1,6 +1,6 @@
 import type { CommandStartedEvent } from 'mongodb';
-import mongoose from 'mongoose';
 import { MongoMemoryReplSet } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
 
 const writtenCollections = new Set<string>();
 let mongoAlreadyStarted = false;

@@ -1,6 +1,8 @@
+import { Menu } from 'lucide-react';
 import React from 'react';
-import { useGate } from 'statsig-react';
 import { Link } from 'react-router-dom';
+import { useGate } from 'statsig-react';
+
 import { Button } from '@/components/base/button';
 import {
   NavigationMenu,
@@ -9,7 +11,6 @@ import {
   NavigationMenuList,
 } from '@/components/base/navigation-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/base/sheet';
-import { Menu } from 'lucide-react';
 
 export const Navbar = () => {
   const { value: show_experimental_features, isLoading } = useGate(

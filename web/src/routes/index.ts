@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { UserRoutes } from '@/routes/user.routes';
-import { InvitationRoutes } from '@/routes/invitation.routes';
+
 import { ApplicationRoutes } from '@/routes/application.routes';
+import { AuthRoutes } from '@/routes/auth.routes';
 import { InterviewRoutes } from '@/routes/interview.routes';
+import { InvitationRoutes } from '@/routes/invitation.routes';
 import { JobPostingRoutes } from '@/routes/job-posting.routes';
 import { LinkRoutes } from '@/routes/link.routes';
-import { AuthRoutes } from '@/routes/auth.routes';
+import { UserRoutes } from '@/routes/user.routes';
 
 const router = Router();
 

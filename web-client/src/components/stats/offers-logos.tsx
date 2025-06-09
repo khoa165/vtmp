@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { useOffersData } from '@/hooks/useOffersData';
 import { sortBy } from 'remeda';
+
 import { CompanyLogo } from '@/components/layout/company-logo';
+import { useOffersData } from '@/hooks/useOffersData';
 import { CompanyMetadataWithOffers } from '@/types';
 
 export const OfferLogos = () => {

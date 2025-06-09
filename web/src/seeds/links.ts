@@ -1,9 +1,14 @@
-import { ILink, LinkModel } from '@/models/link.model';
 import { faker } from '@faker-js/faker';
-import { CompanyName, JobPostingRegion } from '@vtmp/common/constants';
-import { LinkStatus } from '@vtmp/common/constants';
+
+import { ILink, LinkModel } from '@/models/link.model';
+import {
+  CompanyName,
+  JobPostingRegion,
+  LinkStatus,
+  JobTitle,
+} from '@vtmp/common/constants';
 import { formatEnumName } from '@vtmp/common/utils';
-import { JobTitle } from '@vtmp/common/constants';
+
 export const loadLinks = async (count: number): Promise<ILink[]> => {
   const newLinks = Array.from({ length: count }, () => ({
     url: faker.internet.url(),

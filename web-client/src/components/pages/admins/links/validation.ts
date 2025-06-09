@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
 
 export const LinkResponseSchema = z.object({

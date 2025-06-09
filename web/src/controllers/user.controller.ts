@@ -1,7 +1,8 @@
-import UserService from '@/services/user.service';
-import { UserRole } from '@vtmp/common/constants';
 import { Request, Response } from 'express';
 import { z } from 'zod';
+
+import { UserService } from '@/services/user.service';
+import { UserRole } from '@vtmp/common/constants';
 
 const UserUpdateSchema = z
   .object({
@@ -25,7 +26,7 @@ const UserIdSchema = z.object({
   userId: z.string(),
 });
 
-const UserController = {
+export const UserController = {
   getAllUsers: async (_req: Request, res: Response) => {
     const users = await UserService.getAllUsers();
     res.status(200).json({ data: users });
@@ -55,5 +56,3 @@ const UserController = {
     res.status(200).json({ data: updatedUser });
   },
 };
-
-export default UserController;

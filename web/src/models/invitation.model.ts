@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
+
 import { InvitationStatus } from '@vtmp/common/constants';
 
 export interface IInvitation extends Document {

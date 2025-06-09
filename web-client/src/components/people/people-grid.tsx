@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { PeopleCard } from '@/components/people/people-card';
 import { CompanyMetadataWithOffers, MentorshipPerson } from '@/types';
 import { PeopleSortColumn } from '@/utils/constants';

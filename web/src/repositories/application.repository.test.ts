@@ -1,12 +1,13 @@
 import { expect } from 'chai';
-import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
 import { times, zip } from 'remeda';
 
+import assert from 'assert';
+
 import { ApplicationRepository } from '@/repositories/application.repository';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { useMongoDB } from '@/testutils/mongo-db.testutil';
+import { getNewMongoId, toMongoId } from '@/testutils/mongo-id.testutil';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
-import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 
 describe('ApplicationRepository', () => {
   useMongoDB();

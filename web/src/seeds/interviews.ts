@@ -1,8 +1,9 @@
+import { faker } from '@faker-js/faker';
+
 import { IApplication } from '@/models/application.model';
 import { IInterview, InterviewModel } from '@/models/interview.model';
 import { IUser } from '@/models/user.model';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
-import { faker } from '@faker-js/faker';
 
 export const loadInterviews = async (
   users: IUser[],

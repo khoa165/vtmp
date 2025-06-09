@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { GetSummaryDataResponseSchema } from '@/fetch-data/fetch-response-validation/summary';
+
 import { EnvConfig } from '@/config/env';
+import { GetSummaryDataResponseSchema } from '@/fetch-data/fetch-response-validation/summary';
 
 export const getSummaryData = async () => {
   const response = await axios.get(

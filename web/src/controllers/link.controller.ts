@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
-import { LinkService } from '@/services/link.service';
 import { z } from 'zod';
-import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
-import { filterUndefinedAttributes } from '@/utils/helpers';
+
 import { MONGO_OBJECT_ID_REGEX } from '@/constants/validations';
+import { LinkService } from '@/services/link.service';
+import { filterUndefinedAttributes } from '@/utils/helpers';
+import { JobPostingRegion, LinkStatus } from '@vtmp/common/constants';
 
 const LinkSchema = z.object({
   url: z

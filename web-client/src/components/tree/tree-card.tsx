@@ -1,5 +1,8 @@
-import React from 'react';
 import moment from 'moment';
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+import { Badge } from '@/components/base/badge';
 import {
   Card,
   CardContent,
@@ -7,8 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/base/card';
-import { Badge } from '@/components/base/badge';
-import { Link } from 'react-router-dom';
 import { BlogMetadata } from '@/types';
 
 interface TreeCardProps {

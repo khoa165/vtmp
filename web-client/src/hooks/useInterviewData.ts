@@ -1,6 +1,8 @@
 import axios from 'axios';
-import { groupBy, sortBy } from 'remeda';
 import { useEffect, useState } from 'react';
+import { groupBy, sortBy } from 'remeda';
+
+import { EnvConfig } from '@/config/env';
 import {
   DateWithCount,
   InterviewRecordsPerCompany,
@@ -10,7 +12,6 @@ import {
 } from '@/types';
 import { MentorshipYear } from '@/utils/constants';
 import { parseInterviewRecords } from '@/utils/parse';
-import { EnvConfig } from '@/config/env';
 
 export const useInterviewData = () => {
   const [data, setData] = useState<MergedInterviewData>({

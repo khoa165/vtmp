@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { InvitationService } from '@/services/invitation.service';
 import { z } from 'zod';
+
+import { InvitationService } from '@/services/invitation.service';
 
 const InvitationSendEmailSchema = z.object({
   receiverName: z.string({ required_error: 'Receiver Name is required' }),

@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { map, uniqueBy } from 'remeda';
+
+import { EnvConfig } from '@/config/env';
 import { offerCompanies } from '@/data/companies';
 import { mentorshipPeople } from '@/data/people';
-import { map, uniqueBy } from 'remeda';
-import { useEffect, useState } from 'react';
-import { EnvConfig } from '@/config/env';
 
 const parseData = (data: string) => {
   const rows = data.split(/\r?\n/).slice(5);

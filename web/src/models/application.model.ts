@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
+
 import { JobPostingModel } from '@/models/job-posting.model';
+import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 
 export interface IApplication extends Document {
   _id: Types.ObjectId;

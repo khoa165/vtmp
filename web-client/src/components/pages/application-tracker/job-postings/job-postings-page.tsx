@@ -1,7 +1,8 @@
+import React from 'react';
+
 import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
 import { JobPostingsContainer } from '@/components/pages/application-tracker/job-postings/job-postings-container';
 import { JobPostingStatusCards } from '@/components/pages/application-tracker/job-postings/job-postings-status';
-import React from 'react';
 
 export const JobPostingsPage = () => {
   const rawUser = localStorage.getItem('user');

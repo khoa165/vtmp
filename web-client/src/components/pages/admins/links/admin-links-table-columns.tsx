@@ -1,11 +1,14 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { Button } from '@/components/base/button';
-import { ILinkResponse } from '@/components/pages/admins/links/validation';
 import { format } from 'date-fns';
-import { ReviewPopupButton } from '@/components/pages/admins/links/review-popup-button';
-import { StatusDot } from '@/components/base/status-dot';
-import { JobPostingData } from './validation';
+
+import { Button } from '@/components/base/button';
 import { HeaderSorting } from '@/components/base/header';
+import { StatusDot } from '@/components/base/status-dot';
+import { ReviewPopupButton } from '@/components/pages/admins/links/review-popup-button';
+import {
+  ILinkResponse,
+  JobPostingData,
+} from '@/components/pages/admins/links/validation';
 import { StatusToColorMapping } from '@/utils/constants';
 
 interface AdminLinksTableColumnsProps {

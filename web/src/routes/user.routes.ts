@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import UserController from '@/controllers/user.controller';
+
+import { UserController } from '@/controllers/user.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
 import { wrappedHandlers } from '@/middlewares/utils';
 

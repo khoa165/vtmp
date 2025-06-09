@@ -1,18 +1,19 @@
 import React, { Fragment } from 'react';
-import { Avatar } from '@/components/layout/avatar';
 import { chunk } from 'remeda';
-import { CompanyMetadataWithOffers, MentorshipOffer } from '@/types';
-import {
-  isNewGradOffer,
-  isReturnOfferForInternship,
-  isReturnOfferForNewGrad,
-} from '@/utils/data';
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/base/tooltip';
+import { Avatar } from '@/components/layout/avatar';
+import { CompanyMetadataWithOffers, MentorshipOffer } from '@/types';
+import {
+  isNewGradOffer,
+  isReturnOfferForInternship,
+  isReturnOfferForNewGrad,
+} from '@/utils/data';
 
 interface MiniCompaniesListProps {
   offersList: MentorshipOffer[];

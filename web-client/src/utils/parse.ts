@@ -1,5 +1,7 @@
-import { map, uniqueBy, sumBy, countBy, flatMap, filter } from 'remeda';
 import moment from 'moment';
+import { map, uniqueBy, sumBy, countBy, flatMap, filter } from 'remeda';
+
+import { mentorshipPeople } from '@/data/people';
 import {
   DateWithCount,
   InterviewData,
@@ -8,9 +10,9 @@ import {
   MergedDateWithCount,
 } from '@/types';
 import { isSome } from '@/utils/maybe';
-import { interviewTypeAbbreviation, MentorshipYear } from './constants';
-import { mentorshipPeople } from '@/data/people';
 import { InterviewType } from '@vtmp/common/constants';
+
+import { interviewTypeAbbreviation, MentorshipYear } from './constants';
 
 interface InterviewCell {
   date: string;

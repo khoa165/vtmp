@@ -1,11 +1,7 @@
-import { Button } from '@/components/base/button';
+import confetti from 'canvas-confetti';
 import { MoreHorizontal, ChevronDown } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/base/dropdown-menu';
+import { useState } from 'react';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,13 +13,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/base/alert-dialog';
-import { IApplication } from '@/components/pages/application-tracker/applications/validation';
-import { useState } from 'react';
-import confetti from 'canvas-confetti';
-import { ApplicationStatus } from '@vtmp/common/constants';
-import { formatStatus } from '@/utils/helpers';
+import { Button } from '@/components/base/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/base/dropdown-menu';
 import { StatusDot } from '@/components/base/status-dot';
+import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 import { StatusToColorMapping } from '@/utils/constants';
+import { formatStatus } from '@/utils/helpers';
+import { ApplicationStatus } from '@vtmp/common/constants';
 
 const celebrateOffered = (): void => {
   const end = Date.now() + 3 * 1000; // 3 seconds

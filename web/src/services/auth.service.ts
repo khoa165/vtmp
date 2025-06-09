@@ -1,3 +1,8 @@
+import bcrypt from 'bcryptjs';
+import { omit } from 'remeda';
+import { z } from 'zod';
+
+import { JWT_TOKEN_TYPE } from '@/constants/enums';
 import { UserRepository } from '@/repositories/user.repository';
 import { getEmailService } from '@/utils/email';
 import {
@@ -6,10 +11,6 @@ import {
   ResourceNotFoundError,
 } from '@/utils/errors';
 import { JWTUtils } from '@/utils/jwt';
-import bcrypt from 'bcryptjs';
-import { omit } from 'remeda';
-import { JWT_TOKEN_TYPE } from '@/constants/enums';
-import { z } from 'zod';
 
 const ResetTokenPayloadSchema = z.object({
   id: z.string(),

@@ -1,6 +1,7 @@
 import { expect } from 'chai';
-import { EnvConfig } from '@/config/env';
 import { before } from 'mocha';
+
+import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 
 describe('Config', () => {

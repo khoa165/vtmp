@@ -1,11 +1,12 @@
-import request from 'supertest';
-import { expect } from 'chai';
-import app from '@/app';
-import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
 import bcrypt from 'bcryptjs';
+import { expect } from 'chai';
 import { toLowerCase } from 'remeda';
+import request from 'supertest';
+
+import app from '@/app';
 import { UserRepository } from '@/repositories/user.repository';
 import { AuthService } from '@/services/auth.service';
+import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
 import { UserRole } from '@vtmp/common/constants';
 
 export enum HTTPMethod {

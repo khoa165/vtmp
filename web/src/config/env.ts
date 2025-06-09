@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
-import { parseEnvConfig } from '@vtmp/common/utils';
+
 import { Environment } from '@/constants/enums';
+import { parseEnvConfig } from '@vtmp/common/utils';
 
 dotenv.config();
 

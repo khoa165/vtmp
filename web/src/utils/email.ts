@@ -1,5 +1,6 @@
-import { EnvConfig } from '@/config/env';
 import nodemailer from 'nodemailer';
+
+import { EnvConfig } from '@/config/env';
 
 export class EmailService {
   private transporter: nodemailer.Transporter;

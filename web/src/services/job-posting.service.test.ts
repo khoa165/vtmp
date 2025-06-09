@@ -1,13 +1,15 @@
 import { expect } from 'chai';
-import assert from 'assert';
-import { JobPostingService } from '@/services/job-posting.service';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
-import { ResourceNotFoundError } from '@/utils/errors';
 import { differenceInSeconds } from 'date-fns';
+
+import assert from 'assert';
+
 import { IJobPosting } from '@/models/job-posting.model';
+import { ApplicationRepository } from '@/repositories/application.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { JobPostingService } from '@/services/job-posting.service';
+import { useMongoDB } from '@/testutils/mongo-db.testutil';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongo-id.testutil';
+import { ResourceNotFoundError } from '@/utils/errors';
 import { JobPostingRegion } from '@vtmp/common/constants';
 
 describe('JobPostingService', () => {

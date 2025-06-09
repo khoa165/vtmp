@@ -1,5 +1,6 @@
-import { UserRole } from '@vtmp/common/constants';
 import { z } from 'zod';
+
+import { UserRole } from '@vtmp/common/constants';
 
 export const AuthResponseSchema = z.object({
   data: z.object({

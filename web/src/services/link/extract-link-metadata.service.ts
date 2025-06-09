@@ -1,5 +1,5 @@
-import { JobPostingRegion } from '@vtmp/common/constants';
 import { LinkMetaData } from '@/services/link/link.types';
+import { JobPostingRegion } from '@vtmp/common/constants';
 
 export const ExtractLinkMetadataService = {
   async extractMetadata(url: string): Promise<LinkMetaData> {

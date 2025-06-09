@@ -1,15 +1,16 @@
 import dotenv from 'dotenv';
-import { connectDB } from '@/config/database';
-import { exit } from 'process';
-import { loadUsers } from '@/seeds/users';
-import { loadLinks } from '@/seeds/links';
-import { loadJobPostings } from '@/seeds/job-postings';
-import { loadApplications } from '@/seeds/applications';
-
 import mongoose from 'mongoose';
-import { loadInterviews } from '@/seeds/interviews';
+
+import { exit } from 'process';
+
+import { connectDB } from '@/config/database';
 import { EnvConfig } from '@/config/env';
 import { Environment } from '@/constants/enums';
+import { loadApplications } from '@/seeds/applications';
+import { loadInterviews } from '@/seeds/interviews';
+import { loadJobPostings } from '@/seeds/job-postings';
+import { loadLinks } from '@/seeds/links';
+import { loadUsers } from '@/seeds/users';
 
 dotenv.config();
 connectDB();

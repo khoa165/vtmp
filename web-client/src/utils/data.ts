@@ -1,14 +1,16 @@
-import { mentorshipPeople } from '../data/people';
-import { rolePriority } from './constants';
 import { map, first } from 'remeda';
+
 import { MentorshipOffer, MentorshipPerson } from '@/types';
-import { groupDisplayName, roleDisplayName } from './displayName';
 import {
   MentorshipGroup,
   MentorshipRole,
   OfferChannel,
   OfferType,
 } from '@vtmp/common/constants';
+
+import { rolePriority } from './constants';
+import { groupDisplayName, roleDisplayName } from './display-name';
+import { mentorshipPeople } from '../data/people';
 
 export const getName = (alias: string): string => mentorshipPeople[alias].name;
 

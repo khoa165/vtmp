@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { UserRole } from '@vtmp/common/constants';
+
 import { handleError, UnauthorizedError } from '@/utils/errors';
+import { UserRole } from '@vtmp/common/constants';
 
 interface AuthenticatedRequest extends Request {
   user: {

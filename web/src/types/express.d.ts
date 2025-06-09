@@ -1,4 +1,4 @@
-import { UserRole } from '@/types/enums';
+import { UserRole } from '@vtmp/common/constants';
 
 declare global {
   namespace Express {

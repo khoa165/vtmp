@@ -1,9 +1,20 @@
 import React, { useMemo } from 'react';
 import { FaArrowTrendUp, FaCode } from 'react-icons/fa6';
 import { RiTeamFill } from 'react-icons/ri';
+import { useSearchParams } from 'react-router-dom';
+import { useGate } from 'statsig-react';
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/base/tooltip';
 import { Avatar } from '@/components/layout/avatar';
+import { MiniCompaniesList } from '@/components/layout/mini-companies-list';
 import { MiniPeopleList } from '@/components/layout/mini-people-list';
 import { CompanyMetadataWithOffers, MentorshipPerson } from '@/types';
+import { PeopleSortColumn } from '@/utils/constants';
 import {
   getRoleDisplayName,
   isMenteeRole,
@@ -12,17 +23,7 @@ import {
   isReturnOfferForInternship,
   isReturnOfferForNewGrad,
 } from '@/utils/data';
-import { useGate } from 'statsig-react';
-import { MiniCompaniesList } from '@/components/layout/mini-companies-list';
-import { PeopleSortColumn } from '@/utils/constants';
-import { useSearchParams } from 'react-router-dom';
-import { projectDisplayName } from '@/utils/displayName';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/base/tooltip';
+import { projectDisplayName } from '@/utils/display-name';
 
 interface PeopleCardProps extends React.HTMLAttributes<HTMLDivElement> {
   year: number | 'all';

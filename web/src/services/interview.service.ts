@@ -1,8 +1,7 @@
-import { InterviewRepository } from '@/repositories/interview.repository';
 import { IInterview } from '@/models/interview.model';
-
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import { InterviewRepository } from '@/repositories/interview.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
+import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 
 export const InterviewService = {
   createInterview: async (interviewData: {

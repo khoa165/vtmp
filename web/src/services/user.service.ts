@@ -1,9 +1,10 @@
-import { UserRepository } from '@/repositories/user.repository';
-import { UserRole } from '@vtmp/common/constants';
-import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import { omit } from 'remeda';
 
-const UserService = {
+import { UserRepository } from '@/repositories/user.repository';
+import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
+import { UserRole } from '@vtmp/common/constants';
+
+export const UserService = {
   getAllUsers: async () => {
     return UserRepository.getAllUsers();
   },
@@ -51,5 +52,3 @@ const UserService = {
     return omit(updatedUser, ['encryptedPassword']);
   },
 };
-
-export default UserService;

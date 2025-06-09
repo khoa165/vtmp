@@ -1,4 +1,5 @@
 import mongoose, { Document, Types } from 'mongoose';
+
 import { UserRole } from '@vtmp/common/constants';
 
 export interface IUser extends Document {

@@ -1,5 +1,6 @@
-import { Banner } from '@/components/layout/banner';
 import React from 'react';
+
+import { Banner } from '@/components/layout/banner';
 import { Navbar } from '@/components/layout/navigation-bar';
 
 interface BannerPageProps {

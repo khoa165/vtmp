@@ -1,8 +1,10 @@
+import { useState } from 'react';
+
+import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
 import { AdminLinksContainer } from '@/components/pages/admins/links/admin-links-container';
 import { AdminLinksStatusCards } from '@/components/pages/admins/links/admin-links-status';
-import { useState } from 'react';
 import { LinkStatus } from '@vtmp/common/constants';
-import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
+
 export interface LinksFilter {
   status?: LinkStatus;
 }

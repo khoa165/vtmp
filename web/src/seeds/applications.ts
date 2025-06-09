@@ -1,8 +1,9 @@
+import { faker } from '@faker-js/faker';
+
 import { ApplicationModel, IApplication } from '@/models/application.model';
 import { IJobPosting } from '@/models/job-posting.model';
 import { IUser } from '@/models/user.model';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
-import { faker } from '@faker-js/faker';
 
 export const loadApplications = async ({
   users,

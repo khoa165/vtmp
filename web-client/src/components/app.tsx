@@ -1,33 +1,35 @@
-import { useEffect, useState } from 'react';
 import AOS from 'aos';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import { allBlogsMetadata } from '@/blogs/metadata';
+import { Mentorship2025Apply } from '@/components/apply';
+import { BlogContainer } from '@/components/blogs';
+import { LandingContainer } from '@/components/landing';
+import { PageWithNavigation } from '@/components/layout/page-with-navigation';
+import { PageWithSidebar } from '@/components/layout/page-with-sidebar';
+import { PageWithToast } from '@/components/layout/page-with-toast';
+import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
+import { AdminLinksPage } from '@/components/pages/admins/links/admin-links-page';
+import { UserInvitationPage } from '@/components/pages/admins/users/user-invitation';
+import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
+import { JobPostingsPage } from '@/components/pages/application-tracker/job-postings/job-postings-page';
+import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
+import { LoginPage } from '@/components/pages/auth/login';
 import { PeopleContainer } from '@/components/people';
-import { StatsContainer } from '@/components/stats';
 import { ProjectsContainer } from '@/components/projects';
+import { StatsContainer } from '@/components/stats';
 import { SummaryContainer } from '@/components/summary';
 // import { allBlogsFilepaths, allBlogsMetadata } from '@/blogs/metadata';
 // import { buildFileMetadata } from '@/utils/file';
-import { BlogFileMapping } from '@/types';
-import { LandingContainer } from '@/components/landing';
-import { BlogContainer } from '@/components/blogs';
-import { PageWithNavigation } from '@/components/layout/page-with-navigation';
 import { TreeContainer } from '@/components/tree';
-import { Mentorship2025Apply } from '@/components/apply';
-import { Mentorship2025Proposal } from './proposal';
-import LoginPage from '@/components/pages/auth/login';
-import { PageWithSidebar } from '@/components/layout/page-with-sidebar';
-import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
-import { UserInvitationPage } from '@/components/pages/admins/users/user-invitation';
-import { JobPostingsPage } from '@/components/pages/application-tracker/job-postings/job-postings-page';
-import { PageWithToast } from '@/components/layout/page-with-toast';
-import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
-import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
-import { AdminLinksPage } from '@/components/pages/admins/links/admin-links-page';
-import { NotFoundPage } from './pages/shared/not-found-page';
+import { BlogFileMapping } from '@/types';
+import { buildFileMetadata } from '@/utils/file';
 import { ProtectedRoute } from '@/utils/protect-route';
 import { UserRole } from '@vtmp/common/constants';
-import { buildFileMetadata } from '@/utils/file';
-import { allBlogsMetadata } from '@/blogs/metadata';
+
+import { NotFoundPage } from './pages/shared/not-found-page';
+import { Mentorship2025Proposal } from './proposal';
 
 export const App = () => {
   useEffect(() => {

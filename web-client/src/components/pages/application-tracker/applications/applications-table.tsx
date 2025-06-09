@@ -1,5 +1,3 @@
-import { Input } from '@/components/base/input';
-import { useState } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,6 +11,9 @@ import {
   OnChangeFn,
   ColumnSizingState,
 } from '@tanstack/react-table';
+import { useState } from 'react';
+
+import { Input } from '@/components/base/input';
 import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
 import { ResizableTable } from '@/components/pages/shared/resizable-table';
 

@@ -1,14 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { request } from '@/utils/api';
-import { Method, QueryKey } from '@/utils/constants';
+import axios from 'axios';
 import { toast } from 'sonner';
+
 import {
   ApplicationsResponseSchema,
   ApplicationResponseSchema,
   ApplicationsCountByStatusSchema,
 } from '@/components/pages/application-tracker/applications/validation';
+import { request } from '@/utils/api';
+import { Method, QueryKey } from '@/utils/constants';
 import { ApplicationStatus } from '@vtmp/common/constants';
-import axios from 'axios';
 
 export const useGetApplications = (
   applicationFilter: { status?: ApplicationStatus } = {}
@@ -104,6 +105,7 @@ export const useUpdateApplicationStatus = () => {
         );
         toast.error(errorMessages.join('\n'));
       } else {
+        console.log('error', error);
         toast.error('Unexpected error');
       }
     },

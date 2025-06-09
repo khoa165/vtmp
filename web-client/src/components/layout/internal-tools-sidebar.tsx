@@ -1,11 +1,13 @@
-import React, { useMemo } from 'react';
 import {
   ShieldUser,
   ExternalLink,
   LayoutDashboard,
   BriefcaseBusiness,
 } from 'lucide-react';
+import React, { useMemo } from 'react';
 
+import { Avatar } from '@/components/base/avatar';
+import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
 import {
   Sidebar,
   SidebarContent,
@@ -17,9 +19,8 @@ import {
   SidebarTrigger,
 } from '@/components/base/sidebar';
 import { VTMPLogo } from '@/components/base/vtmp-logo';
-import { Avatar } from '@/components/base/avatar';
-import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
 import { UserRole } from '@vtmp/common/constants';
+
 export const InternalToolsSidebar = () => {
   const rawUser = localStorage.getItem('user');
   const user = rawUser ? JSON.parse(rawUser) : null;

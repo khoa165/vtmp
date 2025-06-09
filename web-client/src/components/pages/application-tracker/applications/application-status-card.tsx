@@ -1,8 +1,8 @@
 import { Card } from '@/components/base/card';
-import { ApplicationStatus } from '@vtmp/common/constants';
 import { StatusDot } from '@/components/base/status-dot';
-import { formatStatus } from '@/utils/helpers';
 import { StatusToColorMapping } from '@/utils/constants';
+import { formatStatus } from '@/utils/helpers';
+import { ApplicationStatus } from '@vtmp/common/constants';
 
 export const ApplicationStatusCard = ({
   status,

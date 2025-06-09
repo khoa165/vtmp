@@ -1,5 +1,5 @@
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Outlet } from 'react-router-dom';
 import '@/styles/scss/app.scss';
 

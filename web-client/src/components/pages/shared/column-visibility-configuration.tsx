@@ -1,13 +1,14 @@
+import type { Table } from '@tanstack/react-table';
+import { ChevronDown } from 'lucide-react';
 import { useMemo } from 'react';
+
+import { Button } from '@/components/base/button';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/base/dropdown-menu';
-import { Button } from '@/components/base/button';
-import { ChevronDown } from 'lucide-react';
-import type { Table } from '@tanstack/react-table';
 
 interface ColumnVisibilityConfigurationProps<TData> {
   table: Table<TData>;

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { AuthService } from '@/services/auth.service';
 import { z } from 'zod';
+
+import { AuthService } from '@/services/auth.service';
 
 const PasswordSchema = z
   .string({ required_error: 'Password is required' })

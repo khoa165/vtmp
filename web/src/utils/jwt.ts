@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+
 import { EnvConfig } from '@/config/env';
 
 export const JWTUtils = {

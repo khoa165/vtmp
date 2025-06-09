@@ -31,6 +31,7 @@ export default tseslint.config(
             './web/tsconfig.json',
             './packages/common/tsconfig.json',
             './custom-eslint/tsconfig.json',
+            './discord-service/tsconfig.json',
           ],
           noWarnOnMultipleProjects: true,
         },
@@ -100,16 +101,23 @@ export default tseslint.config(
       'web/src/routes/index.ts',
       'web/app.test.ts',
       'web-client/**/*',
+      'discord-service/**/*',
     ],
     rules: {
       'customEslintRules/wrapped-handlers-in-router': 'off',
     },
   },
   {
-    files: ['**/{app,index,main}.{ts,tsx}', 'eslint.config.ts'],
+    files: [
+      '**/{app,index,main}.{ts,tsx}',
+      'eslint.config.ts',
+      '**/vite.config.ts',
+      '**/.storybook/**/*',
+      '**/*.stories.{ts,tsx}',
+    ],
     rules: {
       'import/no-default-export': 'off',
     },
   },
-  { ignores: ['cookiecutter/', 'scripts/'] }
+  { ignores: ['cookiecutter/', 'scripts/', '**/*.{js,d.ts,d.tsx}'] }
 );

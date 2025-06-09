@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { z } from 'zod';
 import mongoose from 'mongoose';
+import { z } from 'zod';
 
-import { InterviewService } from '@/services/interview.service';
 import { getUserFromRequest } from '@/middlewares/utils';
+import { InterviewService } from '@/services/interview.service';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 
 const InterviewIdParamsSchema = z

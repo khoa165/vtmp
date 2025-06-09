@@ -1,6 +1,7 @@
-import { IUser, UserModel } from '@/models/user.model';
-import bcrypt from 'bcryptjs';
 import { faker } from '@faker-js/faker';
+import bcrypt from 'bcryptjs';
+
+import { IUser, UserModel } from '@/models/user.model';
 
 const specificUsers = [
   {
