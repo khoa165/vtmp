@@ -102,12 +102,20 @@ function FormLabel({
   );
 }
 
-function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
+const FormControl = React.forwardRef<
+  React.ElementRef<typeof Slot>,
+  React.ComponentPropsWithoutRef<typeof Slot>
+>(({ children, ...props }, ref) => {
   const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
 
+  if (!React.isValidElement(children)) {
+    return null;
+  }
+
   return (
     <Slot
+      ref={ref}
       data-slot="form-control"
       id={formItemId}
       aria-describedby={
@@ -117,9 +125,12 @@ function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
       }
       aria-invalid={!!error}
       {...props}
-    />
+    >
+      {React.Children.only(children)}
+    </Slot>
   );
-}
+});
+FormControl.displayName = 'FormControl';
 
 function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
   const { formDescriptionId } = useFormField();

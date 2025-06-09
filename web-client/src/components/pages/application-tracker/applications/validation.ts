@@ -100,4 +100,11 @@ export interface InterviewData {
   note?: string;
 }
 
+export const interviewFormSchema = z.object({
+  types: z.array(z.nativeEnum(InterviewType)),
+  status: z.nativeEnum(InterviewStatus),
+  interviewOnDate: z.coerce.date(),
+  note: z.string().optional(),
+});
+
 export type IInterviews = z.infer<typeof InterviewsResponseSchema>['data'];

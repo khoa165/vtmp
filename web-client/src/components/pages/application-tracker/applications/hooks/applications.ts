@@ -6,11 +6,10 @@ import {
   ApplicationsResponseSchema,
   ApplicationResponseSchema,
   ApplicationsCountByStatusSchema,
-  ApplicationData,
   InterviewsResponseSchema,
   InterviewResponseSchema,
 } from '@/components/pages/application-tracker/applications/validation';
-import { ApplicationStatus } from '@vtmp/common/constants';
+import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 import axios from 'axios';
 
 export const useGetApplications = (
@@ -142,7 +141,12 @@ export const useUpdateApplicationMetadata = () => {
       body,
     }: {
       applicationId: string;
-      body: ApplicationData;
+      body: {
+        interest?: InterestLevel;
+        portalLink?: string;
+        referrer?: string;
+        note?: string;
+      };
     }) =>
       request({
         method: Method.PUT,
@@ -229,9 +233,7 @@ export const useCreateInterview = () => {
         );
         toast.error(errorMessages.join('\n'));
       } else {
-        toast.error(
-          error instanceof Error ? error.message : 'Unexpected error'
-        );
+        toast.error('Unexpected error');
       }
     },
   });
@@ -276,9 +278,7 @@ export const useUpdateInterview = () => {
         );
         toast.error(errorMessages.join('\n'));
       } else {
-        toast.error(
-          error instanceof Error ? error.message : 'Unexpected error'
-        );
+        toast.error('Unexpected error');
       }
     },
   });

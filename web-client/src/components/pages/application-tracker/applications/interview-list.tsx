@@ -1,4 +1,5 @@
 import { Button } from '@/components/base/button';
+import { Skeleton } from '@/components/base/skeleton';
 import {
   useCreateInterview,
   useGetInterviewByApplicationId,
@@ -31,17 +32,24 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
   const [showCreateForm, setShowCreateForm] = useState(false);
 
   if (isLoadingInterviews) {
-    return <div>Loading interviews...</div>;
+    return (
+      <div className="mt-8 space-y-4">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-6 w-40" />
+          <Skeleton className="h-8 w-28 rounded-md" />
+        </div>
+
+        <div className="space-y-4">
+          <Skeleton className="h-20 w-full rounded-lg" />
+          <Skeleton className="h-20 w-full rounded-lg" />
+        </div>
+      </div>
+    );
   }
 
   if (interviewsError) {
     return <div>Error loading interviews: {interviewsError.message}</div>;
   }
-
-  const handleCreateInterview = () => {
-    console.log('Creating interview for application:', applicationId);
-    setShowCreateForm(true);
-  };
 
   return (
     <div className="mt-8 space-y-4">
@@ -50,7 +58,7 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
         <Button
           variant="outline"
           className="text-sm"
-          onClick={handleCreateInterview}
+          onClick={() => setShowCreateForm(true)}
         >
           + Add Interview
         </Button>
@@ -61,17 +69,19 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
           <InterviewCreateForm
             applicationId={applicationId}
             createInterviewFn={createInterviewFn}
+            setShowCreateForm={setShowCreateForm}
           />
         )}
-        {interviewsData?.map((interview) => (
-          <InterviewUpdateForm
-            interviewId={interview._id}
-            currentInterview={interview}
-            updateInterviewFn={updateInterviewFn}
-          />
-        ))}
+        {(Array.isArray(interviewsData) ? interviewsData : []).map(
+          (interview) => (
+            <InterviewUpdateForm
+              key={interview._id}
+              currentInterview={interview}
+              updateInterviewFn={updateInterviewFn}
+            />
+          )
+        )}
       </div>
-      <div className="rounded-2xl border p-4 shadow-sm space-y-3 bg-background h-50"></div>
     </div>
   );
 };

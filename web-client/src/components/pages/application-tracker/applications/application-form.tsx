@@ -13,7 +13,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/base/alert-dialog';
 import {
   Form,
@@ -30,7 +29,12 @@ import { InterestLevel } from '@vtmp/common/constants';
 import { Input } from '@/components/base/input';
 import { Textarea } from '@/components/base/textarea';
 
-interface ApplicationFormProps {
+export const ApplicationForm = ({
+  currentApplication,
+  updateApplicationMetadataFn,
+  deleteApplicationFn,
+  onOpenChange,
+}: {
   currentApplication: {
     _id: string;
   } & ApplicationData;
@@ -43,14 +47,7 @@ interface ApplicationFormProps {
   }) => void;
   deleteApplicationFn: (applicationId: string) => void;
   onOpenChange?: (open: boolean) => void;
-}
-
-export const ApplicationForm = ({
-  currentApplication,
-  updateApplicationMetadataFn,
-  deleteApplicationFn,
-  onOpenChange,
-}: ApplicationFormProps) => {
+}) => {
   const {
     _id: applicationId,
     note,
@@ -160,7 +157,7 @@ export const ApplicationForm = ({
                 note: note || '',
                 referrer: referrer || '',
                 portalLink: portalLink || '',
-                interest: interest || '',
+                interest: interest || InterestLevel.MEDIUM,
               })
             }
           >
@@ -194,7 +191,6 @@ export const ApplicationForm = ({
         </div>
       </Form>
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <AlertDialogTrigger></AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="text-foreground">

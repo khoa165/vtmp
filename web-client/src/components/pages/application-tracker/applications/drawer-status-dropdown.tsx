@@ -40,7 +40,7 @@ export const DrawerStatusDropDown = ({
           )}
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="start" className=" mt-1 w-[150px]">
+        <DropdownMenuContent align="center" className=" mt-1 w-[150px]">
           {Object.values(ApplicationStatus)
             .filter((status) => status !== applicationData.status)
             .map((dropdownStatus) => (
@@ -57,7 +57,11 @@ export const DrawerStatusDropDown = ({
                 }}
               >
                 <div className="flex items-center gap-2">
-                  {formatStatus(dropdownStatus)}
+                  <StatusDot
+                    status={dropdownStatus}
+                    colorMapping={StatusToColorMapping}
+                  />
+                  <span>{formatStatus(dropdownStatus)}</span>
                 </div>
               </DropdownMenuItem>
             ))}
