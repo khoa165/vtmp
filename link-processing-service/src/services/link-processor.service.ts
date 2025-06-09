@@ -4,7 +4,6 @@ import { LinkMetaData } from '@/services/link-metadata-validation';
 import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
 import { ScraperService } from '@/services/web-scraper.service';
 import { handleError, LinkProcessingStatus } from '@/utils/errors';
-// import { postWithAuthRetry } from '@/utils/auth';
 // import { LinkDeduplicatorService } from '@/services/link/link-deduplicator.service';
 
 export const LinkProcessorService = {

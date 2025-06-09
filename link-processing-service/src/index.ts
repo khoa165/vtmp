@@ -1,5 +1,5 @@
 import { LinkProcessorService } from '@/services/link-processor.service';
-import { postWithAuthRetry } from '@/utils/auth';
+import { submitLinkWithToken } from '@/utils/auth';
 import {
   Context,
   APIGatewayProxyResult,
@@ -16,7 +16,7 @@ export const handler = async (
   const processedMetadata = await LinkProcessorService.processLink(url);
 
   try {
-    const response = await postWithAuthRetry('/links', processedMetadata);
+    const response = await submitLinkWithToken('/links', processedMetadata);
 
     if (response.status === 201) {
       console.log('Job link and metadata deposited successfully!');
