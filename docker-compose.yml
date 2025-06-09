@@ -25,6 +25,8 @@ services:
     build:
       context: .
       dockerfile: link-processing-service/Dockerfile
+      args:
+        - NODE_ENV=development
     platform: linux/amd64
     ports:
       - '9000:8080'

@@ -17,6 +17,12 @@ RUN yarn install --immutable
 RUN yarn workspace @vtmp/common build
 RUN yarn workspace @vtmp/link-processing-service build
 
+# Prune devDependencies from the final node_modules if in production only
+ARG NODE_ENV=production
+RUN if [ "$NODE_ENV" = "production" ]; then \
+      yarn install --production --immutable --ignore-scripts; \
+    fi
+
 # 2nd stage
 FROM public.ecr.aws/lambda/nodejs:22
 # ${LAMBDA_TASK_ROOT} is an env var automatically set in AWS Lambda base image. It points to root dir inside a Lambda
