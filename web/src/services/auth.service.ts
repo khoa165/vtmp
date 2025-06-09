@@ -120,7 +120,7 @@ export const AuthService = {
     token: string;
     newPassword: string;
   }) => {
-    const decoded = JWTUtils.decodeAndParseToken(
+    const decoded = JWTUtils.verifyAndParseToken(
       token,
       ResetTokenPayloadSchema,
       EnvConfig.get().JWT_SECRET

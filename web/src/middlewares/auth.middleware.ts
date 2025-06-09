@@ -5,11 +5,7 @@ import { z } from 'zod';
 import UserService from '@/services/user.service';
 import { EnvConfig } from '@/config/env';
 import { UserRole } from '@vtmp/common/constants';
-
-enum ALLOWED_ISSUER {
-  DISCORD_SERVICE = 'discord-service',
-  LINK_PROCESSING_SERVICE = 'link-processing-service',
-}
+import { ALLOWED_ISSUER } from '@/constants/enums';
 
 export const DecodedJWTSchema = z.object({
   id: z.string({ required_error: 'Id is required' }),
@@ -45,7 +41,7 @@ export const authenticate = async (
   // This does not verify the signature (with a secret) or check if it expires
   let decoded;
   try {
-    decoded = JWTUtils.peekTokenPayload(token, TokenPayloadSchema);
+    decoded = JWTUtils.peekAndParseToken(token, TokenPayloadSchema);
   } catch {
     // If Zod throws or jwt.decode returns null, treat as unauthorized
     throw new UnauthorizedError('jwt malformed', {});
@@ -55,7 +51,7 @@ export const authenticate = async (
 
   // Check if decoded has field .id, which means it is from a human 'user'
   if ('id' in decoded) {
-    const parsed = JWTUtils.decodeAndParseToken(
+    const parsed = JWTUtils.verifyAndParseToken(
       token,
       DecodedJWTSchema,
       EnvConfig.get().JWT_SECRET
@@ -64,20 +60,23 @@ export const authenticate = async (
 
     req.user = { id: String(user._id), role: user.role };
   } else {
-    const parsed = JWTUtils.decodeAndParseToken(
+    const parsed = JWTUtils.verifyAndParseToken(
       token,
       getDecodedJWTServiceSchema(),
       EnvConfig.get().SERVICE_JWT_SECRET
     );
-    // Check if parsed have correct issuer and audience
+
+    // Check if parsed have allowed issuer
     if (!Object.values(ALLOWED_ISSUER).includes(parsed.iss)) {
       throw new UnauthorizedError('Unknown issuer', { issuer: parsed.iss });
     }
-    if (parsed.aud !== 'web') {
+    // Check if parsed have correct audience
+    if (parsed.aud !== EnvConfig.get().SERVICE_NAME) {
       throw new UnauthorizedError('Incorrect audience', {
         audience: parsed.aud,
       });
     }
+
     req.service = { role: UserRole.ADMIN };
   }
   next();

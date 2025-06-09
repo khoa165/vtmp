@@ -9,7 +9,7 @@ export const JWTUtils = {
     return jwt.sign(payload, EnvConfig.get().JWT_SECRET, options);
   },
 
-  decodeAndParseToken: <T>(
+  verifyAndParseToken: <T>(
     token: string,
     schema: { parse: (data: unknown) => T },
     secret: string
@@ -18,7 +18,7 @@ export const JWTUtils = {
     return schema.parse(verified);
   },
 
-  peekTokenPayload: <T>(
+  peekAndParseToken: <T>(
     token: string,
     schema: { parse: (data: unknown) => T }
   ) => {
