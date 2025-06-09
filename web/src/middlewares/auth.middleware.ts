@@ -23,10 +23,11 @@ export const TokenPayloadSchema = z.union([
   }),
 ]);
 
-export const DecodedJWTServiceSchema = z.object({
-  iss: z.nativeEnum(ALLOWED_ISSUER),
-  aud: z.literal(EnvConfig.get().SERVICE_NAME),
-});
+const getDecodedJWTServiceSchema = () =>
+  z.object({
+    iss: z.nativeEnum(ALLOWED_ISSUER),
+    aud: z.literal(EnvConfig.get().SERVICE_NAME),
+  });
 
 export const authenticate = async (
   req: Request,
@@ -52,7 +53,7 @@ export const authenticate = async (
 
   if (!decoded) throw new UnauthorizedError('Empty jwt payload', {});
 
-  // Now check if decoded has field .id, which means it is from a human 'user'
+  // Check if decoded has field .id, which means it is from a human 'user'
   if ('id' in decoded) {
     const parsed = JWTUtils.decodeAndParseToken(
       token,
@@ -65,7 +66,7 @@ export const authenticate = async (
   } else {
     const parsed = JWTUtils.decodeAndParseToken(
       token,
-      DecodedJWTServiceSchema,
+      getDecodedJWTServiceSchema(),
       EnvConfig.get().SERVICE_JWT_SECRET
     );
     // Check if parsed have correct issuer and audience
@@ -80,15 +81,4 @@ export const authenticate = async (
     req.service = { role: UserRole.ADMIN };
   }
   next();
-
-  // const parsed = JWTUtils.decodeAndParseToken(
-  //   token,
-  //   DecodedJWTSchema,
-  //   EnvConfig.get().JWT_SECRET
-  // );
-  // const user = await UserService.getUserById(parsed.id);
-
-  // req.user = { id: String(user._id), role: user.role };
-
-  // next();
 };
