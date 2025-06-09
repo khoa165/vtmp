@@ -11,7 +11,7 @@ export const DecodedJWTSchema = z.object({
   id: z.string({ required_error: 'Id is required' }),
 });
 
-export const TokenPayloadSchema = z.union([
+const TokenPayloadSchema = z.union([
   DecodedJWTSchema,
   z.object({
     iss: z.string(),
