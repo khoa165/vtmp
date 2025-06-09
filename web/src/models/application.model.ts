@@ -1,5 +1,9 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
+import {
+  ApplicationStatus,
+  InterestLevel,
+  JobPostingRegion,
+} from '@vtmp/common/constants';
 import { JobPostingModel } from '@/models/job-posting.model';
 
 export interface IApplication extends Document {
@@ -7,7 +11,7 @@ export interface IApplication extends Document {
   jobPostingId: Types.ObjectId;
   companyName?: string;
   jobTitle?: string;
-  location?: string;
+  location?: JobPostingRegion;
   userId: Types.ObjectId;
   hasApplied: boolean;
   status: ApplicationStatus;
@@ -33,6 +37,8 @@ const ApplicationSchema = new mongoose.Schema<IApplication>({
   },
   location: {
     type: String,
+    enum: Object.values(JobPostingRegion),
+    default: JobPostingRegion.US,
   },
   userId: {
     type: Schema.Types.ObjectId,
