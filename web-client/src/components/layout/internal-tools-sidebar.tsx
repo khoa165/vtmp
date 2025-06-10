@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   ShieldUser,
   ExternalLink,
@@ -20,28 +20,14 @@ import { VTMPLogo } from '@/components/base/vtmp-logo';
 import { Avatar } from '@/components/base/avatar';
 import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
 import { UserRole } from '@vtmp/common/constants';
-import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export const InternalToolsSidebar = () => {
-  interface IUser {
-    role: UserRole;
-    _id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
+  const user = useCurrentUser();
+  if (!user) {
+    return <Navigate to="/login?redirected=true" />;
   }
-
-  const rawUser = localStorage.getItem('user');
-  const user: IUser | null = rawUser && JSON.parse(rawUser);
-
-  const navigate = useNavigatePreserveQueryParams();
-
-  useEffect(() => {
-    if (!user) {
-      navigate('/login');
-    }
-  }, [user]);
 
   const items = [
     {
@@ -51,10 +37,10 @@ export const InternalToolsSidebar = () => {
       roles: [UserRole.ADMIN],
     },
     {
-      title: 'Links',
-      url: '/link-sharing',
-      icon: ExternalLink,
-      roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+      title: 'Pending Links',
+      url: '/admin/links',
+      icon: BriefcaseBusiness,
+      roles: [UserRole.ADMIN],
     },
     {
       title: 'Jobs',
@@ -66,6 +52,12 @@ export const InternalToolsSidebar = () => {
       title: 'Applications',
       url: '/application-tracker',
       icon: BriefcaseBusiness,
+      roles: [UserRole.MODERATOR, UserRole.USER],
+    },
+    {
+      title: 'Share Link',
+      url: '/link-sharing',
+      icon: ExternalLink,
       roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
     },
   ];

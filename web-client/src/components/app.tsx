@@ -28,6 +28,7 @@ import { ProtectedRoute } from '@/utils/protect-route';
 import { UserRole } from '@vtmp/common/constants';
 import { buildFileMetadata } from '@/utils/file';
 import { allBlogsMetadata } from '@/blogs/metadata';
+import { RequireAuth } from '@/components/pages/auth/require-auth';
 
 export const App = () => {
   useEffect(() => {
@@ -71,7 +72,13 @@ export const App = () => {
           </Route>
         </Route>
         <Route element={<PageWithToast />}>
-          <Route element={<PageWithSidebar />}>
+          <Route
+            element={
+              <RequireAuth>
+                <PageWithSidebar />
+              </RequireAuth>
+            }
+          >
             <Route path="/link-sharing" element={<LinksPage />} />
             <Route path="/job-postings" element={<JobPostingsPage />} />
             <Route
