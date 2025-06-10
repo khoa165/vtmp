@@ -8,10 +8,9 @@ import { rulesCustom } from './custom-eslint';
 import { Linter } from 'eslint';
 
 const sanitizedGlobals: Linter.Globals = Object.fromEntries(
-  Object.entries({ ...globals.browser, ...globals.node }).map(([key, value ]) => [
-    key.trim(),
-    value,
-  ])
+  Object.entries({ ...globals.browser, ...globals.node }).map(
+    ([key, value]) => [key.trim(), value]
+  )
 );
 
 export default tseslint.config(
@@ -49,19 +48,33 @@ export default tseslint.config(
       },
       'boundaries/elements': [
         {
-          type: 'helpers',
-          pattern: 'helpers/*/*.js',
+          type: 'routes',
+          pattern: 'routes/*.ts',
           mode: 'file',
-          capture: ['category', 'elementName'],
+          capture: ['elementName'],
         },
         {
-          type: 'components',
-          pattern: 'components/*/*',
-          capture: ['family', 'elementName'],
+          type: 'controllers',
+          pattern: 'controllers/*.ts',
+          mode: 'file',
+          capture: ['elementName'],
         },
         {
-          type: 'modules',
-          pattern: 'module/*',
+          type: 'services',
+          pattern: 'services/*.ts',
+          mode: 'file',
+          capture: ['elementName'],
+        },
+        {
+          type: 'repositories',
+          pattern: 'repositories/*.ts',
+          mode: 'file',
+          capture: ['elementName'],
+        },
+        {
+          type: 'models',
+          pattern: 'models/*.ts',
+          mode: 'file',
           capture: ['elementName'],
         },
       ],
