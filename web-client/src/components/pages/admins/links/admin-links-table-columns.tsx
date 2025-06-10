@@ -54,6 +54,7 @@ export const adminLinksTableColumns = ({
     ),
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('datePosted');
+      if (!isoDate) return <div>-</div>;
       const date = new Date(isoDate);
       return <div>{format(date, 'MMM d, yyyy')}</div>;
     },
