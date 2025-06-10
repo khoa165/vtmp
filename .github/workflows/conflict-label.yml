@@ -5,7 +5,7 @@ on:
     types: [synchronize]
 
 jobs:
-  main:
+  apply-conflict-label:
     runs-on: ubuntu-latest
     steps:
       - name: check if prs are dirty

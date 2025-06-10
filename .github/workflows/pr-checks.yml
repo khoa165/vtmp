@@ -19,6 +19,7 @@ jobs:
     uses: ./.github/workflows/test-web.yml
 
   build-web-client:
+    if: contains(github.event.pull_request.files.*.path, 'web-client/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
     uses: ./.github/workflows/build-web-client.yml
 
   chromatic:
