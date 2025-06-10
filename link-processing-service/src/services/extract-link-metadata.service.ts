@@ -13,16 +13,10 @@ import {
 } from '@/utils/errors';
 import { GenerateContentResponse } from '@google/genai';
 import { GoogleGenAI } from '@google/genai';
-// import { ResourceNotFoundError } from '@/utils/errors';
 import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
-  // if (!geminiApiKey) {
-  //   throw new ResourceNotFoundError('GOOGLE_GEMINI_API_KEY is not set', {
-  //     key: geminiApiKey,
-  //   });
-  // }
   return new GoogleGenAI({ apiKey: geminiApiKey });
 };
 
