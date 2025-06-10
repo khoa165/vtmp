@@ -1,4 +1,4 @@
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { z } from 'zod';
 
 export const AuthResponseSchema = z.object({
@@ -9,7 +9,7 @@ export const AuthResponseSchema = z.object({
       firstName: z.string(),
       lastName: z.string(),
       email: z.string(),
-      role: z.nativeEnum(UserRole, { message: 'Invalid user role' }),
+      role: z.nativeEnum(SystemRole, { message: 'Invalid user role' }),
     }),
   }),
 });

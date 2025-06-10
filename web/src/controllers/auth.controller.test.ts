@@ -12,7 +12,7 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { JWTUtils } from '@/utils/jwt';
 import assert from 'assert';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
@@ -111,7 +111,7 @@ describe('AuthController', () => {
         lastName: 'viettech',
         password: 'Test!123',
         email: 'test123@gmail.com',
-        role: UserRole.ADMIN,
+        role: SystemRole.ADMIN,
       });
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal(

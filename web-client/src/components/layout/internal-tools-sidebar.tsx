@@ -19,7 +19,7 @@ import {
 import { VTMPLogo } from '@/components/base/vtmp-logo';
 import { Avatar } from '@/components/base/avatar';
 import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 export const InternalToolsSidebar = () => {
   const rawUser = localStorage.getItem('user');
   const user = rawUser ? JSON.parse(rawUser) : null;
@@ -28,25 +28,25 @@ export const InternalToolsSidebar = () => {
       title: 'Users',
       url: '/user-invitation',
       icon: ShieldUser,
-      roles: [UserRole.ADMIN],
+      roles: [SystemRole.ADMIN],
     },
     {
       title: 'Links',
       url: '/link-sharing',
       icon: ExternalLink,
-      roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+      roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
     },
     {
       title: 'Jobs',
       url: '/job-postings',
       icon: LayoutDashboard,
-      roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+      roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
     },
     {
       title: 'Applications',
       url: '/application-tracker',
       icon: BriefcaseBusiness,
-      roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+      roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
     },
   ];
 

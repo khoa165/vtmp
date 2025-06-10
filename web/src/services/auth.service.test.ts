@@ -13,7 +13,7 @@ import {
 } from '@/utils/errors';
 import assert from 'assert';
 import { expect } from 'chai';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { JWTUtils } from '@/utils/jwt';
 import { EmailService } from '@/utils/email';
 import { ZodError } from 'zod';
@@ -126,7 +126,7 @@ describe('AuthService', () => {
 
       assert(data);
       expect(data).to.have.property('token');
-      expect(data.user.role).to.eq(UserRole.USER);
+      expect(data.user.role).to.eq(SystemRole.USER);
     });
   });
 

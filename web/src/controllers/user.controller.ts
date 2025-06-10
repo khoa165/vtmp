@@ -1,5 +1,5 @@
 import UserService from '@/services/user.service';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { Request, Response } from 'express';
 import { z } from 'zod';
 
@@ -17,7 +17,7 @@ const UserUpdateSchema = z
 
 const UserUpdateRoleSchema = z
   .object({
-    role: z.nativeEnum(UserRole, { message: 'Role is required' }),
+    role: z.nativeEnum(SystemRole, { message: 'Role is required' }),
   })
   .strict('Can only update role');
 

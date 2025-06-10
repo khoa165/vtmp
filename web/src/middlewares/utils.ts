@@ -1,17 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { handleError, UnauthorizedError } from '@/utils/errors';
 
 interface AuthenticatedRequest extends Request {
   user: {
     id: string;
-    role: UserRole;
+    role: SystemRole;
   };
 }
 
 interface AuthenticatedServiceRequest extends Request {
   service: {
-    role: UserRole;
+    role: SystemRole;
   };
 }
 

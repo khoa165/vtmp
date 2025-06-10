@@ -26,7 +26,7 @@ import SignUpPage from '@/components/pages/auth/signup';
 import { AdminLinksPage } from '@/components/pages/admins/links/admin-links-page';
 import { NotFoundPage } from './pages/shared/not-found-page';
 import { ProtectedRoute } from '@/utils/protect-route';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { buildFileMetadata } from '@/utils/file';
 import { allBlogsMetadata } from '@/blogs/metadata';
 import JobtrackrLanding from '@/components/pages/application-tracker/landing/jobtrackr-landing';
@@ -75,7 +75,7 @@ export const App = () => {
             <Route
               path="/user-invitation"
               element={
-                <ProtectedRoute roles={[UserRole.ADMIN]}>
+                <ProtectedRoute roles={[SystemRole.ADMIN]}>
                   <UserInvitationPage />
                 </ProtectedRoute>
               }

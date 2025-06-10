@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import UserService from '@/services/user.service';
 import { EnvConfig } from '@/config/env';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { ALLOWED_ISSUER } from '@/constants/enums';
 
 export const DecodedJWTSchema = z.object({
@@ -77,7 +77,7 @@ export const authenticate = async (
       });
     }
 
-    req.service = { role: UserRole.ADMIN };
+    req.service = { role: SystemRole.SERVICE };
   }
   next();
 };
