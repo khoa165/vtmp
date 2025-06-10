@@ -8,22 +8,22 @@ on:
 jobs:
   build-common:
     if: contains(github.event.pull_request.files.*.path, 'packages/common/src/')
-    uses: ./.github/actions/build-common.yml
+    uses: ./.github/workflows/build-common.yml
 
   build-web:
     if: contains(github.event.pull_request.files.*.path, 'web/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
-    uses: ./.github/actions/build-web.yml
+    uses: ./.github/workflows/build-web.yml
 
   test-web:
     if: contains(github.event.pull_request.files.*.path, 'web/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
-    uses: ./.github/actions/test-web.yml
+    uses: ./.github/workflows/test-web.yml
 
   build-web-client:
     if: contains(github.event.pull_request.files.*.path, 'web-client/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
-    uses: ./.github/actions/build-web-client.yml
+    uses: ./.github/workflows/build-web-client.yml
 
   chromatic:
-    if: contains(github.event.pull_request.files.*.path, 'web-client/src/')
+    if: ${{ contains(github.event.pull_request.files.*.path, 'web-client/src/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
