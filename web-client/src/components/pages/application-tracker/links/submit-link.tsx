@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/base/button';
 import {
   Card,
@@ -37,12 +37,14 @@ export const SubmitLink = () => {
       setLinkInput('');
     },
     onError: (error) => {
-      console.log('Error in useMutation submitLink');
       if (axios.isAxiosError(error) && error.response) {
-        const errors = error.response.data.errors.map((e) => e.message);
-        setSubmitLinkError(errors);
+        const errorMessages = error.response.data.errors.map(
+          (err) => err.message
+        );
+        toast.error(errorMessages.join('\n'));
+        setSubmitLinkError(errorMessages);
       } else {
-        console.log('Unexpected error', error);
+        toast.error('Unexpected error');
       }
     },
   });
@@ -66,7 +68,7 @@ export const SubmitLink = () => {
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="jobLink" className="pb-2">
-                    JobLink
+                    Job Link
                   </Label>
                   <Input
                     id="url"
