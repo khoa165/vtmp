@@ -24,7 +24,7 @@ const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
 const generateMetaData = async (
   extractedText: string,
   url: string
-): Promise<LinkMetaData | { url: string }> => {
+): Promise<LinkMetaData> => {
   const genAI = await getGoogleGenAI();
   const prompt = await extractLinkMetaDatPrompt(extractedText);
 
@@ -71,9 +71,7 @@ const scrapeWebsite = async (url: string): Promise<string> => {
 };
 
 const ExtractLinkMetadataService = {
-  extractMetadata: async (
-    url: string
-  ): Promise<LinkMetaData | { url: string }> => {
+  extractMetadata: async (url: string): Promise<LinkMetaData> => {
     try {
       const extractedText = await scrapeWebsite(url);
       return generateMetaData(extractedText, url);

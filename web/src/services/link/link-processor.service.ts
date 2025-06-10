@@ -5,7 +5,7 @@ import { ExtractLinkMetadataService } from '@/services/link/extract-link-metadat
 import { LinkDeduplicatorService } from '@/services/link/link-deduplicator.service';
 
 export const LinkProcessorService = {
-  async processLink(url: string): Promise<LinkMetaData | { url: string }> {
+  async processLink(url: string): Promise<LinkMetaData> {
     const validUrl = await LinkValidatorService.validateLink(url);
     const normalizedUrl = LinkNormalizerService.normalizeLink(validUrl);
     await LinkDeduplicatorService.checkDuplicate(normalizedUrl);
