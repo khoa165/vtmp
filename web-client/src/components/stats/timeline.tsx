@@ -1,4 +1,3 @@
-import { min } from 'lodash';
 import moment from 'moment';
 import React, { useMemo } from 'react';
 import {
@@ -39,7 +38,7 @@ export const Timeline: React.FC<TimelineProps> = ({ datesWithCount }) => {
         [2023 + 2024] Offers & interviews timeline
       </h2>
       <LineChart
-        width={min([1200, window.innerWidth - 10])}
+        width={Math.min(1200, window.innerWidth - 10)}
         height={600}
         data={countEverything}
         margin={{ top: 20 }}

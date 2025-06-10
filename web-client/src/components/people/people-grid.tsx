@@ -1,5 +1,4 @@
 import React from 'react';
-import { Col, Row } from 'reactstrap';
 import { PeopleCard } from '@/components/people/people-card';
 import { CompanyMetadataWithOffers, MentorshipPerson } from '@/types';
 import { PeopleSortColumn } from '@/utils/constants';
@@ -27,9 +26,9 @@ export const PeopleGrid: React.FC<PeopleGridProps> = ({
   }
 
   return (
-    <Row className="mt-3">
+    <div className="mt-3 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y-4 lg:gap-y-0">
       {people.map((person) => (
-        <Col lg="6" xl="4" key={person.alias}>
+        <div key={person.alias}>
           <PeopleCard
             year={year}
             person={person}
@@ -37,8 +36,8 @@ export const PeopleGrid: React.FC<PeopleGridProps> = ({
             companiesMetadata={companiesMetadata}
             sortColumn={sortColumn}
           />
-        </Col>
+        </div>
       ))}
-    </Row>
+    </div>
   );
 };

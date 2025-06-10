@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { TreeCard } from '@/components/tree/tree-card';
-import { allBlogsFilepaths } from '@/blogs/metadata';
-import { getFileName } from '@/utils/file';
-import { BlogFileMapping } from '@/types';
+import { BlogFileMapping, BlogMetadata } from '@/types';
 
 interface TreeContainerProps {
   metadata: BlogFileMapping | null;
@@ -13,7 +11,7 @@ export const TreeContainer: React.FC<TreeContainerProps> = ({ metadata }) => {
     const run = () => {
       const items = document.querySelectorAll('#tree-container li');
       items.forEach((item) => {
-        if (isInView(item)) {
+        if (item instanceof HTMLElement && isInView(item)) {
           item.classList.add('show');
         }
       });
@@ -23,6 +21,7 @@ export const TreeContainer: React.FC<TreeContainerProps> = ({ metadata }) => {
       window.addEventListener('scroll', run);
       window.addEventListener('load', run);
       window.addEventListener('resize', run);
+      run();
     };
 
     const removeEventListeners = () => {
@@ -31,11 +30,13 @@ export const TreeContainer: React.FC<TreeContainerProps> = ({ metadata }) => {
       window.removeEventListener('resize', run);
     };
 
-    attachEventListeners();
+    if (metadata) {
+      attachEventListeners();
+    }
     return removeEventListeners;
-  }, []);
+  }, [metadata]);
 
-  const isInView = (item) => {
+  const isInView = (item: Element): boolean => {
     const rect = item.getBoundingClientRect();
     return (
       rect.top + 100 >= 0 &&
@@ -47,20 +48,26 @@ export const TreeContainer: React.FC<TreeContainerProps> = ({ metadata }) => {
     );
   };
 
+  if (!metadata) {
+    return null;
+  }
+
+  const blogs: BlogMetadata[] = Object.values(metadata);
+
   return (
-    metadata != null && (
-      <div id="tree-container">
-        <ul>
-          {allBlogsFilepaths.map((path) => {
-            const name = getFileName(path);
-            return (
-              <li key={name}>
-                <TreeCard blog={metadata[name]} />
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    )
+    <div id="tree-container">
+      <ul>
+        {blogs.map((blog) => {
+          if (!blog || !blog.name) {
+            return null;
+          }
+          return (
+            <li key={blog.name}>
+              <TreeCard blog={blog} />
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 };

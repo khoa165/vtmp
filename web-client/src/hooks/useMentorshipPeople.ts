@@ -5,9 +5,9 @@ import {
 } from '@/utils/data';
 import { PeopleSortColumn } from '@/utils/constants';
 import { mentorshipPeople } from '@/data/people';
-import { sortBy, sumBy } from 'lodash';
-import * as R from 'remeda';
+import { first, sortBy, sumBy } from 'remeda';
 import { MentorshipRole } from '@vtmp/common/constants';
+import { MentorshipPerson } from '@/types';
 
 export const useMentorshipPeople = (
   year: number | 'all',
@@ -40,12 +40,12 @@ export const useMentorshipPeople = (
     }
     let sortedPeople = filteredPeople;
     if (sortColumn === PeopleSortColumn.NAME) {
-      sortedPeople = sortBy(filteredPeople, (p) => p.name);
+      sortedPeople = sortBy(filteredPeople, (p: MentorshipPerson) => p.name);
       return sortDescending ? sortedPeople.reverse() : sortedPeople;
     } else if (sortColumn === PeopleSortColumn.OFFERS_COUNT) {
       sortedPeople = sortBy(
         filteredPeople,
-        (p) => {
+        (p: MentorshipPerson) => {
           if (year === 'all') {
             return sumBy(p.terms, (t) => t.offers?.length ?? 0);
           } else {
@@ -53,18 +53,18 @@ export const useMentorshipPeople = (
             return currentTerm?.offers?.length ?? 0;
           }
         },
-        (p) => p.name
+        (p: MentorshipPerson) => p.name
       );
       return sortDescending ? sortedPeople.reverse() : sortedPeople;
     } else if (sortColumn === PeopleSortColumn.ROLE) {
       sortedPeople = sortBy(
         filteredPeople,
-        (p) => {
+        (p: MentorshipPerson) => {
           if (year === 'all') {
             const priorityByTerm = p.terms.map((t) =>
               getPersonPriorityInYear(p, t.year)
             );
-            const highestPriority = R.firstBy(priorityByTerm, R.identity());
+            const highestPriority = first(priorityByTerm.sort((a, b) => a - b));
             if (!highestPriority) {
               return 1000;
             }
@@ -73,7 +73,7 @@ export const useMentorshipPeople = (
             return getPersonPriorityInYear(p, year);
           }
         },
-        (p) => p.name
+        (p: MentorshipPerson) => p.name
       );
     }
     return sortedPeople;
