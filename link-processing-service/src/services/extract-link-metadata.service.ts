@@ -1,5 +1,9 @@
 import { EnvConfig } from '@/config/env';
-import { buildPrompt, formatJobDescription } from '@/helpers/link.helpers';
+import {
+  buildPrompt,
+  createRetryer,
+  formatJobDescription,
+} from '@/helpers/link.helpers';
 import {
   LinkMetaData,
   LinkMetaDataSchema,
@@ -11,8 +15,7 @@ import {
   AIResponseEmptyError,
   InvalidJsonError,
 } from '@/utils/errors';
-import { GenerateContentResponse } from '@google/genai';
-import { GoogleGenAI } from '@google/genai';
+import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
 import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
@@ -100,7 +103,8 @@ const ExtractLinkMetadataService = {
     extractedText: string
   ): Promise<LinkMetaData> => {
     try {
-      return generateMetaData(extractedText, url);
+      const retryer = createRetryer(3, 15);
+      return retryer(() => generateMetaData(extractedText, url));
     } catch (error) {
       throw new AIExtractionError(
         'Failed to extract metadata with AI',
