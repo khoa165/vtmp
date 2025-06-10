@@ -7,10 +7,11 @@ import { LinkDeduplicatorService } from '@/services/link/link-deduplicator.servi
 export const LinkProcessorService = {
   async processLink(url: string): Promise<LinkMetaData | { url: string }> {
     const validUrl = await LinkValidatorService.validateLink(url);
-    const metaData: LinkMetaData =
-      await ExtractLinkMetadataService.extractMetadata(validUrl);
-    const normalizedUrl = LinkNormalizerService.normalizeLink(metaData.url);
+    const normalizedUrl = LinkNormalizerService.normalizeLink(validUrl);
     await LinkDeduplicatorService.checkDuplicate(normalizedUrl);
+    const metaData: LinkMetaData =
+      await ExtractLinkMetadataService.extractMetadata(normalizedUrl);
+
     return metaData;
   },
 };
