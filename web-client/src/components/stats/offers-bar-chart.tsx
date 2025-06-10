@@ -1,6 +1,5 @@
 import React from 'react';
 import { BarChart, Bar, Legend, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { min } from 'lodash';
 import { offerCompanies } from '@/data/companies';
 
 interface OffersBarChartProps {
@@ -19,7 +18,7 @@ export const OffersBarChart: React.FC<OffersBarChartProps> = ({
     <div>
       <h2 className="chart-title">[2023 + 2024] Number of offers: {count}</h2>
       <BarChart
-        width={min([1000, window.innerWidth - 10])}
+        width={Math.min(1000, window.innerWidth - 10)}
         height={1250}
         data={data}
         className="mt-4"

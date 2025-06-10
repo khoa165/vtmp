@@ -2,10 +2,17 @@
 import boundaries from 'eslint-plugin-boundaries';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import pluginReact from 'eslint-plugin-react';
 import globals from 'globals';
 
 import { rulesCustom } from './custom-eslint';
+import { Linter } from 'eslint';
+
+const sanitizedGlobals: Linter.Globals = Object.fromEntries(
+  Object.entries({ ...globals.browser, ...globals.node }).map(([key, value ]) => [
+    key.trim(),
+    value,
+  ])
+);
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -16,36 +23,55 @@ export default tseslint.config(
   // tseslint.configs.stylistic,
 
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     languageOptions: {
       parser: tseslint.parser,
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-      },
-      globals: globals.browser,
+      globals: sanitizedGlobals,
     },
     plugins: {
       boundaries,
       custom: rulesCustom,
-      react: pluginReact,
     },
     settings: {
+      'import/resolver': {
+        typescript: {
+          project: [
+            './web/tsconfig.json',
+            './packages/common/tsconfig.json',
+            './custom-eslint/tsconfig.json',
+            './discord-service/tsconfig.json',
+          ],
+          noWarnOnMultipleProjects: true,
+        },
+        node: true,
+      },
       react: {
         version: 'detect',
       },
+      'boundaries/elements': [
+        {
+          type: 'helpers',
+          pattern: 'helpers/*/*.js',
+          mode: 'file',
+          capture: ['category', 'elementName'],
+        },
+        {
+          type: 'components',
+          pattern: 'components/*/*',
+          capture: ['family', 'elementName'],
+        },
+        {
+          type: 'modules',
+          pattern: 'module/*',
+          capture: ['elementName'],
+        },
+      ],
     },
     rules: {
-      // Combine recommended rules
-      ...eslint.configs.recommended.rules,
-      ...tseslint.configs.recommended[0].rules,
-      ...pluginReact.configs.flat.recommended.rules,
       // Custom rule
-      'custom/no-require-function-calls': 'error',
       'custom/no-try-in-controller-or-middleware': 'error',
       'custom/enforce-uppercase-enum-values': 'error',
       'boundaries/element-types': [
-        2,
+        'error',
         {
           default: 'disallow',
           rules: [
@@ -72,13 +98,6 @@ export default tseslint.config(
   },
 
   // Optional override example (can be extended as needed)
-  {
-    files: ['**/{app,index,main}.{ts,tsx}', 'eslint.config.ts'],
-    rules: {
-      'react/react-in-jsx-scope': 'off', // example override
-    },
-  },
-
   // Ignore files
   {
     ignores: ['dist/', 'node_modules/'],

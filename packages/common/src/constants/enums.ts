@@ -66,6 +66,10 @@ export enum Permission {
 
   VIEW_APPLICATION = 'VIEW_APPLICATION',
   MANAGE_APPLICATION = 'MANAGE_APPLICATION',
+
+  VIEW_INTERVIEW = 'VIEW_INTERVIEW',
+  VIEW_ALL_DATA = 'VIEW_ALL_DATA',
+  MANAGE_INTERVIEW = 'MANAGE_INTERVIEW',
 }
 
 export enum InterestLevel {
@@ -166,10 +170,10 @@ export enum MentorshipGroup {
 }
 
 export enum StatsType {
-  OFFERS = 'offers',
-  INTERVIEWS = 'interviews',
-  TIMELINE = 'timeline',
-  LOGOS = 'logos',
+  OFFERS = 'OFFERS',
+  INTERVIEWS = 'INTERVIEWS',
+  TIMELINE = 'TIMELINE',
+  LOGOS = 'LOGOS',
 }
 
 export enum ProgramRole {

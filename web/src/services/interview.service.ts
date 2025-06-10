@@ -8,7 +8,7 @@ export const InterviewService = {
   createInterview: async (interviewData: {
     applicationId: string;
     userId: string;
-    type: InterviewType[];
+    types: InterviewType[];
     status?: InterviewStatus;
     interviewOnDate: Date;
     note?: string;
@@ -59,7 +59,7 @@ export const InterviewService = {
     interviewId: string;
     userId: string;
     updatedMetadata: {
-      type?: InterviewType[];
+      types?: InterviewType[];
       status?: InterviewStatus;
       interviewOnDate?: Date;
       note?: string;

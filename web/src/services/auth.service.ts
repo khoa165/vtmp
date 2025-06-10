@@ -99,7 +99,7 @@ export const AuthService = {
         purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
       },
       {
-        expiresIn: '10m',
+        expiresIn: '5m',
       }
     );
 
