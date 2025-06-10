@@ -1,9 +1,5 @@
 import { EnvConfig } from '@/config/env';
-import {
-  buildPrompt,
-  createRetryer,
-  formatJobDescription,
-} from '@/helpers/link.helpers';
+import { buildPrompt, formatJobDescription } from '@/helpers/link.helpers';
 import {
   LinkMetaData,
   LinkMetaDataSchema,
@@ -103,8 +99,7 @@ const ExtractLinkMetadataService = {
     extractedText: string
   ): Promise<LinkMetaData> => {
     try {
-      const retryer = createRetryer(3, 15);
-      return retryer(() => generateMetaData(extractedText, url));
+      return generateMetaData(extractedText, url);
     } catch (error) {
       throw new AIExtractionError(
         'Failed to extract metadata with AI',

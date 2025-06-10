@@ -2,7 +2,6 @@ import puppeteer, { Browser, Page } from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 import { ScrapingError } from '@/utils/errors';
 import { NotRetryableError } from 'ts-retry-promise';
-import { createRetryer } from '@/helpers/link.helpers';
 
 const scrapeWebsite = async (url: string): Promise<string> => {
   let browser: Browser | null = null;
@@ -38,8 +37,7 @@ const scrapeWebsite = async (url: string): Promise<string> => {
 export const ScraperService = {
   scrapeWebsite: async (url: string): Promise<string> => {
     try {
-      const retryer = createRetryer();
-      return retryer(() => scrapeWebsite(url));
+      return scrapeWebsite(url);
     } catch (error) {
       throw new ScrapingError('Failed to scrap URL', { url }, { cause: error });
     }

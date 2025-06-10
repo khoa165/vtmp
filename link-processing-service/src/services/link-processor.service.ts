@@ -3,7 +3,7 @@ import { LinkMetaData } from '@/services/link-metadata-validation';
 import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
 import { ScraperService } from '@/services/web-scraper.service';
 import { handleError, LinkProcessingStatus } from '@/utils/errors';
-
+import { retry } from 'ts-retry-promise';
 export const LinkProcessorService = {
   processLink: async (
     url: string
@@ -13,12 +13,15 @@ export const LinkProcessorService = {
   > => {
     try {
       const validUrl = await LinkValidatorService.validateLink(url);
-      const extractedText = await ScraperService.scrapeWebsite(validUrl);
-      const extractedMetadata =
-        await ExtractLinkMetadataService.extractMetadata(
-          validUrl,
-          extractedText
-        );
+      const extractedText = await retry(
+        () => ScraperService.scrapeWebsite(validUrl),
+        { retries: 3, delay: 1000, timeout: 10000 }
+      );
+      const extractedMetadata = await retry(
+        () =>
+          ExtractLinkMetadataService.extractMetadata(validUrl, extractedText),
+        { retries: 3, delay: 1000, timeout: 15000 }
+      );
       return {
         ...extractedMetadata,
         linkProcessingStatus: LinkProcessingStatus.SUCCESS,
