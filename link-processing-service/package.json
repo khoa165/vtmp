@@ -10,7 +10,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.149",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.15.30",
+    "@types/node": "^22.14.1",
     "tsc-alias": "^1.8.16",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
@@ -22,7 +22,6 @@
     "axios": "^1.9.0",
     "dotenv": "^16.5.0",
     "jsonwebtoken": "^9.0.2",
-    "normalize-url": "^8.0.1",
     "puppeteer-core": "^24.10.0",
     "zod": "^3.25.51"
   },
