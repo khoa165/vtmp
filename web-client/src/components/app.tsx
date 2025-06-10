@@ -29,14 +29,10 @@ import { ProtectedRoute } from '@/utils/protect-route';
 import { UserRole } from '@vtmp/common/constants';
 import { buildFileMetadata } from '@/utils/file';
 import { allBlogsMetadata } from '@/blogs/metadata';
+import JobtrackrLanding from '@/components/pages/application-tracker/landing/jobtrackr-landing';
 
 export const App = () => {
   useEffect(() => {
-    // import('@/blogs/content/vtmp-2023/2023-04-30-using-git.md').then((res) => {
-    //   fetch(res.default)
-    //     .then((response) => response.text())
-    //     .then((text) => console.log(text));
-    // });
     AOS.init();
   }, []);
 
@@ -71,6 +67,7 @@ export const App = () => {
             <Route path="/stats/*" element={<StatsContainer />} />
           </Route>
         </Route>
+        <Route path="/jobtrackr" element={<JobtrackrLanding />} />
         <Route element={<PageWithToast />}>
           <Route element={<PageWithSidebar />}>
             <Route path="/link-sharing" element={<LinksPage />} />
