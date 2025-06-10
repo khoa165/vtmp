@@ -12,7 +12,7 @@ JobPostingRoutes.use(wrappedHandlers([authenticate]));
 JobPostingRoutes.get(
   '/id/:jobPostingId',
   wrappedHandlers([
-    hasPermission(Permission.VIEW_JOB_POSTING),
+    hasPermission(Permission.MANAGE_JOB_POSTING),
     JobPostingController.getJobPostingById,
   ])
 );

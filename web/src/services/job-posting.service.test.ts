@@ -10,7 +10,7 @@ import { differenceInSeconds } from 'date-fns';
 import { IJobPosting } from '@/models/job-posting.model';
 import { JobPostingRegion } from '@vtmp/common/constants';
 
-describe.only('JobPostingService', () => {
+describe('JobPostingService', () => {
   useMongoDB();
 
   const mockJobPosting = {
