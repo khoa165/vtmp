@@ -9,11 +9,11 @@ export interface ILink extends Document {
   submittedOn: Date;
   jobTitle?: string;
   companyName?: string;
-  location?: LinkRegion;
+  location: LinkRegion;
   datePosted?: Date;
   jobDescription?: string;
-  jobFunction?: JobFunction;
-  jobType?: JobType;
+  jobFunction: JobFunction;
+  jobType: JobType;
   submittedBy?: Types.ObjectId;
   deletedAt?: Date;
 }
