@@ -3,15 +3,7 @@ import boundaries from 'eslint-plugin-boundaries';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
-
 import { rulesCustom } from './custom-eslint';
-import { Linter } from 'eslint';
-
-const sanitizedGlobals: Linter.Globals = Object.fromEntries(
-  Object.entries({ ...globals.browser, ...globals.node }).map(
-    ([key, value]) => [key.trim(), value]
-  )
-);
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -24,7 +16,7 @@ export default tseslint.config(
   {
     languageOptions: {
       parser: tseslint.parser,
-      globals: sanitizedGlobals,
+      globals: globals.browser,
     },
     plugins: {
       boundaries,
@@ -110,7 +102,6 @@ export default tseslint.config(
     },
   },
 
-  // Optional override example (can be extended as needed)
   // Ignore files
   {
     ignores: ['dist/', 'node_modules/'],
