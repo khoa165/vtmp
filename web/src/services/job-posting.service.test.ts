@@ -117,7 +117,7 @@ describe.only('JobPostingService', () => {
   describe('getJobPostingsUserHasNotAppliedTo', () => {
     const userIdA = getNewMongoId();
     const userIdB = getNewMongoId();
-    let jobPostings: IJobPosting[];
+    let jobPostings: (IJobPosting | undefined)[];
 
     const mockMultipleJobPostings = [
       {
