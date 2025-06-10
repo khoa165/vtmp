@@ -4575,15 +4575,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.15.30":
-  version: 22.15.30
-  resolution: "@types/node@npm:22.15.30"
-  dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10c0/ca330ac0e7fd502686d6df115fcc606aba46fd334220f749bbba2f639accdadcb23f7900603ceccdc8240be736739cad5c0b87c0fa92c9255a4dff245f07d664
-  languageName: node
-  linkType: hard
-
 "@types/nodemailer@npm:^6":
   version: 6.4.17
   resolution: "@types/nodemailer@npm:6.4.17"
@@ -5837,12 +5828,11 @@ __metadata:
     "@sparticuz/chromium": "npm:^133.0.0"
     "@types/aws-lambda": "npm:^8.10.149"
     "@types/jsonwebtoken": "npm:^9.0.9"
-    "@types/node": "npm:^22.15.30"
+    "@types/node": "npm:^22.14.1"
     "@vtmp/common": "npm:1.0.0"
     axios: "npm:^1.9.0"
     dotenv: "npm:^16.5.0"
     jsonwebtoken: "npm:^9.0.2"
-    normalize-url: "npm:^8.0.1"
     puppeteer-core: "npm:^24.10.0"
     tsc-alias: "npm:^1.8.16"
     tsx: "npm:^4.19.4"
