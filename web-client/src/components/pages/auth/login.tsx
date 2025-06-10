@@ -10,7 +10,7 @@ import {
 import { Checkbox } from '@/components/base/checkbox';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LogoMint from '@/assets/images/logo-full-mint.svg?react';
 import { EyeOff, Eye } from 'lucide-react';
 import { request } from '@/utils/api';
@@ -20,8 +20,19 @@ import { Method } from '@/utils/constants';
 import { useMutation } from '@tanstack/react-query';
 import { AuthResponseSchema } from '@/components/pages/auth/validation';
 import { toast } from 'sonner';
+import { useSearchParams } from 'react-router-dom';
 
 const LoginPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const redirected = searchParams.get('redirected');
+    if (redirected) {
+      toast.warning('Please login to your account to continue');
+      searchParams.delete('redirected');
+      setSearchParams(searchParams);
+    }
+  }, [searchParams]);
+
   const [showPassword, setShowPassword] = useState(false);
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');

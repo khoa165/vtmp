@@ -106,7 +106,7 @@ export const JobPostingController = {
 
   getJobPostingsUserHasNotAppliedTo: async (req: Request, res: Response) => {
     const userId = getUserFromRequest(req).user.id;
-    const filterData = FilterSchema.parse(req.body);
+    const filterData = FilterSchema.parse(req.query);
 
     const jobPostings =
       await JobPostingService.getJobPostingsUserHasNotAppliedTo({

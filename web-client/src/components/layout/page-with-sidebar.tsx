@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import React from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
 import { InternalToolsSidebar } from '@/components/layout/internal-tools-sidebar';
 import { SidebarProvider } from '@/components/base/sidebar';
-import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { toast } from 'sonner';
 
 export const PageWithSidebar = () => {
@@ -10,14 +9,11 @@ export const PageWithSidebar = () => {
   const state = open === 'true';
 
   const token = localStorage.getItem('token');
-  const navigate = useNavigatePreserveQueryParams();
 
-  useEffect(() => {
-    if (!token) {
-      navigate('/login');
-      toast('Please login to your account to continue');
-    }
-  }, [token]);
+  if (!token) {
+    toast.warning('Please login to your account to continue');
+    return <Navigate to="/login?redirected=true" />;
+  }
 
   return (
     <SidebarProvider defaultOpen={state}>

@@ -10,7 +10,7 @@ import { differenceInSeconds } from 'date-fns';
 import { IJobPosting } from '@/models/job-posting.model';
 import { JobPostingRegion } from '@vtmp/common/constants';
 
-describe('JobPostingService', () => {
+describe.only('JobPostingService', () => {
   useMongoDB();
 
   const mockJobPosting = {
@@ -117,7 +117,7 @@ describe('JobPostingService', () => {
   describe('getJobPostingsUserHasNotAppliedTo', () => {
     const userIdA = getNewMongoId();
     const userIdB = getNewMongoId();
-    let jobPostings: (IJobPosting | undefined)[];
+    let jobPostings: IJobPosting[];
 
     const mockMultipleJobPostings = [
       {

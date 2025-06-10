@@ -22,24 +22,25 @@ import { JobPostingsPage } from '@/components/pages/application-tracker/job-post
 import { PageWithToast } from '@/components/layout/page-with-toast';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
+import SignUpPage from '@/components/pages/auth/signup';
+import { AdminLinksPage } from '@/components/pages/admins/links/admin-links-page';
 import { NotFoundPage } from './pages/shared/not-found-page';
 import { ProtectedRoute } from '@/utils/protect-route';
 import { UserRole } from '@vtmp/common/constants';
+import { buildFileMetadata } from '@/utils/file';
+import { allBlogsMetadata } from '@/blogs/metadata';
+import { RequireAuth } from '@/components/pages/auth/require-auth';
+import JobtrackrLanding from '@/components/pages/application-tracker/landing/jobtrackr-landing';
 
 export const App = () => {
   useEffect(() => {
-    // import('@/blogs/content/vtmp-2023/2023-04-30-using-git.md').then((res) => {
-    //   fetch(res.default)
-    //     .then((response) => response.text())
-    //     .then((text) => console.log(text));
-    // });
     AOS.init();
   }, []);
 
-  const [metadata] = useState<BlogFileMapping | null>(null);
+  const [metadata, setMetadata] = useState<BlogFileMapping | null>(null);
 
   useEffect(() => {
-    // setMetadata(buildFileMetadata(allBlogsFilepaths, allBlogsMetadata));
+    setMetadata(buildFileMetadata(allBlogsMetadata));
   }, []);
 
   return (
@@ -67,8 +68,15 @@ export const App = () => {
             <Route path="/stats/*" element={<StatsContainer />} />
           </Route>
         </Route>
+        <Route path="/jobtrackr" element={<JobtrackrLanding />} />
         <Route element={<PageWithToast />}>
-          <Route element={<PageWithSidebar />}>
+          <Route
+            element={
+              <RequireAuth>
+                <PageWithSidebar />
+              </RequireAuth>
+            }
+          >
             <Route path="/link-sharing" element={<LinksPage />} />
             <Route path="/job-postings" element={<JobPostingsPage />} />
             <Route
@@ -80,8 +88,10 @@ export const App = () => {
               }
             />
             <Route path="/application-tracker" element={<ApplicationsPage />} />
+            <Route path="/admin/links" element={<AdminLinksPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
           <Route path="/*" element={<NotFoundPage />} />
         </Route>
       </Routes>

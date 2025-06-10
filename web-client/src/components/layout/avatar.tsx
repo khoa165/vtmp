@@ -8,7 +8,7 @@ export const Avatar: React.FC<AvatarProps> = ({ url, size, ...imageProps }) => {
   return (
     <div className="mentorship-avatar">
       <img
-        className={`rounded-circle ${size != null ? `size-${size}` : ''}`}
+        className={`rounded-full ${size != null ? `size-${size}` : ''}`}
         src={url}
         alt="avatar"
         {...imageProps}

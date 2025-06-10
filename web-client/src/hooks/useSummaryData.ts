@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { offerCompanies } from '@/data/companies';
 import { mentorshipPeople } from '@/data/people';
-import { uniq } from 'lodash';
+import { map, uniqueBy } from 'remeda';
 import { useEffect, useState } from 'react';
+import { EnvConfig } from '@/config/env';
 
 const parseData = (data: string) => {
   const rows = data.split(/\r?\n/).slice(5);
@@ -16,7 +17,10 @@ const parseData = (data: string) => {
 
     const interviewsData = columns.slice(1).filter((col) => col.length > 0);
     interviews += interviewsData.length;
-    invitations += uniq(interviewsData.map((d) => d.split(' - ')[2])).length;
+    invitations += uniqueBy(
+      map(interviewsData, (d) => d.split(' - ')[2]),
+      (x) => x
+    ).length;
   });
   return { invitations, interviews };
 };
@@ -51,18 +55,18 @@ export const useSummaryData = () => {
       let invitationsCount = 0;
       let interviewsCount = 0;
 
-      if (import.meta.env.VITE_VTMP_2023_INTERVIEWS_CSV) {
+      if (EnvConfig.get().VITE_VTMP_2023_INTERVIEWS_CSV) {
         const res = await axios.get(
-          import.meta.env.VITE_VTMP_2023_INTERVIEWS_CSV
+          EnvConfig.get().VITE_VTMP_2023_INTERVIEWS_CSV
         );
 
         const { invitations, interviews } = parseData(res.data);
         invitationsCount += invitations;
         interviewsCount += interviews;
       }
-      if (import.meta.env.VITE_VTMP_2024_INTERVIEWS_CSV) {
+      if (EnvConfig.get().VITE_VTMP_2024_INTERVIEWS_CSV) {
         const res = await axios.get(
-          import.meta.env.VITE_VTMP_2024_INTERVIEWS_CSV
+          EnvConfig.get().VITE_VTMP_2024_INTERVIEWS_CSV
         );
 
         const { invitations, interviews } = parseData(res.data);
