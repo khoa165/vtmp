@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 import { DrawerStatusDropDown } from '@/components/pages/application-tracker/applications/drawer-status-dropdown';
 import { InterviewList } from '@/components/pages/application-tracker/applications/interview-list';
 import { Skeleton } from '@/components/base/skeleton';
+import { DATE_MONTH_YEAR } from '@/utils/date';
 
 interface InterviewDrawer {
   open: boolean;
@@ -150,7 +151,7 @@ export function InterviewDrawer({
                       {applicationData?.appliedOnDate
                         ? format(
                             new Date(applicationData.appliedOnDate),
-                            'MMM d, yyyy'
+                            DATE_MONTH_YEAR
                           )
                         : ''}
                     </span>

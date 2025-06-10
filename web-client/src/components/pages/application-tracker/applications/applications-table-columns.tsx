@@ -10,6 +10,7 @@ import {
 import { format } from 'date-fns';
 import { HeaderSorting } from '@/components/base/header';
 import { ApplicationInterestColumn } from '@/components/pages/application-tracker/applications/application-interest-column';
+import { DATE_MONTH_YEAR } from '@/utils/date';
 
 export const applicationsTableColumns = ({
   deleteApplicationFn,
@@ -81,8 +82,9 @@ export const applicationsTableColumns = ({
     },
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('appliedOnDate');
+      if (!isoDate) return <div>-</div>;
       const date = new Date(isoDate);
-      return <div>{format(date, 'MMM d, yyyy')}</div>;
+      return <div>{format(date, DATE_MONTH_YEAR)}</div>;
     },
     enableResizing: true,
   },

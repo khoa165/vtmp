@@ -9,9 +9,9 @@ import { z } from 'zod';
 const ApplicationSchema = z.object({
   _id: z.string(),
   jobPostingId: z.string(),
-  companyName: z.string(),
-  jobTitle: z.string(),
-  location: z.string(),
+  companyName: z.string().optional(),
+  jobTitle: z.string().optional(),
+  location: z.string().optional(),
   userId: z.string(),
   status: z.nativeEnum(ApplicationStatus, {
     message: 'Invalid application status',
