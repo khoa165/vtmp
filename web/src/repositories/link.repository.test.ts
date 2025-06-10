@@ -3,6 +3,7 @@ import {
   JobType,
   LinkRegion,
   LinkStatus,
+  LinkProcessStage,
 } from '@vtmp/common/constants';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
@@ -11,7 +12,6 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import assert from 'assert';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { ILink } from '@/models/link.model';
-import { LinkProcessStage } from '../../../packages/common/src/constants/enums';
 
 describe('LinkRepository', () => {
   useMongoDB();
