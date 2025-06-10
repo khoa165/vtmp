@@ -3,6 +3,8 @@ name: Test web
 
 on:
   workflow_call:
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
   test-web:
@@ -18,3 +20,5 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
+          fail_ci_if_error: true
