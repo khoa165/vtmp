@@ -7,7 +7,7 @@ export const ScraperService = {
     let browser: Browser | null = null;
     try {
       // Instead of the default Puppeteer Chrominum browser, use the Chromium browser
-      // supplied by @sparticuz/chromium libary for compatibility with serverless Lambda
+      // supplied by @sparticuz/chromium library for compatibility with serverless Lambda
       browser = await puppeteer.launch({
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
@@ -15,15 +15,12 @@ export const ScraperService = {
         headless: chromium.headless,
       });
       const page: Page = await browser.newPage();
-
       await page.goto(url, { waitUntil: 'networkidle2' }); // Make sure the page is fully loaded before proceeding
-
       const bodyText: string = await page.$eval(
         'body',
         (el: HTMLBodyElement) => el.innerText
       );
 
-      // await browser.close();
       return bodyText;
     } catch (error) {
       throw new ScrapingError('Failed to scrap URL', { url }, { cause: error });
