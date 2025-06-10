@@ -1,18 +1,18 @@
 import {
   extractLinkMetaDatPrompt,
   formatJobDescription,
-} from '@/helpers/link.helpers';
+} from '@/services/link/link.helpers';
 import {
   LinkMetaData,
   LinkMetaDataSchema,
 } from '@/services/link/link-metadata-validation';
-import { GenerateContentResponse } from '@google/genai';
-import { GoogleGenAI } from '@google/genai';
+import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
 import { ResourceNotFoundError } from '@/utils/errors';
 import puppeteer, { Browser, Page } from 'puppeteer';
+import { EnvConfig } from '@/config/env';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
-  const geminiApiKey = process.env.GOOGLE_GEMINI_API_KEY;
+  const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
   if (!geminiApiKey) {
     throw new ResourceNotFoundError('GOOGLE_GEMINI_API_KEY is not set', {
       key: geminiApiKey,
@@ -24,7 +24,7 @@ const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
 const generateMetaData = async (
   extractedText: string,
   url: string
-): Promise<LinkMetaData | { url: string }> => {
+): Promise<LinkMetaData> => {
   const genAI = await getGoogleGenAI();
   const prompt = await extractLinkMetaDatPrompt(extractedText);
 
@@ -71,9 +71,7 @@ const scrapeWebsite = async (url: string): Promise<string> => {
 };
 
 const ExtractLinkMetadataService = {
-  extractMetadata: async (
-    url: string
-  ): Promise<LinkMetaData | { url: string }> => {
+  extractMetadata: async (url: string): Promise<LinkMetaData> => {
     try {
       const extractedText = await scrapeWebsite(url);
       return generateMetaData(extractedText, url);
