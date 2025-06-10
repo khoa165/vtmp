@@ -1,6 +1,11 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { JobFunction, LinkStatus, JobType } from '@vtmp/common/constants';
-import { LinkRegion, LinkProcessStage } from '@vtmp/common/constants';
+import {
+  JobFunction,
+  LinkStatus,
+  JobType,
+  LinkRegion,
+  LinkProcessStage,
+} from '@vtmp/common/constants';
 export interface ILink extends Document {
   _id: Types.ObjectId;
   url: string;
