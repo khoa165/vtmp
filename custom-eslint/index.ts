@@ -1,4 +1,5 @@
 import {
+  enforceSortedEnumKeys,
   enforceUppercaseEnumValues,
   noRequireFunctionCalls,
   noTryInControllerOrMiddleware,
@@ -9,5 +10,6 @@ export const rulesCustom = {
     'no-require-function-calls': noRequireFunctionCalls,
     'no-try-in-controller-or-middleware': noTryInControllerOrMiddleware,
     'enforce-uppercase-enum-values': enforceUppercaseEnumValues,
+    'enforce-sorted-enum-keys': enforceSortedEnumKeys,
   },
 };

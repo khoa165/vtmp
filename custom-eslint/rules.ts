@@ -1,5 +1,4 @@
 import { ESLintUtils, TSESTree } from '@typescript-eslint/utils';
-
 const createRule = ESLintUtils.RuleCreator(
   (name) => `https://example.com/rule/${name}`
 );
@@ -20,7 +19,7 @@ export const noRequireFunctionCalls = createRule<[], 'noRequire'>({
   defaultOptions: [],
   create(context) {
     return {
-      CallExpression(node: TSESTree.CallExpression) {
+      CallExpression(node) {
         if (
           node.callee.type === 'Identifier' &&
           node.callee.name === 'require'
@@ -29,36 +28,47 @@ export const noRequireFunctionCalls = createRule<[], 'noRequire'>({
             node,
             messageId: 'noRequire',
             fix(fixer) {
-              const moduleName = (node.arguments[0] as TSESTree.Literal).value;
-
-              const declaration = node.parent?.parent;
-              const parentNode = node.parent as TSESTree.VariableDeclarator;
+              const moduleNameLiteral = node.arguments[0];
 
               if (
-                parentNode.id.type === 'ObjectPattern' &&
-                declaration?.type === 'VariableDeclaration'
+                moduleNameLiteral.type !== 'Literal' ||
+                typeof moduleNameLiteral.value !== 'string'
               ) {
-                const valueKey = parentNode.id.properties.map((p) => {
-                  const value = (p as TSESTree.Property).value;
-                  if (value.type === 'Identifier') {
-                    return value.name;
-                  }
-                  return '';
-                });
+                return null;
+              }
 
-                return fixer.replaceText(
-                  declaration,
-                  `import { ${valueKey.join(', ')} } from '${moduleName}';`
-                );
-              } else if (
-                parentNode.id.type === 'Identifier' &&
+              const moduleName = moduleNameLiteral.value;
+              const declaration = node.parent?.parent;
+              const parentNode = node.parent;
+
+              if (
+                parentNode?.type === 'VariableDeclarator' &&
                 declaration?.type === 'VariableDeclaration'
               ) {
-                const varName = parentNode.id.name;
-                return fixer.replaceText(
-                  declaration,
-                  `import ${varName} from '${moduleName}';`
-                );
+                if (parentNode.id.type === 'ObjectPattern') {
+                  const valueKey = parentNode.id.properties.map((p) => {
+                    if (
+                      p.type === 'Property' &&
+                      p.value.type === 'Identifier'
+                    ) {
+                      return p.value.name;
+                    }
+                    return '';
+                  });
+
+                  return fixer.replaceText(
+                    declaration,
+                    `import { ${valueKey.join(', ')} } from '${moduleName}';`
+                  );
+                }
+
+                if (parentNode.id.type === 'Identifier') {
+                  const varName = parentNode.id.name;
+                  return fixer.replaceText(
+                    declaration,
+                    `import ${varName} from '${moduleName}';`
+                  );
+                }
               }
 
               return null;
@@ -92,7 +102,7 @@ export const noTryInControllerOrMiddleware = createRule<[], 'noTry'>({
       /[\\/]middleware[\\/]/.test(filename);
 
     return {
-      TryStatement(node: TSESTree.TryStatement) {
+      TryStatement(node) {
         if (isControllerOrMiddleware) {
           context.report({
             node,
@@ -103,6 +113,7 @@ export const noTryInControllerOrMiddleware = createRule<[], 'noTry'>({
     };
   },
 });
+
 export const enforceUppercaseEnumValues = createRule<
   [],
   'notUppercaseOrMismatch'
@@ -123,7 +134,7 @@ export const enforceUppercaseEnumValues = createRule<
   defaultOptions: [],
   create(context) {
     return {
-      TSEnumMember(node: TSESTree.TSEnumMember) {
+      TSEnumMember(node) {
         if (
           node.id.type === 'Identifier' &&
           node.initializer?.type === 'Literal' &&
@@ -153,6 +164,61 @@ export const enforceUppercaseEnumValues = createRule<
                 return fixes;
               },
             });
+          }
+        }
+      },
+    };
+  },
+});
+
+export const enforceSortedEnumKeys = createRule<[], 'unsorted'>({
+  name: 'enforce-sorted-enum-keys',
+  meta: {
+    type: 'suggestion',
+    docs: {
+      description: 'Enum keys must be sorted alphabetically (key === value)',
+    },
+    fixable: 'code',
+    messages: {
+      unsorted: 'Enum keys must be sorted alphabetically',
+    },
+    schema: [],
+  },
+  defaultOptions: [],
+  create(context) {
+    return {
+      TSEnumDeclaration(node) {
+        const members = node.body?.members;
+        const getKey = (m: TSESTree.TSEnumMember) => {
+          const id = m?.id;
+          if (id?.type === 'Identifier') return id.name;
+          if (id?.type === 'Literal' && typeof id.value === 'string')
+            return id.value;
+          return '';
+        };
+
+        const sorted = [...members].sort((a, b) =>
+          getKey(a).localeCompare(getKey(b))
+        );
+
+        for (let i = 0; i < members.length; i++) {
+          if (members[i] !== sorted[i]) {
+            context.report({
+              node: members[i],
+              messageId: 'unsorted',
+              fix: (fixer) => {
+                const sourceCode = context.sourceCode;
+                const sortedText = sorted
+                  .map((member) => sourceCode.getText(member))
+                  .join(',\n');
+
+                return fixer.replaceTextRange(
+                  [members[0].range[0], members[members.length - 1].range[1]],
+                  sortedText
+                );
+              },
+            });
+            break;
           }
         }
       },

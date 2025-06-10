@@ -75,6 +75,7 @@ export default tseslint.config(
       // Custom rule
       'custom/no-try-in-controller-or-middleware': 'error',
       'custom/enforce-uppercase-enum-values': 'error',
+      'custom/enforce-sorted-enum-keys': 'error',
       'boundaries/element-types': [
         'error',
         {
