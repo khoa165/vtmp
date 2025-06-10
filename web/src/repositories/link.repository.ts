@@ -1,6 +1,12 @@
 import { LinkModel, ILink } from '@/models/link.model';
 import { Types, ClientSession } from 'mongoose';
-import { LinkStatus } from '@vtmp/common/constants';
+import {
+  JobFunction,
+  JobType,
+  LinkProcessStage,
+  LinkRegion,
+  LinkStatus,
+} from '@vtmp/common/constants';
 
 export const LinkRepository = {
   createLink: async (linkData: { url: string }): Promise<ILink> => {
@@ -27,6 +33,26 @@ export const LinkRepository = {
     ).lean();
   },
 
+  updateLinkMetaData: async (
+    id: string,
+    linkMetaData: {
+      processStage?: LinkProcessStage;
+      jobTitle?: string;
+      companyName?: string;
+      location?: LinkRegion;
+      datePosted?: Date;
+      jobDescription?: string;
+      jobFunction?: JobFunction;
+      jobType?: JobType;
+    } = {}
+  ): Promise<ILink | null> => {
+    return LinkModel.findByIdAndUpdate(
+      new Types.ObjectId(id),
+      { $set: linkMetaData },
+      { new: true }
+    ).lean();
+  },
+
   getLinkCountByStatus: async () => {
     const result = await LinkModel.aggregate([
       {
@@ -45,7 +71,12 @@ export const LinkRepository = {
     return groupCountByStatus;
   },
 
-  getLinks: async (filters: { status?: LinkStatus } = {}): Promise<ILink[]> => {
+  getLinks: async (
+    filters: {
+      status?: LinkStatus;
+      processStage?: LinkProcessStage;
+    } = {}
+  ): Promise<ILink[]> => {
     return LinkModel.find(filters).lean();
   },
 

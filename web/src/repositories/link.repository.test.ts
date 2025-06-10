@@ -1,4 +1,9 @@
-import { LinkStatus } from '@vtmp/common/constants';
+import {
+  JobFunction,
+  JobType,
+  LinkRegion,
+  LinkStatus,
+} from '@vtmp/common/constants';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
 import { LinkRepository } from '@/repositories/link.repository';
@@ -6,6 +11,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import assert from 'assert';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { ILink } from '@/models/link.model';
+import { LinkProcessStage } from '../../../packages/common/src/constants/enums';
 
 describe('LinkRepository', () => {
   useMongoDB();
@@ -14,6 +20,13 @@ describe('LinkRepository', () => {
     jobTitle: 'Software Engineer',
     companyName: 'Example Company',
     submittedBy: getNewObjectId(),
+  };
+  const mockLinkMetaData = {
+    processStage: LinkProcessStage.NOT_PROCESSED,
+    location: LinkRegion.US,
+    jobFunction: JobFunction.SOFTWARE_ENGINEER,
+    jobType: JobType.INTERNSHIP,
+    datePosted: new Date(),
   };
 
   let googleLink: ILink;
@@ -39,7 +52,7 @@ describe('LinkRepository', () => {
     });
   });
 
-  describe('updateStatus', () => {
+  describe('updateLinkStatus', () => {
     it('should throw error when link does not exist', async () => {
       const link = await LinkRepository.updateLinkStatus({
         id: getNewMongoId(),
@@ -56,6 +69,26 @@ describe('LinkRepository', () => {
 
       assert(link);
       expect(link.status).to.equal(LinkStatus.APPROVED);
+    });
+  });
+
+  describe('updateLinkMetaData', () => {
+    it('should throw error when link does not exist', async () => {
+      const link = await LinkRepository.updateLinkMetaData(
+        getNewMongoId(),
+        mockLinkMetaData
+      );
+      assert(!link);
+    });
+
+    it('should be able to update link status', async () => {
+      const link = await LinkRepository.updateLinkMetaData(
+        googleLink.id,
+        mockLinkMetaData
+      );
+
+      assert(link);
+      expect(link).to.deep.include(mockLinkMetaData);
     });
   });
 

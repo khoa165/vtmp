@@ -1,10 +1,11 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 import { JobFunction, LinkStatus, JobType } from '@vtmp/common/constants';
-import { LinkRegion } from '@vtmp/common/constants';
+import { LinkRegion, LinkProcessStage } from '@vtmp/common/constants';
 export interface ILink extends Document {
   _id: Types.ObjectId;
   url: string;
   status: LinkStatus;
+  processStage: LinkProcessStage;
   submittedOn: Date;
   jobTitle?: string;
   companyName?: string;
@@ -28,6 +29,11 @@ const LinkSchema = new mongoose.Schema<ILink>(
       type: String,
       enum: Object.values(LinkStatus),
       default: LinkStatus.PENDING,
+    },
+    processStage: {
+      type: String,
+      enum: Object.values(LinkProcessStage),
+      default: LinkProcessStage.NOT_PROCESSED,
     },
     submittedOn: {
       type: Date,
