@@ -28,15 +28,15 @@ const formatJobDescription = (description: {
 
   let result = '';
 
-  if (description.responsibility != '') {
+  if (description?.responsibility && description.responsibility != '') {
     result += formatSection('Responsibilities', description.responsibility);
   }
 
-  if (description.requirement != '') {
+  if (description?.requirement && description.requirement != '') {
     result += '\n' + formatSection('Requirements', description.requirement);
   }
 
-  if (description.prefferred != '') {
+  if (description?.prefferred && description.prefferred != '') {
     result +=
       '\n' + formatSection('Preferred Qualifications', description.prefferred);
   }

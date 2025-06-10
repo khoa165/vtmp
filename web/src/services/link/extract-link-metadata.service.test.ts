@@ -1,7 +1,7 @@
-import { createRetryer } from '@/helpers/link.helpers';
 import { ExtractLinkMetadataService } from '@/services/link/extract-link-metadata.service';
 import { wait } from 'ts-retry-promise';
 import { expect } from 'chai';
+import { createRetryer } from '@/services/link/link.helpers';
 describe('ExtractLinkMetaDataService', () => {
   const retryFunction = createRetryer(3, 1);
   it('should throw error when accessing forbidden website', async () => {
