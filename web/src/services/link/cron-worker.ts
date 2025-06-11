@@ -16,7 +16,7 @@ cron.schedule('0 0 * * * *', async () => {
     processStage: LinkProcessStage.NOT_PROCESSED,
   });
   links.forEach(async (link) => {
-    const response = await api.request({
+    await api.request({
       method: 'POST',
       url: '/link',
       data: {
@@ -24,8 +24,5 @@ cron.schedule('0 0 * * * *', async () => {
         id: link.id,
       },
     });
-    if (response.status !== 200) {
-      throw new Error('Failed to process link in Link Processing Service');
-    }
   });
 });
