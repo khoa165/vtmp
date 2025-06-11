@@ -9,4 +9,5 @@ export const MOCK_ENV = {
   VTMP_WEB_URL: 'viettechmentorship.com',
   SEED_ENV: Environment.DEV,
   GOOGLE_GEMINI_API_KEY: 'Hello',
+  LINK_PROCESSING_DOMAIN: 'link processing api',
 };

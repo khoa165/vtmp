@@ -5,6 +5,8 @@ import {
   JobFunction,
   JobPostingRegion,
   JobType,
+  LinkProcessStage,
+  LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
 import { filterUndefinedAttributes } from '@/utils/helpers';
@@ -14,7 +16,29 @@ const LinkSchema = z.object({
   url: z
     .string({ required_error: 'URL is required' })
     .url({ message: 'Invalid url' }),
+  jobTitle: z.string().optional(),
+  companyName: z.string().optional(),
+  location: z
+    .nativeEnum(LinkRegion, {
+      message: 'Invalid location',
+    })
+    .optional(),
+  jobFunction: z
+    .nativeEnum(JobFunction, {
+      message: 'Invalid job title',
+    })
+    .optional(),
+  jobType: z
+    .nativeEnum(JobType, {
+      message: 'Invalid job type',
+    })
+    .optional(),
+  datePosted: z.string().optional(),
+  jobDescription: z.string().optional(),
+  linkProcessStage: z.nativeEnum(LinkProcessStage).optional(),
 });
+
+export type LinkType = z.infer<typeof LinkSchema>;
 
 const JobPostingDataSchema = z
   .object({
@@ -78,7 +102,7 @@ export const LinkController = {
   submitLink: async (req: Request, res: Response) => {
     const parsedLink = LinkSchema.parse(req.body);
 
-    const submitLink = await LinkService.submitLink(parsedLink.url);
+    const submitLink = await LinkService.submitLink(parsedLink);
     res.status(201).json({
       message: 'Link has been submitted successfully.',
       data: submitLink,

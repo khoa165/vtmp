@@ -1,0 +1,32 @@
+{
+  "name": "@vtmp/link-processing-service",
+  "version": "1.0.0",
+  "repository": "git@github.com:khoa165/vtmp.git",
+  "author": "Viet Tech Mentorship Program <viettechmentorshipprogram@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.149",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.14.1",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@google/genai": "^1.4.0",
+    "@sparticuz/chromium": "^133.0.0",
+    "@vtmp/common": "1.0.0",
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
+    "jsonwebtoken": "^9.0.2",
+    "puppeteer-core": "^24.10.0",
+    "ts-retry-promise": "^0.8.1",
+    "zod": "^3.25.51"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json"
+  }
+}

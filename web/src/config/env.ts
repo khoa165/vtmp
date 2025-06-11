@@ -14,6 +14,7 @@ const webConfigSchema = z.object({
   VTMP_WEB_URL: z.string(),
   SEED_ENV: z.nativeEnum(Environment).default(Environment.DEV),
   GOOGLE_GEMINI_API_KEY: z.string(),
+  LINK_PROCESSING_DOMAIN: z.string(),
 });
 
 export const EnvConfig = {
