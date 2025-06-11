@@ -19,7 +19,7 @@
     "seed": "yarn workspace @vtmp/web seed",
     "blog": "tsx ./scripts/generate-metadata.ts",
     "lint": "yarn eslint .",
-    "test": "yarn workspace @vtmp/common build && yarn workspace @vtmp/web run test",
+    "test": "yarn workspace @vtmp/common build && yarn workspace @vtmp/web run test && yarn workspace @vtmp/link-processing-service run test",
     "tslint": "tslint --project tsconfig.json --config tslint.json",
     "tslint-fix": "tslint --project tsconfig.json --config tslint.json --fix",
     "postinstall": "husky",
