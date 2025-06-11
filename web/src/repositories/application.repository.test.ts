@@ -519,7 +519,7 @@ describe('ApplicationRepository', () => {
     });
   });
 
-  describe.only('getApplicationsCountByUser', () => {
+  describe('getApplicationsCountByUser', () => {
     it('should return empty array since no application is created', async () => {
       const result = await ApplicationRepository.getApplicationsCountByUser();
       expect(result).to.deep.equal([]);
