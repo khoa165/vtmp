@@ -12,6 +12,8 @@ import {
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 import axios from 'axios';
 
+const STALE_TIME = 1000 * 20;
+
 export const useGetApplications = (
   applicationFilter: { status?: ApplicationStatus } = {}
 ) =>
@@ -25,7 +27,7 @@ export const useGetApplications = (
         schema: ApplicationsResponseSchema,
         options: { includeOnlyDataField: true, requireAuth: true },
       }),
-    staleTime: 1000 * 20,
+    staleTime: STALE_TIME,
   });
 
 export const useGetApplicationsCountByStatus = () =>
@@ -38,7 +40,7 @@ export const useGetApplicationsCountByStatus = () =>
         schema: ApplicationsCountByStatusSchema,
         options: { includeOnlyDataField: true, requireAuth: true },
       }),
-    staleTime: 1000 * 20,
+    staleTime: STALE_TIME,
   });
 
 export const useGetApplicationById = (applicationId: string) => {
@@ -52,7 +54,7 @@ export const useGetApplicationById = (applicationId: string) => {
         options: { includeOnlyDataField: true, requireAuth: true },
       }),
     enabled: !!applicationId,
-    staleTime: 1000 * 20,
+    staleTime: STALE_TIME,
   });
 };
 
@@ -191,7 +193,7 @@ export const useGetInterviewByApplicationId = (applicationId: string) => {
         options: { includeOnlyDataField: true, requireAuth: true },
       }),
     enabled: !!applicationId,
-    staleTime: 1000 * 20,
+    staleTime: STALE_TIME,
   });
 };
 
