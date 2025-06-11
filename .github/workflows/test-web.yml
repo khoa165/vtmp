@@ -3,9 +3,7 @@ name: Test web
 
 on:
   workflow_call:
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
+  
 jobs:
   test-web:
     runs-on: ubuntu-latest

@@ -13,8 +13,7 @@ jobs:
   build-web:
     if: contains(github.event.pull_request.files.*.path, 'web/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
     uses: ./.github/workflows/build-web.yml
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    secrets: inherit
 
   test-web:
     if: contains(github.event.pull_request.files.*.path, 'web/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
