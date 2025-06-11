@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/base/skeleton';
 import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
 import { CustomError } from '@/utils/errors';
 import { InterviewDrawer } from '@/components/pages/application-tracker/applications/interview-drawer';
+import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
 
 export const ApplicationsContainer = ({
   applicationFilter,
@@ -79,11 +80,13 @@ export const ApplicationsContainer = ({
         setSorting={setSorting}
         selectedApplicationId={selectedApplicationId}
       />
-      <InterviewDrawer
-        open={openDrawer}
-        onOpenChange={setOpenDrawer}
-        applicationId={selectedApplicationId}
-      />
+      <ErrorBoundaryWrapper customText="Interview Drawer">
+        <InterviewDrawer
+          open={openDrawer}
+          onOpenChange={setOpenDrawer}
+          applicationId={selectedApplicationId}
+        />
+      </ErrorBoundaryWrapper>
     </>
   );
 };

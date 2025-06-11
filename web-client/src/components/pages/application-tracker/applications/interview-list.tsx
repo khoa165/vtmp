@@ -48,7 +48,7 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
   }
 
   if (interviewsError) {
-    return <div>Error loading interviews: {interviewsError.message}</div>;
+    throw new Error('Error retrieving interviews: ', interviewsError);
   }
 
   return (

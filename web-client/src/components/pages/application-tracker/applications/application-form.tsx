@@ -1,7 +1,4 @@
-import {
-  ApplicationData,
-  applicationFormSchema,
-} from '@/components/pages/application-tracker/applications/validation';
+import { applicationFormSchema } from '@/components/pages/application-tracker/applications/validation';
 import { useState } from 'react';
 import { Button } from '@/components/base/button';
 import {
@@ -36,113 +33,217 @@ import {
 } from '@/components/base/select';
 import { formatInterestLevel } from '@/utils/helpers';
 import { ApplicationInterestDropDown } from '@/components/pages/application-tracker/applications/application-interest-column';
+import {
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/base/drawer';
+import { Briefcase, Clock, ExternalLink, Link, MapPin } from 'lucide-react';
+import { format } from 'date-fns';
+import { DATE_MONTH_YEAR } from '@/utils/date';
+import { DrawerStatusDropDown } from '@/components/pages/application-tracker/applications/drawer-status-dropdown';
+import {
+  useDeleteApplication,
+  useGetApplicationById,
+  useUpdateApplicationMetadata,
+  useUpdateApplicationStatus,
+} from '@/components/pages/application-tracker/applications/hooks/applications';
+import { Skeleton } from '@/components/base/skeleton';
 
 export const ApplicationForm = ({
-  currentApplication,
-  updateApplicationMetadataFn,
-  deleteApplicationFn,
+  applicationId,
   onOpenChange,
 }: {
-  currentApplication: {
-    _id: string;
-  } & ApplicationData;
-  updateApplicationMetadataFn: ({
-    applicationId,
-    body,
-  }: {
-    applicationId: string;
-    body: ApplicationData;
-  }) => void;
-  deleteApplicationFn: (applicationId: string) => void;
+  applicationId: string;
   onOpenChange?: (open: boolean) => void;
 }) => {
   const {
-    _id: applicationId,
-    note,
-    referrer,
-    portalLink,
-    interest,
-  } = currentApplication;
+    isLoading: isLoadingApplication,
+    error: applicationError,
+    data: applicationData,
+  } = useGetApplicationById(applicationId);
 
-  const applicationForm = useForm<z.infer<typeof applicationFormSchema>>({
-    resolver: zodResolver(applicationFormSchema),
-    defaultValues: {
-      note: note,
-      referrer: referrer,
-      portalLink: portalLink,
-      interest: InterestLevel.MEDIUM,
-    },
-  });
+  const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
+  const { mutate: deleteApplicationFn } = useDeleteApplication();
+  const { mutate: updateApplicationMetadataFn } =
+    useUpdateApplicationMetadata();
 
   const [isEditing, setIsEditing] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  const applicationForm = useForm<z.infer<typeof applicationFormSchema>>({
+    resolver: zodResolver(applicationFormSchema),
+    defaultValues: {
+      note: applicationData?.note ?? '',
+      referrer: applicationData?.referrer ?? '',
+      portalLink: applicationData?.portalLink ?? '',
+      interest: applicationData?.interest ?? InterestLevel.MEDIUM,
+    },
+  });
+
+  if (isLoadingApplication) {
+    return (
+      <DrawerHeader>
+        <div className="space-y-2">
+          <DrawerTitle className="mb-3">
+            <Skeleton className="h-10 w-3/4 rounded-md" />
+          </DrawerTitle>
+          <DrawerDescription>
+            <Skeleton className="h-6 w-1/3 rounded-md" />
+          </DrawerDescription>
+
+          <div className="flex flex-wrap gap-2 mt-4 mb-6">
+            <Skeleton className="h-8 w-36 rounded-full" />
+            <Skeleton className="h-8 w-40 rounded-full" />
+            <Skeleton className="h-8 w-32 rounded-full" />
+            <Skeleton className="h-8 w-48 rounded-full" />
+          </div>
+        </div>
+      </DrawerHeader>
+    );
+  }
+
+  if (applicationError) {
+    throw new Error('Error loading application form');
+  }
+
   return (
-    <div className="mt-8 rounded-xl">
-      <Form {...applicationForm}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 mb-4">
+    <>
+      <DrawerHeader>
+        <DrawerTitle className="mb-3 text-4xl font-bold">
+          <Link
+            to={applicationData?.portalLink || '#'}
+            className="flex items-center"
+          >
+            {applicationData?.jobTitle || '12312'}
+            <ExternalLink className="ml-1 mt-1 h-8 w-8" />
+          </Link>
+        </DrawerTitle>
+        <div className="flex flex-col space-x-2">
+          <DrawerDescription className="mb-5 text-xl font-bold text-foreground">
+            {applicationData?.companyName}
+          </DrawerDescription>
+
+          <div className="flex items-center justify-between space-x-4 space-y-2 mb-4">
+            <div className="flex flex-wrap gap-1">
+              <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium">
+                <Briefcase className="h-4 w-4 mr-1" />
+                {applicationData?.jobTitle}
+              </span>
+              <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium">
+                <Clock className="h-4 w-4 mr-1" />
+                {applicationData?.appliedOnDate
+                  ? format(
+                      new Date(applicationData.appliedOnDate),
+                      DATE_MONTH_YEAR
+                    )
+                  : ''}
+              </span>
+              <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium">
+                <MapPin className="h-4 w-4 mr-1" />
+                {applicationData?.location}
+              </span>
+              <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium hover:bg-muted/20 hover:text-primary hover:border-primary transition">
+                {applicationData && (
+                  <DrawerStatusDropDown
+                    applicationData={applicationData}
+                    updateApplicationStatusFn={updateApplicationStatusFn}
+                  />
+                )}
+              </span>
+            </div>
+          </div>
+        </div>
+      </DrawerHeader>
+      <div className="my-8 rounded-xl">
+        <Form {...applicationForm}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 mb-4">
+            <FormField
+              control={applicationForm.control}
+              name="interest"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Interest Level</FormLabel>
+                  <FormControl>
+                    <Select
+                      {...field}
+                      onValueChange={field.onChange}
+                      disabled={!isEditing}
+                    >
+                      <SelectTrigger className="w-full h-10 rounded-lg p-2 border border-input px-3 py-2 text-sm shadow-sm">
+                        <ApplicationInterestDropDown interest={field.value} />
+                      </SelectTrigger>
+                      <SelectContent className="z-50">
+                        {Object.values(InterestLevel)
+                          .filter(
+                            (value) =>
+                              value !== applicationForm.watch('interest')
+                          )
+                          .map((dropdownStatus, index) => (
+                            <SelectItem
+                              key={index}
+                              value={formatInterestLevel(
+                                dropdownStatus
+                              ).toString()}
+                            >
+                              <ApplicationInterestDropDown
+                                interest={dropdownStatus}
+                              />
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={applicationForm.control}
+              name="portalLink"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Portal Link</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Add a portal link"
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={applicationForm.control}
+              name="referrer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Referer</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Add a referer"
+                      disabled={!isEditing}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={applicationForm.control}
-            name="interest"
+            name="note"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Interest Level</FormLabel>
+                <FormLabel>Note</FormLabel>
                 <FormControl>
-                  <Select
+                  <Textarea
                     {...field}
-                    onValueChange={field.onChange}
-                    disabled={!isEditing}
-                  >
-                    <SelectTrigger className="w-full h-10 rounded-lg p-2 border border-input px-3 py-2 text-sm shadow-sm">
-                      <ApplicationInterestDropDown interest={field.value} />
-                    </SelectTrigger>
-                    <SelectContent className="z-50">
-                      {Object.values(InterestLevel)
-                        .filter(
-                          (value) => value !== applicationForm.watch('interest')
-                        )
-                        .map((dropdownStatus, index) => (
-                          <SelectItem
-                            key={index}
-                            value={formatInterestLevel(
-                              dropdownStatus
-                            ).toString()}
-                          >
-                            <ApplicationInterestDropDown
-                              interest={dropdownStatus}
-                            />
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={applicationForm.control}
-            name="portalLink"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Portal Link</FormLabel>
-                <FormControl>
-                  <Input placeholder="Add a portal link" {...field} disabled />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={applicationForm.control}
-            name="referrer"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Referer</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="Add a referer"
+                    placeholder="Add a note about this application"
                     disabled={!isEditing}
                   />
                 </FormControl>
@@ -150,113 +251,90 @@ export const ApplicationForm = ({
               </FormItem>
             )}
           />
-        </div>
 
-        <FormField
-          control={applicationForm.control}
-          name="note"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Note</FormLabel>
-              <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder="Add a note about this application"
-                  disabled={!isEditing}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="flex justify-between items-center mt-6">
-          <div>
-            <Button
-              type="button"
-              className="bg-gray-100 border border-red-500 text-red-500 hover:bg-gray-200 font-bold py-2 w-20 rounded shadow-sm"
-              onClick={() => setIsDialogOpen(true)}
-            >
-              Delete
-            </Button>
-          </div>
-
-          <div className="flex gap-2">
-            {isEditing ? (
-              <>
-                <Button
-                  type="button"
-                  className="bg-gray-700 hover:bg-gray-600 text-foreground font-bold py-2 w-20 rounded"
-                  variant="secondary"
-                  onClick={() => {
-                    setIsEditing(false);
-                    applicationForm.reset({
-                      note: note || '',
-                      referrer: referrer || '',
-                      portalLink: portalLink || '',
-                      interest: interest || InterestLevel.MEDIUM,
-                    });
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  onClick={applicationForm.handleSubmit(
-                    (body: z.infer<typeof applicationFormSchema>) => {
-                      updateApplicationMetadataFn({
-                        applicationId: applicationId,
-                        body: body,
-                      });
-                      setIsEditing(false);
-                    }
-                  )}
-                  className="bg-emerald-400 hover:bg-emerald-500 inset-shadow-sm inset-shadow-emerald-400/50 text-foreground font-bold py-2 w-20 rounded"
-                >
-                  Save
-                </Button>
-              </>
-            ) : (
+          <div className="flex justify-between items-center mt-6">
+            <div>
               <Button
                 type="button"
-                onClick={() => setIsEditing(true)}
-                className="bg-emerald-400 hover:bg-emerald-500 inset-shadow-sm inset-shadow-emerald-400/50 text-foreground font-bold py-2 w-20 rounded"
+                className="bg-gray-100 border border-red-500 text-red-500 hover:bg-gray-200 font-bold py-2 w-20 rounded shadow-sm"
+                onClick={() => setIsDialogOpen(true)}
               >
-                Edit
+                Delete
               </Button>
-            )}
+            </div>
+
+            <div className="flex gap-2">
+              {isEditing ? (
+                <>
+                  <Button
+                    type="button"
+                    className="bg-gray-700 hover:bg-gray-600 text-foreground font-bold py-2 w-20 rounded"
+                    variant="secondary"
+                    onClick={() => {
+                      setIsEditing(false);
+                      applicationForm.reset();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    onClick={applicationForm.handleSubmit(
+                      (body: z.infer<typeof applicationFormSchema>) => {
+                        updateApplicationMetadataFn({
+                          applicationId: applicationId,
+                          body: body,
+                        });
+                        setIsEditing(false);
+                      }
+                    )}
+                    className="bg-emerald-400 hover:bg-emerald-500 inset-shadow-sm inset-shadow-emerald-400/50 text-foreground font-bold py-2 w-20 rounded"
+                  >
+                    Save
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  type="button"
+                  onClick={() => setIsEditing(true)}
+                  className="bg-emerald-400 hover:bg-emerald-500 inset-shadow-sm inset-shadow-emerald-400/50 text-foreground font-bold py-2 w-20 rounded"
+                >
+                  Edit
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
-      </Form>
-      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-foreground">
-              Are you absolutely sure?
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              application.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                deleteApplicationFn(applicationId);
-                setIsDialogOpen(false);
-                if (onOpenChange) {
-                  onOpenChange(false);
-                }
-              }}
-            >
-              Continue
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
+        </Form>
+        <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-foreground">
+                Are you absolutely sure?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete your
+                application.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  deleteApplicationFn(applicationId);
+                  setIsDialogOpen(false);
+                  if (onOpenChange) {
+                    onOpenChange(false);
+                  }
+                }}
+              >
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </>
   );
 };

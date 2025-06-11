@@ -15,7 +15,6 @@ import {
 } from '@tanstack/react-table';
 import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
 import { ResizableTable } from '@/components/pages/shared/resizable-table';
-import { InterviewDrawer } from '@/components/pages/application-tracker/applications/interview-drawer';
 import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 
 interface DataTableProps<TData, TValue> {
@@ -28,7 +27,6 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
   data,
   sorting,
   setSorting,
-  selectedApplicationId,
 }: DataTableProps<TData, TValue> & {
   sorting: SortingState;
   setSorting: OnChangeFn<SortingState>;
@@ -67,8 +65,6 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
     },
   });
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
   return (
     <div className="relative">
       <section className="flex items-center justify-between py-4">
@@ -83,12 +79,6 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
         <ColumnVisibilityConfiguration table={table} />
       </section>
       <ResizableTable table={table} columns={columns} />
-
-      <InterviewDrawer
-        open={isDrawerOpen}
-        onOpenChange={setIsDrawerOpen}
-        applicationId={selectedApplicationId}
-      />
     </div>
   );
 }
