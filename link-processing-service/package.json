@@ -9,10 +9,15 @@
   "main": "dist/index.js",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.149",
+    "@types/chai-as-promised": "^8.0.2",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.14.1",
+    "chai-as-promised": "^8.0.1",
+    "cross-env": "^7.0.3",
+    "mocha": "^11.6.0",
+    "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.16",
-    "tsx": "^4.19.4",
+    "tsx": "^4.20.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
@@ -27,6 +32,7 @@
     "zod": "^3.25.51"
   },
   "scripts": {
-    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json"
+    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
+    "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000"
   }
 }

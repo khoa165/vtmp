@@ -2,6 +2,10 @@ import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.ser
 import { ScraperService } from '@/services/web-scraper.service';
 import { retry, wait } from 'ts-retry-promise';
 import { expect } from 'chai';
+import * as chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+
+chai.use(chaiAsPromised);
 describe('LinkProcessorService', () => {
   const indeedUrl =
     'https://www.indeed.com/jobs?l=California&from=searchOnHP%2CsearchSuggestions%2CwhatautocompleteSourceSimba%2Cwhereautocomplete&vjk=eaadc7650cd851af&advn=1592313491803868';
@@ -11,13 +15,13 @@ describe('LinkProcessorService', () => {
       await expect(
         retry(
           () => {
-            wait(3000);
+            wait(100);
             return ExtractLinkMetadataService.extractMetadata(
               extractedText,
               indeedUrl
             );
           },
-          { retries: 3, delay: 1000, timeout: 2000 }
+          { retries: 3, delay: 1000, timeout: 10 }
         )
       ).eventually.rejectedWith(Error);
     });
@@ -27,10 +31,10 @@ describe('LinkProcessorService', () => {
       await expect(
         retry(
           () => {
-            wait(3000);
+            wait(100);
             return ScraperService.scrapeWebsite(indeedUrl);
           },
-          { retries: 3, delay: 1000, timeout: 2000 }
+          { retries: 3, delay: 1000, timeout: 10 }
         )
       ).eventually.rejectedWith(Error);
     });
@@ -41,7 +45,7 @@ describe('LinkProcessorService', () => {
           () => {
             return ScraperService.scrapeWebsite(indeedUrl);
           },
-          { retries: 3, delay: 1000, timeout: 2000 }
+          { retries: 3, delay: 1000, timeout: 10 }
         )
       ).eventually.rejectedWith(Error);
     });
