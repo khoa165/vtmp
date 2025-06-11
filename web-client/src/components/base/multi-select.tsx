@@ -104,7 +104,7 @@ const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>(
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0">
-          <Command>
+          <Command className="overflow-visible">
             <CommandInput placeholder="Search..." />
             <CommandList>
               <CommandEmpty>No item found.</CommandEmpty>
