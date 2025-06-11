@@ -11,8 +11,7 @@ import {
   AIResponseEmptyError,
   InvalidJsonError,
 } from '@/utils/errors';
-import { GenerateContentResponse } from '@google/genai';
-import { GoogleGenAI } from '@google/genai';
+import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
 import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {

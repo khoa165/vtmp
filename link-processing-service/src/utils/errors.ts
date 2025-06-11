@@ -1,18 +1,12 @@
-export enum LinkProcessingStatus {
-  FAILED_VALIDATION = 'VALIDATION_FAILED',
-  FAILED_SCRAPING = 'FAILED_SCRAPING',
-  FAILED_AI_EXTRACTION = 'FAILED_AI_EXTRACTION',
-  FAILED_UNKNOWN = 'FAILED_UNKNOWN',
-  SUCCESS = 'SUCCESS',
-}
+import { LinkProcessStage } from '@vtmp/common/constants';
 
 export abstract class ServiceSpecificError extends Error {
   public metadata: { url: string };
-  public linkProcessingStatus: LinkProcessingStatus;
+  public linkProcessingStatus: LinkProcessStage;
   constructor(
     message: string,
     metadata: { url: string },
-    linkProcessingStatus: LinkProcessingStatus,
+    linkProcessingStatus: LinkProcessStage,
     options?: { cause?: unknown }
   ) {
     super(message);
@@ -31,7 +25,7 @@ export class LinkValidationError extends ServiceSpecificError {
     metadata: { url: string },
     options?: { cause?: unknown }
   ) {
-    super(message, metadata, LinkProcessingStatus.FAILED_VALIDATION, options);
+    super(message, metadata, LinkProcessStage.VALIDATION_FAILED, options);
   }
 }
 
@@ -41,7 +35,7 @@ export class ScrapingError extends ServiceSpecificError {
     metadata: { url: string },
     options?: { cause?: unknown }
   ) {
-    super(message, metadata, LinkProcessingStatus.FAILED_SCRAPING, options);
+    super(message, metadata, LinkProcessStage.SCRAPING_FAILED, options);
   }
 }
 
@@ -51,24 +45,19 @@ export class AIExtractionError extends ServiceSpecificError {
     metadata: { url: string },
     options?: { cause?: unknown }
   ) {
-    super(
-      message,
-      metadata,
-      LinkProcessingStatus.FAILED_AI_EXTRACTION,
-      options
-    );
+    super(message, metadata, LinkProcessStage.EXTRACTION_FAILED, options);
   }
 }
 
 export class AIResponseEmptyError extends ServiceSpecificError {
   constructor(message: string, metadata: { url: string }) {
-    super(message, metadata, LinkProcessingStatus.FAILED_AI_EXTRACTION);
+    super(message, metadata, LinkProcessStage.EXTRACTION_FAILED);
   }
 }
 
 export class InvalidJsonError extends ServiceSpecificError {
   constructor(message: string, metadata: { url: string }) {
-    super(message, metadata, LinkProcessingStatus.FAILED_AI_EXTRACTION);
+    super(message, metadata, LinkProcessStage.EXTRACTION_FAILED);
   }
 }
 
@@ -77,10 +66,10 @@ export const handleError = (
   url: string
 ): {
   url: string;
-  linkProcessingStatus: LinkProcessingStatus;
+  linkProcessingStatus: LinkProcessStage;
 } => {
-  let linkProcessingStatus: LinkProcessingStatus =
-    LinkProcessingStatus.FAILED_VALIDATION;
+  let linkProcessingStatus: LinkProcessStage =
+    LinkProcessStage.VALIDATION_FAILED;
 
   if (error instanceof ServiceSpecificError) {
     console.log('Error message: ', error.message);
@@ -94,9 +83,9 @@ export const handleError = (
       console.error('Error cause: ', error.cause);
       console.log('Error cause message: ', error.cause.message);
     }
-    linkProcessingStatus = LinkProcessingStatus.FAILED_UNKNOWN;
+    linkProcessingStatus = LinkProcessStage.UNKNOWN_FAILED;
   } else {
-    linkProcessingStatus = LinkProcessingStatus.FAILED_UNKNOWN;
+    linkProcessingStatus = LinkProcessStage.UNKNOWN_FAILED;
   }
 
   console.error(error);
