@@ -19,7 +19,7 @@ const DecodedJWTSchema = z.object({
 });
 
 export const InvitationService = {
-  getAllInvitations: async () => {
+  getAllInvitations: async (): Promise<IInvitation[]> => {
     return InvitationRepository.getInvitationsWithFilter({});
   },
 
@@ -27,7 +27,7 @@ export const InvitationService = {
     receiverName: string,
     receiverEmail: string,
     senderId: string
-  ) => {
+  ): Promise<IInvitation | null> => {
     const foundUser = await UserRepository.getUserByEmail(receiverEmail);
     if (foundUser) {
       throw new DuplicateResourceError(
@@ -50,12 +50,14 @@ export const InvitationService = {
 
     let newInvitation: IInvitation | null = null;
     let token: string;
+    let latestPendingInvitation: IInvitation | null = null;
 
-    const [latestPendingInvitation] =
+    const pendingInvitations =
       await InvitationRepository.getInvitationsWithFilter({
         receiverEmail,
         status: InvitationStatus.PENDING,
       });
+    latestPendingInvitation = pendingInvitations[0] ?? null;
 
     if (!latestPendingInvitation) {
       token = jwt.sign({ receiverEmail }, EnvConfig.get().JWT_SECRET, {
@@ -70,10 +72,14 @@ export const InvitationService = {
       });
     } else {
       if (isBefore(latestPendingInvitation.expiryDate, Date.now())) {
-        await InvitationRepository.updateInvitationById(
-          latestPendingInvitation.id,
-          { expiryDate: addDays(Date.now(), 7) }
-        );
+        const updatedInvitation =
+          await InvitationRepository.updateInvitationById(
+            latestPendingInvitation.id,
+            { expiryDate: addDays(Date.now(), 7) }
+          );
+        if (updatedInvitation) {
+          latestPendingInvitation = updatedInvitation;
+        }
       }
 
       token = latestPendingInvitation.token;
@@ -85,10 +91,12 @@ export const InvitationService = {
       token
     );
     await getEmailService().sendEmail(emailTemplate);
-    return newInvitation;
+    return newInvitation || latestPendingInvitation;
   },
 
-  revokeInvitation: async (invitationId: string) => {
+  revokeInvitation: async (
+    invitationId: string
+  ): Promise<IInvitation | null> => {
     const foundInvitation =
       await InvitationRepository.getInvitationById(invitationId);
 
