@@ -1,11 +1,10 @@
 import {
   InterviewData,
-  interviewFormSchema,
+  InterviewFormSchema,
 } from '@/components/pages/application-tracker/applications/validation';
 import { MultiSelect } from '@/components/base/multi-select';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 import { format } from 'date-fns';
-import { formatInterviewStatus } from '@/utils/helpers';
 import {
   Select,
   SelectContent,
@@ -26,6 +25,9 @@ import {
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { DATE_MONTH_YEAR } from '@/utils/date';
+import { capitalize } from 'remeda';
+import { Save, Trash2 } from 'lucide-react';
 
 const interviewTypeOptions = Object.values(InterviewType).map((type) => ({
   label: type.toString(),
@@ -55,8 +57,8 @@ export const InterviewUpdateForm = ({
     note,
   } = currentInterview;
 
-  const interviewForm = useForm<z.infer<typeof interviewFormSchema>>({
-    resolver: zodResolver(interviewFormSchema),
+  const interviewForm = useForm<z.infer<typeof InterviewFormSchema>>({
+    resolver: zodResolver(InterviewFormSchema),
     defaultValues: {
       types: types,
       status: status,
@@ -66,7 +68,7 @@ export const InterviewUpdateForm = ({
   });
 
   return (
-    <div className="rounded-xl bg-background border border-background p-4 mb-4 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3 ">
+    <div className="rounded-xl bg-background border border-background p-6 mb-4 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3 ">
       <Form {...interviewForm}>
         <div>
           <FormField
@@ -105,14 +107,14 @@ export const InterviewUpdateForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Referer
+                    Interview Status
                   </FormLabel>
                   <FormControl>
                     <Select {...field} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full h-10 rounded-lg p-2 border border-input px-3 py-2 text-sm shadow-sm">
+                      <SelectTrigger className="w-full rounded-lg border border-input text-sm shadow-sm">
                         <span>{field.value}</span>
                       </SelectTrigger>
-                      <SelectContent className="z-50">
+                      <SelectContent>
                         {Object.values(InterviewStatus)
                           .filter(
                             (value) => value !== interviewForm.watch('status')
@@ -120,11 +122,9 @@ export const InterviewUpdateForm = ({
                           .map((dropdownStatus, index) => (
                             <SelectItem
                               key={index}
-                              value={formatInterviewStatus(
-                                dropdownStatus
-                              ).toString()}
+                              value={capitalize(dropdownStatus)}
                             >
-                              {formatInterviewStatus(dropdownStatus)}
+                              {capitalize(dropdownStatus)}
                             </SelectItem>
                           ))}
                       </SelectContent>
@@ -150,13 +150,13 @@ export const InterviewUpdateForm = ({
                       {...field}
                       value={
                         field.value
-                          ? format(new Date(field.value), 'yyyy-MM-dd')
+                          ? format(new Date(field.value), DATE_MONTH_YEAR)
                           : ''
                       }
                       placeholder="Date of interview"
                       type="date"
                       onChange={(e) => field.onChange(e.target.value)}
-                      className="w-full h-10 rounded-lg border border-input px-3 py-2 text-sm shadow-sm focus:outline-none"
+                      className="w-full rounded-lg border border-input text-sm shadow-sm"
                     />
                   </FormControl>
                   <FormMessage />
@@ -183,20 +183,34 @@ export const InterviewUpdateForm = ({
             )}
           />
         </div>
+
         <div className="flex justify-end pt-2">
-          <Button
-            variant="default"
-            onClick={() =>
-              updateInterviewFn({
-                interviewId: interviewId,
-                body: {
-                  ...interviewForm.getValues(),
-                },
-              })
-            }
-          >
-            Save Interview
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              className="flex items-center h-7.5 gap-1.5 rounded-md border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
+              variant="secondary"
+              onClick={() => interviewForm.reset()}
+            >
+              <Trash2 className="scale-85" />
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              onClick={() =>
+                updateInterviewFn({
+                  interviewId: interviewId,
+                  body: {
+                    ...interviewForm.getValues(),
+                  },
+                })
+              }
+              className="h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
+            >
+              <Save className="scale-85" />
+              Save
+            </Button>
+          </div>
         </div>
       </Form>
     </div>
@@ -215,16 +229,17 @@ export const InterviewCreateForm = ({
     body: {
       applicationId: string;
       interviewOnDate: Date;
-      types: string[];
-      status: string;
+      types: InterviewType[];
+      status: InterviewStatus;
       note?: string;
     };
   }) => void;
-  setShowCreateForm;
+  setShowCreateForm: (value: boolean) => void;
 }) => {
-  const interviewForm = useForm<z.infer<typeof interviewFormSchema>>({
-    resolver: zodResolver(interviewFormSchema),
+  const interviewForm = useForm<z.infer<typeof InterviewFormSchema>>({
+    resolver: zodResolver(InterviewFormSchema),
     defaultValues: {
+      types: [],
       status: InterviewStatus.PENDING,
       interviewOnDate: new Date(),
       note: '',
@@ -232,7 +247,7 @@ export const InterviewCreateForm = ({
   });
 
   return (
-    <div className="rounded-xl bg-background border border-background p-4 mb-4 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3 ">
+    <div className="rounded-xl bg-neutral-700 border border-background p-6 mb-4 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3">
       <Form {...interviewForm}>
         <div>
           <FormField
@@ -283,7 +298,7 @@ export const InterviewCreateForm = ({
                         defaultValue={field.value}
                         value={field.value}
                       >
-                        <SelectTrigger className="w-full h-10 rounded-lg p-2 border border-input px-3 py-2 text-sm shadow-sm">
+                        <SelectTrigger className="w-full rounded-lg p-2 border border-input px-3 py-2 text-sm shadow-sm">
                           <span>{field.value}</span>
                         </SelectTrigger>
                         <SelectContent className="z-50">
@@ -294,11 +309,9 @@ export const InterviewCreateForm = ({
                             .map((dropdownStatus, index) => (
                               <SelectItem
                                 key={index}
-                                value={formatInterviewStatus(
-                                  dropdownStatus
-                                ).toString()}
+                                value={capitalize(dropdownStatus)}
                               >
-                                {formatInterviewStatus(dropdownStatus)}
+                                {capitalize(dropdownStatus)}
                               </SelectItem>
                             ))}
                         </SelectContent>
@@ -331,7 +344,7 @@ export const InterviewCreateForm = ({
                       placeholder="Date of interview"
                       type="date"
                       onChange={(e) => field.onChange(e.target.value)}
-                      className="w-full h-10 rounded-lg border border-input px-3 py-2 text-sm shadow-sm focus:outline-none"
+                      className="w-full rounded-lg border border-input px-3 py-2 text-sm shadow-sm focus:outline-none"
                     />
                   </FormControl>
                   <FormMessage />
@@ -358,21 +371,35 @@ export const InterviewCreateForm = ({
             )}
           />
         </div>
+
         <div className="flex justify-end pt-2">
-          <Button
-            variant="default"
-            onClick={() => {
-              createInterviewFn({
-                body: {
-                  ...interviewForm.getValues(),
-                  applicationId,
-                },
-              });
-              setShowCreateForm(false);
-            }}
-          >
-            Save Interview
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              className="flex items-center h-7.5 gap-1.5 rounded-md border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
+              variant="secondary"
+              onClick={() => setShowCreateForm(false)}
+            >
+              <Trash2 className="scale-85" />
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              onClick={() => {
+                createInterviewFn({
+                  body: {
+                    ...interviewForm.getValues(),
+                    applicationId,
+                  },
+                });
+                setShowCreateForm(false);
+              }}
+              className="h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
+            >
+              <Save className="scale-85" />
+              Save
+            </Button>
+          </div>
         </div>
       </Form>
     </div>

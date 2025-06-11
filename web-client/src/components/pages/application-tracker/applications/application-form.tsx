@@ -1,4 +1,4 @@
-import { applicationFormSchema } from '@/components/pages/application-tracker/applications/validation';
+import { ApplicationFormSchema } from '@/components/pages/application-tracker/applications/validation';
 import { useState } from 'react';
 import { Button } from '@/components/base/button';
 import {
@@ -31,14 +31,13 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/base/select';
-import { formatInterestLevel } from '@/utils/helpers';
 import { ApplicationInterestDropDown } from '@/components/pages/application-tracker/applications/application-interest-column';
 import {
   DrawerDescription,
   DrawerHeader,
   DrawerTitle,
 } from '@/components/base/drawer';
-import { Briefcase, Clock, ExternalLink, Link, MapPin } from 'lucide-react';
+import { Clock, ExternalLink, MapPin, Save, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { DATE_MONTH_YEAR } from '@/utils/date';
 import { DrawerStatusDropDown } from '@/components/pages/application-tracker/applications/drawer-status-dropdown';
@@ -49,6 +48,8 @@ import {
   useUpdateApplicationStatus,
 } from '@/components/pages/application-tracker/applications/hooks/applications';
 import { Skeleton } from '@/components/base/skeleton';
+import { capitalize } from 'remeda';
+import { Link } from 'react-router-dom';
 
 export const ApplicationForm = ({
   applicationId,
@@ -68,11 +69,11 @@ export const ApplicationForm = ({
   const { mutate: updateApplicationMetadataFn } =
     useUpdateApplicationMetadata();
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingApplication, setIsEditingApplication] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const applicationForm = useForm<z.infer<typeof applicationFormSchema>>({
-    resolver: zodResolver(applicationFormSchema),
+  const applicationForm = useForm<z.infer<typeof ApplicationFormSchema>>({
+    resolver: zodResolver(ApplicationFormSchema),
     defaultValues: {
       note: applicationData?.note ?? '',
       referrer: applicationData?.referrer ?? '',
@@ -115,7 +116,7 @@ export const ApplicationForm = ({
             to={applicationData?.portalLink || '#'}
             className="flex items-center"
           >
-            {applicationData?.jobTitle || '12312'}
+            {applicationData?.jobTitle}
             <ExternalLink className="ml-1 mt-1 h-8 w-8" />
           </Link>
         </DrawerTitle>
@@ -125,11 +126,7 @@ export const ApplicationForm = ({
           </DrawerDescription>
 
           <div className="flex items-center justify-between space-x-4 space-y-2 mb-4">
-            <div className="flex flex-wrap gap-1">
-              <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium">
-                <Briefcase className="h-4 w-4 mr-1" />
-                {applicationData?.jobTitle}
-              </span>
+            <div className="flex flex-wrap gap-2">
               <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium">
                 <Clock className="h-4 w-4 mr-1" />
                 {applicationData?.appliedOnDate
@@ -156,6 +153,63 @@ export const ApplicationForm = ({
         </div>
       </DrawerHeader>
       <div className="my-8 rounded-xl">
+        <div className="flex justify-between gap-2 my-7">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold">Application Detail</h2>
+          </div>
+
+          {isEditingApplication ? (
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                className="flex items-center h-7.5 gap-1.5 rounded-md border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
+                variant="secondary"
+                onClick={() => {
+                  setIsEditingApplication(false);
+                  applicationForm.reset();
+                }}
+              >
+                <Trash2 className="scale-85" />
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                onClick={applicationForm.handleSubmit(
+                  (body: z.infer<typeof ApplicationFormSchema>) => {
+                    updateApplicationMetadataFn({
+                      applicationId: applicationId,
+                      body: body,
+                    });
+                    setIsEditingApplication(false);
+                  }
+                )}
+                className="h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
+              >
+                <Save className="scale-85" />
+                Save
+              </Button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                className="flex items-center h-7.5 gap-1.5 rounded-md border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
+                onClick={() => setIsDialogOpen(true)}
+              >
+                <Trash2 className="scale-85" />
+                Delete
+              </Button>
+              <Button
+                type="button"
+                onClick={() => setIsEditingApplication(true)}
+                className="h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
+              >
+                <Save className="scale-85" />
+                Edit
+              </Button>
+            </div>
+          )}
+        </div>
         <Form {...applicationForm}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 mb-4">
             <FormField
@@ -168,7 +222,7 @@ export const ApplicationForm = ({
                     <Select
                       {...field}
                       onValueChange={field.onChange}
-                      disabled={!isEditing}
+                      disabled={!isEditingApplication}
                     >
                       <SelectTrigger className="w-full h-10 rounded-lg p-2 border border-input px-3 py-2 text-sm shadow-sm">
                         <ApplicationInterestDropDown interest={field.value} />
@@ -182,9 +236,7 @@ export const ApplicationForm = ({
                           .map((dropdownStatus, index) => (
                             <SelectItem
                               key={index}
-                              value={formatInterestLevel(
-                                dropdownStatus
-                              ).toString()}
+                              value={capitalize(dropdownStatus)}
                             >
                               <ApplicationInterestDropDown
                                 interest={dropdownStatus}
@@ -193,6 +245,23 @@ export const ApplicationForm = ({
                           ))}
                       </SelectContent>
                     </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={applicationForm.control}
+              name="referrer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Referer</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Add a referer"
+                      disabled={!isEditingApplication}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -215,23 +284,6 @@ export const ApplicationForm = ({
                 </FormItem>
               )}
             />
-            <FormField
-              control={applicationForm.control}
-              name="referrer"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Referer</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Add a referer"
-                      disabled={!isEditing}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
 
           <FormField
@@ -244,66 +296,13 @@ export const ApplicationForm = ({
                   <Textarea
                     {...field}
                     placeholder="Add a note about this application"
-                    disabled={!isEditing}
+                    disabled={!isEditingApplication}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          <div className="flex justify-between items-center mt-6">
-            <div>
-              <Button
-                type="button"
-                className="bg-gray-100 border border-red-500 text-red-500 hover:bg-gray-200 font-bold py-2 w-20 rounded shadow-sm"
-                onClick={() => setIsDialogOpen(true)}
-              >
-                Delete
-              </Button>
-            </div>
-
-            <div className="flex gap-2">
-              {isEditing ? (
-                <>
-                  <Button
-                    type="button"
-                    className="bg-gray-700 hover:bg-gray-600 text-foreground font-bold py-2 w-20 rounded"
-                    variant="secondary"
-                    onClick={() => {
-                      setIsEditing(false);
-                      applicationForm.reset();
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    onClick={applicationForm.handleSubmit(
-                      (body: z.infer<typeof applicationFormSchema>) => {
-                        updateApplicationMetadataFn({
-                          applicationId: applicationId,
-                          body: body,
-                        });
-                        setIsEditing(false);
-                      }
-                    )}
-                    className="bg-emerald-400 hover:bg-emerald-500 inset-shadow-sm inset-shadow-emerald-400/50 text-foreground font-bold py-2 w-20 rounded"
-                  >
-                    Save
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  type="button"
-                  onClick={() => setIsEditing(true)}
-                  className="bg-emerald-400 hover:bg-emerald-500 inset-shadow-sm inset-shadow-emerald-400/50 text-foreground font-bold py-2 w-20 rounded"
-                >
-                  Edit
-                </Button>
-              )}
-            </div>
-          </div>
         </Form>
         <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <AlertDialogContent>

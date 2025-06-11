@@ -56,7 +56,7 @@ export interface ApplicationData {
   interest?: InterestLevel;
 }
 
-export const applicationFormSchema = z.object({
+export const ApplicationFormSchema = z.object({
   note: z.string().optional(),
   referrer: z.string().optional(),
   portalLink: z.string().optional(),
@@ -100,7 +100,7 @@ export interface InterviewData {
   note?: string;
 }
 
-export const interviewFormSchema = z.object({
+export const InterviewFormSchema = z.object({
   types: z.array(z.nativeEnum(InterviewType)),
   status: z.nativeEnum(InterviewStatus),
   interviewOnDate: z.coerce.date(),

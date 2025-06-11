@@ -11,14 +11,6 @@ import {
 } from '@/components/pages/application-tracker/applications/interview-form';
 import { useState } from 'react';
 
-// const statusColors: Record<InterviewStatus, string> = {
-//   UPCOMING: 'bg-blue-100 text-blue-700',
-//   PASSED: 'bg-green-100 text-green-700',
-//   FAILED: 'bg-red-100 text-red-700',
-//   PENDING: 'bg-yellow-100 text-yellow-700',
-//   WITHDRAWN: 'bg-gray-100 text-gray-700',
-// };
-
 export const InterviewList = ({ applicationId }: { applicationId: string }) => {
   const {
     isLoading: isLoadingInterviews,
@@ -52,15 +44,18 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
   }
 
   return (
-    <div className="mt-8 space-y-4">
+    <div className="mt-20 space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold">Interview Timeline</h2>
         <Button
-          variant="outline"
-          className="text-sm"
-          onClick={() => setShowCreateForm(true)}
+          className={
+            showCreateForm
+              ? 'flex items-center h-7.5 gap-1.5 rounded-md border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition'
+              : 'h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition'
+          }
+          onClick={() => setShowCreateForm(!showCreateForm)}
         >
-          + Add Interview
+          {showCreateForm ? 'Discard Interview' : '+ Add Interview'}
         </Button>
       </div>
 

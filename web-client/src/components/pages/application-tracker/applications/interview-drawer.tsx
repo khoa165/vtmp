@@ -19,7 +19,7 @@ export function InterviewDrawer({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent
         side="right"
-        className="min-w-xl shadow-xl shadow-emerald-950/50"
+        className="min-w-[35vw] shadow-xl shadow-emerald-950/50"
       >
         <ScrollArea className="h-full w-full">
           <div className="mx-auto p-9 text-foreground">
