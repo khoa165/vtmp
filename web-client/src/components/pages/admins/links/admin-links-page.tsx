@@ -11,8 +11,10 @@ export const AdminLinksPage = () => {
   const [linksFilter, setLinksFilter] = useState<LinksFilter>({});
 
   return (
-    <div className="w-full px-10 min-h-screen text-white flex flex-col justify-center gap-6">
-      <h1 className="text-3xl font-bold">Review Links Board</h1>
+    <div className="container mx-auto py-10">
+      <h1 className="text-3xl font-bold text-foreground mb-4">
+        Review Links Board
+      </h1>
       <ErrorBoundaryWrapper customText="Link Status Cards">
         <AdminLinksStatusCards setLinksFilter={setLinksFilter} />
       </ErrorBoundaryWrapper>
