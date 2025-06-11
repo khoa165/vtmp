@@ -193,3 +193,5 @@ export const InvitationStatusToColorMapping: Record<InvitationStatus, string> =
     [InvitationStatus.PENDING]: 'bg-(--vtmp-yellow)',
     [InvitationStatus.REVOKED]: 'bg-(--vtmp-orange)',
   };
+export const MIN_PASSWORD_LENGTH = 8;
+export const MAX_PASSWORD_LENGTH = 20;
