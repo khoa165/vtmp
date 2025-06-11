@@ -4,6 +4,7 @@ import {
   ExternalLink,
   LayoutDashboard,
   BriefcaseBusiness,
+  UserRoundPlus,
 } from 'lucide-react';
 
 import {
@@ -28,6 +29,12 @@ export const InternalToolsSidebar = () => {
       title: 'Users',
       url: '/user-invitation',
       icon: ShieldUser,
+      roles: [UserRole.ADMIN],
+    },
+    {
+      title: 'Invitations Sending',
+      url: '/admin/send-invitation',
+      icon: UserRoundPlus,
       roles: [UserRole.ADMIN],
     },
     {

@@ -5,8 +5,6 @@ import { PeopleContainer } from '@/components/people';
 import { StatsContainer } from '@/components/stats';
 import { ProjectsContainer } from '@/components/projects';
 import { SummaryContainer } from '@/components/summary';
-// import { allBlogsFilepaths, allBlogsMetadata } from '@/blogs/metadata';
-// import { buildFileMetadata } from '@/utils/file';
 import { BlogFileMapping } from '@/types';
 import { LandingContainer } from '@/components/landing';
 import { BlogContainer } from '@/components/blogs';
@@ -22,6 +20,7 @@ import { JobPostingsPage } from '@/components/pages/application-tracker/job-post
 import { PageWithToast } from '@/components/layout/page-with-toast';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
 import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
+import { SendInvitationPage } from '@/components/pages/admins/invitations/send-invitation';
 import { AdminLinksPage } from '@/components/pages/admins/links/admin-links-page';
 import { NotFoundPage } from '@/components/pages/shared/not-found-page';
 import { ProtectedRoute } from '@/utils/protect-route';
@@ -83,7 +82,22 @@ export const App = () => {
               }
             />
             <Route path="/application-tracker" element={<ApplicationsPage />} />
-            <Route path="/admin/links" element={<AdminLinksPage />} />
+            <Route
+              path="/admin/links"
+              element={
+                <ProtectedRoute roles={[UserRole.ADMIN]}>
+                  <AdminLinksPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/send-invitation"
+              element={
+                <ProtectedRoute roles={[UserRole.ADMIN]}>
+                  <SendInvitationPage />
+                </ProtectedRoute>
+              }
+            />
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/*" element={<NotFoundPage />} />
