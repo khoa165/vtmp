@@ -62,7 +62,7 @@ interface SignUpInputErrors {
   lastNameErrors: string[];
 }
 
-const SignUpPage = () => {
+export const SignUpPage = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
   const { mutate: validateTokenFn } = useValidateInvitation();
@@ -389,5 +389,3 @@ const SignUpPage = () => {
     </div>
   );
 };
-
-export default SignUpPage;
