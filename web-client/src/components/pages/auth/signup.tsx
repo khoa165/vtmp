@@ -16,10 +16,7 @@ import axios from 'axios';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { useMutation } from '@tanstack/react-query';
 import { request } from '@/utils/api';
-import {
-  AuthResponseSchema,
-  InvitationResponseSchema,
-} from '@/components/pages/auth/validation';
+import { AuthResponseSchema } from '@/components/pages/auth/validation';
 import {
   MAX_PASSWORD_LENGTH,
   Method,
@@ -29,6 +26,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
 import { omit } from 'remeda';
+import { useValidateInvitation } from '@/components/pages/auth/hooks/validate-invitation-hook';
 
 const passwordMessage = [
   '1. Password length is in range 8-20',
@@ -67,37 +65,7 @@ interface SignUpInputErrors {
 const SignUpPage = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
-
-  const { mutate: validateTokenFn } = useMutation({
-    mutationFn: (body: { token: string }) =>
-      request({
-        method: Method.POST,
-        url: '/auth/validate',
-        data: body,
-        schema: InvitationResponseSchema,
-      }),
-    onSuccess: (res) => {
-      console.log(res);
-      resetState();
-    },
-    onError: (error) => {
-      if (axios.isAxiosError(error) && error.response) {
-        error.response.data.errors.forEach((err: { message: string }) => {
-          if (err.message.toLocaleLowerCase() === 'Invitation has expired') {
-            toast.error('Invitation has expired');
-          }
-
-          if (err.message.toLocaleLowerCase().includes('jwt')) {
-            toast.error('The Invitation is invalid');
-          }
-        });
-      } else {
-        toast.error('Signup failed: Unexpected error occured');
-      }
-      navigate('/404');
-    },
-  });
-
+  const { mutate: validateTokenFn } = useValidateInvitation();
   useEffect(() => {
     validateTokenFn({ token: token ? token : '' });
   }, []);
