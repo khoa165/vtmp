@@ -31,7 +31,6 @@ export const SubmitLink = () => {
         options: { requireAuth: true },
       }),
     onSuccess: (res) => {
-      console.log('Success in useMutation submitLink');
       toast.success(res.message);
       setSubmitLinkError([]);
       setLinkInput('');
