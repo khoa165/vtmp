@@ -11,6 +11,7 @@ jobs:
     permissions:
       pull-requests: read
     outputs:
+      common: ${{ steps.filter.outputs.common }}
       web: ${{ steps.filter.outputs.web }}
       web-client: ${{ steps.filter.outputs.web-client }}
     steps:
