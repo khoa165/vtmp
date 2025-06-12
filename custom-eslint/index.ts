@@ -1,4 +1,4 @@
-import { wrappedHandlersInRouter } from './rules';
+import { wrappedHandlersInRouter } from './rules/wrapped-handlers-in-router';
 
 export const customEslintRules = {
   rules: {
