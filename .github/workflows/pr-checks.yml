@@ -11,8 +11,8 @@ jobs:
     permissions:
       pull-requests: read
     outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
+      web: ${{ steps.filter.outputs.web }}
+      web-client: ${{ steps.filter.outputs.web-client }}
     steps:
       - uses: dorny/paths-filter@v3
         id: filter
@@ -35,14 +35,7 @@ jobs:
   build-web:
     needs: changes
     if: ${{ needs.changes.outputs.web == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Use common setups action
-        uses: ./.github/actions/common-setups
-      - name: Build web
-        run: yarn workspace @vtmp/web build
+    uses: ./.github/workflows/build-web.yml
 
   test-web:
     needs: changes
