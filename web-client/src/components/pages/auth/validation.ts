@@ -13,3 +13,11 @@ export const AuthResponseSchema = z.object({
     }),
   }),
 });
+
+export const InvitationResponseSchema = z.object({
+  data: z.object({
+    receiverEmail: z.string().email(),
+    sender: z.string(),
+    token: z.string(),
+  }),
+});
