@@ -6,31 +6,50 @@ on:
       - main
 
 jobs:
-  print-things:
+  changes:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
     steps:
-      - name: print files path
-        run: |
-          echo "Files changes paths: ${{ github.event.pull_request.files.*.path }}"
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            common:
+              - 'packages/common/**'
+            web:
+              - 'web/**'
+              - 'packages/common/**'
+            web-client:
+              - 'web-client/**'
+              - 'packages/common/**'
 
   build-common:
-    if: contains(github.event.pull_request.files.*.path, 'packages/common/src/')
+    needs: changes
+    if: ${{ needs.changes.outputs.common == 'true' }}
     uses: ./.github/workflows/build-common.yml
 
   build-web:
-    if: startsWith(github.event.pull_request.files.*.path, 'web/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
+    needs: changes
+    if: ${{ needs.changes.outputs.web == 'true' }}
     uses: ./.github/workflows/build-web.yml
 
   test-web:
-    if: startsWith(github.event.pull_request.files.*.path, 'web/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
+    needs: changes
+    if: ${{ needs.changes.outputs.web == 'true' }}
     uses: ./.github/workflows/test-web.yml
 
   build-web-client:
-    if: startsWith(github.event.pull_request.files.*.path, 'web-client/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
+    needs: changes
+    if: ${{ needs.changes.outputs.web-client == 'true' }}
     uses: ./.github/workflows/build-web-client.yml
 
   chromatic:
-    if: ${{ contains(github.event.pull_request.files.*.path, 'web-client/src/') }}
+    needs: changes
+    if: ${{ needs.changes.outputs.web-client == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
