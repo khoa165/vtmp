@@ -1,0 +1,22 @@
+name: Test web
+
+on:
+  workflow_call:
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Use common setups action
+      uses: ./.github/actions/common-setups
+
+    - name: Run tests and collect coverage
+      run: yarn workspace @vtmp/web coverage
+      shell: bash
+
+    - name: Upload results to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}

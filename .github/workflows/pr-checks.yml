@@ -30,7 +30,12 @@ jobs:
   build-common:
     needs: changes
     if: ${{ needs.changes.outputs.common == 'true' }}
-    uses: ./.github/workflows/build-common.yml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/build-common
 
   build-web:
     needs: changes
@@ -45,12 +50,22 @@ jobs:
   test-web:
     needs: changes
     if: ${{ needs.changes.outputs.web == 'true' }}
-    uses: ./.github/workflows/test-web.yml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/test-web
 
   build-web-client:
     needs: changes
     if: ${{ needs.changes.outputs.web-client == 'true' }}
-    uses: ./.github/workflows/build-web-client.yml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/build-web-client
 
   chromatic:
     needs: changes
