@@ -6,20 +6,27 @@ on:
       - main
 
 jobs:
+  print-things:
+    runs-on: ubuntu-latest
+    steps:
+      - name: print files path
+        run: |
+          echo "Files changes paths: ${{ github.event.pull_request.files.*.path }}"
+
   build-common:
     if: contains(github.event.pull_request.files.*.path, 'packages/common/src/')
     uses: ./.github/workflows/build-common.yml
 
   build-web:
-    if: contains(github.event.pull_request.files.*.path, 'web/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
+    if: startsWith(github.event.pull_request.files.*.path, 'web/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
     uses: ./.github/workflows/build-web.yml
 
   test-web:
-    if: contains(github.event.pull_request.files.*.path, 'web/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
+    if: startsWith(github.event.pull_request.files.*.path, 'web/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
     uses: ./.github/workflows/test-web.yml
 
   build-web-client:
-    if: contains(github.event.pull_request.files.*.path, 'web-client/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
+    if: startsWith(github.event.pull_request.files.*.path, 'web-client/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
     uses: ./.github/workflows/build-web-client.yml
 
   chromatic:
