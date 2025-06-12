@@ -10,7 +10,7 @@ export interface ILink extends Document {
   _id: Types.ObjectId;
   url: string;
   status: LinkStatus;
-  processStage: LinkProcessStage;
+  linkProcessStage: LinkProcessStage;
   submittedOn: Date;
   jobTitle?: string;
   companyName?: string;
@@ -50,7 +50,7 @@ const LinkSchema = new mongoose.Schema<ILink>(
       enum: Object.values(LinkRegion),
       default: LinkRegion.OTHER,
     },
-    processStage: {
+    linkProcessStage: {
       type: String,
       enum: Object.values(LinkProcessStage),
       default: LinkProcessStage.NOT_PROCESSED,

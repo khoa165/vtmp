@@ -1,17 +1,14 @@
 import { LinkModel, ILink } from '@/models/link.model';
 import { Types, ClientSession } from 'mongoose';
+import { LinkProcessStage, LinkStatus } from '@vtmp/common/constants';
 import {
-  JobFunction,
-  JobType,
-  LinkProcessStage,
-  LinkRegion,
-  LinkStatus,
-} from '@vtmp/common/constants';
-import { LinkType } from '@/controllers/link.controller';
+  LinkMetaDataType,
+  ExtractionLinkMetaDataType,
+} from '@/types/link.types';
 
 export const LinkRepository = {
-  createLink: async (linkData: LinkType): Promise<ILink> => {
-    return LinkModel.create(linkData);
+  createLink: async (linkMetaData: LinkMetaDataType): Promise<ILink> => {
+    return LinkModel.create(linkMetaData);
   },
 
   getLinkById: async (id: string): Promise<ILink | null> => {
@@ -36,16 +33,7 @@ export const LinkRepository = {
 
   updateLinkMetaData: async (
     id: string,
-    linkMetaData: {
-      processStage?: LinkProcessStage;
-      jobTitle?: string;
-      companyName?: string;
-      location?: LinkRegion;
-      datePosted?: Date;
-      jobDescription?: string;
-      jobFunction?: JobFunction;
-      jobType?: JobType;
-    } = {}
+    linkMetaData: ExtractionLinkMetaDataType
   ): Promise<ILink | null> => {
     return LinkModel.findByIdAndUpdate(
       new Types.ObjectId(id),
@@ -75,7 +63,7 @@ export const LinkRepository = {
   getLinks: async (
     filters: {
       status?: LinkStatus;
-      processStage?: LinkProcessStage;
+      linkProcessStage?: LinkProcessStage;
     } = {}
   ): Promise<ILink[]> => {
     return LinkModel.find(filters).lean();

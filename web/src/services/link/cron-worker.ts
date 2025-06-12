@@ -13,7 +13,7 @@ const api = axios.create({
 cron.schedule('0 0 * * * *', async () => {
   const links = await LinkRepository.getLinks({
     status: LinkStatus.PENDING,
-    processStage: LinkProcessStage.NOT_PROCESSED,
+    linkProcessStage: LinkProcessStage.NOT_PROCESSED,
   });
   links.forEach(async (link) => {
     await api.request({

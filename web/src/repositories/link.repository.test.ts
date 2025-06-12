@@ -21,13 +21,6 @@ describe('LinkRepository', () => {
     companyName: 'Example Company',
     submittedBy: getNewObjectId(),
   };
-  const mockLinkMetaData = {
-    processStage: LinkProcessStage.NOT_PROCESSED,
-    location: LinkRegion.US,
-    jobFunction: JobFunction.SOFTWARE_ENGINEER,
-    jobType: JobType.INTERNSHIP,
-    datePosted: new Date(),
-  };
 
   let googleLink: ILink;
   beforeEach(async () => {
@@ -73,6 +66,15 @@ describe('LinkRepository', () => {
   });
 
   describe('updateLinkMetaData', () => {
+    const mockLinkMetaData = {
+      url: 'google.com',
+      linkProcessStage: LinkProcessStage.NOT_PROCESSED,
+      location: LinkRegion.US,
+      jobFunction: JobFunction.SOFTWARE_ENGINEER,
+      jobType: JobType.INTERNSHIP,
+      datePosted: new Date(),
+    };
+
     it('should throw error when link does not exist', async () => {
       const link = await LinkRepository.updateLinkMetaData(
         getNewMongoId(),
