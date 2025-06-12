@@ -35,7 +35,7 @@ jobs:
   build-web:
     needs: changes
     if: ${{ needs.changes.outputs.web == 'true' }}
-    uses: ./.github/workflows/build-web.yml
+    uses: ./.github/workflows/build-web1.yml
 
   test-web:
     needs: changes
