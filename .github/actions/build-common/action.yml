@@ -1,0 +1,10 @@
+name: Build common
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Use common setups action
+      uses: ./.github/actions/common-setups
