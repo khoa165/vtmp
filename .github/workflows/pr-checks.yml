@@ -16,7 +16,7 @@ jobs:
     secrets: inherit
 
   test-web:
-    if: contains(github.event.pull_request.files.*.path, 'web/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
+    if: ${{ contains(github.event.pull_request.files.*.path, 'web/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/') }}
     uses: ./.github/workflows/test-web.yml
 
   build-web-client:
