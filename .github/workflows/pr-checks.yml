@@ -13,11 +13,11 @@ jobs:
   build-web:
     if: contains(github.event.pull_request.files.*.path, 'web/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
     uses: ./.github/workflows/build-web.yml
-    secrets: inherit
 
   test-web:
     # if: contains(github.event.pull_request.files.*.path, 'web/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
     uses: ./.github/workflows/test-web.yml
+    secrets: inherit
 
   build-web-client:
     if: contains(github.event.pull_request.files.*.path, 'web-client/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
