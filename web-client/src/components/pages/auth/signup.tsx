@@ -8,7 +8,7 @@ import {
 } from '@/components/base/card';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LogoMint from '@/assets/images/logo-full-mint.svg?react';
 import { EyeOff, Eye, TriangleAlert } from 'lucide-react';
 import { Check } from 'lucide-react';
@@ -24,7 +24,9 @@ import {
 } from '@/utils/constants';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { useSearchParams } from 'react-router-dom';
 import { omit } from 'remeda';
+import { useValidateInvitation } from '@/components/pages/auth/hooks/validate-invitation-hook';
 
 const passwordMessage = [
   '1. Password length is in range 8-20',
@@ -60,7 +62,14 @@ interface SignUpInputErrors {
   lastNameErrors: string[];
 }
 
-const SignUpPage = () => {
+export const SignUpPage = () => {
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
+  const { mutate: validateTokenFn } = useValidateInvitation();
+  useEffect(() => {
+    validateTokenFn({ token: token ? token : '' });
+  }, []);
+
   const emailInput = 'Email2@viettech.com';
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -106,7 +115,7 @@ const SignUpPage = () => {
     }) =>
       request({
         method: Method.POST,
-        url: '/auth/signup',
+        url: `/auth/signup?token=${token}`,
         data: body,
         schema: AuthResponseSchema,
       }),
@@ -380,5 +389,3 @@ const SignUpPage = () => {
     </div>
   );
 };
-
-export default SignUpPage;
