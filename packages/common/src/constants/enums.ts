@@ -217,3 +217,9 @@ export enum JobType {
   NEW_GRAD = 'NEW_GRAD',
   INDUSTRY = 'INDUSTRY',
 }
+
+export enum ABC {
+  A = 'A',
+  B = 'B',
+  C = 'C',
+}

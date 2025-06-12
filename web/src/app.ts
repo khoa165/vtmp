@@ -35,10 +35,6 @@ app.get('/health', (_req: Request, res: Response) => {
   res.status(200).send('Server is healthy');
 });
 
-app.get('/hello-world', (_req: Request, res: Response) => {
-  res.status(200).send('Hello world!');
-});
-
 app.get('/vtmp-summary', (_req: Request, res: Response) => {
   const summaryData = {
     conversations: 1,
