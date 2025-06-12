@@ -3,24 +3,24 @@ import {
   JobFunction,
   LinkStatus,
   JobType,
-  LinkProcessingStatus,
+  LinkProcessStage,
 } from '@vtmp/common/constants';
 import { LinkRegion } from '@vtmp/common/constants';
 export interface ILink extends Document {
   _id: Types.ObjectId;
   url: string;
   status: LinkStatus;
+  linkProcessStage: LinkProcessStage;
   submittedOn: Date;
   jobTitle?: string;
   companyName?: string;
   location: LinkRegion;
-  datePosted?: Date;
-  jobDescription?: string;
   jobFunction: JobFunction;
   jobType: JobType;
+  datePosted?: Date;
+  jobDescription?: string;
   submittedBy?: Types.ObjectId;
   deletedAt?: Date;
-  linkProcessingStatus?: LinkProcessingStatus;
 }
 
 const LinkSchema = new mongoose.Schema<ILink>(
@@ -48,13 +48,12 @@ const LinkSchema = new mongoose.Schema<ILink>(
     location: {
       type: String,
       enum: Object.values(LinkRegion),
-      default: LinkRegion.US,
+      default: LinkRegion.OTHER,
     },
-    datePosted: {
-      type: Date,
-    },
-    jobDescription: {
+    linkProcessStage: {
       type: String,
+      enum: Object.values(LinkProcessStage),
+      default: LinkProcessStage.NOT_PROCESSED,
     },
     jobFunction: {
       type: String,
@@ -66,16 +65,18 @@ const LinkSchema = new mongoose.Schema<ILink>(
       enum: Object.values(JobType),
       default: JobType.INTERNSHIP,
     },
+    datePosted: {
+      type: Date,
+    },
+    jobDescription: {
+      type: String,
+    },
     submittedBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
     deletedAt: {
       type: Date,
-    },
-    linkProcessingStatus: {
-      type: String,
-      enum: Object.values(LinkProcessingStatus),
     },
   },
   { timestamps: true }

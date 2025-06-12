@@ -3,14 +3,17 @@ import { LinkRepository } from '@/repositories/link.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
-import { LinkType } from '@/controllers/link.controller';
+import {
+  ExtractionLinkMetaDataType,
+  LinkMetaDataType,
+} from '@/types/link.types';
 
 export const LinkService = {
-  submitLink: async (linkData: LinkType) => {
+  submitLink: async (linkData: LinkMetaDataType) => {
     try {
       return await LinkRepository.createLink(linkData);
     } catch {
-      throw new DuplicateResourceError('Duplicate url', { url: linkData.url });
+      throw new DuplicateResourceError('Duplicate url', linkData);
     }
   },
 
@@ -51,6 +54,21 @@ export const LinkService = {
       await session.endSession();
     }
     return jobPosting;
+  },
+
+  updateLinkMetaData: async (
+    linkId: string,
+    linkMetaData: ExtractionLinkMetaDataType
+  ) => {
+    const updatedLink = await LinkRepository.updateLinkMetaData(
+      linkId,
+      linkMetaData
+    );
+    if (!updatedLink) {
+      throw new ResourceNotFoundError('Link not found', linkMetaData);
+    }
+
+    return updatedLink;
   },
 
   rejectLink: async (linkId: string) => {

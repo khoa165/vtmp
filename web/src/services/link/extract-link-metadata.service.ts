@@ -1,84 +1,16 @@
-import {
-  extractLinkMetaDatPrompt,
-  formatJobDescription,
-} from '@/services/link/link.helpers';
-import {
-  LinkMetaData,
-  LinkMetaDataSchema,
-} from '@/services/link/link-metadata-validation';
-import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
-import { ResourceNotFoundError } from '@/utils/errors';
-import puppeteer, { Browser, Page } from 'puppeteer';
-import { EnvConfig } from '@/config/env';
+import { LinkProcessStage, LinkRegion } from '@vtmp/common/constants';
+import { LinkMetaDataType } from '@/types/link.types';
 
-const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
-  const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
-  if (!geminiApiKey) {
-    throw new ResourceNotFoundError('GOOGLE_GEMINI_API_KEY is not set', {
-      key: geminiApiKey,
+export const ExtractLinkMetadataService = {
+  async extractMetadata(url: string): Promise<LinkMetaDataType> {
+    return Promise.resolve({
+      url: url,
+      linkProcessStage: LinkProcessStage.NOT_PROCESSED,
+      jobTitle: 'Software Engineer',
+      companyName: 'Tech Company',
+      location: LinkRegion.US,
+      datePosted: new Date(),
+      jobDescription: 'Job description goes here.',
     });
-  }
-  return new GoogleGenAI({ apiKey: geminiApiKey });
-};
-
-const generateMetaData = async (
-  extractedText: string,
-  url: string
-): Promise<LinkMetaData> => {
-  const genAI = await getGoogleGenAI();
-  const prompt = await extractLinkMetaDatPrompt(extractedText);
-
-  const response: GenerateContentResponse = await genAI.models.generateContent({
-    model: 'gemini-2.0-flash',
-    contents: prompt,
-  });
-
-  const text = response.text?.replace(/```json|```/g, '').trim();
-  if (!text) return { url };
-
-  const parsedResponse = JSON.parse(text);
-
-  const formattedLinkMetaData: LinkMetaData = {
-    url,
-    ...parsedResponse,
-    jobDescription: formatJobDescription(parsedResponse.jobDescription),
-  };
-
-  if (
-    !formattedLinkMetaData.jobTitle ||
-    !formattedLinkMetaData.companyName ||
-    !formattedLinkMetaData.jobDescription
-  ) {
-    return { url };
-  }
-
-  return LinkMetaDataSchema.parse(formattedLinkMetaData);
-};
-
-const scrapeWebsite = async (url: string): Promise<string> => {
-  const browser: Browser = await puppeteer.launch({ headless: true });
-  const page: Page = await browser.newPage();
-
-  await page.goto(url, { waitUntil: 'networkidle2' });
-
-  const bodyText: string = await page.$eval(
-    'body',
-    (el: HTMLBodyElement) => el.innerText
-  );
-
-  await browser.close();
-  return bodyText;
-};
-
-const ExtractLinkMetadataService = {
-  extractMetadata: async (url: string): Promise<LinkMetaData> => {
-    try {
-      const extractedText = await scrapeWebsite(url);
-      return generateMetaData(extractedText, url);
-    } catch {
-      return { url };
-    }
   },
 };
-
-export { scrapeWebsite, generateMetaData, ExtractLinkMetadataService };
