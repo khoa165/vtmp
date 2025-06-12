@@ -1,7 +1,6 @@
 import puppeteer, { Browser, Page } from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 import { ScrapingError } from '@/utils/errors';
-import { NotRetryableError } from 'ts-retry-promise';
 
 export const ScraperService = {
   scrapeWebsite: async (url: string): Promise<string> => {
@@ -16,10 +15,7 @@ export const ScraperService = {
         headless: chromium.headless,
       });
       const page: Page = await browser.newPage();
-      const response = await page.goto(url, { waitUntil: 'networkidle2' }); // Make sure the page is fully loaded before proceeding
-      if (response && response.status() === 403) {
-        throw new NotRetryableError('Forbiden');
-      }
+      await page.goto(url, { waitUntil: 'networkidle2' }); // Make sure the page is fully loaded before proceeding
       const bodyText: string = await page.$eval(
         'body',
         (el: HTMLBodyElement) => el.innerText
