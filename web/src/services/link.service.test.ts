@@ -1,5 +1,11 @@
 import { expect } from 'chai';
-import { LinkStatus } from '@vtmp/common/constants';
+import {
+  JobType,
+  LinkStatus,
+  JobFunction,
+  LinkRegion,
+  LinkProcessStage,
+} from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { LinkService } from '@/services/link.service';
@@ -54,7 +60,7 @@ describe('LinkService', () => {
 
     it('should throw error when link with same url already exists', async () => {
       await expect(
-        LinkService.submitLink(mockLinkData.url)
+        LinkService.submitLink(mockLinkData)
       ).eventually.rejectedWith(DuplicateResourceError);
     });
   });
@@ -126,6 +132,32 @@ describe('LinkService', () => {
 
       expect(jobPosting.linkId.toString()).to.equal(link._id.toString());
       expect(jobPosting.companyName).to.equal(COMPANY_NAME);
+    });
+  });
+
+  describe('updateLinkMetaData', () => {
+    const mockLinkMetaData = {
+      url: 'google.com',
+      linkProcessStage: LinkProcessStage.NOT_PROCESSED,
+      location: LinkRegion.US,
+      jobFunction: JobFunction.SOFTWARE_ENGINEER,
+      jobType: JobType.INTERNSHIP,
+      datePosted: new Date(),
+    };
+
+    it('should throw error when link does not exist', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(getNewMongoId(), mockLinkMetaData)
+      ).eventually.rejectedWith(ResourceNotFoundError);
+    });
+
+    it('should be able to update link status', async () => {
+      const link = await expect(
+        LinkService.updateLinkMetaData(googleLink.id, mockLinkMetaData)
+      ).eventually.fulfilled;
+
+      assert(link);
+      expect(link).to.deep.include(mockLinkMetaData);
     });
   });
 

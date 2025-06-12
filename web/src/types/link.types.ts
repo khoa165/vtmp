@@ -13,7 +13,23 @@ import { MONGO_OBJECT_ID_REGEX } from '@/constants/validations';
 export const LinkMetaDataSchema = z.object({
   url: z
     .string({ required_error: 'URL is required' })
-    .url({ message: 'Invalid url' }),
+    .transform((val) => {
+      if (!/^https?:\/\//i.test(val)) {
+        return `https://${val}`;
+      }
+      return val;
+    })
+    .refine(
+      (val) => {
+        try {
+          new URL(val); // Native URL constructor
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: 'Invalid url' }
+    ),
   jobTitle: z.string().optional(),
   companyName: z.string().optional(),
   location: z
@@ -33,9 +49,6 @@ export const LinkMetaDataSchema = z.object({
     .optional(),
   datePosted: z
     .string()
-    .regex(/^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/, {
-      message: 'Date must be in MM/dd/yyyy format',
-    })
     .transform((str) => new Date(str))
     .optional(),
   jobDescription: z.string().optional(),
@@ -75,9 +88,6 @@ export const JobPostingDataSchema = z
     }),
     datePosted: z
       .string()
-      .regex(/^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/, {
-        message: 'Date must be in MM/dd/yyyy format',
-      })
       .transform((str) => new Date(str))
       .refine(
         (date) => {
