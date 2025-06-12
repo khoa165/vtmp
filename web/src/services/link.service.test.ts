@@ -54,7 +54,7 @@ describe('LinkService', () => {
 
     it('should throw error when link with same url already exists', async () => {
       await expect(
-        LinkService.submitLink(mockLinkData)
+        LinkService.submitLink(mockLinkData.url)
       ).eventually.rejectedWith(DuplicateResourceError);
     });
   });

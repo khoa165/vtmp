@@ -20,23 +20,6 @@ services:
       # "./web/src" is relative to root (where the command "docker compose up" is run)
       - ./web/src:/app/web/src
 
-  link-processing-service:
-    container_name: link-processor
-    build:
-      context: .
-      dockerfile: link-processing-service/Dockerfile
-      args:
-        - NODE_ENV=development
-    platform: linux/amd64
-    ports:
-      - '9000:8080'
-    env_file:
-      - ./link-processing-service/.env
-    environment:
-      - API_URL=http://web:8000
-    depends_on:
-      - web
-
   discord-service:
     container_name: discord
     build:

@@ -102,7 +102,7 @@ export const LinkController = {
   submitLink: async (req: Request, res: Response) => {
     const parsedLink = LinkSchema.parse(req.body);
 
-    const submitLink = await LinkService.submitLink(parsedLink);
+    const submitLink = await LinkService.submitLink(parsedLink.url);
     res.status(201).json({
       message: 'Link has been submitted successfully.',
       data: submitLink,
