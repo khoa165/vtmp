@@ -1,10 +1,9 @@
 import { Router } from 'express';
-
 import { LinkController } from '@/controllers/link.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
-import { hasPermission } from '@/middlewares/authorization.middleware';
 import { wrappedHandlers } from '@/middlewares/utils';
 import { Permission } from '@vtmp/common/constants';
+import { hasPermission } from '@/middlewares/authorization.middleware';
 
 export const LinkRoutes = Router();
 LinkRoutes.use(wrappedHandlers([authenticate]));

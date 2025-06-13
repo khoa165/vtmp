@@ -1,7 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import { slowDown } from 'express-slow-down';
-
+import { NextFunction, Request, Response } from 'express';
 import { handleError } from '@/utils/errors';
 
 export const rateLimitMiddleware = () => {

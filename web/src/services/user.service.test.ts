@@ -1,16 +1,13 @@
-import { expect } from 'chai';
 import { describe } from 'mocha';
-
-import assert from 'assert';
-
-import { IUser } from '@/models/user.model';
+import UserService from './user.service';
+import { expect } from 'chai';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { UserRepository } from '@/repositories/user.repository';
-import { useMongoDB } from '@/testutils/mongo-db.testutil';
-import { getNewMongoId } from '@/testutils/mongo-id.testutil';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import assert from 'assert';
 import { UserRole } from '@vtmp/common/constants';
-
-import { UserService } from './user.service';
+import { IUser } from '@/models/user.model';
 
 describe('User Service', () => {
   useMongoDB();
@@ -56,7 +53,7 @@ describe('User Service', () => {
         mockMultipleUsers.map((mockUser) => UserRepository.createUser(mockUser))
       );
 
-      const users: IUser[] = await UserService.getAllUsers();
+      const users = await UserService.getAllUsers();
       expect(users)
         .to.be.an('array')
         .that.have.lengthOf(mockMultipleUsers.length);

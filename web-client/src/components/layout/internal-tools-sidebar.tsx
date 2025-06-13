@@ -1,13 +1,11 @@
+import { useMemo } from 'react';
 import {
   ShieldUser,
   ExternalLink,
   LayoutDashboard,
   BriefcaseBusiness,
 } from 'lucide-react';
-import React, { useMemo } from 'react';
 
-import { Avatar } from '@/components/base/avatar';
-import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
 import {
   Sidebar,
   SidebarContent,
@@ -19,11 +17,18 @@ import {
   SidebarTrigger,
 } from '@/components/base/sidebar';
 import { VTMPLogo } from '@/components/base/vtmp-logo';
+import { Avatar } from '@/components/base/avatar';
+import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
 import { UserRole } from '@vtmp/common/constants';
+import { Link, Navigate } from 'react-router-dom';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export const InternalToolsSidebar = () => {
-  const rawUser = localStorage.getItem('user');
-  const user = rawUser ? JSON.parse(rawUser) : null;
+  const user = useCurrentUser();
+  if (!user) {
+    return <Navigate to="/login?redirected=true" />;
+  }
+
   const items = [
     {
       title: 'Users',
@@ -32,10 +37,10 @@ export const InternalToolsSidebar = () => {
       roles: [UserRole.ADMIN],
     },
     {
-      title: 'Links',
-      url: '/link-sharing',
-      icon: ExternalLink,
-      roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+      title: 'Pending Links',
+      url: '/admin/links',
+      icon: BriefcaseBusiness,
+      roles: [UserRole.ADMIN],
     },
     {
       title: 'Jobs',
@@ -47,15 +52,23 @@ export const InternalToolsSidebar = () => {
       title: 'Applications',
       url: '/application-tracker',
       icon: BriefcaseBusiness,
+      roles: [UserRole.MODERATOR, UserRole.USER],
+    },
+    {
+      title: 'Share Link',
+      url: '/link-sharing',
+      icon: ExternalLink,
       roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
     },
   ];
 
   const visibleItems = useMemo(
     () =>
-      items.filter((item) =>
-        item.roles.some((role) => user.role.includes(role))
-      ),
+      user
+        ? items.filter((item) =>
+            item.roles.some((role) => user.role.includes(role))
+          )
+        : [],
     [user, items]
   );
 
@@ -67,20 +80,24 @@ export const InternalToolsSidebar = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/application-tracker" className="w-full">
+                  <Link
+                    to="/application-tracker"
+                    className="w-full"
+                    aria-label="Home"
+                  >
                     <VTMPLogo />
                     <JobTrackrLogo />
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
               {visibleItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url} aria-label={item.title}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

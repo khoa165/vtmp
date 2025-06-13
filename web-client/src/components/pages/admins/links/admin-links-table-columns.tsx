@@ -1,14 +1,11 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
-
 import { Button } from '@/components/base/button';
-import { HeaderSorting } from '@/components/base/header';
-import { StatusDot } from '@/components/base/status-dot';
+import { ILinkResponse } from '@/components/pages/admins/links/validation';
+import { format } from 'date-fns';
 import { ReviewPopupButton } from '@/components/pages/admins/links/review-popup-button';
-import {
-  ILinkResponse,
-  JobPostingData,
-} from '@/components/pages/admins/links/validation';
+import { StatusDot } from '@/components/base/status-dot';
+import { JobPostingData } from './validation';
+import { HeaderSorting } from '@/components/base/header';
 import { StatusToColorMapping } from '@/utils/constants';
 
 interface AdminLinksTableColumnsProps {
@@ -57,6 +54,7 @@ export const adminLinksTableColumns = ({
     ),
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('datePosted');
+      if (!isoDate) return <div>-</div>;
       const date = new Date(isoDate);
       return <div>{format(date, 'MMM d, yyyy')}</div>;
     },

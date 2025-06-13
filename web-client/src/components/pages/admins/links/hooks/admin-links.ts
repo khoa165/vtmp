@@ -1,15 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import { request } from '@/utils/api';
+import { Method, QueryKey } from '@/utils/constants';
 import { toast } from 'sonner';
-
 import {
   LinksResponseSchema,
   JobPostingResponseSchema,
   JobPostingData,
   LinksCountByStatusSchema,
 } from '@/components/pages/admins/links/validation';
-import { request } from '@/utils/api';
-import { Method, QueryKey } from '@/utils/constants';
+import axios from 'axios';
 import { LinkStatus, API_ENDPOINTS } from '@vtmp/common/constants';
 
 const handleLinkMutationError = (error: unknown) => {

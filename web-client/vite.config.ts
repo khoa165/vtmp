@@ -1,9 +1,8 @@
-import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react-swc';
-import svgr from 'vite-plugin-svgr';
-import { defineConfig } from 'vitest/config';
-
 import path from 'path';
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react-swc';
+import tailwindcss from '@tailwindcss/vite';
+import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig({

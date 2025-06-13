@@ -1,34 +1,33 @@
-import { expect } from 'chai';
-import { differenceInSeconds } from 'date-fns';
-import { times, zip } from 'remeda';
 import request from 'supertest';
-
-import assert from 'assert';
-
+import { expect } from 'chai';
+import { times, zip } from 'remeda';
 import app from '@/app';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
-import { IApplication } from '@/models/application.model';
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { InterviewRepository } from '@/repositories/interview.repository';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { ApplicationRepository } from '@/repositories/application.repository';
+import {
+  expectErrorsArray,
+  expectSuccessfulResponse,
+} from '@/testutils/response-assertion.testutil';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import { IApplication } from '@/models/application.model';
+import { InterviewRepository } from '@/repositories/interview.repository';
+import {
+  ApplicationStatus,
+  InterviewStatus,
+  InterviewType,
+  JobPostingRegion,
+} from '@vtmp/common/constants';
+import { differenceInSeconds } from 'date-fns';
+import assert from 'assert';
 import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
   runUserLogin,
 } from '@/testutils/auth.testutils';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import { useMongoDB } from '@/testutils/mongo-db.testutil';
-import { getNewMongoId, getNewObjectId } from '@/testutils/mongo-id.testutil';
-import {
-  expectErrorsArray,
-  expectSuccessfulResponse,
-} from '@/testutils/response-assertion.testutil';
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import {
-  ApplicationStatus,
-  InterviewStatus,
-  InterviewType,
-} from '@vtmp/common/constants';
 
 describe('ApplicationController', () => {
   useMongoDB();
@@ -40,6 +39,7 @@ describe('ApplicationController', () => {
     jobTitle: 'SWE',
     companyName: 'Apple',
     submittedBy: getNewObjectId(),
+    location: JobPostingRegion.CANADA,
   };
 
   beforeEach(async () => {
@@ -157,6 +157,8 @@ describe('ApplicationController', () => {
       expectSuccessfulResponse({ res, statusCode: 201 });
       expect(res.body.data).to.have.property('jobPostingId', jobPosting.id);
       expect(res.body.data).to.have.property('userId', mockUserId);
+      expect(res.body.data).to.have.property('location', jobPosting.location);
+      expect(res.body.data).to.have.property('jobTitle', jobPosting.jobTitle);
     });
   });
 

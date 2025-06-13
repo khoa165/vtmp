@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
+import { z } from 'zod';
 
 const ApplicationSchema = z.object({
   _id: z.string(),

@@ -1,9 +1,7 @@
 import { expect } from 'chai';
-
-import assert from 'assert';
-
 import { LinkNormalizerService } from '@/services/link/link-normalizer.service';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import assert from 'assert';
 
 describe('LinkNormalizerService', () => {
   describe('removeFormatting', () => {

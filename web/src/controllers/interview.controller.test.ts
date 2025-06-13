@@ -1,35 +1,34 @@
-import bcrypt from 'bcryptjs';
-import { assert, expect } from 'chai';
-import { omit } from 'remeda';
 import request from 'supertest';
+import { assert, expect } from 'chai';
+import bcrypt from 'bcryptjs';
 
 import app from '@/app';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
-import { IApplication } from '@/models/application.model';
-import { IInterview } from '@/models/interview.model';
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { InterviewRepository } from '@/repositories/interview.repository';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { UserRepository } from '@/repositories/user.repository';
 import { AuthService } from '@/services/auth.service';
-import {
-  HTTPMethod,
-  runDefaultAuthMiddlewareTests,
-} from '@/testutils/auth.testutils';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import { useMongoDB } from '@/testutils/mongo-db.testutil';
-import { getNewMongoId } from '@/testutils/mongo-id.testutil';
-import {
-  expectErrorsArray,
-  expectSuccessfulResponse,
-} from '@/testutils/response-assertion.testutil';
-import { useSandbox } from '@/testutils/sandbox.testutil';
+import { InterviewRepository } from '@/repositories/interview.repository';
 import {
   InterviewStatus,
   InterviewType,
   UserRole,
 } from '@vtmp/common/constants';
-
+import {
+  expectErrorsArray,
+  expectSuccessfulResponse,
+} from '@/testutils/response-assertion.testutil';
+import { IInterview } from '@/models/interview.model';
+import { IApplication } from '@/models/application.model';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { ApplicationRepository } from '@/repositories/application.repository';
+import { omit } from 'remeda';
+import {
+  HTTPMethod,
+  runDefaultAuthMiddlewareTests,
+} from '@/testutils/auth.testutils';
 describe('InterviewController', () => {
   useMongoDB();
   const sandbox = useSandbox();

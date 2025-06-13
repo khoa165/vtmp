@@ -1,13 +1,13 @@
-import escapeStringRegexp from 'escape-string-regexp';
-import { ClientSession } from 'mongoose';
-
 import {
   JobPostingModel,
   IJobPosting,
   JobFilter,
 } from '@/models/job-posting.model';
-import { toMongoId } from '@/testutils/mongo-id.testutil';
+import { toMongoId } from '@/testutils/mongoID.testutil';
 import { JobPostingRegion } from '@vtmp/common/constants';
+import escapeStringRegexp from 'escape-string-regexp';
+
+import { ClientSession } from 'mongoose';
 
 export const JobPostingRepository = {
   createJobPosting: async ({

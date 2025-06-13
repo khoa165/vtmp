@@ -1,5 +1,4 @@
 import { z } from 'zod';
-
 import { parseEnvConfig } from '@vtmp/common/utils';
 
 const clientConfigSchema = z.object({

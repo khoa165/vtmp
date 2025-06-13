@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-
 import { JobPostingRegion, JobFunction, JobType } from '@vtmp/common/constants';
 
 export interface IJobPosting extends Document {

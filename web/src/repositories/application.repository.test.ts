@@ -1,37 +1,91 @@
 import { expect } from 'chai';
+import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
 import { times, zip } from 'remeda';
 
-import assert from 'assert';
-
 import { ApplicationRepository } from '@/repositories/application.repository';
-import { useMongoDB } from '@/testutils/mongo-db.testutil';
-import { getNewMongoId, toMongoId } from '@/testutils/mongo-id.testutil';
-import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import {
+  ApplicationStatus,
+  InterestLevel,
+  JobPostingRegion,
+} from '@vtmp/common/constants';
+import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { IJobPosting } from '@/models/job-posting.model';
 
 describe('ApplicationRepository', () => {
   useMongoDB();
 
-  const userId_A = getNewMongoId();
-  const userId_B = getNewMongoId();
+  interface MockApplication {
+    jobPostingId: string;
+    userId: string;
+  }
 
-  const mockApplication_A0 = {
-    jobPostingId: getNewMongoId(),
-    userId: userId_A,
-  };
-  const mockApplication_A1 = {
-    jobPostingId: getNewMongoId(),
-    userId: userId_A,
-  };
-  const mockApplication_B = {
-    jobPostingId: getNewMongoId(),
-    userId: userId_B,
-  };
+  let userId_A: string;
+  let userId_B: string;
+
+  let jobPosting_0: IJobPosting;
+
+  let mockApplication_A0: MockApplication;
+  let mockApplication_A1: MockApplication;
+  let mockApplication_B0: MockApplication;
+
+  beforeEach(async () => {
+    userId_A = getNewMongoId();
+    userId_B = getNewMongoId();
+
+    const mockJobPostingData = [
+      {
+        linkId: getNewMongoId(),
+        url: 'http://meta.com/job-posting',
+        jobTitle: 'Software Engineer',
+        companyName: 'Meta',
+        location: JobPostingRegion.CANADA,
+        submittedBy: getNewMongoId(),
+      },
+      {
+        linkId: getNewMongoId(),
+        url: 'http://google.com/job-posting',
+        jobTitle: 'Software Engineer',
+        companyName: 'Google',
+        location: JobPostingRegion.US,
+        submittedBy: getNewMongoId(),
+      },
+    ];
+
+    const [mockJobPosting_0, mockJobPosting_1] = await Promise.all(
+      mockJobPostingData.map((data) =>
+        JobPostingRepository.createJobPosting({
+          jobPostingData: data,
+        })
+      )
+    );
+    assert(
+      mockJobPosting_0 && mockJobPosting_1,
+      'Failed to create job postings'
+    );
+
+    jobPosting_0 = mockJobPosting_0;
+
+    mockApplication_A0 = {
+      jobPostingId: mockJobPosting_0.id,
+      userId: userId_A,
+    };
+    mockApplication_A1 = {
+      jobPostingId: mockJobPosting_1.id,
+      userId: userId_A,
+    };
+    mockApplication_B0 = {
+      jobPostingId: mockJobPosting_0.id,
+      userId: userId_B,
+    };
+  });
 
   describe('createApplication', () => {
     it('should create a new application successfully', async () => {
       const newApplication =
-        await ApplicationRepository.createApplication(mockApplication_B);
+        await ApplicationRepository.createApplication(mockApplication_B0);
       const timeDiff = differenceInSeconds(
         new Date(),
         newApplication.appliedOnDate
@@ -39,33 +93,35 @@ describe('ApplicationRepository', () => {
 
       assert(newApplication);
       expect(newApplication.jobPostingId.toString()).to.equal(
-        mockApplication_B.jobPostingId
+        mockApplication_B0.jobPostingId
       );
       expect(newApplication.userId.toString()).to.equal(
-        mockApplication_B.userId
+        mockApplication_B0.userId
       );
       expect(newApplication.hasApplied).to.equal(true);
       expect(newApplication.status).to.equal(ApplicationStatus.SUBMITTED);
+      expect(newApplication.location).to.equal(jobPosting_0.location);
+      expect(newApplication.location).to.equal(jobPosting_0.location);
       expect(timeDiff).to.lessThan(3);
     });
   });
 
   describe('getApplicationIfExists', () => {
     it('should return an application if an application with certain jobPostingId and userId already exists', async () => {
-      await ApplicationRepository.createApplication(mockApplication_B);
+      await ApplicationRepository.createApplication(mockApplication_B0);
       const application =
-        await ApplicationRepository.getApplicationIfExists(mockApplication_B);
+        await ApplicationRepository.getApplicationIfExists(mockApplication_B0);
 
       assert(application);
       expect(application).to.deep.include({
-        jobPostingId: toMongoId(mockApplication_B.jobPostingId),
-        userId: toMongoId(mockApplication_B.userId),
+        jobPostingId: toMongoId(mockApplication_B0.jobPostingId),
+        userId: toMongoId(mockApplication_B0.userId),
       });
     });
 
     it('should return null if an application with certain jobPostingId and userId does not exist', async () => {
       const application =
-        await ApplicationRepository.getApplicationIfExists(mockApplication_B);
+        await ApplicationRepository.getApplicationIfExists(mockApplication_B0);
 
       assert(!application);
     });
@@ -75,7 +131,7 @@ describe('ApplicationRepository', () => {
     it('should return only applications associated with given userId', async () => {
       await ApplicationRepository.createApplication(mockApplication_A0);
       await ApplicationRepository.createApplication(mockApplication_A1);
-      await ApplicationRepository.createApplication(mockApplication_B);
+      await ApplicationRepository.createApplication(mockApplication_B0);
       const applications = await ApplicationRepository.getApplications({
         userId: userId_A,
       });
@@ -114,7 +170,7 @@ describe('ApplicationRepository', () => {
     });
 
     it('should return an empty array if no applications found for userId', async () => {
-      await ApplicationRepository.createApplication(mockApplication_B);
+      await ApplicationRepository.createApplication(mockApplication_B0);
       const applications = await ApplicationRepository.getApplications({
         userId: userId_A,
       });
@@ -127,7 +183,7 @@ describe('ApplicationRepository', () => {
   describe('getApplicationById', () => {
     it('should return null if the application does not belong to the authorized user', async () => {
       const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
+        await ApplicationRepository.createApplication(mockApplication_B0)
       ).id;
       const application = await ApplicationRepository.getApplicationById({
         applicationId: mockApplicationId_B,
@@ -139,7 +195,7 @@ describe('ApplicationRepository', () => {
 
     it('should return null if trying to get soft-deleted application', async () => {
       const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
+        await ApplicationRepository.createApplication(mockApplication_B0)
       ).id;
       await ApplicationRepository.deleteApplicationById({
         userId: userId_B,
@@ -155,7 +211,7 @@ describe('ApplicationRepository', () => {
 
     it('should return an application if there exists an application for authorized user', async () => {
       await ApplicationRepository.createApplication(mockApplication_A0);
-      await ApplicationRepository.createApplication(mockApplication_B);
+      await ApplicationRepository.createApplication(mockApplication_B0);
       const mockApplicationId_A1 = (
         await ApplicationRepository.createApplication(mockApplication_A1)
       ).id;
@@ -176,7 +232,7 @@ describe('ApplicationRepository', () => {
     let mockApplicationId_B: string;
     beforeEach(async () => {
       mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
+        await ApplicationRepository.createApplication(mockApplication_B0)
       ).id;
     });
 
@@ -326,7 +382,7 @@ describe('ApplicationRepository', () => {
 
     it('should return null if trying to delete an already soft-deleted application', async () => {
       const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
+        await ApplicationRepository.createApplication(mockApplication_B0)
       ).id;
       await ApplicationRepository.deleteApplicationById({
         userId: userId_B,
@@ -343,7 +399,7 @@ describe('ApplicationRepository', () => {
 
     it('should soft delete application and return deleted application object with deletedAt field set', async () => {
       const mockApplicationId_B = (
-        await ApplicationRepository.createApplication(mockApplication_B)
+        await ApplicationRepository.createApplication(mockApplication_B0)
       ).id;
       const deletedApplication =
         await ApplicationRepository.deleteApplicationById({

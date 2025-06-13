@@ -1,8 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
 import React, { useState } from 'react';
-import { toast } from 'sonner';
-
 import { Button } from '@/components/base/button';
 import {
   Card,
@@ -14,9 +10,12 @@ import {
 } from '@/components/base/card';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-import { SubmitLinkResponseSchema } from '@/components/pages/application-tracker/links/validation';
-import { request } from '@/utils/api';
+import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { Method } from '@/utils/constants';
+import { request } from '@/utils/api';
+import { SubmitLinkResponseSchema } from '@/components/pages/application-tracker/links/validation';
 
 export const SubmitLink = () => {
   const [linkInput, setLinkInput] = useState('');

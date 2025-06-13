@@ -1,9 +1,8 @@
 import { Router } from 'express';
-
 import { InvitationController } from '@/controllers/invitation.controller';
+import { wrappedHandlers } from '@/middlewares/utils';
 import { authenticate } from '@/middlewares/auth.middleware';
 import { hasPermission } from '@/middlewares/authorization.middleware';
-import { wrappedHandlers } from '@/middlewares/utils';
 import { Permission } from '@vtmp/common/constants';
 
 export const InvitationRoutes = Router();

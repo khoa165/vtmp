@@ -1,13 +1,11 @@
+import { LinkStatus } from '@vtmp/common/constants';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
-
-import assert from 'assert';
-
-import { ILink } from '@/models/link.model';
 import { LinkRepository } from '@/repositories/link.repository';
-import { useMongoDB } from '@/testutils/mongo-db.testutil';
-import { getNewMongoId, getNewObjectId } from '@/testutils/mongo-id.testutil';
-import { LinkStatus } from '@vtmp/common/constants';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import assert from 'assert';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import { ILink } from '@/models/link.model';
 
 describe('LinkRepository', () => {
   useMongoDB();

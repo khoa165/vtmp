@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom';
-
 import { Toaster } from '@/components/base/sonner';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 

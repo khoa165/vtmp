@@ -1,17 +1,16 @@
-import { expect } from 'chai';
-import { differenceInSeconds } from 'date-fns';
-
 import assert from 'assert';
+import { expect } from 'chai';
 
-import { IApplication } from '@/models/application.model';
-import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { InterviewService } from '@/services/interview.service';
-import { useMongoDB } from '@/testutils/mongo-db.testutil';
-import { getNewMongoId, toMongoId } from '@/testutils/mongo-id.testutil';
-import { ResourceNotFoundError } from '@/utils/errors';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import { ResourceNotFoundError } from '@/utils/errors';
+import { differenceInSeconds } from 'date-fns';
+import { ApplicationRepository } from '@/repositories/application.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { IApplication } from '@/models/application.model';
 
 describe('InterviewService', () => {
   useMongoDB();

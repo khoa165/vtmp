@@ -1,7 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-
-import { ApplicationModel } from '@/models/application.model';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import { ApplicationModel } from '@/models/application.model';
 
 export interface IInterview extends Document {
   _id: Types.ObjectId;

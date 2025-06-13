@@ -1,8 +1,7 @@
-import axios from 'axios';
-import { toast } from 'sonner';
-
 import { EnvConfig } from '@/config/env';
 import { Method } from '@/utils/constants';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 const api = axios.create({
   baseURL: `${EnvConfig.get().VITE_API_URL}/api`,

@@ -1,13 +1,12 @@
 import { expect } from 'chai';
-import { differenceInSeconds } from 'date-fns';
-
 import assert from 'assert';
-
-import { IJobPosting } from '@/models/job-posting.model';
-import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { useMongoDB } from '@/testutils/mongo-db.testutil';
-import { getNewObjectId, getNewMongoId } from '@/testutils/mongo-id.testutil';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewObjectId } from '@/testutils/mongoID.testutil';
+import { differenceInSeconds } from 'date-fns';
+import { ApplicationRepository } from '@/repositories/application.repository';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { IJobPosting } from '@/models/job-posting.model';
 import { JobPostingRegion, JobFunction, JobType } from '@vtmp/common/constants';
 
 describe('JobPostingRepository', () => {

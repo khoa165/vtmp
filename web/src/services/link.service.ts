@@ -1,9 +1,8 @@
-import mongoose, { ClientSession } from 'mongoose';
-
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { LinkRepository } from '@/repositories/link.repository';
-import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import { LinkStatus } from '@vtmp/common/constants';
+import { LinkRepository } from '@/repositories/link.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
+import mongoose, { ClientSession } from 'mongoose';
 
 export const LinkService = {
   submitLink: async (url: string) => {

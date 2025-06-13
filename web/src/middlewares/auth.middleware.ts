@@ -1,9 +1,8 @@
+import { JWTUtils } from '@/utils/jwt';
+import { UnauthorizedError } from '@/utils/errors';
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
-
-import { UserService } from '@/services/user.service';
-import { UnauthorizedError } from '@/utils/errors';
-import { JWTUtils } from '@/utils/jwt';
+import UserService from '@/services/user.service';
 
 export const DecodedJWTSchema = z.object({
   id: z.string({ required_error: 'Id is required' }),

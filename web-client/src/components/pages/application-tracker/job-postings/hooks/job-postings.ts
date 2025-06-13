@@ -1,12 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import { sub } from 'date-fns';
-import { toast } from 'sonner';
-
-import { ApplicationResponseSchema } from '@/components/pages/application-tracker/applications/validation';
-import { JobPostingsResponseSchema } from '@/components/pages/application-tracker/job-postings/validations';
 import { request } from '@/utils/api';
 import { Method, QueryKey } from '@/utils/constants';
+import { JobPostingsResponseSchema } from '@/components/pages/application-tracker/job-postings/validations';
+import { ApplicationResponseSchema } from '@/components/pages/application-tracker/applications/validation';
+import { toast } from 'sonner';
+import axios from 'axios';
+import { sub } from 'date-fns';
 
 export const useGetJobPostings = () => {
   return useQuery({

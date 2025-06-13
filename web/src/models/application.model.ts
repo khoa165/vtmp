@@ -1,12 +1,17 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-
+import {
+  ApplicationStatus,
+  InterestLevel,
+  JobPostingRegion,
+} from '@vtmp/common/constants';
 import { JobPostingModel } from '@/models/job-posting.model';
-import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 
 export interface IApplication extends Document {
   _id: Types.ObjectId;
   jobPostingId: Types.ObjectId;
   companyName?: string;
+  jobTitle?: string;
+  location?: JobPostingRegion;
   userId: Types.ObjectId;
   hasApplied: boolean;
   status: ApplicationStatus;
@@ -26,6 +31,14 @@ const ApplicationSchema = new mongoose.Schema<IApplication>({
   },
   companyName: {
     type: String,
+  },
+  jobTitle: {
+    type: String,
+  },
+  location: {
+    type: String,
+    enum: Object.values(JobPostingRegion),
+    default: JobPostingRegion.US,
   },
   userId: {
     type: Schema.Types.ObjectId,
@@ -69,6 +82,8 @@ ApplicationSchema.pre('save', async function () {
   const jobPosting = await JobPostingModel.findById(this.jobPostingId);
   if (jobPosting) {
     this.companyName = jobPosting.companyName;
+    this.jobTitle = jobPosting.jobTitle;
+    this.location = jobPosting.location;
   }
 });
 

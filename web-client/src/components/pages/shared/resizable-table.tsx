@@ -1,10 +1,3 @@
-import {
-  ColumnDef,
-  flexRender,
-  Header,
-  Table as TanstackTable,
-} from '@tanstack/react-table';
-
 import { Button } from '@/components/base/button';
 import {
   Table,
@@ -14,6 +7,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/base/table';
+import {
+  ColumnDef,
+  flexRender,
+  Header,
+  Table as TanstackTable,
+} from '@tanstack/react-table';
 
 const ColumnResizer = <TData, TValue>({
   header,

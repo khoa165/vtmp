@@ -1,9 +1,8 @@
 import { Router } from 'express';
-
 import { ApplicationController } from '@/controllers/application.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
-import { hasPermission } from '@/middlewares/authorization.middleware';
 import { wrappedHandlers } from '@/middlewares/utils';
+import { hasPermission } from '@/middlewares/authorization.middleware';
 import { Permission } from '@vtmp/common/constants';
 
 export const ApplicationRoutes = Router();

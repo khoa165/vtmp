@@ -1,7 +1,6 @@
-import { ClientSession, UpdateResult } from 'mongoose';
-
 import { InterviewModel, IInterview } from '@/models/interview.model';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import { ClientSession, UpdateResult } from 'mongoose';
 
 export const InterviewRepository = {
   createInterview: async ({

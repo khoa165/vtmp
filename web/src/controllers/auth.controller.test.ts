@@ -1,23 +1,21 @@
-import bcrypt from 'bcryptjs';
-import { expect } from 'chai';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { beforeEach, describe } from 'mocha';
-import request from 'supertest';
-
-import assert from 'assert';
-
-import app from '@/app';
-import { EnvConfig } from '@/config/env';
-import { JWT_TOKEN_TYPE } from '@/constants/enums';
+import bcrypt from 'bcryptjs';
 import { UserRepository } from '@/repositories/user.repository';
+import app from '@/app';
+import request from 'supertest';
+import { expect } from 'chai';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import { useMongoDB } from '@/testutils/mongo-db.testutil';
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import { JWTUtils } from '@/utils/jwt';
 import { UserRole } from '@vtmp/common/constants';
+import { JWTUtils } from '@/utils/jwt';
+import assert from 'assert';
+import { JWT_TOKEN_TYPE } from '@/constants/enums';
 
 describe('AuthController', () => {
   useMongoDB();

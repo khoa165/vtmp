@@ -1,7 +1,6 @@
-import { faker } from '@faker-js/faker';
-
 import { IJobPosting, JobPostingModel } from '@/models/job-posting.model';
 import { ILink } from '@/models/link.model';
+import { faker } from '@faker-js/faker';
 import {
   CompanyName,
   JobPostingRegion,

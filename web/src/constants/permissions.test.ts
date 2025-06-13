@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-
 import { roleToPermissionMapping } from '@/constants/permissions';
 import { Permission, UserRole } from '@vtmp/common/constants';
 

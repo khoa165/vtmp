@@ -1,7 +1,6 @@
-import { useMemo } from 'react';
-
-import { offerCompanies } from '@/data/companies';
 import { mentorshipPeople } from '@/data/people';
+import { offerCompanies } from '@/data/companies';
+import { useMemo } from 'react';
 import { CompanyMetadataWithOffers } from '@/types';
 
 export const useOffersData = () => {

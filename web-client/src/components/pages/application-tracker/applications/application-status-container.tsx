@@ -1,11 +1,10 @@
-import { useState } from 'react';
-
-import { Skeleton } from '@/components/base/skeleton';
-import { ApplicationStatusCard } from '@/components/pages/application-tracker/applications/application-status-card';
-import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
 import { useGetApplicationsCountByStatus } from '@/components/pages/application-tracker/applications/hooks/applications';
-import { CustomError } from '@/utils/errors';
 import { ApplicationStatus } from '@vtmp/common/constants';
+import { useState } from 'react';
+import { ApplicationStatusCard } from '@/components/pages/application-tracker/applications/application-status-card';
+import { Skeleton } from '@/components/base/skeleton';
+import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
+import { CustomError } from '@/utils/errors';
 
 export const ApplicationStatusContainer = ({
   setApplicationFilter,

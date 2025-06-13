@@ -1,15 +1,14 @@
 import * as chai from 'chai';
-import jwt from 'jsonwebtoken';
-import request from 'supertest';
-
 import app from '@/app';
+import request from 'supertest';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { EnvConfig } from '@/config/env';
-import { DecodedJWTSchema } from '@/middlewares/auth.middleware';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import { useMongoDB } from '@/testutils/mongo-db.testutil';
-import { getNewMongoId } from '@/testutils/mongo-id.testutil';
+import jwt from 'jsonwebtoken';
 import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
+import { DecodedJWTSchema } from '@/middlewares/auth.middleware';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 const { expect } = chai;
 describe('AuthMiddleware', () => {

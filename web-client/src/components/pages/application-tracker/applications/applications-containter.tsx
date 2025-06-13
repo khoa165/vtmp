@@ -1,15 +1,14 @@
-import { SortingState } from '@tanstack/react-table';
-import { useMemo, useState } from 'react';
-
-import { Skeleton } from '@/components/base/skeleton';
-import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
-import { ApplicationsTable } from '@/components/pages/application-tracker/applications/applications-table';
 import { applicationsTableColumns } from '@/components/pages/application-tracker/applications/applications-table-columns';
+import { ApplicationsTable } from '@/components/pages/application-tracker/applications/applications-table';
 import {
   useGetApplications,
   useDeleteApplication,
   useUpdateApplicationStatus,
 } from '@/components/pages/application-tracker/applications/hooks/applications';
+import { useMemo, useState } from 'react';
+import { SortingState } from '@tanstack/react-table';
+import { Skeleton } from '@/components/base/skeleton';
+import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
 import { CustomError } from '@/utils/errors';
 
 export const ApplicationsContainer = ({

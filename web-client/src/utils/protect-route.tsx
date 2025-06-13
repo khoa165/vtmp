@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
-import { z } from 'zod';
-
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { UserRole } from '@vtmp/common/constants';
+import { z } from 'zod';
 
 const UserSchema = z.object({
   firstName: z.string(),

@@ -1,11 +1,11 @@
 import { MentorshipPerson } from '@/types';
-import { PeopleName, ProjectName } from '@/utils/constants';
 import {
   CompanyName,
   MentorshipRole,
   OfferChannel,
   OfferType,
 } from '@vtmp/common/constants';
+import { PeopleName, ProjectName } from '@/utils/constants';
 
 export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.KHOA_LE]: {

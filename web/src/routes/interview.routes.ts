@@ -1,9 +1,8 @@
-import { Router } from 'express';
-
 import { InterviewController } from '@/controllers/interview.controller';
+import { wrappedHandlers } from '@/middlewares/utils';
+import { Router } from 'express';
 import { authenticate } from '@/middlewares/auth.middleware';
 import { hasPermission } from '@/middlewares/authorization.middleware';
-import { wrappedHandlers } from '@/middlewares/utils';
 import { Permission } from '@vtmp/common/constants';
 
 export const InterviewRoutes = Router();

@@ -1,14 +1,13 @@
 import { expect } from 'chai';
+
+import { UserRepository } from '@/repositories/user.repository';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import assert from 'assert';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { IUser } from '@/models/user.model';
+import { UserRole } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import { omit } from 'remeda';
-
-import assert from 'assert';
-
-import { IUser } from '@/models/user.model';
-import { UserRepository } from '@/repositories/user.repository';
-import { useMongoDB } from '@/testutils/mongo-db.testutil';
-import { getNewMongoId } from '@/testutils/mongo-id.testutil';
-import { UserRole } from '@vtmp/common/constants';
 
 describe('UserRepository', () => {
   useMongoDB();

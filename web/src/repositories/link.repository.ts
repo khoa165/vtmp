@@ -1,6 +1,5 @@
-import { Types, ClientSession } from 'mongoose';
-
 import { LinkModel, ILink } from '@/models/link.model';
+import { Types, ClientSession } from 'mongoose';
 import { LinkStatus } from '@vtmp/common/constants';
 
 export const LinkRepository = {

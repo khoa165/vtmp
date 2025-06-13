@@ -1,5 +1,3 @@
-import { ExternalLink } from 'lucide-react';
-
 import { Card } from '@/components/base/card';
 import { Skeleton } from '@/components/base/skeleton';
 import {
@@ -7,6 +5,7 @@ import {
   useGetJobPostingsInADay,
 } from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
+import { ExternalLink } from 'lucide-react';
 import { CustomError } from '@/utils/errors';
 
 export const JobPostingStatusCards = (): React.JSX.Element | null => {

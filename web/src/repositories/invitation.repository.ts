@@ -1,4 +1,5 @@
-import { InvitationModel, IInvitation } from '@/models/invitation.model';
+import { InvitationModel } from '@/models/invitation.model';
+import { IInvitation } from '@/models/invitation.model';
 import { InvitationStatus } from '@vtmp/common/constants';
 
 export const InvitationRepository = {

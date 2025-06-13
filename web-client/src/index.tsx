@@ -1,9 +1,8 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ReactDOM from 'react-dom/client';
 import { StatsigProvider } from 'statsig-react';
-
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import { App } from '@/components/app';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { EnvConfig } from '@/config/env';
 
 const queryClient = new QueryClient();

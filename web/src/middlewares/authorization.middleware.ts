@@ -1,9 +1,8 @@
+import { Permission } from '@vtmp/common/constants';
 import { Request, Response, NextFunction } from 'express';
-
+import { ForbiddenError } from '@/utils/errors';
 import { roleToPermissionMapping } from '@/constants/permissions';
 import { getUserFromRequest } from '@/middlewares/utils';
-import { ForbiddenError } from '@/utils/errors';
-import { Permission } from '@vtmp/common/constants';
 
 export const hasPermission = (permission: Permission) => {
   return async (

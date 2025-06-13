@@ -1,15 +1,14 @@
-import cors from 'cors';
-import dotenv from 'dotenv';
 import express, { Express, Request, Response } from 'express';
-import { xss } from 'express-xss-sanitizer';
+import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-
+import dotenv from 'dotenv';
 import { connectDB } from '@/config/database';
-import { rateLimitMiddleware } from '@/middlewares/rate-limit.middleware';
-import { sanitizeMiddileWare } from '@/middlewares/sanitize.middleware';
-import { routeErrorHandler } from '@/middlewares/utils';
 import routes from '@/routes/index';
+import { routeErrorHandler } from '@/middlewares/utils';
+import { rateLimitMiddleware } from '@/middlewares/rate-limit.middleware';
+import { xss } from 'express-xss-sanitizer';
+import { sanitizeMiddileWare } from '@/middlewares/sanitize.middleware';
 
 dotenv.config();
 

@@ -1,13 +1,12 @@
-import { SortingState } from '@tanstack/react-table';
-import { useMemo, useState } from 'react';
-
-import { Skeleton } from '@/components/base/skeleton';
+import { JobPostingsTable } from '@/components/pages/application-tracker/job-postings/job-postings-table';
+import { jobPostingsTableColumns } from '@/components/pages/application-tracker/job-postings/job-postings-table-columns';
 import {
   useCreateApplication,
   useGetJobPostings,
 } from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
-import { JobPostingsTable } from '@/components/pages/application-tracker/job-postings/job-postings-table';
-import { jobPostingsTableColumns } from '@/components/pages/application-tracker/job-postings/job-postings-table-columns';
+import { useMemo, useState } from 'react';
+import { SortingState } from '@tanstack/react-table';
+import { Skeleton } from '@/components/base/skeleton';
 
 export const JobPostingsContainer = (): React.JSX.Element | null => {
   const {

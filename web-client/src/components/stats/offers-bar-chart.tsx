@@ -1,6 +1,5 @@
 import React from 'react';
 import { BarChart, Bar, Legend, XAxis, YAxis, CartesianGrid } from 'recharts';
-
 import { offerCompanies } from '@/data/companies';
 
 interface OffersBarChartProps {

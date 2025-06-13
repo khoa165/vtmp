@@ -1,9 +1,8 @@
 import { expect } from 'chai';
-
-import { ILink } from '@/models/link.model';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { LinkRepository } from '@/repositories/link.repository';
+import { ILink } from '@/models/link.model';
 import { LinkDeduplicatorService } from '@/services/link/link-deduplicator.service';
-import { useMongoDB } from '@/testutils/mongo-db.testutil';
 import { DuplicateResourceError } from '@/utils/errors';
 
 describe('LinkDeduplicatorService', () => {

@@ -184,3 +184,6 @@ export const StatusToColorMapping: Record<
   [LinkStatus.PENDING]: 'bg-[#A2BFF0]',
   [LinkStatus.APPROVED]: 'bg-[#A3F890]',
 };
+
+export const MIN_PASSWORD_LENGTH = 8;
+export const MAX_PASSWORD_LENGTH = 20;

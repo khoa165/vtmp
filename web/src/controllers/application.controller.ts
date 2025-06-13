@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
-import mongoose from 'mongoose';
-import { z } from 'zod';
-
-import { getUserFromRequest } from '@/middlewares/utils';
-import { IApplication } from '@/models/application.model';
 import { ApplicationService } from '@/services/application.service';
+import { z } from 'zod';
+import mongoose from 'mongoose';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
+import { IApplication } from '@/models/application.model';
+import { getUserFromRequest } from '@/middlewares/utils';
 
 const JobPostingIdParamSchema = z.object({
   jobPostingId: z

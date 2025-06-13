@@ -1,10 +1,8 @@
 import { useRef } from 'react';
-
-import { mentorshipProgramValues } from '@/utils/values';
-
-import { BannerPage } from './banner-page';
 import { PrgramValues } from './program-values';
+import { mentorshipProgramValues } from '@/utils/values';
 import { VisualStack } from './visual-stack';
+import { BannerPage } from './banner-page';
 
 export const LandingContainer = () => {
   const contentRef = useRef<HTMLDivElement>(null);

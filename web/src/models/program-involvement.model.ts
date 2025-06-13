@@ -1,6 +1,5 @@
-import mongoose, { Document, Schema, Types } from 'mongoose';
-
 import { Department, ProgramRole } from '@vtmp/common/constants';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 
 interface IProgramInvolvement extends Document {
   programProfileId: Types.ObjectId;

@@ -1,15 +1,13 @@
-import { Tabs, Tab, Box } from '@mui/material';
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-
 import { mentorshipPeople } from '@/data/people';
-import { useInterviewData } from '@/hooks/useInterviewData';
-import { StatsType } from '@/utils/constants';
-
-import { InterviewsBarChart } from './interviews-bar-chart';
 import { OffersBarChart } from './offers-bar-chart';
-import { OfferLogos } from './offers-logos';
+import { useInterviewData } from '@/hooks/useInterviewData';
+import { InterviewsBarChart } from './interviews-bar-chart';
+import { Tabs, Tab, Box } from '@mui/material';
+import { StatsType } from '@/utils/constants';
+import { useNavigate } from 'react-router-dom';
 import { Timeline } from './timeline';
+import { OfferLogos } from './offers-logos';
 
 interface StatsPageProps {
   type: StatsType;
