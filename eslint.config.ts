@@ -54,6 +54,18 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'warn',
       '@typescript-eslint/no-dynamic-delete': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'all',
+          argsIgnorePattern: '^_',
+          caughtErrors: 'all',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
       'customEslintRules/wrapped-handlers-in-router': 'error',
       'stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
       'import/no-unresolved': 'error',
