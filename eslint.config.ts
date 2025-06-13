@@ -63,18 +63,18 @@ export default tseslint.config(
       'import/order': [
         'error',
         {
-          groups: ['external', 'builtin', 'internal'],
+          groups: ['external', 'builtin', 'parent', 'internal'],
           pathGroups: [
             {
               pattern: '@vtmp/common/**',
-              group: 'internal',
+              group: 'parent',
             },
             {
               pattern: '@/**',
               group: 'internal',
             },
           ],
-          pathGroupsExcludedImportTypes: ['internal'],
+          pathGroupsExcludedImportTypes: [],
           alphabetize: {
             order: 'asc',
             caseInsensitive: true,
