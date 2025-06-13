@@ -10,10 +10,10 @@ import {
 import { LinkRepository } from '@/repositories/link.repository';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import {
+  FAILED_REASON,
   JobFunction,
   JobPostingRegion,
   JobType,
-  LinkProcessStage,
   LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
@@ -219,50 +219,84 @@ describe('LinkController', () => {
       jobFunction: JobFunction.SOFTWARE_ENGINEER,
       jobType: JobType.INTERNSHIP,
       datePosted: new Date(),
+      status: LinkStatus.PENDING,
+      attemptsCount: 1,
+      lastProcessedAt: new Date(),
     };
 
     runDefaultAuthMiddlewareTests({
       route: `/api/links/${linkId}/metaData`,
       method: HTTPMethod.PUT,
       body: {
-        linkProcessStage: LinkProcessStage.SUCCESS,
+        subStatus: FAILED_REASON.SCRAPING_FAILED,
         ...mockLinkMetaData,
+        status: LinkStatus.FAILED,
       },
     });
 
-    it('should return error message for approving with not exist link', async () => {
+    it('should return error message for updating with not exist link', async () => {
       const res = await request(app)
         .put(`/api/links/${getNewMongoId()}/metadata`)
-        .send({
-          linkProcessStage: LinkProcessStage.SUCCESS,
-          ...mockLinkMetaData,
-        })
+        .send(mockLinkMetaData)
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`); // should be replaced to link processing service token
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Link not found');
     });
 
-    it('should return error message for not including linkProcessStage', async () => {
+    it('should return error message for not including subStatus when status is failed', async () => {
       const res = await request(app)
         .put(`/api/links/${googleLink.id}/metadata`)
         .send({
+          ...mockLinkMetaData,
+          status: LinkStatus.FAILED,
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`); // should be replaced to link processing service token;
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'subStatus is required when status is failed'
+      );
+    });
+
+    it('should return error message for including subStatus when status is not failed', async () => {
+      const res = await request(app)
+        .put(`/api/links/${googleLink.id}/metadata`)
+        .send({
+          subStatus: FAILED_REASON.SCRAPING_FAILED,
           ...mockLinkMetaData,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`); // should be replaced to link processing service token;
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal(
-        'Link process stage is required'
+        'subStatus is not allowed when status is not failed'
       );
     });
 
-    it('should return link with updated metadata', async () => {
+    it('should return link with updated metadata with status not failed', async () => {
       const res = await request(app)
         .put(`/api/links/${googleLink.id}/metadata`)
         .send({
-          linkProcessStage: LinkProcessStage.SUCCESS,
+          subStatus: FAILED_REASON.SCRAPING_FAILED,
+
           ...mockLinkMetaData,
+          status: LinkStatus.FAILED,
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`); // should be replaced to link processing service token
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.message).to.equal('Link metadata has been updated!');
+    });
+
+    it('should return link with updated metadata with status failed', async () => {
+      const res = await request(app)
+        .put(`/api/links/${googleLink.id}/metadata`)
+        .send({
+          subStatus: FAILED_REASON.SCRAPING_FAILED,
+
+          ...mockLinkMetaData,
+          status: LinkStatus.FAILED,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`); // should be replaced to link processing service token
@@ -300,6 +334,7 @@ describe('LinkController', () => {
       expect(res.body.data).to.deep.equal({
         [LinkStatus.PENDING]: 1,
         [LinkStatus.APPROVED]: 0,
+        [LinkStatus.FAILED]: 0,
         [LinkStatus.REJECTED]: 0,
       });
     });
@@ -326,6 +361,7 @@ describe('LinkController', () => {
       expect(res.body.data).to.deep.equal({
         [LinkStatus.PENDING]: 2,
         [LinkStatus.APPROVED]: 1,
+        [LinkStatus.FAILED]: 0,
         [LinkStatus.REJECTED]: 0,
       });
     });

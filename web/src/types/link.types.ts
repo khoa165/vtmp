@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import {
+  FAILED_REASON,
   JobFunction,
   JobPostingRegion,
   JobType,
-  LinkProcessStage,
   LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
@@ -30,6 +30,19 @@ export const LinkMetaDataSchema = z.object({
       },
       { message: 'Invalid url' }
     ),
+});
+
+export type LinkMetaDataType = z.infer<typeof LinkMetaDataSchema>;
+
+export const ExtractionLinkMetaDataSchema = LinkMetaDataSchema.extend({
+  status: z.nativeEnum(LinkStatus, {
+    message: 'Invalid link status',
+  }),
+  subStatus: z
+    .nativeEnum(FAILED_REASON, {
+      message: 'Invalid sub status',
+    })
+    .optional(),
   jobTitle: z.string().optional(),
   companyName: z.string().optional(),
   location: z
@@ -52,16 +65,22 @@ export const LinkMetaDataSchema = z.object({
     .transform((str) => new Date(str))
     .optional(),
   jobDescription: z.string().optional(),
-  linkProcessStage: z.nativeEnum(LinkProcessStage).optional(),
-});
-
-export type LinkMetaDataType = z.infer<typeof LinkMetaDataSchema>;
-
-export const ExtractionLinkMetaDataSchema = LinkMetaDataSchema.extend({
-  linkProcessStage: z.nativeEnum(LinkProcessStage, {
-    required_error: 'Link process stage is required',
-    invalid_type_error: 'Invalid link process stage',
-  }),
+  attemptsCount: z.number(),
+  lastProcessedAt: z.string().transform((str) => new Date(str)),
+}).superRefine((data, ctx) => {
+  if (data.status === 'FAILED' && !data.subStatus) {
+    ctx.addIssue({
+      path: ['subStatus'], // Which field the error is for
+      code: z.ZodIssueCode.custom, // Custom validation
+      message: 'subStatus is required when status is failed',
+    });
+  } else if (data.status !== 'FAILED' && data.subStatus) {
+    ctx.addIssue({
+      path: ['subStatus'], // Which field the error is for
+      code: z.ZodIssueCode.custom, // Custom validation
+      message: 'subStatus is not allowed when status is not failed',
+    });
+  }
 });
 
 export type ExtractionLinkMetaDataType = z.infer<

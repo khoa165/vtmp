@@ -1,11 +1,10 @@
-import { LinkProcessStage, LinkRegion } from '@vtmp/common/constants';
+import { LinkRegion } from '@vtmp/common/constants';
 import { LinkMetaDataType } from '@/types/link.types';
 
 export const ExtractLinkMetadataService = {
   async extractMetadata(url: string): Promise<LinkMetaDataType> {
     return Promise.resolve({
       url: url,
-      linkProcessStage: LinkProcessStage.NOT_PROCESSED,
       jobTitle: 'Software Engineer',
       companyName: 'Tech Company',
       location: LinkRegion.US,

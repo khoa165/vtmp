@@ -1,10 +1,6 @@
 import { ILink, LinkModel } from '@/models/link.model';
 import { faker } from '@faker-js/faker';
-import {
-  CompanyName,
-  LinkProcessStage,
-  LinkRegion,
-} from '@vtmp/common/constants';
+import { CompanyName, LinkRegion } from '@vtmp/common/constants';
 import { LinkStatus } from '@vtmp/common/constants';
 import { formatEnumName } from '@vtmp/common/utils';
 import { JobTitle } from '@vtmp/common/constants';
@@ -17,7 +13,6 @@ export const loadLinks = async (count: number): Promise<ILink[]> => {
     jobDescription: faker.lorem.paragraph(),
     location: faker.helpers.enumValue(LinkRegion),
     status: faker.helpers.enumValue(LinkStatus),
-    linkProcessStage: faker.helpers.enumValue(LinkProcessStage),
   }));
   const links = await LinkModel.insertMany(newLinks);
   console.log(`Successfully seeded ${links.length} links.`);
