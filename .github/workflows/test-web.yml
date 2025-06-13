@@ -1,5 +1,5 @@
 # Define a Github Actions reusable workflow
-name: Test we
+name: Test web
 
 on:
   workflow_call:
