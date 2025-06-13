@@ -1,4 +1,10 @@
-import { LinkStatus } from '@vtmp/common/constants';
+import {
+  JobFunction,
+  JobType,
+  LinkRegion,
+  LinkStatus,
+  LinkProcessStage,
+} from '@vtmp/common/constants';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
 import { LinkRepository } from '@/repositories/link.repository';
@@ -39,7 +45,7 @@ describe('LinkRepository', () => {
     });
   });
 
-  describe('updateStatus', () => {
+  describe('updateLinkStatus', () => {
     it('should throw error when link does not exist', async () => {
       const link = await LinkRepository.updateLinkStatus({
         id: getNewMongoId(),
@@ -56,6 +62,35 @@ describe('LinkRepository', () => {
 
       assert(link);
       expect(link.status).to.equal(LinkStatus.APPROVED);
+    });
+  });
+
+  describe('updateLinkMetaData', () => {
+    const mockLinkMetaData = {
+      url: 'google.com',
+      linkProcessStage: LinkProcessStage.NOT_PROCESSED,
+      location: LinkRegion.US,
+      jobFunction: JobFunction.SOFTWARE_ENGINEER,
+      jobType: JobType.INTERNSHIP,
+      datePosted: new Date(),
+    };
+
+    it('should throw error when link does not exist', async () => {
+      const link = await LinkRepository.updateLinkMetaData(
+        getNewMongoId(),
+        mockLinkMetaData
+      );
+      assert(!link);
+    });
+
+    it('should be able to update link status', async () => {
+      const link = await LinkRepository.updateLinkMetaData(
+        googleLink.id,
+        mockLinkMetaData
+      );
+
+      assert(link);
+      expect(link).to.deep.include(mockLinkMetaData);
     });
   });
 

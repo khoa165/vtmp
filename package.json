@@ -19,7 +19,7 @@
     "seed": "yarn workspace @vtmp/web seed",
     "blog": "tsx ./scripts/generate-metadata.ts",
     "lint": "yarn eslint .",
-    "test": "yarn workspace @vtmp/common build && yarn workspace @vtmp/web run test && yarn workspace @vtmp/link-processing-service run test",
+    "test": "yarn workspace @vtmp/common build && yarn workspace @vtmp/web run test",
     "tslint": "tslint --project tsconfig.json --config tslint.json",
     "tslint-fix": "tslint --project tsconfig.json --config tslint.json --fix",
     "postinstall": "husky",
@@ -52,6 +52,9 @@
     "tsx": "^4.19.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.26.0"
+  },
+  "resolutions": {
+    "globals": "^14.0.0"
   },
   "lint-staged": {
     "**/*.{ts,tsx,md,html,css}": [

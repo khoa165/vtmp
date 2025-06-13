@@ -13,6 +13,8 @@ import {
   JobFunction,
   JobPostingRegion,
   JobType,
+  LinkProcessStage,
+  LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
 import { useSandbox } from '@/testutils/sandbox.testutil';
@@ -207,6 +209,65 @@ describe('LinkController', () => {
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.message).to.equal('Link has been approved!');
       expect(res.body.data.url).to.equal(url);
+    });
+  });
+
+  describe('PUT /links/metadata', () => {
+    const mockLinkMetaData = {
+      url: 'google.com',
+      location: LinkRegion.US,
+      jobFunction: JobFunction.SOFTWARE_ENGINEER,
+      jobType: JobType.INTERNSHIP,
+      datePosted: new Date(),
+    };
+
+    runDefaultAuthMiddlewareTests({
+      route: `/api/links/${linkId}/metaData`,
+      method: HTTPMethod.PUT,
+      body: {
+        linkProcessStage: LinkProcessStage.SUCCESS,
+        ...mockLinkMetaData,
+      },
+    });
+
+    it('should return error message for approving with not exist link', async () => {
+      const res = await request(app)
+        .put(`/api/links/${getNewMongoId()}/metadata`)
+        .send({
+          linkProcessStage: LinkProcessStage.SUCCESS,
+          ...mockLinkMetaData,
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`); // should be replaced to link processing service token
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Link not found');
+    });
+
+    it('should return error message for not including linkProcessStage', async () => {
+      const res = await request(app)
+        .put(`/api/links/${googleLink.id}/metadata`)
+        .send({
+          ...mockLinkMetaData,
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`); // should be replaced to link processing service token;
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Link process stage is required'
+      );
+    });
+
+    it('should return link with updated metadata', async () => {
+      const res = await request(app)
+        .put(`/api/links/${googleLink.id}/metadata`)
+        .send({
+          linkProcessStage: LinkProcessStage.SUCCESS,
+          ...mockLinkMetaData,
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`); // should be replaced to link processing service token
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.message).to.equal('Link metadata has been updated!');
     });
   });
 

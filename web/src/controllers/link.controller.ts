@@ -1,106 +1,16 @@
 import { Request, Response } from 'express';
 import { LinkService } from '@/services/link.service';
-import { z } from 'zod';
 import {
-  JobFunction,
-  JobPostingRegion,
-  JobType,
-  LinkProcessingStatus,
-  LinkRegion,
-  LinkStatus,
-} from '@vtmp/common/constants';
-import { filterUndefinedAttributes } from '@/utils/helpers';
-import { MONGO_OBJECT_ID_REGEX } from '@/constants/validations';
-
-const LinkSchema = z.object({
-  url: z
-    .string({ required_error: 'URL is required' })
-    .url({ message: 'Invalid url' }),
-  jobTitle: z.string().optional(),
-  companyName: z.string().optional(),
-  location: z
-    .nativeEnum(LinkRegion, {
-      message: 'Invalid location',
-    })
-    .optional(),
-  jobFunction: z
-    .nativeEnum(JobFunction, {
-      message: 'Invalid job title',
-    })
-    .optional(),
-  jobType: z
-    .nativeEnum(JobType, {
-      message: 'Invalid job type',
-    })
-    .optional(),
-  datePosted: z.string().optional(),
-  jobDescription: z.string().optional(),
-  linkProcessingStatus: z.nativeEnum(LinkProcessingStatus).optional(),
-});
-
-export type LinkType = z.infer<typeof LinkSchema>;
-
-const JobPostingDataSchema = z
-  .object({
-    jobTitle: z
-      .string({ required_error: 'Job title is required' })
-      .min(1, { message: 'Job title cannot be empty' }),
-
-    companyName: z
-      .string({ required_error: 'Company name is required' })
-      .min(1, { message: 'Company name cannot be empty' }),
-    location: z.nativeEnum(JobPostingRegion, {
-      message: 'Invalid location',
-    }),
-    jobFunction: z.nativeEnum(JobFunction, {
-      message: 'Invalid job title',
-    }),
-    jobType: z.nativeEnum(JobType, {
-      message: 'Invalid job type',
-    }),
-    datePosted: z
-      .string()
-      .regex(/^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/, {
-        message: 'Date must be in MM/dd/yyyy format',
-      })
-      .transform((str) => new Date(str))
-      .refine(
-        (date) => {
-          const now = new Date();
-          const threeMonthsAgo = new Date();
-          threeMonthsAgo.setMonth(now.getMonth() - 3);
-          return date >= threeMonthsAgo && date <= now;
-        },
-        {
-          message: 'Date must be within the last 3 months',
-        }
-      )
-      .optional(),
-    jobDescription: z.string().optional(),
-    adminNote: z.string().optional(),
-  })
-  .transform(filterUndefinedAttributes);
-
-const LinkIdSchema = z.object({
-  linkId: z.string().regex(MONGO_OBJECT_ID_REGEX, 'Invalid job ID format'),
-});
-
-const LinkFilterSchema = z
-  .object({
-    status: z
-      .nativeEnum(LinkStatus, {
-        message: 'Invalid link status',
-      })
-      .optional(),
-  })
-  .strict({
-    message: 'Only allow filtering by given fields',
-  })
-  .transform(filterUndefinedAttributes);
+  LinkFilterSchema,
+  LinkIdSchema,
+  LinkMetaDataSchema,
+  JobPostingDataSchema,
+  ExtractionLinkMetaDataSchema,
+} from '@/types/link.types';
 
 export const LinkController = {
   submitLink: async (req: Request, res: Response) => {
-    const parsedLink = LinkSchema.parse(req.body);
+    const parsedLink = LinkMetaDataSchema.parse(req.body);
 
     const submitLink = await LinkService.submitLink(parsedLink);
     res.status(201).json({
@@ -137,6 +47,21 @@ export const LinkController = {
     res.status(200).json({
       message: 'Link has been approved!',
       data: approvedLink,
+    });
+  },
+
+  updateLinkMetaData: async (req: Request, res: Response) => {
+    const parsedLinkId = LinkIdSchema.parse(req.params);
+    const parsedResponseFromExtraction = ExtractionLinkMetaDataSchema.parse(
+      req.body
+    );
+    const updatedLink = await LinkService.updateLinkMetaData(
+      parsedLinkId.linkId,
+      parsedResponseFromExtraction
+    );
+    res.status(200).json({
+      message: 'Link metadata has been updated!',
+      data: updatedLink,
     });
   },
 
