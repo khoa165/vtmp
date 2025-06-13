@@ -1,6 +1,7 @@
 import { LinkModel, ILink } from '@/models/link.model';
 import { Types, ClientSession } from 'mongoose';
-import { FAILED_REASON, LinkStatus } from '@vtmp/common/constants';
+import { LinkStatus } from '@vtmp/common/constants';
+import { FilterQuery } from 'mongoose';
 import {
   LinkMetaDataType,
   ExtractionLinkMetaDataType,
@@ -60,38 +61,8 @@ export const LinkRepository = {
     return groupCountByStatus;
   },
 
-  getLinks: async (
-    filters: {
-      status?: LinkStatus;
-    } = {},
-    retry = false
-  ): Promise<ILink[]> => {
-    return LinkModel.find(
-      retry
-        ? {
-            $or: [
-              { status: LinkStatus.PENDING },
-              {
-                status: LinkStatus.FAILED,
-                subStatus: FAILED_REASON.UNKNOWN_FAILED,
-                attemptsCount: { $lt: 4 },
-                $expr: {
-                  $gt: [
-                    {
-                      $dateDiff: {
-                        startDate: '$lastProcessedAt',
-                        endDate: '$$NOW',
-                        unit: 'minute',
-                      },
-                    },
-                    30,
-                  ],
-                },
-              },
-            ],
-          }
-        : filters
-    ).lean();
+  getLinks: async (filters: FilterQuery<ILink> = {}): Promise<ILink[]> => {
+    return LinkModel.find(filters).lean();
   },
 
   getLinkByUrl: async (url: string): Promise<ILink | null> => {
