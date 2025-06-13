@@ -4653,6 +4653,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/retry@npm:^0":
+  version: 0.12.5
+  resolution: "@types/retry@npm:0.12.5"
+  checksum: 10c0/eaaca483cc62f2f02c0b8486847ee70986ca7f97afd7363037247dbe3e98df8bd56a5b50d58b1e96768a5a1be0307010d86e9991bd458d72e8df88be471bd720
+  languageName: node
+  linkType: hard
+
 "@types/send@npm:*":
   version: 0.17.4
   resolution: "@types/send@npm:0.17.4"
@@ -5809,6 +5816,7 @@ __metadata:
     "@types/chai-as-promised": "npm:^8.0.2"
     "@types/jsonwebtoken": "npm:^9.0.9"
     "@types/node": "npm:^22.14.1"
+    "@types/retry": "npm:^0"
     "@vtmp/common": "npm:1.0.0"
     axios: "npm:^1.9.0"
     chai-as-promised: "npm:^8.0.1"
@@ -5817,6 +5825,7 @@ __metadata:
     jsonwebtoken: "npm:^9.0.2"
     mocha: "npm:^11.6.0"
     puppeteer-core: "npm:^24.10.0"
+    retry: "npm:^0.13.1"
     ts-node: "npm:^10.9.2"
     ts-retry-promise: "npm:^0.8.1"
     tsc-alias: "npm:^1.8.16"
@@ -13432,6 +13441,13 @@ __metadata:
   version: 0.12.0
   resolution: "retry@npm:0.12.0"
   checksum: 10c0/59933e8501727ba13ad73ef4a04d5280b3717fd650408460c987392efe9d7be2040778ed8ebe933c5cbd63da3dcc37919c141ef8af0a54a6e4fca5a2af177bfe
+  languageName: node
+  linkType: hard
+
+"retry@npm:^0.13.1":
+  version: 0.13.1
+  resolution: "retry@npm:0.13.1"
+  checksum: 10c0/9ae822ee19db2163497e074ea919780b1efa00431d197c7afdb950e42bf109196774b92a49fc9821f0b8b328a98eea6017410bfc5e8a0fc19c85c6d11adb3772
   languageName: node
   linkType: hard
 
