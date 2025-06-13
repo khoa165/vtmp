@@ -1,28 +1,28 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/base/button';
-import { IDashBoardLink } from '@/components/pages/admins/dashboard/validation';
+import { ILinkResponse } from '@/components/pages/admins/links/validation';
 import { format } from 'date-fns';
-import { ReviewPopupButton } from '@/components/pages/admins/dashboard/review-popup-button';
+import { ReviewPopupButton } from '@/components/pages/admins/links/review-popup-button';
 import { StatusDot } from '@/components/base/status-dot';
 import { JobPostingData } from './validation';
 import { HeaderSorting } from '@/components/base/header';
 import { StatusToColorMapping } from '@/utils/constants';
 
-interface DashboardTableColumnsProps {
-  approveDashBoardLinkFn: ({
+interface AdminLinksTableColumnsProps {
+  approveLinkFn: ({
     linkId,
     newUpdate,
   }: {
     linkId: string;
     newUpdate: JobPostingData;
   }) => void;
-  rejectDashBoardLinkFn: ({ linkId }: { linkId: string }) => void;
+  rejectLinkFn: ({ linkId }: { linkId: string }) => void;
 }
 
-export const dashboardTableColumns = ({
-  approveDashBoardLinkFn,
-  rejectDashBoardLinkFn,
-}: DashboardTableColumnsProps): ColumnDef<IDashBoardLink>[] => [
+export const adminLinksTableColumns = ({
+  approveLinkFn,
+  rejectLinkFn,
+}: AdminLinksTableColumnsProps): ColumnDef<ILinkResponse>[] => [
   {
     accessorKey: 'jobTitle',
     header: () => <div className="ml-4">Job Title</div>,
@@ -54,6 +54,7 @@ export const dashboardTableColumns = ({
     ),
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('datePosted');
+      if (!isoDate) return <div>-</div>;
       const date = new Date(isoDate);
       return <div>{format(date, 'MMM d, yyyy')}</div>;
     },
@@ -63,8 +64,8 @@ export const dashboardTableColumns = ({
     cell: ({ row }) => (
       <ReviewPopupButton
         currentLink={row.original}
-        approveDashBoardLinkFn={approveDashBoardLinkFn}
-        rejectDashBoardLinkFn={rejectDashBoardLinkFn}
+        approveLinkFn={approveLinkFn}
+        rejectLinkFn={rejectLinkFn}
       />
     ),
   },

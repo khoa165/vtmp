@@ -19,7 +19,6 @@ import {
   runDefaultAuthMiddlewareTests,
   runUserLogin,
 } from '@/testutils/auth.testutils';
-
 describe('LinkController', () => {
   useMongoDB();
   const sandbox = useSandbox();
@@ -72,7 +71,7 @@ describe('LinkController', () => {
       const res = await request(app)
         .post('/api/links')
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockAdminToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('URL is required');
@@ -83,7 +82,7 @@ describe('LinkController', () => {
         .post('/api/links')
         .send({ url: 'https://example.com' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockAdminToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 201 });
       expect(res.body.message).to.equal(
@@ -96,7 +95,7 @@ describe('LinkController', () => {
         .post('/api/links')
         .send({ url: googleLink.url })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockAdminToken}`);
+        .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Duplicate url');
@@ -105,7 +104,7 @@ describe('LinkController', () => {
 
   describe('POST /links/:id/reject', () => {
     runDefaultAuthMiddlewareTests({
-      route: `/api/links/${getNewMongoId()}/reject`,
+      route: `/api/links/${linkId}/reject`,
       method: HTTPMethod.POST,
     });
 
@@ -144,7 +143,7 @@ describe('LinkController', () => {
 
   describe('POST /links/:id/approve', () => {
     runDefaultAuthMiddlewareTests({
-      route: `/api/links/${getNewMongoId()}/approve`,
+      route: `/api/links/${linkId}/approve`,
       method: HTTPMethod.POST,
       body: {
         url: 'https://facebook.com',
@@ -204,8 +203,18 @@ describe('LinkController', () => {
 
   describe('GET /links/count-by-status', () => {
     runDefaultAuthMiddlewareTests({
-      route: '/api/links/count-by-status',
+      route: `/api/links/count-by-status`,
       method: HTTPMethod.GET,
+    });
+
+    it('should throw ForbiddenError when user try to view link status', async () => {
+      const res = await request(app)
+        .get('/api/links/count-by-status')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Forbidden');
     });
 
     it('should return 1 link for pending status', async () => {
@@ -254,8 +263,18 @@ describe('LinkController', () => {
 
   describe('GET /links', () => {
     runDefaultAuthMiddlewareTests({
-      route: '/api/links',
+      route: `/api/links`,
       method: HTTPMethod.GET,
+    });
+
+    it('should throw ForbiddenError when user try to view links', async () => {
+      const res = await request(app)
+        .get('/api/links')
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockUserToken}`);
+
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Forbidden');
     });
 
     it('should return 400 when an invalid status is provided', async () => {

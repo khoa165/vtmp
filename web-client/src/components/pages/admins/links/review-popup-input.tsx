@@ -1,6 +1,6 @@
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-import { JobPostingData } from '@/components/pages/admins/dashboard/validation';
+import { JobPostingData } from '@/components/pages/admins/links/validation';
 
 type FieldInForms =
   | 'url'

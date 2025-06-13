@@ -1,5 +1,4 @@
 name: Common setup
-description: Common setup steps for all jobs
 
 runs:
   using: 'composite'

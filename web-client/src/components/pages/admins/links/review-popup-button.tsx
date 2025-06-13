@@ -11,28 +11,28 @@ import {
 } from '@/components/base/dialog';
 import { Label } from '@/components/base/label';
 import { Textarea } from '@/components/base/textarea';
-import { ReviewPopupInput } from '@/components/pages/admins/dashboard/review-popup-input';
+import { ReviewPopupInput } from '@/components/pages/admins/links/review-popup-input';
 import { JobPostingRegion } from '@vtmp/common/constants';
-import { JobPostingData } from '@/components/pages/admins/dashboard/validation';
+import { JobPostingData } from '@/components/pages/admins/links/validation';
 
 interface ReviewPopupButtonProps {
   currentLink: {
     _id: string;
   } & JobPostingData;
-  approveDashBoardLinkFn: ({
+  approveLinkFn: ({
     linkId,
     newUpdate,
   }: {
     linkId: string;
     newUpdate: JobPostingData;
   }) => void;
-  rejectDashBoardLinkFn: ({ linkId }: { linkId: string }) => void;
+  rejectLinkFn: ({ linkId }: { linkId: string }) => void;
 }
 
 export const ReviewPopupButton = ({
   currentLink,
-  approveDashBoardLinkFn,
-  rejectDashBoardLinkFn,
+  approveLinkFn,
+  rejectLinkFn,
 }: ReviewPopupButtonProps) => {
   const {
     _id: linkId,
@@ -53,14 +53,14 @@ export const ReviewPopupButton = ({
     adminNote: '',
   });
   const handleApprove = () => {
-    approveDashBoardLinkFn({
+    approveLinkFn({
       linkId,
       newUpdate: reviewForm,
     });
   };
 
   const handleReject = () => {
-    rejectDashBoardLinkFn({ linkId });
+    rejectLinkFn({ linkId });
   };
 
   return (

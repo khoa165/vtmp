@@ -2,7 +2,7 @@
 # Render blueprint for Staging environment
 services:
   - type: web
-    name: vtmp-api-staging
+    name: vtmp-backend-staging
     runtime: node
     repo: https://github.com/khoa165/vtmp
     branch: main

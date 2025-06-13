@@ -19,7 +19,7 @@ import { expect } from 'chai';
 import { addDays, differenceInSeconds, subDays } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import { describe } from 'mocha';
-import * as R from 'remeda';
+import { omit } from 'remeda';
 import { getEmailService } from '@/utils/email';
 import { SinonStub } from 'sinon';
 
@@ -128,7 +128,7 @@ describe('InvitationService', () => {
       );
     });
 
-    it('should not throw error and return null when a Pending invitation associated with receiver email exists', async () => {
+    it('should not throw error and send email when a Pending invitation associated with receiver email exists', async () => {
       await InvitationRepository.createInvitation(mockOneInvitation);
       await expect(
         InvitationService.sendInvitation(
@@ -136,11 +136,11 @@ describe('InvitationService', () => {
           mockOneInvitation.receiverEmail,
           mockAdminId
         )
-      ).eventually.fulfilled.and.to.be.null;
+      ).eventually.fulfilled;
       expect(sendEmailStub.calledOnce).to.equal(true);
     });
 
-    it('should not throw error and return null when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
+    it('should not throw error and send email when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
       await InvitationRepository.createInvitation({
         ...mockOneInvitation,
         expiryDate: subDays(Date.now(), 2),
@@ -151,27 +151,25 @@ describe('InvitationService', () => {
           mockOneInvitation.receiverEmail,
           mockAdminId
         )
-      ).eventually.fulfilled.and.to.be.null;
+      ).eventually.fulfilled;
       expect(sendEmailStub.calledOnce).to.equal(true);
     });
 
     it('should update invitation to new expiry date when a Pending invitation associated with receiver email exists but pass expiry date', async () => {
-      const expiredInvitation = await InvitationRepository.createInvitation({
+      await InvitationRepository.createInvitation({
         ...mockOneInvitation,
         expiryDate: subDays(Date.now(), 2),
       });
       const expectedExpiryDate = addDays(Date.now(), 7);
-      await InvitationService.sendInvitation(
-        mockMenteeName,
-        mockOneInvitation.receiverEmail,
-        mockAdminId
-      );
-
       const invitationWithNewExpiryDate =
-        await InvitationRepository.getInvitationById(expiredInvitation.id);
+        await InvitationService.sendInvitation(
+          mockMenteeName,
+          mockOneInvitation.receiverEmail,
+          mockAdminId
+        );
       assert(invitationWithNewExpiryDate);
       expect(invitationWithNewExpiryDate.toObject()).to.deep.include(
-        R.omit({ ...mockOneInvitation, sender: toMongoId(mockAdminId) }, [
+        omit({ ...mockOneInvitation, sender: toMongoId(mockAdminId) }, [
           'expiryDate',
         ])
       );

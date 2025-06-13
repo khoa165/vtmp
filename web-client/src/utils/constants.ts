@@ -157,9 +157,10 @@ export enum ProjectName {
 export enum QueryKey {
   SUBMIT_LINK = '/api/links',
   GET_APPLICATIONS = '/api/applications',
-  GET_JOB_POSTINGS = '/api//job-postings/not-applied',
+  GET_JOB_POSTINGS = '/api/job-postings/not-applied',
+  GET_JOB_POSTINGS_IN_ADAY = '/api/job-postings/not-applied-last-24h',
   GET_APPLICATIONS_COUNT_BY_STATUS = '/api/applications/countByStatus',
-  GET_DASHBOARD_LINKS = '/api/links/getLinks',
+  GET_LINKS = '/api/links/getLinks',
   GET_LINKS_COUNT_BY_STATUS = '/api/links/count-by-status',
 }
 
@@ -183,3 +184,6 @@ export const StatusToColorMapping: Record<
   [LinkStatus.PENDING]: 'bg-[#A2BFF0]',
   [LinkStatus.APPROVED]: 'bg-[#A3F890]',
 };
+
+export const MIN_PASSWORD_LENGTH = 8;
+export const MAX_PASSWORD_LENGTH = 20;

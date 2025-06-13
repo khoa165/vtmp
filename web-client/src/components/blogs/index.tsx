@@ -1,42 +1,81 @@
 import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useParams } from 'react-router-dom';
-import { Container } from 'reactstrap';
 import { removeMetadata } from '@/utils/file';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import rehypeRaw from 'rehype-raw';
-import { BlogFileMapping } from '@/types';
+import { BlogFileMapping, BlogMetadata } from '@/types';
 
 interface BlogContainerProps {
   metadata: BlogFileMapping;
 }
 export const BlogContainer: React.FC<BlogContainerProps> = ({ metadata }) => {
-  const { filename } = useParams();
-  const [markdown, setMarkdown] = useState('');
+  const { filename } = useParams<{ filename: string }>();
+  const [markdown, setMarkdown] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const currentBlogMetadata: BlogMetadata | undefined = filename
+    ? metadata[filename]
+    : undefined;
 
   useEffect(() => {
-    if (metadata == null || filename == null) {
+    if (!filename || !currentBlogMetadata) {
+      setError(filename ? 'Blog post not found.' : 'Filename missing.');
+      setIsLoading(false);
       return;
     }
-    const filepath = metadata[filename].path;
-    fetch(filepath)
-      .then((response) => response.text())
+
+    const urlToFetch = currentBlogMetadata.filepath;
+    if (!urlToFetch) {
+      setError('File path is missing in blog metadata.');
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    setMarkdown('');
+
+    fetch(urlToFetch)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch blog: ${response.status} ${response.statusText}`
+          );
+        }
+        return response.text();
+      })
       .then((mdText) => {
         setMarkdown(removeMetadata(mdText));
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching blog content:', err);
+        setError(err.message || 'Could not load blog content.');
+        setIsLoading(false);
       });
-  }, [metadata, filename]);
+  }, [filename, currentBlogMetadata]);
 
-  if (metadata == null || filename == null) {
-    return <h1>Loading...</h1>;
+  if (isLoading) {
+    return <h1>Loading blog content...</h1>;
   }
 
-  const { title, authors, contributors, banner } = metadata[filename];
+  if (error) {
+    return <h1 className="text-red-500">Error: {error}</h1>;
+  }
+
+  if (!currentBlogMetadata) {
+    return <h1>Blog post not found or filename is invalid.</h1>;
+  }
+
+  const { title, authors, contributors, banner } = currentBlogMetadata;
 
   return (
-    <Container id="blog-page">
+    <div id="blog-page" className="container mx-auto px-4">
       {banner && (
         <div className="banner-wrapper">
-          <img className="banner-img" src={banner} alt="blog banner" />
+          <img className="banner-img mx-auto" src={banner} alt="blog banner" />
         </div>
       )}
       <div className={`blog-header ${banner && 'with-separator'}`}>
@@ -59,7 +98,7 @@ export const BlogContainer: React.FC<BlogContainerProps> = ({ metadata }) => {
       <div className="blog-content">
         <ReactMarkdown
           children={markdown}
-          // @ts-expect-error third-party library typing is incompatible
+          // @ts-expect-error TODO: Resolve type conflict with rehype-raw and react-markdown
           rehypePlugins={[rehypeRaw]}
           components={{
             code({ inline, className, children, ...props }) {
@@ -67,9 +106,7 @@ export const BlogContainer: React.FC<BlogContainerProps> = ({ metadata }) => {
               return !inline && match ? (
                 <SyntaxHighlighter
                   children={String(children).replace(/\n$/, '')}
-                  // style={dark}
                   language={match[1]}
-                  // PreTag='section'
                   {...props}
                 />
               ) : (
@@ -81,6 +118,6 @@ export const BlogContainer: React.FC<BlogContainerProps> = ({ metadata }) => {
           }}
         />
       </div>
-    </Container>
+    </div>
   );
 };
