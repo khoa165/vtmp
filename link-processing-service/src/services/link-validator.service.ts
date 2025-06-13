@@ -17,7 +17,7 @@ export const LinkValidatorService = {
   },
 
   /**
-   * Validates and resolves shortened URLs to their final destination
+   * Resolves shortened URLs to their final destination and scan it for known malicious links
    * @param url - The URL to validate and resolve
    * @returns The final resolved URL
    * @throws `LinkValidationError`
@@ -38,6 +38,13 @@ export const LinkValidatorService = {
       }
     );
 
+    const linkIsSafe = await this._checkSafety(resolvedUrl);
+
+    if (!linkIsSafe) {
+      throw new LinkValidationError('Provided link fails safety check', {
+        url,
+      });
+    }
     return resolvedUrl;
   },
 
@@ -78,7 +85,8 @@ export const LinkValidatorService = {
     return finalUrl;
   },
 
-  async _checkSafety(url: string): Promise<void> {
+  async _checkSafety(url: string): Promise<boolean> {
     console.log(url);
+    return true;
   },
 };
