@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { LinkValidationError } from '@/utils/errors';
 export const LinkValidatorService = {
   config: {
@@ -27,48 +26,47 @@ export const LinkValidatorService = {
    * Resolves URL redirects following the chain to the final destination
    */
   async _resolveRedirects(url: string): Promise<string> {
-    const { maxRedirects, timeoutMs, retriableHttpCodes } = this.config;
+    const { timeoutMs, retriableHttpCodes, userAgent } = this.config;
 
-    const response = await axios
-      .get(url, {
-        timeout: timeoutMs,
-        maxRedirects: maxRedirects,
-        validateStatus: (status) => status >= 200 && status < 400,
-        headers: {
-          'User-Agent': this.config.userAgent,
-        },
-      })
-      .catch((error) => {
-        if (!axios.isAxiosError(error)) {
-          throw new LinkValidationError(
-            'Unknown error while checking URL Responsiveness',
-            { url },
-            { cause: 'UNKNOWN_NON_AXIOS_ERR', retryable: true }
-          );
-        }
-        if (!error.response?.status) {
-          const cause = error.cause ?? 'UNKNOWN_AXIOS_ERR';
-          throw new LinkValidationError(
-            error.message === '' ? `AxiosError: ${error.cause}` : error.message,
-            { url },
-            { cause: cause, retryable: true }
-          );
-        }
-        throw new LinkValidationError(
-          error.message,
-          { url },
-          {
-            cause: error.code,
-            retryable: retriableHttpCodes.includes(error.response.status),
-          }
-        );
+    let response: Response;
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      response = await fetch(url, {
+        method: 'GET',
+        headers: { 'User-Agent': userAgent },
+        signal: controller.signal,
+        redirect: 'follow',
       });
+      clearTimeout(timer);
+    } catch (error) {
+      throw new LinkValidationError(
+        'Network error while checking URL Responsiveness',
+        { url },
+        { cause: error, retryable: true }
+      );
+    }
 
-    axios.getUri();
-    const finalUrl = response.request.res.responseUrl;
+    // HTTP status handling
+    if (retriableHttpCodes.includes(response.status)) {
+      throw new LinkValidationError(
+        `HTTP ${response.status}`,
+        { url },
+        { cause: response.status, retryable: true }
+      );
+    }
+    if (!response.ok) {
+      throw new LinkValidationError(
+        `HTTP ${response.status}`,
+        { url },
+        { cause: response.status, retryable: false }
+      );
+    }
+
+    const finalUrl = response.url;
     console.log(`URL:`, finalUrl);
     console.log(`HTTP Status Code`, response.status);
-    return Promise.resolve(finalUrl);
+    return finalUrl;
   },
 
   async _checkSafety(url: string): Promise<void> {
