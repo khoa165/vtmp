@@ -16,7 +16,7 @@ export class EmailService {
   }
 
   getInvitationEmailTemplate(name: string, email: string, token: string) {
-    const link = `${EnvConfig.get().VTMP_WEB_URL}?token=${token}`;
+    const link = `${EnvConfig.get().VTMP_WEB_URL}/signup?token=${token}`;
     return {
       email,
       subject: 'Invitation to join VTMP',

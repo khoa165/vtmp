@@ -6,25 +6,72 @@ on:
       - main
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      common: ${{ steps.filter.outputs.common }}
+      web: ${{ steps.filter.outputs.web }}
+      web-client: ${{ steps.filter.outputs.web-client }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            common:
+              - 'packages/common/**'
+            web:
+              - 'web/**'
+              - 'packages/common/**'
+            web-client:
+              - 'web-client/**'
+              - 'packages/common/**'
+
   build-common:
-    if: contains(github.event.pull_request.files.*.path, 'packages/common/src/')
-    uses: ./.github/workflows/build-common.yml
+    needs: changes
+    if: ${{ needs.changes.outputs.common == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/build-common
 
   build-web:
-    if: contains(github.event.pull_request.files.*.path, 'web/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
-    uses: ./.github/workflows/build-web.yml
+    needs: changes
+    if: ${{ needs.changes.outputs.web == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/build-web
 
   test-web:
-    # if: contains(github.event.pull_request.files.*.path, 'web/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
-    uses: ./.github/workflows/test-web.yml
-    secrets: inherit
+    needs: changes
+    if: ${{ needs.changes.outputs.web == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/test-web
+        secrets: inherit
 
   build-web-client:
-    if: contains(github.event.pull_request.files.*.path, 'web-client/src/') || contains(github.event.pull_request.files.*.path, 'packages/common/src/')
-    uses: ./.github/workflows/build-web-client.yml
+    needs: changes
+    if: ${{ needs.changes.outputs.web-client == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/build-web-client
 
   chromatic:
-    if: ${{ contains(github.event.pull_request.files.*.path, 'web-client/src/') }}
+    needs: changes
+    if: ${{ needs.changes.outputs.web-client == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
