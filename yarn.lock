@@ -5402,6 +5402,7 @@ __metadata:
     mongoose-lean-virtuals: "npm:^1.1.0"
     morgan: "npm:^1.10.0"
     multer: "npm:^1.4.5-lts.1"
+    node-cron: "npm:^4.1.0"
     nodemailer: "npm:^6.10.1"
     normalize-url: "npm:^8.0.1"
     remeda: "npm:^2.22.5"
@@ -11147,6 +11148,13 @@ __metadata:
   dependencies:
     node-gyp: "npm:latest"
   checksum: 10c0/fb32a206276d608037fa1bcd7e9921e177fe992fc610d098aa3128baca3c0050fc1e014fa007e9b3874cf865ddb4f5bd9f43ccb7cbbbe4efaff6a83e920b17e9
+  languageName: node
+  linkType: hard
+
+"node-cron@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "node-cron@npm:4.1.0"
+  checksum: 10c0/41aa0a66ac3988ea5dcc4eea7f61c57e2266c8b18bfaee4527145406fe568a300803b37446a45fe45e735571eaed42f6f1c359c8b455a2f20a04d214cc561249
   languageName: node
   linkType: hard
 
