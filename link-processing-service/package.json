@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.4.0",
+    "@modelcontextprotocol/sdk": "^1.12.1",
     "@sparticuz/chromium": "^133.0.0",
     "@vtmp/common": "1.0.0",
     "axios": "^1.9.0",
