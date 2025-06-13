@@ -57,7 +57,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Use common setups action
         uses: ./.github/actions/test-web
-        secrets: inherit
+        with:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   build-web-client:
     needs: changes
