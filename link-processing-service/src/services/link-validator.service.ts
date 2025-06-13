@@ -43,7 +43,7 @@ export const LinkValidatorService = {
       throw new LinkValidationError(
         'Network error while checking URL Responsiveness',
         { url },
-        { cause: error, retryable: true }
+        { cause: error }
       );
     }
 
@@ -52,14 +52,14 @@ export const LinkValidatorService = {
       throw new LinkValidationError(
         `HTTP ${response.status}`,
         { url },
-        { cause: response.status, retryable: true }
+        { cause: response.status }
       );
     }
     if (!response.ok) {
       throw new LinkValidationError(
         `HTTP ${response.status}`,
         { url },
-        { cause: response.status, retryable: false }
+        { cause: response.status }
       );
     }
 

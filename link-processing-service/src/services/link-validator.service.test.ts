@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 import { LinkValidatorService } from '@/services/link-validator.service';
 import { LinkValidationError } from '@/utils/errors';
 
-const shortenedUrl_shouldReturn200 = 'https://forms.gle/ev19p5dMVWaZ6oTn8';
+const shortenedUrl_shouldReturn200 = 'https://bit.ly/3SA6Wol';
 const testUrl_shouldReturn403 = 'https://httpstat.us/403';
 const testUrl_shouldReturn429 = 'https://httpstat.us/429';
 const testUrl_shouldReturnNetworkError = 'https://meow.meow';
@@ -15,41 +15,33 @@ describe('LinkValidatorService', () => {
     it('should return final URL without any errors', async () => {
       const url = shortenedUrl_shouldReturn200;
       const finalLink = await LinkValidatorService.validateLink(url);
-      expect(finalLink).equals(
-        'https://docs.google.com/forms/d/e/1FAIpQLSdSFZsK-cdXj26nTagTdLL3BJpQkYQ1dTEMWLyFFOvGzNzIUw/viewform?usp=send_form'
-      );
+      expect(finalLink).equals('https://www.cbc.ca/');
     });
-    it('should return 403 error', async () => {
-      try {
-        await LinkValidatorService.validateLink(testUrl_shouldReturn403);
-      } catch (e) {
-        if (e instanceof LinkValidationError === false) {
-          assert.fail();
-        }
-        expect((e as Error).cause).equals(403);
-      }
-    });
-    it('should throw 429 eror', async () => {
-      try {
-        await LinkValidatorService.validateLink(testUrl_shouldReturn429);
-      } catch (e) {
-        if (e instanceof LinkValidationError === false) {
-          assert.fail();
-        }
-        expect((e as Error).cause).equals(429);
-      }
-    });
-    it('should return network error', async () => {
-      try {
-        await LinkValidatorService.validateLink(
-          testUrl_shouldReturnNetworkError
-        );
-      } catch (e) {
-        if (e instanceof LinkValidationError === false) {
-          assert.fail();
-        }
-        expect(e.message).contains('Network error');
-      }
+    describe('handling faulty links', () => {
+      it('should return 403 error', async () => {
+        const error = await testErrorResponse(testUrl_shouldReturn403);
+        expect(error.cause).equals(403);
+      });
+      it('should throw 429 eror', async () => {
+        const error = await testErrorResponse(testUrl_shouldReturn429);
+        expect(error.cause).equals(429);
+      });
+      it('should return network error', async () => {
+        const error = await testErrorResponse(testUrl_shouldReturnNetworkError);
+        expect(error.message).contains('Network error');
+      });
     });
   });
 });
+
+async function testErrorResponse(url: string): Promise<LinkValidationError> {
+  try {
+    await LinkValidatorService.validateLink(url);
+  } catch (e) {
+    if (e instanceof LinkValidationError === false) {
+      assert.fail();
+    }
+    return Promise.resolve(e);
+  }
+  assert.fail('Fail: LinkValidationService did not throw any error');
+}

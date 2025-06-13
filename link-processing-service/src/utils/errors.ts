@@ -5,16 +5,14 @@ export enum LinkProcessingStatus {
   FAILED_UNKNOWN = 'FAILED_UNKNOWN',
   SUCCESS = 'SUCCESS',
 }
-
 export abstract class ServiceSpecificError extends Error {
   public metadata: { url: string };
   public linkProcessingStatus: LinkProcessingStatus;
-  public retryable?: boolean;
   constructor(
     message: string,
     metadata: { url: string },
     linkProcessingStatus: LinkProcessingStatus,
-    options?: { cause?: unknown; retryable?: boolean }
+    options?: { cause?: unknown }
   ) {
     super(message);
     this.name = this.constructor.name;
@@ -23,9 +21,6 @@ export abstract class ServiceSpecificError extends Error {
     if (options?.cause) {
       this.cause = options.cause;
     }
-    if (options?.retryable !== undefined) {
-      this.retryable = options.retryable;
-    }
   }
 }
 
@@ -33,7 +28,7 @@ export class LinkValidationError extends ServiceSpecificError {
   constructor(
     message: string,
     metadata: { url: string },
-    options?: { cause?: unknown; retryable: boolean }
+    options?: { cause?: unknown }
   ) {
     super(message, metadata, LinkProcessingStatus.FAILED_VALIDATION, options);
   }
