@@ -1,6 +1,5 @@
-import axios from 'axios';
-
 import { EnvConfig } from '@/config/env';
+import axios from 'axios';
 
 let jwtToken: string | undefined;
 
