@@ -70,7 +70,7 @@ services:
     name: vtmp-discord-service
     runtime: docker
     repo: https://github.com/khoa165/vtmp
-    branch: dson/discord-webhook-service
+    branch: main
     plan: free
     envVars:
       - key: LOGIN_PASSWORD
