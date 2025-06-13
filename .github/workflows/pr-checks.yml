@@ -27,6 +27,9 @@ jobs:
             web-client:
               - 'web-client/**'
               - 'packages/common/**'
+            discord-service:
+              - 'discord-service/**'
+              - 'packages/common/**'
             ci:
               - '.github/**'
 
@@ -47,20 +50,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Use common setups action
+      - name: Use build-web composite action
         uses: ./.github/actions/build-web
 
-  test-web:
+  build-discord-service:
     needs: changes
-    if: ${{ needs.changes.outputs.web == 'true' || needs.changes.outputs.ci == 'true' }}
+    if: ${{ needs.changes.outputs.discord-service == 'true' || needs.changes.outputs.ci == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Use common setups action
-        uses: ./.github/actions/test-web
-        with:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Use build-discord-service composite action
+        uses: ./.github/actions/build-discord-service
 
   build-web-client:
     needs: changes
@@ -69,8 +70,20 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Use common setups action
+      - name: Use build-web-client composite action
         uses: ./.github/actions/build-web-client
+
+  test-web:
+    needs: changes
+    if: ${{ needs.changes.outputs.web == 'true' || needs.changes.outputs.ci == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use test-web composite action
+        uses: ./.github/actions/test-web
+        with:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   chromatic:
     needs: changes
