@@ -40,7 +40,7 @@ export const InternalToolsSidebar = () => {
       title: 'Pending Links',
       url: '/admin/links',
       icon: BriefcaseBusiness,
-      roles: [SystemRole.ADMIN],
+      roles: [SystemRole.ADMIN, SystemRole.MODERATOR],
     },
     {
       title: 'Jobs',
@@ -52,7 +52,7 @@ export const InternalToolsSidebar = () => {
       title: 'Applications',
       url: '/application-tracker',
       icon: BriefcaseBusiness,
-      roles: [SystemRole.MODERATOR, SystemRole.USER],
+      roles: [SystemRole.USER],
     },
     {
       title: 'Share Link',
@@ -80,11 +80,7 @@ export const InternalToolsSidebar = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link
-                    to="/application-tracker"
-                    className="w-full"
-                    aria-label="Home"
-                  >
+                  <Link to="/job-postings" className="w-full" aria-label="Home">
                     <VTMPLogo />
                     <JobTrackrLogo />
                   </Link>
