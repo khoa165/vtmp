@@ -22,8 +22,8 @@ export const JobTrackrLogo = () => {
             y2="81"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#F8FF6A" />
-            <stop offset="0.855769" stop-color="#66FFCC" />
+            <stop stopColor="#F8FF6A" />
+            <stop offset="0.855769" stopColor="#66FFCC" />
           </linearGradient>
         </defs>
       </svg>
