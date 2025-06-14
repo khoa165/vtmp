@@ -27,11 +27,11 @@ export const InvitationController = {
   sendInvitation: async (req: Request, res: Response) => {
     const { receiverName, receiverEmail, senderId } =
       InvitationSendEmailSchema.parse(req.body);
-    const invitation = await InvitationService.sendInvitation(
+    const invitation = await InvitationService.sendOrResendInvitation({
       receiverName,
       receiverEmail,
-      senderId
-    );
+      senderId,
+    });
     res.status(200).json({ data: invitation });
   },
 
@@ -40,6 +40,15 @@ export const InvitationController = {
     const revokedInvitation =
       await InvitationService.revokeInvitation(invitationId);
     res.status(200).json({ data: revokedInvitation });
+  },
+
+  resendInvitation: async (req: Request, res: Response) => {
+    const { invitationId } = InvitationIdSchema.parse(req.params);
+    const resentInvitation = await InvitationService.sendOrResendInvitation({
+      invitationId,
+      isResend: true,
+    });
+    res.status(200).json({ data: resentInvitation });
   },
 
   validateInvitation: async (req: Request, res: Response) => {

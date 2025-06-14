@@ -74,7 +74,7 @@ export const App = () => {
             <Route path="/link-sharing" element={<LinksPage />} />
             <Route path="/job-postings" element={<JobPostingsPage />} />
             <Route
-              path="/user-invitation"
+              path="/invitations"
               element={
                 <ProtectedRoute roles={[UserRole.ADMIN]}>
                   <UserInvitationPage />

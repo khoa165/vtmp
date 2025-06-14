@@ -4,6 +4,7 @@ import { InvitationStatus } from '@vtmp/common/constants';
 export interface IInvitation extends Document {
   _id: Types.ObjectId;
   receiverEmail: string;
+  receiverName?: string;
   sender: Types.ObjectId;
   token: string;
   expiryDate: Date;
@@ -15,6 +16,10 @@ const InvitationSchema = new mongoose.Schema<IInvitation>(
     receiverEmail: {
       type: String,
       required: true,
+    },
+    receiverName: {
+      type: String,
+      required: false,
     },
     sender: {
       type: Schema.Types.ObjectId,

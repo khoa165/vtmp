@@ -31,3 +31,11 @@ InvitationRoutes.put(
     InvitationController.revokeInvitation,
   ])
 );
+
+InvitationRoutes.post(
+  '/:invitationId/resend',
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_INVITATION),
+    InvitationController.resendInvitation,
+  ])
+);

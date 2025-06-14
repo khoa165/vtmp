@@ -18,7 +18,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/base/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
-import { useSendInvitation } from '@/components/pages/admins/invitations/hooks/invitations';
+import { useSendInvitation } from '@/hooks/useInvitation';
+import { AxiosError } from 'axios';
 
 export const SendInvitationPage = () => {
   const [userInput, setUserInput] = useState<{
@@ -44,10 +45,7 @@ export const SendInvitationPage = () => {
     setInputErrors({ ...inputErrors, [e.target.name]: [] });
   };
 
-  const { mutate: sendInvitationFn } = useSendInvitation({
-    setUserInput,
-    setInputErrors,
-  });
+  const { mutate: sendInvitationFn } = useSendInvitation();
 
   const rawUser = localStorage.getItem('user');
   const user = rawUser ? JSON.parse(rawUser) : null;
@@ -61,11 +59,57 @@ export const SendInvitationPage = () => {
       setInputErrors({ ...inputErrors, email: ['Email is required'] });
       return;
     }
-    sendInvitationFn({
-      receiverName: userInput.name,
-      receiverEmail: userInput.email,
-      senderId: user._id,
-    });
+
+    sendInvitationFn(
+      {
+        receiverName: userInput.name,
+        receiverEmail: userInput.email,
+        senderId: user._id,
+      },
+      {
+        onSuccess: () => {
+          setInputErrors({ name: [], email: [] });
+          setUserInput({
+            name: '',
+            email: '',
+            role: UserRole.USER,
+          });
+        },
+        onError: (error) => {
+          if (error && typeof error === 'object' && 'response' in error) {
+            const axiosError = error as AxiosError<{
+              errors: { message: string }[];
+            }>;
+            if (axiosError.response?.data?.errors) {
+              const errorMessages = axiosError.response.data.errors.map(
+                (e: { message: string }) => e.message
+              );
+              const { emailRelatedErrors, otherErrors } = errorMessages.reduce(
+                (
+                  acc: { emailRelatedErrors: string[]; otherErrors: string[] },
+                  errMsg: string
+                ) => {
+                  if (
+                    errMsg.toLowerCase().includes('email') ||
+                    errMsg.toLowerCase().includes('user')
+                  ) {
+                    acc.emailRelatedErrors.push(errMsg);
+                  } else {
+                    acc.otherErrors.push(errMsg);
+                  }
+                  return acc;
+                },
+                { emailRelatedErrors: [], otherErrors: [] }
+              );
+              setInputErrors({
+                name: otherErrors,
+                email: emailRelatedErrors,
+              });
+            }
+          }
+        },
+      }
+    );
   };
 
   return (
