@@ -7,23 +7,23 @@ import { UserRole } from '@vtmp/common/constants';
 import axios from 'axios';
 import { toast } from 'sonner';
 
+export interface IInvitationUserInput {
+  name: string;
+  email: string;
+  role: UserRole;
+}
+
+export interface IInvitationInputErrors {
+  name: string[];
+  email: string[];
+}
+
 export const useSendInvitation = ({
   setUserInput,
   setInputErrors,
 }: {
-  setUserInput: React.Dispatch<
-    React.SetStateAction<{
-      name: string;
-      email: string;
-      role: UserRole;
-    }>
-  >;
-  setInputErrors: React.Dispatch<
-    React.SetStateAction<{
-      name: string[];
-      email: string[];
-    }>
-  >;
+  setUserInput: React.Dispatch<React.SetStateAction<IInvitationUserInput>>;
+  setInputErrors: React.Dispatch<React.SetStateAction<IInvitationInputErrors>>;
 }) => {
   return useMutation({
     mutationFn: (body: {

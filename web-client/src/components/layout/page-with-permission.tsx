@@ -1,17 +1,16 @@
-import React, { useEffect } from 'react';
-import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
+import React from 'react';
 import { UserRole } from '@vtmp/common/constants';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export const PageWithPermission = ({ roles }: { roles: UserRole[] }) => {
   const user = useCurrentUser();
-  const navigate = useNavigatePreserveQueryParams();
-  useEffect(() => {
-    if (!roles.some((role) => user?.role.includes(role))) {
-      navigate('/404');
-    }
-  }, [roles, user]);
+  if (!user) {
+    return <Navigate to="/login?redirected=true" />;
+  }
+  if (!roles.includes(user.role)) {
+    return <Navigate to="/404" />;
+  }
 
   return <Outlet />;
 };

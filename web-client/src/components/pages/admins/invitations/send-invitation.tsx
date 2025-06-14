@@ -18,23 +18,22 @@ import {
   DropdownMenuTrigger,
 } from '@/components/base/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
-import { useSendInvitation } from '@/components/pages/admins/invitations/hooks/invitations';
+import {
+  IInvitationInputErrors,
+  IInvitationUserInput,
+  useSendInvitation,
+} from '@/components/pages/admins/invitations/hooks/invitations';
+import { Navigate } from 'react-router-dom';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export const SendInvitationPage = () => {
-  const [userInput, setUserInput] = useState<{
-    name: string;
-    email: string;
-    role: UserRole;
-  }>({
+  const [userInput, setUserInput] = useState<IInvitationUserInput>({
     name: '',
     email: '',
     role: UserRole.USER,
   });
 
-  const [inputErrors, setInputErrors] = useState<{
-    name: string[];
-    email: string[];
-  }>({
+  const [inputErrors, setInputErrors] = useState<IInvitationInputErrors>({
     name: [],
     email: [],
   });
@@ -49,8 +48,10 @@ export const SendInvitationPage = () => {
     setInputErrors,
   });
 
-  const rawUser = localStorage.getItem('user');
-  const user = rawUser ? JSON.parse(rawUser) : null;
+  const user = useCurrentUser();
+  if (!user) {
+    return <Navigate to="/login?redirected=true" />;
+  }
 
   const handleSend = async () => {
     if (!userInput.name) {
