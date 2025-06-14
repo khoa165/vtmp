@@ -3,14 +3,14 @@ import {
   JobFunction,
   LinkStatus,
   JobType,
-  FAILEDREASON,
+  LinkProcessingSubStatus,
 } from '@vtmp/common/constants';
 import { LinkRegion } from '@vtmp/common/constants';
 export interface ILink extends Document {
   _id: Types.ObjectId;
   url: string;
   status: LinkStatus;
-  subStatus?: FAILEDREASON;
+  subStatus?: LinkProcessingSubStatus;
   submittedOn: Date;
   jobTitle?: string;
   companyName?: string;
@@ -39,7 +39,7 @@ const LinkSchema = new mongoose.Schema<ILink>(
     },
     subStatus: {
       type: String,
-      enum: Object.values(FAILEDREASON),
+      enum: Object.values(LinkProcessingSubStatus),
       required: function () {
         return this.status === LinkStatus.FAILED;
       },
