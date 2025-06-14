@@ -33,7 +33,6 @@ export const useGetInvitations = () => {
   });
 };
 
-// New unified hook for send and resend with conditional logic
 export const useSendInvitation = () => {
   const queryClient = useQueryClient();
 
