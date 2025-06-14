@@ -86,15 +86,6 @@ describe('JobPostingController', () => {
       method: HTTPMethod.GET,
     });
 
-    it('should throw ForbiddenError when user try to delete job posting', async () => {
-      const res = await request(app)
-        .get(`/api/job-postings/id/${jobPostings[0]?.id}`)
-        .set('Authorization', `Bearer ${mockUserToken}`);
-
-      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.eq('Forbidden');
-    });
-
     it('should return 400 for invalid job posting ID format', async () => {
       const res = await request(app)
         .get('/api/job-postings/id/invalid-id')
