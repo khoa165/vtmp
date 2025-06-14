@@ -19,6 +19,7 @@ import {
   ApplicationStatus,
   InterviewStatus,
   InterviewType,
+  JobPostingRegion,
 } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import assert from 'assert';
@@ -38,6 +39,7 @@ describe('ApplicationController', () => {
     jobTitle: 'SWE',
     companyName: 'Apple',
     submittedBy: getNewObjectId(),
+    location: JobPostingRegion.CANADA,
   };
 
   beforeEach(async () => {
@@ -155,6 +157,8 @@ describe('ApplicationController', () => {
       expectSuccessfulResponse({ res, statusCode: 201 });
       expect(res.body.data).to.have.property('jobPostingId', jobPosting.id);
       expect(res.body.data).to.have.property('userId', mockUserId);
+      expect(res.body.data).to.have.property('location', jobPosting.location);
+      expect(res.body.data).to.have.property('jobTitle', jobPosting.jobTitle);
     });
   });
 
