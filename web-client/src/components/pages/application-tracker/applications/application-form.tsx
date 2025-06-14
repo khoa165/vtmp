@@ -46,7 +46,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { format } from 'date-fns';
-import { DATE_MONTH_YEAR } from '@/utils/date';
+import { MONTH_DATE_YEAR } from '@/utils/date';
 import { DrawerStatusDropDown } from '@/components/pages/application-tracker/applications/drawer-status-dropdown';
 import {
   useDeleteApplication,
@@ -144,7 +144,7 @@ export const ApplicationForm = ({
                 {applicationData?.appliedOnDate
                   ? format(
                       new Date(applicationData.appliedOnDate),
-                      DATE_MONTH_YEAR
+                      MONTH_DATE_YEAR
                     )
                   : ''}
               </span>

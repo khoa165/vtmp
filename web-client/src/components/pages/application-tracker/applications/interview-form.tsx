@@ -25,7 +25,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { DATE_MONTH_YEAR } from '@/utils/date';
+import { MONTH_DATE_YEAR } from '@/utils/date';
 import { capitalize } from 'remeda';
 import { Save, Trash2 } from 'lucide-react';
 import { useEffect } from 'react';
@@ -162,7 +162,7 @@ export const InterviewUpdateForm = ({
                       {...field}
                       value={
                         field.value
-                          ? format(new Date(field.value), DATE_MONTH_YEAR)
+                          ? format(new Date(field.value), MONTH_DATE_YEAR)
                           : ''
                       }
                       placeholder="Date of interview"
@@ -350,7 +350,7 @@ export const InterviewCreateForm = ({
                       {...field}
                       value={
                         field.value
-                          ? format(new Date(field.value), 'yyyy-MM-dd')
+                          ? format(new Date(field.value), MONTH_DATE_YEAR)
                           : ''
                       }
                       placeholder="Date of interview"

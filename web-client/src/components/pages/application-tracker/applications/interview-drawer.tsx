@@ -4,7 +4,7 @@ import { ApplicationForm } from '@/components/pages/application-tracker/applicat
 import { InterviewList } from '@/components/pages/application-tracker/applications/interview-list';
 import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
 
-interface InterviewDrawer {
+interface InterviewDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   applicationId: string;
@@ -14,7 +14,7 @@ export function InterviewDrawer({
   open,
   onOpenChange,
   applicationId,
-}: InterviewDrawer) {
+}: InterviewDrawerProps) {
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent

@@ -1,1 +1,1 @@
-export const DATE_MONTH_YEAR = 'MMM d, yyyy'; // Jun 3, 2025
+export const MONTH_DATE_YEAR = 'MMM d, yyyy'; // Jun 3, 2025
