@@ -1,6 +1,7 @@
 import { LinkModel, ILink } from '@/models/link.model';
 import { Types, ClientSession } from 'mongoose';
-import { LinkProcessStage, LinkStatus } from '@vtmp/common/constants';
+import { LinkStatus } from '@vtmp/common/constants';
+import { FilterQuery } from 'mongoose';
 import {
   LinkMetaDataType,
   ExtractionLinkMetaDataType,
@@ -24,10 +25,10 @@ export const LinkRepository = {
     status: LinkStatus;
     session?: ClientSession;
   }): Promise<ILink | null> => {
-    return LinkModel.findByIdAndUpdate(
-      new Types.ObjectId(id),
-      { $set: { status } },
-      { new: true, session: session ?? null }
+    return LinkModel.findOneAndUpdate(
+      { _id: new Types.ObjectId(id) },
+      { $set: { status, subStatus: null } },
+      { new: true, session: session ?? null, runValidators: true }
     ).lean();
   },
 
@@ -35,10 +36,10 @@ export const LinkRepository = {
     id: string,
     linkMetaData: ExtractionLinkMetaDataType
   ): Promise<ILink | null> => {
-    return LinkModel.findByIdAndUpdate(
-      new Types.ObjectId(id),
+    return LinkModel.findOneAndUpdate(
+      { _id: new Types.ObjectId(id) },
       { $set: linkMetaData },
-      { new: true }
+      { new: true, runValidators: true }
     ).lean();
   },
 
@@ -60,12 +61,7 @@ export const LinkRepository = {
     return groupCountByStatus;
   },
 
-  getLinks: async (
-    filters: {
-      status?: LinkStatus;
-      linkProcessStage?: LinkProcessStage;
-    } = {}
-  ): Promise<ILink[]> => {
+  getLinks: async (filters: FilterQuery<ILink> = {}): Promise<ILink[]> => {
     return LinkModel.find(filters).lean();
   },
 
