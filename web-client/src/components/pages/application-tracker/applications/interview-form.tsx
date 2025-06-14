@@ -24,7 +24,6 @@ import {
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { capitalize } from 'remeda';
 import { Save, Trash2 } from 'lucide-react';
 import { useEffect } from 'react';
 
@@ -130,11 +129,8 @@ export const InterviewUpdateForm = ({
                             (value) => value !== interviewForm.watch('status')
                           )
                           .map((dropdownStatus, index) => (
-                            <SelectItem
-                              key={index}
-                              value={capitalize(dropdownStatus)}
-                            >
-                              {capitalize(dropdownStatus)}
+                            <SelectItem key={index} value={dropdownStatus}>
+                              {dropdownStatus}
                             </SelectItem>
                           ))}
                       </SelectContent>
@@ -299,13 +295,11 @@ export const InterviewCreateForm = ({
                     </FormLabel>
                     <FormControl>
                       <Select
-                        {...field}
+                        value={field.value ?? InterviewStatus.PENDING}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        value={field.value}
                       >
                         <SelectTrigger className="w-full rounded-lg p-2 border border-input px-3 py-2 text-sm shadow-sm">
-                          <span>{field.value}</span>
+                          <span>{field.value ?? InterviewStatus.PENDING}</span>
                         </SelectTrigger>
                         <SelectContent className="z-50">
                           {Object.values(InterviewStatus)
@@ -313,11 +307,8 @@ export const InterviewCreateForm = ({
                               (value) => value !== interviewForm.watch('status')
                             )
                             .map((dropdownStatus, index) => (
-                              <SelectItem
-                                key={index}
-                                value={capitalize(dropdownStatus)}
-                              >
-                                {capitalize(dropdownStatus)}
+                              <SelectItem key={index} value={dropdownStatus}>
+                                {dropdownStatus}
                               </SelectItem>
                             ))}
                         </SelectContent>

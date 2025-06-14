@@ -81,6 +81,12 @@ export const ApplicationForm = ({
 
   const applicationForm = useForm<z.infer<typeof ApplicationFormSchema>>({
     resolver: zodResolver(ApplicationFormSchema),
+    defaultValues: {
+      note: '',
+      referrer: '',
+      portalLink: '',
+      interest: InterestLevel.MEDIUM,
+    },
   });
 
   useEffect(() => {
@@ -124,10 +130,7 @@ export const ApplicationForm = ({
     <>
       <DrawerHeader>
         <DrawerTitle className="mb-3 text-4xl font-bold">
-          <Link
-            to={applicationData?.portalLink || '#'}
-            className="flex items-center"
-          >
+          <Link to={applicationData?.url || '#'} className="flex items-center">
             {applicationData?.jobTitle}
             <ExternalLink className="ml-1 mt-1 h-8 w-8" />
           </Link>

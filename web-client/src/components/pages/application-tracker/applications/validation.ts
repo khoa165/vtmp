@@ -16,6 +16,7 @@ const ApplicationSchema = z.object({
   status: z.nativeEnum(ApplicationStatus, {
     message: 'Invalid application status',
   }),
+  url: z.string().optional(),
   appliedOnDate: z.string(),
   note: z.string().optional(),
   referrer: z.string().optional(),
