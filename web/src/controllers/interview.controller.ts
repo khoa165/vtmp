@@ -23,12 +23,10 @@ const InterviewCreateSchema = z
       .refine((id) => mongoose.Types.ObjectId.isValid(id), {
         message: 'Invalid application ID format',
       }),
-    types: z
-      .array(z.nativeEnum(InterviewType), {
-        required_error: 'Interview types is required',
-        invalid_type_error: 'Invalid interview type format',
-      })
-      .min(1, { message: 'Must select at least 1 interview type' }),
+    types: z.array(z.nativeEnum(InterviewType), {
+      required_error: 'Interview types is required',
+      invalid_type_error: 'Invalid interview type format',
+    }),
     status: z.nativeEnum(InterviewStatus).optional(),
     interviewOnDate: z.coerce.date(),
     note: z.string().optional(),
