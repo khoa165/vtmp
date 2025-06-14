@@ -4,7 +4,7 @@ import {
   LinkStatus,
   JobFunction,
   LinkRegion,
-  FAILEDREASON,
+  LinkProcessingSubStatus,
 } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
@@ -157,7 +157,7 @@ describe('LinkService', () => {
       await expect(
         LinkService.updateLinkMetaData(googleLink.id, {
           ...mockLinkMetaData,
-          subStatus: FAILEDREASON.SCRAPING_FAILED,
+          subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
         })
       ).eventually.rejectedWith(Error);
     });
@@ -180,7 +180,7 @@ describe('LinkService', () => {
     it('should be able to update link metadata with status failed', async () => {
       await expect(
         LinkService.updateLinkMetaData(googleLink.id, {
-          subStatus: FAILEDREASON.SCRAPING_FAILED,
+          subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
           ...mockLinkMetaData,
           status: LinkStatus.FAILED,
         })

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import {
-  FAILEDREASON,
+  LinkProcessingSubStatus,
   JobFunction,
   JobPostingRegion,
   JobType,
@@ -39,7 +39,7 @@ export const ExtractionLinkMetaDataSchema = LinkMetaDataSchema.extend({
     message: 'Invalid link status',
   }),
   subStatus: z
-    .nativeEnum(FAILEDREASON, {
+    .nativeEnum(LinkProcessingSubStatus, {
       message: 'Invalid sub status',
     })
     .optional(),

@@ -3,7 +3,7 @@ import {
   JobType,
   LinkRegion,
   LinkStatus,
-  FAILEDREASON,
+  LinkProcessingSubStatus,
 } from '@vtmp/common/constants';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
@@ -97,14 +97,14 @@ describe('LinkRepository', () => {
 
     it('should be able to update link metadata with status failed', async () => {
       const link = await LinkRepository.updateLinkMetaData(googleLink.id, {
-        subStatus: FAILEDREASON.SCRAPING_FAILED,
+        subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
         ...mockLinkMetaData,
         status: LinkStatus.FAILED,
       });
 
       assert(link);
       expect(link).to.deep.include({
-        subStatus: FAILEDREASON.SCRAPING_FAILED,
+        subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
         ...mockLinkMetaData,
         status: LinkStatus.FAILED,
       });
