@@ -73,12 +73,12 @@ export class InvalidJsonError extends ServiceSpecificError {
 
 export function logError(error: unknown): void {
   if (error instanceof ServiceSpecificError) {
-    console.error('ServiceSpecificError:', error.message);
+    console.error('ServiceSpecificError:', error);
     if (error.cause instanceof Error) {
       console.error('Error cause:', error.cause);
     }
   } else if (error instanceof Error) {
-    console.error('General error:', error.message);
+    console.error('General error:', error);
     if (error.cause instanceof Error) {
       console.error('Error cause:', error.cause);
     }
