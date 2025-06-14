@@ -52,7 +52,7 @@ const LoginPage = () => {
       console.log('Login successfully: ', res);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
-      navigate('/application-tracker');
+      navigate('/job-postings');
     },
     onError: (error) => {
       console.log('Error in useMutation login', error);
