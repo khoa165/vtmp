@@ -10,7 +10,7 @@ import {
 import { LinkRepository } from '@/repositories/link.repository';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import {
-  FAILED_REASON,
+  FAILEDREASON,
   JobFunction,
   JobPostingRegion,
   JobType,
@@ -228,7 +228,7 @@ describe('LinkController', () => {
       route: `/api/links/${linkId}/metaData`,
       method: HTTPMethod.PUT,
       body: {
-        subStatus: FAILED_REASON.SCRAPING_FAILED,
+        subStatus: FAILEDREASON.SCRAPING_FAILED,
         ...mockLinkMetaData,
         status: LinkStatus.FAILED,
       },
@@ -263,7 +263,7 @@ describe('LinkController', () => {
       const res = await request(app)
         .put(`/api/links/${googleLink.id}/metadata`)
         .send({
-          subStatus: FAILED_REASON.SCRAPING_FAILED,
+          subStatus: FAILEDREASON.SCRAPING_FAILED,
           ...mockLinkMetaData,
         })
         .set('Accept', 'application/json')
@@ -278,7 +278,7 @@ describe('LinkController', () => {
       const res = await request(app)
         .put(`/api/links/${googleLink.id}/metadata`)
         .send({
-          subStatus: FAILED_REASON.SCRAPING_FAILED,
+          subStatus: FAILEDREASON.SCRAPING_FAILED,
 
           ...mockLinkMetaData,
           status: LinkStatus.FAILED,
@@ -293,7 +293,7 @@ describe('LinkController', () => {
       const res = await request(app)
         .put(`/api/links/${googleLink.id}/metadata`)
         .send({
-          subStatus: FAILED_REASON.SCRAPING_FAILED,
+          subStatus: FAILEDREASON.SCRAPING_FAILED,
 
           ...mockLinkMetaData,
           status: LinkStatus.FAILED,

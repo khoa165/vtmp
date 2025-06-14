@@ -1,7 +1,6 @@
 import { LinkModel, ILink } from '@/models/link.model';
-import { Types, ClientSession } from 'mongoose';
+import { Types, ClientSession, FilterQuery } from 'mongoose';
 import { LinkStatus } from '@vtmp/common/constants';
-import { FilterQuery } from 'mongoose';
 import {
   LinkMetaDataType,
   ExtractionLinkMetaDataType,
