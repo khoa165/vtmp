@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
-import { times, zip } from 'remeda';
+import { sortBy, times, zip } from 'remeda';
 
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
@@ -13,7 +13,7 @@ import {
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { IJobPosting } from '@/models/job-posting.model';
-
+import { UserRepository } from '@/repositories/user.repository';
 describe('ApplicationRepository', () => {
   useMongoDB();
 
@@ -516,6 +516,218 @@ describe('ApplicationRepository', () => {
       expect(result).to.deep.equal({
         [ApplicationStatus.SUBMITTED]: 1,
       });
+    });
+  });
+
+  describe('getApplicationsCountByUser', () => {
+    it('should return empty array since no application is created', async () => {
+      const result = await ApplicationRepository.getApplicationsCountByUser();
+      expect(result).to.deep.equal([]);
+    });
+
+    it('should return count of applications for a single user', async () => {
+      const mockOneUser = {
+        firstName: 'Test',
+        lastName: 'Nguyen',
+        email: 'test@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      };
+      const user = await UserRepository.createUser(mockOneUser);
+      await Promise.all(
+        times(2, () =>
+          ApplicationRepository.createApplication({
+            jobPostingId: getNewMongoId(),
+            userId: user._id.toString(),
+          })
+        )
+      );
+      const result = await ApplicationRepository.getApplicationsCountByUser();
+      assert(result);
+      expect(result).to.deep.equal([
+        {
+          count: 2,
+          userId: user._id,
+          name: 'Test Nguyen',
+        },
+      ]);
+    });
+
+    it('should return count of applications for multiple users', async () => {
+      const mockMultipleUsers = [
+        {
+          firstName: 'admin1',
+          lastName: 'viettech',
+          email: 'test1@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+        {
+          firstName: 'admin2',
+          lastName: 'viettech',
+          email: 'test2@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+        {
+          firstName: 'admin3',
+          lastName: 'viettech',
+          email: 'test3@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+      ];
+      await Promise.all(
+        mockMultipleUsers.map((mockUser) => UserRepository.createUser(mockUser))
+      );
+      const users = await UserRepository.getAllUsers();
+      await Promise.all(
+        users.map((user) =>
+          times(3, () =>
+            ApplicationRepository.createApplication({
+              jobPostingId: getNewMongoId(),
+              userId: user._id.toString(),
+            })
+          )
+        )
+      );
+      const additionalUser = {
+        firstName: 'Test',
+        lastName: 'Nguyen',
+        email: 'test@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      };
+      const user = await UserRepository.createUser(additionalUser);
+      await Promise.all(
+        times(8, () =>
+          ApplicationRepository.createApplication({
+            jobPostingId: getNewMongoId(),
+            userId: user._id.toString(),
+          })
+        )
+      );
+      const result = await ApplicationRepository.getApplicationsCountByUser();
+      assert(result);
+      expect(
+        result.map(({ count, name }) => ({ count, name }))
+      ).to.deep.include.members([
+        {
+          count: 8,
+          name: 'Test Nguyen',
+        },
+        {
+          count: 3,
+          name: 'admin1 viettech',
+        },
+        {
+          count: 3,
+          name: 'admin2 viettech',
+        },
+        {
+          count: 3,
+          name: 'admin3 viettech',
+        },
+      ]);
+    });
+
+    it('should not count applications that are soft-deleted', async () => {
+      const mockOneUser = {
+        firstName: 'Test',
+        lastName: 'Nguyen',
+        email: 'test@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      };
+      const user = await UserRepository.createUser(mockOneUser);
+      await Promise.all(
+        times(5, () =>
+          ApplicationRepository.createApplication({
+            jobPostingId: getNewMongoId(),
+            userId: user._id.toString(),
+          })
+        )
+      );
+      const applicationToDelete = await ApplicationRepository.createApplication(
+        {
+          jobPostingId: getNewMongoId(),
+          userId: user._id.toString(),
+        }
+      );
+      await ApplicationRepository.deleteApplicationById({
+        userId: user._id.toString(),
+        applicationId: applicationToDelete.id,
+      });
+
+      const result = await ApplicationRepository.getApplicationsCountByUser();
+      expect(result).to.deep.equal([
+        {
+          count: 5,
+          userId: user._id,
+          name: 'Test Nguyen',
+        },
+      ]);
+    });
+
+    it('sort the result in the ascending order of counts', async () => {
+      const mockMultipleUsers = [
+        {
+          firstName: 'admin1',
+          lastName: 'viettech',
+          email: 'test1@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+        {
+          firstName: 'admin2',
+          lastName: 'viettech',
+          email: 'test2@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+        {
+          firstName: 'admin3',
+          lastName: 'viettech',
+          email: 'test3@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+        {
+          firstName: 'admin4',
+          lastName: 'viettech',
+          email: 'test4@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+      ];
+      const mockNumberofApplications = [1, 12, 6, 4];
+      await Promise.all(
+        mockMultipleUsers.map((mockUser) => UserRepository.createUser(mockUser))
+      );
+      const users = await UserRepository.getAllUsers();
+      const usersSortByFirstName = sortBy(users, (user) => user.firstName);
+      await Promise.all(
+        zip(usersSortByFirstName, mockNumberofApplications)
+          .map(([user, count]) =>
+            times(count, () =>
+              ApplicationRepository.createApplication({
+                jobPostingId: getNewMongoId(),
+                userId: user._id.toString(),
+              })
+            )
+          )
+          .flatMap((a) => a)
+      );
+      const result = await ApplicationRepository.getApplicationsCountByUser();
+      assert(result);
+      expect(result.map(({ count, name }) => ({ count, name }))).to.deep.equal([
+        {
+          count: 1,
+          name: 'admin1 viettech',
+        },
+        {
+          count: 4,
+          name: 'admin4 viettech',
+        },
+        {
+          count: 6,
+          name: 'admin3 viettech',
+        },
+        {
+          count: 12,
+          name: 'admin2 viettech',
+        },
+      ]);
     });
   });
 });
