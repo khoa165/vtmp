@@ -1,31 +1,25 @@
 import { LinkProcessorService } from '@/services/link-processor.service';
-import { submitLinkWithToken } from '@/utils/auth';
-import {
-  Context,
-  APIGatewayProxyResult,
-  APIGatewayProxyEvent,
-} from 'aws-lambda';
+// import { submitLinkWithToken } from '@/utils/auth';
+import middy from '@middy/core';
+import httpJsonBodyParser from '@middy/http-json-body-parser';
+import { handleErrorMiddleware } from '@/utils/errors';
+import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
+import { z } from 'zod';
 
-export const handler = async (
-  event: APIGatewayProxyEvent,
-  context: Context
+const EventBodySchema = z.object({
+  url: z.string().url(),
+});
+
+const lambdaHandler = async (
+  event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyResult> => {
-  console.log(`Event: ${JSON.stringify(event, null, 2)}`);
-  console.log(`Context: ${JSON.stringify(context, null, 2)}`);
-  const url = event.body || '';
+  const { url } = EventBodySchema.parse(event.body);
   const processedMetadata = await LinkProcessorService.processLink(url);
 
-  try {
-    const response = await submitLinkWithToken('/links', processedMetadata);
+  console.log(processedMetadata);
 
-    if (response.status === 201) {
-      console.log('Job link and metadata deposited successfully!');
-    } else {
-      console.log('Failed to deposit job link!');
-    }
-  } catch (error: unknown) {
-    console.error('Failed to POST to /links: ', error);
-  }
+  // Need to deal with case when submitLinkWithToken throws?
+  // await submitLinkWithToken('/links', processedMetadata);
 
   return {
     statusCode: 200,
@@ -34,3 +28,7 @@ export const handler = async (
     }),
   };
 };
+
+export const handler = middy(lambdaHandler)
+  .use(httpJsonBodyParser())
+  .use(handleErrorMiddleware());

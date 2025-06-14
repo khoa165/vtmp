@@ -13,6 +13,7 @@ import {
 } from '@/utils/errors';
 import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
 import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
+import { mapStringToEnum } from '@/helpers/link.helpers';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
@@ -25,22 +26,6 @@ const parseJson = (text: string, url: string): RawAIResponse => {
   } catch {
     throw new InvalidJsonError('Invalid JSON format in AI response', { url });
   }
-};
-
-const mapStringToEnum = <T extends Record<string, string>>({
-  enumObject,
-  value,
-  fallback,
-}: {
-  enumObject: T;
-  value: string;
-  fallback: T[keyof T];
-}): T[keyof T] => {
-  const match = Object.values(enumObject).find((v) => v === value);
-  if (!match) {
-    return fallback;
-  }
-  return match as T[keyof T];
 };
 
 const generateMetaData = async (
@@ -100,7 +85,7 @@ const ExtractLinkMetadataService = {
   ): Promise<LinkMetaData> => {
     try {
       return generateMetaData(extractedText, url);
-    } catch (error) {
+    } catch (error: unknown) {
       throw new AIExtractionError(
         'Failed to extract metadata with AI',
         { url },

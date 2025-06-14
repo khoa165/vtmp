@@ -1069,6 +1069,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@middy/core@npm:^6.3.1":
+  version: 6.3.1
+  resolution: "@middy/core@npm:6.3.1"
+  checksum: 10c0/238126b991201972fc4f57e54ba466db7e5a01eba75a930db67556d8415e092f337dbe6060f24275aca6edb1418cba411376404fb72c8278d3c4ac74189a7601
+  languageName: node
+  linkType: hard
+
+"@middy/http-json-body-parser@npm:^6.3.1":
+  version: 6.3.1
+  resolution: "@middy/http-json-body-parser@npm:6.3.1"
+  dependencies:
+    "@middy/util": "npm:6.3.1"
+  checksum: 10c0/efefa57b87672d5faaa315a3f4bfb2d2632456178c9d70c6db66e3502a2b9154d74f9436b16d89881c6e0fc9c6e053d2ea744184ae545d7089a235955f3a000e
+  languageName: node
+  linkType: hard
+
+"@middy/util@npm:6.3.1":
+  version: 6.3.1
+  resolution: "@middy/util@npm:6.3.1"
+  checksum: 10c0/00bdce80552dc556757b1a7f89182a61c5a16db08f1d0c634e121201c5d4cc17e9149c937c0ec5ab7aed46bc1bd7ab293bb2a399e3f08dc50bb374860f75b35c
+  languageName: node
+  linkType: hard
+
 "@modelcontextprotocol/sdk@npm:^1.12.1":
   version: 1.12.1
   resolution: "@modelcontextprotocol/sdk@npm:1.12.1"
@@ -2438,13 +2461,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sparticuz/chromium@npm:^133.0.0":
-  version: 133.0.0
-  resolution: "@sparticuz/chromium@npm:133.0.0"
+"@sparticuz/chromium@npm:^137.0.1":
+  version: 137.0.1
+  resolution: "@sparticuz/chromium@npm:137.0.1"
   dependencies:
     follow-redirects: "npm:^1.15.9"
-    tar-fs: "npm:^3.0.8"
-  checksum: 10c0/186ff9dc7d0502c0766e7f9d9d929c1cf057adff287f13f725beaa94a5d2a1db6dd94dfb4f3d3e7bfa9b03bf37984ea9f8c1543f29b207d58303e053a6890839
+    tar-fs: "npm:^3.0.9"
+  checksum: 10c0/19816afc273b7d641a180660e455b312a3cabc13e9d9bab9d401f3cd21867f779cb2da15ddd03a955e5970f207bf2ba50907012da7729ef7b291bddcd39aaca5
   languageName: node
   linkType: hard
 
@@ -5357,8 +5380,10 @@ __metadata:
   resolution: "@vtmp/link-processing-service@workspace:link-processing-service"
   dependencies:
     "@google/genai": "npm:^1.4.0"
+    "@middy/core": "npm:^6.3.1"
+    "@middy/http-json-body-parser": "npm:^6.3.1"
     "@modelcontextprotocol/sdk": "npm:^1.12.1"
-    "@sparticuz/chromium": "npm:^133.0.0"
+    "@sparticuz/chromium": "npm:^137.0.1"
     "@types/aws-lambda": "npm:^8.10.149"
     "@types/jsonwebtoken": "npm:^9.0.9"
     "@types/node": "npm:^22.14.1"
@@ -5366,7 +5391,7 @@ __metadata:
     axios: "npm:^1.9.0"
     dotenv: "npm:^16.5.0"
     jsonwebtoken: "npm:^9.0.2"
-    puppeteer-core: "npm:^24.10.0"
+    puppeteer-core: "npm:^24.10.1"
     tsc-alias: "npm:^1.8.16"
     tsx: "npm:^4.19.4"
     typescript: "npm:^5.8.3"
@@ -12306,7 +12331,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer-core@npm:^24.10.0":
+"puppeteer-core@npm:^24.10.1":
   version: 24.10.1
   resolution: "puppeteer-core@npm:24.10.1"
   dependencies:
@@ -14068,7 +14093,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar-fs@npm:^3.0.8":
+"tar-fs@npm:^3.0.8, tar-fs@npm:^3.0.9":
   version: 3.0.9
   resolution: "tar-fs@npm:3.0.9"
   dependencies:
@@ -15630,10 +15655,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.22.4, zod@npm:^3.23.8, zod@npm:^3.24.1":
+"zod@npm:^3.22.4, zod@npm:^3.23.8":
   version: 3.25.63
   resolution: "zod@npm:3.25.63"
   checksum: 10c0/ce09c6ae327a66629e67340856ec19b6b4ba2c28691a2de1e618a5cc717685c2b4e9baa370cf81c34f453fc652733ecfc9a7d5d966570a22472999931abd5ada
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.24.1":
+  version: 3.25.64
+  resolution: "zod@npm:3.25.64"
+  checksum: 10c0/00d76093a999e377e4ffd037fa7185e861c35917e8c4272f514115c206a0654995168f57fb71708b11e0a9243206d988b7f63b543404e1796402e50d346a6bd7
   languageName: node
   linkType: hard
 

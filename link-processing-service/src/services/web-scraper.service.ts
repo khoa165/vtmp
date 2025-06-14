@@ -12,7 +12,7 @@ export const ScraperService = {
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
         executablePath: await chromium.executablePath(),
-        headless: chromium.headless,
+        headless: true,
       });
       const page: Page = await browser.newPage();
       await page.goto(url, { waitUntil: 'networkidle2' }); // Make sure the page is fully loaded before proceeding
@@ -20,9 +20,8 @@ export const ScraperService = {
         'body',
         (el: HTMLBodyElement) => el.innerText
       );
-
       return bodyText;
-    } catch (error) {
+    } catch (error: unknown) {
       throw new ScrapingError('Failed to scrap URL', { url }, { cause: error });
     } finally {
       // Make sure to clean up resources even if error occurs
