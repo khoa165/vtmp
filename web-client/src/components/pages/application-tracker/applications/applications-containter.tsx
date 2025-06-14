@@ -55,7 +55,7 @@ export const ApplicationsContainer = ({
           <Skeleton className="h-10 w-[24rem] rounded-md" />
           <Skeleton className="h-10 w-[8rem] rounded-md" />
         </div>
-        <Skeleton className="h-[32rem] w-full rounded-x   l" />
+        <Skeleton className="h-[32rem] w-full rounded-xl" />
       </>
     );
   }
