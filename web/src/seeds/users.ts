@@ -1,43 +1,53 @@
 import { IUser, UserModel } from '@/models/user.model';
 import bcrypt from 'bcryptjs';
 import { faker } from '@faker-js/faker';
+import { UserRole } from '@vtmp/common/constants';
 
 const specificUsers = [
   {
     firstName: 'Khoa',
     lastName: 'Le',
+    role: UserRole.ADMIN,
   },
   {
     firstName: 'Dang',
     lastName: 'Son',
+    role: UserRole.USER,
   },
   {
     firstName: 'Quang',
     lastName: 'Minh',
+    role: UserRole.MODERATOR,
   },
   {
     firstName: 'Phuc',
     lastName: 'Jun',
+    role: UserRole.MODERATOR,
   },
   {
     firstName: 'An',
     lastName: 'Tran',
+    role: UserRole.USER,
   },
   {
     firstName: 'Nam',
     lastName: 'Nguyen',
+    role: UserRole.USER,
   },
   {
     firstName: 'Kha',
     lastName: 'Tran',
+    role: UserRole.USER,
   },
   {
     firstName: 'Monica',
     lastName: 'Huynh',
+    role: UserRole.ADMIN,
   },
   {
     firstName: 'Kevin',
     lastName: 'Doan',
+    role: UserRole.MODERATOR,
   },
 ];
 
