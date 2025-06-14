@@ -1,4 +1,4 @@
-import { withRetry } from '@/helpers/retry.helper';
+import { executeWithRetry } from '@/helpers/retry.helper';
 import { LinkValidationError } from '@/utils/errors';
 import retry from 'retry';
 export const LinkValidatorService = {
@@ -26,7 +26,7 @@ export const LinkValidatorService = {
     // Validate URL format - throws TypeError if invalid
     new URL(url);
     const { retryConfig, httpErrorNoRetry } = this.config;
-    const resolvedUrl = await withRetry(
+    const resolvedUrl = await executeWithRetry(
       () => this._resolveRedirects(url),
       retryConfig,
       (error: Error) => {

@@ -11,6 +11,14 @@ const testUrl_shouldReturn429 = 'https://httpstat.us/429';
 const testUrl_shouldReturnNetworkError = 'https://meow.meow';
 const testUrl_shouldReturnTypeError = 'not-a-valid-url';
 
+const testRetryConfig: retry.WrapOptions = {
+  retries: 3,
+  factor: 2,
+  minTimeout: 10,
+  maxTimeout: 10,
+};
+LinkValidatorService.config.retryConfig = testRetryConfig;
+
 chai.use(chaiAsPromised);
 describe('LinkValidatorService', () => {
   describe('resolveRedirects', () => {

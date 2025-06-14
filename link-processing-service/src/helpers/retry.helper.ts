@@ -6,13 +6,14 @@ import retry from 'retry';
  * @template T The type of the result returned by the operation.
  * @param operation A function that returns a Promise of type T to be executed.
  * @param retryConfig Configuration options for the retry operation (from the `retry` library).
- * @param shouldRetry A function that determines whether a given error should trigger a retry.
+ * @param shouldRetry  Optional. A function that determines whether a given error should trigger a retry.
+ * If unfilled,the `operation` will be retried until timeout or max retries reached
  * @returns A Promise that resolves with the result of the operation, or rejects if all retries fail or if the error is not retryable.
  */
-async function withRetry<T>(
+async function executeWithRetry<T>(
   operation: () => Promise<T>,
   retryConfig: retry.OperationOptions,
-  shouldRetry: (error: Error) => boolean
+  shouldRetry?: (error: Error) => boolean
 ): Promise<T> {
   const retryOperation = retry.operation(retryConfig);
 
@@ -23,7 +24,10 @@ async function withRetry<T>(
         resolve(result);
       } catch (error) {
         const castedError = error as Error;
-        if (!shouldRetry(castedError) || !retryOperation.retry(castedError)) {
+        if (
+          (shouldRetry !== undefined && !shouldRetry(castedError)) ||
+          !retryOperation.retry(castedError)
+        ) {
           reject(error);
         }
       }
@@ -31,4 +35,4 @@ async function withRetry<T>(
   });
 }
 
-export { withRetry };
+export { executeWithRetry };

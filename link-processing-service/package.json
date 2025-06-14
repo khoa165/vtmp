@@ -33,6 +33,7 @@
     "zod": "^3.25.51"
   },
   "scripts": {
-    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json"
+    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
+    "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000"
   }
 }
