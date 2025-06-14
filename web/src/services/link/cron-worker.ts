@@ -1,4 +1,4 @@
-import { LinkStatus, FAILED_REASON } from '@vtmp/common/constants';
+import { LinkStatus, FAILEDREASON } from '@vtmp/common/constants';
 import { LinkRepository } from '@/repositories/link.repository';
 import cron from 'node-cron';
 
@@ -7,7 +7,7 @@ const getRetryFilter = () => ({
     { status: LinkStatus.PENDING },
     {
       status: LinkStatus.FAILED,
-      subStatus: FAILED_REASON.UNKNOWN_FAILED,
+      subStatus: FAILEDREASON.UNKNOWN_FAILED,
       attemptsCount: { $lt: 4 },
       $expr: {
         $gt: [
@@ -25,7 +25,7 @@ const getRetryFilter = () => ({
   ],
 });
 
-cron.schedule('0 * * * * *', async () => {
+cron.schedule('0 0 * * * *', async () => {
   const links = await LinkRepository.getLinks(getRetryFilter());
   console.log(links);
 });

@@ -1,6 +1,6 @@
 import { ILink, LinkModel } from '@/models/link.model';
 import { faker } from '@faker-js/faker';
-import { CompanyName, FAILED_REASON, LinkRegion } from '@vtmp/common/constants';
+import { CompanyName, FAILEDREASON, LinkRegion } from '@vtmp/common/constants';
 import { LinkStatus } from '@vtmp/common/constants';
 import { formatEnumName } from '@vtmp/common/utils';
 import { JobTitle } from '@vtmp/common/constants';
@@ -18,7 +18,7 @@ export const loadLinks = async (count: number): Promise<ILink[]> => {
     newLinks.map((link) =>
       link.status === LinkStatus.FAILED
         ? {
-            subStatus: faker.helpers.enumValue(FAILED_REASON),
+            subStatus: faker.helpers.enumValue(FAILEDREASON),
             ...link,
             lastProcessedAt: new Date(new Date().getTime() - 30 * 60 * 1000),
           }
