@@ -28,6 +28,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { DATE_MONTH_YEAR } from '@/utils/date';
 import { capitalize } from 'remeda';
 import { Save, Trash2 } from 'lucide-react';
+import { useEffect } from 'react';
 
 const interviewTypeOptions = Object.values(InterviewType).map((type) => ({
   label: type.toString(),
@@ -66,6 +67,17 @@ export const InterviewUpdateForm = ({
       note: note,
     },
   });
+
+  useEffect(() => {
+    if (currentInterview) {
+      interviewForm.reset({
+        types: currentInterview.types,
+        status: currentInterview.status,
+        interviewOnDate: currentInterview.interviewOnDate,
+        note: currentInterview.note,
+      });
+    }
+  }, [currentInterview]);
 
   return (
     <div className="rounded-xl bg-background border border-background p-6 mb-4 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3 ">

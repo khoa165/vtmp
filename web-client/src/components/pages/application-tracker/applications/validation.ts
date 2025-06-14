@@ -60,7 +60,7 @@ export const ApplicationFormSchema = z.object({
   note: z.string().optional(),
   referrer: z.string().optional(),
   portalLink: z.string().optional(),
-  interest: z.nativeEnum(InterestLevel),
+  interest: z.nativeEnum(InterestLevel).optional(),
 });
 
 export type IApplications = z.infer<typeof ApplicationsResponseSchema>['data'];

@@ -1,5 +1,5 @@
 import { ApplicationFormSchema } from '@/components/pages/application-tracker/applications/validation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/base/button';
 import {
   AlertDialog,
@@ -37,7 +37,14 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/base/drawer';
-import { Clock, ExternalLink, MapPin, Save, Trash2 } from 'lucide-react';
+import {
+  Clock,
+  ExternalLink,
+  MapPin,
+  RotateCw,
+  Save,
+  Trash2,
+} from 'lucide-react';
 import { format } from 'date-fns';
 import { DATE_MONTH_YEAR } from '@/utils/date';
 import { DrawerStatusDropDown } from '@/components/pages/application-tracker/applications/drawer-status-dropdown';
@@ -74,13 +81,18 @@ export const ApplicationForm = ({
 
   const applicationForm = useForm<z.infer<typeof ApplicationFormSchema>>({
     resolver: zodResolver(ApplicationFormSchema),
-    defaultValues: {
-      note: applicationData?.note ?? '',
-      referrer: applicationData?.referrer ?? '',
-      portalLink: applicationData?.portalLink ?? '',
-      interest: applicationData?.interest ?? InterestLevel.MEDIUM,
-    },
   });
+
+  useEffect(() => {
+    if (applicationData) {
+      applicationForm.reset({
+        note: applicationData.note,
+        referrer: applicationData.referrer,
+        portalLink: applicationData.portalLink,
+        interest: applicationData.interest,
+      });
+    }
+  }, [applicationData]);
 
   if (isLoadingApplication) {
     return (
@@ -169,7 +181,7 @@ export const ApplicationForm = ({
                   applicationForm.reset();
                 }}
               >
-                <Trash2 className="scale-85" />
+                <RotateCw className="scale-85" />
                 Cancel
               </Button>
               <Button
@@ -213,7 +225,6 @@ export const ApplicationForm = ({
         <Form {...applicationForm}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-x-4 mb-4">
             <FormField
-              control={applicationForm.control}
               name="interest"
               render={({ field }) => (
                 <FormItem>
@@ -225,7 +236,9 @@ export const ApplicationForm = ({
                       disabled={!isEditingApplication}
                     >
                       <SelectTrigger className="w-full h-10 rounded-lg p-2 border border-input px-3 py-2 text-sm shadow-sm">
-                        <ApplicationInterestDropDown interest={field.value} />
+                        <ApplicationInterestDropDown
+                          interest={field.value ?? InterestLevel.MEDIUM}
+                        />
                       </SelectTrigger>
                       <SelectContent className="z-50">
                         {Object.values(InterestLevel)
@@ -251,7 +264,6 @@ export const ApplicationForm = ({
               )}
             />
             <FormField
-              control={applicationForm.control}
               name="referrer"
               render={({ field }) => (
                 <FormItem>
@@ -268,7 +280,6 @@ export const ApplicationForm = ({
               )}
             />
             <FormField
-              control={applicationForm.control}
               name="portalLink"
               render={({ field }) => (
                 <FormItem>
@@ -277,7 +288,7 @@ export const ApplicationForm = ({
                     <Input
                       placeholder="Add a portal link"
                       {...field}
-                      disabled
+                      disabled={!isEditingApplication}
                     />
                   </FormControl>
                   <FormMessage />
@@ -287,7 +298,6 @@ export const ApplicationForm = ({
           </div>
 
           <FormField
-            control={applicationForm.control}
             name="note"
             render={({ field }) => (
               <FormItem>
