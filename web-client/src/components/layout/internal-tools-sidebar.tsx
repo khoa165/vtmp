@@ -33,7 +33,7 @@ export const InternalToolsSidebar = () => {
   const items = [
     {
       title: 'Users',
-      url: '/user-invitation',
+      url: '/admin/user-invitation',
       icon: ShieldUser,
       roles: [UserRole.ADMIN],
     },
