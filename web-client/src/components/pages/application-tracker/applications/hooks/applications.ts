@@ -197,7 +197,7 @@ export const useGetInterviewByApplicationId = (applicationId: string) => {
   });
 };
 
-export const useCreateInterview = () => {
+export const useCreateInterview = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -227,6 +227,7 @@ export const useCreateInterview = () => {
         ],
       });
       toast.success(res.message);
+      onSuccess?.();
     },
     onError: (error: unknown) => {
       if (axios.isAxiosError(error) && error.response) {

@@ -18,7 +18,9 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
     data: interviewsData,
   } = useGetInterviewByApplicationId(applicationId);
 
-  const { mutate: createInterviewFn } = useCreateInterview();
+  const { mutate: createInterviewFn } = useCreateInterview(() =>
+    setShowCreateForm(false)
+  );
   const { mutate: updateInterviewFn } = useUpdateInterview();
 
   const [showCreateForm, setShowCreateForm] = useState(false);

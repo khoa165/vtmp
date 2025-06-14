@@ -4,7 +4,6 @@ import {
 } from '@/components/pages/application-tracker/applications/validation';
 import { MultiSelect } from '@/components/base/multi-select';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
-import { format } from 'date-fns';
 import {
   Select,
   SelectContent,
@@ -25,7 +24,6 @@ import {
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MONTH_DATE_YEAR } from '@/utils/date';
 import { capitalize } from 'remeda';
 import { Save, Trash2 } from 'lucide-react';
 import { useEffect } from 'react';
@@ -160,14 +158,10 @@ export const InterviewUpdateForm = ({
                   <FormControl>
                     <Input
                       {...field}
-                      value={
-                        field.value
-                          ? format(new Date(field.value), MONTH_DATE_YEAR)
-                          : ''
-                      }
+                      value={new Date(field.value).toISOString().split('T')[0]}
                       placeholder="Date of interview"
                       type="date"
-                      onChange={(e) => field.onChange(e.target.value)}
+                      onChange={(e) => field.onChange(new Date(e.target.value))}
                       className="w-full rounded-lg border border-input text-sm shadow-sm"
                     />
                   </FormControl>
@@ -348,14 +342,10 @@ export const InterviewCreateForm = ({
                   <FormControl>
                     <Input
                       {...field}
-                      value={
-                        field.value
-                          ? format(new Date(field.value), MONTH_DATE_YEAR)
-                          : ''
-                      }
+                      value={new Date(field.value).toISOString().split('T')[0]}
                       placeholder="Date of interview"
                       type="date"
-                      onChange={(e) => field.onChange(e.target.value)}
+                      onChange={(e) => field.onChange(new Date(e.target.value))}
                       className="w-full rounded-lg border border-input px-3 py-2 text-sm shadow-sm focus:outline-none"
                     />
                   </FormControl>
@@ -404,7 +394,6 @@ export const InterviewCreateForm = ({
                     applicationId,
                   },
                 });
-                setShowCreateForm(false);
               }}
               className="h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
             >
