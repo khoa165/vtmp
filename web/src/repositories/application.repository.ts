@@ -127,4 +127,50 @@ export const ApplicationRepository = {
 
     return countGroupByStatus;
   },
+
+  getApplicationsCountByUser: async () => {
+    return ApplicationModel.aggregate([
+      {
+        $match: {
+          deletedAt: null,
+        },
+      },
+      {
+        $group: {
+          _id: '$userId',
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: {
+          path: '$user',
+        },
+      },
+      {
+        $project: {
+          userId: '$_id',
+          _id: 0,
+          count: 1,
+          name: {
+            $concat: ['$user.firstName', ' ', '$user.lastName'],
+          },
+        },
+      },
+      {
+        $sort: {
+          count: 1,
+        },
+      },
+    ]);
+  },
 };
