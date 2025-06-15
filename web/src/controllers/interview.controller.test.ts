@@ -211,6 +211,23 @@ describe('InterviewController', () => {
       ]);
     });
 
+    it('should return error message with 400 status code if interview types is an empty array', async () => {
+      const res = await request(app)
+        .post(url)
+        .set('Authorization', `Bearer ${mockToken_A}`)
+        .set('Accept', 'application/json')
+        .send({
+          applicationId: googleApplication_B.id,
+          types: [],
+          interviewOnDate: new Date('2025-06-07'),
+          status: InterviewStatus.PENDING,
+        });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors).to.deep.include.members([
+        { message: 'Must select at least 1 interview type' },
+      ]);
+    });
+
     it('should return error message with 400 status code if applicationId format is invalid', async () => {
       const res = await request(app)
         .post(url)
