@@ -2,7 +2,7 @@ import { LinkRegion, JobFunction, JobType } from '@vtmp/common/constants';
 import { z } from 'zod';
 export const LinkMetaDataSchema = z
   .object({
-    url: z.string().url({ message: 'Invalid URL' }),
+    // This should not have url field
     jobTitle: z.string(),
     companyName: z.string(),
     location: z.nativeEnum(LinkRegion, {

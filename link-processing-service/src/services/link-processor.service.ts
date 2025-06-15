@@ -1,25 +1,32 @@
-import { LinkValidatorService } from '@/services/link-validator.service';
-import { LinkMetaData } from '@/services/link-metadata-validation';
+// import { LinkValidatorService } from '@/services/link-validator.service';
 import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
-import { ScraperService } from '@/services/web-scraper.service';
-import { LinkProcessingSubStatus } from '@vtmp/common/constants';
+import { WebScrapingService } from '@/services/web-scraping.service';
+import { MetadataPipelineResult } from '@/services/web-scraping.service';
 
 export const LinkProcessorService = {
-  processLink: async (
-    url: string
-  ): Promise<
-    | (LinkMetaData & { linkProcessingStatus: LinkProcessingSubStatus })
-    | { url: string; linkProcessingStatus: LinkProcessingSubStatus }
-  > => {
-    const validUrl = await LinkValidatorService.validateLink(url);
-    const extractedText = await ScraperService.scrapeWebsite(validUrl);
-    const extractedMetadata = await ExtractLinkMetadataService.extractMetadata(
-      validUrl,
-      extractedText
-    );
-    return {
-      ...extractedMetadata,
-      linkProcessingStatus: LinkProcessingSubStatus.SUCCESS,
-    };
+  // processLink: async (
+  //   urls: string[]
+  // ): Promise<
+  //   | (LinkMetaData & { linkProcessingStatus: LinkProcessingSubStatus })
+  //   | { url: string; linkProcessingStatus: LinkProcessingSubStatus }
+  // > => {
+  //   // const validUrl = await LinkValidatorService.validateLink(url);
+  //   const extractedTexts = await WebScrapingService.entryPoint(urls);
+  //   // const extractedMetadata = await ExtractLinkMetadataService.extractMetadata(
+  //   //   url,
+  //   //   extractedText
+  //   // );
+  //   return {
+  //     ...extractedMetadata,
+  //     linkProcessingStatus: LinkProcessingSubStatus.SUCCESS,
+  //   };
+  // },
+
+  processLink: async (urls: string[]): Promise<MetadataPipelineResult[]> => {
+    // const validUrl = await LinkValidatorService.validateLink(url);
+    const scrapingStageResults = await WebScrapingService.entryPoint(urls);
+    const aiMetadataExtractionResults =
+      await ExtractLinkMetadataService.extractMetadata(scrapingStageResults);
+    return aiMetadataExtractionResults;
   },
 };

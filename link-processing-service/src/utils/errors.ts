@@ -4,11 +4,11 @@ import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { ZodError } from 'zod';
 
 export abstract class ServiceSpecificError extends Error {
-  public metadata: { url: string };
+  public metadata: { urls: string[] };
   public linkProcessingStatus: LinkProcessingSubStatus;
   constructor(
     message: string,
-    metadata: { url: string },
+    metadata: { urls: string[] },
     linkProcessingStatus: LinkProcessingSubStatus,
     options?: { cause?: unknown }
   ) {
@@ -22,7 +22,7 @@ export abstract class ServiceSpecificError extends Error {
 export class LinkValidationError extends ServiceSpecificError {
   constructor(
     message: string,
-    metadata: { url: string },
+    metadata: { urls: string[] },
     options?: { cause?: unknown }
   ) {
     super(
@@ -37,7 +37,7 @@ export class LinkValidationError extends ServiceSpecificError {
 export class ScrapingError extends ServiceSpecificError {
   constructor(
     message: string,
-    metadata: { url: string },
+    metadata: { urls: string[] },
     options?: { cause?: unknown }
   ) {
     super(message, metadata, LinkProcessingSubStatus.SCRAPING_FAILED, options);
@@ -47,7 +47,7 @@ export class ScrapingError extends ServiceSpecificError {
 export class AIExtractionError extends ServiceSpecificError {
   constructor(
     message: string,
-    metadata: { url: string },
+    metadata: { urls: string[] },
     options?: { cause?: unknown }
   ) {
     super(
@@ -60,13 +60,13 @@ export class AIExtractionError extends ServiceSpecificError {
 }
 
 export class AIResponseEmptyError extends ServiceSpecificError {
-  constructor(message: string, metadata: { url: string }) {
+  constructor(message: string, metadata: { urls: string[] }) {
     super(message, metadata, LinkProcessingSubStatus.EXTRACTION_FAILED);
   }
 }
 
 export class InvalidJsonError extends ServiceSpecificError {
-  constructor(message: string, metadata: { url: string }) {
+  constructor(message: string, metadata: { urls: string[] }) {
     super(message, metadata, LinkProcessingSubStatus.EXTRACTION_FAILED);
   }
 }

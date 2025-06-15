@@ -1,4 +1,5 @@
 import { EnvConfig } from '@/config/env';
+import { MetadataPipelineResult } from '@/services/web-scraping.service';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
@@ -18,7 +19,7 @@ const createServiceToken = (issuer: string, audience: string): string => {
 
 export const submitLinkWithToken = async (
   url: string,
-  data: { url: string }
+  data: MetadataPipelineResult
 ) => {
   const token = createServiceToken(
     EnvConfig.get().SERVICE_NAME,
