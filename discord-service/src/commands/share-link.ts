@@ -1,4 +1,4 @@
-import { submitLinkWithToken } from '@/utils/auth';
+import { submitLinkWithToken } from '@/utils/api';
 import {
   SlashCommand,
   CommandContext,
