@@ -1,4 +1,5 @@
 import { EnvConfig } from '@/config/env';
+import { AuthType } from '@vtmp/common/constants';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
@@ -11,7 +12,7 @@ const api = axios.create({
 
 const createServiceToken = (issuer: string, audience: string): string => {
   return jwt.sign(
-    { iss: issuer, aud: audience },
+    { iss: issuer, aud: audience, authType: AuthType.SERVICE },
     EnvConfig.get().SERVICE_JWT_SECRET
   );
 };

@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
-import { EnvConfig } from '@/config/env';
 
 export const JWTUtils = {
   createTokenWithPayload: (
     payload: string | Buffer | object,
+    secret: string,
     options?: jwt.SignOptions
   ): string => {
-    return jwt.sign(payload, EnvConfig.get().JWT_SECRET, options);
+    return jwt.sign(payload, secret, options);
   },
 
   verifyAndParseToken: <T>(

@@ -1,14 +1,15 @@
-import { JWTUtils } from '@/utils/jwt';
+import { JWTUtils } from '@vtmp/common/utils/server';
 import { UnauthorizedError } from '@/utils/errors';
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import UserService from '@/services/user.service';
 import { EnvConfig } from '@/config/env';
-import { SystemRole } from '@vtmp/common/constants';
-import { ALLOWED_ISSUER } from '@/constants/enums';
+import { AuthType, SystemRole } from '@vtmp/common/constants';
+import { AllowedIssuer } from '@/constants/enums';
 
 export const DecodedJWTSchema = z.object({
   id: z.string({ required_error: 'Id is required' }),
+  authType: z.nativeEnum(AuthType),
 });
 
 const TokenPayloadSchema = z.union([
@@ -16,13 +17,15 @@ const TokenPayloadSchema = z.union([
   z.object({
     iss: z.string(),
     aud: z.string(),
+    authType: z.nativeEnum(AuthType),
   }),
 ]);
 
 const getDecodedJWTServiceSchema = () =>
   z.object({
-    iss: z.nativeEnum(ALLOWED_ISSUER),
+    iss: z.nativeEnum(AllowedIssuer),
     aud: z.literal(EnvConfig.get().SERVICE_NAME),
+    authType: z.nativeEnum(AuthType),
   });
 
 export const authenticate = async (
@@ -47,10 +50,7 @@ export const authenticate = async (
     throw new UnauthorizedError('jwt malformed', {});
   }
 
-  if (!decoded) throw new UnauthorizedError('Empty jwt payload', {});
-
-  // Check if decoded has field .id, which means it is from a human 'user'
-  if ('id' in decoded) {
+  if (decoded.authType === AuthType.USER) {
     const parsed = JWTUtils.verifyAndParseToken(
       token,
       DecodedJWTSchema,
@@ -67,7 +67,7 @@ export const authenticate = async (
     );
 
     // Check if parsed have allowed issuer
-    if (!Object.values(ALLOWED_ISSUER).includes(parsed.iss)) {
+    if (!Object.values(AllowedIssuer).includes(parsed.iss)) {
       throw new UnauthorizedError('Unknown issuer', { issuer: parsed.iss });
     }
     // Check if parsed have correct audience

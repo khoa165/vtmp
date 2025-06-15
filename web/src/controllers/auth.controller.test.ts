@@ -12,8 +12,8 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import { SystemRole } from '@vtmp/common/constants';
-import { JWTUtils } from '@/utils/jwt';
+import { AuthType, SystemRole } from '@vtmp/common/constants';
+import { JWTUtils } from '@vtmp/common/utils/server';
 import assert from 'assert';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
 
@@ -377,9 +377,11 @@ describe('AuthController', () => {
       resetToken = JWTUtils.createTokenWithPayload(
         {
           id: userId,
+          authType: AuthType.USER,
           email: user.email,
           purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
         },
+        EnvConfig.get().JWT_SECRET,
         {
           expiresIn: '10m',
         }

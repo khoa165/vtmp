@@ -3909,7 +3909,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:^9.0.9":
+"@types/jsonwebtoken@npm:^9, @types/jsonwebtoken@npm:^9.0.9":
   version: 9.0.9
   resolution: "@types/jsonwebtoken@npm:9.0.9"
   dependencies:
@@ -5240,6 +5240,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@vtmp/common@workspace:packages/common"
   dependencies:
+    "@types/jsonwebtoken": "npm:^9"
+    jsonwebtoken: "npm:9.0.2"
     remeda: "npm:^2.22.5"
     typescript: "npm:^5.8.3"
     zod: "npm:^3.25.51"
@@ -9653,7 +9655,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:^9.0.2":
+"jsonwebtoken@npm:9.0.2, jsonwebtoken@npm:^9.0.2":
   version: 9.0.2
   resolution: "jsonwebtoken@npm:9.0.2"
   dependencies:
