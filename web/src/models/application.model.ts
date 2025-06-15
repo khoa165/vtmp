@@ -20,6 +20,7 @@ export interface IApplication extends Document {
   deletedAt?: Date;
   referrer?: string;
   portalLink?: string;
+  url?: string;
   interest: InterestLevel;
 }
 
@@ -71,6 +72,9 @@ const ApplicationSchema = new mongoose.Schema<IApplication>({
   portalLink: {
     type: String,
   },
+  url: {
+    type: String,
+  },
   interest: {
     type: String,
     enum: Object.values(InterestLevel),
@@ -84,6 +88,7 @@ ApplicationSchema.pre('save', async function () {
     this.companyName = jobPosting.companyName;
     this.jobTitle = jobPosting.jobTitle;
     this.location = jobPosting.location;
+    this.url = jobPosting.url;
   }
 });
 
