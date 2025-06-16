@@ -59,9 +59,13 @@ export const JobPostingRepository = {
   getJobPostingsUserHasNotAppliedTo: async ({
     userId,
     filters,
+    limit,
+    cursor,
   }: {
     userId: string;
     filters?: JobFilter;
+    limit: number;
+    cursor?: { createdAt: Date; _id: string };
   }): Promise<IJobPosting[]> => {
     const dynamicMatch: Record<string, unknown> = {};
 
@@ -128,6 +132,21 @@ export const JobPostingRepository = {
           userApplication: 0,
         },
       },
-    ]);
+      ...(cursor
+        ? [
+            {
+              $match: {
+                $or: [
+                  { createdAt: { $gt: new Date(cursor.createdAt) } },
+                  {
+                    createdAt: new Date(cursor.createdAt),
+                    _id: { $gt: toMongoId(cursor._id) },
+                  },
+                ],
+              },
+            },
+          ]
+        : []),
+    ]).limit(limit + 1);
   },
 };
