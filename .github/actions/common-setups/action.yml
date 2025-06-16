@@ -17,6 +17,6 @@ runs:
       run: yarn install --immutable
       shell: bash
 
-    - name: Build common package
+    - name: Build common and server-common packages
       run: yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build
       shell: bash
