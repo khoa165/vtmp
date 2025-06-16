@@ -1,4 +1,4 @@
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { z } from 'zod';
 
 const RawUserSchema = z.object({
@@ -6,7 +6,7 @@ const RawUserSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   email: z.string(),
-  role: z.nativeEnum(UserRole),
+  role: z.nativeEnum(SystemRole),
 });
 type UserType = z.infer<typeof RawUserSchema>;
 

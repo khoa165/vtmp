@@ -10,7 +10,7 @@ import {
 } from '@/components/base/card';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -30,7 +30,7 @@ export const SendInvitationPage = () => {
   const [userInput, setUserInput] = useState<IInvitationUserInput>({
     name: '',
     email: '',
-    role: UserRole.USER,
+    role: SystemRole.USER,
   });
 
   const [inputErrors, setInputErrors] = useState<IInvitationInputErrors>({
@@ -133,7 +133,7 @@ export const SendInvitationPage = () => {
                     <DropdownMenuContent
                       onCloseAutoFocus={(e) => e.preventDefault()}
                     >
-                      {Object.values(UserRole).map((dropdownRole, index) => (
+                      {Object.values(SystemRole).map((dropdownRole, index) => (
                         <DropdownMenuCheckboxItem
                           key={index}
                           onClick={() => {

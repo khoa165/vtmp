@@ -12,8 +12,9 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import { UserRole } from '@vtmp/common/constants';
-import { JWTUtils } from '@/utils/jwt';
+import { SystemRole } from '@vtmp/common/constants';
+import { AuthType } from '@vtmp/server-common/constants';
+import { JWTUtils } from '@vtmp/server-common/utils';
 import assert from 'assert';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
 
@@ -111,7 +112,7 @@ describe('AuthController', () => {
         lastName: 'viettech',
         password: 'Test!123',
         email: 'test123@gmail.com',
-        role: UserRole.ADMIN,
+        role: SystemRole.ADMIN,
       });
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal(
@@ -377,9 +378,11 @@ describe('AuthController', () => {
       resetToken = JWTUtils.createTokenWithPayload(
         {
           id: userId,
+          authType: AuthType.USER,
           email: user.email,
           purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
         },
+        EnvConfig.get().JWT_SECRET,
         {
           expiresIn: '10m',
         }
