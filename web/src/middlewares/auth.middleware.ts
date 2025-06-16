@@ -1,10 +1,11 @@
-import { JWTUtils } from '@vtmp/common/utils/server';
+import { JWTUtils } from '@vtmp/server-common/utils';
 import { UnauthorizedError } from '@/utils/errors';
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import UserService from '@/services/user.service';
 import { EnvConfig } from '@/config/env';
-import { AuthType, SystemRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
+import { AuthType } from '@vtmp/server-common/constants';
 import { AllowedIssuer } from '@/constants/enums';
 
 export const DecodedJWTSchema = z.object({

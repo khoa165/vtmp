@@ -18,5 +18,5 @@ runs:
       shell: bash
 
     - name: Build common package
-      run: yarn workspace @vtmp/common build
+      run: yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build
       shell: bash

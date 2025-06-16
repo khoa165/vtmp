@@ -13,8 +13,9 @@ import {
 } from '@/utils/errors';
 import assert from 'assert';
 import { expect } from 'chai';
-import { AuthType, SystemRole } from '@vtmp/common/constants';
-import { JWTUtils } from '@vtmp/common/utils/server';
+import { SystemRole } from '@vtmp/common/constants';
+import { AuthType } from '@vtmp/server-common/constants';
+import { JWTUtils } from '@vtmp/server-common/utils';
 import { EmailService } from '@/utils/email';
 import { ZodError } from 'zod';
 import jwt from 'jsonwebtoken';

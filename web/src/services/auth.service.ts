@@ -5,13 +5,13 @@ import {
   UnauthorizedError,
   ResourceNotFoundError,
 } from '@/utils/errors';
-import { JWTUtils } from '@vtmp/common/utils/server';
+import { JWTUtils } from '@vtmp/server-common/utils';
 import bcrypt from 'bcryptjs';
 import { omit } from 'remeda';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
 import { z } from 'zod';
 import { EnvConfig } from '@/config/env';
-import { AuthType } from '@vtmp/common/constants';
+import { AuthType } from '@vtmp/server-common/constants';
 
 const ResetTokenPayloadSchema = z.object({
   id: z.string(),

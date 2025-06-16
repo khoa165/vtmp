@@ -9,7 +9,7 @@ import { DecodedJWTSchema } from '@/middlewares/auth.middleware';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { AuthType } from '@vtmp/common/constants';
+import { AuthType } from '@vtmp/server-common/constants';
 
 const { expect } = chai;
 describe('AuthMiddleware', () => {

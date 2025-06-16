@@ -12,8 +12,9 @@ import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import { AuthType, SystemRole } from '@vtmp/common/constants';
-import { JWTUtils } from '@vtmp/common/utils/server';
+import { SystemRole } from '@vtmp/common/constants';
+import { AuthType } from '@vtmp/server-common/constants';
+import { JWTUtils } from '@vtmp/server-common/utils';
 import assert from 'assert';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
 

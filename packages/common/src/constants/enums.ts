@@ -54,11 +54,6 @@ export enum SystemRole {
   SERVICE = 'SERVICE',
 }
 
-export enum AuthType {
-  SERVICE = 'SERVICE',
-  USER = 'USER',
-}
-
 export enum Permission {
   VIEW_JOB_LINK = 'VIEW_JOB_LINK',
   CREATE_JOB_LINK = 'CREATE_JOB_LINK',
