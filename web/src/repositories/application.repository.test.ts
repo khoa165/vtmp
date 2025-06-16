@@ -552,7 +552,7 @@ describe('ApplicationRepository', () => {
       ]);
     });
 
-    it.only('should return count of applications for multiple users', async () => {
+    it('should return count of applications for multiple users', async () => {
       const mockMultipleUsers = [
         {
           firstName: 'admin1',
