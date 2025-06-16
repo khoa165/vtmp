@@ -1,5 +1,5 @@
 import { UserRepository } from '@/repositories/user.repository';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import { omit } from 'remeda';
 
@@ -24,7 +24,7 @@ const UserService = {
       firstName?: string;
       lastName?: string;
       email?: string;
-      role?: UserRole;
+      role?: SystemRole;
     }
   ) => {
     if (updateData.email) {

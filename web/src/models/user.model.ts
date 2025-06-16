@@ -1,5 +1,5 @@
 import mongoose, { Document, Types } from 'mongoose';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 
 export interface IUser extends Document {
   _id: Types.ObjectId;
@@ -7,7 +7,7 @@ export interface IUser extends Document {
   lastName: string;
   email: string;
   encryptedPassword: string;
-  role: UserRole;
+  role: SystemRole;
   deletedAt?: Date;
 }
 
@@ -32,8 +32,8 @@ const UserSchema = new mongoose.Schema<IUser>(
     },
     role: {
       type: String,
-      enum: Object.values(UserRole),
-      default: UserRole.USER,
+      enum: Object.values(SystemRole),
+      default: SystemRole.USER,
     },
     deletedAt: {
       type: Date,
