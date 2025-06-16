@@ -1,17 +1,17 @@
+import { Input } from '@/components/base/input';
 import { useState } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
-  VisibilityState,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
+  OnChangeFn,
+  ColumnSizingState,
 } from '@tanstack/react-table';
-import { Input } from '@/components/base/input';
-import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
 import { ResizableTable } from '@/components/pages/shared/resizable-table';
 
 interface DataTableProps<TData, TValue> {
@@ -19,33 +19,42 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function DashBoardTable<TData, TValue>({
+export function InvitationTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([
-    { id: 'datePosted', desc: true },
-  ]);
+  sorting,
+  setSorting,
+}: DataTableProps<TData, TValue> & {
+  sorting: SortingState;
+  setSorting: OnChangeFn<SortingState>;
+}) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnSizingChange: setColumnSizing,
     onRowSelectionChange: setRowSelection,
+    enableColumnResizing: true,
+    columnResizeMode: 'onChange',
     state: {
       sorting,
       columnFilters,
-      columnVisibility,
+      columnSizing,
       rowSelection,
+    },
+    defaultColumn: {
+      size: 200,
+      minSize: 50,
+      maxSize: 750,
     },
   });
 
@@ -53,14 +62,13 @@ export function DashBoardTable<TData, TValue>({
     <>
       <section className="flex items-center justify-between py-4">
         <Input
-          placeholder="Filter companies..."
-          value={table.getColumn('companyName')?.getFilterValue() as string}
+          placeholder="Filter Receiver Email"
+          value={table.getColumn('receiverEmail')?.getFilterValue() as string}
           onChange={(event) =>
-            table.getColumn('companyName')?.setFilterValue(event.target.value)
+            table.getColumn('receiverEmail')?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
-        <ColumnVisibilityConfiguration table={table} />
       </section>
       <ResizableTable table={table} columns={columns} />
     </>
