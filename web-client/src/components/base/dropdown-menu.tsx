@@ -7,14 +7,24 @@ import { cn } from '@/lib/utils';
 function DropdownMenu({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
-  return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
+  return (
+    <DropdownMenuPrimitive.Root
+      data-testid="dropdown-menu"
+      data-slot="dropdown-menu"
+      {...props}
+    />
+  );
 }
 
 function DropdownMenuPortal({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
   return (
-    <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
+    <DropdownMenuPrimitive.Portal
+      data-testid="dropdown-menu-portal"
+      data-slot="dropdown-menu-portal"
+      {...props}
+    />
   );
 }
 
@@ -24,6 +34,7 @@ function DropdownMenuTrigger({
   return (
     <DropdownMenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
+      data-testid="dropdown-menu-trigger"
       {...props}
     />
   );
@@ -37,6 +48,7 @@ function DropdownMenuContent({
   return (
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
+        data-testid="dropdown-menu-content-table"
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
         className={cn(
@@ -53,7 +65,11 @@ function DropdownMenuGroup({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
   return (
-    <DropdownMenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />
+    <DropdownMenuPrimitive.Group
+      data-testid="dropdown-menu-group"
+      data-slot="dropdown-menu-group"
+      {...props}
+    />
   );
 }
 

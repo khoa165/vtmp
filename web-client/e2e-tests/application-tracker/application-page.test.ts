@@ -11,11 +11,12 @@ test.describe('Application Status Card', () => {
     page,
   }) => {
     const targetStatus = 'INTERVIEWING';
-
+    // Adjust this to the status you want to test 'Interviewing'
     const card = page.getByTestId(`status-card-${targetStatus}`);
     await expect(card).toBeVisible();
     await card.click();
 
+    // Check if the application table is filtered by the target status
     const applicationRows = page.getByTestId('application-table-row');
     await expect(applicationRows.first()).toBeVisible();
 
@@ -37,20 +38,21 @@ test.describe('Application Status Card', () => {
 });
 test.describe('Application Table', () => {
   test('should display all key application columns', async ({ page }) => {
-    const headers = [
-      'Company',
-      'Status',
-      'Date Applied',
-      'Portal Link',
-      'Interest',
-      'Referrer',
-      'Note',
+    const expectedHeaders = [
+      { id: 'companyName', name: 'Company' },
+      { id: 'status', name: 'Status' },
+      { id: 'appliedOnDate', name: 'Date Applied' },
+      { id: 'portalLink', name: 'Portal Link' },
+      { id: 'interest', name: 'Interest' },
+      { id: 'referrer', name: 'Referrer' },
+      { id: 'note', name: 'Note' },
     ];
 
-    for (const header of headers) {
-      await expect(
-        page.getByRole('columnheader', { name: header })
-      ).toBeVisible();
+    for (const { id, name } of expectedHeaders) {
+      const text = await page
+        .locator(`[data-testid="application-header-${id}"]`)
+        .innerText();
+      expect(text.trim()).toBe(name);
     }
   });
   test('should filter applications by company name', async ({ page }) => {
@@ -64,8 +66,7 @@ test.describe('Application Table', () => {
       const companyCell = rows
         .nth(i)
         .locator('[data-testid="application-cell-companyName"]');
-      console.log(companyCell.innerText);
-      await expect(companyCell).toContainText(/Godaddy/i);
+      await expect(companyCell).toContainText(/Goldman/i);
     }
   });
   test('should sort applications by date applied', async ({ page }) => {
@@ -109,51 +110,80 @@ test.describe('Application Table', () => {
       /offered/i
     );
   });
-  test.only('should toggle column visibility via configuration dropdown', async ({
+  test('should toggle column visibility via configuration dropdown', async ({
     page,
   }) => {
-    const headers = [
-      'Company',
-      'Status',
-      'Date Applied',
-      'Portal Link',
-      'Interest',
-      'Referrer',
-      'Note',
-    ];
+    // Count Header Columns Before Toggling
+    const headersLocator = page.locator(
+      'th[role=columnheader][data-testid^="application-header-"]'
+    );
 
-    let headersBefore = 0;
+    await headersLocator.first().waitFor({ state: 'visible' });
 
-    for (const header of headers) {
-      headersBefore += await page
-        .getByRole('columnheader', {
-          name: header,
-        })
-        .count();
+    let headersCount = 0;
+    const total = await headersLocator.count();
+
+    for (let i = 0; i < total; i++) {
+      if (await headersLocator.nth(i).isVisible()) {
+        headersCount++;
+      }
     }
 
-    console.log('Headers before:', headersBefore);
-
+    // Toggle the "Note" column visibility
     const configButton = page.locator('[data-testid="column-config-button"]');
+    await configButton.waitFor({ state: 'visible' });
     await configButton.click();
 
+    // Locate the "Note" checkbox in the dropdown menu
+    // Toggle the "Note" column visibility
     const noteCheckbox = page.locator('[data-testid="row-config-note"]');
+    await noteCheckbox.waitFor({ state: 'visible' });
     await expect(noteCheckbox).toBeVisible();
     await noteCheckbox.click();
 
-    const headersAfter = await page.getByRole('columnheader').all();
-    const headerCountAfter = headersAfter.length;
-    expect(headerCountAfter).toBe(headersBefore - 1);
+    // Count Header Columns After Toggling
+    let headersAfter = 0;
+    const headersAfterLocator = page.locator(
+      'th[role=columnheader][data-testid^="application-header-"]'
+    );
 
+    await headersAfterLocator.first().waitFor({ state: 'visible' });
+
+    for (let i = 0; i < total; i++) {
+      if (await headersAfterLocator.nth(i).isVisible()) {
+        headersAfter++;
+      }
+    }
+
+    // Verify Header Count Decreased
+    expect(headersAfter).toBe(headersCount - 1);
+
+    // Verify the "Note" column is hidden
     const firstRow = page.getByTestId('application-table-row').first();
     const noteCell = firstRow.locator('[data-testid="application-cell-note"]');
     await expect(noteCell).toHaveCount(0);
 
-    await configButton.click();
-    console.log('Config button clicked');
-    await noteCheckbox.click();
-    console.log('Note checkbox clicked');
+    // Re-toggle configuration dropdown
+    const dropdownContent = page.locator(
+      '[data-testid^="dropdown-menu-content"]'
+    );
 
+    if (await dropdownContent.first().isVisible()) {
+      await configButton.click();
+      await dropdownContent.first().waitFor({ state: 'detached' });
+    }
+    await configButton.click();
+    await dropdownContent.first().waitFor({ state: 'visible' });
+
+    // Toggle the "Note" column visibility again
+    await noteCheckbox.waitFor({ state: 'visible' });
+    await expect(noteCheckbox).toBeVisible();
+    await noteCheckbox.click();
+
+    // Verify the "Note" column is visible again
+    await firstRow.locator('[data-testid="application-cell-note"]').waitFor({
+      state: 'visible',
+    });
     await expect(
       firstRow.locator('[data-testid="application-cell-note"]')
     ).toBeVisible();

@@ -61,6 +61,11 @@ export function ResizableTable<TData, TValue>({
                         className="text-background"
                         role="columnheader"
                         style={{ width: header.getSize() }}
+                        data-testid={
+                          testIdPrefix
+                            ? `${testIdPrefix}-header-${header.column.id}`
+                            : undefined
+                        }
                       >
                         {header.isPlaceholder
                           ? null
