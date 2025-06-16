@@ -67,7 +67,7 @@ export const ApplicationFormSchema = z.object({
 export type IApplications = z.infer<typeof ApplicationsResponseSchema>['data'];
 export type IApplication = z.infer<typeof ApplicationSchema>;
 
-const InterviewSchema = z.object({
+export const InterviewSchema = z.object({
   _id: z.string(),
   applicationId: z.string(),
   userId: z.string(),
