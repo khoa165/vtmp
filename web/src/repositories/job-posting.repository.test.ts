@@ -136,52 +136,20 @@ describe('JobPostingRepository', () => {
     const userIdA = getNewMongoId();
     const userIdB = getNewMongoId();
     let jobPostings: (IJobPosting | undefined)[];
-    const limit = 2;
+    const limit = 6;
+    const totalJobPostings = 15;
+    const totalPage = Math.floor((totalJobPostings - 1) / limit) + 1;
 
-    const mockMultipleJobPostings = [
-      {
+    const mockMultipleJobPostings = Array.from(
+      { length: totalJobPostings },
+      (_, i) => ({
         linkId: getNewObjectId(),
-        url: 'http://example1.com/job-posting',
-        jobTitle: 'Software Engineer 1',
-        companyName: 'Example Company 1',
+        url: `http://example${i + 1}.com/job-posting`,
+        jobTitle: `Software Engineer ${i + 1}`,
+        companyName: `Example Company ${i + 1}`,
         submittedBy: getNewObjectId(),
-      },
-      {
-        linkId: getNewObjectId(),
-        url: 'http://example2.com/job-posting',
-        jobTitle: 'Software Engineer 2',
-        companyName: 'Example Company 2',
-        submittedBy: getNewObjectId(),
-      },
-      {
-        linkId: getNewObjectId(),
-        url: 'http://example3.com/job-posting',
-        jobTitle: 'Software Engineer 3',
-        companyName: 'Example Company 3',
-        submittedBy: getNewObjectId(),
-      },
-      {
-        linkId: getNewObjectId(),
-        url: 'http://example4.com/job-posting',
-        jobTitle: 'Software Engineer 4',
-        companyName: 'Example Company 4',
-        submittedBy: getNewObjectId(),
-      },
-      {
-        linkId: getNewObjectId(),
-        url: 'http://example5.com/job-posting',
-        jobTitle: 'Software Engineer 5',
-        companyName: 'Example Company 5',
-        submittedBy: getNewObjectId(),
-      },
-      {
-        linkId: getNewObjectId(),
-        url: 'http://example6.com/job-posting',
-        jobTitle: 'Software Engineer 6',
-        companyName: 'Example Company 6',
-        submittedBy: getNewObjectId(),
-      },
-    ];
+      })
+    );
 
     describe.only('getJobPostingsUserHasNotAppliedTo no filter', () => {
       beforeEach(async () => {
@@ -212,24 +180,38 @@ describe('JobPostingRepository', () => {
         expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(0);
       });
 
-      it.only(`should return ${limit + 1} job postings on page 1, 2, 3, 4 that matches all available job postings in the system if user has no applied to any posting`, async () => {
-        const page = 1;
+      it.only(`should return ${limit} job postings on page i/${totalPage} that matches all available job postings in the system if user has no applied to any posting`, async () => {
+        let page = 1;
         let jobsNotAppliedByUserA: IJobPosting[] = [];
-        while (jobsNotAppliedByUserA.length <= limit + 1) {
+        let cursor = { _id: '000000000000000000000000' };
+        while (page <= totalPage) {
           jobsNotAppliedByUserA =
             await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
               userId: userIdA,
               limit,
+              cursor,
             });
-
+          console.log('Page: ', page);
+          // console.log(jobsNotAppliedByUserA);
           expect(jobsNotAppliedByUserA)
             .to.be.an('array')
-            .that.has.length(limit + 1);
+            .that.has.length(
+              Math.min(totalJobPostings - limit * (page - 1), limit)
+            );
           expect(
             jobsNotAppliedByUserA.map((job) => job._id?.toString())
           ).to.have.members(
-            jobPostings.slice(page - 1, 3).map((jobPosting) => jobPosting?.id)
+            jobPostings
+              .slice((page - 1) * limit, page * limit)
+              .map((jobPosting) => jobPosting?._id.toString())
           );
+
+          page += 1;
+          cursor = {
+            _id: String(
+              jobsNotAppliedByUserA[jobsNotAppliedByUserA.length - 1]?._id
+            ),
+          };
         }
       });
 

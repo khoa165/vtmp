@@ -65,7 +65,7 @@ export const JobPostingRepository = {
     userId: string;
     filters?: JobFilter;
     limit: number;
-    cursor?: { createdAt: Date; _id: string };
+    cursor?: { _id: string };
   }): Promise<IJobPosting[]> => {
     const dynamicMatch: Record<string, unknown> = {};
 
@@ -136,17 +136,12 @@ export const JobPostingRepository = {
         ? [
             {
               $match: {
-                $or: [
-                  { createdAt: { $gt: new Date(cursor.createdAt) } },
-                  {
-                    createdAt: new Date(cursor.createdAt),
-                    _id: { $gt: toMongoId(cursor._id) },
-                  },
-                ],
+                _id: { $gt: toMongoId(cursor._id) },
               },
             },
           ]
         : []),
-    ]).limit(limit + 1);
+      { $limit: limit },
+    ]);
   },
 };
