@@ -4,6 +4,7 @@ import {
   useCreateInterview,
   useGetInterviewByApplicationId,
   useUpdateInterview,
+  useDeleteInterview,
 } from '@/components/pages/application-tracker/applications/hooks/applications';
 import {
   InterviewUpdateForm,
@@ -22,6 +23,7 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
     setShowCreateForm(false)
   );
   const { mutate: updateInterviewFn } = useUpdateInterview();
+  const { mutate: deleteInterviewFn } = useDeleteInterview();
 
   const [showCreateForm, setShowCreateForm] = useState(false);
 
@@ -66,7 +68,6 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
           <InterviewCreateForm
             applicationId={applicationId}
             createInterviewFn={createInterviewFn}
-            setShowCreateForm={setShowCreateForm}
           />
         )}
         {(Array.isArray(interviewsData) ? interviewsData : []).map(
@@ -75,6 +76,7 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
               key={interview._id}
               currentInterview={interview}
               updateInterviewFn={updateInterviewFn}
+              deleteInterviewFn={deleteInterviewFn}
             />
           )
         )}

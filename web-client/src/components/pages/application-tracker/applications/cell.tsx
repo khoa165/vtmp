@@ -68,24 +68,18 @@ export const CellActions = ({
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button variant="ghost" justify="start" className="h-8 w-8 p-0">
+        <DropdownMenuTrigger className="px-auto">
+          <Button variant="ghost" justify="center" className="h-8 w-8">
             <span className="sr-only">Open menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {/* TODO-(QuangMinhNguyen27405/dsmai): Remove this 'Copy Application ID action' */}
-          <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(application._id)}
-          >
-            Copy application ID
-          </DropdownMenuItem>
+        <DropdownMenuContent align="start" className="min-w-20">
           <DropdownMenuItem onClick={() => handleOpenDrawer(application._id)}>
             Detail
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsDialogOpen(true)}>
-            Delete application
+            Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

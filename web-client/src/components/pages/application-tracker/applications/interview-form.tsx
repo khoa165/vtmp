@@ -35,6 +35,7 @@ const interviewTypeOptions = Object.values(InterviewType).map((type) => ({
 export const InterviewUpdateForm = ({
   currentInterview,
   updateInterviewFn,
+  deleteInterviewFn,
 }: {
   currentInterview: {
     _id: string;
@@ -46,6 +47,7 @@ export const InterviewUpdateForm = ({
     interviewId: string;
     body: InterviewData;
   }) => void;
+  deleteInterviewFn: (interviewId: string) => void;
 }) => {
   const {
     _id: interviewId,
@@ -186,33 +188,31 @@ export const InterviewUpdateForm = ({
           />
         </div>
 
-        <div className="flex justify-end pt-2">
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              className="flex items-center h-7.5 gap-1.5 rounded-md border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
-              variant="secondary"
-              onClick={() => interviewForm.reset()}
-            >
-              <Trash2 className="scale-85" />
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              onClick={() =>
-                updateInterviewFn({
-                  interviewId: interviewId,
-                  body: {
-                    ...interviewForm.getValues(),
-                  },
-                })
-              }
-              className="h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
-            >
-              <Save className="scale-85" />
-              Save
-            </Button>
-          </div>
+        <div className="flex justify-between pt-2 px-1">
+          <Button
+            type="button"
+            className="flex items-center h-7.5 gap-1.5 rounded-md border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
+            variant="secondary"
+            onClick={() => deleteInterviewFn(interviewId)}
+          >
+            <Trash2 className="scale-85" />
+            Delete
+          </Button>
+          <Button
+            type="submit"
+            onClick={() =>
+              updateInterviewFn({
+                interviewId: interviewId,
+                body: {
+                  ...interviewForm.getValues(),
+                },
+              })
+            }
+            className="flex items-center h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
+          >
+            <Save className="scale-85" />
+            Save
+          </Button>
         </div>
       </Form>
     </div>
@@ -222,7 +222,6 @@ export const InterviewUpdateForm = ({
 export const InterviewCreateForm = ({
   applicationId,
   createInterviewFn,
-  setShowCreateForm,
 }: {
   applicationId: string;
   createInterviewFn: ({
@@ -236,7 +235,6 @@ export const InterviewCreateForm = ({
       note?: string;
     };
   }) => void;
-  setShowCreateForm: (value: boolean) => void;
 }) => {
   const interviewForm = useForm<z.infer<typeof InterviewFormSchema>>({
     resolver: zodResolver(InterviewFormSchema),
@@ -365,33 +363,22 @@ export const InterviewCreateForm = ({
           />
         </div>
 
-        <div className="flex justify-end pt-2">
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              className="flex items-center h-7.5 gap-1.5 rounded-md border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
-              variant="secondary"
-              onClick={() => setShowCreateForm(false)}
-            >
-              <Trash2 className="scale-85" />
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              onClick={() => {
-                createInterviewFn({
-                  body: {
-                    ...interviewForm.getValues(),
-                    applicationId,
-                  },
-                });
-              }}
-              className="h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
-            >
-              <Save className="scale-85" />
-              Save
-            </Button>
-          </div>
+        <div className="flex justify-end pt-2 pr-1">
+          <Button
+            type="submit"
+            onClick={() => {
+              createInterviewFn({
+                body: {
+                  ...interviewForm.getValues(),
+                  applicationId,
+                },
+              });
+            }}
+            className="h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
+          >
+            <Save className="scale-85" />
+            Save
+          </Button>
         </div>
       </Form>
     </div>

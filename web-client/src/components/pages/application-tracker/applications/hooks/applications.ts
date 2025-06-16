@@ -74,6 +74,9 @@ export const useDeleteApplication = () => {
         queryKey: [QueryKey.GET_APPLICATIONS],
       });
       queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_APPLICATION_BY_ID, res.data._id],
+      });
+      queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS_COUNT_BY_STATUS],
       });
       toast.success(res.message);
@@ -262,6 +265,39 @@ export const useUpdateInterview = () => {
         method: Method.PUT,
         url: `/interviews/${interviewId}`,
         data: body,
+        schema: InterviewResponseSchema,
+        options: { requireAuth: true },
+      }),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          QueryKey.GET_INTERVIEW_BY_APPLICATION_ID,
+          res.data.applicationId,
+        ],
+      });
+      toast.success(res.message);
+    },
+    onError: (error: unknown) => {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessages = error.response.data.errors.map(
+          (err) => err.message
+        );
+        toast.error(errorMessages.join('\n'));
+      } else {
+        toast.error('Unexpected error');
+      }
+    },
+  });
+};
+
+export const useDeleteInterview = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (interviewId: string) =>
+      request({
+        method: Method.DELETE,
+        url: `/interviews/${interviewId}`,
         schema: InterviewResponseSchema,
         options: { requireAuth: true },
       }),
