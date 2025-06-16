@@ -31,6 +31,7 @@ import { buildFileMetadata } from '@/utils/file';
 import { allBlogsMetadata } from '@/blogs/metadata';
 import { RequireAuth } from '@/components/pages/auth/require-auth';
 import JobtrackrLanding from '@/components/pages/application-tracker/landing/jobtrackr-landing';
+import { InterviewFeedPage } from '@/components/pages/application-tracker/interview-feed/interview-feed-page';
 
 export const App = () => {
   useEffect(() => {
@@ -88,6 +89,7 @@ export const App = () => {
               }
             />
             <Route path="/application-tracker" element={<ApplicationsPage />} />
+            <Route path="/interview-feed" element={<InterviewFeedPage />} />
             <Route path="/admin/links" element={<AdminLinksPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />

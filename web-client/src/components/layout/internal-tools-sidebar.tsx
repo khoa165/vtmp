@@ -4,6 +4,7 @@ import {
   ExternalLink,
   LayoutDashboard,
   BriefcaseBusiness,
+  MessageSquareQuote,
 } from 'lucide-react';
 
 import {
@@ -53,6 +54,12 @@ export const InternalToolsSidebar = () => {
       url: '/application-tracker',
       icon: BriefcaseBusiness,
       roles: [UserRole.USER],
+    },
+    {
+      title: 'Interview Feed',
+      url: '/interview-feed',
+      icon: MessageSquareQuote,
+      roles: [UserRole.USER, UserRole.ADMIN, UserRole.MODERATOR],
     },
     {
       title: 'Share Link',
