@@ -47,10 +47,11 @@ export const JobPostingService = {
   getJobPostingsUserHasNotAppliedTo: async ({
     userId,
     filters,
-    pagination,
   }: {
     userId: string;
     filters?: {
+      limit?: number;
+      cursor?: string | undefined;
       jobTitle?: string;
       companyName?: string;
       location?: string;
@@ -59,19 +60,15 @@ export const JobPostingService = {
       postingDateRangeStart?: Date;
       postingDateRangeEnd?: Date;
     };
-    pagination?: {
-      limit?: number;
-      cursor?: string | undefined;
-    };
   }) => {
     const jobPostings =
       await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
         userId: userId,
-        limit: pagination?.limit || 10,
+        limit: filters?.limit || 10,
         filters: filters ?? {},
-        cursor: pagination?.cursor
+        cursor: filters?.cursor
           ? JWTUtils.peekAndParseToken(
-              pagination.cursor,
+              filters?.cursor,
               z.object({ _id: z.string() })
             )
           : undefined,
@@ -79,7 +76,7 @@ export const JobPostingService = {
     return {
       data: jobPostings,
       cursor:
-        jobPostings.length === pagination?.limit
+        jobPostings.length === filters?.limit
           ? JWTUtils.createTokenWithPayload(
               { _id: jobPostings[jobPostings.length - 1]?._id.toString() },
               EnvConfig.get().JWT_SECRET

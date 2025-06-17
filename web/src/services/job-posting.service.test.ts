@@ -179,8 +179,7 @@ describe('JobPostingService', () => {
         jobsNotAppliedByUser =
           await JobPostingService.getJobPostingsUserHasNotAppliedTo({
             userId,
-            pagination: { limit, cursor: cursor },
-            filters,
+            filters: { ...filters, limit, cursor },
           });
 
         assert(jobsNotAppliedByUser);
@@ -230,7 +229,7 @@ describe('JobPostingService', () => {
         const jobsNotAppliedByUserA =
           await JobPostingService.getJobPostingsUserHasNotAppliedTo({
             userId: userIdA,
-            pagination: { limit },
+            filters: { limit },
           });
 
         assert(jobsNotAppliedByUserA);
