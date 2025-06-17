@@ -60,7 +60,7 @@ export const JobPostingRepository = {
     userId,
     filters,
     limit,
-    cursor,
+    cursor = { _id: '000000000000000000000000' },
   }: {
     userId: string;
     filters?: JobFilter;
