@@ -30,7 +30,6 @@ export const InvitationController = {
   },
 
   sendInvitation: async (req: Request, res: Response) => {
-    // Check if this is a resend operation
     if (req.body.invitationId && req.body.isResend) {
       const { invitationId } = InvitationResendSchema.parse(req.body);
       const resentInvitation = await InvitationService.sendOrResendInvitation({
@@ -39,7 +38,6 @@ export const InvitationController = {
       });
       res.status(200).json({ data: resentInvitation });
     } else {
-      // Regular send operation
       const { receiverName, receiverEmail, senderId } =
         InvitationSendEmailSchema.parse(req.body);
       const invitation = await InvitationService.sendOrResendInvitation({
