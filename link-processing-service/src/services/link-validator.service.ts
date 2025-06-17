@@ -53,7 +53,7 @@ const LinkValidatorService = {
     if (!linkIsSafe) {
       throw new LinkValidationError(
         'Provided link fails safety check',
-        { url },
+        { urls: [url] },
         { failedSteps: [LINK_VALIDATOR_STEPS.SAFETY_CHECK] }
       );
     }
@@ -77,14 +77,14 @@ const LinkValidatorService = {
     } catch (error) {
       throw new LinkValidationError(
         'Network error while checking URL Responsiveness',
-        { url },
+        { urls: [url] },
         { cause: error, failedSteps: [LINK_VALIDATOR_STEPS.NETWORK_CHECK] }
       );
     }
     if (!response.ok) {
       throw new LinkValidationError(
         `Failed to validate link due to HTTP error`,
-        { url },
+        { urls: [url] },
         {
           cause: `HTTP Error ${response.status}: ${response.statusText}`,
           statusCode: response.status,
@@ -140,7 +140,7 @@ const LinkValidatorService = {
         const attempts = this.config.resolveLinkRetryConfig.retries;
         throw new LinkValidationError(
           `Unable to validate link safety with Safe Browsing API after ${attempts} attempts`,
-          { url },
+          { urls: [url] },
           { cause: error, failedSteps: [LINK_VALIDATOR_STEPS.SAFETY_CHECK] }
         );
       }

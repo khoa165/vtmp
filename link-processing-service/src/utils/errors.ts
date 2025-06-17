@@ -4,8 +4,9 @@ import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { ZodError } from 'zod';
 
 export abstract class ServiceSpecificError extends Error {
-  public metadata: { url: string };
+  public metadata: { urls: string[] };
   public linkProcessingStatus: LinkProcessingSubStatus;
+  public failedSteps?: [string];
   constructor(
     message: string,
     metadata: { urls: string[] },
@@ -31,7 +32,7 @@ export class LinkValidationError extends ServiceSpecificError {
   constructor(
     message: string,
     metadata: { urls: string[] },
-    options?: { cause?: unknown }
+    options?: { cause?: unknown; statusCode?: number; failedSteps: [string] }
   ) {
     super(
       message,
@@ -105,7 +106,9 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
   const onError: middy.MiddlewareFn<
     APIGatewayProxyEventV2,
     APIGatewayProxyResult
-  > = async (request) => {
+  > = async (
+    request: middy.Request<APIGatewayProxyEventV2, APIGatewayProxyResult>
+  ) => {
     const error = request.error;
     logError(error);
 

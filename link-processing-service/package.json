@@ -25,9 +25,9 @@
   },
   "dependencies": {
     "@google/genai": "^1.4.0",
+    "@googleapis/safebrowsing": "^11.0.1",
     "@middy/core": "^6.3.1",
     "@middy/http-json-body-parser": "^6.3.1",
-    "@googleapis/safebrowsing": "^11.0.1",
     "@modelcontextprotocol/sdk": "^1.12.1",
     "@sparticuz/chromium": "^137.0.1",
     "@vtmp/common": "1.0.0",
