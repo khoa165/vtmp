@@ -5,6 +5,8 @@ import {
   LinkMetaDataSchema,
   RawAIResponse,
   RawAIResponseSchema,
+  ScrapedMetadata,
+  ExtractedMetadata,
 } from '@/services/link-metadata-validation';
 import {
   AIExtractionError,
@@ -18,12 +20,9 @@ import {
   JobType,
   LinkProcessingSubStatus,
   LinkRegion,
+  LinkStatus,
 } from '@vtmp/common/constants';
 import { mapStringToEnum } from '@/helpers/link.helpers';
-import {
-  IScrapedMetadata,
-  MetadataPipelineResult,
-} from '@/services/web-scraping.service';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
@@ -40,7 +39,7 @@ const parseJson = (text: string, url: string): RawAIResponse => {
   }
 };
 
-const generateMetaData = async (
+const generateMetadata = async (
   text: string,
   url: string
 ): Promise<LinkMetaData> => {
@@ -89,57 +88,47 @@ const generateMetaData = async (
   return LinkMetaDataSchema.parse(formattedLinkMetaData);
 };
 
-const ExtractLinkMetadataService = {
-  // extractMetadata: async (
-  //   url: string,
-  //   extractedText: string
-  // ): Promise<LinkMetaData> => {
-  //   try {
-  //     return generateMetaData(extractedText, url);
-  //   } catch (error: unknown) {
-  //     throw new AIExtractionError(
-  //       'Failed to extract metadata with AI',
-  //       { url },
-  //       { cause: error }
-  //     );
-  //   }
-  // },
-
+export const ExtractLinkMetadataService = {
   extractMetadata: async (
-    inputs: IScrapedMetadata[]
-  ): Promise<MetadataPipelineResult[]> => {
+    scrapedLinksMetadata: ScrapedMetadata[]
+  ): Promise<ExtractedMetadata[]> => {
+    const urls = scrapedLinksMetadata.map((metadata) => metadata.url);
     try {
       const extractedMetadataResults = await Promise.all(
-        inputs.map(async (input) => {
-          if (input.data) {
-            try {
-              // If this object has data field, meaning it was "decorated" successfully from scraping stage
-              // Call function generateMetaData async
-              const newMetadataObject = await generateMetaData(
-                input.data,
-                input.url
-              );
-              // Now replace the data field from before (which is a string text) with this new object and return
-              return { url: input.url, data: newMetadataObject };
-            } catch (error: unknown) {
-              logError(error);
-              // If any error happens, remove the data field (string text from before), and attach processingSubStatus and error fields
-              return {
-                url: input.url,
-                processingSubStatus: LinkProcessingSubStatus.EXTRACTION_FAILED,
-                error: String(error),
-              };
-            }
-          } else {
-            // This means it does not have `data` field, meaning it error out from scraping stage
-            // So just return the original object input
-            return input;
+        scrapedLinksMetadata.map(async (metadata) => {
+          if (!metadata.processedContent) {
+            // Scraping stage failed
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { processedContent, ...rest } = metadata;
+            return {
+              ...rest,
+            };
+          }
+          try {
+            // If this object has processedContent field, meaning it was "decorated" successfully from scraping stage
+            // Call function generateMetadata async
+            const extractedMetadata = await generateMetadata(
+              metadata.processedContent,
+              metadata.url
+            );
+            // Now replace the data field from before (which is a string text) with this new object and return
+            return { ...metadata, processedContent: extractedMetadata };
+          } catch (error: unknown) {
+            logError(error);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { processedContent, ...rest } = metadata;
+            // If any error happens, remove the data field (string text from before), and attach processingSubStatus and error fields
+            return {
+              ...rest,
+              status: LinkStatus.FAILED,
+              subStatus: LinkProcessingSubStatus.EXTRACTION_FAILED,
+              error: String(error),
+            };
           }
         })
       );
       return extractedMetadataResults;
     } catch (error: unknown) {
-      const urls = inputs.map((input) => input.url);
       throw new AIExtractionError(
         'Failed to extract metadata with AI',
         { urls },
@@ -148,5 +137,3 @@ const ExtractLinkMetadataService = {
     }
   },
 };
-
-export { ExtractLinkMetadataService };

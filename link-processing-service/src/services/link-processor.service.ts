@@ -1,30 +1,16 @@
 // import { LinkValidatorService } from '@/services/link-validator.service';
 import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
 import { WebScrapingService } from '@/services/web-scraping.service';
-import { MetadataPipelineResult } from '@/services/web-scraping.service';
+import {
+  LinkType,
+  ExtractedMetadata,
+} from '@/services/link-metadata-validation';
 
 export const LinkProcessorService = {
-  // processLink: async (
-  //   urls: string[]
-  // ): Promise<
-  //   | (LinkMetaData & { linkProcessingStatus: LinkProcessingSubStatus })
-  //   | { url: string; linkProcessingStatus: LinkProcessingSubStatus }
-  // > => {
-  //   // const validUrl = await LinkValidatorService.validateLink(url);
-  //   const extractedTexts = await WebScrapingService.entryPoint(urls);
-  //   // const extractedMetadata = await ExtractLinkMetadataService.extractMetadata(
-  //   //   url,
-  //   //   extractedText
-  //   // );
-  //   return {
-  //     ...extractedMetadata,
-  //     linkProcessingStatus: LinkProcessingSubStatus.SUCCESS,
-  //   };
-  // },
-
-  processLink: async (urls: string[]): Promise<MetadataPipelineResult[]> => {
+  processLinks: async (linksData: LinkType[]): Promise<ExtractedMetadata[]> => {
     // const validUrl = await LinkValidatorService.validateLink(url);
-    const scrapingStageResults = await WebScrapingService.entryPoint(urls);
+    const scrapingStageResults =
+      await WebScrapingService.scrapeLinks(linksData);
     const aiMetadataExtractionResults =
       await ExtractLinkMetadataService.extractMetadata(scrapingStageResults);
     return aiMetadataExtractionResults;
