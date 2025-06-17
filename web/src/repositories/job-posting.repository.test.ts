@@ -132,7 +132,7 @@ describe('JobPostingRepository', () => {
     });
   });
 
-  describe.only('getJobPostingsUserHasNotAppliedTo', () => {
+  describe('getJobPostingsUserHasNotAppliedTo', () => {
     const userIdA = getNewMongoId();
     const userIdB = getNewMongoId();
     let jobPostings: (IJobPosting | undefined)[];
