@@ -20,6 +20,7 @@ api.interceptors.response.use(
     } else if (status === 400) {
       return Promise.reject(error);
     }
+    return Promise.reject(error);
   }
 );
 interface RequestBaseArgs<T> {

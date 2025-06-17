@@ -1,0 +1,19 @@
+{
+  "name": "@vtmp/server-common",
+  "version": "1.0.0",
+  "exports": {
+    "./constants": "./dist/constants/index.js",
+    "./utils": "./dist/utils/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "jsonwebtoken": "9.0.2"
+  }
+}
