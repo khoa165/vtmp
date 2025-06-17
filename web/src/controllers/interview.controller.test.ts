@@ -14,7 +14,7 @@ import { InterviewRepository } from '@/repositories/interview.repository';
 import {
   InterviewStatus,
   InterviewType,
-  UserRole,
+  SystemRole,
 } from '@vtmp/common/constants';
 import {
   expectErrorsArray,
@@ -67,14 +67,14 @@ describe('InterviewController', () => {
       lastName: 'viettech',
       email: 'testA@gmail.com',
       encryptedPassword,
-      role: UserRole.ADMIN,
+      role: SystemRole.ADMIN,
     };
     const mockUser_B = {
       firstName: 'admin',
       lastName: 'viettech',
       email: 'testB@gmail.com',
       encryptedPassword,
-      role: UserRole.USER,
+      role: SystemRole.USER,
     };
 
     userId_A = (await UserRepository.createUser(mockUser_A)).id;
