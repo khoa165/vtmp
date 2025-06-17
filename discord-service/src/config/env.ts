@@ -10,8 +10,9 @@ const discordConfigSchema = z.object({
   DISCORD_BOT_TOKEN: z.string(),
   API_URL: z.string(),
   PORT: z.preprocess(Number, z.number().positive().finite()),
-  LOGIN_EMAIL: z.string().email(),
-  LOGIN_PASSWORD: z.string(),
+  SERVICE_JWT_SECRET: z.string(),
+  SERVICE_NAME: z.string(),
+  AUDIENCE_SERVICE_NAME: z.string(),
 });
 
 export const EnvConfig = {
