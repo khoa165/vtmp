@@ -5,7 +5,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import assert from 'assert';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { IUser } from '@/models/user.model';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import { omit } from 'remeda';
 
@@ -224,7 +224,7 @@ describe('UserRepository', () => {
       const updateUserInfo = {
         firstName: 'adminViettech',
         email: 'testupdate@gmail.com',
-        role: UserRole.ADMIN,
+        role: SystemRole.ADMIN,
       };
       const updatedUser = await UserRepository.updateUserById(
         user.id,

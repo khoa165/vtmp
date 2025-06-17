@@ -35,6 +35,7 @@ const ColumnResizer = <TData, TValue>({
     />
   );
 };
+
 interface ResizableTableProps<TData, TValue> {
   table: TanstackTable<TData>;
   columns: ColumnDef<TData, TValue>[];
