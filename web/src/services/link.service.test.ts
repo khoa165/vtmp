@@ -4,7 +4,7 @@ import {
   LinkStatus,
   JobFunction,
   LinkRegion,
-  LinkProcessStage,
+  LinkProcessingSubStatus,
 } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
@@ -138,11 +138,13 @@ describe('LinkService', () => {
   describe('updateLinkMetaData', () => {
     const mockLinkMetaData = {
       url: 'google.com',
-      linkProcessStage: LinkProcessStage.NOT_PROCESSED,
+      status: LinkStatus.PENDING,
       location: LinkRegion.US,
       jobFunction: JobFunction.SOFTWARE_ENGINEER,
       jobType: JobType.INTERNSHIP,
       datePosted: new Date(),
+      attemptsCount: 1,
+      lastProcessedAt: new Date(),
     };
 
     it('should throw error when link does not exist', async () => {
@@ -151,13 +153,38 @@ describe('LinkService', () => {
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
-    it('should be able to update link status', async () => {
-      const link = await expect(
+    it('should throw error when substatus included without status failed', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
+        })
+      ).eventually.rejectedWith(Error);
+    });
+
+    it('should throw error when status failed included without substatus', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          status: LinkStatus.FAILED,
+        })
+      ).eventually.rejectedWith(Error);
+    });
+
+    it('should be able to update link metadata with status not failed', async () => {
+      await expect(
         LinkService.updateLinkMetaData(googleLink.id, mockLinkMetaData)
       ).eventually.fulfilled;
+    });
 
-      assert(link);
-      expect(link).to.deep.include(mockLinkMetaData);
+    it('should be able to update link metadata with status failed', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
+          ...mockLinkMetaData,
+          status: LinkStatus.FAILED,
+        })
+      ).eventually.fulfilled;
     });
   });
 
@@ -194,6 +221,7 @@ describe('LinkService', () => {
         [LinkStatus.PENDING]: 3,
         [LinkStatus.APPROVED]: 0,
         [LinkStatus.REJECTED]: 0,
+        [LinkStatus.FAILED]: 0,
       });
     });
 
@@ -208,6 +236,7 @@ describe('LinkService', () => {
         [LinkStatus.PENDING]: 2,
         [LinkStatus.APPROVED]: 1,
         [LinkStatus.REJECTED]: 0,
+        [LinkStatus.FAILED]: 0,
       });
     });
   });

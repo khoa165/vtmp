@@ -1,8 +1,14 @@
-import { LinkRegion, JobFunction, JobType } from '@vtmp/common/constants';
+import {
+  LinkRegion,
+  JobFunction,
+  JobType,
+  LinkStatus,
+  LinkProcessingSubStatus,
+} from '@vtmp/common/constants';
 import { z } from 'zod';
 export const LinkMetaDataSchema = z
   .object({
-    url: z.string().url({ message: 'Invalid URL' }),
+    // This should not have url field
     jobTitle: z.string(),
     companyName: z.string(),
     location: z.nativeEnum(LinkRegion, {
@@ -41,3 +47,36 @@ export const RawAIResponseSchema = z
 
 export type LinkMetaData = z.infer<typeof LinkMetaDataSchema>;
 export type RawAIResponse = z.infer<typeof RawAIResponseSchema>;
+
+export type ProcessingResult<T> = LinkType & {
+  processedContent?: T;
+  status?: LinkStatus;
+  subStatus?: LinkProcessingSubStatus;
+  error?: string;
+};
+export type ScrapedMetadata = ProcessingResult<string>;
+export type ExtractedMetadata = ProcessingResult<LinkMetaData>;
+
+const LinkSchema = z.object({
+  _id: z.string(),
+  url: z.string().url(),
+  attemptsCount: z.number(),
+});
+export const EventBodySchema = z.object({
+  linksData: z.array(LinkSchema).min(1),
+});
+export type LinkType = z.infer<typeof LinkSchema>;
+
+export interface UpdateLinkPayload {
+  lastProcessedAt: Date;
+  jobTitle?: string;
+  companyName?: string;
+  location?: LinkRegion;
+  jobFunction?: JobFunction;
+  jobType?: JobType;
+  datePosted?: string;
+  jobDescription?: string;
+  attemptsCount: number;
+  status?: LinkStatus;
+  subStatus?: LinkProcessingSubStatus;
+}

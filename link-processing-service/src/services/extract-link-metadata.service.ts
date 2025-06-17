@@ -5,14 +5,24 @@ import {
   LinkMetaDataSchema,
   RawAIResponse,
   RawAIResponseSchema,
+  ScrapedMetadata,
+  ExtractedMetadata,
 } from '@/services/link-metadata-validation';
 import {
   AIExtractionError,
   AIResponseEmptyError,
   InvalidJsonError,
+  logError,
 } from '@/utils/errors';
 import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
-import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
+import {
+  JobFunction,
+  JobType,
+  LinkProcessingSubStatus,
+  LinkRegion,
+  LinkStatus,
+} from '@vtmp/common/constants';
+import { mapStringToEnum } from '@/helpers/link.helpers';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
@@ -23,32 +33,18 @@ const parseJson = (text: string, url: string): RawAIResponse => {
   try {
     return JSON.parse(text);
   } catch {
-    throw new InvalidJsonError('Invalid JSON format in AI response', { url });
+    throw new InvalidJsonError('Invalid JSON format in AI response', {
+      urls: [url],
+    });
   }
 };
 
-const mapStringToEnum = <T extends Record<string, string>>({
-  enumObject,
-  value,
-  fallback,
-}: {
-  enumObject: T;
-  value: string;
-  fallback: T[keyof T];
-}): T[keyof T] => {
-  const match = Object.values(enumObject).find((v) => v === value);
-  if (!match) {
-    return fallback;
-  }
-  return match as T[keyof T];
-};
-
-const generateMetaData = async (
-  extractedText: string,
+const generateMetadata = async (
+  text: string,
   url: string
 ): Promise<LinkMetaData> => {
   const genAI = await getGoogleGenAI();
-  const prompt = await buildPrompt(extractedText);
+  const prompt = await buildPrompt(text);
 
   const response: GenerateContentResponse = await genAI.models.generateContent({
     model: 'gemini-2.0-flash',
@@ -58,7 +54,7 @@ const generateMetaData = async (
   // Get raw response from AI
   const rawAIResponse = response.text?.replace(/```json|```/g, '').trim();
   if (!rawAIResponse)
-    throw new AIResponseEmptyError('AI response was empty', { url });
+    throw new AIResponseEmptyError('AI response was empty', { urls: [url] });
 
   // JSON.parse it to convert to JS object if it is not null/undefined
   const parsedAIResponse = parseJson(rawAIResponse, url);
@@ -68,7 +64,6 @@ const generateMetaData = async (
 
   // Convert from string to Typescript enum, had to use a separate helper function
   const formattedLinkMetaData: LinkMetaData = {
-    url,
     jobTitle: validatedAIResponse.jobTitle,
     companyName: validatedAIResponse.companyName,
     location: mapStringToEnum({
@@ -93,21 +88,52 @@ const generateMetaData = async (
   return LinkMetaDataSchema.parse(formattedLinkMetaData);
 };
 
-const ExtractLinkMetadataService = {
+export const ExtractLinkMetadataService = {
   extractMetadata: async (
-    url: string,
-    extractedText: string
-  ): Promise<LinkMetaData> => {
+    scrapedLinksMetadata: ScrapedMetadata[]
+  ): Promise<ExtractedMetadata[]> => {
+    const urls = scrapedLinksMetadata.map((metadata) => metadata.url);
     try {
-      return generateMetaData(extractedText, url);
-    } catch (error) {
+      const extractedMetadataResults = await Promise.all(
+        scrapedLinksMetadata.map(async (metadata) => {
+          if (!metadata.processedContent) {
+            // Scraping stage failed
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { processedContent, ...rest } = metadata;
+            return {
+              ...rest,
+            };
+          }
+          try {
+            // If this object has processedContent field, meaning it was "decorated" successfully from scraping stage
+            // Call function generateMetadata async
+            const extractedMetadata = await generateMetadata(
+              metadata.processedContent,
+              metadata.url
+            );
+            // Now replace the data field from before (which is a string text) with this new object and return
+            return { ...metadata, processedContent: extractedMetadata };
+          } catch (error: unknown) {
+            logError(error);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { processedContent, ...rest } = metadata;
+            // If any error happens, remove the data field (string text from before), and attach processingSubStatus and error fields
+            return {
+              ...rest,
+              status: LinkStatus.FAILED,
+              subStatus: LinkProcessingSubStatus.EXTRACTION_FAILED,
+              error: String(error),
+            };
+          }
+        })
+      );
+      return extractedMetadataResults;
+    } catch (error: unknown) {
       throw new AIExtractionError(
         'Failed to extract metadata with AI',
-        { url },
+        { urls },
         { cause: error }
       );
     }
   },
 };
-
-export { ExtractLinkMetadataService };

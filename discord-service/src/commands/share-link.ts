@@ -1,3 +1,4 @@
+import { submitLinkWithToken } from '@/utils/api';
 import {
   SlashCommand,
   CommandContext,
@@ -5,7 +6,6 @@ import {
   CommandOptionType,
 } from 'slash-create';
 import { z } from 'zod';
-import { postWithAuthRetry } from '@/utils/auth';
 
 const urlSchema = z.string().url();
 
@@ -36,7 +36,7 @@ export class ShareLinkCommand extends SlashCommand {
     }
 
     try {
-      const response = await postWithAuthRetry('/links', {
+      const response = await submitLinkWithToken('/links', {
         url: parsed_url.data,
       });
 

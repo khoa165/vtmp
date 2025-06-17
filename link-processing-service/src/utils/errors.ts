@@ -1,15 +1,18 @@
-import { LinkProcessStage } from '@vtmp/common/constants';
+import { LinkProcessingSubStatus } from '@vtmp/common/constants';
+import middy from '@middy/core';
+import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
+import { ZodError } from 'zod';
+
 export abstract class ServiceSpecificError extends Error {
   public metadata: { url: string };
-  public linkProcessingStatus: LinkProcessStage;
-  public failedSteps?: [string];
+  public linkProcessingStatus: LinkProcessingSubStatus;
   constructor(
     message: string,
-    metadata: { url: string },
-    linkProcessingStatus: LinkProcessStage,
+    metadata: { urls: string[] },
+    linkProcessingStatus: LinkProcessingSubStatus,
     options?: { cause?: unknown; failedSteps?: [string] }
   ) {
-    super(message);
+    super(message, options);
     this.name = this.constructor.name;
     this.metadata = metadata;
     this.linkProcessingStatus = linkProcessingStatus;
@@ -27,10 +30,15 @@ export class LinkValidationError extends ServiceSpecificError {
 
   constructor(
     message: string,
-    metadata: { url: string },
-    options?: { cause?: unknown; statusCode?: number; failedSteps: [string] }
+    metadata: { urls: string[] },
+    options?: { cause?: unknown }
   ) {
-    super(message, metadata, LinkProcessStage.VALIDATION_FAILED, options);
+    super(
+      message,
+      metadata,
+      LinkProcessingSubStatus.VALIDATION_FAILED,
+      options
+    );
     if (options?.statusCode) {
       this.statusCode = options?.statusCode;
     }
@@ -40,62 +48,105 @@ export class LinkValidationError extends ServiceSpecificError {
 export class ScrapingError extends ServiceSpecificError {
   constructor(
     message: string,
-    metadata: { url: string },
+    metadata: { urls: string[] },
     options?: { cause?: unknown }
   ) {
-    super(message, metadata, LinkProcessStage.SCRAPING_FAILED, options);
+    super(message, metadata, LinkProcessingSubStatus.SCRAPING_FAILED, options);
   }
 }
 
 export class AIExtractionError extends ServiceSpecificError {
   constructor(
     message: string,
-    metadata: { url: string },
+    metadata: { urls: string[] },
     options?: { cause?: unknown }
   ) {
-    super(message, metadata, LinkProcessStage.EXTRACTION_FAILED, options);
+    super(
+      message,
+      metadata,
+      LinkProcessingSubStatus.EXTRACTION_FAILED,
+      options
+    );
   }
 }
 
 export class AIResponseEmptyError extends ServiceSpecificError {
-  constructor(message: string, metadata: { url: string }) {
-    super(message, metadata, LinkProcessStage.EXTRACTION_FAILED);
+  constructor(message: string, metadata: { urls: string[] }) {
+    super(message, metadata, LinkProcessingSubStatus.EXTRACTION_FAILED);
   }
 }
 
 export class InvalidJsonError extends ServiceSpecificError {
-  constructor(message: string, metadata: { url: string }) {
-    super(message, metadata, LinkProcessStage.EXTRACTION_FAILED);
+  constructor(message: string, metadata: { urls: string[] }) {
+    super(message, metadata, LinkProcessingSubStatus.EXTRACTION_FAILED);
   }
 }
 
-export const handleError = (
-  error: unknown,
-  url: string
-): {
-  url: string;
-  linkProcessingStatus: LinkProcessStage;
-} => {
-  let linkProcessingStatus: LinkProcessStage =
-    LinkProcessStage.VALIDATION_FAILED;
-
+export function logError(error: unknown): void {
   if (error instanceof ServiceSpecificError) {
-    console.log('Error message: ', error.message);
-    linkProcessingStatus = error.linkProcessingStatus;
+    console.error('ServiceSpecificError:', error);
     if (error.cause instanceof Error) {
-      console.error('Error cause: ', error.cause);
-      console.log('Error cause message: ', error.cause.message);
+      console.error('Error cause:', error.cause);
     }
   } else if (error instanceof Error) {
+    console.error('General error:', error);
     if (error.cause instanceof Error) {
-      console.error('Error cause: ', error.cause);
-      console.log('Error cause message: ', error.cause.message);
+      console.error('Error cause:', error.cause);
     }
-    linkProcessingStatus = LinkProcessStage.UNKNOWN_FAILED;
   } else {
-    linkProcessingStatus = LinkProcessStage.UNKNOWN_FAILED;
+    console.error('Unknown error:', error);
   }
+}
 
-  console.error(error);
-  return { url, linkProcessingStatus };
+export const handleErrorMiddleware = (): middy.MiddlewareObj<
+  APIGatewayProxyEventV2,
+  APIGatewayProxyResult
+> => {
+  const onError: middy.MiddlewareFn<
+    APIGatewayProxyEventV2,
+    APIGatewayProxyResult
+  > = async (request) => {
+    const error = request.error;
+    logError(error);
+
+    if (error instanceof SyntaxError) {
+      // Error thrown due to malformed JSON string that failed JSON.parse
+      request.response = {
+        statusCode: 400,
+        body: JSON.stringify({
+          message: 'Malformed JSON in request body',
+          linkProcessingStatus: LinkProcessingSubStatus.PRE_VALIDATION_FAILED,
+        }),
+      };
+      return;
+    } else if (error instanceof ZodError) {
+      request.response = {
+        statusCode: 400,
+        body: JSON.stringify({
+          message: 'Invalid request body shape',
+          linkProcessingStatus: LinkProcessingSubStatus.PRE_VALIDATION_FAILED,
+        }),
+      };
+    } else if (error instanceof ServiceSpecificError) {
+      request.response = {
+        statusCode: 500,
+        body: JSON.stringify({
+          message: error.message,
+          linkProcessingStatus: error.linkProcessingStatus,
+        }),
+      };
+    } else {
+      request.response = {
+        statusCode: 500,
+        body: JSON.stringify({
+          message: 'Internal server error',
+          linkProcessingStatus: LinkProcessingSubStatus.UNKNOWN_FAILED,
+        }),
+      };
+    }
+  };
+
+  return {
+    onError,
+  };
 };

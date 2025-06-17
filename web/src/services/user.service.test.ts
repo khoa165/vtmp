@@ -6,7 +6,7 @@ import { UserRepository } from '@/repositories/user.repository';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import assert from 'assert';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { IUser } from '@/models/user.model';
 
 describe('User Service', () => {
@@ -126,20 +126,20 @@ describe('User Service', () => {
 
     it('should successfully update one field of user with given id', async () => {
       await expect(
-        UserService.updateUserById(user.id, { role: UserRole.ADMIN })
+        UserService.updateUserById(user.id, { role: SystemRole.ADMIN })
       ).eventually.fulfilled;
     });
 
     it('should successfully update one field and return user without encrypted password field', async () => {
-      expect(user.role).to.equal(UserRole.USER);
+      expect(user.role).to.equal(SystemRole.USER);
 
       const updatedUser = await UserService.updateUserById(user.id, {
-        role: UserRole.ADMIN,
+        role: SystemRole.ADMIN,
       });
 
       assert(updatedUser);
       expect(updatedUser).to.have.property('role');
-      expect(updatedUser.role).to.equal(UserRole.ADMIN);
+      expect(updatedUser.role).to.equal(SystemRole.ADMIN);
       expect(updatedUser).to.not.have.property('encryptedPassword');
     });
 
@@ -147,18 +147,18 @@ describe('User Service', () => {
       await expect(
         UserService.updateUserById(user.id, {
           firstName: 'admin2',
-          role: UserRole.ADMIN,
+          role: SystemRole.ADMIN,
         })
       ).eventually.fulfilled;
     });
 
     it('should successfully update multiple fields and return user without encrypted password field', async () => {
       expect(user.firstName).to.equal('admin1');
-      expect(user.role).to.equal(UserRole.USER);
+      expect(user.role).to.equal(SystemRole.USER);
 
       const updateInfo = {
         firstName: 'admin2',
-        role: UserRole.ADMIN,
+        role: SystemRole.ADMIN,
       };
       const updatedUser = await UserService.updateUserById(user.id, updateInfo);
 

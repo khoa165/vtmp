@@ -47,16 +47,11 @@ export enum LinkRegion {
   OTHER = 'OTHER',
 }
 
-export enum LinkStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
-}
-
-export enum UserRole {
+export enum SystemRole {
   ADMIN = 'ADMIN',
   MODERATOR = 'MODERATOR',
   USER = 'USER',
+  SERVICE = 'SERVICE',
 }
 
 export enum Permission {
@@ -224,11 +219,18 @@ export enum JobType {
   INDUSTRY = 'INDUSTRY',
 }
 
-export enum LinkProcessStage {
+export enum LinkStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  FAILED = 'FAILED',
+}
+
+export enum LinkProcessingSubStatus {
   UNKNOWN_FAILED = 'UNKNOWN_FAILED',
-  NOT_PROCESSED = 'NOT_PROCESSED',
   VALIDATION_FAILED = 'VALIDATION_FAILED',
   SCRAPING_FAILED = 'SCRAPING_FAILED',
   EXTRACTION_FAILED = 'EXTRACTION_FAILED',
+  PRE_VALIDATION_FAILED = 'PRE_VALIDATION_FAILED',
   SUCCESS = 'SUCCESS',
 }

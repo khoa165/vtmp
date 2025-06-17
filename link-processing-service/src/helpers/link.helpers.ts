@@ -31,6 +31,22 @@ const formatJobDescription = (description: {
   return result.length > 0 ? '\n' + result.trim() : '';
 };
 
+export const mapStringToEnum = <T extends Record<string, string>>({
+  enumObject,
+  value,
+  fallback,
+}: {
+  enumObject: T;
+  value: string;
+  fallback: T[keyof T];
+}): T[keyof T] => {
+  const match = Object.values(enumObject).find((v) => v === value);
+  if (!match) {
+    return fallback;
+  }
+  return match as T[keyof T];
+};
+
 const buildPrompt = (extractedText: string): string => `
 ${extractedText}
 \n\n

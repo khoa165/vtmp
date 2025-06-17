@@ -1,11 +1,31 @@
+import { LinkStatus, LinkProcessingSubStatus } from '@vtmp/common/constants';
 import { LinkRepository } from '@/repositories/link.repository';
-import { LinkProcessStage, LinkStatus } from '@vtmp/common/constants';
 import cron from 'node-cron';
 
+const getRetryFilter = () => ({
+  $or: [
+    { status: LinkStatus.PENDING },
+    {
+      status: LinkStatus.FAILED,
+      subStatus: LinkProcessingSubStatus.UNKNOWN_FAILED,
+      attemptsCount: { $lt: 4 },
+      $expr: {
+        $gt: [
+          {
+            $dateDiff: {
+              startDate: '$lastProcessedAt',
+              endDate: '$$NOW',
+              unit: 'minute',
+            },
+          },
+          30,
+        ],
+      },
+    },
+  ],
+});
+
 cron.schedule('0 0 * * * *', async () => {
-  const links = await LinkRepository.getLinks({
-    status: LinkStatus.PENDING,
-    linkProcessStage: LinkProcessStage.NOT_PROCESSED,
-  });
+  const links = await LinkRepository.getLinks(getRetryFilter());
   console.log(links);
 });

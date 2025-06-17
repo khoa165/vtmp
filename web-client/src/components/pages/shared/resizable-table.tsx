@@ -35,6 +35,7 @@ const ColumnResizer = <TData, TValue>({
     />
   );
 };
+
 interface ResizableTableProps<TData, TValue> {
   table: TanstackTable<TData>;
   columns: ColumnDef<TData, TValue>[];
@@ -47,7 +48,7 @@ export function ResizableTable<TData, TValue>({
   return (
     <>
       <section className="rounded-md border border-foreground">
-        <div className="overflow-x-scroll">
+        <div className="overflow-x-auto">
           <Table>
             <TableHeader className="bg-foreground">
               {table.getHeaderGroups().map((headerGroup) => (

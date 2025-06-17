@@ -2,6 +2,7 @@ import {
   InterviewType,
   MentorshipRole,
   ApplicationStatus,
+  InvitationStatus,
   LinkStatus,
 } from '@vtmp/common/constants';
 
@@ -160,8 +161,10 @@ export enum QueryKey {
   GET_JOB_POSTINGS = '/api/job-postings/not-applied',
   GET_JOB_POSTINGS_IN_ADAY = '/api/job-postings/not-applied-last-24h',
   GET_APPLICATIONS_COUNT_BY_STATUS = '/api/applications/countByStatus',
+  GET_APPLICATION_BY_ID = '/api/applications/:id',
   GET_LINKS = '/api/links/getLinks',
   GET_LINKS_COUNT_BY_STATUS = '/api/links/count-by-status',
+  GET_INTERVIEW_BY_APPLICATION_ID = '/api/interviews/by-application/:applicationId',
 }
 
 export enum Method {
@@ -185,5 +188,12 @@ export const StatusToColorMapping: Record<
   [LinkStatus.APPROVED]: 'bg-[#A3F890]',
 };
 
+export const InvitationStatusToColorMapping: Record<InvitationStatus, string> =
+  {
+    [InvitationStatus.ACCEPTED]: 'bg-(--vtmp-green)',
+    [InvitationStatus.EXPIRED]: 'bg-(--vtmp-brown)',
+    [InvitationStatus.PENDING]: 'bg-(--vtmp-yellow)',
+    [InvitationStatus.REVOKED]: 'bg-(--vtmp-orange)',
+  };
 export const MIN_PASSWORD_LENGTH = 8;
 export const MAX_PASSWORD_LENGTH = 20;

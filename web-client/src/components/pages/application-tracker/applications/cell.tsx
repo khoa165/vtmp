@@ -25,7 +25,7 @@ import { formatStatus } from '@/utils/helpers';
 import { StatusDot } from '@/components/base/status-dot';
 import { StatusToColorMapping } from '@/utils/constants';
 
-const celebrateOffered = (): void => {
+export const celebrateOffered = (): void => {
   const end = Date.now() + 3 * 1000; // 3 seconds
   const colors = ['#a786ff', '#fd8bbc', '#eca184', '#f8deb1'];
 
@@ -58,29 +58,28 @@ const celebrateOffered = (): void => {
 export const CellActions = ({
   application,
   deleteApplicationFn,
+  handleOpenDrawer,
 }: {
   application: IApplication;
   deleteApplicationFn: (id: string) => void;
+  handleOpenDrawer: (id: string) => void;
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button variant="ghost" className="h-8 w-8 p-0">
+        <DropdownMenuTrigger className="px-auto">
+          <Button variant="ghost" justify="center" className="h-8 w-8">
             <span className="sr-only">Open menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {/* TODO-(QuangMinhNguyen27405/dsmai): Remove this 'Copy Application ID action' */}
-          <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(application._id)}
-          >
-            Copy application ID
+        <DropdownMenuContent align="start" className="min-w-20">
+          <DropdownMenuItem onClick={() => handleOpenDrawer(application._id)}>
+            Detail
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsDialogOpen(true)}>
-            Delete application
+            Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
