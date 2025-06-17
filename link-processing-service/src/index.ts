@@ -1,12 +1,10 @@
-// import { LinkProcessorService } from '@/services/link-processor.service';
-// import { submitLinkWithToken } from '@/utils/auth';
 import middy from '@middy/core';
 import httpJsonBodyParser from '@middy/http-json-body-parser';
 import { handleErrorMiddleware } from '@/utils/errors';
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { z } from 'zod';
 import { LinkProcessorService } from '@/services/link-processor.service';
-import { submitLinkWithToken } from '@/utils/auth';
+import { submitLinkWithToken } from '@/utils/api';
 
 // const EventBodySchema = z.object({
 //   url: z.string().url(),
