@@ -7,20 +7,22 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe('Submit link', () => {
-  test.only('should appear and filter application table correctly', async ({
+  test('link sharing page appears and allows to perform action', async ({
     page,
   }) => {
-    // Check if the link input and button are visible
-    const linkInput = page.getByPlaceholder('URL');
-    console.log(await linkInput.innerText());
+    const randomValue = Math.random();
+    // Check if the link input are visible
+    const linkInput = page.locator('#url');
+    await linkInput.waitFor({ state: 'visible' });
     expect(linkInput).toBeVisible();
-
+    // check if the button are visible
     const button = page.getByRole('button', { name: 'Submit Link' });
-    expect(button).toBeVisible();
-
-    // check if the link input is empty
+    await button.waitFor({ state: 'visible' });
+    await expect(button).toBeVisible();
+    // Fill input
+    await linkInput.fill(`https://www.test/vtmp/${randomValue}`);
     await button.click();
-    const errorText = page.getByText('Invalid url', { exact: true });
-    expect(errorText).toBeVisible();
+    // Verify that the input's text is cleared or removed
+    await expect(linkInput).toHaveValue('');
   });
 });
