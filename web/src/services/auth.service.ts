@@ -5,14 +5,17 @@ import {
   UnauthorizedError,
   ResourceNotFoundError,
 } from '@/utils/errors';
-import { JWTUtils } from '@/utils/jwt';
+import { JWTUtils } from '@vtmp/server-common/utils';
 import bcrypt from 'bcryptjs';
 import { omit } from 'remeda';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
 import { z } from 'zod';
+import { EnvConfig } from '@/config/env';
+import { AuthType } from '@vtmp/server-common/constants';
 
 const ResetTokenPayloadSchema = z.object({
   id: z.string(),
+  authType: z.nativeEnum(AuthType),
   email: z.string().email(),
   purpose: z.literal(JWT_TOKEN_TYPE.RESET_PASSWORD),
 });
@@ -51,7 +54,8 @@ export const AuthService = {
     });
 
     const token = JWTUtils.createTokenWithPayload(
-      { id: user._id.toString() },
+      { id: user._id.toString(), authType: AuthType.USER },
+      EnvConfig.get().JWT_SECRET,
       {
         expiresIn: '2w',
       }
@@ -77,7 +81,8 @@ export const AuthService = {
     }
 
     const token = JWTUtils.createTokenWithPayload(
-      { id: user._id.toString() },
+      { id: user._id.toString(), authType: AuthType.USER },
+      EnvConfig.get().JWT_SECRET,
       {
         expiresIn: '2w',
       }
@@ -95,9 +100,11 @@ export const AuthService = {
     const resetToken = JWTUtils.createTokenWithPayload(
       {
         id: user._id.toString(),
+        authType: AuthType.USER,
         email: user.email,
         purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
       },
+      EnvConfig.get().JWT_SECRET,
       {
         expiresIn: '10m',
       }
@@ -119,9 +126,10 @@ export const AuthService = {
     token: string;
     newPassword: string;
   }) => {
-    const decoded = JWTUtils.decodeAndParseToken(
+    const decoded = JWTUtils.verifyAndParseToken(
       token,
-      ResetTokenPayloadSchema
+      ResetTokenPayloadSchema,
+      EnvConfig.get().JWT_SECRET
     );
 
     const user = await UserRepository.getUserById(decoded.id, {

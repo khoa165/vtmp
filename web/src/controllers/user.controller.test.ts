@@ -9,7 +9,7 @@ import request from 'supertest';
 import { expect } from 'chai';
 import { IUser } from '@/models/user.model';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
@@ -152,7 +152,7 @@ describe('UserController', () => {
       const res = await request(app)
         .put(`/api/users/${mockUserId}`)
         .send({
-          role: UserRole.ADMIN,
+          role: SystemRole.ADMIN,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockToken}`);
@@ -199,7 +199,7 @@ describe('UserController', () => {
 
     it('should return error message not found for user not exist', async () => {
       const updateInfo = {
-        role: UserRole.ADMIN,
+        role: SystemRole.ADMIN,
       };
 
       const res = await request(app)
@@ -215,7 +215,7 @@ describe('UserController', () => {
 
     it('should return updated user without encryptedPassword field', async () => {
       const updateInfo = {
-        role: UserRole.ADMIN,
+        role: SystemRole.ADMIN,
       };
 
       const res = await request(app)

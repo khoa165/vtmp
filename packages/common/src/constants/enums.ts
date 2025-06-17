@@ -47,10 +47,11 @@ export enum LinkStatus {
   REJECTED = 'REJECTED',
 }
 
-export enum UserRole {
+export enum SystemRole {
   ADMIN = 'ADMIN',
   MODERATOR = 'MODERATOR',
   USER = 'USER',
+  SERVICE = 'SERVICE',
 }
 
 export enum Permission {

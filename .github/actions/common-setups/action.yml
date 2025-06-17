@@ -1,5 +1,4 @@
 name: Common setup
-description: Common setup steps for all jobs
 
 runs:
   using: 'composite'
@@ -18,6 +17,6 @@ runs:
       run: yarn install --immutable
       shell: bash
 
-    - name: Build common package
-      run: yarn workspace @vtmp/common build
+    - name: Build common and server-common packages
+      run: yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build
       shell: bash
