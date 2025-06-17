@@ -23,7 +23,7 @@
     "express-xss-sanitizer": "^2.0.0",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.15.0",
+    "mongodb": "^6.17.0",
     "mongoose": "^8.12.0",
     "mongoose-lean-virtuals": "^1.1.0",
     "morgan": "^1.10.0",
