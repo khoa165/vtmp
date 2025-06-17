@@ -60,7 +60,7 @@ export const JobPostingRepository = {
     userId,
     filters,
     limit,
-    cursor = { _id: '000000000000000000000000' },
+    cursor,
   }: {
     userId: string;
     filters?: JobFilter;
@@ -141,6 +141,7 @@ export const JobPostingRepository = {
             },
           ]
         : []),
+      { $sort: { _id: 1 } },
       { $limit: limit },
     ]);
   },

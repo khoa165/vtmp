@@ -1,6 +1,9 @@
+import { EnvConfig } from '@/config/env';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
 import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
+import { JWTUtils } from '@vtmp/server-common/utils';
+import z from 'zod';
 
 export const JobPostingService = {
   updateJobPostingById: async (
@@ -44,12 +47,10 @@ export const JobPostingService = {
   getJobPostingsUserHasNotAppliedTo: async ({
     userId,
     filters,
+    pagination,
   }: {
     userId: string;
     filters?: {
-      limit?: number;
-      previous_cursor?: string;
-      next_cursor?: string;
       jobTitle?: string;
       companyName?: string;
       location?: string;
@@ -58,10 +59,32 @@ export const JobPostingService = {
       postingDateRangeStart?: Date;
       postingDateRangeEnd?: Date;
     };
+    pagination: {
+      limit?: number;
+      cursor?: string;
+    };
   }) => {
-    return JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
-      userId: userId,
-      filters: filters ?? {},
-    });
+    const jobPostings =
+      await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
+        userId: userId,
+        limit: pagination.limit || 10,
+        filters: filters ?? {},
+        cursor: pagination.cursor
+          ? JWTUtils.peekAndParseToken(
+              pagination.cursor,
+              z.object({ _id: z.string() })
+            )
+          : undefined,
+      });
+    return {
+      data: jobPostings,
+      cursor:
+        jobPostings.length === pagination.limit
+          ? JWTUtils.createTokenWithPayload(
+              { _id: jobPostings[jobPostings.length - 1]?._id.toString() },
+              EnvConfig.get().JWT_SECRET
+            )
+          : undefined,
+    };
   },
 };
