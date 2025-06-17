@@ -3,7 +3,7 @@ import boundaries from 'eslint-plugin-boundaries';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
-import { rulesCustom } from './custom-eslint';
+import { customEslintRules } from './custom-eslint';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -16,11 +16,11 @@ export default tseslint.config(
   {
     languageOptions: {
       parser: tseslint.parser,
-      globals: globals.browser,
+      globals: { ...globals.node, ...globals.browser },
     },
     plugins: {
       boundaries,
-      custom: rulesCustom,
+      custom: customEslintRules,
     },
     settings: {
       'import/resolver': {
@@ -72,6 +72,7 @@ export default tseslint.config(
       ],
     },
     rules: {
+      '@typescript-eslint/no-var-requires': 'error',
       // Custom rule
       'custom/no-try-in-controller-or-middleware': 'error',
       'custom/enforce-uppercase-enum-values': 'error',

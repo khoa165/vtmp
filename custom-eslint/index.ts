@@ -1,13 +1,9 @@
-import {
-  enforceSortedEnumKeys,
-  enforceUppercaseEnumValues,
-  noRequireFunctionCalls,
-  noTryInControllerOrMiddleware,
-} from './rules';
+import { enforceSortedEnumKeys } from './rules/enforce-sorted-enum-keys';
+import { enforceUppercaseEnumValues } from './rules/enforce-uppercase-enum-values';
+import { noTryInControllerOrMiddleware } from './rules/no-try-in-controller-or-middleware';
 
-export const rulesCustom = {
+export const customEslintRules = {
   rules: {
-    'no-require-function-calls': noRequireFunctionCalls,
     'no-try-in-controller-or-middleware': noTryInControllerOrMiddleware,
     'enforce-uppercase-enum-values': enforceUppercaseEnumValues,
     'enforce-sorted-enum-keys': enforceSortedEnumKeys,
