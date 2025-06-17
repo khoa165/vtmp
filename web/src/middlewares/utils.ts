@@ -1,11 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { handleError, UnauthorizedError } from '@/utils/errors';
 
 interface AuthenticatedRequest extends Request {
   user: {
     id: string;
-    role: UserRole;
+    role: SystemRole;
+  };
+}
+
+interface AuthenticatedServiceRequest extends Request {
+  service: {
+    role: SystemRole;
   };
 }
 
@@ -14,6 +20,15 @@ export const getUserFromRequest = (req: Request): AuthenticatedRequest => {
     throw new UnauthorizedError('User is not authenticated', {});
   }
   return req as AuthenticatedRequest;
+};
+
+export const getServiceFromRequest = (
+  req: Request
+): AuthenticatedServiceRequest => {
+  if (!req.service) {
+    throw new UnauthorizedError('Service is not authenticated', {});
+  }
+  return req as AuthenticatedServiceRequest;
 };
 
 export const routeErrorHandler = (
