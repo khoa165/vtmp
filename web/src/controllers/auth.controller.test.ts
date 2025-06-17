@@ -25,8 +25,35 @@ import { omit } from 'remeda';
 describe('AuthController', () => {
   useMongoDB();
   const sandbox = useSandbox();
-  beforeEach(() => {
+  let mockInvitationToken: string;
+  let signupBody: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    token: string;
+  };
+
+  beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+    mockInvitationToken = JWTUtils.createTokenWithPayload(
+      { receiverEmail: 'test123@gmail.com' },
+      EnvConfig.get().JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    await InvitationRepository.createInvitation({
+      receiverEmail: 'test123@gmail.com',
+      sender: getNewMongoId(),
+      expiryDate: addDays(Date.now(), 7),
+      token: mockInvitationToken,
+    });
+    signupBody = {
+      firstName: 'admin',
+      lastName: 'viettech',
+      email: 'test123@gmail.com',
+      password: 'Test!123',
+      token: mockInvitationToken,
+    };
   });
 
   describe('POST /auth/login', () => {
@@ -110,36 +137,6 @@ describe('AuthController', () => {
   });
 
   describe('POST /auth/signup', () => {
-    let mockInvitationToken: string;
-    let signupBody: {
-      firstName: string;
-      lastName: string;
-      email: string;
-      password: string;
-      token: string;
-    };
-
-    beforeEach(async () => {
-      mockInvitationToken = JWTUtils.createTokenWithPayload(
-        { receiverEmail: 'test123@gmail.com' },
-        EnvConfig.get().JWT_SECRET,
-        { expiresIn: '7d' }
-      );
-      await InvitationRepository.createInvitation({
-        receiverEmail: 'test123@gmail.com',
-        sender: getNewMongoId(),
-        expiryDate: addDays(Date.now(), 7),
-        token: mockInvitationToken,
-      });
-      signupBody = {
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test123@gmail.com',
-        password: 'Test!123',
-        token: mockInvitationToken,
-      };
-    });
-
     it('should return error message for no invitation token', async () => {
       const res = await request(app)
         .post('/api/auth/signup')
@@ -159,6 +156,22 @@ describe('AuthController', () => {
         });
       expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('jwt malformed');
+    });
+
+    it('should return error message for invitation not existed with associated email', async () => {
+      const invalidToken = JWTUtils.createTokenWithPayload(
+        { receiverEmail: 'notfound@gmail.com' },
+        EnvConfig.get().JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          ...signupBody,
+          token: invalidToken,
+        });
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Invitation not found');
     });
 
     it('should return error message for unrecognized field', async () => {
@@ -302,36 +315,6 @@ describe('AuthController', () => {
   });
 
   describe('POST /auth/signup + POST /auth/login', () => {
-    let mockInvitationToken: string;
-    let signupBody: {
-      firstName: string;
-      lastName: string;
-      email: string;
-      password: string;
-      token: string;
-    };
-
-    beforeEach(async () => {
-      mockInvitationToken = JWTUtils.createTokenWithPayload(
-        { receiverEmail: 'test123@gmail.com' },
-        EnvConfig.get().JWT_SECRET,
-        { expiresIn: '7d' }
-      );
-      await InvitationRepository.createInvitation({
-        receiverEmail: 'test123@gmail.com',
-        sender: getNewMongoId(),
-        expiryDate: addDays(Date.now(), 7),
-        token: mockInvitationToken,
-      });
-      signupBody = {
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test123@gmail.com',
-        password: 'Test!123',
-        token: mockInvitationToken,
-      };
-    });
-
     it('should not allow user to login after signup if wrong password', async () => {
       const resSignup = await request(app)
         .post('/api/auth/signup')
