@@ -57,6 +57,9 @@ const JobPostingIdParamSchema = z.object({
 
 const FilterSchema = z
   .object({
+    limit: z.number().optional().default(10),
+    next_cursor: z.string().optional(),
+    previous_cursor: z.string().optional(),
     jobTitle: z.string().optional(),
     companyName: z.string().optional(),
     location: z.nativeEnum(JobPostingRegion).optional(),

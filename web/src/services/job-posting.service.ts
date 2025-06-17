@@ -47,6 +47,9 @@ export const JobPostingService = {
   }: {
     userId: string;
     filters?: {
+      limit?: number;
+      previous_cursor?: string;
+      next_cursor?: string;
       jobTitle?: string;
       companyName?: string;
       location?: string;
