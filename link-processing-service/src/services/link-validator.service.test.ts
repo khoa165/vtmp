@@ -1,9 +1,14 @@
 import { expect, assert } from 'chai';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { LinkValidatorService } from '@/services/link-validator.service';
+import {
+  LINK_VALIDATOR_STEPS,
+  LinkValidatorService,
+} from '@/services/link-validator.service';
 import { LinkValidationError } from '@/utils/errors';
 import retry from 'retry';
+import * as sinon from 'sinon';
+import { safebrowsing_v4 } from '@googleapis/safebrowsing';
 
 const shortenedUrl_shouldReturn200 = 'https://bit.ly/3SA6Wol';
 const testUrl_shouldReturn403 = 'https://httpstat.us/403';
@@ -17,10 +22,15 @@ const testRetryConfig: retry.WrapOptions = {
   minTimeout: 10,
   maxTimeout: 10,
 };
-LinkValidatorService.config.retryConfig = testRetryConfig;
+LinkValidatorService.config.resolveLinkRetryConfig = testRetryConfig;
+//disable by default to avoid hitting Google Safe Browsing API limits
+LinkValidatorService.config.enableVirusScan = false;
 
 chai.use(chaiAsPromised);
 describe('LinkValidatorService', () => {
+  afterEach(() => {
+    sinon.restore();
+  });
   describe('resolveRedirects', () => {
     it('should return final URL without any errors', async () => {
       const url = shortenedUrl_shouldReturn200;
@@ -32,19 +42,83 @@ describe('LinkValidatorService', () => {
         LinkValidatorService.validateLink(testUrl_shouldReturnTypeError)
       ).to.be.rejectedWith(TypeError);
     });
+    describe('handling faulty links', () => {
+      it('should return 403 error', async () => {
+        const error = await testErrorResponse(testUrl_shouldReturn403);
+        expect(error.statusCode).equals(403);
+      });
+      it('should throw 429 eror', async () => {
+        const error = await testErrorResponse(testUrl_shouldReturn429);
+        expect(error.statusCode).equals(429);
+      });
+      it('should return network error', async () => {
+        const error = await testErrorResponse(testUrl_shouldReturnNetworkError);
+        expect(error.message).contains('Network error');
+      });
+    });
   });
-  describe('handling faulty links', () => {
-    it('should return 403 error', async () => {
-      const error = await testErrorResponse(testUrl_shouldReturn403);
-      expect(error.statusCode).equals(403);
+  describe('Safe Browsing checks', () => {
+    before(() => (LinkValidatorService.config.enableVirusScan = true));
+    after(() => (LinkValidatorService.config.enableVirusScan = false));
+
+    it('should return true for non-malicious link (empty response.data)', async () => {
+      // Mock the Safe Browsing client
+      const mockResponse = {
+        data: {},
+      };
+
+      const mockClient = {
+        threatMatches: {
+          find: sinon.stub().resolves(mockResponse),
+        },
+      };
+
+      // Stub the Safebrowsing constructor to return our mock client
+      sinon
+        .stub(safebrowsing_v4, 'Safebrowsing')
+        .returns(mockClient as unknown as safebrowsing_v4.Safebrowsing);
+
+      const safeUrl = 'https://www.google.com/';
+      const result = await LinkValidatorService.validateLink(safeUrl);
+
+      expect(result).to.equal(safeUrl);
     });
-    it('should throw 429 eror', async () => {
-      const error = await testErrorResponse(testUrl_shouldReturn429);
-      expect(error.statusCode).equals(429);
-    });
-    it('should return network error', async () => {
-      const error = await testErrorResponse(testUrl_shouldReturnNetworkError);
-      expect(error.message).contains('Network error');
+
+    it('should return false for malicious link (response.data contains threat matches)', async () => {
+      // Mock the Safe Browsing client with malicious response
+      const mockResponse = {
+        data: {
+          matches: [
+            {
+              threatType: 'MALWARE',
+              platformType: 'ANY_PLATFORM',
+              threat: {
+                url: 'http://testsafebrowsing.appspot.com/apiv4/ANY_PLATFORM/MALWARE/URL/',
+              },
+              cacheDuration: '300s',
+              threatEntryType: 'URL',
+            },
+          ],
+        },
+      };
+      const mockClient = {
+        threatMatches: {
+          find: sinon.stub().resolves(mockResponse),
+        },
+      };
+      sinon
+        .stub(safebrowsing_v4, 'Safebrowsing')
+        .returns(mockClient as unknown as safebrowsing_v4.Safebrowsing);
+
+      const maliciousUrl =
+        'http://testsafebrowsing.appspot.com/apiv4/ANY_PLATFORM/MALWARE/URL/';
+      try {
+        await LinkValidatorService.validateLink(maliciousUrl);
+      } catch (error) {
+        if (error instanceof LinkValidationError) {
+          expect(error.failedSteps).equals(LINK_VALIDATOR_STEPS.SAFETY_CHECK);
+        }
+      }
     });
   });
 });
@@ -52,7 +126,7 @@ describe('LinkValidatorService', () => {
 async function testErrorResponse(url: string): Promise<LinkValidationError> {
   try {
     const retryOnceConfig: retry.OperationOptions = { retries: 0 };
-    LinkValidatorService.config.retryConfig = retryOnceConfig;
+    LinkValidatorService.config.resolveLinkRetryConfig = retryOnceConfig;
     await LinkValidatorService.validateLink(url);
   } catch (e) {
     if (e instanceof LinkValidationError === false) {

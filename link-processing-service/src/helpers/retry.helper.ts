@@ -35,4 +35,9 @@ async function executeWithRetry<T>(
   });
 }
 
-export { executeWithRetry };
+/**
+ * If received, these HTTP status codes should not be retried
+ */
+const httpErrorNoRetry = [429];
+
+export { executeWithRetry, httpErrorNoRetry };

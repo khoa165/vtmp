@@ -6,6 +6,7 @@ dotenv.config();
 
 const linkProcessorConfigSchema = z.object({
   GOOGLE_GEMINI_API_KEY: z.string(),
+  GOOGLE_SAFE_BROWSING_API_KEY: z.string(),
   API_URL: z.string(),
   SERVICE_JWT_SECRET: z.string(),
   SERVICE_NAME: z.string(),

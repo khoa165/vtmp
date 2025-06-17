@@ -1,19 +1,27 @@
-import { executeWithRetry } from '@/helpers/retry.helper';
+import { executeWithRetry, httpErrorNoRetry } from '@/helpers/retry.helper';
 import { LinkValidationError } from '@/utils/errors';
+import { EnvConfig } from '@/config/env';
 import retry from 'retry';
-export const LinkValidatorService = {
+import { GlobalOptions, safebrowsing_v4 } from '@googleapis/safebrowsing';
+
+const LinkValidatorService = {
   config: {
-    maxRedirects: 10,
     timeoutMs: 8000,
     userAgent:
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/20100101 Firefox/138.0',
-    httpErrorNoRetry: [429],
-    retryConfig: {
+    resolveLinkRetryConfig: {
       retries: 3,
       factor: 2,
       minTimeout: 1000,
-      maxTimeout: 30 * 1000,
-    } as retry.OperationOptions,
+      maxTimeout: 15 * 1000,
+    } as retry.WrapOptions,
+    virusScanRetryConfig: {
+      retries: 2,
+      factor: 2,
+      minTimeout: 5 * 1000,
+      maxTimeout: 10 * 1000,
+    } as retry.WrapOptions,
+    enableVirusScan: true,
   },
 
   /**
@@ -25,7 +33,8 @@ export const LinkValidatorService = {
   async validateLink(url: string): Promise<string> {
     // Validate URL format - throws TypeError if invalid
     new URL(url);
-    const { retryConfig, httpErrorNoRetry } = this.config;
+    const { resolveLinkRetryConfig: retryConfig } = this.config;
+
     const resolvedUrl = await executeWithRetry(
       () => this._resolveRedirects(url),
       retryConfig,
@@ -38,12 +47,15 @@ export const LinkValidatorService = {
       }
     );
 
-    const linkIsSafe = await this._checkSafety(resolvedUrl);
-
+    const linkIsSafe = executeWithRetry(async () => {
+      return await this._checkSafety(resolvedUrl);
+    }, this.config.virusScanRetryConfig);
     if (!linkIsSafe) {
-      throw new LinkValidationError('Provided link fails safety check', {
-        url,
-      });
+      throw new LinkValidationError(
+        'Provided link fails safety check',
+        { url },
+        { failedSteps: [LINK_VALIDATOR_STEPS.SAFETY_CHECK] }
+      );
     }
     return resolvedUrl;
   },
@@ -66,7 +78,7 @@ export const LinkValidatorService = {
       throw new LinkValidationError(
         'Network error while checking URL Responsiveness',
         { url },
-        { cause: error }
+        { cause: error, failedSteps: [LINK_VALIDATOR_STEPS.NETWORK_CHECK] }
       );
     }
     if (!response.ok) {
@@ -76,17 +88,81 @@ export const LinkValidatorService = {
         {
           cause: `HTTP Error ${response.status}: ${response.statusText}`,
           statusCode: response.status,
+          failedSteps: [LINK_VALIDATOR_STEPS.NETWORK_CHECK],
         }
       );
     }
 
     const finalUrl = response.url;
-    console.log('Successfully reached link', url);
     return finalUrl;
   },
 
+  /**
+   * Check if URL is safe using Google Safe Browsing v4 API
+   * @param url - The URL to check for safety
+   * @returns Promise<boolean> - true if safe, false if unsafe
+   */
   async _checkSafety(url: string): Promise<boolean> {
-    console.log(url);
+    const GOOGLE_SAFE_BROWSING_API_KEY =
+      EnvConfig.get().GOOGLE_SAFE_BROWSING_API_KEY;
+    const options: GlobalOptions = { auth: GOOGLE_SAFE_BROWSING_API_KEY };
+    const client = new safebrowsing_v4.Safebrowsing(options);
+    const requestBody: safebrowsing_v4.Schema$GoogleSecuritySafebrowsingV4FindThreatMatchesRequest =
+      {
+        client: {
+          clientId: 'VTMP-LinkProcessing',
+          clientVersion: '1.0.0',
+        },
+        threatInfo: {
+          platformTypes: ['ANY_PLATFORM'],
+          threatEntries: [
+            {
+              url,
+            },
+          ],
+          threatEntryTypes: ['URL'],
+          threatTypes: [
+            'MALWARE',
+            'SOCIAL_ENGINEERING',
+            'UNWANTED_SOFTWARE',
+            'POTENTIALLY_HARMFUL_APPLICATION',
+          ],
+        },
+      };
+
+    let response = undefined;
+    try {
+      response = await client.threatMatches.find({
+        requestBody: requestBody,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        const attempts = this.config.resolveLinkRetryConfig.retries;
+        throw new LinkValidationError(
+          `Unable to validate link safety with Safe Browsing API after ${attempts} attempts`,
+          { url },
+          { cause: error, failedSteps: [LINK_VALIDATOR_STEPS.SAFETY_CHECK] }
+        );
+      }
+    }
+    if (response?.data.matches) {
+      const threat = response.data.matches.at(0);
+      console.warn(
+        `[LinkValidatorService] Link rejected. Virus check came back as malicious or unsure.`,
+        {
+          url: url,
+          threatType: threat?.threatType,
+        }
+      );
+      return false;
+    }
     return true;
   },
 };
+
+enum LINK_VALIDATOR_STEPS {
+  NETWORK_CHECK = 'NETWORK_CHECK',
+  SAFETY_CHECK = 'SAFETY_CHECK',
+}
+
+export { LinkValidatorService, LINK_VALIDATOR_STEPS };

@@ -1,13 +1,13 @@
 import { LinkProcessStage } from '@vtmp/common/constants';
 export abstract class ServiceSpecificError extends Error {
   public metadata: { url: string };
-  public linkProcessingStatus: LinkProcessingStatus;
-  public statusCode?: number;
+  public linkProcessingStatus: LinkProcessStage;
+  public failedSteps?: [string];
   constructor(
     message: string,
     metadata: { url: string },
-    linkProcessingStatus: LinkProcessingStatus,
-    options?: { cause?: unknown; statusCode?: number }
+    linkProcessingStatus: LinkProcessStage,
+    options?: { cause?: unknown; failedSteps?: [string] }
   ) {
     super(message);
     this.name = this.constructor.name;
@@ -16,19 +16,24 @@ export abstract class ServiceSpecificError extends Error {
     if (options?.cause) {
       this.cause = options.cause;
     }
-    if (options?.statusCode) {
-      this.statusCode = options.statusCode;
+    if (options?.failedSteps) {
+      this.failedSteps = options.failedSteps;
     }
   }
 }
 
 export class LinkValidationError extends ServiceSpecificError {
+  public statusCode?: number;
+
   constructor(
     message: string,
     metadata: { url: string },
-    options?: { cause?: unknown; statusCode?: number }
+    options?: { cause?: unknown; statusCode?: number; failedSteps: [string] }
   ) {
     super(message, metadata, LinkProcessStage.VALIDATION_FAILED, options);
+    if (options?.statusCode) {
+      this.statusCode = options?.statusCode;
+    }
   }
 }
 
