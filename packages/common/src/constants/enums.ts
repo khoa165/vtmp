@@ -47,10 +47,11 @@ export enum LinkRegion {
   OTHER = 'OTHER',
 }
 
-export enum UserRole {
+export enum SystemRole {
   ADMIN = 'ADMIN',
   MODERATOR = 'MODERATOR',
   USER = 'USER',
+  SERVICE = 'SERVICE',
 }
 
 export enum Permission {

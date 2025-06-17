@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { z } from 'zod';
 
 const UserSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
-  role: z.nativeEnum(UserRole),
+  role: z.nativeEnum(SystemRole),
   email: z.string().email(),
 });
 
@@ -15,7 +15,7 @@ export const ProtectedRoute = ({
   roles,
 }: {
   children: React.ReactNode;
-  roles: UserRole[];
+  roles: SystemRole[];
 }) => {
   let rawUser = localStorage.getItem('user');
   const navigate = useNavigatePreserveQueryParams();

@@ -14,7 +14,7 @@ import { InterviewRepository } from '@/repositories/interview.repository';
 import {
   InterviewStatus,
   InterviewType,
-  UserRole,
+  SystemRole,
 } from '@vtmp/common/constants';
 import {
   expectErrorsArray,
@@ -67,14 +67,14 @@ describe('InterviewController', () => {
       lastName: 'viettech',
       email: 'testA@gmail.com',
       encryptedPassword,
-      role: UserRole.ADMIN,
+      role: SystemRole.ADMIN,
     };
     const mockUser_B = {
       firstName: 'admin',
       lastName: 'viettech',
       email: 'testB@gmail.com',
       encryptedPassword,
-      role: UserRole.USER,
+      role: SystemRole.USER,
     };
 
     userId_A = (await UserRepository.createUser(mockUser_A)).id;
@@ -208,6 +208,23 @@ describe('InterviewController', () => {
         { message: 'Application ID is required' },
         { message: 'Interview types is required' },
         { message: 'Invalid date' },
+      ]);
+    });
+
+    it('should return error message with 400 status code if interview types is an empty array', async () => {
+      const res = await request(app)
+        .post(url)
+        .set('Authorization', `Bearer ${mockToken_A}`)
+        .set('Accept', 'application/json')
+        .send({
+          applicationId: googleApplication_B.id,
+          types: [],
+          interviewOnDate: new Date('2025-06-07'),
+          status: InterviewStatus.PENDING,
+        });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors).to.deep.include.members([
+        { message: 'Must select at least 1 interview type' },
       ]);
     });
 

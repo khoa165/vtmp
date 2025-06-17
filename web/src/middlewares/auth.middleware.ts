@@ -1,12 +1,33 @@
-import { JWTUtils } from '@/utils/jwt';
+import { JWTUtils } from '@vtmp/server-common/utils';
 import { UnauthorizedError } from '@/utils/errors';
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import UserService from '@/services/user.service';
+import { EnvConfig } from '@/config/env';
+import { SystemRole } from '@vtmp/common/constants';
+import { AuthType } from '@vtmp/server-common/constants';
+import { AllowedIssuer } from '@/constants/enums';
 
 export const DecodedJWTSchema = z.object({
   id: z.string({ required_error: 'Id is required' }),
+  authType: z.nativeEnum(AuthType),
 });
+
+const TokenPayloadSchema = z.union([
+  DecodedJWTSchema,
+  z.object({
+    iss: z.string(),
+    aud: z.string(),
+    authType: z.nativeEnum(AuthType),
+  }),
+]);
+
+const getDecodedJWTServiceSchema = () =>
+  z.object({
+    iss: z.nativeEnum(AllowedIssuer),
+    aud: z.literal(EnvConfig.get().SERVICE_NAME),
+    authType: z.nativeEnum(AuthType),
+  });
 
 export const authenticate = async (
   req: Request,
@@ -19,10 +40,45 @@ export const authenticate = async (
     throw new UnauthorizedError('Unauthorized', {});
   }
 
-  const parsed = JWTUtils.decodeAndParseToken(token, DecodedJWTSchema);
-  const user = await UserService.getUserById(parsed.id);
+  // Decode token without verifying to inspect payload
+  // To determine if the token is for service-to-service authentication or not
+  // This does not verify the signature (with a secret) or check if it expires
+  let decoded;
+  try {
+    decoded = JWTUtils.peekAndParseToken(token, TokenPayloadSchema);
+  } catch {
+    // If Zod throws or jwt.decode returns null, treat as unauthorized
+    throw new UnauthorizedError('jwt malformed', {});
+  }
 
-  req.user = { id: String(user._id), role: user.role };
+  if (decoded.authType === AuthType.USER) {
+    const parsed = JWTUtils.verifyAndParseToken(
+      token,
+      DecodedJWTSchema,
+      EnvConfig.get().JWT_SECRET
+    );
+    const user = await UserService.getUserById(parsed.id);
 
+    req.user = { id: String(user._id), role: user.role };
+  } else {
+    const parsed = JWTUtils.verifyAndParseToken(
+      token,
+      getDecodedJWTServiceSchema(),
+      EnvConfig.get().SERVICE_JWT_SECRET
+    );
+
+    // Check if parsed have allowed issuer
+    if (!Object.values(AllowedIssuer).includes(parsed.iss)) {
+      throw new UnauthorizedError('Unknown issuer', { issuer: parsed.iss });
+    }
+    // Check if parsed have correct audience
+    if (parsed.aud !== EnvConfig.get().SERVICE_NAME) {
+      throw new UnauthorizedError('Incorrect audience', {
+        audience: parsed.aud,
+      });
+    }
+
+    req.service = { role: SystemRole.SERVICE };
+  }
   next();
 };
