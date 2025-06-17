@@ -28,6 +28,9 @@ LinkValidatorService.config.enableVirusScan = false;
 
 chai.use(chaiAsPromised);
 describe('LinkValidatorService', () => {
+  beforeEach(() => {
+    sinon.stub(console, 'warn');
+  });
   afterEach(() => {
     sinon.restore();
   });
