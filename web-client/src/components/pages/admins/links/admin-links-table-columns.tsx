@@ -7,6 +7,7 @@ import { StatusDot } from '@/components/base/status-dot';
 import { JobPostingData } from './validation';
 import { HeaderSorting } from '@/components/base/header';
 import { StatusToColorMapping } from '@/utils/constants';
+import { MONTH_DATE_YEAR } from '@/utils/date';
 
 interface AdminLinksTableColumnsProps {
   approveLinkFn: ({
@@ -56,7 +57,7 @@ export const adminLinksTableColumns = ({
       const isoDate = row.getValue<string>('datePosted');
       if (!isoDate) return <div>-</div>;
       const date = new Date(isoDate);
-      return <div>{format(date, 'MMM d, yyyy')}</div>;
+      return <div>{format(date, MONTH_DATE_YEAR)}</div>;
     },
   },
   {
