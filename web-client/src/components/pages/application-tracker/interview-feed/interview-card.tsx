@@ -11,6 +11,7 @@ import {
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
 import { SharedInterviewData } from '@/components/pages/application-tracker/interview-feed/validation';
+import { CircleUserRound } from 'lucide-react';
 
 export const InterviewCard = ({
   interview,
@@ -18,9 +19,12 @@ export const InterviewCard = ({
   interview: SharedInterviewData;
 }) => {
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="max-w-sm">
       <CardHeader>
-        <CardTitle>{interview.userName}</CardTitle>
+        <CardTitle className="flex items-center">
+          <CircleUserRound className="mr-2 scale-85" />
+          {interview.username}
+        </CardTitle>
         <CardDescription>
           Enter your email below to login to your account
         </CardDescription>
@@ -32,7 +36,7 @@ export const InterviewCard = ({
         <form>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label />
               <Input
                 id="email"
                 type="email"
@@ -42,7 +46,7 @@ export const InterviewCard = ({
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
+                <Label>Password</Label>
                 <a
                   href="#"
                   className="ml-auto inline-block text-sm underline-offset-4 hover:underline"

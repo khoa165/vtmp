@@ -5,7 +5,7 @@ import { InterviewSharedList } from '@/components/pages/application-tracker/inte
 
 export interface InterviewFilter {
   status?: InterviewStatus;
-  types?: InterviewType;
+  types?: InterviewType[];
   interviewOnDate?: Date;
   companyName?: string;
 }
@@ -14,7 +14,10 @@ export const InterviewFeedContainer = () => {
   const [interviewFilter, setInterviewFilter] = useState<InterviewFilter>({});
   return (
     <div>
-      <InterviewFilterContainer setInterviewFilter={setInterviewFilter} />
+      <InterviewFilterContainer
+        interviewFilter={interviewFilter}
+        setInterviewFilter={setInterviewFilter}
+      />
       <InterviewSharedList interviewFilter={interviewFilter} />
     </div>
   );

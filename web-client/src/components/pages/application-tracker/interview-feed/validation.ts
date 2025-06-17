@@ -5,7 +5,7 @@ import {
 import z from 'zod';
 
 const SharedInterviewSchema = InterviewSchema.extend({
-  userName: z.string(),
+  username: z.string(),
 });
 
 export const SharedInterviewsResponseSchema = z.object({
@@ -14,5 +14,5 @@ export const SharedInterviewsResponseSchema = z.object({
 });
 
 export interface SharedInterviewData extends InterviewData {
-  userName: string;
+  username: string;
 }

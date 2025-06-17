@@ -69,12 +69,6 @@ export const InternalToolsSidebar = () => {
       roles: [SystemRole.USER, SystemRole.ADMIN, SystemRole.MODERATOR],
     },
     {
-      title: 'Interview Feed',
-      url: '/interview-feed',
-      icon: MessageSquareQuote,
-      roles: [SystemRole.USER, SystemRole.ADMIN, SystemRole.MODERATOR],
-    },
-    {
       title: 'Share Link',
       url: '/link-sharing',
       icon: ExternalLink,

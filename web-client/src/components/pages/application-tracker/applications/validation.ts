@@ -12,8 +12,6 @@ const ApplicationSchema = z.object({
   companyName: z.string().optional(),
   jobTitle: z.string().optional(),
   location: z.string().optional().optional(),
-  jobTitle: z.string().optional(),
-  location: z.string().optional(),
   userId: z.string(),
   status: z.nativeEnum(ApplicationStatus, {
     message: 'Invalid application status',
@@ -70,49 +68,6 @@ export type IApplications = z.infer<typeof ApplicationsResponseSchema>['data'];
 export type IApplication = z.infer<typeof ApplicationSchema>;
 
 export const InterviewSchema = z.object({
-  _id: z.string(),
-  applicationId: z.string(),
-  userId: z.string(),
-  types: z.array(
-    z.nativeEnum(InterviewType, {
-      message: 'Invalid interview type',
-    })
-  ),
-  status: z.nativeEnum(InterviewStatus, {
-    message: 'Invalid interview status',
-  }),
-  interviewOnDate: z.coerce.date(),
-  companyName: z.string().optional(),
-  note: z.string().optional(),
-});
-
-export const InterviewsResponseSchema = z.object({
-  message: z.string(),
-  data: z.array(InterviewSchema),
-});
-
-export const InterviewResponseSchema = z.object({
-  message: z.string(),
-  data: InterviewSchema,
-});
-
-export interface InterviewData {
-  types: InterviewType[];
-  status: InterviewStatus;
-  interviewOnDate: Date;
-  note?: string;
-}
-
-export const InterviewFormSchema = z.object({
-  types: z.array(z.nativeEnum(InterviewType)),
-  status: z.nativeEnum(InterviewStatus),
-  interviewOnDate: z.coerce.date(),
-  note: z.string().optional(),
-});
-
-export type IInterviews = z.infer<typeof InterviewsResponseSchema>['data'];
-
-const InterviewSchema = z.object({
   _id: z.string(),
   applicationId: z.string(),
   userId: z.string(),

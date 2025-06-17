@@ -26,11 +26,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Save, Trash2 } from 'lucide-react';
 import { useEffect } from 'react';
-
-const interviewTypeOptions = Object.values(InterviewType).map((type) => ({
-  label: type.toString(),
-  value: type,
-}));
+import { interviewTypeOptions } from '@/utils/helpers';
 
 export const InterviewUpdateForm = ({
   currentInterview,
