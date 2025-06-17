@@ -15,7 +15,7 @@ import { expect } from 'chai';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import assert from 'assert';
 import { getNewObjectId } from '@/testutils/mongoID.testutil';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 
 describe('hasPermission', () => {
   useMongoDB();
@@ -44,7 +44,7 @@ describe('hasPermission', () => {
     await UserRepository.createUser({
       ...mockUser,
       encryptedPassword,
-      role: UserRole.MODERATOR,
+      role: SystemRole.MODERATOR,
     });
 
     const { token } = await AuthService.login({
