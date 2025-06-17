@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { IJobPosting } from '@/components/pages/application-tracker/job-postings/validations';
 import { JobPostingsAction } from '@/components/pages/application-tracker/job-postings/job-postings-action';
 import { HeaderSorting } from '@/components/base/header';
+import { MONTH_DATE_YEAR } from '@/utils/date';
 
 export const jobPostingsTableColumns = ({
   createApplicationFn,
@@ -75,7 +76,7 @@ export const jobPostingsTableColumns = ({
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('datePosted');
       const date = new Date(isoDate);
-      return <div>{format(date, 'MMM d, yyyy')}</div>;
+      return <div>{format(date, MONTH_DATE_YEAR)}</div>;
     },
   },
   {

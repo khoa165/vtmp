@@ -1,4 +1,4 @@
-import { LinkStatus, FAILEDREASON } from '@vtmp/common/constants';
+import { LinkStatus, LinkProcessingSubStatus } from '@vtmp/common/constants';
 import { LinkRepository } from '@/repositories/link.repository';
 import cron from 'node-cron';
 
@@ -7,7 +7,7 @@ const getRetryFilter = () => ({
     { status: LinkStatus.PENDING },
     {
       status: LinkStatus.FAILED,
-      subStatus: FAILEDREASON.UNKNOWN_FAILED,
+      subStatus: LinkProcessingSubStatus.UNKNOWN_FAILED,
       attemptsCount: { $lt: 4 },
       $expr: {
         $gt: [
