@@ -15,13 +15,14 @@ import {
 } from '@tanstack/react-table';
 import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
 import { ResizableTable } from '@/components/pages/shared/resizable-table';
+import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function ApplicationsTable<TData, TValue>({
+export function ApplicationsTable<TData extends IApplication, TValue>({
   columns,
   data,
   sorting,
@@ -29,6 +30,7 @@ export function ApplicationsTable<TData, TValue>({
 }: DataTableProps<TData, TValue> & {
   sorting: SortingState;
   setSorting: OnChangeFn<SortingState>;
+  selectedApplicationId: string;
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -64,7 +66,7 @@ export function ApplicationsTable<TData, TValue>({
   });
 
   return (
-    <>
+    <div className="relative">
       <section className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter companies..."
@@ -77,6 +79,6 @@ export function ApplicationsTable<TData, TValue>({
         <ColumnVisibilityConfiguration table={table} />
       </section>
       <ResizableTable table={table} columns={columns} />
-    </>
+    </div>
   );
 }

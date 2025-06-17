@@ -13,8 +13,9 @@ import {
 } from '@/utils/errors';
 import assert from 'assert';
 import { expect } from 'chai';
-import { UserRole } from '@vtmp/common/constants';
-import { JWTUtils } from '@/utils/jwt';
+import { SystemRole } from '@vtmp/common/constants';
+import { AuthType } from '@vtmp/server-common/constants';
+import { JWTUtils } from '@vtmp/server-common/utils';
 import { EmailService } from '@/utils/email';
 import { ZodError } from 'zod';
 import jwt from 'jsonwebtoken';
@@ -126,7 +127,7 @@ describe('AuthService', () => {
 
       assert(data);
       expect(data).to.have.property('token');
-      expect(data.user.role).to.eq(UserRole.USER);
+      expect(data.user.role).to.eq(SystemRole.USER);
     });
   });
 
@@ -185,9 +186,11 @@ describe('AuthService', () => {
       resetToken = JWTUtils.createTokenWithPayload(
         {
           id: userId,
+          authType: AuthType.USER,
           email: mockUser.email,
           purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
         },
+        EnvConfig.get().JWT_SECRET,
         {
           expiresIn: '10m',
         }
@@ -196,7 +199,13 @@ describe('AuthService', () => {
 
     it('should throw error for invalid token purpose', async () => {
       const invalidToken = JWTUtils.createTokenWithPayload(
-        { id: userId, email: 'test@gmail.com', purpose: 'login' },
+        {
+          id: userId,
+          authType: AuthType.USER,
+          email: 'test@gmail.com',
+          purpose: 'login',
+        },
+        EnvConfig.get().JWT_SECRET,
         { expiresIn: '10m' }
       );
       await expect(
@@ -211,9 +220,11 @@ describe('AuthService', () => {
       const expiredToken = JWTUtils.createTokenWithPayload(
         {
           id: userId,
+          authType: AuthType.USER,
           email: 'test@gmail.com',
           purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
         },
+        EnvConfig.get().JWT_SECRET,
         { expiresIn: '-1s' }
       );
       await expect(
@@ -228,9 +239,11 @@ describe('AuthService', () => {
       const invalidToken = JWTUtils.createTokenWithPayload(
         {
           id: getNewMongoId(),
+          authType: AuthType.USER,
           email: 'test@gmail.com',
           purpose: JWT_TOKEN_TYPE.RESET_PASSWORD,
         },
+        EnvConfig.get().JWT_SECRET,
         { expiresIn: '10m' }
       );
       await expect(

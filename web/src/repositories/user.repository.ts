@@ -1,5 +1,5 @@
 import { IUser, UserModel } from '@/models/user.model';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 
 export const UserRepository = {
   createUser: async (userData: {
@@ -7,7 +7,7 @@ export const UserRepository = {
     lastName: string;
     email: string;
     encryptedPassword: string;
-    role?: UserRole;
+    role?: SystemRole;
   }): Promise<IUser> => {
     return UserModel.create(userData);
   },
@@ -47,7 +47,7 @@ export const UserRepository = {
       lastName?: string;
       email?: string;
       encryptedPassword?: string;
-      role?: UserRole;
+      role?: SystemRole;
     }
   ): Promise<IUser | null> => {
     return UserModel.findOneAndUpdate(

@@ -22,7 +22,7 @@ export function ColumnVisibilityConfiguration<TData>({
   );
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger style={{ userSelect: 'none' }}>
+      <DropdownMenuTrigger style={{ userSelect: 'none' }} asChild>
         <Button variant="outline" className="text-foreground">
           Configure columns visibility <ChevronDown />
         </Button>
