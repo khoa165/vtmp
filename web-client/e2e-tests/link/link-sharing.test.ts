@@ -6,10 +6,8 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/link-sharing');
 });
 
-test.describe('Submit link', () => {
-  test('link sharing page appears and allows to perform action', async ({
-    page,
-  }) => {
+test.describe('Submit link page', () => {
+  test('should appear and allow to perform action', async ({ page }) => {
     const randomValue = Math.random();
     // Check if the link input are visible
     const linkInput = page.locator('#url');

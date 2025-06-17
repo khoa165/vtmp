@@ -38,7 +38,10 @@ export const JobPostingStatusCards = (): React.JSX.Element | null => {
 
   return (
     <div className="grid grid-cols-5 w-full gap-4 mb-6 max-md:grid-rows-6 mt-3">
-      <Card className="bg-transparent h-fit transition-colors duration-200">
+      <Card
+        data-testid={`status-card-jobposting-1`}
+        className="bg-transparent h-fit transition-colors duration-200"
+      >
         <section className="flex flex-col items-left justify-center ml-10">
           <div className="flex flex-row items-center gap-2">
             <span className="font-bold max-lg:text-[0.7rem] text-wrap">
@@ -56,7 +59,10 @@ export const JobPostingStatusCards = (): React.JSX.Element | null => {
         </section>
       </Card>
 
-      <Card className="bg-transparent h-fit transition-colors duration-200">
+      <Card
+        data-testid={`status-card-jobposting-2`}
+        className="bg-transparent h-fit transition-colors duration-200"
+      >
         <section className="flex flex-col items-left justify-center ml-10">
           <div className="flex flex-row items-center gap-2">
             <span className="font-bold max-lg:text-[0.7rem] text-wrap">
