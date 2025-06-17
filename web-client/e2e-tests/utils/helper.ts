@@ -8,5 +8,5 @@ export async function login(page: Page) {
 
   await page.getByRole('button', { name: 'Sign in' }).click();
 
-  await page.waitForURL('**/application-tracker');
+  await page.waitForURL('**/job-postings');
 }
