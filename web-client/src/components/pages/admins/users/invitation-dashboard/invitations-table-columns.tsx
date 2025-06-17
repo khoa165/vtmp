@@ -7,7 +7,10 @@ import { capitalize } from 'remeda';
 import { StatusDot } from '@/components/base/status-dot';
 import { InvitationStatusToColorMapping } from '@/utils/constants';
 import { InvitationStatus } from '@vtmp/common/constants';
-import { useRevokeInvitation, useSendInvitation } from '@/hooks/useInvitation';
+import {
+  useRevokeInvitation,
+  useSendInvitation,
+} from '@/components/pages/admins/invitations/hooks/useInvitation';
 import { toast } from 'sonner';
 
 export const invitationsTableColumns = (): ColumnDef<IInvitationSchema>[] => {

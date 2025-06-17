@@ -10,6 +10,11 @@ const InvitationSendEmailSchema = z.object({
   senderId: z.string({ required_error: 'SenderId is required' }),
 });
 
+const InvitationResendSchema = z.object({
+  invitationId: z.string({ required_error: 'Invitation ID is required' }),
+  isResend: z.boolean().optional(),
+});
+
 const InvitationIdSchema = z.object({
   invitationId: z.string(),
 });
@@ -25,14 +30,25 @@ export const InvitationController = {
   },
 
   sendInvitation: async (req: Request, res: Response) => {
-    const { receiverName, receiverEmail, senderId } =
-      InvitationSendEmailSchema.parse(req.body);
-    const invitation = await InvitationService.sendOrResendInvitation({
-      receiverName,
-      receiverEmail,
-      senderId,
-    });
-    res.status(200).json({ data: invitation });
+    // Check if this is a resend operation
+    if (req.body.invitationId && req.body.isResend) {
+      const { invitationId } = InvitationResendSchema.parse(req.body);
+      const resentInvitation = await InvitationService.sendOrResendInvitation({
+        invitationId,
+        isResend: true,
+      });
+      res.status(200).json({ data: resentInvitation });
+    } else {
+      // Regular send operation
+      const { receiverName, receiverEmail, senderId } =
+        InvitationSendEmailSchema.parse(req.body);
+      const invitation = await InvitationService.sendOrResendInvitation({
+        receiverName,
+        receiverEmail,
+        senderId,
+      });
+      res.status(200).json({ data: invitation });
+    }
   },
 
   revokeInvitation: async (req: Request, res: Response) => {
@@ -40,15 +56,6 @@ export const InvitationController = {
     const revokedInvitation =
       await InvitationService.revokeInvitation(invitationId);
     res.status(200).json({ data: revokedInvitation });
-  },
-
-  resendInvitation: async (req: Request, res: Response) => {
-    const { invitationId } = InvitationIdSchema.parse(req.params);
-    const resentInvitation = await InvitationService.sendOrResendInvitation({
-      invitationId,
-      isResend: true,
-    });
-    res.status(200).json({ data: resentInvitation });
   },
 
   validateInvitation: async (req: Request, res: Response) => {

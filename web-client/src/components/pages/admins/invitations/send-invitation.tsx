@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/base/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
-import { useSendInvitation } from '@/hooks/useInvitation';
+import { useSendInvitation } from '@/components/pages/admins/invitations/hooks/useInvitation';
 import { AxiosError } from 'axios';
 
 export const SendInvitationPage = () => {
