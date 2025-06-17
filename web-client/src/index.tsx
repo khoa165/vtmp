@@ -7,7 +7,7 @@ import { EnvConfig } from '@/config/env';
 
 const queryClient = new QueryClient();
 
- 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
   <StatsigProvider
