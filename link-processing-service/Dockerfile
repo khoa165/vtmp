@@ -14,7 +14,7 @@ RUN corepack enable
 RUN yarn install --immutable
 
 # Build
-RUN yarn workspace @vtmp/common build
+RUN yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build
 RUN yarn workspace @vtmp/link-processing-service build
 
 # Prune devDependencies from the final node_modules if in production only
