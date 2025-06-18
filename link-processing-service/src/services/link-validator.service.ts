@@ -137,7 +137,7 @@ const LinkValidatorService = {
       });
     } catch (error) {
       if (error instanceof Error) {
-        const attempts = this.config.resolveLinkRetryConfig.retries;
+        const attempts = this.config.virusScanRetryConfig.retries;
         throw new LinkValidationError(
           `Unable to validate link safety with Safe Browsing API after ${attempts} attempts`,
           { urls: [url] },
