@@ -47,8 +47,8 @@ const LinkValidatorService = {
       }
     );
 
-    const linkIsSafe = executeWithRetry(async () => {
-      return await this._checkSafety(resolvedUrl);
+    const linkIsSafe = await executeWithRetry(() => {
+      return this._checkSafety(resolvedUrl);
     }, this.config.virusScanRetryConfig);
     if (!linkIsSafe) {
       throw new LinkValidationError(
