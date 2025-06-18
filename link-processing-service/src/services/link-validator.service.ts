@@ -42,7 +42,7 @@ const LinkValidatorService = {
         return (
           error instanceof LinkValidationError &&
           error.statusCode !== undefined &&
-          httpErrorNoRetry.includes(error.statusCode)
+          !httpErrorNoRetry.includes(error.statusCode)
         );
       }
     );
