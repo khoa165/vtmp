@@ -250,14 +250,14 @@ describe('JobPostingService', () => {
 
       it('should exclude soft-deleted job postings from the returned array', async () => {
         await randomRemoveJobPostings();
-        const jobPosstingA = await randomCreateApplications({
+        const jobPostingA = await randomCreateApplications({
           userId: userIdA,
           numApplications: 4,
         });
 
         await runPaginationTest({
           userId: userIdA,
-          allJobPostings: jobPosstingA,
+          allJobPostings: jobPostingA,
         });
       });
 
