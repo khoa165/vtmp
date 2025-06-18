@@ -36,7 +36,7 @@ const LinkValidatorService = {
     const { resolveLinkRetryConfig: retryConfig } = this.config;
 
     const resolvedUrl = await executeWithRetry(
-      () => this._resolveRedirects(url),
+      () => this._performNetworkCheck(url),
       retryConfig,
       (error: Error) => {
         return (
@@ -63,7 +63,7 @@ const LinkValidatorService = {
   /**
    * Resolves URL redirects following the chain to the final destination
    */
-  async _resolveRedirects(url: string): Promise<string> {
+  async _performNetworkCheck(url: string): Promise<string> {
     const { timeoutMs, userAgent } = this.config;
 
     let response: Response;

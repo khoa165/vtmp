@@ -23,8 +23,6 @@ const testRetryConfig: retry.WrapOptions = {
   maxTimeout: 10,
 };
 LinkValidatorService.config.resolveLinkRetryConfig = testRetryConfig;
-//disable by default to avoid hitting Google Safe Browsing API limits
-LinkValidatorService.config.enableVirusScan = false;
 
 chai.use(chaiAsPromised);
 describe('LinkValidatorService', () => {
@@ -34,7 +32,11 @@ describe('LinkValidatorService', () => {
   afterEach(() => {
     sinon.restore();
   });
-  describe('resolveRedirects', () => {
+  describe('performNetworkCheck', () => {
+    before(() => {
+      //disable by default to avoid hitting Google Safe Browsing API limits
+      LinkValidatorService.config.enableVirusScan = false;
+    });
     it('should return final URL without any errors', async () => {
       const url = shortenedUrl_shouldReturn200;
       const finalLink = await LinkValidatorService.validateLink(url);
@@ -61,6 +63,7 @@ describe('LinkValidatorService', () => {
     });
   });
   describe('Safe Browsing checks', () => {
+    //re-enable virus scan.
     before(() => (LinkValidatorService.config.enableVirusScan = true));
     after(() => (LinkValidatorService.config.enableVirusScan = false));
 
