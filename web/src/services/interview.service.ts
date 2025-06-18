@@ -51,6 +51,22 @@ export const InterviewService = {
     return InterviewRepository.getInterviews({ filters });
   },
 
+  getSharedInterviews: async ({
+    filters = {},
+  }: {
+    filters: {
+      companyName?: string;
+      types?: InterviewType[];
+      status?: InterviewStatus;
+    };
+  }): Promise<IInterview[]> => {
+    const sharedInterviews = InterviewRepository.getSharedInterviews({
+      filters,
+    });
+
+    return sharedInterviews;
+  },
+
   updateInterviewById: async ({
     interviewId,
     userId,

@@ -11,6 +11,8 @@ export interface IInterview extends Document {
   interviewOnDate: Date;
   companyName?: string;
   note?: string;
+  isDisclosed?: boolean;
+  sharedAt?: Date;
   deletedAt?: Date;
 }
 
@@ -43,6 +45,14 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
   },
   note: {
     type: String,
+  },
+  isDisclosed: {
+    type: Boolean,
+    default: false,
+  },
+  sharedAt: {
+    type: Date,
+    default: null,
   },
   deletedAt: {
     type: Date,

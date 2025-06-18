@@ -64,9 +64,11 @@ const InterviewApplicationFilter = z
     )
   );
 
-const InterviewCompanyFilter = z
+const SharedInterviewFilter = z
   .object({
     companyName: z.string({ required_error: 'Company Name is required' }),
+    types: z.array(z.nativeEnum(InterviewType)).optional(),
+    status: z.nativeEnum(InterviewStatus).optional(),
   })
   .strict()
   .transform((data) =>
@@ -142,8 +144,8 @@ export const InterviewController = {
     });
   },
 
-  getInterviewsByCompanyName: async (req: Request, res: Response) => {
-    const filters = InterviewCompanyFilter.parse(req.query);
+  getSharedInterviews: async (req: Request, res: Response) => {
+    const filters = SharedInterviewFilter.parse(req.query);
 
     const interviews = await InterviewService.getInterviews({ filters });
 
