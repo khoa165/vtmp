@@ -122,7 +122,7 @@ describe('LinkValidatorService', () => {
         await LinkValidatorService.validateLink(maliciousUrl);
       } catch (error) {
         if (error instanceof LinkValidationError) {
-          expect(error.failedSteps).equals(LINK_VALIDATOR_STEPS.SAFETY_CHECK);
+          expect(error.failedSteps).to.include(LINK_VALIDATOR_STEPS.SAFETY_CHECK);
         }
       }
     });
