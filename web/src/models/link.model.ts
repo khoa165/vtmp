@@ -9,18 +9,19 @@ import { LinkRegion } from '@vtmp/common/constants';
 export interface ILink extends Document {
   _id: Types.ObjectId;
   url: string;
+  originalUrl?: string;
   status: LinkStatus;
   subStatus?: LinkProcessingSubStatus;
   submittedOn: Date;
   jobTitle?: string;
   companyName?: string;
-  location: LinkRegion;
-  jobFunction: JobFunction;
-  jobType: JobType;
+  location?: LinkRegion;
+  jobFunction?: JobFunction;
+  jobType?: JobType;
   datePosted?: Date;
   jobDescription?: string;
   attemptsCount: number;
-  lastProcessedAt: Date;
+  lastProcessedAt?: Date;
   submittedBy?: Types.ObjectId;
   deletedAt?: Date;
 }
@@ -30,6 +31,10 @@ const LinkSchema = new mongoose.Schema<ILink>(
     url: {
       type: String,
       required: true,
+      unique: true,
+    },
+    originalUrl: {
+      type: String,
       unique: true,
     },
     status: {
@@ -57,17 +62,14 @@ const LinkSchema = new mongoose.Schema<ILink>(
     location: {
       type: String,
       enum: Object.values(LinkRegion),
-      default: LinkRegion.OTHER,
     },
     jobFunction: {
       type: String,
       enum: Object.values(JobFunction),
-      default: JobFunction.SOFTWARE_ENGINEER,
     },
     jobType: {
       type: String,
       enum: Object.values(JobType),
-      default: JobType.INTERNSHIP,
     },
     datePosted: {
       type: Date,
@@ -93,18 +95,18 @@ const LinkSchema = new mongoose.Schema<ILink>(
   { timestamps: true }
 );
 
-LinkSchema.post('findOneAndUpdate', function (doc) {
-  if (!doc) {
-    return;
-  }
+// LinkSchema.post('findOneAndUpdate', function (doc) {
+//   if (!doc) {
+//     return;
+//   }
 
-  if (doc.status === LinkStatus.FAILED && !doc.subStatus) {
-    throw new Error('FAIL status must include a subStatus');
-  }
+//   if (doc.status === LinkStatus.FAILED && !doc.subStatus) {
+//     throw new Error('FAIL status must include a subStatus');
+//   }
 
-  if (doc.status !== LinkStatus.FAILED && doc.subStatus) {
-    throw new Error(`${doc.status} status must not include a subStatus`);
-  }
-});
+//   if (doc.status !== LinkStatus.FAILED && doc.subStatus) {
+//     throw new Error(`${doc.status} status must not include a subStatus`);
+//   }
+// });
 
 export const LinkModel = mongoose.model<ILink>('Link', LinkSchema);
