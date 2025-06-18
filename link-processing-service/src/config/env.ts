@@ -11,6 +11,7 @@ const linkProcessorConfigSchema = z.object({
   SERVICE_JWT_SECRET: z.string(),
   SERVICE_NAME: z.string(),
   AUDIENCE_SERVICE_NAME: z.string(),
+  NODE_ENV: z.string(),
 });
 
 export const EnvConfig = {

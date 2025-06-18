@@ -6,12 +6,11 @@ import { ZodError } from 'zod';
 export abstract class ServiceSpecificError extends Error {
   public metadata: { urls: string[] };
   public linkProcessingStatus: LinkProcessingSubStatus;
-  public failedSteps?: [string];
   constructor(
     message: string,
     metadata: { urls: string[] },
     linkProcessingStatus: LinkProcessingSubStatus,
-    options?: { cause?: unknown; failedSteps?: [string] }
+    options?: { cause?: unknown }
   ) {
     super(message, options);
     this.name = this.constructor.name;
@@ -20,19 +19,15 @@ export abstract class ServiceSpecificError extends Error {
     if (options?.cause) {
       this.cause = options.cause;
     }
-    if (options?.failedSteps) {
-      this.failedSteps = options.failedSteps;
-    }
   }
 }
 
 export class LinkValidationError extends ServiceSpecificError {
   public statusCode?: number;
-
   constructor(
     message: string,
     metadata: { urls: string[] },
-    options?: { cause?: unknown; statusCode?: number; failedSteps: [string] }
+    options?: { cause?: unknown; statusCode?: number }
   ) {
     super(
       message,

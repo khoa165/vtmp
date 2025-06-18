@@ -3,6 +3,11 @@ import { LinkValidationError } from '@/utils/errors';
 import { EnvConfig } from '@/config/env';
 import retry from 'retry';
 import { GlobalOptions, safebrowsing_v4 } from '@googleapis/safebrowsing';
+import {
+  LinkType,
+  ProcessingResult,
+} from '@/services/link-metadata-validation';
+import { LinkStatus, LinkProcessingSubStatus } from '@vtmp/common/constants';
 
 const LinkValidatorService = {
   config: {
@@ -22,6 +27,36 @@ const LinkValidatorService = {
       maxTimeout: 10 * 1000,
     } as retry.WrapOptions,
     enableVirusScan: true,
+  },
+
+  async validateLinks(linksData: LinkType[]): Promise<{
+    validatedUrls: LinkValidationResult[];
+    faultyUrls: LinkValidationResult[];
+  }> {
+    const validatedUrls: LinkValidationResult[] = [];
+    const faultyUrls: LinkValidationResult[] = [];
+    await Promise.all(
+      linksData.map(async (linkData) => {
+        try {
+          const validatedUrl = await this.validateLink(linkData.url);
+          validatedUrls.push({
+            ...linkData,
+            processedContent: validatedUrl,
+            status: LinkStatus.PENDING,
+          });
+        } catch (error) {
+          faultyUrls.push({
+            ...linkData,
+            status: LinkStatus.FAILED,
+            subStatus: LinkProcessingSubStatus.VALIDATION_FAILED,
+            error: error instanceof Error ? error.message : `Unknown error`,
+          });
+          console.warn(error);
+        }
+      })
+    );
+
+    return { validatedUrls, faultyUrls };
   },
 
   /**
@@ -47,15 +82,21 @@ const LinkValidatorService = {
       }
     );
 
+    if (!this.config.enableVirusScan) {
+      if (EnvConfig.get().NODE_ENV !== 'test') {
+        throw new Error(
+          '[LinkValidatorSerivce] Can only disable virus scan in test environment'
+        );
+      }
+      return resolvedUrl;
+    }
     const linkIsSafe = await executeWithRetry(() => {
       return this._checkSafety(resolvedUrl);
     }, this.config.virusScanRetryConfig);
     if (!linkIsSafe) {
-      throw new LinkValidationError(
-        'Provided link fails safety check',
-        { urls: [url] },
-        { failedSteps: [LINK_VALIDATOR_STEPS.SAFETY_CHECK] }
-      );
+      throw new LinkValidationError('Provided link fails safety check', {
+        urls: [url],
+      });
     }
     return resolvedUrl;
   },
@@ -76,19 +117,18 @@ const LinkValidatorService = {
       });
     } catch (error) {
       throw new LinkValidationError(
-        'Network error while checking URL Responsiveness',
+        `Network error while checking URL. Message: ${error instanceof Error ? error.message : 'Unknown error'}`,
         { urls: [url] },
-        { cause: error, failedSteps: [LINK_VALIDATOR_STEPS.NETWORK_CHECK] }
+        { cause: error }
       );
     }
     if (!response.ok) {
       throw new LinkValidationError(
-        `Failed to validate link due to HTTP error`,
+        `Failed to validate link due to HTTP error code ${response.status}`,
         { urls: [url] },
         {
           cause: `HTTP Error ${response.status}: ${response.statusText}`,
           statusCode: response.status,
-          failedSteps: [LINK_VALIDATOR_STEPS.NETWORK_CHECK],
         }
       );
     }
@@ -139,21 +179,13 @@ const LinkValidatorService = {
       if (error instanceof Error) {
         const attempts = this.config.virusScanRetryConfig.retries;
         throw new LinkValidationError(
-          `Unable to validate link safety with Safe Browsing API after ${attempts} attempts`,
+          `Unable to validate link safety with Safe Browsing API after ${attempts} attempts. Message: ${error.message}`,
           { urls: [url] },
-          { cause: error, failedSteps: [LINK_VALIDATOR_STEPS.SAFETY_CHECK] }
+          { cause: error }
         );
       }
     }
     if (response?.data.matches) {
-      const threat = response.data.matches.at(0);
-      console.warn(
-        `[LinkValidatorService] Link rejected. Virus check came back as malicious or unsure.`,
-        {
-          url: url,
-          threatType: threat?.threatType,
-        }
-      );
       return false;
     }
     return true;
@@ -165,4 +197,10 @@ enum LINK_VALIDATOR_STEPS {
   SAFETY_CHECK = 'SAFETY_CHECK',
 }
 
-export { LinkValidatorService, LINK_VALIDATOR_STEPS };
+type LinkValidationResult = ProcessingResult<string>;
+
+export {
+  LinkValidatorService,
+  LINK_VALIDATOR_STEPS,
+  LinkValidationResult as ValidationResult,
+};
