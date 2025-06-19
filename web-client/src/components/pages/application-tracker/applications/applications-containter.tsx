@@ -10,6 +10,8 @@ import { SortingState } from '@tanstack/react-table';
 import { Skeleton } from '@/components/base/skeleton';
 import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
 import { CustomError } from '@/utils/errors';
+import { InterviewDrawer } from '@/components/pages/application-tracker/applications/interview-drawer';
+import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
 
 export const ApplicationsContainer = ({
   applicationFilter,
@@ -21,18 +23,29 @@ export const ApplicationsContainer = ({
     error,
     data: applicationsData,
   } = useGetApplications(applicationFilter);
+
   const { mutate: deleteApplicationFn } = useDeleteApplication();
   const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
 
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+
+  const [selectedApplicationId, setSelectedApplicationId] =
+    useState<string>('');
+
+  const handleOpenDrawer = (id: string) => {
+    setSelectedApplicationId(id);
+    setOpenDrawer(true);
+  };
 
   const columns = useMemo(
     () =>
       applicationsTableColumns({
         deleteApplicationFn,
         updateApplicationStatusFn,
+        handleOpenDrawer,
       }),
-    [deleteApplicationFn, updateApplicationStatusFn]
+    [deleteApplicationFn, updateApplicationStatusFn, handleOpenDrawer]
   );
 
   if (isLoading) {
@@ -48,6 +61,7 @@ export const ApplicationsContainer = ({
   }
 
   if (error) {
+    console.error('Error fetching applications data:', error);
     throw new CustomError('Error fetching applications data');
   }
 
@@ -58,11 +72,21 @@ export const ApplicationsContainer = ({
   }
 
   return (
-    <ApplicationsTable
-      columns={columns}
-      data={applicationsData}
-      sorting={sorting}
-      setSorting={setSorting}
-    />
+    <>
+      <ApplicationsTable
+        columns={columns}
+        data={applicationsData}
+        sorting={sorting}
+        setSorting={setSorting}
+        selectedApplicationId={selectedApplicationId}
+      />
+      <ErrorBoundaryWrapper customText="Interview Drawer">
+        <InterviewDrawer
+          open={openDrawer}
+          onOpenChange={setOpenDrawer}
+          applicationId={selectedApplicationId}
+        />
+      </ErrorBoundaryWrapper>
+    </>
   );
 };

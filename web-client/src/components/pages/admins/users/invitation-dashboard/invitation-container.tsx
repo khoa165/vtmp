@@ -5,6 +5,7 @@ import { invitationsTableColumns } from '@/components/pages/admins/users/invitat
 import { useGetInvitations } from '@/components/pages/admins/invitations/hooks/useInvitation';
 import { Skeleton } from '@/components/base/skeleton';
 import { CustomError } from '@/utils/errors';
+import { InvitationStatus } from '@vtmp/common/constants';
 
 export const InvitationContainer = (): React.JSX.Element | null => {
   const { isLoading, error, data: invitations } = useGetInvitations();

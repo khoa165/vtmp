@@ -3,34 +3,34 @@ import { SendInvitationResponseSchema } from '@/components/pages/admins/invitati
 import { request } from '@/utils/api';
 import { Method } from '@/utils/constants';
 import { useMutation } from '@tanstack/react-query';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import axios from 'axios';
 import { toast } from 'sonner';
+
+export interface IInvitationUserInput {
+  name: string;
+  email: string;
+  role: SystemRole;
+}
+
+export interface IInvitationInputErrors {
+  name: string[];
+  email: string[];
+}
 
 export const useSendInvitation = ({
   setUserInput,
   setInputErrors,
 }: {
-  setUserInput: React.Dispatch<
-    React.SetStateAction<{
-      name: string;
-      email: string;
-      role: UserRole;
-    }>
-  >;
-  setInputErrors: React.Dispatch<
-    React.SetStateAction<{
-      name: string[];
-      email: string[];
-    }>
-  >;
+  setUserInput: React.Dispatch<React.SetStateAction<IInvitationUserInput>>;
+  setInputErrors: React.Dispatch<React.SetStateAction<IInvitationInputErrors>>;
 }) => {
   return useMutation({
     mutationFn: (body: {
       receiverName: string;
       receiverEmail: string;
       senderId: string;
-      role?: UserRole;
+      role?: SystemRole;
     }) =>
       request({
         method: Method.POST,
@@ -46,7 +46,7 @@ export const useSendInvitation = ({
       setUserInput({
         name: '',
         email: '',
-        role: UserRole.USER,
+        role: SystemRole.USER,
       });
     },
     onError: (error) => {
