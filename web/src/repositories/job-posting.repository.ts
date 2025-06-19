@@ -59,12 +59,12 @@ export const JobPostingRepository = {
   getJobPostingsUserHasNotAppliedTo: async ({
     userId,
     filters,
-    limit,
+    limit = 10,
     cursor,
   }: {
     userId: string;
     filters?: JobFilter;
-    limit: number;
+    limit?: number;
     cursor?: { _id: string };
   }): Promise<IJobPosting[]> => {
     const dynamicMatch: Record<string, unknown> = {};
