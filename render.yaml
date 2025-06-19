@@ -20,6 +20,10 @@ services:
         sync: false
       - key: PORT
         sync: false
+      - key: SERVICE_JWT_SECRET
+        sync: false
+      - key: SERVICE_NAME
+        sync: false
     region: oregon
     buildCommand:
       yarn install && yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace
