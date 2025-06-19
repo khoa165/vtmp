@@ -10,7 +10,7 @@ export const JobPostingRoutes = Router();
 JobPostingRoutes.use(wrappedHandlers([authenticate]));
 
 JobPostingRoutes.get(
-  '/id/:jobPostingId',
+  '/view/:jobPostingId',
   wrappedHandlers([
     hasPermission(Permission.VIEW_JOB_POSTING),
     JobPostingController.getJobPostingById,

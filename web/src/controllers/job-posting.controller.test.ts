@@ -58,7 +58,7 @@ describe('JobPostingController', () => {
       datePosted: new Date('2024-05-01'),
     },
     {
-      linkId: getNewMongoId(),
+      linkId: getNewObjectId(),
       url: 'http://example4.com/job-posting',
       jobTitle: 'Software Engineer 4',
       companyName: 'Example Company 4',
@@ -80,15 +80,15 @@ describe('JobPostingController', () => {
     );
     assert(jobPostings);
   });
-  describe('GET /job-postings/id/:jobId', () => {
+  describe('GET /job-postings/view/:jobPostingId', () => {
     runDefaultAuthMiddlewareTests({
-      route: `/api/job-postings/id/${getNewMongoId()}`,
+      route: `/api/job-postings/view/${getNewMongoId()}`,
       method: HTTPMethod.GET,
     });
 
     it('should return 400 for invalid job posting ID format', async () => {
       const res = await request(app)
-        .get('/api/job-postings/id/invalid-id')
+        .get('/api/job-postings/view/invalid-id')
         .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
@@ -99,18 +99,16 @@ describe('JobPostingController', () => {
 
     it('should return error message for no job posting found', async () => {
       const res = await request(app)
-        .get(`/api/job-postings/id/${getNewMongoId()}`)
+        .get(`/api/job-postings/view/${getNewMongoId()}`)
         .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
-
-      const errors = res.body.errors;
-      expect(errors[0].message).to.equal('Job posting not found');
+      expect(res.body.errors[0].message).to.equal('Job posting not found');
     });
 
     it('should return a job posting', async () => {
       const res = await request(app)
-        .get(`/api/job-postings/id/${jobPostings[0]?.id}`)
+        .get(`/api/job-postings/view/${jobPostings[0]?.id}`)
         .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
