@@ -4,6 +4,7 @@ import {
   ExternalLink,
   LayoutDashboard,
   BriefcaseBusiness,
+  UserRoundPlus,
 } from 'lucide-react';
 
 import {
@@ -19,7 +20,7 @@ import {
 import { VTMPLogo } from '@/components/base/vtmp-logo';
 import { Avatar } from '@/components/base/avatar';
 import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 import { Link, Navigate } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
@@ -32,33 +33,39 @@ export const InternalToolsSidebar = () => {
   const items = [
     {
       title: 'Users',
-      url: '/user-invitation',
+      url: '/admin/user-invitation',
       icon: ShieldUser,
-      roles: [UserRole.ADMIN],
+      roles: [SystemRole.ADMIN],
+    },
+    {
+      title: 'Invitations Sending',
+      url: '/admin/send-invitation',
+      icon: UserRoundPlus,
+      roles: [SystemRole.ADMIN],
     },
     {
       title: 'Pending Links',
       url: '/admin/links',
       icon: BriefcaseBusiness,
-      roles: [UserRole.ADMIN, UserRole.MODERATOR],
+      roles: [SystemRole.ADMIN, SystemRole.MODERATOR],
     },
     {
       title: 'Jobs',
       url: '/job-postings',
       icon: LayoutDashboard,
-      roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+      roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
     },
     {
       title: 'Applications',
       url: '/application-tracker',
       icon: BriefcaseBusiness,
-      roles: [UserRole.USER],
+      roles: [SystemRole.USER],
     },
     {
       title: 'Share Link',
       url: '/link-sharing',
       icon: ExternalLink,
-      roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+      roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
     },
   ];
 

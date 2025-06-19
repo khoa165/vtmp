@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs';
 import { toLowerCase } from 'remeda';
 import { UserRepository } from '@/repositories/user.repository';
 import { AuthService } from '@/services/auth.service';
-import { UserRole } from '@vtmp/common/constants';
+import { SystemRole } from '@vtmp/common/constants';
 
 export enum HTTPMethod {
   GET = 'GET',
@@ -50,7 +50,7 @@ export const runUserLogin = async (): Promise<{
     lastName: 'viettech',
     email: 'admin@gmail.com',
     encryptedPassword,
-    role: UserRole.ADMIN,
+    role: SystemRole.ADMIN,
   };
   const mockAdminId = (await UserRepository.createUser(mockAdmin)).id;
   const mockAdminToken = (
@@ -65,7 +65,7 @@ export const runUserLogin = async (): Promise<{
     lastName: 'viettech',
     email: 'moderator@gmail.com',
     encryptedPassword,
-    role: UserRole.MODERATOR,
+    role: SystemRole.MODERATOR,
   };
   const mockModeratorId = (await UserRepository.createUser(mockModerator)).id;
   const mockModeratorToken = (
