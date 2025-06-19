@@ -62,3 +62,11 @@ InterviewRoutes.delete(
     InterviewController.deleteInterviewById,
   ])
 );
+
+InterviewRoutes.post(
+  '/share/:interviewId',
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_INTERVIEW),
+    InterviewController.shareInterview,
+  ])
+);

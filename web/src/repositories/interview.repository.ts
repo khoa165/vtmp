@@ -158,4 +158,23 @@ export const InterviewRepository = {
       { new: true }
     );
   },
+
+  shareInterview: async ({
+    interviewId,
+    userId,
+  }: {
+    interviewId: string;
+    userId: string;
+  }): Promise<IInterview | null> => {
+    return InterviewModel.findOneAndUpdate(
+      { _id: interviewId, userId, deletedAt: null },
+      {
+        $set: {
+          isDisclosed: true,
+          sharedAt: new Date(),
+        },
+      },
+      { new: true }
+    );
+  },
 };

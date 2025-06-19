@@ -197,4 +197,19 @@ export const InterviewController = {
       data: deletedInterview,
     });
   },
+
+  shareInterview: async (req: Request, res: Response) => {
+    const { interviewId } = InterviewIdParamsSchema.parse(req.params);
+    const userId = getUserFromRequest(req).user.id;
+
+    const sharedInterview = await InterviewService.shareInterview({
+      interviewId,
+      userId,
+    });
+
+    res.status(200).json({
+      message: 'Interview shared successfully',
+      data: sharedInterview,
+    });
+  },
 };
