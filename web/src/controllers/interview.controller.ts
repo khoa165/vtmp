@@ -150,7 +150,7 @@ export const InterviewController = {
     const interviews = await InterviewService.getInterviews({ filters });
 
     res.status(200).json({
-      message: 'Interviews retrieved successfully',
+      message: 'Shared interviews retrieved successfully',
       data: interviews,
     });
   },

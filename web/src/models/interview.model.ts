@@ -48,7 +48,7 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
   },
   isDisclosed: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   sharedAt: {
     type: Date,
