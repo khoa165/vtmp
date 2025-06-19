@@ -19,6 +19,8 @@ export interface IJobPosting extends Document {
 }
 
 export interface JobFilter {
+  limit?: number;
+  cursor?: string;
   jobTitle?: string;
   companyName?: string;
   location?: string;
@@ -89,3 +91,8 @@ export const JobPostingModel = mongoose.model<IJobPosting>(
   'JobPosting',
   JobPostingSchema
 );
+
+JobPostingSchema.index({
+  _id: 1,
+  datePosted: -1,
+});
