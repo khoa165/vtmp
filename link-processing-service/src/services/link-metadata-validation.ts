@@ -3,80 +3,148 @@ import {
   JobFunction,
   JobType,
   LinkStatus,
-  LinkProcessingSubStatus,
+  LinkProcessingFailureStage,
 } from '@vtmp/common/constants';
 import { z } from 'zod';
 export const LinkMetaDataSchema = z
   .object({
-    // This should not have url field
-    jobTitle: z.string(),
-    companyName: z.string(),
-    location: z.nativeEnum(LinkRegion, {
-      message: 'Invalid location',
-    }),
-    jobFunction: z.nativeEnum(JobFunction, {
-      message: 'Invalid job title',
-    }),
-    jobType: z.nativeEnum(JobType, {
-      message: 'Invalid job type',
-    }),
-    datePosted: z.string(),
-    jobDescription: z.string(),
+    jobTitle: z.string().optional(),
+    companyName: z.string().optional(),
+    location: z
+      .nativeEnum(LinkRegion, {
+        message: 'Invalid location',
+      })
+      .optional(),
+    jobFunction: z
+      .nativeEnum(JobFunction, {
+        message: 'Invalid job title',
+      })
+      .optional(),
+    jobType: z
+      .nativeEnum(JobType, {
+        message: 'Invalid job type',
+      })
+      .optional(),
+    datePosted: z.string().optional(),
+    jobDescription: z.string().optional(),
   })
   .strict();
 
+export type LinkMetaData = z.infer<typeof LinkMetaDataSchema>;
+
 export const RawJobDescriptionSchema = z
   .object({
-    responsibility: z.string(),
-    requirement: z.string(),
-    preferred: z.string(),
+    responsibility: z.string().optional(),
+    requirement: z.string().optional(),
+    preferred: z.string().optional(),
   })
   .strict();
 
 export const RawAIResponseSchema = z
   .object({
-    jobTitle: z.string(),
-    companyName: z.string(),
-    location: z.string(),
-    jobFunction: z.string(),
-    jobType: z.string(),
-    datePosted: z.string(),
+    jobTitle: z.string().optional(),
+    companyName: z.string().optional(),
+    location: z.string().optional(),
+    jobFunction: z.string().optional(),
+    jobType: z.string().optional(),
+    datePosted: z.string().optional(),
     jobDescription: RawJobDescriptionSchema,
   })
   .strict();
 
-export type LinkMetaData = z.infer<typeof LinkMetaDataSchema>;
 export type RawAIResponse = z.infer<typeof RawAIResponseSchema>;
 
-export type ProcessingResult<T> = LinkType & {
-  processedContent?: T;
-  status?: LinkStatus;
-  subStatus?: LinkProcessingSubStatus;
-  error?: string;
-};
-export type ScrapedMetadata = ProcessingResult<string>;
-export type ExtractedMetadata = ProcessingResult<LinkMetaData>;
-
-const LinkSchema = z.object({
+const SubmittedLinkSchema = z.object({
   _id: z.string(),
-  url: z.string().url(),
+  originalUrl: z.string().url(),
   attemptsCount: z.number(),
 });
 export const EventBodySchema = z.object({
-  linksData: z.array(LinkSchema).min(1),
+  linksData: z.array(SubmittedLinkSchema).min(1),
 });
-export type LinkType = z.infer<typeof LinkSchema>;
+
+// Input into LinkProcessingService.proceesLink & LinkValidator
+export interface ISubmittedLink {
+  _id: string;
+  originalUrl: string;
+  attemptsCount: number;
+}
+
+// const validatedLinks: ProcessedLink[];
+// const failedLinks: LinkProcessingError[];
+
+/**
+ * ENTRYPOINT: links
+ * const {validatedLinks,failedLinks} = await LinkValidatorServie.validateLinks(links);
+ * const metadatas = await LinkScrapingService.scrapeLinks(validatedLinks);
+ *
+ */
+
+// Output/return from ValidationService , input/param into ScrapingService
+export interface ProcessedLink {
+  originalRequest: ISubmittedLink;
+  url: string;
+}
+
+export type ScrapedLink = ISubmittedLink & {
+  metadata: string[];
+};
+
+export type AIExtractedMetadataLink = ISubmittedLink & {
+  metadata: string[];
+  abc: string;
+  xyz: string;
+};
+
+export type LinkProcessingError = ISubmittedLink & {
+  status: LinkStatus;
+  failureStage: LinkProcessingFailureStage;
+  shouldLongRetry: boolean;
+  error: Error;
+};
+
+// scraping failed
+// const scrapingFailedRetry: LinkProcessingError = {
+//   status: LinkStatus.PENDING_RETRY
+//   failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
+//   shouldLongRetry: true,
+//   error: new ScrapingError("Failed to asdasdasd")
+// }
+
+// const scrapingFailedNoRetry: LinkProcessingError = {
+//   status: LinkStatus.PIPELINE_FAILED
+//   failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
+//   shouldLongRetry: false,
+//   error: new ScrapingError("Failed to asdasdasd")
+// }
+
+export interface IValidatedLink {
+  originalUrl: string;
+  url: string;
+  attemptsCount: number;
+}
+
+export type LinkProcessingResult<T> = IValidatedLink & {
+  processedContent?: T;
+  status?: LinkStatus;
+  subStatus?: LinkProcessingFailureStage;
+  error?: string;
+};
+export type ScrapedMetadataResult = LinkProcessingResult<string>;
+export type ExtractedMetadataResult = LinkProcessingResult<LinkMetaData>;
 
 export interface UpdateLinkPayload {
-  lastProcessedAt: Date;
-  jobTitle?: string;
-  companyName?: string;
-  location?: LinkRegion;
-  jobFunction?: JobFunction;
-  jobType?: JobType;
-  datePosted?: string;
-  jobDescription?: string;
-  attemptsCount: number;
+  url?: string;
+  originalUrl?: string;
+  jobTitle?: string | undefined;
+  companyName?: string | undefined;
+  location?: LinkRegion | undefined;
+  jobFunction?: JobFunction | undefined;
+  jobType?: JobType | undefined;
+  datePosted?: string | undefined;
+  jobDescription?: string | undefined;
   status?: LinkStatus;
-  subStatus?: LinkProcessingSubStatus;
+  subStatus?: LinkProcessingFailureStage;
+  attemptsCount: number;
+  lastProcessedAt: string;
 }
