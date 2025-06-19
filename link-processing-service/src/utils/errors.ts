@@ -1,21 +1,21 @@
-import { LinkProcessingSubStatus } from '@vtmp/common/constants';
+import { LinkProcessingFailureStage } from '@vtmp/common/constants';
 import middy from '@middy/core';
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { ZodError } from 'zod';
 
 export abstract class ServiceSpecificError extends Error {
   public metadata: { urls: string[] };
-  public linkProcessingStatus: LinkProcessingSubStatus;
+  public failureStage: LinkProcessingFailureStage;
   constructor(
     message: string,
     metadata: { urls: string[] },
-    linkProcessingStatus: LinkProcessingSubStatus,
+    failureStage: LinkProcessingFailureStage,
     options?: { cause?: unknown }
   ) {
     super(message, options);
     this.name = this.constructor.name;
     this.metadata = metadata;
-    this.linkProcessingStatus = linkProcessingStatus;
+    this.failureStage = failureStage;
   }
 }
 
@@ -28,7 +28,7 @@ export class LinkValidationError extends ServiceSpecificError {
     super(
       message,
       metadata,
-      LinkProcessingSubStatus.VALIDATION_FAILED,
+      LinkProcessingFailureStage.VALIDATION_FAILED,
       options
     );
   }
@@ -40,7 +40,12 @@ export class ScrapingError extends ServiceSpecificError {
     metadata: { urls: string[] },
     options?: { cause?: unknown }
   ) {
-    super(message, metadata, LinkProcessingSubStatus.SCRAPING_FAILED, options);
+    super(
+      message,
+      metadata,
+      LinkProcessingFailureStage.SCRAPING_FAILED,
+      options
+    );
   }
 }
 
@@ -53,7 +58,7 @@ export class AIExtractionError extends ServiceSpecificError {
     super(
       message,
       metadata,
-      LinkProcessingSubStatus.EXTRACTION_FAILED,
+      LinkProcessingFailureStage.EXTRACTION_FAILED,
       options
     );
   }
@@ -61,13 +66,13 @@ export class AIExtractionError extends ServiceSpecificError {
 
 export class AIResponseEmptyError extends ServiceSpecificError {
   constructor(message: string, metadata: { urls: string[] }) {
-    super(message, metadata, LinkProcessingSubStatus.EXTRACTION_FAILED);
+    super(message, metadata, LinkProcessingFailureStage.EXTRACTION_FAILED);
   }
 }
 
 export class InvalidJsonError extends ServiceSpecificError {
   constructor(message: string, metadata: { urls: string[] }) {
-    super(message, metadata, LinkProcessingSubStatus.EXTRACTION_FAILED);
+    super(message, metadata, LinkProcessingFailureStage.EXTRACTION_FAILED);
   }
 }
 
@@ -104,7 +109,7 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
         statusCode: 400,
         body: JSON.stringify({
           message: 'Malformed JSON in request body',
-          linkProcessingStatus: LinkProcessingSubStatus.PRE_VALIDATION_FAILED,
+          failureStage: LinkProcessingFailureStage.PRE_VALIDATION_FAILED,
         }),
       };
       return;
@@ -113,7 +118,7 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
         statusCode: 400,
         body: JSON.stringify({
           message: 'Invalid request body shape',
-          linkProcessingStatus: LinkProcessingSubStatus.PRE_VALIDATION_FAILED,
+          failureStage: LinkProcessingFailureStage.PRE_VALIDATION_FAILED,
         }),
       };
     } else if (error instanceof ServiceSpecificError) {
@@ -121,7 +126,7 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
         statusCode: 500,
         body: JSON.stringify({
           message: error.message,
-          linkProcessingStatus: error.linkProcessingStatus,
+          failureStage: error.failureStage,
         }),
       };
     } else {
@@ -129,7 +134,7 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
         statusCode: 500,
         body: JSON.stringify({
           message: 'Internal server error',
-          linkProcessingStatus: LinkProcessingSubStatus.UNKNOWN_FAILED,
+          failureStage: LinkProcessingFailureStage.UNKNOWN_FAILED,
         }),
       };
     }

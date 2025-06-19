@@ -1,9 +1,9 @@
 import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
 
 const formatJobDescription = (description: {
-  responsibility: string;
-  requirement: string;
-  preferred: string;
+  responsibility?: string | undefined;
+  requirement?: string | undefined;
+  preferred?: string | undefined;
 }): string => {
   const formatSection = (title: string, content: string) => {
     const lines = content
@@ -15,15 +15,15 @@ const formatJobDescription = (description: {
 
   let result = '';
 
-  if (description.responsibility != '') {
+  if (description.responsibility) {
     result += formatSection('Responsibilities', description.responsibility);
   }
 
-  if (description.requirement != '') {
+  if (description.requirement) {
     result += '\n' + formatSection('Requirements', description.requirement);
   }
 
-  if (description.preferred != '') {
+  if (description.preferred) {
     result +=
       '\n' + formatSection('Preferred Qualifications', description.preferred);
   }
@@ -37,7 +37,7 @@ export const mapStringToEnum = <T extends Record<string, string>>({
   fallback,
 }: {
   enumObject: T;
-  value: string;
+  value: string | undefined;
   fallback: T[keyof T];
 }): T[keyof T] => {
   const match = Object.values(enumObject).find((v) => v === value);
@@ -78,7 +78,7 @@ Strategy:
 - The job description, including responsibilities and requirements, is generally located below.
 
 **Important:**
-- If any of the above fields are not available in the input, use an empty string ("").
+- If any of the above fields are not available in the input, do not include them in the returned object.
 - Do not explain your answer.
 - Return only a single JSON object, with no extra text, markdown, or code block formatting.
 - Field names must match exactly as shown below.
