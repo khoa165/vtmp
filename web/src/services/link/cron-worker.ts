@@ -1,31 +1,32 @@
-// import { LinkStatus, LinkProcessingFailureStage} from '@vtmp/common/constants';
-// import { LinkRepository } from '@/repositories/link.repository';
-import cron from 'node-cron';
 import axios from 'axios';
-import { EnvConfig } from '@/config/env';
+import cron from 'node-cron';
 
-// const getRetryFilter = () => ({
-//   $or: [
-//     { status: LinkStatus.PENDING, attemptsCount: 0 },
-//     {
-//       status: LinkStatus.FAILED,
-//       subStatus: LinkProcessingSubStatus.UNKNOWN_FAILED,
-//       attemptsCount: { $lt: 4 },
-//       $expr: {
-//         $gt: [
-//           {
-//             $dateDiff: {
-//               startDate: '$lastProcessedAt',
-//               endDate: '$$NOW',
-//               unit: 'minute',
-//             },
-//           },
-//           30,
-//         ],
-//       },
-//     },
-//   ],
-// });
+import { LinkStatus } from '@vtmp/common/constants';
+
+import { EnvConfig } from '@/config/env';
+import { LinkRepository } from '@/repositories/link.repository';
+
+const getRetryFilter = () => ({
+  $or: [
+    { status: LinkStatus.PENDING_PROCESSING },
+    {
+      status: LinkStatus.PENDING_RETRY,
+      attemptsCount: { $lt: 4 },
+      $expr: {
+        $gt: [
+          {
+            $dateDiff: {
+              startDate: '$lastProcessedAt',
+              endDate: '$$NOW',
+              unit: 'minute',
+            },
+          },
+          30,
+        ],
+      },
+    },
+  ],
+});
 
 const api = axios.create({
   baseURL: `${EnvConfig.get().LAMBDA_URL}`,
@@ -62,9 +63,8 @@ export const sendLinksToLambda = async (
 };
 
 cron.schedule('*/30 * * * * *', async () => {
-  // console.log('Cron wakes up...');
-  // const links = await LinkRepository.getLinks(getRetryFilter());
-  // console.log('PENDING links retrieved from database: ', links);
+  const links = await LinkRepository.getLinks(getRetryFilter());
+  console.log('PENDING links retrieved from database: ', links);
   // if (links.length === 0) return;
   // const linksData = links.map(({ _id, originalUrl, attemptsCount }) => ({
   //   _id: _id.toString(),
