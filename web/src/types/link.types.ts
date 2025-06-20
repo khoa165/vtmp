@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import {
-  LinkProcessingSubStatus,
+  LinkProcessingFailureStage,
   JobFunction,
   JobPostingRegion,
   JobType,
@@ -43,7 +43,7 @@ export const ExtractionLinkMetaDataSchema = z
       })
       .optional(),
     subStatus: z
-      .nativeEnum(LinkProcessingSubStatus, {
+      .nativeEnum(LinkProcessingFailureStage, {
         message: 'Invalid sub status',
       })
       .optional(),
@@ -73,13 +73,17 @@ export const ExtractionLinkMetaDataSchema = z
     lastProcessedAt: z.string().transform((str) => new Date(str)),
   })
   .superRefine((data, ctx) => {
-    if (data.status === 'FAILED' && !data.subStatus) {
+    const isFailed =
+      data.status === LinkStatus.PENDING_RETRY ||
+      data.status === LinkStatus.PIPELINE_FAILED ||
+      data.status === LinkStatus.PIPELINE_REJECTED;
+    if (isFailed && !data.subStatus) {
       ctx.addIssue({
         path: ['subStatus'], // Which field the error is for
         code: z.ZodIssueCode.custom, // Custom validation
         message: 'subStatus is required when status is failed',
       });
-    } else if (data.status !== 'FAILED' && data.subStatus) {
+    } else if (!isFailed && data.subStatus) {
       ctx.addIssue({
         path: ['subStatus'], // Which field the error is for
         code: z.ZodIssueCode.custom, // Custom validation

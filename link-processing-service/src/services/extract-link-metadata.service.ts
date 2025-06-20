@@ -1,12 +1,13 @@
 import { EnvConfig } from '@/config/env';
 import { buildPrompt, formatJobDescription } from '@/helpers/link.helpers';
 import {
-  LinkMetaData,
-  LinkMetaDataSchema,
+  ExtractedLinkMetadata,
+  ExtractedLinkMetadataSchema,
   RawAIResponse,
   RawAIResponseSchema,
-  ScrapedMetadata,
-  ExtractedMetadata,
+  ScrapedLink,
+  FailedProcessedLink,
+  MetadataExtractedLink,
 } from '@/services/link-metadata-validation';
 import {
   AIExtractionError,
@@ -18,7 +19,7 @@ import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
 import {
   JobFunction,
   JobType,
-  LinkProcessingSubStatus,
+  LinkProcessingFailureStage,
   LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
@@ -42,7 +43,7 @@ const parseJson = (text: string, url: string): RawAIResponse => {
 const generateMetadata = async (
   text: string,
   url: string
-): Promise<LinkMetaData> => {
+): Promise<ExtractedLinkMetadata> => {
   const genAI = await getGoogleGenAI();
   const prompt = await buildPrompt(text);
 
@@ -63,7 +64,7 @@ const generateMetadata = async (
   const validatedAIResponse = RawAIResponseSchema.parse(parsedAIResponse);
 
   // Convert from string to Typescript enum, had to use a separate helper function
-  const formattedLinkMetaData: LinkMetaData = {
+  const formattedLinkMetaData = {
     jobTitle: validatedAIResponse.jobTitle,
     companyName: validatedAIResponse.companyName,
     location: mapStringToEnum({
@@ -85,49 +86,73 @@ const generateMetadata = async (
     jobDescription: formatJobDescription(validatedAIResponse.jobDescription),
   };
 
-  return LinkMetaDataSchema.parse(formattedLinkMetaData);
+  return ExtractedLinkMetadataSchema.parse(formattedLinkMetaData);
+};
+
+const _shouldLongRetry = (attempsCount: number) => {
+  if (attempsCount < 3) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 export const ExtractLinkMetadataService = {
   extractMetadata: async (
-    scrapedLinksMetadata: ScrapedMetadata[]
-  ): Promise<ExtractedMetadata[]> => {
-    const urls = scrapedLinksMetadata.map((metadata) => metadata.url);
+    scrapedLinks: ScrapedLink[]
+  ): Promise<{
+    metadataExtractedLinks: MetadataExtractedLink[];
+    failedMetadataExtractionLinks: FailedProcessedLink[];
+  }> => {
+    // Get all the urls for logging purposes
+    const urls = scrapedLinks.map((scrapedLink) => scrapedLink.url);
     try {
-      const extractedMetadataResults = await Promise.all(
-        scrapedLinksMetadata.map(async (metadata) => {
-          if (!metadata.processedContent) {
-            // Scraping stage failed
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { processedContent, ...rest } = metadata;
-            return {
-              ...rest,
-            };
-          }
+      const metadataExtractedLinks: MetadataExtractedLink[] = [];
+      const failedMetadataExtractionLinks: FailedProcessedLink[] = [];
+      const results = await Promise.all(
+        scrapedLinks.map(async (link) => {
           try {
-            // If this object has processedContent field, meaning it was "decorated" successfully from scraping stage
-            // Call function generateMetadata async
             const extractedMetadata = await generateMetadata(
-              metadata.processedContent,
-              metadata.url
+              link.scrapedText,
+              link.url
             );
-            // Now replace the data field from before (which is a string text) with this new object and return
-            return { ...metadata, processedContent: extractedMetadata };
+            return {
+              ...link,
+              extractedMetadata,
+              status: LinkStatus.PENDING_ADMIN_REVIEW,
+              failureStage: null,
+            };
           } catch (error: unknown) {
             logError(error);
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { processedContent, ...rest } = metadata;
-            // If any error happens, remove the data field (string text from before), and attach processingSubStatus and error fields
+
+            if (_shouldLongRetry(link.originalRequest.attemptsCount)) {
+              return {
+                ...link,
+                status: LinkStatus.PENDING_RETRY,
+                failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
+                error,
+              };
+            }
+
             return {
-              ...rest,
-              status: LinkStatus.FAILED,
-              subStatus: LinkProcessingSubStatus.EXTRACTION_FAILED,
-              error: String(error),
+              ...link,
+              status: LinkStatus.PIPELINE_FAILED,
+              failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
+              error,
             };
           }
         })
       );
-      return extractedMetadataResults;
+
+      // Now split results into metadataExtractedLinks and failedMetadataExtractionLinks
+      for (const result of results) {
+        if ('error' in result) {
+          failedMetadataExtractionLinks.push(result);
+        } else {
+          metadataExtractedLinks.push(result);
+        }
+      }
+      return { metadataExtractedLinks, failedMetadataExtractionLinks };
     } catch (error: unknown) {
       throw new AIExtractionError(
         'Failed to extract metadata with AI',

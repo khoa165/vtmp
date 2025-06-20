@@ -6,30 +6,60 @@ import { LinkProcessorService } from '@/services/link-processor.service';
 import { updateLink } from '@/utils/api';
 import {
   EventBodySchema,
-  ExtractedMetadata,
+  FailedProcessedLink,
+  MetadataExtractedLink,
   UpdateLinkPayload,
 } from '@/services/link-metadata-validation';
 
-// Need an extra service function to flatten out processedResults
-// Update attemptsCount
-// Update lastProcessedAt
-// Organize the list of objects, so that each object only have {linkId: string, url: string, updatePayload: that already have _id and url pruned from}
-const prepareUpdatePayloads = (
-  processedResults: ExtractedMetadata[]
-): { linkId: string; url: string; updatePayload: UpdateLinkPayload }[] => {
+const buildSucceeddedLinksUpdatePayloads = (
+  processedResults: MetadataExtractedLink[]
+): {
+  linkId: string;
+  originalUrl: string;
+  updatePayload: UpdateLinkPayload;
+}[] => {
   return processedResults.map((result) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { error, processedContent, ...rest } = result;
-    const processedResult = {
+    // destructure to take out originalRequest and extractedMetadata
+    const { originalRequest, extractedMetadata, ...rest } = result;
+    // Flatten, attach lastProcessedAt, and add attemptsCount
+    const flattenResult = {
       ...rest,
-      ...processedContent,
-      lastProcessedAt: new Date(),
+      ...extractedMetadata,
+      ...originalRequest,
+      lastProcessedAt: new Date().toISOString(),
     };
 
-    processedResult.attemptsCount += 1;
+    // Increment attempsCount
+    flattenResult.attemptsCount += 1;
 
-    const { _id, url, ...updatePayload } = processedResult;
-    return { linkId: _id, url, updatePayload };
+    const { _id, originalUrl, ...updatePayload } = flattenResult;
+    return { linkId: _id, originalUrl, updatePayload };
+  });
+};
+
+const buildFailedLinksUpdatePayloads = (
+  processedResults: FailedProcessedLink[]
+): {
+  linkId: string;
+  originalUrl: string;
+  updatePayload: UpdateLinkPayload;
+}[] => {
+  return processedResults.map((result) => {
+    // destructure to take out error and scrapedText
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { originalRequest, scrapedText, error, ...rest } = result;
+    // Flatten, attach lastProcessedAt, and add attemptsCount
+    const flattenResult = {
+      ...rest,
+      ...originalRequest,
+      lastProcessedAt: new Date().toISOString(),
+    };
+
+    // Increment attempsCount
+    flattenResult.attemptsCount += 1;
+
+    const { _id, originalUrl, ...updatePayload } = flattenResult;
+    return { linkId: _id, originalUrl, updatePayload };
   });
 };
 
@@ -37,24 +67,35 @@ const lambdaHandler = async (
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyResult> => {
   const { linksData } = EventBodySchema.parse(event.body);
-  const processedResults = await LinkProcessorService.processLinks(linksData);
-  console.log(processedResults);
+  const { succeededLinks, failedLinks } =
+    await LinkProcessorService.processLinks(linksData);
+
+  console.log('Succeeded links: ', succeededLinks);
+  console.log('Failed links: ', failedLinks);
 
   // Need to deal with case when updateLink throws?
-  const updateLinksPayloads = prepareUpdatePayloads(processedResults);
+  const updateSucceededLinksPayloads =
+    buildSucceeddedLinksUpdatePayloads(succeededLinks);
+  const updateFailedLinksPayloads = buildFailedLinksUpdatePayloads(failedLinks);
+  const allUpdateLinksPayloads = [
+    ...updateSucceededLinksPayloads,
+    ...updateFailedLinksPayloads,
+  ];
   await Promise.all(
-    updateLinksPayloads.map(async ({ linkId, url, updatePayload }) => {
-      try {
-        await updateLink(`/links/${linkId}/metaData`, updatePayload);
-      } catch (error: unknown) {
-        console.error(`Failed to update link for ${url}:`, error);
+    allUpdateLinksPayloads.map(
+      async ({ linkId, originalUrl, updatePayload }) => {
+        try {
+          await updateLink(`/links/${linkId}/metaData`, updatePayload);
+        } catch (error: unknown) {
+          console.error(`Failed to update link for ${originalUrl}:`, error);
+        }
       }
-    })
+    )
   );
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ processedResults }),
+    body: JSON.stringify({ succeededLinks, failedLinks }),
   };
 };
 

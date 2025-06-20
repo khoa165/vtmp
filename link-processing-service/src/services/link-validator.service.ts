@@ -4,8 +4,9 @@ import { EnvConfig } from '@/config/env';
 import retry from 'retry';
 import { GlobalOptions, safebrowsing_v4 } from '@googleapis/safebrowsing';
 import {
-  ISubmittedLink,
-  LinkProcessingError,
+  SubmittedLink,
+  ValidatedLink,
+  FailedProcessedLink,
 } from '@/services/link-metadata-validation';
 import { LinkStatus, LinkProcessingFailureStage } from '@vtmp/common/constants';
 import { LinkValidationErrorType } from '@/utils/errors-enum';
@@ -38,12 +39,12 @@ const LinkValidatorService = {
    *   - `validatedUrls`: An array of results for successfully validated links.
    *   - `faultyUrls`: An array of errors for links that failed validation, including error details and failure stage.
    */
-  async validateLinks(requests: ISubmittedLink[]): Promise<{
-    validatedUrls: LinkValidationResult[];
-    faultyUrls: LinkProcessingError[];
+  async validateLinks(requests: SubmittedLink[]): Promise<{
+    validatedUrls: ValidatedLink[];
+    faultyUrls: FailedProcessedLink[];
   }> {
-    const validatedUrls: LinkValidationResult[] = [];
-    const faultyUrls: LinkProcessingError[] = [];
+    const validatedUrls: ValidatedLink[] = [];
+    const faultyUrls: FailedProcessedLink[] = [];
     await Promise.allSettled(
       requests.map(async (request) => {
         try {
@@ -54,23 +55,16 @@ const LinkValidatorService = {
           });
         } catch (error) {
           const status = this._determineProcessStatus(request, error);
-          const returnError =
-            error instanceof Error
-              ? error
-              : new Error(
-                  'Unknown error: Value thrown is not of Error instance',
-                  { cause: error }
-                );
           faultyUrls.push({
-            ...request,
+            originalRequest: request,
             status: status,
             failureStage: LinkProcessingFailureStage.VALIDATION_FAILED,
-            error: returnError,
+            error: error,
           });
 
           console.warn(`Link failed at LinkValidationService.`, {
             url: request.originalUrl,
-            error: returnError,
+            error: error,
           });
         }
       })
@@ -130,7 +124,7 @@ const LinkValidatorService = {
    * @param error
    */
   _determineProcessStatus(
-    originalRequest: ISubmittedLink,
+    originalRequest: SubmittedLink,
     error: unknown
   ): LinkStatus {
     if (originalRequest.attemptsCount >= this.config.maxLongRetry) {
@@ -238,9 +232,4 @@ const LinkValidatorService = {
   },
 };
 
-interface LinkValidationResult {
-  originalRequest: ISubmittedLink;
-  url: string;
-}
-
-export { LinkValidatorService, LinkValidationResult as ValidationResult };
+export { LinkValidatorService, ValidatedLink as ValidationResult };

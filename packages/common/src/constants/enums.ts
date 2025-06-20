@@ -225,8 +225,6 @@ export enum LinkStatus {
   PENDING_PROCESSING = 'PENDING_PROCESSING',
   // link finished processing successfully, pending manual review.
   PENDING_ADMIN_REVIEW = 'PENDING_ADMIN_REVIEW',
-
-  // -- may or may not have LinkProcessingFailureStage ----
   // admin manually approved link
   ADMIN_APPROVED = 'ADMIN_APPROVED',
   // admin manually rejected link

@@ -6,17 +6,17 @@ import { LinkValidationErrorType } from '@/utils/errors-enum';
 
 export abstract class ServiceSpecificError extends Error {
   public metadata: { urls: string[] };
-  public linkProcessingStatus: LinkProcessingFailureStage;
+  public failureStage: LinkProcessingFailureStage;
   constructor(
     message: string,
     metadata: { urls: string[] },
-    linkProcessingStatus: LinkProcessingFailureStage,
+    failureStage: LinkProcessingFailureStage,
     options?: { cause?: unknown }
   ) {
     super(message, options);
     this.name = this.constructor.name;
     this.metadata = metadata;
-    this.linkProcessingStatus = linkProcessingStatus;
+    this.failureStage = failureStage;
     if (options?.cause) {
       this.cause = options.cause;
     }
@@ -125,8 +125,7 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
         statusCode: 400,
         body: JSON.stringify({
           message: 'Malformed JSON in request body',
-          linkProcessingStatus:
-            LinkProcessingFailureStage.PRE_VALIDATION_FAILED,
+          failureStage: LinkProcessingFailureStage.PRE_VALIDATION_FAILED,
         }),
       };
       return;
@@ -135,8 +134,7 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
         statusCode: 400,
         body: JSON.stringify({
           message: 'Invalid request body shape',
-          linkProcessingStatus:
-            LinkProcessingFailureStage.PRE_VALIDATION_FAILED,
+          failureStage: LinkProcessingFailureStage.PRE_VALIDATION_FAILED,
         }),
       };
     } else if (error instanceof ServiceSpecificError) {
@@ -144,7 +142,7 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
         statusCode: 500,
         body: JSON.stringify({
           message: error.message,
-          linkProcessingStatus: error.linkProcessingStatus,
+          failureStage: error.failureStage,
         }),
       };
     } else {
@@ -152,7 +150,7 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
         statusCode: 500,
         body: JSON.stringify({
           message: 'Internal server error',
-          linkProcessingStatus: LinkProcessingFailureStage.UNKNOWN_FAILED,
+          failureStage: LinkProcessingFailureStage.UNKNOWN_FAILED,
         }),
       };
     }

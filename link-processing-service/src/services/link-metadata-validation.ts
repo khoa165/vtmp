@@ -6,7 +6,11 @@ import {
   LinkProcessingFailureStage,
 } from '@vtmp/common/constants';
 import { z } from 'zod';
-export const LinkMetaDataSchema = z
+
+/**
+ * These schema are specifically for zod validation at AI metadata extraction stage
+ */
+export const ExtractedLinkMetadataSchema = z
   .object({
     jobTitle: z.string().optional(),
     companyName: z.string().optional(),
@@ -30,7 +34,7 @@ export const LinkMetaDataSchema = z
   })
   .strict();
 
-export type LinkMetaData = z.infer<typeof LinkMetaDataSchema>;
+export type ExtractedLinkMetadata = z.infer<typeof ExtractedLinkMetadataSchema>;
 
 export const RawJobDescriptionSchema = z
   .object({
@@ -54,6 +58,11 @@ export const RawAIResponseSchema = z
 
 export type RawAIResponse = z.infer<typeof RawAIResponseSchema>;
 
+/**
+ * These schemas and types are to check link object that was just sent to Lambda
+ * SubmittedLink[] is type of input param into LinkProcessorService.processLink()
+ * SubmittedLink[] is also the type of input param into LinkValidatorService.validateLinks()
+ */
 const SubmittedLinkSchema = z.object({
   _id: z.string(),
   originalUrl: z.string().url(),
@@ -62,75 +71,64 @@ const SubmittedLinkSchema = z.object({
 export const EventBodySchema = z.object({
   linksData: z.array(SubmittedLinkSchema).min(1),
 });
-
-// Input into LinkProcessingService.proceesLink & LinkValidator
-export interface ISubmittedLink {
-  _id: string;
-  originalUrl: string;
-  attemptsCount: number;
-}
-
-// const validatedLinks: ProcessedLink[];
-// const failedLinks: LinkProcessingError[];
+export type SubmittedLink = z.infer<typeof SubmittedLinkSchema>;
 
 /**
- * ENTRYPOINT: links
- * const {validatedLinks,failedLinks} = await LinkValidatorServie.validateLinks(links);
- * const metadatas = await LinkScrapingService.scrapeLinks(validatedLinks);
- *
+ * Output from link validator service are 2 arrays: validatedLinks[] and failedLinks[]
+ * Type of each element of validatedLinks is: ValidatedLink
+ * Type of each element of failedValidationLinks is: FailedProcessedLink
+ * At all stage, in the failedValidationLinks, failedScrapingLinks, failedMetadataExtractionLinks, each element have type FailedProcessedLink
+ * The type ValidatedLink is also type of each element in the input array to the next WebScrapingService.scrapeLinks
  */
 
-// Output/return from ValidationService , input/param into ScrapingService
-
-export type ScrapedLink = ISubmittedLink & {
-  metadata: string[];
-};
-
-export type AIExtractedMetadataLink = ISubmittedLink & {
-  metadata: string[];
-  abc: string;
-  xyz: string;
-};
-
-export type LinkProcessingError = ISubmittedLink & {
+export interface ValidatedLink {
+  originalRequest: SubmittedLink;
+  url: string;
+}
+export interface FailedProcessedLink {
+  originalRequest: SubmittedLink;
+  url?: string;
+  scrapedText?: string;
   status: LinkStatus;
   failureStage: LinkProcessingFailureStage;
-  error: Error;
-};
-
-// scraping failed
-// const scrapingFailedRetry: LinkProcessingError = {
-//   status: LinkStatus.PENDING_RETRY
-//   failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-//   shouldLongRetry: true,
-//   error: new ScrapingError("Failed to asdasdasd")
-// }
-
-// const scrapingFailedNoRetry: LinkProcessingError = {
-//   status: LinkStatus.PIPELINE_FAILED
-//   failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-//   shouldLongRetry: false,
-//   error: new ScrapingError("Failed to asdasdasd")
-// }
-
-export interface IValidatedLink {
-  originalUrl: string;
-  url: string;
-  attemptsCount: number;
+  error: unknown;
 }
 
-export type LinkProcessingResult<T> = IValidatedLink & {
-  processedContent?: T;
-  status?: LinkStatus;
-  subStatus?: LinkProcessingFailureStage;
-  error?: string;
-};
-export type ScrapedMetadataResult = LinkProcessingResult<string>;
-export type ExtractedMetadataResult = LinkProcessingResult<LinkMetaData>;
+/**
+ * WebScrapingService.scrapeLinks receive and array named validatedLinks: ValidatedLink[]
+ * WebScrapingService.scrapeLinks returns an object of 2 fields:
+ * - scrapedLinks: ScrapedLink[]
+ * - failedScrapingLinks: FailedProcessedLink[]
+ * The type ScrapedLink is also type of each element in the input array to the next ExtractLinkMetadataService.extractMetadata
+ */
+
+export interface ScrapedLink {
+  originalRequest: SubmittedLink;
+  url: string;
+  scrapedText: string;
+}
+
+/**
+ * ExtractLinkMetadataService.extractMetadata receive and array named scrapedLinks: ScrapedLink[]
+ * ExtractLinkMetadataService.extractMetadata returns an object of 2 fields:
+ * - metadataExtractedLinks: MetadataExtractedLink[]
+ * - failedMetadataExtractionLinks: FailedProcessedLink[]
+ */
+
+export interface MetadataExtractedLink {
+  originalRequest: SubmittedLink;
+  url: string;
+  extractedMetadata: ExtractedLinkMetadata;
+  status: LinkStatus;
+  failureStage: null;
+}
 
 export interface UpdateLinkPayload {
+  attemptsCount: number;
+  lastProcessedAt: string;
   url?: string;
-  originalUrl?: string;
+  status: LinkStatus;
+  failureStage?: LinkProcessingFailureStage | null;
   jobTitle?: string | undefined;
   companyName?: string | undefined;
   location?: LinkRegion | undefined;
@@ -138,8 +136,4 @@ export interface UpdateLinkPayload {
   jobType?: JobType | undefined;
   datePosted?: string | undefined;
   jobDescription?: string | undefined;
-  status?: LinkStatus;
-  subStatus?: LinkProcessingFailureStage;
-  attemptsCount: number;
-  lastProcessedAt: string;
 }

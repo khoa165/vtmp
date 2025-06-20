@@ -7,7 +7,7 @@ import { LinkValidationError } from '@/utils/errors';
 import retry from 'retry';
 import * as sinon from 'sinon';
 import { safebrowsing_v4 } from '@googleapis/safebrowsing';
-import { ISubmittedLink } from '@/services/link-metadata-validation';
+import { SubmittedLink } from '@/services/link-metadata-validation';
 import { LinkValidationErrorType } from '@/utils/errors-enum';
 
 const shortenedUrl_shouldReturn200 = 'https://bit.ly/3SA6Wol';
@@ -36,7 +36,7 @@ describe('LinkValidatorService', () => {
   });
   describe('validateLinks', () => {
     it('should return 1 successful link and 1 failed links', async () => {
-      const requests: ISubmittedLink[] = [];
+      const requests: SubmittedLink[] = [];
       const links = [shortenedUrl_shouldReturn200, testUrl_shouldReturn403];
       for (let i = 0; i < links.length; i++) {
         requests.push({

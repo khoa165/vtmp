@@ -2,7 +2,7 @@ import { ILink, LinkModel } from '@/models/link.model';
 import { faker } from '@faker-js/faker';
 import {
   CompanyName,
-  LinkProcessingSubStatus,
+  LinkProcessingFailureStage,
   LinkRegion,
 } from '@vtmp/common/constants';
 import { LinkStatus } from '@vtmp/common/constants';
@@ -19,15 +19,19 @@ export const loadLinks = async (count: number): Promise<ILink[]> => {
     status: faker.helpers.enumValue(LinkStatus),
   }));
   const links = await LinkModel.insertMany(
-    newLinks.map((link) =>
-      link.status === LinkStatus.FAILED
+    newLinks.map((link) => {
+      const isFailed =
+        link.status === LinkStatus.PIPELINE_FAILED ||
+        link.status === LinkStatus.PENDING_RETRY ||
+        link.status === LinkStatus.PIPELINE_REJECTED;
+      return isFailed
         ? {
-            subStatus: faker.helpers.enumValue(LinkProcessingSubStatus),
+            subStatus: faker.helpers.enumValue(LinkProcessingFailureStage),
             ...link,
             lastProcessedAt: new Date(new Date().getTime() - 30 * 60 * 1000),
           }
-        : link
-    )
+        : link;
+    })
   );
   console.log(`Successfully seeded ${links.length} links.`);
   return links;
