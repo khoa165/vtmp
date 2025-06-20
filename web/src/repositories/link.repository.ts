@@ -1,10 +1,14 @@
 import { LinkModel, ILink } from '@/models/link.model';
 import { Types, ClientSession } from 'mongoose';
 import { LinkStatus } from '@vtmp/common/constants';
+import { LinkMetaDataType } from '@/types/link.types';
 
 export const LinkRepository = {
-  createLink: async (linkData: { url: string }): Promise<ILink> => {
-    return LinkModel.create(linkData);
+  createLink: async (linkMetaData: LinkMetaDataType): Promise<ILink> => {
+    return LinkModel.create({
+      url: linkMetaData.url,
+      originalUrl: linkMetaData.url,
+    });
   },
 
   getLinkById: async (id: string): Promise<ILink | null> => {

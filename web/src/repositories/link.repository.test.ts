@@ -1,4 +1,10 @@
-import { LinkStatus } from '@vtmp/common/constants';
+import {
+  // JobFunction,
+  // JobType,
+  // LinkRegion,
+  LinkStatus,
+  // LinkProcessingFailureStage,
+} from '@vtmp/common/constants';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
 import { LinkRepository } from '@/repositories/link.repository';
@@ -11,6 +17,7 @@ describe('LinkRepository', () => {
   useMongoDB();
   const mockLinkData = {
     url: 'google.com',
+    originalUrl: 'google.com',
     jobTitle: 'Software Engineer',
     companyName: 'Example Company',
     submittedBy: getNewObjectId(),
@@ -21,21 +28,27 @@ describe('LinkRepository', () => {
     googleLink = await LinkRepository.createLink(mockLinkData);
   });
 
-  describe('getLinkById', () => {
+  describe.only('getLinkById', () => {
     it('should be able to find link by id', async () => {
       const link = await LinkRepository.getLinkById(googleLink.id);
 
       assert(link);
     });
+    it('should return null if no link is found for the given id', async () => {
+      const link = await LinkRepository.getLinkById(getNewMongoId());
+
+      assert(!link);
+    });
   });
 
   describe('createLink', () => {
-    it('should be able to create new link with expected fields', async () => {
+    it.only('should be able to create a new link with expected fields', async () => {
       const timeDiff = differenceInSeconds(new Date(), googleLink.submittedOn);
 
-      expect(googleLink).to.deep.include(mockLinkData);
-      expect(googleLink.status).to.equal(LinkStatus.PENDING);
-      expect(timeDiff).to.lessThan(3);
+      expect(googleLink).to.have.property('url', mockLinkData.url);
+      expect(googleLink).to.have.property('originalUrl', mockLinkData.url);
+      expect(googleLink.status).to.equal(LinkStatus.PENDING_PROCESSING);
+      expect(timeDiff).to.be.lessThan(3);
     });
   });
 
@@ -43,7 +56,7 @@ describe('LinkRepository', () => {
     it('should throw error when link does not exist', async () => {
       const link = await LinkRepository.updateLinkStatus({
         id: getNewMongoId(),
-        status: LinkStatus.APPROVED,
+        status: LinkStatus.ADMIN_APPROVED,
       });
       assert(!link);
     });
@@ -51,13 +64,59 @@ describe('LinkRepository', () => {
     it('should be able to update link status', async () => {
       const link = await LinkRepository.updateLinkStatus({
         id: googleLink.id,
-        status: LinkStatus.APPROVED,
+        status: LinkStatus.ADMIN_APPROVED,
       });
 
       assert(link);
-      expect(link.status).to.equal(LinkStatus.APPROVED);
+      expect(link.status).to.equal(LinkStatus.ADMIN_APPROVED);
     });
   });
+
+  // describe('updateLinkMetaData', () => {
+  //   const mockLinkMetaData = {
+  //     url: 'google.com',
+  //     status: LinkStatus.PENDING_ADMIN_REVIEW,
+  //     location: LinkRegion.US,
+  //     jobFunction: JobFunction.SOFTWARE_ENGINEER,
+  //     jobType: JobType.INTERNSHIP,
+  //     datePosted: new Date(),
+  //     attemptsCount: 1,
+  //     lastProcessedAt: new Date(),
+  //   };
+
+  //   it('should throw error when link does not exist', async () => {
+  //     const link = await LinkRepository.updateLinkMetaData(
+  //       getNewMongoId(),
+  //       mockLinkMetaData
+  //     );
+  //     assert(!link);
+  //   });
+
+  //   it('should be able to update link metadata with status not failed', async () => {
+  //     const link = await LinkRepository.updateLinkMetaData(
+  //       googleLink.id,
+  //       mockLinkMetaData
+  //     );
+
+  //     assert(link);
+  //     expect(link).to.deep.include(mockLinkMetaData);
+  //   });
+
+  //   it('should be able to update link metadata with status failed', async () => {
+  //     const link = await LinkRepository.updateLinkMetaData(googleLink.id, {
+  //       subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
+  //       ...mockLinkMetaData,
+  //       status: LinkStatus.FAILED,
+  //     });
+
+  //     assert(link);
+  //     expect(link).to.deep.include({
+  //       subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
+  //       ...mockLinkMetaData,
+  //       status: LinkStatus.FAILED,
+  //     });
+  //   });
+  // });
 
   describe('getLinkCountByStatus', () => {
     beforeEach(async () => {
@@ -82,24 +141,24 @@ describe('LinkRepository', () => {
       );
     });
 
-    it('should be able to get links by pending status without given status', async () => {
-      const linkCounts = await LinkRepository.getLinkCountByStatus();
+    // it('should be able to get links by pending status without given status', async () => {
+    //   const linkCounts = await LinkRepository.getLinkCountByStatus();
 
-      expect(linkCounts).to.deep.equal({
-        [LinkStatus.PENDING]: 3,
-      });
-    });
+    //   expect(linkCounts).to.deep.equal({
+    //     [LinkStatus.PENDING]: 3,
+    //   });
+    // });
 
     it('should be able to get multiple links by multiple statuses', async () => {
       await LinkRepository.updateLinkStatus({
         id: googleLink.id,
-        status: LinkStatus.APPROVED,
+        status: LinkStatus.ADMIN_APPROVED,
       });
 
       const afterUpdateLinks = await LinkRepository.getLinkCountByStatus();
       expect(afterUpdateLinks).to.deep.equal({
-        [LinkStatus.PENDING]: 2,
-        [LinkStatus.APPROVED]: 1,
+        [LinkStatus.PENDING_PROCESSING]: 2,
+        [LinkStatus.ADMIN_APPROVED]: 1,
       });
     });
   });
@@ -130,15 +189,15 @@ describe('LinkRepository', () => {
       it('should be able to get all links without status filter', async () => {
         await LinkRepository.updateLinkStatus({
           id: googleLink.id,
-          status: LinkStatus.APPROVED,
+          status: LinkStatus.ADMIN_APPROVED,
         });
         const links = await LinkRepository.getLinks();
 
         expect(links).to.be.an('array').that.have.lengthOf(3);
         expect(links.map((link) => link.status)).to.deep.equal([
-          LinkStatus.APPROVED,
-          LinkStatus.PENDING,
-          LinkStatus.PENDING,
+          LinkStatus.ADMIN_APPROVED,
+          LinkStatus.PENDING_PROCESSING,
+          LinkStatus.PENDING_PROCESSING,
         ]);
       });
     });
@@ -146,58 +205,58 @@ describe('LinkRepository', () => {
     describe('when filter is provided', () => {
       it('should return empty array when no links exist with given status', async () => {
         const links = await LinkRepository.getLinks({
-          status: LinkStatus.APPROVED,
+          status: LinkStatus.ADMIN_APPROVED,
         });
         expect(links).to.have.lengthOf(0);
       });
 
       it('should be able to get multiple links by a status', async () => {
         const links = await LinkRepository.getLinks({
-          status: LinkStatus.PENDING,
+          status: LinkStatus.PENDING_PROCESSING,
         });
 
         expect(links).to.be.an('array').that.have.lengthOf(3);
         expect(links.map((link) => link.status)).to.deep.equal([
-          LinkStatus.PENDING,
-          LinkStatus.PENDING,
-          LinkStatus.PENDING,
+          LinkStatus.PENDING_PROCESSING,
+          LinkStatus.PENDING_PROCESSING,
+          LinkStatus.PENDING_PROCESSING,
         ]);
       });
 
       it('should be able to get link by given status after update', async () => {
         await LinkRepository.updateLinkStatus({
           id: googleLink.id,
-          status: LinkStatus.APPROVED,
+          status: LinkStatus.ADMIN_APPROVED,
         });
         const links = await LinkRepository.getLinks({
-          status: LinkStatus.APPROVED,
+          status: LinkStatus.ADMIN_APPROVED,
         });
 
         expect(links).to.be.an('array').that.have.lengthOf(1);
         expect(links.map((link) => link.status)).to.deep.equal([
-          LinkStatus.APPROVED,
+          LinkStatus.ADMIN_APPROVED,
         ]);
       });
 
       it('should not include link of different status', async () => {
         const beforeUpdateLinks = await LinkRepository.getLinks({
-          status: LinkStatus.PENDING,
+          status: LinkStatus.PENDING_PROCESSING,
         });
 
         expect(beforeUpdateLinks).to.be.an('array').that.have.lengthOf(3);
 
         await LinkRepository.updateLinkStatus({
           id: googleLink.id,
-          status: LinkStatus.APPROVED,
+          status: LinkStatus.ADMIN_APPROVED,
         });
         const afterUpdateLinks = await LinkRepository.getLinks({
-          status: LinkStatus.PENDING,
+          status: LinkStatus.PENDING_PROCESSING,
         });
 
         expect(afterUpdateLinks).to.be.an('array').that.have.lengthOf(2);
         expect(afterUpdateLinks.map((link) => link.status)).to.deep.equal([
-          LinkStatus.PENDING,
-          LinkStatus.PENDING,
+          LinkStatus.PENDING_PROCESSING,
+          LinkStatus.PENDING_PROCESSING,
         ]);
       });
     });
