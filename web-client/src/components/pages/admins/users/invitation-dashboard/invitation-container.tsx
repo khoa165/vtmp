@@ -2,17 +2,25 @@ import { useMemo, useState } from 'react';
 import { SortingState } from '@tanstack/react-table';
 import { InvitationTable } from '@/components/pages/admins/users/invitation-dashboard/invitation-table';
 import { invitationsTableColumns } from '@/components/pages/admins/users/invitation-dashboard/invitations-table-columns';
-import { useGetInvitations } from '@/components/pages/admins/invitations/hooks/useInvitation';
+import {
+  useGetInvitations,
+  useSendInvitation,
+  useRevokeInvitation,
+} from '@/components/pages/admins/invitations/hooks/useInvitation';
 import { Skeleton } from '@/components/base/skeleton';
 import { CustomError } from '@/utils/errors';
-import { InvitationStatus } from '@vtmp/common/constants';
 
 export const InvitationContainer = (): React.JSX.Element | null => {
   const { isLoading, error, data: invitations } = useGetInvitations();
+  const { mutate: revokeInvitation } = useRevokeInvitation();
+  const { mutate: sendInvitation } = useSendInvitation();
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columns = useMemo(() => invitationsTableColumns(), []);
+  const columns = useMemo(
+    () => invitationsTableColumns(revokeInvitation, sendInvitation),
+    [revokeInvitation, sendInvitation]
+  );
 
   if (isLoading) {
     return (

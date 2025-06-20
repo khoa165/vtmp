@@ -7,16 +7,12 @@ import { capitalize } from 'remeda';
 import { StatusDot } from '@/components/base/status-dot';
 import { InvitationStatusToColorMapping } from '@/utils/constants';
 import { InvitationStatus } from '@vtmp/common/constants';
-import {
-  useRevokeInvitation,
-  useSendInvitation,
-} from '@/components/pages/admins/invitations/hooks/useInvitation';
 import { toast } from 'sonner';
 
-export const invitationsTableColumns = (): ColumnDef<IInvitationSchema>[] => {
-  const { mutate: revokeInvitation } = useRevokeInvitation();
-  const { mutate: sendInvitation } = useSendInvitation();
-
+export const invitationsTableColumns = (
+  revokeInvitation: (id: string) => void,
+  sendInvitation: (data: { isResend: boolean; invitationId: string }) => void
+): ColumnDef<IInvitationSchema>[] => {
   return [
     {
       accessorKey: 'receiverName',
