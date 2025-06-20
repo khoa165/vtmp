@@ -9,6 +9,8 @@ import { InterviewType, InterviewStatus } from '@vtmp/common/constants';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { IApplication } from '@/models/application.model';
+import { IUser } from '@/models/user.model';
+import { UserRepository } from '@/repositories/user.repository';
 
 describe('Interview Repository', () => {
   useMongoDB();
@@ -22,8 +24,8 @@ describe('Interview Repository', () => {
     note?: string;
   }
 
-  let userId_A: string;
-  let userId_B: string;
+  let user_A: IUser;
+  let user_B: IUser;
 
   let metaApplication_A: IApplication;
   let googleApplication_A: IApplication;
@@ -37,8 +39,25 @@ describe('Interview Repository', () => {
   let mockInterview_B1: MockInterview;
 
   beforeEach(async () => {
-    userId_A = getNewMongoId();
-    userId_B = getNewMongoId();
+    const mockUsers = [
+      {
+        firstName: 'userA',
+        lastName: 'viettech',
+        email: 'test1@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      },
+      {
+        firstName: 'userB',
+        lastName: 'viettech',
+        email: 'test2@example.com',
+        encryptedPassword: 'ecnrypted-password-later',
+      },
+    ];
+    const createdUsers = await Promise.all(
+      mockUsers.map((data) => UserRepository.createUser({ ...data }))
+    );
+    assert(createdUsers[0] && createdUsers[1], 'Failed to create users');
+    [user_A, user_B] = createdUsers;
 
     const mockJobPostingData = [
       {
@@ -67,7 +86,7 @@ describe('Interview Repository', () => {
     assert(metaJobPosting && googleJobPosting, 'Failed to create job postings');
 
     const nestedApplications = await Promise.all(
-      [userId_A, userId_B].map((userId) =>
+      [user_A.id, user_B.id].map((userId) =>
         Promise.all([
           ApplicationRepository.createApplication({
             jobPostingId: metaJobPosting.id,
@@ -90,7 +109,7 @@ describe('Interview Repository', () => {
 
     mockInterview_A0 = {
       applicationId: metaApplication_A.id,
-      userId: userId_A,
+      userId: user_A.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PASSED,
@@ -98,7 +117,7 @@ describe('Interview Repository', () => {
 
     mockInterview_A1 = {
       applicationId: googleApplication_A.id,
-      userId: userId_A,
+      userId: user_A.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.FAILED,
@@ -106,14 +125,14 @@ describe('Interview Repository', () => {
 
     mockInterview_A2 = {
       applicationId: metaApplication_A.id,
-      userId: userId_A,
+      userId: user_A.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
     };
 
     mockInterview_B0 = {
       applicationId: googleApplication_B.id,
-      userId: userId_B,
+      userId: user_B.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PENDING,
@@ -121,7 +140,7 @@ describe('Interview Repository', () => {
 
     mockInterview_B1 = {
       applicationId: metaApplication_B.id,
-      userId: userId_B,
+      userId: user_B.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PENDING,
@@ -137,7 +156,7 @@ describe('Interview Repository', () => {
       expect(newInterview).to.deep.include({
         ...mockInterview_A2,
         applicationId: toMongoId(metaApplication_A.id),
-        userId: toMongoId(userId_A),
+        userId: toMongoId(user_A.id),
         companyName: 'Meta',
         status: InterviewStatus.PENDING,
       });
@@ -154,7 +173,7 @@ describe('Interview Repository', () => {
 
       const interview = await InterviewRepository.getInterviewById({
         interviewId: getNewMongoId(),
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       assert(!interview);
@@ -171,7 +190,7 @@ describe('Interview Repository', () => {
 
       const interview = await InterviewRepository.getInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_B,
+        userId: user_B.id,
       });
 
       assert(!interview);
@@ -183,12 +202,12 @@ describe('Interview Repository', () => {
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       const interview = await InterviewRepository.getInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       assert(!interview);
@@ -200,7 +219,7 @@ describe('Interview Repository', () => {
 
       const interview = await InterviewRepository.getInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       assert(interview);
@@ -208,7 +227,7 @@ describe('Interview Repository', () => {
       expect(interview).to.deep.include({
         ...mockInterview_A0,
         applicationId: toMongoId(mockInterview_A0.applicationId),
-        userId: toMongoId(userId_A),
+        userId: toMongoId(user_A.id),
       });
     });
   });
@@ -219,7 +238,7 @@ describe('Interview Repository', () => {
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
-          userId: userId_B,
+          userId: user_B.id,
         },
       });
 
@@ -239,12 +258,12 @@ describe('Interview Repository', () => {
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
-          userId: userId_A,
+          userId: user_A.id,
         },
       });
 
@@ -263,7 +282,7 @@ describe('Interview Repository', () => {
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
-          userId: userId_A,
+          userId: user_A.id,
         },
       });
 
@@ -282,7 +301,7 @@ describe('Interview Repository', () => {
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
-          userId: userId_A,
+          userId: user_A.id,
           applicationId: getNewMongoId(),
         },
       });
@@ -303,12 +322,12 @@ describe('Interview Repository', () => {
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
-          userId: userId_A,
+          userId: user_A.id,
           applicationId: metaApplication_A.id,
         },
       });
@@ -328,7 +347,7 @@ describe('Interview Repository', () => {
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
-          userId: userId_A,
+          userId: user_A.id,
           applicationId: metaApplication_A.id,
         },
       });
@@ -352,7 +371,7 @@ describe('Interview Repository', () => {
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
-          userId: userId_A,
+          userId: user_A.id,
           status: InterviewStatus.PENDING,
         },
       });
@@ -370,7 +389,7 @@ describe('Interview Repository', () => {
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
-          userId: userId_A,
+          userId: user_A.id,
           status: InterviewStatus.PENDING,
         },
       });
@@ -432,7 +451,7 @@ describe('Interview Repository', () => {
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       const interviews = await InterviewRepository.getInterviews({
@@ -460,7 +479,7 @@ describe('Interview Repository', () => {
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
-          userId: userId_A,
+          userId: user_A.id,
           applicationId: metaApplication_A.id,
           status: InterviewStatus.PENDING,
         },
@@ -476,11 +495,71 @@ describe('Interview Repository', () => {
     });
   });
 
+  describe('getSharedInterviews', () => {
+    it.only('should return an empty array if no interview is shared', async () => {
+      await Promise.all(
+        [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      const sharedInterviews = await InterviewRepository.getSharedInterviews({
+        filters: {},
+      });
+
+      expect(sharedInterviews).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it.only('should not return an soft-deleted interviews', async () => {
+      const [interview_A0, interview_A2] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A0 && interview_A2);
+
+      await InterviewRepository.deleteInterviewById(interview_A0.id);
+
+      const sharedInterview = await InterviewRepository.shareInterview({
+        interviewId: interview_A2.id,
+        userId: user_A.id,
+      });
+      assert(sharedInterview, 'Failed to share interview');
+
+      const sharedInterviews = await InterviewRepository.getSharedInterviews({
+        filters: {},
+      });
+
+      assert(sharedInterviews);
+      expect(sharedInterviews).to.be.an('array').that.have.lengthOf(1);
+      expect(sharedInterviews[0]).to.deep.include({
+        ...mockInterview_A2,
+        applicationId: toMongoId(mockInterview_A2.applicationId),
+        userId: toMongoId(user_A.id),
+      });
+    });
+
+    it.only('should return shared interv', async () => {
+      await Promise.all(
+        [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      const sharedInterviews = await InterviewRepository.getSharedInterviews({
+        filters: {},
+      });
+
+      assert(!sharedInterviews);
+    });
+  });
+
   describe('updateInterviewById', () => {
     it('should return null if no interview with that interviewId exists', async () => {
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: getNewMongoId(),
-        userId: userId_A,
+        userId: user_A.id,
         updatedMetadata: { interviewOnDate: new Date('2025-08-10') },
       });
 
@@ -493,7 +572,7 @@ describe('Interview Repository', () => {
 
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_B,
+        userId: user_B.id,
         updatedMetadata: { interviewOnDate: new Date('2025-08-10') },
       });
 
@@ -506,12 +585,12 @@ describe('Interview Repository', () => {
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview.id,
-        userId: userId_B,
+        userId: user_B.id,
       });
 
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: interview.id,
-        userId: userId_B,
+        userId: user_B.id,
         updatedMetadata: { interviewOnDate: new Date('2025-08-10') },
       });
 
@@ -524,7 +603,7 @@ describe('Interview Repository', () => {
 
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: interview.id,
-        userId: userId_A,
+        userId: user_A.id,
         updatedMetadata: {
           interviewOnDate: new Date('2025-08-10'),
           types: [
@@ -539,7 +618,7 @@ describe('Interview Repository', () => {
       assert(updatedInterview);
       expect(updatedInterview.id).to.equal(interview.id);
       expect(updatedInterview).to.deep.include({
-        userId: toMongoId(userId_A),
+        userId: toMongoId(user_A.id),
         interviewOnDate: new Date('2025-08-10'),
         types: [
           InterviewType.PROJECT_WALKTHROUGH,
@@ -565,19 +644,19 @@ describe('Interview Repository', () => {
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A1.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       const interviewUpdateResult =
         await InterviewRepository.updateInterviewsWithStatus({
-          userId: userId_A,
+          userId: user_A.id,
           interviewIds: [interview_A1.id, interview_A2.id],
           updatedStatus: InterviewStatus.FAILED,
         });
 
       const updatedInterview_A2 = await InterviewRepository.getInterviewById({
         interviewId: interview_A2.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       assert(interviewUpdateResult);
@@ -594,14 +673,14 @@ describe('Interview Repository', () => {
 
       const interviewUpdateResult =
         await InterviewRepository.updateInterviewsWithStatus({
-          userId: userId_A,
+          userId: user_A.id,
           interviewIds: [interview_B0.id],
           updatedStatus: InterviewStatus.PASSED,
         });
 
       const unchangedInterview = await InterviewRepository.getInterviewById({
         interviewId: interview_B0.id,
-        userId: userId_B,
+        userId: user_B.id,
       });
 
       assert(interviewUpdateResult);
@@ -625,18 +704,18 @@ describe('Interview Repository', () => {
 
       const interviewUpdateResult =
         await InterviewRepository.updateInterviewsWithStatus({
-          userId: userId_A,
+          userId: user_A.id,
           interviewIds: [interview_A1.id, interview_A2.id, interview_B0.id],
           updatedStatus: InterviewStatus.PASSED,
         });
 
       const updatedInterview_A1 = await InterviewRepository.getInterviewById({
         interviewId: interview_A1.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
       const updatedInterview_A2 = await InterviewRepository.getInterviewById({
         interviewId: interview_A2.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       assert(interviewUpdateResult);
@@ -654,7 +733,7 @@ describe('Interview Repository', () => {
     it('should return null if the interview does not exist', async () => {
       const deletedInterview = await InterviewRepository.deleteInterviewById({
         interviewId: getNewMongoId(),
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       assert(!deletedInterview);
@@ -666,7 +745,7 @@ describe('Interview Repository', () => {
 
       const deletedInterview = await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_B,
+        userId: user_B.id,
       });
 
       assert(!deletedInterview);
@@ -678,12 +757,12 @@ describe('Interview Repository', () => {
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       const deletedInterview = await InterviewRepository.deleteInterviewById({
         interviewId: interview.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       assert(!deletedInterview);
@@ -695,12 +774,12 @@ describe('Interview Repository', () => {
 
       const deletedInterview = await InterviewRepository.deleteInterviewById({
         interviewId: interview.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       const foundInterview = await InterviewRepository.getInterviewById({
         interviewId: interview.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       assert(deletedInterview);

@@ -1,5 +1,6 @@
 import { InterviewModel, IInterview } from '@/models/interview.model';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import escapeStringRegexp from 'escape-string-regexp';
 import { ClientSession, UpdateResult } from 'mongoose';
 
 export const InterviewRepository = {
@@ -72,33 +73,53 @@ export const InterviewRepository = {
       types?: InterviewType[];
       status?: InterviewStatus;
     };
-    session?: ClientSession;
   }): Promise<IInterview[]> => {
+    const dynamicMatch: Record<string, unknown> = {};
+
+    if (filters?.companyName) {
+      dynamicMatch.companyName = {
+        $regex: escapeStringRegexp(filters.companyName),
+        $options: 'i',
+      };
+    }
+    if (filters?.types) {
+      dynamicMatch.types = { $in: filters.types };
+    }
+    if (filters?.status) {
+      dynamicMatch.status = filters.status;
+    }
+
     return InterviewModel.aggregate([
-      { $match: { deletedAt: null, isDisclosed: true, ...filters } },
       {
-        $lookup: {
-          from: 'users',
-          localField: 'userId',
-          foreignField: '_id',
-          as: 'user',
+        $match: {
+          deletedAt: null,
+          sharedAt: { $ne: null },
+          ...dynamicMatch,
         },
       },
-      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          user: {
-            $cond: {
-              if: '$isDisclosed',
-              then: {
-                firstName: '$user.firstName',
-                lastName: '$user.lastName',
-              },
-              else: undefined,
-            },
-          },
-        },
-      },
+      // {
+      //   $lookup: {
+      //     from: 'users',
+      //     localField: 'userId',
+      //     foreignField: '_id',
+      //     as: 'user',
+      //   },
+      // },
+      // { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      // {
+      //   $addFields: {
+      //     user: {
+      //       $cond: {
+      //         if: '$isDisclosed',
+      //         then: {
+      //           firstName: '$user.firstName',
+      //           lastName: '$user.lastName',
+      //         },
+      //         else: undefined,
+      //       },
+      //     },
+      //   },
+      // },
     ]);
   },
 
