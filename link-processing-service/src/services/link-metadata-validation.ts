@@ -120,6 +120,7 @@ export interface MetadataExtractedLink {
   url: string;
   extractedMetadata: ExtractedLinkMetadata;
   status: LinkStatus;
+  failureStage: null;
 }
 
 export interface UpdateLinkPayload {
@@ -127,7 +128,7 @@ export interface UpdateLinkPayload {
   lastProcessedAt: string;
   url?: string;
   status: LinkStatus;
-  failureStage?: LinkProcessingFailureStage;
+  failureStage?: LinkProcessingFailureStage | null;
   jobTitle?: string | undefined;
   companyName?: string | undefined;
   location?: LinkRegion | undefined;

@@ -120,6 +120,7 @@ export const ExtractLinkMetadataService = {
               ...link,
               extractedMetadata,
               status: LinkStatus.PENDING_ADMIN_REVIEW,
+              failureStage: null,
             };
           } catch (error: unknown) {
             logError(error);
@@ -135,7 +136,7 @@ export const ExtractLinkMetadataService = {
 
             return {
               ...link,
-              status: LinkStatus.PENDING_RETRY,
+              status: LinkStatus.PIPELINE_FAILED,
               failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
               error,
             };
