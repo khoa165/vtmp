@@ -81,10 +81,6 @@ export interface ISubmittedLink {
  */
 
 // Output/return from ValidationService , input/param into ScrapingService
-export interface ProcessedLink {
-  originalRequest: ISubmittedLink;
-  url: string;
-}
 
 export type ScrapedLink = ISubmittedLink & {
   metadata: string[];
@@ -99,7 +95,6 @@ export type AIExtractedMetadataLink = ISubmittedLink & {
 export type LinkProcessingError = ISubmittedLink & {
   status: LinkStatus;
   failureStage: LinkProcessingFailureStage;
-  shouldLongRetry: boolean;
   error: Error;
 };
 

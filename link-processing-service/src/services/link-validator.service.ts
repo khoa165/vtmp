@@ -4,10 +4,11 @@ import { EnvConfig } from '@/config/env';
 import retry from 'retry';
 import { GlobalOptions, safebrowsing_v4 } from '@googleapis/safebrowsing';
 import {
-  LinkType,
-  ProcessingResult,
+  ISubmittedLink,
+  LinkProcessingError,
 } from '@/services/link-metadata-validation';
-import { LinkStatus, LinkProcessingSubStatus } from '@vtmp/common/constants';
+import { LinkStatus, LinkProcessingFailureStage } from '@vtmp/common/constants';
+import { LinkValidationErrorType } from '@/utils/errors-enum';
 
 const LinkValidatorService = {
   config: {
@@ -27,35 +28,53 @@ const LinkValidatorService = {
       maxTimeout: 10 * 1000,
     } as retry.WrapOptions,
     enableVirusScan: true,
+    maxLongRetry: 4,
   },
 
-  async validateLinks(linksData: LinkType[]): Promise<{
+  /**
+   * Concurrently validates links for reachability, resolve shortened links (if applicable), then check for virus via Safe Browsing API
+   * @param requests Links to validate
+   * @returns A promise that resolves to an object containing:
+   *   - `validatedUrls`: An array of results for successfully validated links.
+   *   - `faultyUrls`: An array of errors for links that failed validation, including error details and failure stage.
+   */
+  async validateLinks(requests: ISubmittedLink[]): Promise<{
     validatedUrls: LinkValidationResult[];
-    faultyUrls: LinkValidationResult[];
+    faultyUrls: LinkProcessingError[];
   }> {
     const validatedUrls: LinkValidationResult[] = [];
-    const faultyUrls: LinkValidationResult[] = [];
-    await Promise.all(
-      linksData.map(async (linkData) => {
+    const faultyUrls: LinkProcessingError[] = [];
+    await Promise.allSettled(
+      requests.map(async (request) => {
         try {
-          const validatedUrl = await this.validateLink(linkData.url);
+          const validatedUrl = await this.validateLink(request.originalUrl);
           validatedUrls.push({
-            ...linkData,
-            processedContent: validatedUrl,
-            status: LinkStatus.PENDING,
+            originalRequest: request,
+            url: validatedUrl,
           });
         } catch (error) {
+          const status = this._determineProcessStatus(request, error);
+          const returnError =
+            error instanceof Error
+              ? error
+              : new Error(
+                  'Unknown error: Value thrown is not of Error instance',
+                  { cause: error }
+                );
           faultyUrls.push({
-            ...linkData,
-            status: LinkStatus.FAILED,
-            subStatus: LinkProcessingSubStatus.VALIDATION_FAILED,
-            error: error instanceof Error ? error.message : `Unknown error`,
+            ...request,
+            status: status,
+            failureStage: LinkProcessingFailureStage.VALIDATION_FAILED,
+            error: returnError,
           });
-          console.warn(error);
+
+          console.warn(`Link failed at LinkValidationService.`, {
+            url: request.originalUrl,
+            error: returnError,
+          });
         }
       })
     );
-
     return { validatedUrls, faultyUrls };
   },
 
@@ -85,7 +104,7 @@ const LinkValidatorService = {
     if (!this.config.enableVirusScan) {
       if (EnvConfig.get().NODE_ENV !== 'test') {
         throw new Error(
-          '[LinkValidatorSerivce] Can only disable virus scan in test environment'
+          '[LinkValidatorService] Can only disable virus scan in test environment'
         );
       }
       return resolvedUrl;
@@ -94,11 +113,35 @@ const LinkValidatorService = {
       return this._checkSafety(resolvedUrl);
     }, this.config.virusScanRetryConfig);
     if (!linkIsSafe) {
-      throw new LinkValidationError('Provided link fails safety check', {
-        urls: [url],
-      });
+      throw new LinkValidationError(
+        'Provided link fails safety check',
+        LinkValidationErrorType.SITE_REPORTED_MALICIOUS,
+        {
+          urls: [url],
+        }
+      );
     }
     return resolvedUrl;
+  },
+
+  /**
+   * Decide on whether link should be retried.
+   * @param originalRequest
+   * @param error
+   */
+  _determineProcessStatus(
+    originalRequest: ISubmittedLink,
+    error: unknown
+  ): LinkStatus {
+    if (originalRequest.attemptsCount >= this.config.maxLongRetry) {
+      return LinkStatus.PIPELINE_FAILED;
+    }
+    if (error instanceof LinkValidationError) {
+      if (error.errorType === LinkValidationErrorType.SITE_REPORTED_MALICIOUS) {
+        return LinkStatus.PIPELINE_REJECTED;
+      }
+    }
+    return LinkStatus.PENDING_RETRY;
   },
 
   /**
@@ -118,6 +161,7 @@ const LinkValidatorService = {
     } catch (error) {
       throw new LinkValidationError(
         `Network error while checking URL. Message: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        LinkValidationErrorType.NETWORK_ERROR,
         { urls: [url] },
         { cause: error }
       );
@@ -125,6 +169,7 @@ const LinkValidatorService = {
     if (!response.ok) {
       throw new LinkValidationError(
         `Failed to validate link due to HTTP error code ${response.status}`,
+        LinkValidationErrorType.SITE_UNREACHABLE,
         { urls: [url] },
         {
           cause: `HTTP Error ${response.status}: ${response.statusText}`,
@@ -180,6 +225,7 @@ const LinkValidatorService = {
         const attempts = this.config.virusScanRetryConfig.retries;
         throw new LinkValidationError(
           `Unable to validate link safety with Safe Browsing API after ${attempts} attempts. Message: ${error.message}`,
+          LinkValidationErrorType.SAFETY_API_FAILED,
           { urls: [url] },
           { cause: error }
         );
@@ -192,15 +238,9 @@ const LinkValidatorService = {
   },
 };
 
-enum LINK_VALIDATOR_STEPS {
-  NETWORK_CHECK = 'NETWORK_CHECK',
-  SAFETY_CHECK = 'SAFETY_CHECK',
+interface LinkValidationResult {
+  originalRequest: ISubmittedLink;
+  url: string;
 }
 
-type LinkValidationResult = ProcessingResult<string>;
-
-export {
-  LinkValidatorService,
-  LINK_VALIDATOR_STEPS,
-  LinkValidationResult as ValidationResult,
-};
+export { LinkValidatorService, LinkValidationResult as ValidationResult };

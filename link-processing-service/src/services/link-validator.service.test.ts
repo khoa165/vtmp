@@ -1,14 +1,14 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { expect, assert } from 'chai';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {
-  LINK_VALIDATOR_STEPS,
-  LinkValidatorService,
-} from '@/services/link-validator.service';
+import { LinkValidatorService } from '@/services/link-validator.service';
 import { LinkValidationError } from '@/utils/errors';
 import retry from 'retry';
 import * as sinon from 'sinon';
 import { safebrowsing_v4 } from '@googleapis/safebrowsing';
+import { ISubmittedLink } from '@/services/link-metadata-validation';
+import { LinkValidationErrorType } from '@/utils/errors-enum';
 
 const shortenedUrl_shouldReturn200 = 'https://bit.ly/3SA6Wol';
 const testUrl_shouldReturn403 = 'https://httpstat.us/403';
@@ -22,15 +22,35 @@ const testRetryConfig: retry.WrapOptions = {
   minTimeout: 10,
   maxTimeout: 10,
 };
-LinkValidatorService.config.resolveLinkRetryConfig = testRetryConfig;
+const originalConfig = LinkValidatorService.config.resolveLinkRetryConfig;
 
 chai.use(chaiAsPromised);
 describe('LinkValidatorService', () => {
   beforeEach(() => {
     sinon.stub(console, 'warn');
+    LinkValidatorService.config.resolveLinkRetryConfig = testRetryConfig;
   });
   afterEach(() => {
     sinon.restore();
+    LinkValidatorService.config.resolveLinkRetryConfig = originalConfig;
+  });
+  describe('validateLinks', () => {
+    it('should return 1 successful link and 1 failed links', async () => {
+      const requests: ISubmittedLink[] = [];
+      const links = [shortenedUrl_shouldReturn200, testUrl_shouldReturn403];
+      for (let i = 0; i < links.length; i++) {
+        requests.push({
+          _id: String(i),
+          originalUrl: links[i]!,
+          attemptsCount: 0,
+        });
+      }
+      const { validatedUrls, faultyUrls } =
+        await LinkValidatorService.validateLinks(requests);
+
+      expect(validatedUrls.length).equals(1);
+      expect(faultyUrls.length).equals(1);
+    });
   });
   describe('performNetworkCheck', () => {
     before(() => {
@@ -122,7 +142,9 @@ describe('LinkValidatorService', () => {
         await LinkValidatorService.validateLink(maliciousUrl);
       } catch (error) {
         if (error instanceof LinkValidationError) {
-          expect(error.failedSteps).to.include(LINK_VALIDATOR_STEPS.SAFETY_CHECK);
+          expect(error.errorType).to.include(
+            LinkValidationErrorType.SITE_REPORTED_MALICIOUS
+          );
         }
       }
     });

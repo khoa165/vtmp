@@ -5509,7 +5509,6 @@ __metadata:
     cross-env: "npm:^7.0.3"
     dotenv: "npm:^16.5.0"
     mocha: "npm:^11.6.0"
-    mocha-suppress-logs: "npm:^0.5.1"
     puppeteer-core: "npm:^24.10.1"
     retry: "npm:^0.13.1"
     sinon: "npm:^19.0.2"
@@ -6712,13 +6711,6 @@ __metadata:
     strip-ansi: "npm:^6.0.1"
     wrap-ansi: "npm:^7.0.0"
   checksum: 10c0/4bda0f09c340cbb6dfdc1ed508b3ca080f12992c18d68c6be4d9cf51756033d5266e61ec57529e610dacbf4da1c634423b0c1b11037709cc6b09045cbd815df5
-  languageName: node
-  linkType: hard
-
-"clone@npm:^2.1.2":
-  version: 2.1.2
-  resolution: "clone@npm:2.1.2"
-  checksum: 10c0/ed0601cd0b1606bc7d82ee7175b97e68d1dd9b91fd1250a3617b38d34a095f8ee0431d40a1a611122dcccb4f93295b4fdb94942aa763392b5fe44effa50c2d5e
   languageName: node
   linkType: hard
 
@@ -11520,15 +11512,6 @@ __metadata:
   bin:
     mkdirp: dist/cjs/src/bin.js
   checksum: 10c0/9f2b975e9246351f5e3a40dcfac99fcd0baa31fbfab615fe059fb11e51f10e4803c63de1f384c54d656e4db31d000e4767e9ef076a22e12a641357602e31d57d
-  languageName: node
-  linkType: hard
-
-"mocha-suppress-logs@npm:^0.5.1":
-  version: 0.5.1
-  resolution: "mocha-suppress-logs@npm:0.5.1"
-  dependencies:
-    clone: "npm:^2.1.2"
-  checksum: 10c0/63c7767e55b25f2b4a6d6ab3b1f41ec49bd1772f886da1b521fa40e44551745045d950c36d43ddb86dac057e124295446eac48de78527d7fed77ef5912c423cf
   languageName: node
   linkType: hard
 
