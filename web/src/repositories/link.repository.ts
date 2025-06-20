@@ -8,10 +8,7 @@ import {
 
 export const LinkRepository = {
   createLink: async (linkMetaData: LinkMetaDataType): Promise<ILink> => {
-    return LinkModel.create({
-      url: linkMetaData.url,
-      originalUrl: linkMetaData.url,
-    });
+    return LinkModel.create(linkMetaData);
   },
 
   getLinkById: async (id: string): Promise<ILink | null> => {
@@ -29,7 +26,7 @@ export const LinkRepository = {
   }): Promise<ILink | null> => {
     return LinkModel.findOneAndUpdate(
       { _id: new Types.ObjectId(id) },
-      { $set: { status, subStatus: null } },
+      { $set: { status, failureStage: null } },
       { new: true, session: session ?? null, runValidators: true }
     ).lean();
   },

@@ -21,7 +21,7 @@ describe('LinkService', () => {
   const sandbox = useSandbox();
 
   const mockLinkData = {
-    url: 'google.com',
+    originalUrl: 'google.com',
     jobTitle: 'Software Engineer',
     companyName: 'Example Company',
     submittedBy: getNewObjectId(),
@@ -29,14 +29,14 @@ describe('LinkService', () => {
 
   const mockMultipleLinks = [
     {
-      url: 'nvida.com',
+      originalUrl: 'nvida.com',
       jobTitle: 'Software Engineer',
       companyName: 'Example Company',
       submittedBy: getNewObjectId(),
     },
 
     {
-      url: 'microsoft.com',
+      originalUrl: 'microsoft.com',
       jobTitle: 'Software Engineer',
       companyName: 'Example Company',
       submittedBy: getNewObjectId(),
@@ -52,7 +52,7 @@ describe('LinkService', () => {
     it('should be able to create new link with expected fields', async () => {
       const timeDiff = differenceInSeconds(new Date(), googleLink.submittedOn);
 
-      expect(googleLink.url).to.equal(mockLinkData.url);
+      expect(googleLink.originalUrl).to.equal(mockLinkData.originalUrl);
       expect(googleLink.status).to.equal(LinkStatus.PENDING_PROCESSING);
       expect(timeDiff).to.lessThan(3);
     });

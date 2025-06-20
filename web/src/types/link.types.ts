@@ -11,7 +11,7 @@ import { filterUndefinedAttributes } from '@/utils/helpers';
 import { MONGO_OBJECT_ID_REGEX } from '@/constants/validations';
 
 export const LinkMetaDataSchema = z.object({
-  url: z
+  originalUrl: z
     .string({ required_error: 'URL is required' })
     .transform((val) => {
       if (!/^https?:\/\//i.test(val)) {

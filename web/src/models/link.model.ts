@@ -8,9 +8,9 @@ import {
 import { LinkRegion } from '@vtmp/common/constants';
 export interface ILink extends Document {
   _id: Types.ObjectId;
-  url: string;
+  url?: string;
   originalUrl: string;
-  status?: LinkStatus;
+  status: LinkStatus;
   failureStage?: LinkProcessingFailureStage;
   submittedOn: Date;
   jobTitle?: string;
@@ -20,7 +20,7 @@ export interface ILink extends Document {
   jobType?: JobType;
   datePosted?: Date;
   jobDescription?: string;
-  attemptsCount?: number;
+  attemptsCount: number;
   lastProcessedAt?: Date;
   submittedBy?: Types.ObjectId;
   deletedAt?: Date;
@@ -30,7 +30,6 @@ const LinkSchema = new mongoose.Schema<ILink>(
   {
     url: {
       type: String,
-      required: true,
       unique: true,
     },
     originalUrl: {
@@ -42,7 +41,6 @@ const LinkSchema = new mongoose.Schema<ILink>(
       type: String,
       enum: Object.values(LinkStatus),
       default: LinkStatus.PENDING_PROCESSING,
-      required: true,
     },
     failureStage: {
       type: String,
