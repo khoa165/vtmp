@@ -35,6 +35,7 @@ export const InvitationContainer = (): React.JSX.Element | null => {
   }
 
   if (error) {
+    console.log('error while fetching invitations', error);
     throw new CustomError('Error fetching invitations data');
   }
 

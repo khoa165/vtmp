@@ -32,53 +32,31 @@ export const useSendInvitation = () => {
 
   return useMutation({
     mutationFn: (data: {
-      receiverName?: string;
-      receiverEmail?: string;
-      senderId?: string;
-      isResend?: boolean;
-      invitationId?: string;
+      receiverName: string;
+      receiverEmail: string;
+      senderId: string;
     }) => {
-      const { isResend, invitationId, ...sendData } = data;
-
-      if (isResend && invitationId) {
-        return request({
-          method: Method.POST,
-          url: '/invitations',
-          data: { invitationId, isResend: true },
-          schema: InvitationResponseSchema,
-          options: { includeOnlyDataField: true, requireAuth: true },
-        });
-      } else {
-        return request({
-          method: Method.POST,
-          url: '/invitations',
-          data: sendData,
-          schema: InvitationResponseSchema,
-          options: { includeOnlyDataField: true, requireAuth: true },
-        });
-      }
+      return request({
+        method: Method.POST,
+        url: '/invitations',
+        data,
+        schema: InvitationResponseSchema,
+        options: { includeOnlyDataField: true, requireAuth: true },
+      });
     },
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QueryKey.GET_INVITATIONS] });
-      const isResend = variables.isResend;
-      toast.success(
-        isResend
-          ? 'Invitation resent successfully'
-          : 'Invitation sent successfully'
-      );
+      toast.success('Invitation sent successfully');
     },
-    onError: (error, variables) => {
+    onError: (error) => {
       console.error('Error sending invitation:', error);
-      const isResend = variables.isResend;
-      const action = isResend ? 'resend' : 'send';
-
       if (axios.isAxiosError(error) && error.response) {
         toast.error(
           error.response.data.errors?.[0]?.message ||
-            `Failed to ${action} invitation`
+            `Failed to send invitation`
         );
       } else {
-        toast.error(`Failed to ${action} invitation`);
+        toast.error(`Failed to send invitation`);
       }
     },
   });

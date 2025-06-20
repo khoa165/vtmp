@@ -11,7 +11,11 @@ import { toast } from 'sonner';
 
 export const invitationsTableColumns = (
   revokeInvitation: (id: string) => void,
-  sendInvitation: (data: { isResend: boolean; invitationId: string }) => void
+  sendInvitation: (data: {
+    receiverName: string;
+    receiverEmail: string;
+    senderId: string;
+  }) => void
 ): ColumnDef<IInvitationSchema>[] => {
   return [
     {
@@ -121,8 +125,9 @@ export const invitationsTableColumns = (
             return;
           }
           sendInvitation({
-            isResend: true,
-            invitationId: invitation._id,
+            receiverName: invitation.receiverName,
+            receiverEmail: invitation.receiverEmail,
+            senderId: invitation._id,
           });
         };
 
