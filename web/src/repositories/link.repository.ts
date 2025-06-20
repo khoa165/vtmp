@@ -1,14 +1,10 @@
 import { LinkModel, ILink } from '@/models/link.model';
-import { Types, ClientSession, FilterQuery } from 'mongoose';
+import { Types, ClientSession } from 'mongoose';
 import { LinkStatus } from '@vtmp/common/constants';
-import {
-  LinkMetaDataType,
-  ExtractionLinkMetaDataType,
-} from '@/types/link.types';
 
 export const LinkRepository = {
-  createLink: async (linkMetaData: LinkMetaDataType): Promise<ILink> => {
-    return LinkModel.create(linkMetaData);
+  createLink: async (linkData: { url: string }): Promise<ILink> => {
+    return LinkModel.create(linkData);
   },
 
   getLinkById: async (id: string): Promise<ILink | null> => {
@@ -24,21 +20,10 @@ export const LinkRepository = {
     status: LinkStatus;
     session?: ClientSession;
   }): Promise<ILink | null> => {
-    return LinkModel.findOneAndUpdate(
-      { _id: new Types.ObjectId(id) },
-      { $set: { status, subStatus: null } },
-      { new: true, session: session ?? null, runValidators: true }
-    ).lean();
-  },
-
-  updateLinkMetaData: async (
-    id: string,
-    linkMetaData: ExtractionLinkMetaDataType
-  ): Promise<ILink | null> => {
-    return LinkModel.findOneAndUpdate(
-      { _id: new Types.ObjectId(id) },
-      { $set: linkMetaData },
-      { new: true, runValidators: true }
+    return LinkModel.findByIdAndUpdate(
+      new Types.ObjectId(id),
+      { $set: { status } },
+      { new: true, session: session ?? null }
     ).lean();
   },
 
@@ -60,7 +45,7 @@ export const LinkRepository = {
     return groupCountByStatus;
   },
 
-  getLinks: async (filters: FilterQuery<ILink> = {}): Promise<ILink[]> => {
+  getLinks: async (filters: { status?: LinkStatus } = {}): Promise<ILink[]> => {
     return LinkModel.find(filters).lean();
   },
 

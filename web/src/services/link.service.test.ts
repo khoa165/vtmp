@@ -1,11 +1,5 @@
 import { expect } from 'chai';
-import {
-  JobType,
-  LinkStatus,
-  JobFunction,
-  LinkRegion,
-  LinkProcessingSubStatus,
-} from '@vtmp/common/constants';
+import { LinkStatus } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { LinkService } from '@/services/link.service';
@@ -60,7 +54,7 @@ describe('LinkService', () => {
 
     it('should throw error when link with same url already exists', async () => {
       await expect(
-        LinkService.submitLink(mockLinkData)
+        LinkService.submitLink(mockLinkData.url)
       ).eventually.rejectedWith(DuplicateResourceError);
     });
   });
@@ -135,59 +129,6 @@ describe('LinkService', () => {
     });
   });
 
-  describe('updateLinkMetaData', () => {
-    const mockLinkMetaData = {
-      url: 'google.com',
-      status: LinkStatus.PENDING,
-      location: LinkRegion.US,
-      jobFunction: JobFunction.SOFTWARE_ENGINEER,
-      jobType: JobType.INTERNSHIP,
-      datePosted: new Date(),
-      attemptsCount: 1,
-      lastProcessedAt: new Date(),
-    };
-
-    it('should throw error when link does not exist', async () => {
-      await expect(
-        LinkService.updateLinkMetaData(getNewMongoId(), mockLinkMetaData)
-      ).eventually.rejectedWith(ResourceNotFoundError);
-    });
-
-    it('should throw error when substatus included without status failed', async () => {
-      await expect(
-        LinkService.updateLinkMetaData(googleLink.id, {
-          ...mockLinkMetaData,
-          subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
-        })
-      ).eventually.rejectedWith(Error);
-    });
-
-    it('should throw error when status failed included without substatus', async () => {
-      await expect(
-        LinkService.updateLinkMetaData(googleLink.id, {
-          ...mockLinkMetaData,
-          status: LinkStatus.FAILED,
-        })
-      ).eventually.rejectedWith(Error);
-    });
-
-    it('should be able to update link metadata with status not failed', async () => {
-      await expect(
-        LinkService.updateLinkMetaData(googleLink.id, mockLinkMetaData)
-      ).eventually.fulfilled;
-    });
-
-    it('should be able to update link metadata with status failed', async () => {
-      await expect(
-        LinkService.updateLinkMetaData(googleLink.id, {
-          subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
-          ...mockLinkMetaData,
-          status: LinkStatus.FAILED,
-        })
-      ).eventually.fulfilled;
-    });
-  });
-
   describe('rejectLink', () => {
     it('should not throw when link exists', async () => {
       await expect(LinkService.rejectLink(googleLink.id)).eventually.fulfilled;
@@ -221,7 +162,6 @@ describe('LinkService', () => {
         [LinkStatus.PENDING]: 3,
         [LinkStatus.APPROVED]: 0,
         [LinkStatus.REJECTED]: 0,
-        [LinkStatus.FAILED]: 0,
       });
     });
 
@@ -236,7 +176,6 @@ describe('LinkService', () => {
         [LinkStatus.PENDING]: 2,
         [LinkStatus.APPROVED]: 1,
         [LinkStatus.REJECTED]: 0,
-        [LinkStatus.FAILED]: 0,
       });
     });
   });
