@@ -1,14 +1,7 @@
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { beforeEach, describe } from 'mocha';
-import app from '@/app';
 import { expect } from 'chai';
+import { beforeEach, describe } from 'mocha';
 import request from 'supertest';
-import {
-  expectErrorsArray,
-  expectSuccessfulResponse,
-} from '@/testutils/response-assertion.testutil';
-import { LinkRepository } from '@/repositories/link.repository';
-import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+
 import {
   LinkProcessingFailureStage,
   JobFunction,
@@ -17,15 +10,25 @@ import {
   LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
-import { useSandbox } from '@/testutils/sandbox.testutil';
+
+import app from '@/app';
 import { EnvConfig } from '@/config/env';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { ILink } from '@/models/link.model';
+import { LinkRepository } from '@/repositories/link.repository';
 import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
   runUserLogin,
 } from '@/testutils/auth.testutils';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import {
+  expectErrorsArray,
+  expectSuccessfulResponse,
+} from '@/testutils/response-assertion.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+
 describe('LinkController', () => {
   useMongoDB();
   const sandbox = useSandbox();
@@ -85,7 +88,7 @@ describe('LinkController', () => {
       expect(res.body.errors[0].message).to.equal('URL is required');
     });
 
-    it('should throw an Duplicate Error when submitting exist url', async () => {
+    it('should throw a duplicate error when submitting exist url', async () => {
       const res = await request(app)
         .post('/api/links')
         .send({ originalUrl: googleLink.originalUrl })
@@ -294,7 +297,7 @@ describe('LinkController', () => {
     });
 
     it('should return error for missing attemptsCount when status is not final', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { attemptsCount: _, ...rest } = mockLinkMetaData;
       const res = await request(app)
         .put(`/api/links/${googleLink.id}/metadata`)
@@ -311,7 +314,7 @@ describe('LinkController', () => {
     });
 
     it('should return error for missing lastProcessedAt', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { lastProcessedAt: _, ...rest } = mockLinkMetaData;
       const res = await request(app)
         .put(`/api/links/${googleLink.id}/metadata`)

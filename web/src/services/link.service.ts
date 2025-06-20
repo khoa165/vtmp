@@ -1,24 +1,25 @@
+import mongoose, { ClientSession } from 'mongoose';
+
 import { LinkStatus } from '@vtmp/common/constants';
-import { LinkRepository } from '@/repositories/link.repository';
+
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { LinkRepository } from '@/repositories/link.repository';
+import {
+  ExtractionLinkMetaDataType,
+  LinkMetaDataType,
+} from '@/types/link.types';
 import {
   DuplicateResourceError,
   InternalServerError,
   ResourceNotFoundError,
 } from '@/utils/errors';
-import mongoose, { ClientSession } from 'mongoose';
-import {
-  ExtractionLinkMetaDataType,
-  LinkMetaDataType,
-} from '@/types/link.types';
 
 export const LinkService = {
   submitLink: async (linkMetaData: LinkMetaDataType) => {
     try {
-      const submittedLink = await LinkRepository.createLink(linkMetaData);
-      return submittedLink;
+      return await LinkRepository.createLink(linkMetaData);
     } catch (error: unknown) {
-      if (error instanceof mongoose.Error.ValidationError) {
+      if (error instanceof Error && 'code' in error && error.code === 11000) {
         throw new DuplicateResourceError('Duplicate url', linkMetaData);
       }
       throw error;

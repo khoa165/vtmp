@@ -1,16 +1,17 @@
 import mongoose, { Document, Schema, Types, UpdateQuery } from 'mongoose';
+
 import {
   JobFunction,
   LinkStatus,
   JobType,
   LinkProcessingFailureStage,
-} from '@vtmp/common/constants';
-import { LinkRegion } from '@vtmp/common/constants';
+ LinkRegion } from '@vtmp/common/constants';
+
 import { InternalServerError } from '@/utils/errors';
 
 export interface ILink extends Document {
   _id: Types.ObjectId;
-  url?: string;
+  url: string;
   originalUrl: string;
   status: LinkStatus;
   failureStage?: LinkProcessingFailureStage;
