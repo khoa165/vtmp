@@ -41,10 +41,10 @@ export enum JobPostingRegion {
   CANADA = 'CANADA',
 }
 
-export enum LinkRegion {
-  US = 'US',
-  CANADA = 'CANADA',
-  OTHER = 'OTHER',
+export enum LinkStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
 }
 
 export enum SystemRole {
@@ -217,34 +217,4 @@ export enum JobType {
   INTERNSHIP = 'INTERNSHIP',
   NEW_GRAD = 'NEW_GRAD',
   INDUSTRY = 'INDUSTRY',
-}
-
-export enum LinkStatus {
-  // ---- MUST NOT CONTAIN LinkProcessingFailureStage ----
-  // New links to process.
-  PENDING_PROCESSING = 'PENDING_PROCESSING',
-  // link finished processing successfully, pending manual review.
-  PENDING_ADMIN_REVIEW = 'PENDING_ADMIN_REVIEW',
-
-  // -- may or may not have LinkProcessingFailureStage ----
-  // admin manually approved link
-  ADMIN_APPROVED = 'ADMIN_APPROVED',
-  // admin manually rejected link
-  ADMIN_REJECTED = 'ADMIN_REJECTED',
-
-  // ---- MUST CONTAIN LinkProcessingFailureStage ----
-  // Links to retry after failing any processing stage
-  PENDING_RETRY = 'PENDING_RETRY',
-  // failed to process link even after retry (ex: attempsCount > 4). Manual intervention needed (e.g. 403 Forbidden)
-  PIPELINE_FAILED = 'PIPELINE_FAILED',
-  // when link should no longer be processed (e.g. virus link), abandon any long retry
-  PIPELINE_REJECTED = 'PIPELINE_REJECTED',
-}
-
-export enum LinkProcessingFailureStage {
-  PRE_VALIDATION_FAILED = 'PRE_VALIDATION_FAILED',
-  VALIDATION_FAILED = 'VALIDATION_FAILED',
-  SCRAPING_FAILED = 'SCRAPING_FAILED',
-  EXTRACTION_FAILED = 'EXTRACTION_FAILED',
-  UNKNOWN_FAILED = 'UNKNOWN_FAILED',
 }
