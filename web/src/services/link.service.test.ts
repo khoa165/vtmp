@@ -1,17 +1,21 @@
 import { expect } from 'chai';
 import {
-  // JobType,
+  JobType,
   LinkStatus,
-  // JobFunction,
-  // LinkRegion,
-  // LinkProcessingFailureStage,
+  JobFunction,
+  LinkRegion,
+  LinkProcessingFailureStage,
 } from '@vtmp/common/constants';
 import { differenceInSeconds } from 'date-fns';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { LinkService } from '@/services/link.service';
 import assert from 'assert';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
-import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
+import {
+  DuplicateResourceError,
+  InternalServerError,
+  ResourceNotFoundError,
+} from '@/utils/errors';
 import { LinkRepository } from '@/repositories/link.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useSandbox } from '@/testutils/sandbox.testutil';
@@ -21,7 +25,7 @@ describe('LinkService', () => {
   const sandbox = useSandbox();
 
   const mockLinkData = {
-    originalUrl: 'google.com',
+    originalUrl: 'https://google.com',
     jobTitle: 'Software Engineer',
     companyName: 'Example Company',
     submittedBy: getNewObjectId(),
@@ -29,14 +33,14 @@ describe('LinkService', () => {
 
   const mockMultipleLinks = [
     {
-      originalUrl: 'nvida.com',
+      originalUrl: 'https://nvida.com',
       jobTitle: 'Software Engineer',
       companyName: 'Example Company',
       submittedBy: getNewObjectId(),
     },
 
     {
-      originalUrl: 'microsoft.com',
+      originalUrl: 'https://microsoft',
       jobTitle: 'Software Engineer',
       companyName: 'Example Company',
       submittedBy: getNewObjectId(),
@@ -49,18 +53,40 @@ describe('LinkService', () => {
   });
 
   describe('submitLink', () => {
-    it('should be able to create new link with expected fields', async () => {
-      const timeDiff = differenceInSeconds(new Date(), googleLink.submittedOn);
-
-      expect(googleLink.originalUrl).to.equal(mockLinkData.originalUrl);
-      expect(googleLink.status).to.equal(LinkStatus.PENDING_PROCESSING);
-      expect(timeDiff).to.lessThan(3);
-    });
-
     it('should throw error when link with same url already exists', async () => {
       await expect(
         LinkService.submitLink(mockLinkData)
       ).eventually.rejectedWith(DuplicateResourceError);
+    });
+
+    it('should throw an error if invalid enum value is passed', async () => {
+      const invalidEnumData = {
+        ...mockLinkData,
+        jobFunction: 'NOT_A_REAL_FUNCTION',
+      };
+
+      await expect(
+        LinkService.submitLink(invalidEnumData)
+      ).eventually.rejectedWith(Error);
+    });
+
+    it('should throw error if repository throws unexpected error', async () => {
+      sandbox
+        .stub(LinkRepository, 'createLink')
+        .rejects(new InternalServerError('Unexpected DB failure', {}));
+
+      await expect(
+        LinkService.submitLink(mockLinkData)
+      ).eventually.rejectedWith('Unexpected DB failure');
+    });
+
+    it('should be able to create new link with expected fields', async () => {
+      const timeDiff = differenceInSeconds(new Date(), googleLink.submittedOn);
+
+      expect(googleLink.originalUrl).to.equal(mockLinkData.originalUrl);
+      expect(googleLink.url).to.equal(mockLinkData.originalUrl);
+      expect(googleLink.status).to.equal(LinkStatus.PENDING_PROCESSING);
+      expect(timeDiff).to.lessThan(3);
     });
   });
 
@@ -134,58 +160,98 @@ describe('LinkService', () => {
     });
   });
 
-  // describe('updateLinkMetaData', () => {
-  //   const mockLinkMetaData = {
-  //     url: 'google.com',
-  //     status: LinkStatus.PENDING,
-  //     location: LinkRegion.US,
-  //     jobFunction: JobFunction.SOFTWARE_ENGINEER,
-  //     jobType: JobType.INTERNSHIP,
-  //     datePosted: new Date(),
-  //     attemptsCount: 1,
-  //     lastProcessedAt: new Date(),
-  //   };
+  describe('updateLinkMetaData', () => {
+    const mockLinkMetaData = {
+      url: 'https://google.com',
+      status: LinkStatus.PENDING_ADMIN_REVIEW,
+      failureStage: null,
+      location: LinkRegion.US,
+      jobFunction: JobFunction.SOFTWARE_ENGINEER,
+      jobType: JobType.INTERNSHIP,
+      datePosted: new Date(),
+      attemptsCount: 1,
+      lastProcessedAt: new Date(),
+    };
 
-  //   it('should throw error when link does not exist', async () => {
-  //     await expect(
-  //       LinkService.updateLinkMetaData(getNewMongoId(), mockLinkMetaData)
-  //     ).eventually.rejectedWith(ResourceNotFoundError);
-  //   });
+    it('should throw error when link does not exist', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(getNewMongoId(), mockLinkMetaData)
+      ).eventually.rejectedWith(ResourceNotFoundError);
+    });
 
-  //   it('should throw error when substatus included without status failed', async () => {
-  //     await expect(
-  //       LinkService.updateLinkMetaData(googleLink.id, {
-  //         ...mockLinkMetaData,
-  //         subStatus: LinkProcessingFailureStage.SCRAPING_FAILED,
-  //       })
-  //     ).eventually.rejectedWith(Error);
-  //   });
+    it('should throw error when substatus included without status failed', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
+        })
+      ).eventually.rejectedWith(Error);
+    });
 
-  //   it('should throw error when status failed included without substatus', async () => {
-  //     await expect(
-  //       LinkService.updateLinkMetaData(googleLink.id, {
-  //         ...mockLinkMetaData,
-  //         status: LinkStatus.FAILED,
-  //       })
-  //     ).eventually.rejectedWith(Error);
-  //   });
+    it('should throw error when status failed included with failureStage is null', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          status: LinkStatus.PIPELINE_FAILED,
+          failureStage: null, // Adding failureStage to satisfy type requirement
+        })
+      ).eventually.rejectedWith(Error);
+    });
 
-  //   it('should be able to update link metadata with status not failed', async () => {
-  //     await expect(
-  //       LinkService.updateLinkMetaData(googleLink.id, mockLinkMetaData)
-  //     ).eventually.fulfilled;
-  //   });
+    it('should throw when attemptsCount is 0 for failed status', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          status: LinkStatus.PENDING_RETRY,
+          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
+          attemptsCount: 0,
+        })
+      ).eventually.rejectedWith(Error);
+    });
 
-  //   it('should be able to update link metadata with status failed', async () => {
-  //     await expect(
-  //       LinkService.updateLinkMetaData(googleLink.id, {
-  //         subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
-  //         ...mockLinkMetaData,
-  //         status: LinkStatus.FAILED,
-  //       })
-  //     ).eventually.fulfilled;
-  //   });
-  // });
+    it('should throw when status is set to PENDING_PROCESSING', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          status: LinkStatus.PENDING_PROCESSING,
+        })
+      ).eventually.rejectedWith(Error);
+    });
+
+    it('should throw when status is set to PENDING_PROCESSING', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          status: LinkStatus.PENDING_PROCESSING,
+        })
+      ).eventually.rejectedWith(Error);
+    });
+
+    it('should throw when status is set to ADMIN_APPROVED', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          status: LinkStatus.ADMIN_APPROVED,
+        })
+      ).eventually.rejectedWith(Error);
+    });
+
+    it('should be able to update link metadata with status not failed', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, mockLinkMetaData)
+      ).eventually.fulfilled;
+    });
+
+    it('should be able to update link metadata with status failed', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          status: LinkStatus.PIPELINE_REJECTED,
+          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
+        })
+      ).eventually.fulfilled;
+    });
+  });
 
   describe('rejectLink', () => {
     it('should not throw when link exists', async () => {
@@ -220,6 +286,10 @@ describe('LinkService', () => {
         [LinkStatus.PENDING_PROCESSING]: 3,
         [LinkStatus.ADMIN_APPROVED]: 0,
         [LinkStatus.ADMIN_REJECTED]: 0,
+        [LinkStatus.PENDING_ADMIN_REVIEW]: 0,
+        [LinkStatus.PENDING_RETRY]: 0,
+        [LinkStatus.PIPELINE_FAILED]: 0,
+        [LinkStatus.PIPELINE_REJECTED]: 0,
       });
     });
 
@@ -234,6 +304,10 @@ describe('LinkService', () => {
         [LinkStatus.PENDING_PROCESSING]: 2,
         [LinkStatus.ADMIN_APPROVED]: 1,
         [LinkStatus.ADMIN_REJECTED]: 0,
+        [LinkStatus.PENDING_ADMIN_REVIEW]: 0,
+        [LinkStatus.PENDING_RETRY]: 0,
+        [LinkStatus.PIPELINE_FAILED]: 0,
+        [LinkStatus.PIPELINE_REJECTED]: 0,
       });
     });
   });

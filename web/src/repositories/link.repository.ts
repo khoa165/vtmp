@@ -21,7 +21,7 @@ export const LinkRepository = {
     session,
   }: {
     id: string;
-    status: LinkStatus;
+    status: LinkStatus.ADMIN_APPROVED | LinkStatus.ADMIN_REJECTED;
     session?: ClientSession;
   }): Promise<ILink | null> => {
     return LinkModel.findOneAndUpdate(

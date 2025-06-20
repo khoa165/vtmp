@@ -1,9 +1,9 @@
 import {
-  // JobFunction,
-  // JobType,
-  // LinkRegion,
+  JobFunction,
+  JobType,
+  LinkRegion,
   LinkStatus,
-  // LinkProcessingFailureStage,
+  LinkProcessingFailureStage,
 } from '@vtmp/common/constants';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
@@ -16,7 +16,7 @@ import { ILink } from '@/models/link.model';
 describe('LinkRepository', () => {
   useMongoDB();
   const mockLinkData = {
-    originalUrl: 'google.com',
+    originalUrl: 'https://google.com',
     jobTitle: 'Software Engineer',
     companyName: 'Example Company',
     submittedBy: getNewObjectId(),
@@ -27,7 +27,7 @@ describe('LinkRepository', () => {
     googleLink = await LinkRepository.createLink(mockLinkData);
   });
 
-  describe.only('getLinkById', () => {
+  describe('getLinkById', () => {
     it('should be able to find link by id', async () => {
       const link = await LinkRepository.getLinkById(googleLink.id);
 
@@ -40,7 +40,7 @@ describe('LinkRepository', () => {
     });
   });
 
-  describe.only('createLink', () => {
+  describe('createLink', () => {
     it('should be able to create a new link with expected fields', async () => {
       const timeDiff = differenceInSeconds(new Date(), googleLink.submittedOn);
 
@@ -50,7 +50,7 @@ describe('LinkRepository', () => {
     });
   });
 
-  describe.only('updateLinkStatus', () => {
+  describe('updateLinkStatus', () => {
     it('should throw error when link does not exist', async () => {
       const link = await LinkRepository.updateLinkStatus({
         id: getNewMongoId(),
@@ -70,69 +70,70 @@ describe('LinkRepository', () => {
     });
   });
 
-  // describe('updateLinkMetaData', () => {
-  //   const mockLinkMetaData = {
-  //     url: 'google.com',
-  //     status: LinkStatus.PENDING_ADMIN_REVIEW,
-  //     location: LinkRegion.US,
-  //     jobFunction: JobFunction.SOFTWARE_ENGINEER,
-  //     jobType: JobType.INTERNSHIP,
-  //     datePosted: new Date(),
-  //     attemptsCount: 1,
-  //     lastProcessedAt: new Date(),
-  //   };
+  describe('updateLinkMetaData', () => {
+    const mockLinkMetaData = {
+      url: 'https://google.com',
+      status: LinkStatus.PENDING_ADMIN_REVIEW,
+      failureStage: null,
+      location: LinkRegion.US,
+      jobFunction: JobFunction.SOFTWARE_ENGINEER,
+      jobType: JobType.INTERNSHIP,
+      datePosted: new Date(),
+      attemptsCount: 1,
+      lastProcessedAt: new Date(),
+    };
 
-  //   it('should throw error when link does not exist', async () => {
-  //     const link = await LinkRepository.updateLinkMetaData(
-  //       getNewMongoId(),
-  //       mockLinkMetaData
-  //     );
-  //     assert(!link);
-  //   });
+    it('should return null when link does not exist', async () => {
+      const link = await LinkRepository.updateLinkMetaData(
+        getNewMongoId(),
+        mockLinkMetaData
+      );
+      assert(!link);
+    });
 
-  //   it('should be able to update link metadata with status not failed', async () => {
-  //     const link = await LinkRepository.updateLinkMetaData(
-  //       googleLink.id,
-  //       mockLinkMetaData
-  //     );
+    it('should be able to update link metadata with status not failed', async () => {
+      const link = await LinkRepository.updateLinkMetaData(
+        googleLink.id,
+        mockLinkMetaData
+      );
 
-  //     assert(link);
-  //     expect(link).to.deep.include(mockLinkMetaData);
-  //   });
+      assert(link);
+      expect(link).to.deep.include(mockLinkMetaData);
+    });
 
-  //   it('should be able to update link metadata with status failed', async () => {
-  //     const link = await LinkRepository.updateLinkMetaData(googleLink.id, {
-  //       subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
-  //       ...mockLinkMetaData,
-  //       status: LinkStatus.FAILED,
-  //     });
+    it('should be able to update link metadata with failed status', async () => {
+      const link = await LinkRepository.updateLinkMetaData(googleLink.id, {
+        ...mockLinkMetaData,
+        status: LinkStatus.PENDING_RETRY,
+        failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
+      });
 
-  //     assert(link);
-  //     expect(link).to.deep.include({
-  //       subStatus: LinkProcessingSubStatus.SCRAPING_FAILED,
-  //       ...mockLinkMetaData,
-  //       status: LinkStatus.FAILED,
-  //     });
-  //   });
-  // });
+      assert(link);
+      expect(link).to.deep.include({
+        ...mockLinkMetaData,
+        status: LinkStatus.PENDING_RETRY,
+        failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
+      });
+    });
+  });
 
   describe('getLinkCountByStatus', () => {
-    const mockMultipleLinks = [
-      {
-        originalUrl: 'nvida.com',
-        jobTitle: 'Software Engineer',
-        companyName: 'Example Company',
-        submittedBy: getNewObjectId(),
-      },
-
-      {
-        originalUrl: 'microsoft.com',
-        jobTitle: 'Software Engineer',
-        companyName: 'Example Company',
-        submittedBy: getNewObjectId(),
-      },
-    ];
     beforeEach(async () => {
+      const mockMultipleLinks = [
+        {
+          originalUrl: 'https://nvida.com',
+          jobTitle: 'Software Engineer',
+          companyName: 'Example Company',
+          submittedBy: getNewObjectId(),
+        },
+
+        {
+          originalUrl: 'https://microsoft.com',
+          jobTitle: 'Software Engineer',
+          companyName: 'Example Company',
+          submittedBy: getNewObjectId(),
+        },
+      ];
       await Promise.all(
         mockMultipleLinks.map((link) => LinkRepository.createLink(link))
       );
@@ -142,7 +143,7 @@ describe('LinkRepository', () => {
       const counts = await LinkRepository.getLinkCountByStatus();
 
       expect(counts).to.deep.equal({
-        [LinkStatus.PENDING_PROCESSING]: 2,
+        [LinkStatus.PENDING_PROCESSING]: 3,
       });
     });
 
@@ -163,14 +164,14 @@ describe('LinkRepository', () => {
   describe('getLinks', () => {
     const mockMultipleLinks = [
       {
-        originalUrl: 'nvida.com',
+        originalUrl: 'https://nvida.com',
         jobTitle: 'Software Engineer',
         companyName: 'Example Company',
         submittedBy: getNewObjectId(),
       },
 
       {
-        originalUrl: 'microsoft.com',
+        originalUrl: 'https://microsoft.com',
         jobTitle: 'Software Engineer',
         companyName: 'Example Company',
         submittedBy: getNewObjectId(),
