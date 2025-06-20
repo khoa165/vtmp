@@ -1,14 +1,14 @@
-import { JobPostingRegion } from '@vtmp/common/constants';
-import { LinkMetaData } from '@/services/link/link.types';
+import { LinkRegion } from '@vtmp/common/constants';
+import { LinkMetaDataType } from '@/types/link.types';
 
 export const ExtractLinkMetadataService = {
-  async extractMetadata(url: string): Promise<LinkMetaData> {
+  async extractMetadata(url: string): Promise<LinkMetaDataType> {
     return Promise.resolve({
       url: url,
       jobTitle: 'Software Engineer',
       companyName: 'Tech Company',
-      location: JobPostingRegion.US,
-      datePosted: '2023-10-01',
+      location: LinkRegion.US,
+      datePosted: new Date(),
       jobDescription: 'Job description goes here.',
     });
   },

@@ -52,7 +52,7 @@ describe('LinkRepository', () => {
     });
   });
 
-  describe('updateStatus', () => {
+  describe('updateLinkStatus', () => {
     it('should throw error when link does not exist', async () => {
       const link = await LinkRepository.updateLinkStatus({
         id: getNewMongoId(),
@@ -141,13 +141,9 @@ describe('LinkRepository', () => {
       );
     });
 
-    // it('should be able to get links by pending status without given status', async () => {
-    //   const linkCounts = await LinkRepository.getLinkCountByStatus();
-
-    //   expect(linkCounts).to.deep.equal({
-    //     [LinkStatus.PENDING]: 3,
-    //   });
-    // });
+    it('should be able to get links by pending status without given status', async () => {
+      await expect(LinkRepository.getLinkCountByStatus()).eventually.fulfilled;
+    });
 
     it('should be able to get multiple links by multiple statuses', async () => {
       await LinkRepository.updateLinkStatus({

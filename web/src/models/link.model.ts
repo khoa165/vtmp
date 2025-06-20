@@ -76,6 +76,13 @@ const LinkSchema = new mongoose.Schema<ILink>(
     jobDescription: {
       type: String,
     },
+    attemptsCount: {
+      type: Number,
+      default: 0,
+    },
+    lastProcessedAt: {
+      type: Date,
+    },
     submittedBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',

@@ -11,9 +11,9 @@ import { LinkRepository } from '@/repositories/link.repository';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import {
   // LinkProcessingFailureStage,
-  // JobFunction,
+  JobFunction,
   JobPostingRegion,
-  // JobType,
+  JobType,
   // LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
@@ -190,6 +190,8 @@ describe('LinkController', () => {
           jobTitle: 'Software Engineer Intern',
           companyName: 'Example Company',
           location: JobPostingRegion.CANADA,
+          jobFunction: JobFunction.SOFTWARE_ENGINEER,
+          jobType: JobType.INTERNSHIP,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
@@ -204,7 +206,9 @@ describe('LinkController', () => {
           url: 'https://facebook.com',
           jobTitle: 'Software Engineer Intern',
           companyName: 'Example Company',
-          location: JobPostingRegion.US,
+          location: JobPostingRegion.CANADA,
+          jobFunction: JobFunction.SOFTWARE_ENGINEER,
+          jobType: JobType.INTERNSHIP,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
