@@ -37,9 +37,13 @@ export const JobPostingResponseSchema = z.object({
 export const LinksCountByStatusSchema = z.object({
   message: z.string(),
   data: z.object({
-    [LinkStatus.PENDING]: z.number(),
-    [LinkStatus.APPROVED]: z.number(),
-    [LinkStatus.REJECTED]: z.number(),
+    [LinkStatus.PENDING_PROCESSING]: z.number(),
+    [LinkStatus.PENDING_ADMIN_REVIEW]: z.number(),
+    [LinkStatus.ADMIN_APPROVED]: z.number(),
+    [LinkStatus.ADMIN_REJECTED]: z.number(),
+    [LinkStatus.PENDING_RETRY]: z.number(),
+    [LinkStatus.PIPELINE_FAILED]: z.number(),
+    [LinkStatus.PIPELINE_REJECTED]: z.number(),
   }),
 });
 
