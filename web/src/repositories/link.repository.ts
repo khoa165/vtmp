@@ -8,7 +8,10 @@ import {
 
 export const LinkRepository = {
   createLink: async (linkMetaData: LinkMetaDataType): Promise<ILink> => {
-    return LinkModel.create(linkMetaData);
+    return LinkModel.create({
+      url: linkMetaData.url,
+      originalUrl: linkMetaData.url,
+    });
   },
 
   getLinkById: async (id: string): Promise<ILink | null> => {

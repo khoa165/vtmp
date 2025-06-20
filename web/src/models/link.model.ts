@@ -1,26 +1,27 @@
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, { Document, Schema, Types, UpdateQuery } from 'mongoose';
 import {
   JobFunction,
   LinkStatus,
   JobType,
-  LinkProcessingSubStatus,
+  LinkProcessingFailureStage,
 } from '@vtmp/common/constants';
 import { LinkRegion } from '@vtmp/common/constants';
 export interface ILink extends Document {
   _id: Types.ObjectId;
   url: string;
-  status: LinkStatus;
-  subStatus?: LinkProcessingSubStatus;
+  originalUrl: string;
+  status?: LinkStatus;
+  failureStage?: LinkProcessingFailureStage;
   submittedOn: Date;
   jobTitle?: string;
   companyName?: string;
-  location: LinkRegion;
-  jobFunction: JobFunction;
-  jobType: JobType;
+  location?: LinkRegion;
+  jobFunction?: JobFunction;
+  jobType?: JobType;
   datePosted?: Date;
   jobDescription?: string;
-  attemptsCount: number;
-  lastProcessedAt: Date;
+  attemptsCount?: number;
+  lastProcessedAt?: Date;
   submittedBy?: Types.ObjectId;
   deletedAt?: Date;
 }
@@ -32,17 +33,20 @@ const LinkSchema = new mongoose.Schema<ILink>(
       required: true,
       unique: true,
     },
+    originalUrl: {
+      type: String,
+      unique: true,
+      required: true,
+    },
     status: {
       type: String,
       enum: Object.values(LinkStatus),
-      default: LinkStatus.PENDING,
+      default: LinkStatus.PENDING_PROCESSING,
+      required: true,
     },
-    subStatus: {
+    failureStage: {
       type: String,
-      enum: Object.values(LinkProcessingSubStatus),
-      required: function () {
-        return this.status === LinkStatus.FAILED;
-      },
+      enum: Object.values(LinkProcessingFailureStage),
     },
     submittedOn: {
       type: Date,
@@ -57,17 +61,14 @@ const LinkSchema = new mongoose.Schema<ILink>(
     location: {
       type: String,
       enum: Object.values(LinkRegion),
-      default: LinkRegion.OTHER,
     },
     jobFunction: {
       type: String,
       enum: Object.values(JobFunction),
-      default: JobFunction.SOFTWARE_ENGINEER,
     },
     jobType: {
       type: String,
       enum: Object.values(JobType),
-      default: JobType.INTERNSHIP,
     },
     datePosted: {
       type: Date,
@@ -93,18 +94,63 @@ const LinkSchema = new mongoose.Schema<ILink>(
   { timestamps: true }
 );
 
-LinkSchema.post('findOneAndUpdate', function (doc) {
-  if (!doc) {
-    return;
+LinkSchema.pre('findOneAndUpdate', function (next) {
+  const update = this.getUpdate() as UpdateQuery<ILink>;
+  if (!('$set' in update)) {
+    return next(new Error('Updates must use the $set operator'));
+  }
+  const status = update['$set']?.status;
+  const failureStage = update['$set']?.failureStage;
+
+  if (status === undefined || failureStage === undefined) {
+    return next(new Error('status or failureStage must be set'));
+  }
+  if (status === LinkStatus.PENDING_PROCESSING) {
+    return next(new Error('status cannot be reset to PENDING_PROCESSING'));
   }
 
-  if (doc.status === LinkStatus.FAILED && !doc.subStatus) {
-    throw new Error('FAIL status must include a subStatus');
+  const isFailed =
+    status === LinkStatus.PENDING_RETRY ||
+    status === LinkStatus.PIPELINE_FAILED ||
+    status === LinkStatus.PIPELINE_REJECTED;
+
+  if (isFailed) {
+    if (!failureStage) {
+      return next(
+        new Error(
+          'failureStage must be set when status is PENDING_RETRY, PIPELINE_FAILED, or PIPELINE_REJECTED'
+        )
+      );
+    }
+  } else {
+    if (failureStage) {
+      return next(
+        new Error(
+          'failureStage must not be set for ADMIN_APPROVED, ADMIN_REJECTED, PENDING_PROCESSING, or PENDING_ADMIN_REVIEW'
+        )
+      );
+    }
   }
 
-  if (doc.status !== LinkStatus.FAILED && doc.subStatus) {
-    throw new Error(`${doc.status} status must not include a subStatus`);
+  if (
+    status !== LinkStatus.ADMIN_APPROVED &&
+    status !== LinkStatus.ADMIN_REJECTED
+  ) {
+    const attemptsCount = update['$set']?.attemptsCount;
+    const lastProcessedAt = update['$set']?.lastProcessedAt;
+
+    if (attemptsCount === undefined) {
+      return next(new Error('attemptsCount must be set'));
+    } else if (attemptsCount <= 0) {
+      return next(new Error('attemptsCount must be greater than 0'));
+    }
+
+    if (!lastProcessedAt) {
+      return next(new Error('lastProcessedAt must be set'));
+    }
   }
+
+  next();
 });
 
 export const LinkModel = mongoose.model<ILink>('Link', LinkSchema);
