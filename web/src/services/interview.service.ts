@@ -118,4 +118,26 @@ export const InterviewService = {
 
     return deletedInterview;
   },
+
+  shareInterview: async ({
+    interviewId,
+    userId,
+  }: {
+    interviewId: string;
+    userId: string;
+  }): Promise<IInterview | null> => {
+    const sharedInterview = await InterviewRepository.shareInterview({
+      interviewId,
+      userId,
+    });
+
+    if (!sharedInterview) {
+      throw new ResourceNotFoundError('Interview not found', {
+        interviewId,
+        userId,
+      });
+    }
+
+    return sharedInterview;
+  },
 };
