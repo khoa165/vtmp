@@ -503,6 +503,121 @@ describe('InterviewService', () => {
     });
   });
 
+  describe('updateInterviewSharingStatus', () => {
+    it('should throw error if the interview does not exist', async () => {
+      await expect(
+        InterviewService.updateInterviewSharingStatus({
+          interviewId: getNewMongoId(),
+          userId: userId_A,
+          isDisclosed: true,
+        })
+      ).eventually.to.be.rejectedWith(
+        ResourceNotFoundError,
+        'Interview not found'
+      );
+    });
+
+    it('should throw error if the interview does not belong to the authorized user', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      await expect(
+        InterviewService.updateInterviewSharingStatus({
+          interviewId: interview_A0.id,
+          userId: userId_B,
+          isDisclosed: true,
+        })
+      ).eventually.to.be.rejectedWith(
+        ResourceNotFoundError,
+        'Interview not found'
+      );
+    });
+
+    it('should throw error if the interview is already soft deleted', async () => {
+      const interview_A1 =
+        await InterviewRepository.createInterview(mockInterview_A1);
+
+      await InterviewRepository.deleteInterviewById({
+        interviewId: interview_A1.id,
+        userId: userId_A,
+      });
+
+      await expect(
+        InterviewService.updateInterviewSharingStatus({
+          interviewId: interview_A1.id,
+          userId: userId_A,
+          isDisclosed: true,
+        })
+      ).eventually.to.be.rejectedWith(
+        ResourceNotFoundError,
+        'Interview not found'
+      );
+    });
+
+    it('should not update the shareAt date if the interview has been shared before', async () => {
+      const sharedDate = new Date('2025-06-07');
+
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: userId_A,
+        newUpdate: {
+          isDisclosed: true,
+          sharedAt: sharedDate,
+        },
+      });
+
+      const updatedInterview =
+        await InterviewService.updateInterviewSharingStatus({
+          interviewId: interview_A0.id,
+          userId: userId_A,
+          isDisclosed: false,
+        });
+
+      assert(updatedInterview);
+      expect(updatedInterview.isDisclosed).to.equal(false);
+      assert(updatedInterview.sharedAt);
+      expect(updatedInterview.id).to.equal(interview_A0.id);
+      expect(updatedInterview.sharedAt).to.deep.equal(sharedDate);
+    });
+
+    it('should update the interview disClose to true when unsharing an interview', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      const updatedInterview =
+        await InterviewService.updateInterviewSharingStatus({
+          interviewId: interview_A0.id,
+          userId: userId_A,
+          isShare: true,
+        });
+
+      assert(updatedInterview);
+      expect(updatedInterview.isDisclosed).to.equal(true);
+      assert(updatedInterview.sharedAt);
+      expect(updatedInterview.id).to.equal(interview_A0.id);
+    });
+
+    it('should update the interview sharing status successfully', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      const updatedInterview =
+        await InterviewService.updateInterviewSharingStatus({
+          interviewId: interview_A0.id,
+          userId: userId_A,
+          isDisclosed: false,
+        });
+
+      assert(updatedInterview);
+      expect(updatedInterview.isDisclosed).to.equal(false);
+      assert(updatedInterview.sharedAt);
+      expect(updatedInterview.id).to.equal(interview_A0.id);
+    });
+  });
+
   describe('deleteInterviewById', () => {
     it('should throw error of the interview does not exists', async () => {
       await expect(

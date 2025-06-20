@@ -20,7 +20,7 @@ InterviewRoutes.get(
   '/by-company',
   wrappedHandlers([
     hasPermission(Permission.VIEW_INTERVIEW),
-    InterviewController.getInterviewsByCompanyName,
+    InterviewController.getSharedInterviews,
   ])
 );
 InterviewRoutes.get(
@@ -55,18 +55,26 @@ InterviewRoutes.put(
   ])
 );
 
+InterviewRoutes.put(
+  '/share/:interviewId',
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_INTERVIEW),
+    InterviewController.shareInterview,
+  ])
+);
+
+InterviewRoutes.put(
+  '/unshare/:interviewId',
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_INTERVIEW),
+    InterviewController.unshareInterview,
+  ])
+);
+
 InterviewRoutes.delete(
   '/:interviewId',
   wrappedHandlers([
     hasPermission(Permission.MANAGE_INTERVIEW),
     InterviewController.deleteInterviewById,
-  ])
-);
-
-InterviewRoutes.post(
-  '/share/:interviewId',
-  wrappedHandlers([
-    hasPermission(Permission.MANAGE_INTERVIEW),
-    InterviewController.shareInterview,
   ])
 );

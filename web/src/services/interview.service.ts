@@ -70,11 +70,11 @@ export const InterviewService = {
   updateInterviewById: async ({
     interviewId,
     userId,
-    updatedMetadata,
+    newUpdate,
   }: {
     interviewId: string;
     userId: string;
-    updatedMetadata: {
+    newUpdate: {
       types?: InterviewType[];
       status?: InterviewStatus;
       interviewOnDate?: Date;
@@ -84,7 +84,7 @@ export const InterviewService = {
     const updatedInterview = await InterviewRepository.updateInterviewById({
       interviewId,
       userId,
-      updatedMetadata,
+      newUpdate,
     });
 
     if (!updatedInterview) {
@@ -95,6 +95,60 @@ export const InterviewService = {
     }
 
     return updatedInterview;
+  },
+
+  updateInterviewSharingStatus: async ({
+    interviewId,
+    userId,
+    isDisclosed,
+    isShare = true,
+  }: {
+    interviewId: string;
+    userId: string;
+    isDisclosed?: boolean;
+    isShare?: boolean;
+  }): Promise<IInterview | null> => {
+    const interview = await InterviewRepository.getInterviewById({
+      interviewId,
+      userId,
+    });
+
+    if (!interview) {
+      throw new ResourceNotFoundError('Interview not found', {
+        interviewId,
+        userId,
+      });
+    }
+
+    if (isShare) {
+      if (interview.sharedAt) {
+        return await InterviewRepository.updateInterviewById({
+          interviewId,
+          userId,
+          newUpdate: {
+            isDisclosed: isDisclosed,
+          },
+        });
+      } else {
+        return await InterviewRepository.updateInterviewSharing({
+          interviewId,
+          userId,
+          shareOptions: {
+            isDisclosed: isDisclosed,
+            sharedAt: new Date(),
+          },
+        });
+      }
+    } else {
+      return await InterviewRepository.updateInterviewSharing({
+        interviewId,
+        userId,
+        shareOptions: {
+          isDisclosed: true,
+          sharedAt: null,
+        },
+      });
+    }
   },
 
   deleteInterviewById: async ({
@@ -117,27 +171,5 @@ export const InterviewService = {
     }
 
     return deletedInterview;
-  },
-
-  shareInterview: async ({
-    interviewId,
-    userId,
-  }: {
-    interviewId: string;
-    userId: string;
-  }): Promise<IInterview | null> => {
-    const sharedInterview = await InterviewRepository.shareInterview({
-      interviewId,
-      userId,
-    });
-
-    if (!sharedInterview) {
-      throw new ResourceNotFoundError('Interview not found', {
-        interviewId,
-        userId,
-      });
-    }
-
-    return sharedInterview;
   },
 };

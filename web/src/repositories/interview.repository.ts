@@ -105,20 +105,22 @@ export const InterviewRepository = {
   updateInterviewById: async ({
     interviewId,
     userId,
-    updatedMetadata,
+    newUpdate,
   }: {
     interviewId: string;
     userId: string;
-    updatedMetadata: {
+    newUpdate: {
       types?: InterviewType[];
       status?: InterviewStatus;
       interviewOnDate?: Date;
       note?: string;
+      isDisclosed?: boolean;
+      sharedAt?: Date | null;
     };
   }): Promise<IInterview | null> => {
     return InterviewModel.findOneAndUpdate(
       { _id: interviewId, userId, deletedAt: null },
-      { $set: updatedMetadata },
+      { $set: newUpdate },
       { new: true }
     );
   },
@@ -159,19 +161,23 @@ export const InterviewRepository = {
     );
   },
 
-  shareInterview: async ({
+  updateInterviewSharing: async ({
     interviewId,
     userId,
+    shareOptions,
   }: {
     interviewId: string;
     userId: string;
+    shareOptions: {
+      isDisclosed?: boolean;
+      sharedAt?: Date | null;
+    };
   }): Promise<IInterview | null> => {
     return InterviewModel.findOneAndUpdate(
       { _id: interviewId, userId, deletedAt: null },
       {
         $set: {
-          isDisclosed: true,
-          sharedAt: new Date(),
+          ...shareOptions,
         },
       },
       { new: true }

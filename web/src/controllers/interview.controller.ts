@@ -99,6 +99,17 @@ const AdminInterviewFilter = z
     )
   );
 
+const shareInterviewSchema = z
+  .object({
+    isDisclosed: z.boolean().optional(),
+  })
+  .strict()
+  .transform((data) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
+  );
+
 export const InterviewController = {
   createInterview: async (req: Request, res: Response) => {
     const userId = getUserFromRequest(req).user.id;
@@ -169,12 +180,12 @@ export const InterviewController = {
   updateInterviewById: async (req: Request, res: Response) => {
     const { interviewId } = InterviewIdParamsSchema.parse(req.params);
     const userId = getUserFromRequest(req).user.id;
-    const updatedMetadata = InterviewUpdateSchema.parse(req.body);
+    const newUpdate = InterviewUpdateSchema.parse(req.body);
 
     const updatedInterview = await InterviewService.updateInterviewById({
       interviewId,
       userId,
-      updatedMetadata,
+      newUpdate,
     });
 
     res.status(200).json({
@@ -200,15 +211,37 @@ export const InterviewController = {
 
   shareInterview: async (req: Request, res: Response) => {
     const { interviewId } = InterviewIdParamsSchema.parse(req.params);
+    const { isDisclosed } = shareInterviewSchema.parse(req.body);
     const userId = getUserFromRequest(req).user.id;
 
-    const sharedInterview = await InterviewService.shareInterview({
-      interviewId,
-      userId,
-    });
+    const sharedInterview = await InterviewService.updateInterviewSharingStatus(
+      {
+        interviewId,
+        userId,
+        isDisclosed,
+      }
+    );
 
     res.status(200).json({
       message: 'Interview shared successfully',
+      data: sharedInterview,
+    });
+  },
+
+  unshareInterview: async (req: Request, res: Response) => {
+    const { interviewId } = InterviewIdParamsSchema.parse(req.params);
+    const userId = getUserFromRequest(req).user.id;
+
+    const sharedInterview = await InterviewService.updateInterviewSharingStatus(
+      {
+        interviewId,
+        userId,
+        isShare: false,
+      }
+    );
+
+    res.status(200).json({
+      message: 'Interview unshared successfully',
       data: sharedInterview,
     });
   },
