@@ -74,10 +74,14 @@ export const EventBodySchema = z.object({
 export type SubmittedLink = z.infer<typeof SubmittedLinkSchema>;
 
 /**
- * Output from link validator service are 2 arrays: validatedLinks[] and failedLinks[]
+ * Output from link validator service are 2 arrays: `validatedLinks[]` and `failedLinks[]`
+ *
  * Type of each element of validatedLinks is: ValidatedLink
+ *
  * Type of each element of failedValidationLinks is: FailedProcessedLink
+ *
  * At all stage, in the failedValidationLinks, failedScrapingLinks, failedMetadataExtractionLinks, each element have type FailedProcessedLink
+ *
  * The type ValidatedLink is also type of each element in the input array to the next WebScrapingService.scrapeLinks
  */
 
@@ -95,10 +99,13 @@ export interface FailedProcessedLink {
 }
 
 /**
- * WebScrapingService.scrapeLinks receive and array named validatedLinks: ValidatedLink[]
+ * WebScrapingService.scrapeLinks receive and array named validatedLinks: `ValidatedLink[]`
+ *
  * WebScrapingService.scrapeLinks returns an object of 2 fields:
+ *
  * - scrapedLinks: ScrapedLink[]
  * - failedScrapingLinks: FailedProcessedLink[]
+ *
  * The type ScrapedLink is also type of each element in the input array to the next ExtractLinkMetadataService.extractMetadata
  */
 
@@ -109,7 +116,8 @@ export interface ScrapedLink {
 }
 
 /**
- * ExtractLinkMetadataService.extractMetadata receive and array named scrapedLinks: ScrapedLink[]
+ * ExtractLinkMetadataService.extractMetadata receive and array named scrapedLinks:` ScrapedLink[]`
+ *
  * ExtractLinkMetadataService.extractMetadata returns an object of 2 fields:
  * - metadataExtractedLinks: MetadataExtractedLink[]
  * - failedMetadataExtractionLinks: FailedProcessedLink[]

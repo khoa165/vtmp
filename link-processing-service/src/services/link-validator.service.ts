@@ -232,4 +232,4 @@ const LinkValidatorService = {
   },
 };
 
-export { LinkValidatorService, ValidatedLink as ValidationResult };
+export { LinkValidatorService };
