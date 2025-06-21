@@ -16,6 +16,7 @@ const webConfigSchema = z.object({
   VTMP_WEB_URL: z.string(),
   SEED_ENV: z.nativeEnum(Environment).default(Environment.DEV),
   LAMBDA_URL: z.string(),
+  NODE_ENV: z.nativeEnum(Environment).default(Environment.DEV),
 });
 
 export const EnvConfig = {

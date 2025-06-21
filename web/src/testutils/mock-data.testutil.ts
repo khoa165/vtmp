@@ -11,4 +11,5 @@ export const MOCK_ENV = {
   VTMP_WEB_URL: 'viettechmentorship.com',
   SEED_ENV: Environment.DEV,
   LAMBDA_URL: 'https://lambda-url.on.aws',
+  NODE_ENV: Environment.DEV,
 };
