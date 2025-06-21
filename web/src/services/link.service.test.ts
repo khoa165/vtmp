@@ -1,4 +1,8 @@
 import { expect } from 'chai';
+import { differenceInSeconds } from 'date-fns';
+
+import assert from 'assert';
+
 import {
   JobType,
   LinkStatus,
@@ -6,20 +10,20 @@ import {
   LinkRegion,
   LinkProcessingFailureStage,
 } from '@vtmp/common/constants';
-import { differenceInSeconds } from 'date-fns';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
+
+import { ILink } from '@/models/link.model';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { LinkRepository } from '@/repositories/link.repository';
 import { LinkService } from '@/services/link.service';
-import assert from 'assert';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
 import {
   DuplicateResourceError,
   InternalServerError,
   ResourceNotFoundError,
 } from '@/utils/errors';
-import { LinkRepository } from '@/repositories/link.repository';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import { ILink } from '@/models/link.model';
+
 describe('LinkService', () => {
   useMongoDB();
   const sandbox = useSandbox();
@@ -179,7 +183,7 @@ describe('LinkService', () => {
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
-    it('should throw error when substatus included without status failed', async () => {
+    it('should throw error when failure stage included without status failed', async () => {
       await expect(
         LinkService.updateLinkMetaData(googleLink.id, {
           ...mockLinkMetaData,

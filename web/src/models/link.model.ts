@@ -5,7 +5,8 @@ import {
   LinkStatus,
   JobType,
   LinkProcessingFailureStage,
- LinkRegion } from '@vtmp/common/constants';
+  LinkRegion,
+} from '@vtmp/common/constants';
 
 import { InternalServerError } from '@/utils/errors';
 
@@ -66,14 +67,17 @@ const LinkSchema = new mongoose.Schema<ILink>(
     location: {
       type: String,
       enum: Object.values(LinkRegion),
+      default: LinkRegion.UNKNOWN,
     },
     jobFunction: {
       type: String,
       enum: Object.values(JobFunction),
+      default: JobFunction.UNKNOWN,
     },
     jobType: {
       type: String,
       enum: Object.values(JobType),
+      default: JobType.UNKNOWN,
     },
     datePosted: {
       type: Date,

@@ -1,16 +1,17 @@
-import { ILink, LinkModel } from '@/models/link.model';
 import { faker } from '@faker-js/faker';
+
 import {
   CompanyName,
   LinkProcessingFailureStage,
   LinkRegion,
-} from '@vtmp/common/constants';
-import { LinkStatus } from '@vtmp/common/constants';
+ LinkStatus , JobTitle } from '@vtmp/common/constants';
 import { formatEnumName } from '@vtmp/common/utils';
-import { JobTitle } from '@vtmp/common/constants';
+
+import { ILink, LinkModel } from '@/models/link.model';
+
 export const loadLinks = async (count: number): Promise<ILink[]> => {
   const newLinks = Array.from({ length: count }, () => ({
-    url: faker.internet.url(),
+    originalUrl: faker.internet.url(),
     companyName: formatEnumName(faker.helpers.enumValue(CompanyName)),
     jobTitle: formatEnumName(faker.helpers.enumValue(JobTitle)),
     datePosted: faker.date.recent({ days: 90 }),
@@ -26,7 +27,7 @@ export const loadLinks = async (count: number): Promise<ILink[]> => {
         link.status === LinkStatus.PIPELINE_REJECTED;
       return isFailed
         ? {
-            subStatus: faker.helpers.enumValue(LinkProcessingFailureStage),
+            failureStage: faker.helpers.enumValue(LinkProcessingFailureStage),
             ...link,
             lastProcessedAt: new Date(new Date().getTime() - 30 * 60 * 1000),
           }

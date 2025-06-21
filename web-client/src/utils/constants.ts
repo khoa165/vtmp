@@ -174,18 +174,23 @@ export enum Method {
   DELETE = 'DELETE',
 }
 
-export const StatusToColorMapping: Record<
-  ApplicationStatus | LinkStatus,
-  string
-> = {
+export const StatusToColorMapping: Record<ApplicationStatus, string> = {
   [ApplicationStatus.SUBMITTED]: 'bg-[#A2BFF0]',
   [ApplicationStatus.OA]: 'bg-[#F49DFF]',
   [ApplicationStatus.INTERVIEWING]: 'bg-[#F8FF6A]',
   [ApplicationStatus.OFFERED]: 'bg-[#A3F890]',
   [ApplicationStatus.WITHDRAWN]: 'bg-[#CAAB94]',
   [ApplicationStatus.REJECTED]: 'bg-[#FEB584]',
-  [LinkStatus.PENDING]: 'bg-[#A2BFF0]',
-  [LinkStatus.APPROVED]: 'bg-[#A3F890]',
+};
+
+export const LinksColorMapping: Record<LinkStatus, string> = {
+  [LinkStatus.PENDING_PROCESSING]: 'bg-[#F49DFF]',
+  [LinkStatus.ADMIN_APPROVED]: 'bg-[#A3F890]',
+  [LinkStatus.ADMIN_REJECTED]: 'bg-[#FEB584]',
+  [LinkStatus.PENDING_ADMIN_REVIEW]: 'bg-[#66FFCC]',
+  [LinkStatus.PENDING_RETRY]: 'bg-[#F8FF6A]',
+  [LinkStatus.PIPELINE_FAILED]: 'bg-[#A2BFF0]',
+  [LinkStatus.PIPELINE_REJECTED]: 'bg-[#CAAB94]',
 };
 
 export const InvitationStatusToColorMapping: Record<InvitationStatus, string> =

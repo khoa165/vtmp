@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import {
   LinkProcessingFailureStage,
   JobFunction,
@@ -7,8 +8,9 @@ import {
   LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
-import { filterUndefinedAttributes } from '@/utils/helpers';
+
 import { MONGO_OBJECT_ID_REGEX } from '@/constants/validations';
+import { filterUndefinedAttributes } from '@/utils/helpers';
 
 export const LinkMetaDataSchema = z.object({
   originalUrl: z
@@ -52,7 +54,7 @@ export const ExtractionLinkMetaDataSchema = z.object({
     .optional(),
   jobFunction: z
     .nativeEnum(JobFunction, {
-      message: 'Invalid job title',
+      message: 'Invalid job function',
     })
     .optional(),
   jobType: z
@@ -93,12 +95,20 @@ export const JobPostingDataSchema = z
     location: z.nativeEnum(JobPostingRegion, {
       message: 'Invalid location',
     }),
-    jobFunction: z.nativeEnum(JobFunction, {
-      message: 'Invalid job title',
-    }),
-    jobType: z.nativeEnum(JobType, {
-      message: 'Invalid job type',
-    }),
+    jobFunction: z
+      .nativeEnum(JobFunction, {
+        message: 'Invalid job function',
+      })
+      .refine((val) => val !== JobFunction.UNKNOWN, {
+        message: 'Job function cannot be UNKNOWN',
+      }),
+    jobType: z
+      .nativeEnum(JobType, {
+        message: 'Invalid job type',
+      })
+      .refine((val) => val !== JobType.UNKNOWN, {
+        message: 'Job type cannot be UNKNOWN',
+      }),
     datePosted: z
       .string()
       .transform((str) => new Date(str))
