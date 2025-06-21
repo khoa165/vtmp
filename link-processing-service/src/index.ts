@@ -11,7 +11,7 @@ import {
   UpdateLinkPayload,
 } from '@/services/link-metadata-validation';
 
-const buildSucceeddedLinksUpdatePayloads = (
+const buildSuccessfulLinksPayloads = (
   processedResults: MetadataExtractedLink[]
 ): {
   linkId: string;
@@ -19,9 +19,8 @@ const buildSucceeddedLinksUpdatePayloads = (
   updatePayload: UpdateLinkPayload;
 }[] => {
   return processedResults.map((result) => {
-    // destructure to take out originalRequest and extractedMetadata
-    const { originalRequest, extractedMetadata, ...rest } = result;
-    // Flatten, attach lastProcessedAt, and add attemptsCount
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { originalRequest, extractedMetadata, scrapedText, ...rest } = result;
     const flattenResult = {
       ...rest,
       ...extractedMetadata,
@@ -29,7 +28,6 @@ const buildSucceeddedLinksUpdatePayloads = (
       lastProcessedAt: new Date().toISOString(),
     };
 
-    // Increment attempsCount
     flattenResult.attemptsCount += 1;
 
     const { _id, originalUrl, ...updatePayload } = flattenResult;
@@ -37,7 +35,7 @@ const buildSucceeddedLinksUpdatePayloads = (
   });
 };
 
-const buildFailedLinksUpdatePayloads = (
+const buildFailedLinksPayloads = (
   processedResults: FailedProcessedLink[]
 ): {
   linkId: string;
@@ -45,17 +43,14 @@ const buildFailedLinksUpdatePayloads = (
   updatePayload: UpdateLinkPayload;
 }[] => {
   return processedResults.map((result) => {
-    // destructure to take out error and scrapedText
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { originalRequest, scrapedText, error, ...rest } = result;
-    // Flatten, attach lastProcessedAt, and add attemptsCount
     const flattenResult = {
       ...rest,
       ...originalRequest,
       lastProcessedAt: new Date().toISOString(),
     };
 
-    // Increment attempsCount
     flattenResult.attemptsCount += 1;
 
     const { _id, originalUrl, ...updatePayload } = flattenResult;
@@ -67,20 +62,16 @@ const lambdaHandler = async (
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyResult> => {
   const { linksData } = EventBodySchema.parse(event.body);
-  const { succeededLinks, failedLinks } =
+  const { successfulLinks, failedLinks } =
     await LinkProcessorService.processLinks(linksData);
 
-  console.log('Succeeded links: ', succeededLinks);
-  console.log('Failed links: ', failedLinks);
-
-  // Need to deal with case when updateLink throws?
-  const updateSucceededLinksPayloads =
-    buildSucceeddedLinksUpdatePayloads(succeededLinks);
-  const updateFailedLinksPayloads = buildFailedLinksUpdatePayloads(failedLinks);
+  const successfulLinksPayloads = buildSuccessfulLinksPayloads(successfulLinks);
+  const failedLinksPayloads = buildFailedLinksPayloads(failedLinks);
   const allUpdateLinksPayloads = [
-    ...updateSucceededLinksPayloads,
-    ...updateFailedLinksPayloads,
+    ...successfulLinksPayloads,
+    ...failedLinksPayloads,
   ];
+
   await Promise.all(
     allUpdateLinksPayloads.map(
       async ({ linkId, originalUrl, updatePayload }) => {
@@ -95,7 +86,7 @@ const lambdaHandler = async (
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ succeededLinks, failedLinks }),
+    body: JSON.stringify({ successfulLinks, failedLinks }),
   };
 };
 

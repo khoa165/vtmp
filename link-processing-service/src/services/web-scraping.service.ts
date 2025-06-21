@@ -38,36 +38,31 @@ const _shouldLongRetry = (attempsCount: number) => {
 
 export const WebScrapingService = {
   scrapeLinks: async (
-    linksData: ValidatedLink[]
+    validatedLinks: ValidatedLink[]
   ): Promise<{
     scrapedLinks: ScrapedLink[];
     failedScrapingLinks: FailedProcessedLink[];
   }> => {
-    // Get all the validated urls
-    const urls = linksData.map((linkData) => linkData.url);
-    // Launch a browser instance
+    // Get all the urls for logging
+    const urls = validatedLinks.map((linkData) => linkData.url);
+    // Open only 1 Chrominum browser process
     const browser = await _launchBrowserInstance();
     try {
       const scrapedLinks: ScrapedLink[] = [];
       const failedScrapingLinks: FailedProcessedLink[] = [];
       const results = await Promise.all(
-        linksData.map(async (linkData) => {
+        validatedLinks.map(async (validatedLink) => {
           // Open a new tab
           const page = await browser.newPage();
           try {
-            const scrapedText = await _scrapeWebpage(page, linkData.url);
-            return { ...linkData, scrapedText };
+            const scrapedText = await _scrapeWebpage(page, validatedLink.url);
+            return { ...validatedLink, scrapedText };
           } catch (error: unknown) {
-            // At failfure stage, need to add fields like status, failureStage
-            // For `status`, it is particularly important because we need to determine whether it is:
-            // LinkStatus.PENDING_RETRY => if attemptsCount < 3 (or some const number)
-            // LinkStatus.PIPELINE_FAILED => if attemptsCount == 3 (or some const number)
-
             logError(error);
 
-            if (_shouldLongRetry(linkData.originalRequest.attemptsCount)) {
+            if (_shouldLongRetry(validatedLink.originalRequest.attemptsCount)) {
               return {
-                ...linkData,
+                ...validatedLink,
                 status: LinkStatus.PENDING_RETRY,
                 failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
                 error,
@@ -75,7 +70,7 @@ export const WebScrapingService = {
             }
 
             return {
-              ...linkData,
+              ...validatedLink,
               status: LinkStatus.PIPELINE_FAILED,
               failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
               error,
@@ -86,7 +81,7 @@ export const WebScrapingService = {
         })
       );
 
-      // Now, split the results into scrapedLinks and failedScrapingLinks
+      // Sort the results into scrapedLinks and failedScrapingLinks
       for (const result of results) {
         if ('error' in result) {
           failedScrapingLinks.push(result);

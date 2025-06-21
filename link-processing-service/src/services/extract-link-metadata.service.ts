@@ -23,7 +23,7 @@ import {
   LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
-import { mapStringToEnum } from '@/helpers/link.helpers';
+import { stringToEnumValue } from '@/helpers/link.helpers';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
@@ -45,6 +45,7 @@ const generateMetadata = async (
   url: string
 ): Promise<ExtractedLinkMetadata> => {
   const genAI = await getGoogleGenAI();
+  // const prompt = await buildPrompt(text);
   const prompt = await buildPrompt(text);
 
   const response: GenerateContentResponse = await genAI.models.generateContent({
@@ -52,41 +53,36 @@ const generateMetadata = async (
     contents: prompt,
   });
 
-  // Get raw response from AI
+  // Get raw response from Gemini
   const rawAIResponse = response.text?.replace(/```json|```/g, '').trim();
   if (!rawAIResponse)
     throw new AIResponseEmptyError('AI response was empty', { urls: [url] });
-
-  // JSON.parse it to convert to JS object if it is not null/undefined
+  // JSON.parse it to convert to JS object
   const parsedAIResponse = parseJson(rawAIResponse, url);
-
-  // Validate it against zod schema
+  // Validate against zod schema
   const validatedAIResponse = RawAIResponseSchema.parse(parsedAIResponse);
 
   // Convert from string to Typescript enum, had to use a separate helper function
-  const formattedLinkMetaData = {
+  const formattedLinkMetadata = {
     jobTitle: validatedAIResponse.jobTitle,
     companyName: validatedAIResponse.companyName,
-    location: mapStringToEnum({
+    location: stringToEnumValue({
+      stringValue: validatedAIResponse.location,
       enumObject: LinkRegion,
-      value: validatedAIResponse.location,
-      fallback: LinkRegion.OTHER,
     }),
-    jobFunction: mapStringToEnum({
+    jobFunction: stringToEnumValue({
+      stringValue: validatedAIResponse.jobFunction,
       enumObject: JobFunction,
-      value: validatedAIResponse.jobFunction,
-      fallback: JobFunction.SOFTWARE_ENGINEER,
     }),
-    jobType: mapStringToEnum({
+    jobType: stringToEnumValue({
+      stringValue: validatedAIResponse.jobType,
       enumObject: JobType,
-      value: validatedAIResponse.jobType,
-      fallback: JobType.INDUSTRY,
     }),
     datePosted: validatedAIResponse.datePosted,
     jobDescription: formatJobDescription(validatedAIResponse.jobDescription),
   };
 
-  return ExtractedLinkMetadataSchema.parse(formattedLinkMetaData);
+  return ExtractedLinkMetadataSchema.parse(formattedLinkMetadata);
 };
 
 const _shouldLongRetry = (attempsCount: number) => {
@@ -104,7 +100,7 @@ export const ExtractLinkMetadataService = {
     metadataExtractedLinks: MetadataExtractedLink[];
     failedMetadataExtractionLinks: FailedProcessedLink[];
   }> => {
-    // Get all the urls for logging purposes
+    // Get all the urls for logging
     const urls = scrapedLinks.map((scrapedLink) => scrapedLink.url);
     try {
       const metadataExtractedLinks: MetadataExtractedLink[] = [];
@@ -120,7 +116,7 @@ export const ExtractLinkMetadataService = {
               ...link,
               extractedMetadata,
               status: LinkStatus.PENDING_ADMIN_REVIEW,
-              failureStage: null,
+              failureStage: null, // Update failureStage to null to clear any previous failureStage value
             };
           } catch (error: unknown) {
             logError(error);
@@ -144,7 +140,7 @@ export const ExtractLinkMetadataService = {
         })
       );
 
-      // Now split results into metadataExtractedLinks and failedMetadataExtractionLinks
+      // Sort results into metadataExtractedLinks and failedMetadataExtractionLinks
       for (const result of results) {
         if ('error' in result) {
           failedMetadataExtractionLinks.push(result);

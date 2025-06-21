@@ -10,6 +10,28 @@ import { z } from 'zod';
 /**
  * These schema are specifically for zod validation at AI metadata extraction stage
  */
+const RawJobDescriptionSchema = z
+  .object({
+    responsibility: z.string().optional(),
+    requirement: z.string().optional(),
+    preferred: z.string().optional(),
+  })
+  .strict();
+
+export const RawAIResponseSchema = z
+  .object({
+    jobTitle: z.string().optional(),
+    companyName: z.string().optional(),
+    location: z.string().optional(),
+    jobFunction: z.string().optional(),
+    jobType: z.string().optional(),
+    datePosted: z.string().optional(),
+    jobDescription: RawJobDescriptionSchema.optional(),
+  })
+  .strict();
+
+export type RawAIResponse = z.infer<typeof RawAIResponseSchema>;
+
 export const ExtractedLinkMetadataSchema = z
   .object({
     jobTitle: z.string().optional(),
@@ -32,31 +54,14 @@ export const ExtractedLinkMetadataSchema = z
     datePosted: z.string().optional(),
     jobDescription: z.string().optional(),
   })
-  .strict();
+  .strict()
+  .transform((data) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
+  );
 
 export type ExtractedLinkMetadata = z.infer<typeof ExtractedLinkMetadataSchema>;
-
-export const RawJobDescriptionSchema = z
-  .object({
-    responsibility: z.string().optional(),
-    requirement: z.string().optional(),
-    preferred: z.string().optional(),
-  })
-  .strict();
-
-export const RawAIResponseSchema = z
-  .object({
-    jobTitle: z.string().optional(),
-    companyName: z.string().optional(),
-    location: z.string().optional(),
-    jobFunction: z.string().optional(),
-    jobType: z.string().optional(),
-    datePosted: z.string().optional(),
-    jobDescription: RawJobDescriptionSchema,
-  })
-  .strict();
-
-export type RawAIResponse = z.infer<typeof RawAIResponseSchema>;
 
 /**
  * These schemas and types are to check link object that was just sent to Lambda
@@ -78,20 +83,12 @@ export type SubmittedLink = z.infer<typeof SubmittedLinkSchema>;
  * Type of each element of validatedLinks is: ValidatedLink
  * Type of each element of failedValidationLinks is: FailedProcessedLink
  * At all stage, in the failedValidationLinks, failedScrapingLinks, failedMetadataExtractionLinks, each element have type FailedProcessedLink
- * The type ValidatedLink is also type of each element in the input array to the next WebScrapingService.scrapeLinks
+ * The type ValidatedLink is also type of each element in the input array to the next WebScrapingService.scrapeLinks()
  */
 
 export interface ValidatedLink {
   originalRequest: SubmittedLink;
   url: string;
-}
-export interface FailedProcessedLink {
-  originalRequest: SubmittedLink;
-  url?: string;
-  scrapedText?: string;
-  status: LinkStatus;
-  failureStage: LinkProcessingFailureStage;
-  error: unknown;
 }
 
 /**
@@ -118,9 +115,19 @@ export interface ScrapedLink {
 export interface MetadataExtractedLink {
   originalRequest: SubmittedLink;
   url: string;
+  scrapedText: string;
   extractedMetadata: ExtractedLinkMetadata;
   status: LinkStatus;
   failureStage: null;
+}
+
+export interface FailedProcessedLink {
+  originalRequest: SubmittedLink;
+  url?: string;
+  scrapedText?: string;
+  status: LinkStatus;
+  failureStage: LinkProcessingFailureStage;
+  error: unknown;
 }
 
 export interface UpdateLinkPayload {

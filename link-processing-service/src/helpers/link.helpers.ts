@@ -1,10 +1,10 @@
 import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
 
-const formatJobDescription = (description: {
+export const formatJobDescription = (description?: {
   responsibility?: string | undefined;
   requirement?: string | undefined;
   preferred?: string | undefined;
-}): string => {
+}): string | undefined => {
   const formatSection = (title: string, content: string) => {
     const lines = content
       .replace(/\n\n/g, '\n')
@@ -14,74 +14,63 @@ const formatJobDescription = (description: {
   };
 
   let result = '';
-
-  if (description.responsibility) {
+  if (description && description.responsibility) {
     result += formatSection('Responsibilities', description.responsibility);
   }
-
-  if (description.requirement) {
+  if (description && description.requirement) {
     result += '\n' + formatSection('Requirements', description.requirement);
   }
-
-  if (description.preferred) {
+  if (description && description.preferred) {
     result +=
       '\n' + formatSection('Preferred Qualifications', description.preferred);
   }
 
-  return result.length > 0 ? '\n' + result.trim() : '';
+  return result.length > 0 ? '\n' + result.trim() : undefined;
 };
 
-export const mapStringToEnum = <T extends Record<string, string>>({
+export const stringToEnumValue = <T extends Record<string, string>>({
+  stringValue,
   enumObject,
-  value,
-  fallback,
 }: {
+  stringValue: string | undefined;
   enumObject: T;
-  value: string | undefined;
-  fallback: T[keyof T];
-}): T[keyof T] => {
-  const match = Object.values(enumObject).find((v) => v === value);
-  if (!match) {
-    return fallback;
-  }
+}): T[keyof T] | undefined => {
+  if (!stringValue) return undefined;
+  const match = Object.values(enumObject).find((v) => v === stringValue);
   return match as T[keyof T];
 };
 
-const buildPrompt = (extractedText: string): string => `
+export const buildPrompt = (extractedText: string): string => `
 ${extractedText}
 \n\n
 You are given a raw text of a job posting. Extract the following structured fields from it:
 
-jobTitle: The title of the job. It is usually located near the top of the posting, typically above or near the "Apply" section.
-
-companyName: The name of the company offering the job. It is usually listed near the job title.
-
-location: Choose the best match from this list: ${Object.values(LinkRegion).join(', ')}. If none are a good fit, return "OTHER".
-
-jobFunction: Choose the best match from this list: ${Object.values(JobFunction).join(', ')}. If none are a good fit, return "SOFTWARE_ENGINEER".
-
-jobType: Choose from: ${Object.values(JobType).join(', ')}. Use the following rules:
-- If the job title or description includes "Intern", "Co-op", "Program", or "Apprenticeship", return "INTERNSHIP".
-- If it includes "New Grad", "Entry-Level", or "Early Career", return "NEW_GRAD".
-- Otherwise, return "INDUSTRY".
-
-datePosted: The date the job was posted. If unavailable, return an empty string. If available, format as MM/DD/YYYY.
-
-jobDescription: Extract and structure the content into the following Markdown fields:
-- responsibility: List the main responsibilities or duties of the role.
-- requirement: List the required qualifications, skills, or experience.
-- preferred: List any preferred qualifications.
-
-Strategy:
-- First, find the main body of the job posting text.
-- Look for an “Apply” section or similar phrases like “Apply Now” or “Submit Application.” Job title and company are typically located just above this.
-- The job description, including responsibilities and requirements, is generally located below.
-
-**Important:**
-- If any of the above fields are not available in the input, do not include them in the returned object.
+**General Instructions:**
+- Extract the following fields if available. If a field is not present in the text, omit it entirely from the output JSON.
 - Do not explain your answer.
-- Return only a single JSON object, with no extra text, markdown, or code block formatting.
+- Output only a single, minified JSON object. Do not include markdown, comments, or extra text.
 - Field names must match exactly as shown below.
+
+**Field definitions:**
+- jobTitle: The title of the job, usually near the top above or near the "Apply" section.
+- companyName: The company offering the job, usually near the job title.
+- location: Choose the best match from: ${Object.values(LinkRegion).join(', ')}. If none fit, use "OTHER".
+- jobFunction: Choose the best match from: ${Object.values(JobFunction).join(', ')}. If none closely match, omit the "jobFunction" field entirely from the output.
+- jobType: Choose from: ${Object.values(JobType).join(', ')}. Use these rules:
+  - If the job title or description includes "Intern", "Co-op", "Program", or "Apprenticeship", use "INTERNSHIP".
+  - If it includes "New Grad", "Entry-Level", or "Early Career", use "NEW_GRAD".
+  - Otherwise, use "INDUSTRY".
+- datePosted: The date the job was posted. If unavailable, omit this field. If available, format as MM/DD/YYYY.
+- jobDescription: Structure as an object with:
+  - responsibility: Main responsibilities or duties.
+  - requirement: Required qualifications, skills, or experience.
+  - preferred: Preferred qualifications.
+  For "jobDescription", if at least one of these subfields is present, include the "jobDescription" field and only the present subfields. If none are present, omit the "jobDescription" field entirely.
+
+**Strategy:**
+- First, find the main body of the job posting.
+- Look for an “Apply” section or similar phrases; job title and company are typically just above this.
+- The job description, including responsibilities and requirements, is generally located down below in the job posting.
 
 Return the extracted information with the following format:
 {
@@ -99,5 +88,3 @@ Return the extracted information with the following format:
   }
 }
 `;
-
-export { buildPrompt, formatJobDescription };

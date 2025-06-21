@@ -102,6 +102,7 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
   > = async (request) => {
     const error = request.error;
     logError(error);
+    console.error('Error cause: ', error?.cause);
 
     if (error instanceof SyntaxError) {
       // Error thrown due to malformed JSON string that failed JSON.parse
