@@ -72,7 +72,7 @@ describe('LinkValidatorService', () => {
         const error = await testErrorResponse(testUrl_shouldReturn403);
         expect(error.statusCode).equals(403);
       });
-      it('should throw 429 eror', async () => {
+      it('should throw 429 error', async () => {
         const error = await testErrorResponse(testUrl_shouldReturn429);
         expect(error.statusCode).equals(429);
       });
