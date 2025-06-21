@@ -1,19 +1,28 @@
-import { LinkStatus } from '@vtmp/common/constants';
-import { LinkRepository } from '@/repositories/link.repository';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
+
+import { LinkStatus } from '@vtmp/common/constants';
+
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { LinkRepository } from '@/repositories/link.repository';
 import {
   ExtractionLinkMetaDataType,
   LinkMetaDataType,
 } from '@/types/link.types';
+import {
+  DuplicateResourceError,
+  InternalServerError,
+  ResourceNotFoundError,
+} from '@/utils/errors';
 
 export const LinkService = {
   submitLink: async (linkMetaData: LinkMetaDataType) => {
     try {
       return await LinkRepository.createLink(linkMetaData);
-    } catch {
-      throw new DuplicateResourceError('Duplicate url', linkMetaData);
+    } catch (error: unknown) {
+      if (error instanceof Error && 'code' in error && error.code === 11000) {
+        throw new DuplicateResourceError('Duplicate url', linkMetaData);
+      }
+      throw error;
     }
   },
 
@@ -60,6 +69,17 @@ export const LinkService = {
     linkId: string,
     linkMetaData: ExtractionLinkMetaDataType
   ) => {
+    const { status } = linkMetaData;
+    if (
+      status === LinkStatus.ADMIN_APPROVED ||
+      status === LinkStatus.ADMIN_REJECTED
+    ) {
+      throw new InternalServerError(
+        'Link status cannot be ADMIN_APPROVED or ADMIN_REJECTED when updating metadata',
+        { linkMetaData, linkId }
+      );
+    }
+
     const updatedLink = await LinkRepository.updateLinkMetaData(
       linkId,
       linkMetaData

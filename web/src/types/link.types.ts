@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import {
   LinkProcessingFailureStage,
   JobFunction,
@@ -7,11 +8,12 @@ import {
   LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
-import { filterUndefinedAttributes } from '@/utils/helpers';
+
 import { MONGO_OBJECT_ID_REGEX } from '@/constants/validations';
+import { filterUndefinedAttributes } from '@/utils/helpers';
 
 export const LinkMetaDataSchema = z.object({
-  url: z
+  originalUrl: z
     .string({ required_error: 'URL is required' })
     .transform((val) => {
       if (!/^https?:\/\//i.test(val)) {
@@ -33,64 +35,49 @@ export const LinkMetaDataSchema = z.object({
 });
 
 export type LinkMetaDataType = z.infer<typeof LinkMetaDataSchema>;
-
-export const ExtractionLinkMetaDataSchema = z
-  .object({
-    url: z.string().optional(),
-    status: z
-      .nativeEnum(LinkStatus, {
-        message: 'Invalid link status',
-      })
-      .optional(),
-    subStatus: z
-      .nativeEnum(LinkProcessingFailureStage, {
-        message: 'Invalid sub status',
-      })
-      .optional(),
-    jobTitle: z.string().optional(),
-    companyName: z.string().optional(),
-    location: z
-      .nativeEnum(LinkRegion, {
-        message: 'Invalid location',
-      })
-      .optional(),
-    jobFunction: z
-      .nativeEnum(JobFunction, {
-        message: 'Invalid job title',
-      })
-      .optional(),
-    jobType: z
-      .nativeEnum(JobType, {
-        message: 'Invalid job type',
-      })
-      .optional(),
-    datePosted: z
-      .string()
-      .transform((str) => new Date(str))
-      .optional(),
-    jobDescription: z.string().optional(),
-    attemptsCount: z.number(),
-    lastProcessedAt: z.string().transform((str) => new Date(str)),
-  })
-  .superRefine((data, ctx) => {
-    const isFailed =
-      data.status === LinkStatus.PENDING_RETRY ||
-      data.status === LinkStatus.PIPELINE_FAILED ||
-      data.status === LinkStatus.PIPELINE_REJECTED;
-    if (isFailed && !data.subStatus) {
-      ctx.addIssue({
-        path: ['subStatus'], // Which field the error is for
-        code: z.ZodIssueCode.custom, // Custom validation
-        message: 'subStatus is required when status is failed',
-      });
-    } else if (!isFailed && data.subStatus) {
-      ctx.addIssue({
-        path: ['subStatus'], // Which field the error is for
-        code: z.ZodIssueCode.custom, // Custom validation
-        message: 'subStatus is not allowed when status is not failed',
-      });
-    }
-  });
+export const ExtractionLinkMetaDataSchema = z.object({
+  url: z.string(),
+  status: z.nativeEnum(LinkStatus, {
+    message: 'Invalid link status',
+  }),
+  failureStage: z
+    .nativeEnum(LinkProcessingFailureStage, {
+      message: 'Invalid failure stage',
+    })
+    .nullable(),
+  jobTitle: z.string().optional(),
+  companyName: z.string().optional(),
+  location: z
+    .nativeEnum(LinkRegion, {
+      message: 'Invalid location',
+    })
+    .optional(),
+  jobFunction: z
+    .nativeEnum(JobFunction, {
+      message: 'Invalid job title',
+    })
+    .optional(),
+  jobType: z
+    .nativeEnum(JobType, {
+      message: 'Invalid job type',
+    })
+    .optional(),
+  datePosted: z
+    .string()
+    .transform((str) => new Date(str))
+    .refine((date) => !isNaN(date.getTime()), {
+      message: 'datePosted must be a valid ISO date string',
+    })
+    .optional(),
+  jobDescription: z.string().optional(),
+  attemptsCount: z.number({ required_error: 'attemptsCount is required' }),
+  lastProcessedAt: z
+    .string({ required_error: 'lastProcessedAt is required' })
+    .transform((str) => new Date(str))
+    .refine((date) => !isNaN(date.getTime()), {
+      message: 'lastProcessedAt must be a valid ISO date string',
+    }),
+});
 
 export type ExtractionLinkMetaDataType = z.infer<
   typeof ExtractionLinkMetaDataSchema

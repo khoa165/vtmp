@@ -1,16 +1,20 @@
 import mongoose, { Document, Schema, Types, UpdateQuery } from 'mongoose';
+
 import {
   JobFunction,
   LinkStatus,
   JobType,
   LinkProcessingFailureStage,
+  LinkRegion,
 } from '@vtmp/common/constants';
-import { LinkRegion } from '@vtmp/common/constants';
+
+import { InternalServerError } from '@/utils/errors';
+
 export interface ILink extends Document {
   _id: Types.ObjectId;
   url: string;
   originalUrl: string;
-  status?: LinkStatus;
+  status: LinkStatus;
   failureStage?: LinkProcessingFailureStage;
   submittedOn: Date;
   jobTitle?: string;
@@ -20,7 +24,7 @@ export interface ILink extends Document {
   jobType?: JobType;
   datePosted?: Date;
   jobDescription?: string;
-  attemptsCount?: number;
+  attemptsCount: number;
   lastProcessedAt?: Date;
   submittedBy?: Types.ObjectId;
   deletedAt?: Date;
@@ -28,21 +32,23 @@ export interface ILink extends Document {
 
 const LinkSchema = new mongoose.Schema<ILink>(
   {
-    url: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     originalUrl: {
       type: String,
       unique: true,
       required: true,
     },
+    url: {
+      type: String,
+      default: function (this: ILink) {
+        return this.originalUrl;
+      },
+      unique: true,
+    },
+
     status: {
       type: String,
       enum: Object.values(LinkStatus),
       default: LinkStatus.PENDING_PROCESSING,
-      required: true,
     },
     failureStage: {
       type: String,
@@ -97,16 +103,24 @@ const LinkSchema = new mongoose.Schema<ILink>(
 LinkSchema.pre('findOneAndUpdate', function (next) {
   const update = this.getUpdate() as UpdateQuery<ILink>;
   if (!('$set' in update)) {
-    return next(new Error('Updates must use the $set operator'));
+    return next(
+      new InternalServerError('Updates must use the $set operator', { update })
+    );
   }
   const status = update['$set']?.status;
   const failureStage = update['$set']?.failureStage;
 
   if (status === undefined || failureStage === undefined) {
-    return next(new Error('status or failureStage must be set'));
+    return next(
+      new InternalServerError('status or failureStage must be set', { update })
+    );
   }
   if (status === LinkStatus.PENDING_PROCESSING) {
-    return next(new Error('status cannot be reset to PENDING_PROCESSING'));
+    return next(
+      new InternalServerError('status cannot be reset to PENDING_PROCESSING', {
+        update,
+      })
+    );
   }
 
   const isFailed =
@@ -117,16 +131,18 @@ LinkSchema.pre('findOneAndUpdate', function (next) {
   if (isFailed) {
     if (!failureStage) {
       return next(
-        new Error(
-          'failureStage must be set when status is PENDING_RETRY, PIPELINE_FAILED, or PIPELINE_REJECTED'
+        new InternalServerError(
+          'failureStage must be set when status is PENDING_RETRY, PIPELINE_FAILED, or PIPELINE_REJECTED',
+          { update }
         )
       );
     }
   } else {
     if (failureStage) {
       return next(
-        new Error(
-          'failureStage must not be set for ADMIN_APPROVED, ADMIN_REJECTED, PENDING_PROCESSING, or PENDING_ADMIN_REVIEW'
+        new InternalServerError(
+          'failureStage must not be set for ADMIN_APPROVED, ADMIN_REJECTED, PENDING_PROCESSING, or PENDING_ADMIN_REVIEW',
+          { update }
         )
       );
     }
@@ -140,13 +156,21 @@ LinkSchema.pre('findOneAndUpdate', function (next) {
     const lastProcessedAt = update['$set']?.lastProcessedAt;
 
     if (attemptsCount === undefined) {
-      return next(new Error('attemptsCount must be set'));
+      return next(
+        new InternalServerError('attemptsCount must be set', { update })
+      );
     } else if (attemptsCount <= 0) {
-      return next(new Error('attemptsCount must be greater than 0'));
+      return next(
+        new InternalServerError('attemptsCount must be greater than 0', {
+          update,
+        })
+      );
     }
 
     if (!lastProcessedAt) {
-      return next(new Error('lastProcessedAt must be set'));
+      return next(
+        new InternalServerError('lastProcessedAt must be set', { update })
+      );
     }
   }
 
