@@ -673,11 +673,11 @@ describe('InterviewService', () => {
 
       assert(interview_A0 && interview_A2 && interview_B1);
 
-      const sharedInterviews = await InterviewRepository.updateInterviewById({
+      await InterviewRepository.updateInterviewById({
         interviewId: interview_A0.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: true,
+          isDisclosed: false,
           sharedAt: new Date(),
         },
       });
@@ -698,9 +698,6 @@ describe('InterviewService', () => {
         },
       });
 
-      assert(sharedInterviews);
-      expect(sharedInterviews.id).to.equal(interview_A0.id);
-
       const interviews = await InterviewService.getSharedInterviews({
         filters: {
           companyName: 'Meta',
@@ -715,8 +712,11 @@ describe('InterviewService', () => {
         ...mockInterview_A0,
         applicationId: toMongoId(metaApplication_A.id),
         userId: toMongoId(user_A.id),
-        isDisclosed: true,
-        sharedAt: sharedInterviews.sharedAt,
+        isDisclosed: false,
+        user: {
+          firstName: user_A.firstName,
+          lastName: user_A.lastName,
+        },
       });
     });
   });

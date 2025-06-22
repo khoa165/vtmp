@@ -190,7 +190,7 @@ export const InterviewController = {
   getSharedInterviews: async (req: Request, res: Response) => {
     const filters = SharedInterviewFilter.parse(req.query);
 
-    const interviews = await InterviewService.getInterviews({ filters });
+    const interviews = await InterviewService.getSharedInterviews({ filters });
 
     res.status(200).json({
       message: 'Interviews retrieved successfully',
