@@ -1,34 +1,37 @@
-import request from 'supertest';
-import { assert, expect } from 'chai';
 import bcrypt from 'bcryptjs';
+import { assert, expect } from 'chai';
+import { omit } from 'remeda';
+import request from 'supertest';
 
-import app from '@/app';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import { EnvConfig } from '@/config/env';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { UserRepository } from '@/repositories/user.repository';
-import { AuthService } from '@/services/auth.service';
-import { InterviewRepository } from '@/repositories/interview.repository';
 import {
   InterviewStatus,
   InterviewType,
   SystemRole,
 } from '@vtmp/common/constants';
-import {
-  expectErrorsArray,
-  expectSuccessfulResponse,
-} from '@/testutils/response-assertion.testutil';
-import { IInterview } from '@/models/interview.model';
+
+import app from '@/app';
+import { EnvConfig } from '@/config/env';
 import { IApplication } from '@/models/application.model';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { IInterview } from '@/models/interview.model';
+import { IUser } from '@/models/user.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
-import { omit } from 'remeda';
+import { InterviewRepository } from '@/repositories/interview.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { UserRepository } from '@/repositories/user.repository';
+import { AuthService } from '@/services/auth.service';
 import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
 } from '@/testutils/auth.testutils';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import {
+  expectErrorsArray,
+  expectSuccessfulResponse,
+} from '@/testutils/response-assertion.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+
 describe('InterviewController', () => {
   useMongoDB();
   const sandbox = useSandbox();
@@ -44,8 +47,8 @@ describe('InterviewController', () => {
     note?: string;
   }
 
-  let userId_A: string;
-  let userId_B: string;
+  let user_A: IUser;
+  let user_B: IUser;
 
   let metaApplication_A: IApplication;
   let googleApplication_A: IApplication;
@@ -62,32 +65,36 @@ describe('InterviewController', () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
 
     const encryptedPassword = await bcrypt.hash('test password', 10);
-    const mockUser_A = {
-      firstName: 'admin',
-      lastName: 'viettech',
-      email: 'testA@gmail.com',
-      encryptedPassword,
-      role: SystemRole.ADMIN,
-    };
-    const mockUser_B = {
-      firstName: 'admin',
-      lastName: 'viettech',
-      email: 'testB@gmail.com',
-      encryptedPassword,
-      role: SystemRole.USER,
-    };
+    const mockUsers = [
+      {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'testA@gmail.com',
+        encryptedPassword,
+        role: SystemRole.ADMIN,
+      },
+      {
+        firstName: 'admin',
+        lastName: 'viettech',
+        email: 'testB@gmail.com',
+        encryptedPassword,
+        role: SystemRole.USER,
+      },
+    ];
 
-    userId_A = (await UserRepository.createUser(mockUser_A)).id;
+    const createdUsers = await Promise.all(
+      mockUsers.map((data) => UserRepository.createUser({ ...data }))
+    );
+    assert(createdUsers[0] && createdUsers[1], 'Failed to create users');
+    [user_A, user_B] = createdUsers;
 
     ({ token: mockToken_A } = await AuthService.login({
-      email: mockUser_A.email,
+      email: user_A.email,
       password: 'test password',
     }));
 
-    userId_B = (await UserRepository.createUser(mockUser_B)).id;
-
     ({ token: mockToken_B } = await AuthService.login({
-      email: mockUser_B.email,
+      email: user_B.email,
       password: 'test password',
     }));
 
@@ -119,7 +126,7 @@ describe('InterviewController', () => {
     assert(metaJobPosting && googleJobPosting, 'Failed to create job postings');
 
     const nestedApplications = await Promise.all(
-      [userId_A, userId_B].map(
+      [user_A.id, user_B.id].map(
         (userId) =>
           Promise.all([
             ApplicationRepository.createApplication({
@@ -143,7 +150,7 @@ describe('InterviewController', () => {
 
     mockInterview_A0 = {
       applicationId: metaApplication_A.id,
-      userId: userId_A,
+      userId: user_A.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PASSED,
@@ -152,7 +159,7 @@ describe('InterviewController', () => {
 
     mockInterview_A1 = {
       applicationId: googleApplication_A.id,
-      userId: userId_A,
+      userId: user_A.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.FAILED,
@@ -161,7 +168,7 @@ describe('InterviewController', () => {
 
     mockInterview_A2 = {
       applicationId: metaApplication_A.id,
-      userId: userId_A,
+      userId: user_A.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-07-07'),
       note: 'Good job',
@@ -169,7 +176,7 @@ describe('InterviewController', () => {
 
     mockInterview_B0 = {
       applicationId: googleApplication_B.id,
-      userId: userId_B,
+      userId: user_B.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PENDING,
@@ -177,7 +184,7 @@ describe('InterviewController', () => {
 
     mockInterview_B1 = {
       applicationId: metaApplication_B.id,
-      userId: userId_B,
+      userId: user_B.id,
       types: [InterviewType.PROJECT_WALKTHROUGH],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PASSED,
@@ -308,7 +315,7 @@ describe('InterviewController', () => {
         .set('Authorization', `Bearer ${mockToken_A}`);
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('_id', interview.id);
-      expect(res.body.data).to.have.property('userId', userId_A);
+      expect(res.body.data).to.have.property('userId', user_A.id);
     });
   });
 
@@ -371,7 +378,7 @@ describe('InterviewController', () => {
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       const res = await request(app)
@@ -429,11 +436,8 @@ describe('InterviewController', () => {
     });
   });
 
-  describe('GET /api/interviews/by-company/:companyName', () => {
-    const endpoint = (name: string) =>
-      `/api/interviews/by-company/?companyName=${name}`;
-
-    const companyName = 'Meta';
+  describe('GET /api/interviews/share', () => {
+    const endpoint = `/api/interviews/share`;
 
     it('should return error message with status code 400 if query.companyName missing', async () => {
       await InterviewRepository.createInterview(mockInterview_A0);
@@ -447,7 +451,7 @@ describe('InterviewController', () => {
 
     it('should return an empty array if no interviews found', async () => {
       const res = await request(app)
-        .get(endpoint(companyName))
+        .get(endpoint)
         .set('Authorization', `Bearer ${mockToken_A}`);
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
@@ -472,7 +476,7 @@ describe('InterviewController', () => {
       );
 
       const res = await request(app)
-        .get(endpoint(companyName))
+        .get(endpoint)
         .set('Authorization', `Bearer ${mockToken_B}`);
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(3);
@@ -695,7 +699,7 @@ describe('InterviewController', () => {
     it('should return the successfully deleted interview', async () => {
       const created = await InterviewRepository.createInterview({
         applicationId: getNewMongoId(),
-        userId: userId_A,
+        userId: user_A.id,
         types: [InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
       });

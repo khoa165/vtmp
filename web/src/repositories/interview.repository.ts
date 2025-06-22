@@ -1,6 +1,9 @@
-import { InterviewModel, IInterview } from '@/models/interview.model';
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import escapeStringRegexp from 'escape-string-regexp';
 import { ClientSession, UpdateResult } from 'mongoose';
+
+import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+
+import { InterviewModel, IInterview } from '@/models/interview.model';
 
 export const InterviewRepository = {
   createInterview: async ({
@@ -72,10 +75,30 @@ export const InterviewRepository = {
       types?: InterviewType[];
       status?: InterviewStatus;
     };
-    session?: ClientSession;
   }): Promise<IInterview[]> => {
-    return InterviewModel.aggregate([
-      { $match: { deletedAt: null, isDisclosed: true, ...filters } },
+    const dynamicMatch: Record<string, unknown> = {};
+
+    if (filters?.companyName) {
+      dynamicMatch.companyName = {
+        $regex: escapeStringRegexp(filters.companyName),
+        $options: 'i',
+      };
+    }
+    if (filters?.types) {
+      dynamicMatch.types = { $in: filters.types };
+    }
+    if (filters?.status) {
+      dynamicMatch.status = filters.status;
+    }
+
+    return await InterviewModel.aggregate([
+      {
+        $match: {
+          deletedAt: null,
+          sharedAt: { $ne: null },
+          ...dynamicMatch,
+        },
+      },
       {
         $lookup: {
           from: 'users',
@@ -89,12 +112,15 @@ export const InterviewRepository = {
         $addFields: {
           user: {
             $cond: {
-              if: '$isDisclosed',
+              if: { $not: ['$isDisclosed'] },
               then: {
                 firstName: '$user.firstName',
                 lastName: '$user.lastName',
               },
-              else: undefined,
+              else: {
+                firstName: 'Anonymous',
+                lastName: 'User',
+              },
             },
           },
         },

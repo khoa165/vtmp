@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
-import { z } from 'zod';
 import mongoose from 'mongoose';
+import { z } from 'zod';
 
-import { InterviewService } from '@/services/interview.service';
-import { getUserFromRequest } from '@/middlewares/utils';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+
+import { getUserFromRequest } from '@/middlewares/utils';
+import { InterviewService } from '@/services/interview.service';
 
 const InterviewIdParamsSchema = z
   .object({
@@ -66,7 +67,7 @@ const InterviewApplicationFilter = z
 
 const SharedInterviewFilter = z
   .object({
-    companyName: z.string({ required_error: 'Company Name is required' }),
+    companyName: z.string().optional(),
     types: z.array(z.nativeEnum(InterviewType)).optional(),
     status: z.nativeEnum(InterviewStatus).optional(),
   })
@@ -155,8 +156,8 @@ export const InterviewController = {
     });
   },
 
-  getSharedInterviews: async (req: Request, res: Response) => {
-    const filters = SharedInterviewFilter.parse(req.query);
+  getInterviews: async (req: Request, res: Response) => {
+    const filters = AdminInterviewFilter.parse(req.query);
 
     const interviews = await InterviewService.getInterviews({ filters });
 
@@ -166,8 +167,8 @@ export const InterviewController = {
     });
   },
 
-  getInterviews: async (req: Request, res: Response) => {
-    const filters = AdminInterviewFilter.parse(req.query);
+  getSharedInterviews: async (req: Request, res: Response) => {
+    const filters = SharedInterviewFilter.parse(req.query);
 
     const interviews = await InterviewService.getInterviews({ filters });
 
