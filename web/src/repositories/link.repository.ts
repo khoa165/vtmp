@@ -1,6 +1,8 @@
-import { LinkModel, ILink } from '@/models/link.model';
 import { Types, ClientSession, FilterQuery } from 'mongoose';
+
 import { LinkStatus } from '@vtmp/common/constants';
+
+import { LinkModel, ILink } from '@/models/link.model';
 import {
   LinkMetaDataType,
   ExtractionLinkMetaDataType,
@@ -24,10 +26,10 @@ export const LinkRepository = {
     status: LinkStatus.ADMIN_APPROVED | LinkStatus.ADMIN_REJECTED;
     session?: ClientSession;
   }): Promise<ILink | null> => {
-    return LinkModel.findOneAndUpdate(
-      { _id: new Types.ObjectId(id) },
-      { $set: { status, failureStage: null } },
-      { new: true, session: session ?? null, runValidators: true }
+    return LinkModel.findByIdAndUpdate(
+      new Types.ObjectId(id),
+      { $set: { status } },
+      { new: true, session: session ?? null }
     ).lean();
   },
 

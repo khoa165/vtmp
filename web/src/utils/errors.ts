@@ -43,6 +43,14 @@ export class InternalServerError extends ApplicationSpecificError {
   }
 }
 
+export class BadRequest extends ApplicationSpecificError {
+  constructor(message: string, metadata: object) {
+    super(message, metadata, 400);
+  }
+}
+
+export class LinkProcessingBadRequest extends BadRequest {}
+
 export const handleError = (error: unknown) => {
   if (error instanceof ZodError) {
     return {

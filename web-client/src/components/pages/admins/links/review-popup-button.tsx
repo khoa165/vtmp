@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
 
@@ -68,6 +69,10 @@ export const ReviewPopupButton = ({
   };
 
   const handleReject = () => {
+    if (reviewForm.adminNote?.trim() === '') {
+      toast.error('Please give the reason for rejection.');
+      return;
+    }
     rejectLinkFn({ linkId });
   };
 

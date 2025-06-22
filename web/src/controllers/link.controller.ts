@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+
 import { LinkService } from '@/services/link.service';
 import {
   LinkFilterSchema,
@@ -70,7 +71,7 @@ export const LinkController = {
 
     const rejectedLink = await LinkService.rejectLink(parsedLink.linkId);
     res.status(200).json({
-      message: 'Link has been rejected!',
+      message: 'Link has been rejected by admin',
       data: rejectedLink,
     });
   },

@@ -21,6 +21,7 @@ import { useSandbox } from '@/testutils/sandbox.testutil';
 import {
   DuplicateResourceError,
   InternalServerError,
+  LinkProcessingBadRequest,
   ResourceNotFoundError,
 } from '@/utils/errors';
 
@@ -189,7 +190,7 @@ describe('LinkService', () => {
           ...mockLinkMetaData,
           failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
         })
-      ).eventually.rejectedWith(Error);
+      ).eventually.rejectedWith(LinkProcessingBadRequest);
     });
 
     it('should throw error when status failed included with failureStage is null', async () => {
@@ -199,7 +200,7 @@ describe('LinkService', () => {
           status: LinkStatus.PIPELINE_FAILED,
           failureStage: null, // Adding failureStage to satisfy type requirement
         })
-      ).eventually.rejectedWith(Error);
+      ).eventually.rejectedWith(LinkProcessingBadRequest);
     });
 
     it('should throw when attemptsCount is 0 for failed status', async () => {
@@ -210,7 +211,7 @@ describe('LinkService', () => {
           failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
           attemptsCount: 0,
         })
-      ).eventually.rejectedWith(Error);
+      ).eventually.rejectedWith(LinkProcessingBadRequest);
     });
 
     it('should throw when status is set to PENDING_PROCESSING', async () => {
@@ -219,7 +220,7 @@ describe('LinkService', () => {
           ...mockLinkMetaData,
           status: LinkStatus.PENDING_PROCESSING,
         })
-      ).eventually.rejectedWith(Error);
+      ).eventually.rejectedWith(LinkProcessingBadRequest);
     });
 
     it('should throw when status is set to PENDING_PROCESSING', async () => {
@@ -228,7 +229,7 @@ describe('LinkService', () => {
           ...mockLinkMetaData,
           status: LinkStatus.PENDING_PROCESSING,
         })
-      ).eventually.rejectedWith(Error);
+      ).eventually.rejectedWith(LinkProcessingBadRequest);
     });
 
     it('should throw when status is set to ADMIN_APPROVED', async () => {
@@ -237,7 +238,7 @@ describe('LinkService', () => {
           ...mockLinkMetaData,
           status: LinkStatus.ADMIN_APPROVED,
         })
-      ).eventually.rejectedWith(Error);
+      ).eventually.rejectedWith(LinkProcessingBadRequest);
     });
 
     it('should be able to update link metadata with status not failed', async () => {
