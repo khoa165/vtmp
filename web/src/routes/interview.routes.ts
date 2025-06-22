@@ -20,7 +20,7 @@ InterviewRoutes.get(
 );
 
 InterviewRoutes.get(
-  '/shared',
+  '/share',
   wrappedHandlers([
     hasPermission(Permission.VIEW_INTERVIEW),
     InterviewController.getSharedInterviews,
