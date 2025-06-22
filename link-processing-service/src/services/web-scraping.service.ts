@@ -1,12 +1,14 @@
-import puppeteer, { Browser, Page } from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
-import { logError, ScrapingError } from '@/utils/errors';
+import puppeteer, { Browser, Page } from 'puppeteer-core';
+
 import { LinkStatus, LinkProcessingFailureStage } from '@vtmp/common/constants';
+
 import {
   FailedProcessedLink,
   ScrapedLink,
   ValidatedLink,
 } from '@/services/link-metadata-validation';
+import { logError, ScrapingError } from '@/utils/errors';
 
 const _launchBrowserInstance = async (): Promise<Browser> => {
   const browser = await puppeteer.launch({
@@ -43,61 +45,61 @@ export const WebScrapingService = {
     scrapedLinks: ScrapedLink[];
     failedScrapingLinks: FailedProcessedLink[];
   }> => {
-    // Get all the urls for logging
-    const urls = validatedLinks.map((linkData) => linkData.url);
     // Open only 1 Chrominum browser process
     const browser = await _launchBrowserInstance();
-    try {
-      const scrapedLinks: ScrapedLink[] = [];
-      const failedScrapingLinks: FailedProcessedLink[] = [];
-      const results = await Promise.all(
-        validatedLinks.map(async (validatedLink) => {
-          // Open a new tab
-          const page = await browser.newPage();
-          try {
-            const scrapedText = await _scrapeWebpage(page, validatedLink.url);
-            return { ...validatedLink, scrapedText };
-          } catch (error: unknown) {
-            logError(error);
+    const scrapedLinks: ScrapedLink[] = [];
+    const failedScrapingLinks: FailedProcessedLink[] = [];
+    const results = await Promise.all(
+      validatedLinks.map(async (validatedLink) => {
+        // Open a new tab
+        const page = await browser.newPage();
+        try {
+          const scrapedText = await _scrapeWebpage(page, validatedLink.url);
+          return { ...validatedLink, scrapedText };
+        } catch (error: unknown) {
+          logError(error);
 
-            if (_shouldLongRetry(validatedLink.originalRequest.attemptsCount)) {
-              return {
-                ...validatedLink,
-                status: LinkStatus.PENDING_RETRY,
-                failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-                error,
-              };
-            }
-
+          if (_shouldLongRetry(validatedLink.originalRequest.attemptsCount)) {
             return {
               ...validatedLink,
-              status: LinkStatus.PIPELINE_FAILED,
+              status: LinkStatus.PENDING_RETRY,
               failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-              error,
+              error: new ScrapingError(
+                'Failed to scrap url',
+                {
+                  url: validatedLink.url,
+                },
+                { cause: error }
+              ),
             };
-          } finally {
-            await page.close();
           }
-        })
-      );
 
-      // Sort the results into scrapedLinks and failedScrapingLinks
-      for (const result of results) {
-        if ('error' in result) {
-          failedScrapingLinks.push(result);
-        } else {
-          scrapedLinks.push(result);
+          return {
+            ...validatedLink,
+            status: LinkStatus.PIPELINE_FAILED,
+            failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
+            error: new ScrapingError(
+              'Failed to scrap url',
+              { url: validatedLink.url },
+              { cause: error }
+            ),
+          };
+        } finally {
+          await page.close();
         }
+      })
+    );
+
+    await browser.close();
+
+    // Sort the results into scrapedLinks and failedScrapingLinks
+    for (const result of results) {
+      if ('error' in result) {
+        failedScrapingLinks.push(result);
+      } else {
+        scrapedLinks.push(result);
       }
-      return { scrapedLinks, failedScrapingLinks };
-    } catch (error: unknown) {
-      throw new ScrapingError(
-        'Failed to scrap URLs',
-        { urls },
-        { cause: error }
-      );
-    } finally {
-      await browser.close();
     }
+    return { scrapedLinks, failedScrapingLinks };
   },
 };

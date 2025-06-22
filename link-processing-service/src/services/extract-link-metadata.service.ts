@@ -1,5 +1,15 @@
+import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
+
+import {
+  JobFunction,
+  JobType,
+  LinkProcessingFailureStage,
+  LinkRegion,
+  LinkStatus,
+} from '@vtmp/common/constants';
+
 import { EnvConfig } from '@/config/env';
-import { buildPrompt, formatJobDescription } from '@/helpers/link.helpers';
+import { buildPrompt, formatJobDescription , stringToEnumValue } from '@/helpers/link.helpers';
 import {
   ExtractedLinkMetadata,
   ExtractedLinkMetadataSchema,
@@ -15,15 +25,6 @@ import {
   InvalidJsonError,
   logError,
 } from '@/utils/errors';
-import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
-import {
-  JobFunction,
-  JobType,
-  LinkProcessingFailureStage,
-  LinkRegion,
-  LinkStatus,
-} from '@vtmp/common/constants';
-import { stringToEnumValue } from '@/helpers/link.helpers';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
@@ -35,7 +36,7 @@ const parseJson = (text: string, url: string): RawAIResponse => {
     return JSON.parse(text);
   } catch {
     throw new InvalidJsonError('Invalid JSON format in AI response', {
-      urls: [url],
+      url,
     });
   }
 };
@@ -56,7 +57,7 @@ const generateMetadata = async (
   // Get raw response from Gemini
   const rawAIResponse = response.text?.replace(/```json|```/g, '').trim();
   if (!rawAIResponse)
-    throw new AIResponseEmptyError('AI response was empty', { urls: [url] });
+    throw new AIResponseEmptyError('AI response was empty', { url });
   // JSON.parse it to convert to JS object
   const parsedAIResponse = parseJson(rawAIResponse, url);
   // Validate against zod schema
@@ -100,61 +101,59 @@ export const ExtractLinkMetadataService = {
     metadataExtractedLinks: MetadataExtractedLink[];
     failedMetadataExtractionLinks: FailedProcessedLink[];
   }> => {
-    // Get all the urls for logging
-    const urls = scrapedLinks.map((scrapedLink) => scrapedLink.url);
-    try {
-      const metadataExtractedLinks: MetadataExtractedLink[] = [];
-      const failedMetadataExtractionLinks: FailedProcessedLink[] = [];
-      const results = await Promise.all(
-        scrapedLinks.map(async (link) => {
-          try {
-            const extractedMetadata = await generateMetadata(
-              link.scrapedText,
-              link.url
-            );
+    const metadataExtractedLinks: MetadataExtractedLink[] = [];
+    const failedMetadataExtractionLinks: FailedProcessedLink[] = [];
+    const results = await Promise.all(
+      scrapedLinks.map(async (link) => {
+        try {
+          const extractedMetadata = await generateMetadata(
+            link.scrapedText,
+            link.url
+          );
+          return {
+            ...link,
+            extractedMetadata,
+            status: LinkStatus.PENDING_ADMIN_REVIEW,
+            failureStage: null, // Update failureStage to null to clear any previous failureStage value
+          };
+        } catch (error: unknown) {
+          logError(error);
+
+          if (_shouldLongRetry(link.originalRequest.attemptsCount)) {
             return {
               ...link,
-              extractedMetadata,
-              status: LinkStatus.PENDING_ADMIN_REVIEW,
-              failureStage: null, // Update failureStage to null to clear any previous failureStage value
-            };
-          } catch (error: unknown) {
-            logError(error);
-
-            if (_shouldLongRetry(link.originalRequest.attemptsCount)) {
-              return {
-                ...link,
-                status: LinkStatus.PENDING_RETRY,
-                failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
-                error,
-              };
-            }
-
-            return {
-              ...link,
-              status: LinkStatus.PIPELINE_FAILED,
+              status: LinkStatus.PENDING_RETRY,
               failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
-              error,
+              error: new AIExtractionError(
+                'Failed to extract metadata with AI',
+                { url: link.url },
+                { cause: error }
+              ),
             };
           }
-        })
-      );
 
-      // Sort results into metadataExtractedLinks and failedMetadataExtractionLinks
-      for (const result of results) {
-        if ('error' in result) {
-          failedMetadataExtractionLinks.push(result);
-        } else {
-          metadataExtractedLinks.push(result);
+          return {
+            ...link,
+            status: LinkStatus.PIPELINE_FAILED,
+            failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
+            error: new AIExtractionError(
+              'Failed to extract metadata with AI',
+              { url: link.url },
+              { cause: error }
+            ),
+          };
         }
+      })
+    );
+
+    // Sort results into metadataExtractedLinks and failedMetadataExtractionLinks
+    for (const result of results) {
+      if ('error' in result) {
+        failedMetadataExtractionLinks.push(result);
+      } else {
+        metadataExtractedLinks.push(result);
       }
-      return { metadataExtractedLinks, failedMetadataExtractionLinks };
-    } catch (error: unknown) {
-      throw new AIExtractionError(
-        'Failed to extract metadata with AI',
-        { urls },
-        { cause: error }
-      );
     }
+    return { metadataExtractedLinks, failedMetadataExtractionLinks };
   },
 };

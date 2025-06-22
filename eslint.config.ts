@@ -32,6 +32,7 @@ export default tseslint.config(
             './packages/common/tsconfig.json',
             './custom-eslint/tsconfig.json',
             './discord-service/tsconfig.json',
+            './link-processing-service/tsconfig.json',
           ],
           noWarnOnMultipleProjects: true,
         },
