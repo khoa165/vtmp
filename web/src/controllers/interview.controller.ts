@@ -22,15 +22,25 @@ const InterviewCreateSchema = z
     applicationId: z
       .string({ required_error: 'Application ID is required' })
       .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-        message: 'Invalid application ID format',
+        message: 'Invalid application ID',
       }),
     types: z
-      .array(z.nativeEnum(InterviewType), {
-        required_error: 'Interview types is required',
-        invalid_type_error: 'Invalid interview type format',
+      .array(
+        z.nativeEnum(InterviewType, {
+          message: 'Invalid interview type',
+        }),
+        {
+          message: 'Interview types is required',
+        }
+      )
+      .min(1, {
+        message: 'At least one interview type is required',
+      }),
+    status: z
+      .nativeEnum(InterviewStatus, {
+        message: 'Invalid interview status',
       })
-      .min(1, { message: 'Must select at least 1 interview type' }),
-    status: z.nativeEnum(InterviewStatus).optional(),
+      .optional(),
     interviewOnDate: z.coerce.date(),
     note: z.string().optional(),
   })
@@ -68,8 +78,18 @@ const InterviewApplicationFilter = z
 const SharedInterviewFilter = z
   .object({
     companyName: z.string().optional(),
-    types: z.array(z.nativeEnum(InterviewType)).optional(),
-    status: z.nativeEnum(InterviewStatus).optional(),
+    types: z
+      .array(
+        z.nativeEnum(InterviewType, {
+          message: 'Invalid interview type',
+        })
+      )
+      .optional(),
+    status: z
+      .nativeEnum(InterviewStatus, {
+        message: 'Invalid interview status',
+      })
+      .optional(),
   })
   .strict()
   .transform((data) =>
@@ -170,7 +190,7 @@ export const InterviewController = {
   getSharedInterviews: async (req: Request, res: Response) => {
     const filters = SharedInterviewFilter.parse(req.query);
 
-    const interviews = await InterviewService.getInterviews({ filters });
+    const interviews = await InterviewService.getSharedInterviews({ filters });
 
     res.status(200).json({
       message: 'Interviews retrieved successfully',
