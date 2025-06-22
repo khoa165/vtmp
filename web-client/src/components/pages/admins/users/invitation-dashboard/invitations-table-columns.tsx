@@ -125,8 +125,8 @@ export const invitationsTableColumns = (
             return;
           }
           sendInvitation({
-            receiverName: invitation.receiverName,
             receiverEmail: invitation.receiverEmail,
+            receiverName: invitation.receiverName,
             senderId: invitation._id,
           });
         };
