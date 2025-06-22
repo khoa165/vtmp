@@ -51,14 +51,30 @@ export const InterviewService = {
     return InterviewRepository.getInterviews({ filters });
   },
 
+  getSharedInterviews: async ({
+    filters = {},
+  }: {
+    filters: {
+      companyName?: string;
+      types?: InterviewType[];
+      status?: InterviewStatus;
+    };
+  }): Promise<IInterview[]> => {
+    const sharedInterviews = InterviewRepository.getSharedInterviews({
+      filters,
+    });
+
+    return sharedInterviews;
+  },
+
   updateInterviewById: async ({
     interviewId,
     userId,
-    updatedMetadata,
+    newUpdate,
   }: {
     interviewId: string;
     userId: string;
-    updatedMetadata: {
+    newUpdate: {
       types?: InterviewType[];
       status?: InterviewStatus;
       interviewOnDate?: Date;
@@ -68,7 +84,7 @@ export const InterviewService = {
     const updatedInterview = await InterviewRepository.updateInterviewById({
       interviewId,
       userId,
-      updatedMetadata,
+      newUpdate,
     });
 
     if (!updatedInterview) {
@@ -79,6 +95,60 @@ export const InterviewService = {
     }
 
     return updatedInterview;
+  },
+
+  updateInterviewSharingStatus: async ({
+    interviewId,
+    userId,
+    isDisclosed,
+    isShare = true,
+  }: {
+    interviewId: string;
+    userId: string;
+    isDisclosed?: boolean;
+    isShare?: boolean;
+  }): Promise<IInterview | null> => {
+    const interview = await InterviewRepository.getInterviewById({
+      interviewId,
+      userId,
+    });
+
+    if (!interview) {
+      throw new ResourceNotFoundError('Interview not found', {
+        interviewId,
+        userId,
+      });
+    }
+
+    if (isShare) {
+      if (interview.sharedAt) {
+        return await InterviewRepository.updateInterviewById({
+          interviewId,
+          userId,
+          newUpdate: {
+            isDisclosed: isDisclosed,
+          },
+        });
+      } else {
+        return await InterviewRepository.updateInterviewSharing({
+          interviewId,
+          userId,
+          shareOptions: {
+            isDisclosed: isDisclosed,
+            sharedAt: new Date(),
+          },
+        });
+      }
+    } else {
+      return await InterviewRepository.updateInterviewSharing({
+        interviewId,
+        userId,
+        shareOptions: {
+          isDisclosed: true,
+          sharedAt: null,
+        },
+      });
+    }
   },
 
   deleteInterviewById: async ({

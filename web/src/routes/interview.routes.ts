@@ -1,9 +1,11 @@
-import { InterviewController } from '@/controllers/interview.controller';
-import { wrappedHandlers } from '@/middlewares/utils';
 import { Router } from 'express';
+
+import { Permission } from '@vtmp/common/constants';
+
+import { InterviewController } from '@/controllers/interview.controller';
 import { authenticate } from '@/middlewares/auth.middleware';
 import { hasPermission } from '@/middlewares/authorization.middleware';
-import { Permission } from '@vtmp/common/constants';
+import { wrappedHandlers } from '@/middlewares/utils';
 
 export const InterviewRoutes = Router();
 
@@ -16,13 +18,15 @@ InterviewRoutes.get(
     InterviewController.getInterviewsByApplicationId,
   ])
 );
+
 InterviewRoutes.get(
-  '/by-company',
+  '/shared',
   wrappedHandlers([
     hasPermission(Permission.VIEW_INTERVIEW),
-    InterviewController.getInterviewsByCompanyName,
+    InterviewController.getSharedInterviews,
   ])
 );
+
 InterviewRoutes.get(
   '/',
   wrappedHandlers([
@@ -52,6 +56,22 @@ InterviewRoutes.put(
   wrappedHandlers([
     hasPermission(Permission.MANAGE_INTERVIEW),
     InterviewController.updateInterviewById,
+  ])
+);
+
+InterviewRoutes.put(
+  '/share/:interviewId',
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_INTERVIEW),
+    InterviewController.shareInterview,
+  ])
+);
+
+InterviewRoutes.put(
+  '/unshare/:interviewId',
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_INTERVIEW),
+    InterviewController.unshareInterview,
   ])
 );
 
