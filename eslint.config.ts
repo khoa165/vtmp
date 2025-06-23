@@ -4,28 +4,34 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
 import { customEslintRules } from './custom-eslint';
+import stylistic from '@stylistic/eslint-plugin';
+import checkFile from 'eslint-plugin-check-file';
+import importPlugin from 'eslint-plugin-import';
 
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
-
-  // Optionally add strict/stylistic rules if needed
-  // tseslint.configs.strict,
-  // tseslint.configs.stylistic,
+  tseslint.configs.strict,
+  tseslint.configs.stylistic,
 
   {
     languageOptions: {
-      parser: tseslint.parser,
       globals: { ...globals.node, ...globals.browser },
+      parser: tseslint.parser,
     },
     plugins: {
-      boundaries,
       custom: customEslintRules,
+      import: importPlugin,
+      stylistic,
+      checkFile,
+      boundaries,
     },
+    files: ['web-client/**/*.{ts,tsx}'],
     settings: {
       'import/resolver': {
         typescript: {
           project: [
+            './web-client/tsconfig.app.json',
             './web/tsconfig.json',
             './packages/common/tsconfig.json',
             './custom-eslint/tsconfig.json',
@@ -72,11 +78,64 @@ export default tseslint.config(
       ],
     },
     rules: {
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/no-dynamic-delete': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'all',
+          argsIgnorePattern: '^_',
+          caughtErrors: 'all',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
+      'custom/wrapped-handlers-in-router': 'error',
+      'stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
+      'import/no-unresolved': 'error',
+      'import/no-default-export': 'error',
+      'import/no-duplicates': 'error',
+      'import/newline-after-import': ['error', { count: 1 }],
+      'import/order': [
+        'error',
+        {
+          groups: ['external', 'builtin', 'parent', 'internal'],
+          pathGroups: [
+            {
+              pattern: '@vtmp/common/**',
+              group: 'parent',
+            },
+            {
+              pattern: '@/**',
+              group: 'internal',
+            },
+          ],
+          pathGroupsExcludedImportTypes: [],
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+          'newlines-between': 'always',
+        },
+      ],
+      'checkFile/filename-naming-convention': [
+        'error',
+        {
+          '**/stories/**/*.{ts,tsx}': 'PASCAL_CASE',
+          '**/hooks/**/(use*).{ts,tsx}': 'CAMEL_CASE',
+          '**/!(stories|hooks)/*.{ts,tsx}': 'KEBAB_CASE',
+        },
+        {
+          ignoreMiddleExtensions: true,
+        },
+      ],
       '@typescript-eslint/no-var-requires': 'error',
-      // Custom rule
       'custom/no-try-in-controller-or-middleware': 'error',
       'custom/enforce-uppercase-enum-values': 'error',
       'custom/enforce-sorted-enum-keys': 'error',
+
       'boundaries/element-types': [
         'error',
         {
@@ -103,9 +162,33 @@ export default tseslint.config(
       ],
     },
   },
-
-  // Ignore files
   {
-    ignores: ['dist/', 'node_modules/'],
+    files: [
+      'web/src/app.ts',
+      'web/src/routes/index.ts',
+      'web/app.test.ts',
+      'web-client/**/*',
+      'discord-service/**/*',
+    ],
+    rules: {
+      'custom/wrapped-handlers-in-router': 'off',
+    },
+  },
+
+  {
+    files: [
+      '**/{app,index,main}.{ts,tsx}',
+      'eslint.config.ts',
+      '**/vite.config.ts',
+      '**/.storybook/**/*',
+      '**/*.stories.{ts,tsx}',
+    ],
+    rules: {
+      'import/no-default-export': 'off',
+    },
+  },
+
+  {
+    ignores: ['cookiecutter/', 'scripts/', '**/*.{js,d.ts,d.tsx}'],
   }
 );
