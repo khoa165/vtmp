@@ -101,7 +101,7 @@ export default tseslint.config(
           ignoreRestSiblings: true,
         },
       ],
-      'customEslintRules/wrapped-handlers-in-router': 'error', // 🔧 Updated plugin prefix from customEslintRules → custom
+      'customEslintRules/wrapped-handlers-in-router': 'error',
       'stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
       'import/no-unresolved': 'error',
       'import/no-default-export': 'error',
@@ -141,9 +141,9 @@ export default tseslint.config(
         },
       ],
       '@typescript-eslint/no-var-requires': 'error',
-      'customEslintRules/no-try-in-controller-or-middleware': 'error', // 🔧 Updated prefix
-      'customEslintRules/enforce-uppercase-enum-values': 'error', // 🔧 Updated prefix
-      'customEslintRules/enforce-sorted-enum-keys': 'error', // 🔧 Updated prefix
+      'customEslintRules/no-try-in-controller-or-middleware': 'error',
+      'customEslintRules/enforce-uppercase-enum-values': 'error',
+      'customEslintRules/enforce-sorted-enum-keys': 'error',
       'boundaries/element-types': [
         'error',
         {
@@ -180,7 +180,7 @@ export default tseslint.config(
       'discord-service/**/*',
     ],
     rules: {
-      'custom/wrapped-handlers-in-router': 'off', // 🔧 Updated prefix
+      'customEslintRules/wrapped-handlers-in-router': 'off', // 🔧 Updated prefix
     },
   },
 
