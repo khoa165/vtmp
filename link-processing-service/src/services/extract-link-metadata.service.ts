@@ -17,7 +17,6 @@ import {
 import {
   ExtractedLinkMetadata,
   ExtractedLinkMetadataSchema,
-  RawAIResponse,
   RawAIResponseSchema,
   ScrapedLink,
   FailedProcessedLink,
@@ -26,7 +25,6 @@ import {
 import {
   AIExtractionError,
   AIResponseEmptyError,
-  InvalidJsonError,
   logError,
 } from '@/utils/errors';
 
@@ -35,22 +33,11 @@ const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   return new GoogleGenAI({ apiKey: geminiApiKey });
 };
 
-const parseJson = (text: string, url: string): RawAIResponse => {
-  try {
-    return JSON.parse(text);
-  } catch {
-    throw new InvalidJsonError('Invalid JSON format in AI response', {
-      url,
-    });
-  }
-};
-
 const generateMetadata = async (
   text: string,
   url: string
 ): Promise<ExtractedLinkMetadata> => {
   const genAI = await getGoogleGenAI();
-  // const prompt = await buildPrompt(text);
   const prompt = await buildPrompt(text);
 
   const response: GenerateContentResponse = await genAI.models.generateContent({
@@ -62,12 +49,12 @@ const generateMetadata = async (
   const rawAIResponse = response.text?.replace(/```json|```/g, '').trim();
   if (!rawAIResponse)
     throw new AIResponseEmptyError('AI response was empty', { url });
-  // JSON.parse it to convert to JS object
-  const parsedAIResponse = parseJson(rawAIResponse, url);
-  // Validate against zod schema
-  const validatedAIResponse = RawAIResponseSchema.parse(parsedAIResponse);
 
-  // Convert from string to Typescript enum, had to use a separate helper function
+  const validatedAIResponse = RawAIResponseSchema.parse(
+    JSON.parse(rawAIResponse)
+  );
+
+  // Convert from string to Typescript enum, had to use a separate helper stringToEnumValue
   const formattedLinkMetadata = {
     jobTitle: validatedAIResponse.jobTitle,
     companyName: validatedAIResponse.companyName,

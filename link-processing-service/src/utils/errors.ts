@@ -71,12 +71,6 @@ export class AIResponseEmptyError extends ServiceSpecificError {
   }
 }
 
-export class InvalidJsonError extends ServiceSpecificError {
-  constructor(message: string, metadata: { url: string }) {
-    super(message, metadata, LinkProcessingFailureStage.EXTRACTION_FAILED);
-  }
-}
-
 export function logError(error: unknown): void {
   if (error instanceof ServiceSpecificError) {
     console.error('ServiceSpecificError:', error);
@@ -103,19 +97,9 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
   > = async (request) => {
     const error = request.error;
     logError(error);
-    console.error('Error cause: ', error?.cause);
 
-    if (error instanceof SyntaxError) {
-      // Error thrown due to malformed JSON string that failed JSON.parse
-      request.response = {
-        statusCode: 400,
-        body: JSON.stringify({
-          message: 'Malformed JSON in request body',
-          failureStage: LinkProcessingFailureStage.PRE_VALIDATION_FAILED,
-        }),
-      };
-      return;
-    } else if (error instanceof ZodError) {
+    // Error thrown if does not pass EventBodySchema
+    if (error instanceof ZodError) {
       request.response = {
         statusCode: 400,
         body: JSON.stringify({

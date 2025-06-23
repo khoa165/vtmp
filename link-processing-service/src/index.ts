@@ -20,7 +20,6 @@ const buildSuccessfulLinksPayloads = (
   updatePayload: UpdateLinkPayload;
 }[] => {
   return processedResults.map((result) => {
-     
     const { originalRequest, extractedMetadata, scrapedText, ...rest } = result;
     const flattenResult = {
       ...rest,
@@ -28,10 +27,9 @@ const buildSuccessfulLinksPayloads = (
       ...originalRequest,
       lastProcessedAt: new Date().toISOString(),
     };
-
     flattenResult.attemptsCount += 1;
-
     const { _id, originalUrl, ...updatePayload } = flattenResult;
+
     return { linkId: _id, originalUrl, updatePayload };
   });
 };
@@ -44,17 +42,15 @@ const buildFailedLinksPayloads = (
   updatePayload: UpdateLinkPayload;
 }[] => {
   return processedResults.map((result) => {
-     
     const { originalRequest, scrapedText, error, ...rest } = result;
     const flattenResult = {
       ...rest,
       ...originalRequest,
       lastProcessedAt: new Date().toISOString(),
     };
-
     flattenResult.attemptsCount += 1;
-
     const { _id, originalUrl, ...updatePayload } = flattenResult;
+
     return { linkId: _id, originalUrl, updatePayload };
   });
 };
@@ -92,5 +88,5 @@ const lambdaHandler = async (
 };
 
 export const handler = middy(lambdaHandler)
-  .use(wrappedHandlers([httpJsonBodyParser()]))
-  .use(wrappedHandlers([handleErrorMiddleware()]));
+  .use(httpJsonBodyParser())
+  .use(handleErrorMiddleware());
