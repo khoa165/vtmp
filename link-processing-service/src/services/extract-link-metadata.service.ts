@@ -10,11 +10,6 @@ import {
 
 import { EnvConfig } from '@/config/env';
 import {
-  buildPrompt,
-  formatJobDescription,
-  stringToEnumValue,
-} from '@/helpers/link.helpers';
-import {
   ExtractedLinkMetadata,
   ExtractedLinkMetadataSchema,
   RawAIResponseSchema,
@@ -27,6 +22,8 @@ import {
   AIResponseEmptyError,
   logError,
 } from '@/utils/errors';
+import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
+import { buildPrompt } from '@/utils/prompts';
 
 const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
