@@ -31,25 +31,23 @@ export const RawAIResponseSchema = z
   })
   .strict();
 
-export type RawAIResponse = z.infer<typeof RawAIResponseSchema>;
-
 export const ExtractedLinkMetadataSchema = z
   .object({
     jobTitle: z.string().optional(),
     companyName: z.string().optional(),
     location: z
       .nativeEnum(LinkRegion, {
-        message: 'Invalid location',
+        message: 'Invalid AI generated location',
       })
       .optional(),
     jobFunction: z
       .nativeEnum(JobFunction, {
-        message: 'Invalid job title',
+        message: 'Invalid AI generated job title',
       })
       .optional(),
     jobType: z
       .nativeEnum(JobType, {
-        message: 'Invalid job type',
+        message: 'Invalid AI generated job type',
       })
       .optional(),
     datePosted: z.string().optional(),
