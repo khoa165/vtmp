@@ -31,3 +31,19 @@ export const ApplicationInterestColumn = ({
     </div>
   );
 };
+
+export const ApplicationInterestDropDown = ({
+  interest,
+}: {
+  interest: InterestLevel;
+}) => {
+  const InterestIcon = InterestLevelToIconMapping[interest];
+  return (
+    <span className="flex items-center gap-2">
+      <InterestIcon
+        className={`w-8 h-8 ${InterestLevelToColorMapping[interest]}`}
+      />
+      <span>{interest}</span>
+    </span>
+  );
+};
