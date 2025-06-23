@@ -2,7 +2,7 @@ import chromium from '@sparticuz/chromium';
 import pLimit from 'p-limit';
 import puppeteer, { Browser, Page } from 'puppeteer-core';
 
-import { LinkStatus, LinkProcessingFailureStage } from '@vtmp/common/constants';
+import { LinkProcessingFailureStage } from '@vtmp/common/constants';
 
 import {
   FailedProcessedLink,
@@ -10,6 +10,7 @@ import {
   ValidatedLink,
 } from '@/types/link-processing.types';
 import { logError, ScrapingError } from '@/utils/errors';
+import { _determineProcessStatus } from '@/utils/retry';
 
 const _launchBrowserInstance = async (): Promise<Browser> => {
   const browser = await puppeteer.launch({
@@ -31,14 +32,6 @@ const _scrapeWebpage = async (page: Page, url: string): Promise<string> => {
   return bodyText;
 };
 
-const _shouldLongRetry = (attempsCount: number) => {
-  if (attempsCount < 3) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
 export const WebScrapingService = {
   scrapeLinks: async (
     validatedLinks: ValidatedLink[]
@@ -49,6 +42,7 @@ export const WebScrapingService = {
     // Create a limiter with CONCURRENCY_LIMIT
     const CONCURRENCY_LIMIT = 5;
     const limit = pLimit(CONCURRENCY_LIMIT);
+    const MAX_LONG_RETRY = 3;
 
     // Open only 1 Chrominum browser process
     const browser = await _launchBrowserInstance();
@@ -70,28 +64,18 @@ export const WebScrapingService = {
           } catch (error: unknown) {
             logError(error);
 
-            if (_shouldLongRetry(validatedLink.originalRequest.attemptsCount)) {
-              failedScrapingLinks.push({
-                ...validatedLink,
-                status: LinkStatus.PENDING_RETRY,
-                failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-                error: new ScrapingError(
-                  'Failed to scrap url',
-                  {
-                    url: validatedLink.url,
-                  },
-                  { cause: error }
-                ),
-              });
-            }
-
             failedScrapingLinks.push({
               ...validatedLink,
-              status: LinkStatus.PIPELINE_FAILED,
+              status: _determineProcessStatus(
+                validatedLink.originalRequest,
+                MAX_LONG_RETRY
+              ),
               failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
               error: new ScrapingError(
                 'Failed to scrap url',
-                { url: validatedLink.url },
+                {
+                  url: validatedLink.url,
+                },
                 { cause: error }
               ),
             });

@@ -24,17 +24,18 @@ import {
 } from '@/utils/errors';
 import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
 import { buildPrompt } from '@/utils/prompts';
+import { _determineProcessStatus } from '@/utils/retry';
 
-const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
+const _getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
   return new GoogleGenAI({ apiKey: geminiApiKey });
 };
 
-const generateMetadata = async (
+const _generateMetadata = async (
   text: string,
   url: string
 ): Promise<ExtractedLinkMetadata> => {
-  const genAI = await getGoogleGenAI();
+  const genAI = await _getGoogleGenAI();
   const prompt = await buildPrompt(text);
 
   const response: GenerateContentResponse = await genAI.models.generateContent({
@@ -74,14 +75,6 @@ const generateMetadata = async (
   return ExtractedLinkMetadataSchema.parse(formattedLinkMetadata);
 };
 
-const _shouldLongRetry = (attempsCount: number) => {
-  if (attempsCount < 3) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
 export const ExtractLinkMetadataService = {
   extractMetadata: async (
     scrapedLinks: ScrapedLink[]
@@ -89,12 +82,13 @@ export const ExtractLinkMetadataService = {
     metadataExtractedLinks: MetadataExtractedLink[];
     failedMetadataExtractionLinks: FailedProcessedLink[];
   }> => {
+    const MAX_LONG_RETRY = 3;
     const metadataExtractedLinks: MetadataExtractedLink[] = [];
     const failedMetadataExtractionLinks: FailedProcessedLink[] = [];
     await Promise.all(
       scrapedLinks.map(async (link) => {
         try {
-          const extractedMetadata = await generateMetadata(
+          const extractedMetadata = await _generateMetadata(
             link.scrapedText,
             link.url
           );
@@ -107,22 +101,12 @@ export const ExtractLinkMetadataService = {
         } catch (error: unknown) {
           logError(error);
 
-          if (_shouldLongRetry(link.originalRequest.attemptsCount)) {
-            failedMetadataExtractionLinks.push({
-              ...link,
-              status: LinkStatus.PENDING_RETRY,
-              failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
-              error: new AIExtractionError(
-                'Failed to extract metadata with AI',
-                { url: link.url },
-                { cause: error }
-              ),
-            });
-          }
-
           failedMetadataExtractionLinks.push({
             ...link,
-            status: LinkStatus.PIPELINE_FAILED,
+            status: _determineProcessStatus(
+              link.originalRequest,
+              MAX_LONG_RETRY
+            ),
             failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
             error: new AIExtractionError(
               'Failed to extract metadata with AI',
