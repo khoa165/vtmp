@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import {
   LinkRegion,
   JobFunction,
@@ -5,12 +7,11 @@ import {
   LinkStatus,
   LinkProcessingFailureStage,
 } from '@vtmp/common/constants';
-import { z } from 'zod';
 
 /**
  * These schema are specifically for zod validation at AI metadata extraction stage
  */
-const RawJobDescriptionSchema = z
+const JobDescriptionSchema = z
   .object({
     responsibility: z.string().optional(),
     requirement: z.string().optional(),
@@ -26,7 +27,7 @@ export const RawAIResponseSchema = z
     jobFunction: z.string().optional(),
     jobType: z.string().optional(),
     datePosted: z.string().optional(),
-    jobDescription: RawJobDescriptionSchema.optional(),
+    jobDescription: JobDescriptionSchema.optional(),
   })
   .strict();
 
@@ -64,7 +65,7 @@ export const ExtractedLinkMetadataSchema = z
 export type ExtractedLinkMetadata = z.infer<typeof ExtractedLinkMetadataSchema>;
 
 /**
- * These schemas and types are to check link object that was just sent to Lambda
+ * These schemas and types are to check link object that was sent to Lambda
  * SubmittedLink[] is type of input param into LinkProcessorService.processLink()
  * SubmittedLink[] is also the type of input param into LinkValidatorService.validateLinks()
  */

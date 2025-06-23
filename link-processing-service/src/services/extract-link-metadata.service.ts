@@ -9,7 +9,11 @@ import {
 } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
-import { buildPrompt, formatJobDescription , stringToEnumValue } from '@/helpers/link.helpers';
+import {
+  buildPrompt,
+  formatJobDescription,
+  stringToEnumValue,
+} from '@/helpers/link.helpers';
 import {
   ExtractedLinkMetadata,
   ExtractedLinkMetadataSchema,
@@ -18,7 +22,7 @@ import {
   ScrapedLink,
   FailedProcessedLink,
   MetadataExtractedLink,
-} from '@/services/link-metadata-validation';
+} from '@/types/link-processing.types';
 import {
   AIExtractionError,
   AIResponseEmptyError,
@@ -103,24 +107,24 @@ export const ExtractLinkMetadataService = {
   }> => {
     const metadataExtractedLinks: MetadataExtractedLink[] = [];
     const failedMetadataExtractionLinks: FailedProcessedLink[] = [];
-    const results = await Promise.all(
+    await Promise.all(
       scrapedLinks.map(async (link) => {
         try {
           const extractedMetadata = await generateMetadata(
             link.scrapedText,
             link.url
           );
-          return {
+          metadataExtractedLinks.push({
             ...link,
             extractedMetadata,
             status: LinkStatus.PENDING_ADMIN_REVIEW,
             failureStage: null, // Update failureStage to null to clear any previous failureStage value
-          };
+          });
         } catch (error: unknown) {
           logError(error);
 
           if (_shouldLongRetry(link.originalRequest.attemptsCount)) {
-            return {
+            failedMetadataExtractionLinks.push({
               ...link,
               status: LinkStatus.PENDING_RETRY,
               failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
@@ -129,10 +133,10 @@ export const ExtractLinkMetadataService = {
                 { url: link.url },
                 { cause: error }
               ),
-            };
+            });
           }
 
-          return {
+          failedMetadataExtractionLinks.push({
             ...link,
             status: LinkStatus.PIPELINE_FAILED,
             failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
@@ -141,19 +145,11 @@ export const ExtractLinkMetadataService = {
               { url: link.url },
               { cause: error }
             ),
-          };
+          });
         }
       })
     );
 
-    // Sort results into metadataExtractedLinks and failedMetadataExtractionLinks
-    for (const result of results) {
-      if ('error' in result) {
-        failedMetadataExtractionLinks.push(result);
-      } else {
-        metadataExtractedLinks.push(result);
-      }
-    }
     return { metadataExtractedLinks, failedMetadataExtractionLinks };
   },
 };

@@ -7,7 +7,7 @@ import {
   FailedProcessedLink,
   ScrapedLink,
   ValidatedLink,
-} from '@/services/link-metadata-validation';
+} from '@/types/link-processing.types';
 import { logError, ScrapingError } from '@/utils/errors';
 
 const _launchBrowserInstance = async (): Promise<Browser> => {
@@ -47,20 +47,22 @@ export const WebScrapingService = {
   }> => {
     // Open only 1 Chrominum browser process
     const browser = await _launchBrowserInstance();
+
     const scrapedLinks: ScrapedLink[] = [];
     const failedScrapingLinks: FailedProcessedLink[] = [];
-    const results = await Promise.all(
+
+    await Promise.all(
       validatedLinks.map(async (validatedLink) => {
         // Open a new tab
         const page = await browser.newPage();
         try {
           const scrapedText = await _scrapeWebpage(page, validatedLink.url);
-          return { ...validatedLink, scrapedText };
+          scrapedLinks.push({ ...validatedLink, scrapedText });
         } catch (error: unknown) {
           logError(error);
 
           if (_shouldLongRetry(validatedLink.originalRequest.attemptsCount)) {
-            return {
+            failedScrapingLinks.push({
               ...validatedLink,
               status: LinkStatus.PENDING_RETRY,
               failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
@@ -71,10 +73,10 @@ export const WebScrapingService = {
                 },
                 { cause: error }
               ),
-            };
+            });
           }
 
-          return {
+          failedScrapingLinks.push({
             ...validatedLink,
             status: LinkStatus.PIPELINE_FAILED,
             failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
@@ -83,7 +85,7 @@ export const WebScrapingService = {
               { url: validatedLink.url },
               { cause: error }
             ),
-          };
+          });
         } finally {
           await page.close();
         }
@@ -91,15 +93,6 @@ export const WebScrapingService = {
     );
 
     await browser.close();
-
-    // Sort the results into scrapedLinks and failedScrapingLinks
-    for (const result of results) {
-      if ('error' in result) {
-        failedScrapingLinks.push(result);
-      } else {
-        scrapedLinks.push(result);
-      }
-    }
     return { scrapedLinks, failedScrapingLinks };
   },
 };

@@ -1,15 +1,16 @@
 import middy from '@middy/core';
 import httpJsonBodyParser from '@middy/http-json-body-parser';
-import { handleErrorMiddleware } from '@/utils/errors';
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
+
 import { LinkProcessorService } from '@/services/link-processor.service';
-import { updateLink } from '@/utils/api';
 import {
   EventBodySchema,
   FailedProcessedLink,
   MetadataExtractedLink,
   UpdateLinkPayload,
-} from '@/services/link-metadata-validation';
+} from '@/types/link-processing.types';
+import { updateLink } from '@/utils/api';
+import { handleErrorMiddleware } from '@/utils/errors';
 
 const buildSuccessfulLinksPayloads = (
   processedResults: MetadataExtractedLink[]
@@ -19,7 +20,7 @@ const buildSuccessfulLinksPayloads = (
   updatePayload: UpdateLinkPayload;
 }[] => {
   return processedResults.map((result) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const { originalRequest, extractedMetadata, scrapedText, ...rest } = result;
     const flattenResult = {
       ...rest,
@@ -43,7 +44,7 @@ const buildFailedLinksPayloads = (
   updatePayload: UpdateLinkPayload;
 }[] => {
   return processedResults.map((result) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const { originalRequest, scrapedText, error, ...rest } = result;
     const flattenResult = {
       ...rest,
@@ -91,5 +92,5 @@ const lambdaHandler = async (
 };
 
 export const handler = middy(lambdaHandler)
-  .use(httpJsonBodyParser())
-  .use(handleErrorMiddleware());
+  .use(wrappedHandlers([httpJsonBodyParser()]))
+  .use(wrappedHandlers([handleErrorMiddleware()]));

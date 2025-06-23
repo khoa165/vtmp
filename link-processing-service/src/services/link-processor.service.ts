@@ -5,7 +5,7 @@ import {
   SubmittedLink,
   MetadataExtractedLink,
   FailedProcessedLink,
-} from '@/services/link-metadata-validation';
+} from '@/types/link-processing.types';
 
 export const LinkProcessorService = {
   processLinks: async (
@@ -19,6 +19,7 @@ export const LinkProcessorService = {
     //   LinkValidatorService.validateLinks(linksData);
 
     // Simulate Validation stage: get validatedLinks and failedValidationLinks
+    // To be removed in Link Validation Service PR
     const validatedLinks = linksData.map((linkData) => ({
       originalRequest: linkData,
       url: linkData.originalUrl,
@@ -38,6 +39,7 @@ export const LinkProcessorService = {
       ...failedScrapingLinks,
       ...failedMetadataExtractionLinks
     );
+
     return { successfulLinks: metadataExtractedLinks, failedLinks };
   },
 };
