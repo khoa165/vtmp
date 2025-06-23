@@ -8,7 +8,7 @@ import {
   LinkRegion,
 } from '@vtmp/common/constants';
 
-import { LinkProcessingBadRequest, InternalServerError } from '@/utils/errors';
+import { LinkProcessingBadRequest } from '@/utils/errors';
 
 export interface ILink extends Document {
   _id: Types.ObjectId;
@@ -107,7 +107,9 @@ LinkSchema.pre('findOneAndUpdate', function (next) {
   const update = this.getUpdate() as UpdateQuery<ILink>;
   if (!('$set' in update)) {
     return next(
-      new InternalServerError('Updates must use the $set operator', { update })
+      new LinkProcessingBadRequest('Updates must use the $set operator', {
+        update,
+      })
     );
   }
   const status = update['$set']?.status;
