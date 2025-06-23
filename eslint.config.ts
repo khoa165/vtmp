@@ -20,18 +20,16 @@ export default tseslint.config(
       parser: tseslint.parser,
     },
     plugins: {
-      custom: customEslintRules,
+      customEslintRules,
       import: importPlugin,
       stylistic,
       checkFile,
       boundaries,
     },
-    files: ['web-client/**/*.{ts,tsx}'],
     settings: {
       'import/resolver': {
         typescript: {
           project: [
-            './web-client/tsconfig.app.json',
             './web/tsconfig.json',
             './packages/common/tsconfig.json',
             './custom-eslint/tsconfig.json',
@@ -77,6 +75,17 @@ export default tseslint.config(
         },
       ],
     },
+  },
+
+  {
+    files: ['web-client/**/*.{ts,tsx}'],
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: './web-client/tsconfig.app.json',
+        },
+      },
+    },
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'warn',
       '@typescript-eslint/no-dynamic-delete': 'off',
@@ -92,7 +101,7 @@ export default tseslint.config(
           ignoreRestSiblings: true,
         },
       ],
-      'custom/wrapped-handlers-in-router': 'error',
+      'customEslintRules/wrapped-handlers-in-router': 'error', // 🔧 Updated plugin prefix from customEslintRules → custom
       'stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
       'import/no-unresolved': 'error',
       'import/no-default-export': 'error',
@@ -132,10 +141,9 @@ export default tseslint.config(
         },
       ],
       '@typescript-eslint/no-var-requires': 'error',
-      'custom/no-try-in-controller-or-middleware': 'error',
-      'custom/enforce-uppercase-enum-values': 'error',
-      'custom/enforce-sorted-enum-keys': 'error',
-
+      'customEslintRules/no-try-in-controller-or-middleware': 'error', // 🔧 Updated prefix
+      'customEslintRules/enforce-uppercase-enum-values': 'error', // 🔧 Updated prefix
+      'customEslintRules/enforce-sorted-enum-keys': 'error', // 🔧 Updated prefix
       'boundaries/element-types': [
         'error',
         {
@@ -162,6 +170,7 @@ export default tseslint.config(
       ],
     },
   },
+
   {
     files: [
       'web/src/app.ts',
@@ -171,7 +180,7 @@ export default tseslint.config(
       'discord-service/**/*',
     ],
     rules: {
-      'custom/wrapped-handlers-in-router': 'off',
+      'custom/wrapped-handlers-in-router': 'off', // 🔧 Updated prefix
     },
   },
 
