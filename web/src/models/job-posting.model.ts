@@ -19,6 +19,18 @@ export interface IJobPosting extends Document {
 }
 
 export interface JobFilter {
+  jobTitle?: string;
+  companyName?: string;
+  location?: string;
+  jobFunction?: JobFunction;
+  jobType?: JobType;
+  postingDateRangeStart?: Date;
+  postingDateRangeEnd?: Date;
+}
+
+export interface JobFilterPagination {
+  sortedField?: string;
+  sortedOrder?: string;
   limit?: number;
   previous_cursor?: string;
   next_cursor?: string;
@@ -96,4 +108,8 @@ export const JobPostingModel = mongoose.model<IJobPosting>(
 JobPostingSchema.index({
   _id: 1,
   datePosted: -1,
+  location: 1,
+  companyName: 1,
+  jobType: 1,
+  JobFunction: 1,
 });

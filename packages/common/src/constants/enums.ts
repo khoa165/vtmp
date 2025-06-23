@@ -217,3 +217,16 @@ export enum JobType {
   NEW_GRAD = 'NEW_GRAD',
   INDUSTRY = 'INDUSTRY',
 }
+
+export enum SortedOrder {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
+export enum JobPostingSortedField {
+  DATE_POSTED = 'datePosted',
+  LOCATION = 'location',
+  COMPANY_NAME = 'companyName',
+  JOB_TYPE = 'jobType',
+  JOB_FUNCTION = 'JobFunction',
+}

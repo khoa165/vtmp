@@ -1,6 +1,12 @@
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
-import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
+import {
+  JobFunction,
+  JobPostingRegion,
+  JobType,
+  JobPostingSortedField,
+  SortedOrder,
+} from '@vtmp/common/constants';
 
 export const JobPostingService = {
   updateJobPostingById: async (
@@ -47,6 +53,8 @@ export const JobPostingService = {
   }: {
     userId: string;
     filters?: {
+      sortedField?: JobPostingSortedField;
+      sortedOrder?: SortedOrder;
       limit?: number;
       previous_cursor?: string;
       next_cursor?: string;

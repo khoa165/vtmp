@@ -1,7 +1,13 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { JobPostingService } from '@/services/job-posting.service';
-import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
+import {
+  JobFunction,
+  JobPostingRegion,
+  JobType,
+  JobPostingSortedField,
+  SortedOrder,
+} from '@vtmp/common/constants';
 import { getUserFromRequest } from '@/middlewares/utils';
 import { parse } from 'date-fns';
 import mongoose from 'mongoose';
@@ -57,6 +63,14 @@ const JobPostingIdParamSchema = z.object({
 
 const FilterSchema = z
   .object({
+    sortedField: z
+      .nativeEnum(JobPostingSortedField, {
+        message: 'Invalid sorted field format',
+      })
+      .optional(),
+    sortedOrder: z.nativeEnum(SortedOrder, {
+      message: 'Invalid sorted order format',
+    }),
     limit: z.number().optional().default(10),
     next_cursor: z.string().optional(),
     previous_cursor: z.string().optional(),
