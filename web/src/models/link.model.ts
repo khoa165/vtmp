@@ -8,7 +8,7 @@ import {
   LinkRegion,
 } from '@vtmp/common/constants';
 
-import { InternalServerError } from '@/utils/errors';
+import { LinkProcessingBadRequest } from '@/utils/errors';
 
 export interface ILink extends Document {
   _id: Types.ObjectId;
@@ -67,14 +67,17 @@ const LinkSchema = new mongoose.Schema<ILink>(
     location: {
       type: String,
       enum: Object.values(LinkRegion),
+      default: LinkRegion.UNKNOWN,
     },
     jobFunction: {
       type: String,
       enum: Object.values(JobFunction),
+      default: JobFunction.UNKNOWN,
     },
     jobType: {
       type: String,
       enum: Object.values(JobType),
+      default: JobType.UNKNOWN,
     },
     datePosted: {
       type: Date,
@@ -104,22 +107,36 @@ LinkSchema.pre('findOneAndUpdate', function (next) {
   const update = this.getUpdate() as UpdateQuery<ILink>;
   if (!('$set' in update)) {
     return next(
-      new InternalServerError('Updates must use the $set operator', { update })
+      new LinkProcessingBadRequest('Updates must use the $set operator', {
+        update,
+      })
     );
   }
   const status = update['$set']?.status;
   const failureStage = update['$set']?.failureStage;
 
+  if (
+    status === LinkStatus.ADMIN_APPROVED ||
+    status === LinkStatus.ADMIN_REJECTED
+  ) {
+    next();
+  }
+
   if (status === undefined || failureStage === undefined) {
     return next(
-      new InternalServerError('status or failureStage must be set', { update })
+      new LinkProcessingBadRequest('status or failureStage must be set', {
+        update,
+      })
     );
   }
   if (status === LinkStatus.PENDING_PROCESSING) {
     return next(
-      new InternalServerError('status cannot be reset to PENDING_PROCESSING', {
-        update,
-      })
+      new LinkProcessingBadRequest(
+        'status cannot be reset to PENDING_PROCESSING',
+        {
+          update,
+        }
+      )
     );
   }
 
@@ -131,47 +148,42 @@ LinkSchema.pre('findOneAndUpdate', function (next) {
   if (isFailed) {
     if (!failureStage) {
       return next(
-        new InternalServerError(
+        new LinkProcessingBadRequest(
           'failureStage must be set when status is PENDING_RETRY, PIPELINE_FAILED, or PIPELINE_REJECTED',
           { update }
         )
       );
     }
-  } else {
+  } else if (status === LinkStatus.PENDING_ADMIN_REVIEW) {
     if (failureStage) {
       return next(
-        new InternalServerError(
-          'failureStage must not be set for ADMIN_APPROVED, ADMIN_REJECTED, PENDING_PROCESSING, or PENDING_ADMIN_REVIEW',
+        new LinkProcessingBadRequest(
+          'failureStage must not be set for PENDING_ADMIN_REVIEW',
           { update }
         )
       );
     }
   }
 
-  if (
-    status !== LinkStatus.ADMIN_APPROVED &&
-    status !== LinkStatus.ADMIN_REJECTED
-  ) {
-    const attemptsCount = update['$set']?.attemptsCount;
-    const lastProcessedAt = update['$set']?.lastProcessedAt;
+  const attemptsCount = update['$set']?.attemptsCount;
+  const lastProcessedAt = update['$set']?.lastProcessedAt;
 
-    if (attemptsCount === undefined) {
-      return next(
-        new InternalServerError('attemptsCount must be set', { update })
-      );
-    } else if (attemptsCount <= 0) {
-      return next(
-        new InternalServerError('attemptsCount must be greater than 0', {
-          update,
-        })
-      );
-    }
+  if (attemptsCount === undefined) {
+    return next(
+      new LinkProcessingBadRequest('attemptsCount must be set', { update })
+    );
+  } else if (attemptsCount <= 0) {
+    return next(
+      new LinkProcessingBadRequest('attemptsCount must be greater than 0', {
+        update,
+      })
+    );
+  }
 
-    if (!lastProcessedAt) {
-      return next(
-        new InternalServerError('lastProcessedAt must be set', { update })
-      );
-    }
+  if (!lastProcessedAt) {
+    return next(
+      new LinkProcessingBadRequest('lastProcessedAt must be set', { update })
+    );
   }
 
   next();

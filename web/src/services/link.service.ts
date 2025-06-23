@@ -10,7 +10,7 @@ import {
 } from '@/types/link.types';
 import {
   DuplicateResourceError,
-  InternalServerError,
+  LinkProcessingBadRequest,
   ResourceNotFoundError,
 } from '@/utils/errors';
 
@@ -74,7 +74,7 @@ export const LinkService = {
       status === LinkStatus.ADMIN_APPROVED ||
       status === LinkStatus.ADMIN_REJECTED
     ) {
-      throw new InternalServerError(
+      throw new LinkProcessingBadRequest(
         'Link status cannot be ADMIN_APPROVED or ADMIN_REJECTED when updating metadata',
         { linkMetaData, linkId }
       );

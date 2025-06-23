@@ -150,7 +150,7 @@ describe('LinkController', () => {
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data.originalUrl).to.equal(originalUrl);
       expect(res.body.data.status).to.equal(LinkStatus.ADMIN_REJECTED);
-      expect(res.body.message).to.equal('Link has been rejected!');
+      expect(res.body.message).to.equal('Link has been rejected by admin');
     });
   });
 
@@ -276,9 +276,9 @@ describe('LinkController', () => {
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`); // should be replaced to link processing service token;
-      expectErrorsArray({ res, statusCode: 500, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal(
-        'failureStage must not be set for ADMIN_APPROVED, ADMIN_REJECTED, PENDING_PROCESSING, or PENDING_ADMIN_REVIEW'
+        'failureStage must not be set for PENDING_ADMIN_REVIEW'
       );
     });
 
@@ -338,7 +338,7 @@ describe('LinkController', () => {
           failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
         })
         .set('Authorization', `Bearer ${mockAdminToken}`);
-      expectErrorsArray({ res, statusCode: 500, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.include(
         'status cannot be reset to PENDING_PROCESSING'
       );

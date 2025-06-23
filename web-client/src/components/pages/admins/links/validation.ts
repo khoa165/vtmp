@@ -1,5 +1,11 @@
 import { z } from 'zod';
-import { LinkRegion, LinkStatus } from '@vtmp/common/constants';
+
+import {
+  JobFunction,
+  JobType,
+  LinkRegion,
+  LinkStatus,
+} from '@vtmp/common/constants';
 
 export const LinkResponseSchema = z.object({
   _id: z.string(),
@@ -13,6 +19,16 @@ export const LinkResponseSchema = z.object({
   location: z
     .nativeEnum(LinkRegion, {
       message: 'Invalid job location',
+    })
+    .optional(),
+  jobFunction: z
+    .nativeEnum(JobFunction, {
+      message: 'Invalid job function',
+    })
+    .optional(),
+  jobType: z
+    .nativeEnum(JobType, {
+      message: 'Invalid job type',
     })
     .optional(),
   datePosted: z.string().optional(),
@@ -38,9 +54,9 @@ export const LinksCountByStatusSchema = z.object({
   message: z.string(),
   data: z.object({
     [LinkStatus.PENDING_PROCESSING]: z.number(),
-    [LinkStatus.PENDING_ADMIN_REVIEW]: z.number(),
     [LinkStatus.ADMIN_APPROVED]: z.number(),
     [LinkStatus.ADMIN_REJECTED]: z.number(),
+    [LinkStatus.PENDING_ADMIN_REVIEW]: z.number(),
     [LinkStatus.PENDING_RETRY]: z.number(),
     [LinkStatus.PIPELINE_FAILED]: z.number(),
     [LinkStatus.PIPELINE_REJECTED]: z.number(),
@@ -53,6 +69,8 @@ export interface JobPostingData {
   companyName?: string;
   jobTitle?: string;
   location?: string;
+  jobFunction?: string;
+  jobType?: string;
   datePosted?: string;
   jobDescription?: string;
   adminNote?: string;

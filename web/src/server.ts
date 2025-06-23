@@ -1,5 +1,5 @@
 import app from '@/app';
-import '@/services/link/cron-worker';
+// import '@/services/link/cron-worker';
 import { EnvConfig } from '@/config/env';
 
 const PORT = EnvConfig.get().PORT ?? 8000;

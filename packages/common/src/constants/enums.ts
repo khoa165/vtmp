@@ -44,7 +44,7 @@ export enum JobPostingRegion {
 export enum LinkRegion {
   US = 'US',
   CANADA = 'CANADA',
-  OTHER = 'OTHER',
+  UNKNOWN = 'UNKNOWN',
 }
 
 export enum SystemRole {
@@ -199,24 +199,19 @@ export enum Department {
   PD = 'PD',
 }
 
-export enum JobTitle {
-  SOFTWARE_ENGINEER = 'SOFTWARE_ENGINEER',
-  DATA_SCIENTIST = 'DATA_SCIENTIST',
-  PRODUCT_DESIGNER = 'PRODUCT_DESIGNER',
-  DATA_ENGINEER = 'DATA_ENGINEER',
-}
-
 export enum JobFunction {
   SOFTWARE_ENGINEER = 'SOFTWARE_ENGINEER',
   DATA_SCIENTIST = 'DATA_SCIENTIST',
   PRODUCT_DESIGNER = 'PRODUCT_DESIGNER',
   DATA_ENGINEER = 'DATA_ENGINEER',
+  UNKNOWN = 'UNKNOWN',
 }
 
 export enum JobType {
   INTERNSHIP = 'INTERNSHIP',
   NEW_GRAD = 'NEW_GRAD',
   INDUSTRY = 'INDUSTRY',
+  UNKNOWN = 'UNKNOWN',
 }
 
 export enum LinkStatus {
