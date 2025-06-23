@@ -27,6 +27,9 @@ import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
 import { omit } from 'remeda';
 import { useValidateInvitation } from '@/components/pages/auth/hooks/validate-invitation-hook';
+import { jwtDecode } from 'jwt-decode';
+import { z } from 'zod';
+import { InvitationErrorPage } from '@/components/pages/auth/invitation-error';
 
 const passwordMessage = [
   '1. Password length is in range 8-20',
@@ -62,15 +65,31 @@ interface SignUpInputErrors {
   lastNameErrors: string[];
 }
 
+const JWTDecodeSchema = z.object({
+  receiverEmail: z.string(),
+});
+
 export const SignUpPage = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
+  let decodedToken: z.infer<typeof JWTDecodeSchema>;
+  if (!token) {
+    return (
+      <InvitationErrorPage message="You will need a valid invitation to sign up!" />
+    );
+  }
+
+  try {
+    decodedToken = JWTDecodeSchema.parse(jwtDecode(token));
+  } catch (err) {
+    return <InvitationErrorPage message="Your invitation is invalid!" />;
+  }
+  const emailInput = decodedToken.receiverEmail;
+
   const { mutate: validateTokenFn } = useValidateInvitation();
   useEffect(() => {
-    validateTokenFn({ token: token ? token : '' });
+    validateTokenFn({ token });
   }, []);
-
-  const emailInput = 'Email2@viettech.com';
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
@@ -116,7 +135,7 @@ export const SignUpPage = () => {
       request({
         method: Method.POST,
         url: `/auth/signup?token=${token}`,
-        data: body,
+        data: { ...body, token },
         schema: AuthResponseSchema,
       }),
     onSuccess: (res) => {
@@ -126,6 +145,7 @@ export const SignUpPage = () => {
       navigate('/application-tracker');
     },
     onError: (error) => {
+      console.log('Error in signup mutation', error);
       if (axios.isAxiosError(error) && error.response) {
         error.response.data.errors.forEach((err: { message: string }) => {
           if (
@@ -188,8 +208,8 @@ export const SignUpPage = () => {
   };
 
   return (
-    <div className="grid grid-cols-12 max-w-screen min-h-screen gap-4 px-20 py-15">
-      <div className="col-start-1 col-span-6">
+    <div className="grid grid-cols-12 max-w-screen min-h-screen gap-4 px-20 py-10">
+      <div className="col-start-1 col-span-6 ">
         <div className="magic-pattern px-15 py-15 rounded-[33px]">
           <div className="relative h-full w-xs">
             <p className="text-6xl text-black font-bold absolute bottom-0">
@@ -201,10 +221,10 @@ export const SignUpPage = () => {
 
       <div className="col-start-7 col-span-5 flex flex-col justify-end">
         <div className="w-full flex flex-row justify-end">
-          <LogoMint className="w-80 h-32 mb-[56px]" />
+          <LogoMint className="w-40 h-16 pr-6" />
         </div>
 
-        <Card className="bg-transparent border-0 h-full justify-center">
+        <Card className="bg-transparent border-0 shadow-none h-full justify-center">
           <CardHeader>
             <CardTitle className="text-4xl font-bold">
               Create an Account

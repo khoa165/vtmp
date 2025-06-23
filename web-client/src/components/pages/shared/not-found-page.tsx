@@ -1,8 +1,17 @@
 import React from 'react';
+import { Particles } from '@/components/magicui/particles';
 
 export const NotFoundPage = () => {
   return (
     <div className="min-h-screen bg-black text-green-100 font-mono flex items-center justify-center p-8">
+      <Particles
+        className="absolute inset-0 z-0"
+        quantity={1000}
+        ease={100}
+        staticity={10}
+        size={0.8}
+        refresh
+      />
       <div className="max-w-xl text-center">
         <h1 className="text-5xl mb-6 tracking-widest">
           404 — The Page is Gone
