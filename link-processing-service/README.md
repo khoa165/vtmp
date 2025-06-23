@@ -2,7 +2,7 @@
 
 ## Production deployment
 
-- Build locally: docker buildx build --no-cache --platform linux/amd64 --provenance=false -f link-processing-service/Dockerfile -t vtmp-link-processor .
+- Build locally: docker buildx build --no-cache --platform linux/arm64 --provenance=false -f link-processing-service/Dockerfile -t vtmp-link-processor .
 
 - Tag it for ECR: docker tag vtmp-link-processor:latest 904233113283.dkr.ecr.us-east-1.amazonaws.com/vtmp-link-processor:latest
 

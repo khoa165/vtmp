@@ -83,8 +83,10 @@ export const ExtractLinkMetadataService = {
     failedMetadataExtractionLinks: FailedProcessedLink[];
   }> => {
     const MAX_LONG_RETRY = 3;
+
     const metadataExtractedLinks: MetadataExtractedLink[] = [];
     const failedMetadataExtractionLinks: FailedProcessedLink[] = [];
+
     await Promise.all(
       scrapedLinks.map(async (link) => {
         try {

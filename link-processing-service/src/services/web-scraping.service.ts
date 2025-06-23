@@ -44,11 +44,11 @@ export const WebScrapingService = {
     const limit = pLimit(CONCURRENCY_LIMIT);
     const MAX_LONG_RETRY = 3;
 
-    // Open only 1 Chrominum browser process
-    const browser = await _launchBrowserInstance();
-
     const scrapedLinks: ScrapedLink[] = [];
     const failedScrapingLinks: FailedProcessedLink[] = [];
+
+    // Open only 1 Chrominum browser process
+    const browser = await _launchBrowserInstance();
 
     await Promise.all(
       validatedLinks.map((validatedLink) =>

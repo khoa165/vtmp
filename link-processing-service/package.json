@@ -29,6 +29,7 @@
     "zod": "^3.25.51"
   },
   "scripts": {
-    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json"
+    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
+    "dev": "tsx watch src/index.ts"
   }
 }
