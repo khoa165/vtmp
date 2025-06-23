@@ -8,7 +8,7 @@ import { SubmittedLink } from '@/types/link-processing.types';
  * @param maxLongRetry
  * @param error (optional)
  */
-export const _determineProcessStatus = (
+export const determineProcessStatus = (
   originalRequest: SubmittedLink,
   maxLongRetry: number,
   _error?: unknown

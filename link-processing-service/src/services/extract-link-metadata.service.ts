@@ -23,7 +23,7 @@ import {
   logError,
 } from '@/utils/errors';
 import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
-import { _determineProcessStatus } from '@/utils/long-retry';
+import { determineProcessStatus } from '@/utils/long-retry';
 import { buildPrompt } from '@/utils/prompts';
 
 const _getGoogleGenAI = async (): Promise<GoogleGenAI> => {
@@ -103,7 +103,7 @@ export const ExtractLinkMetadataService = {
 
           failedMetadataExtractionLinks.push({
             ...link,
-            status: _determineProcessStatus(
+            status: determineProcessStatus(
               link.originalRequest,
               MAX_LONG_RETRY
             ),

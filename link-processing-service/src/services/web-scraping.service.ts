@@ -10,7 +10,7 @@ import {
   ValidatedLink,
 } from '@/types/link-processing.types';
 import { logError, ScrapingError } from '@/utils/errors';
-import { _determineProcessStatus } from '@/utils/long-retry';
+import { determineProcessStatus } from '@/utils/long-retry';
 
 const _launchBrowserInstance = async (): Promise<Browser> => {
   const browser = await puppeteer.launch({
@@ -66,7 +66,7 @@ export const WebScrapingService = {
 
             failedScrapingLinks.push({
               ...validatedLink,
-              status: _determineProcessStatus(
+              status: determineProcessStatus(
                 validatedLink.originalRequest,
                 MAX_LONG_RETRY
               ),
