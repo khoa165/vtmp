@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { Button } from '@/components/base/button';
 import { Skeleton } from '@/components/base/skeleton';
 import {
@@ -5,12 +7,13 @@ import {
   useGetInterviewByApplicationId,
   useUpdateInterview,
   useDeleteInterview,
+  useShareInterview,
+  useUnshareInterview,
 } from '@/components/pages/application-tracker/applications/hooks/applications';
 import {
   InterviewUpdateForm,
   InterviewCreateForm,
 } from '@/components/pages/application-tracker/applications/interview-form';
-import { useState } from 'react';
 
 export const InterviewList = ({ applicationId }: { applicationId: string }) => {
   const {
@@ -23,6 +26,8 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
     setShowCreateForm(false)
   );
   const { mutate: updateInterviewFn } = useUpdateInterview();
+  const { mutate: shareInterviewFn } = useShareInterview();
+  const { mutate: unshareInterviewFn } = useUnshareInterview();
   const { mutate: deleteInterviewFn } = useDeleteInterview();
 
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -32,7 +37,7 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
       <div className="mt-8 space-y-4">
         <div className="flex items-center justify-between">
           <Skeleton className="h-6 w-40" />
-          <Skeleton className="h-8 w-28 rounded-md" />
+          <Skeleton className="h-8 w-28 rounded-sm" />
         </div>
 
         <div className="space-y-4">
@@ -54,8 +59,8 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
         <Button
           className={
             showCreateForm
-              ? 'flex items-center h-7.5 gap-1.5 rounded-md border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition'
-              : 'h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition'
+              ? 'flex items-center h-7 gap-1.5 rounded-sm border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition'
+              : 'h-7 gap-1.5 rounded-sm border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition'
           }
           onClick={() => setShowCreateForm(!showCreateForm)}
         >
@@ -76,6 +81,8 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
               key={interview._id}
               currentInterview={interview}
               updateInterviewFn={updateInterviewFn}
+              shareInterviewFn={shareInterviewFn}
+              unsharedInterviewFn={unshareInterviewFn}
               deleteInterviewFn={deleteInterviewFn}
             />
           )

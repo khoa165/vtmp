@@ -243,6 +243,8 @@ export const InterviewController = {
       }
     );
 
+    console.log('sharedInterview', sharedInterview);
+
     res.status(200).json({
       message: 'Interview shared successfully',
       data: sharedInterview,

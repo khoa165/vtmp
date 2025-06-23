@@ -1,7 +1,6 @@
 import { useGetSharedInterviews } from '@/components/pages/application-tracker/interview-feed/hooks/interviews';
 import { InterviewCard } from '@/components/pages/application-tracker/interview-feed/interview-card';
 import { InterviewFilter } from '@/components/pages/application-tracker/interview-feed/interview-feed-container';
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 
 export const InterviewSharedList = ({
   interviewFilter,
@@ -9,30 +8,21 @@ export const InterviewSharedList = ({
   interviewFilter: InterviewFilter;
 }) => {
   const {
-    // isLoading,
-    // isError,
+    isLoading,
+    isError,
     data: sharedInterviewData,
   } = useGetSharedInterviews(interviewFilter);
 
-  const mockInterview = {
-    username: 'Anonymous',
-    status: InterviewStatus.PASSED,
-    types: [InterviewType.CODE_REVIEW, InterviewType.CRITICAL_THINKING],
-    interviewOnDate: new Date(),
-    note: 'This is an mock interview',
-  };
+  if (isLoading) {
+    return <div></div>;
+  }
 
-  // if (isLoading) {
-  //   return <div></div>;
-  // }
-
-  // if (isError) {
-  //   throw new Error('Error loading interviews');
-  // }
+  if (isError) {
+    throw new Error('Error loading interviews');
+  }
 
   return (
-    <div>
-      <InterviewCard interview={mockInterview} />
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
       {(Array.isArray(sharedInterviewData) ? sharedInterviewData : []).map(
         (interview) => (
           <InterviewCard interview={interview} />
