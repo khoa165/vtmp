@@ -2,6 +2,12 @@ import { LinkStatus } from '@vtmp/common/constants';
 
 import { SubmittedLink } from '@/types/link-processing.types';
 
+/**
+ * Decide on whether link should be long retried.
+ * @param originalRequest
+ * @param maxLongRetry
+ * @param error (optional)
+ */
 export const _determineProcessStatus = (
   originalRequest: SubmittedLink,
   maxLongRetry: number,

@@ -10,7 +10,7 @@ import {
   ValidatedLink,
 } from '@/types/link-processing.types';
 import { logError, ScrapingError } from '@/utils/errors';
-import { _determineProcessStatus } from '@/utils/retry';
+import { _determineProcessStatus } from '@/utils/long-retry';
 
 const _launchBrowserInstance = async (): Promise<Browser> => {
   const browser = await puppeteer.launch({

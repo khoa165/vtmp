@@ -23,8 +23,8 @@ import {
   logError,
 } from '@/utils/errors';
 import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
+import { _determineProcessStatus } from '@/utils/long-retry';
 import { buildPrompt } from '@/utils/prompts';
-import { _determineProcessStatus } from '@/utils/retry';
 
 const _getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
