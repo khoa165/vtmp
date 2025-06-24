@@ -187,14 +187,14 @@ export const ReviewPopupButton = ({
           <Button
             variant="outline"
             onClick={handleApprove}
-            className="cursor-pointer text-[#66FFCC]"
+            className="cursor-pointer text-vtmp-mint"
           >
             Approve
           </Button>
           <Button
             variant="outline"
             onClick={handleReject}
-            className="cursor-pointer text-[#FEB584]"
+            className="cursor-pointer text-vtmp-orange"
           >
             Reject
           </Button>
