@@ -286,7 +286,7 @@ describe('InvitationService', () => {
 
     it('should return error message for token with invalid structure', async () => {
       const invalidStructureToken = jwt.sign(
-        { invalidField: 'test' }, // Missing receiverEmail field
+        { invalidField: 'test' },
         EnvConfig.get().JWT_SECRET,
         { expiresIn: '7d' }
       );
@@ -297,7 +297,7 @@ describe('InvitationService', () => {
 
     it('should return error message for token with invalid email format', async () => {
       const invalidEmailToken = jwt.sign(
-        { receiverEmail: 'invalid-email' }, // Invalid email format
+        { receiverEmail: 'invalid-email' }, 
         EnvConfig.get().JWT_SECRET,
         { expiresIn: '7d' }
       );
