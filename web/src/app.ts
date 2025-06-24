@@ -1,18 +1,20 @@
-import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import express, { Express, Request, Response } from 'express';
+import { xss } from 'express-xss-sanitizer';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
+
 import { connectDB } from '@/config/database';
-import routes from '@/routes/index';
-import { routeErrorHandler } from '@/middlewares/utils';
 import { rateLimitMiddleware } from '@/middlewares/rate-limit.middleware';
-import { xss } from 'express-xss-sanitizer';
 import { sanitizeMiddileWare } from '@/middlewares/sanitize.middleware';
+import { routeErrorHandler } from '@/middlewares/utils';
+import routes from '@/routes/index';
 
 dotenv.config();
 
 const app: Express = express();
+app.set('trust proxy', 1);
 
 // Connect to database
 connectDB();
