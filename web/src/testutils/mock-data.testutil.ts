@@ -8,7 +8,7 @@ export const MOCK_ENV = {
   SERVICE_NAME: 'web',
   GMAIL_EMAIL: 'vtmpwebsite2025@gmail.com',
   GMAIL_APP_PASSWORD: 'azpj ibvt glaf ebcy',
-  VTMP_WEB_URL: 'viettechmentorship.com',
+  VTMP_WEB_URL: 'viettechmentorship.co',
   SEED_ENV: Environment.DEV,
   LINK_PROCESSING_ENDPOINT: 'https://lambda-url.on.aws',
   NODE_ENV: Environment.DEV,
