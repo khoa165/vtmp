@@ -1,6 +1,24 @@
 import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
 
-export const buildPrompt = (extractedText: string): string => `
+export const buildPrompt = (extractedText: string): string => {
+  const outputFormat = `
+\`\`\`json
+{
+  "jobTitle": string,
+  "companyName": string,
+  "location": string,
+  "jobFunction": string,
+  "jobType": string,
+  "datePosted": string,
+  "jobDescription": {
+    "responsibility": string,
+    "requirement": string,
+    "preferred": string
+  }
+}
+\`\`\`
+`;
+  return `
 ${extractedText}
 \n\n
 You are given a raw text of a job posting. Extract the following structured fields from it:
@@ -14,7 +32,7 @@ You are given a raw text of a job posting. Extract the following structured fiel
 **Field definitions:**
 - jobTitle: The title of the job, usually near the top above or near the "Apply" section.
 - companyName: The company offering the job, usually near the job title.
-- location: Choose the best match from: ${Object.values(LinkRegion).join(', ')}. If none fit, use "OTHER".
+- location: Choose the best match from: ${Object.values(LinkRegion).join(', ')}. If none closely match, omit the "location" field entirely from the output.
 - jobFunction: Choose the best match from: ${Object.values(JobFunction).join(', ')}. If none closely match, omit the "jobFunction" field entirely from the output.
 - jobType: Choose from: ${Object.values(JobType).join(', ')}. Use these rules:
   - If the job title or description includes "Intern", "Co-op", "Program", or "Apprenticeship", use "INTERNSHIP".
@@ -22,9 +40,9 @@ You are given a raw text of a job posting. Extract the following structured fiel
   - Otherwise, use "INDUSTRY".
 - datePosted: The date the job was posted. If unavailable, omit this field. If available, format as MM/DD/YYYY.
 - jobDescription: Structure as an object with:
-  - responsibility: Main responsibilities or duties.
-  - requirement: Required qualifications, skills, or experience.
-  - preferred: Preferred qualifications.
+  - responsibility: This field shows what the employee will do in the role, such as day-to-day tasks and key responsibilities.
+  - requirement: This field shows the minimum qualifications, skills, or experience required for the position.
+  - preferred: This field shows any additional qualifications or skills that are preferred but not strictly required.
   For "jobDescription", if at least one of these subfields is present, include the "jobDescription" field and only the present subfields. If none are present, omit the "jobDescription" field entirely.
 
 **Strategy:**
@@ -32,19 +50,7 @@ You are given a raw text of a job posting. Extract the following structured fiel
 - Look for an “Apply” section or similar phrases; job title and company are typically just above this.
 - The job description, including responsibilities and requirements, is generally located down below in the job posting.
 
-Return the extracted information with the following format:
-{
-  "jobTitle": string,
-  "companyName": string,
-  "location": string,
-  "jobFunction": string,
-  "jobType": string,
-  "datePosted": string,
-  "jobDescription": object 
-  {
-    "responsibility": string,
-    "requirement": string,
-    "preferred": string
-  }
-}
+Return the extracted information with the JSON format:
+${outputFormat.trim()}
 `;
+};
