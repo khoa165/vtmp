@@ -9,6 +9,7 @@ import {
   ApplicationStatus,
   InterestLevel,
   JobPostingRegion,
+  SystemRole,
 } from '@vtmp/common/constants';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -555,19 +556,19 @@ describe('ApplicationRepository', () => {
     it('should return count of applications for multiple users', async () => {
       const mockMultipleUsers = [
         {
-          firstName: 'admin1',
+          firstName: 'user1',
           lastName: 'viettech',
           email: 'test1@example.com',
           encryptedPassword: 'ecnrypted-password-later',
         },
         {
-          firstName: 'admin2',
+          firstName: 'user2',
           lastName: 'viettech',
           email: 'test2@example.com',
           encryptedPassword: 'ecnrypted-password-later',
         },
         {
-          firstName: 'admin3',
+          firstName: 'user3',
           lastName: 'viettech',
           email: 'test3@example.com',
           encryptedPassword: 'ecnrypted-password-later',
@@ -613,15 +614,15 @@ describe('ApplicationRepository', () => {
         },
         {
           count: 3,
-          name: 'admin1 viettech',
+          name: 'user1 viettech',
         },
         {
           count: 3,
-          name: 'admin2 viettech',
+          name: 'user2 viettech',
         },
         {
           count: 3,
-          name: 'admin3 viettech',
+          name: 'user3 viettech',
         },
       ]);
     });
@@ -663,28 +664,28 @@ describe('ApplicationRepository', () => {
       ]);
     });
 
-    it('sort the result in the ascending order of counts', async () => {
+    it('should sort the result in the ascending order of counts', async () => {
       const mockMultipleUsers = [
         {
-          firstName: 'admin1',
+          firstName: 'user1',
           lastName: 'viettech',
           email: 'test1@example.com',
           encryptedPassword: 'ecnrypted-password-later',
         },
         {
-          firstName: 'admin2',
+          firstName: 'user2',
           lastName: 'viettech',
           email: 'test2@example.com',
           encryptedPassword: 'ecnrypted-password-later',
         },
         {
-          firstName: 'admin3',
+          firstName: 'user3',
           lastName: 'viettech',
           email: 'test3@example.com',
           encryptedPassword: 'ecnrypted-password-later',
         },
         {
-          firstName: 'admin4',
+          firstName: 'user4',
           lastName: 'viettech',
           email: 'test4@example.com',
           encryptedPassword: 'ecnrypted-password-later',
@@ -713,19 +714,80 @@ describe('ApplicationRepository', () => {
       expect(result.map(({ count, name }) => ({ count, name }))).to.deep.equal([
         {
           count: 1,
-          name: 'admin1 viettech',
+          name: 'user1 viettech',
         },
         {
           count: 4,
-          name: 'admin4 viettech',
+          name: 'user4 viettech',
         },
         {
           count: 6,
-          name: 'admin3 viettech',
+          name: 'user3 viettech',
         },
         {
           count: 12,
-          name: 'admin2 viettech',
+          name: 'user2 viettech',
+        },
+      ]);
+    });
+
+    it('should exclude admins and moderator from the applications count', async () => {
+      const mockMultipleUsers = [
+        {
+          firstName: 'admin',
+          lastName: 'viettech',
+          email: 'test1@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+          role: SystemRole.ADMIN,
+        },
+        {
+          firstName: 'moderator',
+          lastName: 'viettech',
+          email: 'test2@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+          role: SystemRole.MODERATOR,
+        },
+        {
+          firstName: 'user1',
+          lastName: 'viettech',
+          email: 'test3@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+        {
+          firstName: 'user2',
+          lastName: 'viettech',
+          email: 'test4@example.com',
+          encryptedPassword: 'ecnrypted-password-later',
+        },
+      ];
+      const mockNumberofApplications = [1, 12, 6, 4];
+      await Promise.all(
+        mockMultipleUsers.map((mockUser) => UserRepository.createUser(mockUser))
+      );
+      const users = await UserRepository.getAllUsers();
+      const usersSortByFirstName = sortBy(users, (user) => user.firstName);
+      await Promise.all(
+        zip(usersSortByFirstName, mockNumberofApplications)
+          .map(([user, count]) =>
+            times(count, () =>
+              ApplicationRepository.createApplication({
+                jobPostingId: getNewMongoId(),
+                userId: user._id.toString(),
+              })
+            )
+          )
+          .flatMap((a) => a)
+      );
+      const result = await ApplicationRepository.getApplicationsCountByUser();
+      assert(result);
+      expect(result.map(({ count, name }) => ({ count, name }))).to.deep.equal([
+        {
+          count: 4,
+          name: 'user2 viettech',
+        },
+        {
+          count: 6,
+          name: 'user1 viettech',
         },
       ]);
     });
