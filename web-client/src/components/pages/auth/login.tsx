@@ -20,9 +20,14 @@ import { Method } from '@/utils/constants';
 import { useMutation } from '@tanstack/react-query';
 import { AuthResponseSchema } from '@/components/pages/auth/validation';
 import { toast } from 'sonner';
-import { useSearchParams } from 'react-router-dom';
+import { Navigate, useSearchParams } from 'react-router-dom';
 
 const LoginPage = () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    return <Navigate to="/job-postings" />;
+  }
+
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     const redirected = searchParams.get('redirected');
