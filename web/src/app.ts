@@ -14,7 +14,6 @@ import routes from '@/routes/index';
 dotenv.config();
 
 const app: Express = express();
-app.set('trust proxy', 1);
 
 // Connect to database
 connectDB();

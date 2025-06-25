@@ -72,7 +72,7 @@ export const sendLinksToLambda = async (
   }
 };
 
-cron.schedule('*/30 * * * * *', async () => {
+cron.schedule('0 0 * * * *', async () => {
   console.log('Cron wakes up...');
   const links = await LinkRepository.getLinks(getRetryFilter());
   console.log('PENDING links retrieved from database: ', links);
