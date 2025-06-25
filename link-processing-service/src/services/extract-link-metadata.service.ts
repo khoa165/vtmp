@@ -1,21 +1,5 @@
-import { EnvConfig } from '@/config/env';
-import { buildPrompt, formatJobDescription } from '@/helpers/link.helpers';
-import {
-  ExtractedLinkMetadata,
-  ExtractedLinkMetadataSchema,
-  RawAIResponse,
-  RawAIResponseSchema,
-  ScrapedLink,
-  FailedProcessedLink,
-  MetadataExtractedLink,
-} from '@/services/link-metadata-validation';
-import {
-  AIExtractionError,
-  AIResponseEmptyError,
-  InvalidJsonError,
-  logError,
-} from '@/utils/errors';
 import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
+
 import {
   JobFunction,
   JobType,
@@ -23,28 +7,35 @@ import {
   LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
-import { mapStringToEnum } from '@/helpers/link.helpers';
 
-const getGoogleGenAI = async (): Promise<GoogleGenAI> => {
+import { EnvConfig } from '@/config/env';
+import {
+  ExtractedLinkMetadata,
+  ExtractedLinkMetadataSchema,
+  RawAIResponseSchema,
+  ScrapedLink,
+  FailedProcessedLink,
+  MetadataExtractedLink,
+} from '@/types/link-processing.types';
+import {
+  AIExtractionError,
+  AIResponseEmptyError,
+  logError,
+} from '@/utils/errors';
+import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
+import { determineProcessStatus } from '@/utils/long-retry';
+import { buildPrompt } from '@/utils/prompts';
+
+const _getGoogleGenAI = async (): Promise<GoogleGenAI> => {
   const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
   return new GoogleGenAI({ apiKey: geminiApiKey });
 };
 
-const parseJson = (text: string, url: string): RawAIResponse => {
-  try {
-    return JSON.parse(text);
-  } catch {
-    throw new InvalidJsonError('Invalid JSON format in AI response', {
-      urls: [url],
-    });
-  }
-};
-
-const generateMetadata = async (
+const _generateMetadata = async (
   text: string,
   url: string
 ): Promise<ExtractedLinkMetadata> => {
-  const genAI = await getGoogleGenAI();
+  const genAI = await _getGoogleGenAI();
   const prompt = await buildPrompt(text);
 
   const response: GenerateContentResponse = await genAI.models.generateContent({
@@ -52,49 +43,36 @@ const generateMetadata = async (
     contents: prompt,
   });
 
-  // Get raw response from AI
+  // Get raw response from Gemini
   const rawAIResponse = response.text?.replace(/```json|```/g, '').trim();
   if (!rawAIResponse)
-    throw new AIResponseEmptyError('AI response was empty', { urls: [url] });
+    throw new AIResponseEmptyError('AI response was empty', { url });
 
-  // JSON.parse it to convert to JS object if it is not null/undefined
-  const parsedAIResponse = parseJson(rawAIResponse, url);
+  const validatedAIResponse = RawAIResponseSchema.parse(
+    JSON.parse(rawAIResponse)
+  );
 
-  // Validate it against zod schema
-  const validatedAIResponse = RawAIResponseSchema.parse(parsedAIResponse);
-
-  // Convert from string to Typescript enum, had to use a separate helper function
-  const formattedLinkMetaData = {
+  // Convert from string to Typescript enum, had to use a separate helper stringToEnumValue
+  const formattedLinkMetadata = {
     jobTitle: validatedAIResponse.jobTitle,
     companyName: validatedAIResponse.companyName,
-    location: mapStringToEnum({
+    location: stringToEnumValue({
+      stringValue: validatedAIResponse.location,
       enumObject: LinkRegion,
-      value: validatedAIResponse.location,
-      fallback: LinkRegion.OTHER,
     }),
-    jobFunction: mapStringToEnum({
+    jobFunction: stringToEnumValue({
+      stringValue: validatedAIResponse.jobFunction,
       enumObject: JobFunction,
-      value: validatedAIResponse.jobFunction,
-      fallback: JobFunction.SOFTWARE_ENGINEER,
     }),
-    jobType: mapStringToEnum({
+    jobType: stringToEnumValue({
+      stringValue: validatedAIResponse.jobType,
       enumObject: JobType,
-      value: validatedAIResponse.jobType,
-      fallback: JobType.INDUSTRY,
     }),
     datePosted: validatedAIResponse.datePosted,
     jobDescription: formatJobDescription(validatedAIResponse.jobDescription),
   };
 
-  return ExtractedLinkMetadataSchema.parse(formattedLinkMetaData);
-};
-
-const _shouldLongRetry = (attempsCount: number) => {
-  if (attempsCount < 3) {
-    return true;
-  } else {
-    return false;
-  }
+  return ExtractedLinkMetadataSchema.parse(formattedLinkMetadata);
 };
 
 export const ExtractLinkMetadataService = {
@@ -104,61 +82,44 @@ export const ExtractLinkMetadataService = {
     metadataExtractedLinks: MetadataExtractedLink[];
     failedMetadataExtractionLinks: FailedProcessedLink[];
   }> => {
-    // Get all the urls for logging purposes
-    const urls = scrapedLinks.map((scrapedLink) => scrapedLink.url);
-    try {
-      const metadataExtractedLinks: MetadataExtractedLink[] = [];
-      const failedMetadataExtractionLinks: FailedProcessedLink[] = [];
-      const results = await Promise.all(
-        scrapedLinks.map(async (link) => {
-          try {
-            const extractedMetadata = await generateMetadata(
-              link.scrapedText,
-              link.url
-            );
-            return {
-              ...link,
-              extractedMetadata,
-              status: LinkStatus.PENDING_ADMIN_REVIEW,
-              failureStage: null,
-            };
-          } catch (error: unknown) {
-            logError(error);
+    const MAX_LONG_RETRY = 3;
 
-            if (_shouldLongRetry(link.originalRequest.attemptsCount)) {
-              return {
-                ...link,
-                status: LinkStatus.PENDING_RETRY,
-                failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
-                error,
-              };
-            }
+    const metadataExtractedLinks: MetadataExtractedLink[] = [];
+    const failedMetadataExtractionLinks: FailedProcessedLink[] = [];
 
-            return {
-              ...link,
-              status: LinkStatus.PIPELINE_FAILED,
-              failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
-              error,
-            };
-          }
-        })
-      );
+    await Promise.all(
+      scrapedLinks.map(async (link) => {
+        try {
+          const extractedMetadata = await _generateMetadata(
+            link.scrapedText,
+            link.url
+          );
+          metadataExtractedLinks.push({
+            ...link,
+            extractedMetadata,
+            status: LinkStatus.PENDING_ADMIN_REVIEW,
+            failureStage: null, // Update failureStage to null to clear any previous failureStage value
+          });
+        } catch (error: unknown) {
+          logError(error);
 
-      // Now split results into metadataExtractedLinks and failedMetadataExtractionLinks
-      for (const result of results) {
-        if ('error' in result) {
-          failedMetadataExtractionLinks.push(result);
-        } else {
-          metadataExtractedLinks.push(result);
+          failedMetadataExtractionLinks.push({
+            ...link,
+            status: determineProcessStatus(
+              link.originalRequest,
+              MAX_LONG_RETRY
+            ),
+            failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
+            error: new AIExtractionError(
+              'Failed to extract metadata with AI',
+              { url: link.url },
+              { cause: error }
+            ),
+          });
         }
-      }
-      return { metadataExtractedLinks, failedMetadataExtractionLinks };
-    } catch (error: unknown) {
-      throw new AIExtractionError(
-        'Failed to extract metadata with AI',
-        { urls },
-        { cause: error }
-      );
-    }
+      })
+    );
+
+    return { metadataExtractedLinks, failedMetadataExtractionLinks };
   },
 };

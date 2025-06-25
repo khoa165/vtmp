@@ -13,6 +13,7 @@ services:
       - ./web/.env
     environment:
       - MONGO_URI=mongodb://mongo:27017/vtmp-db # This will override MONGO_URI loaded from .env above
+      - LINK_PROCESSING_ENDPOINT=http://link-processing-service:8080/2015-03-31/functions/function/invocations
     depends_on:
       - mongo
     volumes:

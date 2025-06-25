@@ -1,12 +1,16 @@
-import puppeteer, { Browser, Page } from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
-import { logError, ScrapingError } from '@/utils/errors';
-import { LinkStatus, LinkProcessingFailureStage } from '@vtmp/common/constants';
+import pLimit from 'p-limit';
+import puppeteer, { Browser, Page } from 'puppeteer-core';
+
+import { LinkProcessingFailureStage } from '@vtmp/common/constants';
+
 import {
   FailedProcessedLink,
   ScrapedLink,
   ValidatedLink,
-} from '@/services/link-metadata-validation';
+} from '@/types/link-processing.types';
+import { logError, ScrapingError } from '@/utils/errors';
+import { determineProcessStatus } from '@/utils/long-retry';
 
 const _launchBrowserInstance = async (): Promise<Browser> => {
   const browser = await puppeteer.launch({
@@ -28,81 +32,61 @@ const _scrapeWebpage = async (page: Page, url: string): Promise<string> => {
   return bodyText;
 };
 
-const _shouldLongRetry = (attempsCount: number) => {
-  if (attempsCount < 3) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
 export const WebScrapingService = {
   scrapeLinks: async (
-    linksData: ValidatedLink[]
+    validatedLinks: ValidatedLink[]
   ): Promise<{
     scrapedLinks: ScrapedLink[];
     failedScrapingLinks: FailedProcessedLink[];
   }> => {
-    // Get all the validated urls
-    const urls = linksData.map((linkData) => linkData.url);
-    // Launch a browser instance
+    // Create a limiter with CONCURRENCY_LIMIT
+    const CONCURRENCY_LIMIT = 5;
+    const limit = pLimit(CONCURRENCY_LIMIT);
+    const MAX_LONG_RETRY = 3;
+
+    const scrapedLinks: ScrapedLink[] = [];
+    const failedScrapingLinks: FailedProcessedLink[] = [];
+
+    // Open only 1 Chrominum browser process
     const browser = await _launchBrowserInstance();
-    try {
-      const scrapedLinks: ScrapedLink[] = [];
-      const failedScrapingLinks: FailedProcessedLink[] = [];
-      const results = await Promise.all(
-        linksData.map(async (linkData) => {
-          // Open a new tab
+
+    await Promise.all(
+      validatedLinks.map((validatedLink) =>
+        // Instead of calling async function directly, wrap it with the limiter
+        // The limiter ensures that only CONCURRENCY_LIMIT promises are running at anytime
+        // When one batch finises, the next queued tasks batch starts
+        limit(async () => {
+          // Open a new Chromium tab
           const page = await browser.newPage();
           try {
-            const scrapedText = await _scrapeWebpage(page, linkData.url);
-            return { ...linkData, scrapedText };
+            const scrapedText = await _scrapeWebpage(page, validatedLink.url);
+            scrapedLinks.push({ ...validatedLink, scrapedText });
           } catch (error: unknown) {
-            // At failfure stage, need to add fields like status, failureStage
-            // For `status`, it is particularly important because we need to determine whether it is:
-            // LinkStatus.PENDING_RETRY => if attemptsCount < 3 (or some const number)
-            // LinkStatus.PIPELINE_FAILED => if attemptsCount == 3 (or some const number)
-
             logError(error);
 
-            if (_shouldLongRetry(linkData.originalRequest.attemptsCount)) {
-              return {
-                ...linkData,
-                status: LinkStatus.PENDING_RETRY,
-                failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-                error,
-              };
-            }
-
-            return {
-              ...linkData,
-              status: LinkStatus.PIPELINE_FAILED,
+            failedScrapingLinks.push({
+              ...validatedLink,
+              status: determineProcessStatus(
+                validatedLink.originalRequest,
+                MAX_LONG_RETRY
+              ),
               failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-              error,
-            };
+              error: new ScrapingError(
+                'Failed to scrap url',
+                {
+                  url: validatedLink.url,
+                },
+                { cause: error }
+              ),
+            });
           } finally {
             await page.close();
           }
         })
-      );
+      )
+    );
 
-      // Now, split the results into scrapedLinks and failedScrapingLinks
-      for (const result of results) {
-        if ('error' in result) {
-          failedScrapingLinks.push(result);
-        } else {
-          scrapedLinks.push(result);
-        }
-      }
-      return { scrapedLinks, failedScrapingLinks };
-    } catch (error: unknown) {
-      throw new ScrapingError(
-        'Failed to scrap URLs',
-        { urls },
-        { cause: error }
-      );
-    } finally {
-      await browser.close();
-    }
+    await browser.close();
+    return { scrapedLinks, failedScrapingLinks };
   },
 };

@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import {
   LinkRegion,
   JobFunction,
@@ -5,38 +7,11 @@ import {
   LinkStatus,
   LinkProcessingFailureStage,
 } from '@vtmp/common/constants';
-import { z } from 'zod';
 
 /**
  * These schema are specifically for zod validation at AI metadata extraction stage
  */
-export const ExtractedLinkMetadataSchema = z
-  .object({
-    jobTitle: z.string().optional(),
-    companyName: z.string().optional(),
-    location: z
-      .nativeEnum(LinkRegion, {
-        message: 'Invalid location',
-      })
-      .optional(),
-    jobFunction: z
-      .nativeEnum(JobFunction, {
-        message: 'Invalid job title',
-      })
-      .optional(),
-    jobType: z
-      .nativeEnum(JobType, {
-        message: 'Invalid job type',
-      })
-      .optional(),
-    datePosted: z.string().optional(),
-    jobDescription: z.string().optional(),
-  })
-  .strict();
-
-export type ExtractedLinkMetadata = z.infer<typeof ExtractedLinkMetadataSchema>;
-
-export const RawJobDescriptionSchema = z
+const JobDescriptionSchema = z
   .object({
     responsibility: z.string().optional(),
     requirement: z.string().optional(),
@@ -52,14 +27,43 @@ export const RawAIResponseSchema = z
     jobFunction: z.string().optional(),
     jobType: z.string().optional(),
     datePosted: z.string().optional(),
-    jobDescription: RawJobDescriptionSchema,
+    jobDescription: JobDescriptionSchema.optional(),
   })
   .strict();
 
-export type RawAIResponse = z.infer<typeof RawAIResponseSchema>;
+export const ExtractedLinkMetadataSchema = z
+  .object({
+    jobTitle: z.string().optional(),
+    companyName: z.string().optional(),
+    location: z
+      .nativeEnum(LinkRegion, {
+        message: 'Invalid AI generated location',
+      })
+      .optional(),
+    jobFunction: z
+      .nativeEnum(JobFunction, {
+        message: 'Invalid AI generated job title',
+      })
+      .optional(),
+    jobType: z
+      .nativeEnum(JobType, {
+        message: 'Invalid AI generated job type',
+      })
+      .optional(),
+    datePosted: z.string().optional(),
+    jobDescription: z.string().optional(),
+  })
+  .strict()
+  .transform((data) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
+  );
+
+export type ExtractedLinkMetadata = z.infer<typeof ExtractedLinkMetadataSchema>;
 
 /**
- * These schemas and types are to check link object that was just sent to Lambda
+ * These schemas and types are to check link object that was sent to Lambda
  * SubmittedLink[] is type of input param into LinkProcessorService.processLink()
  * SubmittedLink[] is also the type of input param into LinkValidatorService.validateLinks()
  */
@@ -88,14 +92,6 @@ export type SubmittedLink = z.infer<typeof SubmittedLinkSchema>;
 export interface ValidatedLink {
   originalRequest: SubmittedLink;
   url: string;
-}
-export interface FailedProcessedLink {
-  originalRequest: SubmittedLink;
-  url?: string;
-  scrapedText?: string;
-  status: LinkStatus;
-  failureStage: LinkProcessingFailureStage;
-  error: unknown;
 }
 
 /**
@@ -126,9 +122,19 @@ export interface ScrapedLink {
 export interface MetadataExtractedLink {
   originalRequest: SubmittedLink;
   url: string;
+  scrapedText: string;
   extractedMetadata: ExtractedLinkMetadata;
   status: LinkStatus;
   failureStage: null;
+}
+
+export interface FailedProcessedLink {
+  originalRequest: SubmittedLink;
+  url?: string;
+  scrapedText?: string;
+  status: LinkStatus;
+  failureStage: LinkProcessingFailureStage;
+  error: unknown;
 }
 
 export interface UpdateLinkPayload {
