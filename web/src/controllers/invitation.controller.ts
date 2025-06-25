@@ -1,23 +1,13 @@
 import { Request, Response } from 'express';
-import { InvitationService } from '@/services/invitation.service';
 import { z } from 'zod';
+
 import { MONGO_OBJECT_ID_REGEX } from '@/constants/validations';
+import { InvitationService } from '@/services/invitation.service';
 
 const InvitationSendEmailSchema = z.object({
   receiverName: z.string({ required_error: 'Receiver Name is required' }),
-  // receiverName: z
-  //   .string({ required_error: 'Receiver Name is required' })
-  //   .min(1, { message: 'Receiver Name is required' }),
-  receiverEmail: z
-    .string({ required_error: 'Receiver Email is required' }),
-  // receiverEmail: z
-  //   .string({ required_error: 'Receiver Email is required' })
-  //   .min(1, { message: 'Receiver Email is required' })
-  //   .email({ message: 'Invalid email address' }),
+  receiverEmail: z.string({ required_error: 'Receiver Email is required' }),
   senderId: z.string({ required_error: 'SenderId is required' }),
-  // senderId: z
-  //   .string({ required_error: 'SenderId is required' })
-  //   .min(1, { message: 'SenderId is required' }),
 });
 
 const InvitationIdSchema = z.object({
