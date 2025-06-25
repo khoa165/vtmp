@@ -1,4 +1,4 @@
-import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
+import { GoogleGenAI } from '@google/genai';
 
 import {
   JobFunction,
@@ -26,23 +26,24 @@ import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
 import { determineProcessStatus } from '@/utils/long-retry';
 import { buildPrompt } from '@/utils/prompts';
 
-const _getGoogleGenAI = async (): Promise<GoogleGenAI> => {
-  const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
-  return new GoogleGenAI({ apiKey: geminiApiKey });
+export const GoogleGenAIModel = {
+  generateContent: async (prompt: string) => {
+    const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
+    const genAI = new GoogleGenAI({ apiKey: geminiApiKey });
+    const response = await genAI.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: prompt,
+    });
+    return { text: response.text ? response.text : '' };
+  },
 };
 
-const _generateMetadata = async (
+export const _generateMetadata = async (
   text: string,
   url: string
 ): Promise<ExtractedLinkMetadata> => {
-  const genAI = await _getGoogleGenAI();
   const prompt = await buildPrompt(text);
-
-  const response: GenerateContentResponse = await genAI.models.generateContent({
-    model: 'gemini-2.0-flash',
-    contents: prompt,
-  });
-
+  const response = await GoogleGenAIModel.generateContent(prompt);
   // Get raw response from Gemini
   const rawAIResponse = response.text?.replace(/```json|```/g, '').trim();
   if (!rawAIResponse)

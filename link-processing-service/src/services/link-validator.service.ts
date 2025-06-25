@@ -1,14 +1,19 @@
-import { executeWithRetry, httpErrorNoRetry } from '@/helpers/retry.helper';
-import { LinkValidationError } from '@/utils/errors';
-import { EnvConfig } from '@/config/env';
-import retry from 'retry';
 import { GlobalOptions, safebrowsing_v4 } from '@googleapis/safebrowsing';
+import retry from 'retry';
+
+import { LinkStatus, LinkProcessingFailureStage } from '@vtmp/common/constants';
+
+import { EnvConfig } from '@/config/env';
+import {
+  executeWithRetry,
+  httpErrorNoShortRetry,
+} from '@/helpers/retry.helper';
 import {
   SubmittedLink,
   ValidatedLink,
   FailedProcessedLink,
-} from '@/services/link-metadata-validation';
-import { LinkStatus, LinkProcessingFailureStage } from '@vtmp/common/constants';
+} from '@/types/link-processing.types';
+import { LinkValidationError } from '@/utils/errors';
 import { LinkValidationErrorType } from '@/utils/errors-enum';
 
 const LinkValidatorService = {
@@ -90,7 +95,7 @@ const LinkValidatorService = {
         return (
           error instanceof LinkValidationError &&
           error.statusCode !== undefined &&
-          !httpErrorNoRetry.includes(error.statusCode)
+          !httpErrorNoShortRetry.includes(error.statusCode)
         );
       }
     );
@@ -111,7 +116,7 @@ const LinkValidatorService = {
         'Provided link fails safety check',
         LinkValidationErrorType.SITE_REPORTED_MALICIOUS,
         {
-          urls: [url],
+          url: url,
         }
       );
     }
@@ -156,7 +161,7 @@ const LinkValidatorService = {
       throw new LinkValidationError(
         `Network error while checking URL. Message: ${error instanceof Error ? error.message : 'Unknown error'}`,
         LinkValidationErrorType.NETWORK_ERROR,
-        { urls: [url] },
+        { url: url },
         { cause: error }
       );
     }
@@ -164,7 +169,7 @@ const LinkValidatorService = {
       throw new LinkValidationError(
         `Failed to validate link due to HTTP error code ${response.status}`,
         LinkValidationErrorType.SITE_UNREACHABLE,
-        { urls: [url] },
+        { url: url },
         {
           cause: `HTTP Error ${response.status}: ${response.statusText}`,
           statusCode: response.status,
@@ -220,7 +225,7 @@ const LinkValidatorService = {
         throw new LinkValidationError(
           `Unable to validate link safety with Safe Browsing API after ${attempts} attempts. Message: ${error.message}`,
           LinkValidationErrorType.SAFETY_API_FAILED,
-          { urls: [url] },
+          { url: url },
           { cause: error }
         );
       }
