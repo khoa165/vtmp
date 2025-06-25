@@ -1,5 +1,11 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+
+import {
+  InterviewStatus,
+  InterviewType,
+  JobPostingRegion,
+} from '@vtmp/common/constants';
+
 import { ApplicationModel } from '@/models/application.model';
 
 export interface IInterview extends Document {
@@ -10,6 +16,8 @@ export interface IInterview extends Document {
   status: InterviewStatus;
   interviewOnDate: Date;
   companyName?: string;
+  jobTitle?: string;
+  location?: JobPostingRegion;
   note?: string;
   isDisclosed?: boolean;
   sharedAt?: Date;
@@ -43,6 +51,14 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
   companyName: {
     type: String,
   },
+  jobTitle: {
+    type: String,
+  },
+  location: {
+    type: String,
+    enum: Object.values(JobPostingRegion),
+    default: JobPostingRegion.US,
+  },
   note: {
     type: String,
   },
@@ -66,6 +82,8 @@ InterviewSchema.pre('save', async function () {
   });
   if (application && application.companyName !== undefined) {
     this.companyName = application.companyName;
+    this.jobTitle = application.jobTitle;
+    this.location = application.location;
   }
 });
 

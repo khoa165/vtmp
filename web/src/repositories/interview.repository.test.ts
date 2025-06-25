@@ -3,7 +3,11 @@ import { differenceInSeconds } from 'date-fns';
 
 import assert from 'assert';
 
-import { InterviewType, InterviewStatus } from '@vtmp/common/constants';
+import {
+  InterviewStatus,
+  InterviewType,
+  JobPostingRegion,
+} from '@vtmp/common/constants';
 
 import { IApplication } from '@/models/application.model';
 import { IUser } from '@/models/user.model';
@@ -160,6 +164,8 @@ describe('Interview Repository', () => {
         applicationId: toMongoId(metaApplication_A.id),
         userId: toMongoId(user_A.id),
         companyName: 'Meta',
+        jobTitle: 'Software Engineer',
+        location: JobPostingRegion.US,
         status: InterviewStatus.PENDING,
       });
     });
