@@ -16,6 +16,7 @@ import {
   ScrapedLink,
   FailedProcessedLink,
   MetadataExtractedLink,
+  SubmittedLink,
 } from '@/types/link-processing.types';
 import {
   AIExtractionError,
@@ -23,7 +24,6 @@ import {
   logError,
 } from '@/utils/errors';
 import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
-import { determineProcessStatus } from '@/utils/long-retry';
 import { buildPrompt } from '@/utils/prompts';
 
 const _getGoogleGenAI = async (): Promise<GoogleGenAI> => {
@@ -81,6 +81,21 @@ const _generateMetadata = async (
   return ExtractedLinkMetadataSchema.parse(formattedLinkMetadata);
 };
 
+/**
+ * Decide on whether link should be long retried.
+ * @param originalRequest
+ * @param maxLongRetry
+ */
+const _determineProcessStatus = (
+  originalRequest: SubmittedLink,
+  maxLongRetry: number
+): LinkStatus => {
+  if (originalRequest.attemptsCount >= maxLongRetry) {
+    return LinkStatus.PIPELINE_FAILED;
+  }
+  return LinkStatus.PENDING_RETRY;
+};
+
 export const ExtractLinkMetadataService = {
   extractMetadata: async (
     scrapedLinks: ScrapedLink[]
@@ -88,7 +103,7 @@ export const ExtractLinkMetadataService = {
     metadataExtractedLinks: MetadataExtractedLink[];
     failedMetadataExtractionLinks: FailedProcessedLink[];
   }> => {
-    const MAX_LONG_RETRY = 3;
+    const MAX_LONG_RETRY = 4;
 
     const metadataExtractedLinks: MetadataExtractedLink[] = [];
     const failedMetadataExtractionLinks: FailedProcessedLink[] = [];
@@ -111,7 +126,7 @@ export const ExtractLinkMetadataService = {
 
           failedMetadataExtractionLinks.push({
             ...link,
-            status: determineProcessStatus(
+            status: _determineProcessStatus(
               link.originalRequest,
               MAX_LONG_RETRY
             ),

@@ -27,7 +27,6 @@ const buildSuccessfulLinksPayloads = (
       ...originalRequest,
       lastProcessedAt: new Date().toISOString(),
     };
-    flattenResult.attemptsCount += 1;
     const { _id, originalUrl, ...updatePayload } = flattenResult;
 
     return { linkId: _id, originalUrl, updatePayload };
@@ -48,7 +47,6 @@ const buildFailedLinksPayloads = (
       ...originalRequest,
       lastProcessedAt: new Date().toISOString(),
     };
-    flattenResult.attemptsCount += 1;
     const { _id, originalUrl, ...updatePayload } = flattenResult;
 
     return { linkId: _id, originalUrl, updatePayload };
@@ -59,6 +57,10 @@ const lambdaHandler = async (
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyResult> => {
   const { linksData } = EventBodySchema.parse(event.body);
+  // Increment attemptsCount for each link
+  for (const linkData of linksData) {
+    linkData.attemptsCount += 1;
+  }
   const { successfulLinks, failedLinks } =
     await LinkProcessorService.processLinks(linksData);
 
@@ -88,5 +90,5 @@ const lambdaHandler = async (
 };
 
 export const handler = middy(lambdaHandler)
-  .use(httpJsonBodyParser())
-  .use(handleErrorMiddleware());
+  .use(wrappedHandlers([httpJsonBodyParser()]))
+  .use(wrappedHandlers([handleErrorMiddleware()]));
