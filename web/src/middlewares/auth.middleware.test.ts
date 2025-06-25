@@ -9,6 +9,7 @@ import { DecodedJWTSchema } from '@/middlewares/auth.middleware';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { AuthService } from '@/services/auth.service';
 import { AuthType } from '@vtmp/server-common/constants';
 
 const { expect } = chai;
@@ -60,15 +61,12 @@ describe('AuthMiddleware', () => {
   });
 
   it('should allow user to login, return a token and get user profile', async () => {
-    await request(app)
-      .post('/api/auth/signup')
-      .send({
-        firstName: 'admin',
-        lastName: 'viettech',
-        email: 'test@example.com',
-        password: 'Test!123',
-      })
-      .set('Accept', 'application/json');
+    await AuthService.signup({
+      firstName: 'admin',
+      lastName: 'viettech',
+      email: 'test@example.com',
+      password: 'Test!123',
+    });
 
     const resLogin = await request(app)
       .post('/api/auth/login')

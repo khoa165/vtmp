@@ -6,7 +6,7 @@ import { safebrowsing_v4 } from '@googleapis/safebrowsing';
 
 import { LinkValidatorService } from '@/services/link-validator.service';
 import { LinkValidationError } from '@/utils/errors';
-import { SubmittedLink } from '@/services/link-metadata-validation';
+import { SubmittedLink } from '@/types/link-processing.types';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 
 chai.use(chaiAsPromised);

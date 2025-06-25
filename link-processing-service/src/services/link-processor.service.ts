@@ -1,18 +1,18 @@
 // import { LinkValidatorService } from '@/services/link-validator.service';
 import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
+import { LinkValidatorService } from '@/services/link-validator.service';
 import { WebScrapingService } from '@/services/web-scraping.service';
 import {
   SubmittedLink,
   MetadataExtractedLink,
   FailedProcessedLink,
-} from '@/services/link-metadata-validation';
-import { LinkValidatorService } from '@/services/link-validator.service';
+} from '@/types/link-processing.types';
 
 export const LinkProcessorService = {
   processLinks: async (
     linksData: SubmittedLink[]
   ): Promise<{
-    succeededLinks: MetadataExtractedLink[];
+    successfulLinks: MetadataExtractedLink[];
     failedLinks: FailedProcessedLink[];
   }> => {
     const failedLinks: FailedProcessedLink[] = [];
@@ -27,12 +27,12 @@ export const LinkProcessorService = {
     const { metadataExtractedLinks, failedMetadataExtractionLinks } =
       await ExtractLinkMetadataService.extractMetadata(scrapedLinks);
 
-    // Push all failed to processed links to failedLinks array
     failedLinks.push(
       ...faultyUrls,
       ...failedScrapingLinks,
       ...failedMetadataExtractionLinks
     );
-    return { succeededLinks: metadataExtractedLinks, failedLinks };
+
+    return { successfulLinks: metadataExtractedLinks, failedLinks };
   },
 };

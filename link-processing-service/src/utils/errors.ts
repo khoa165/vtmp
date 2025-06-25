@@ -1,15 +1,15 @@
-import { LinkProcessingFailureStage } from '@vtmp/common/constants';
 import middy from '@middy/core';
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { ZodError } from 'zod';
 import { LinkValidationErrorType } from '@/utils/errors-enum';
+import { LinkProcessingFailureStage } from '@vtmp/common/constants';
 
 export abstract class ServiceSpecificError extends Error {
-  public metadata: { urls: string[] };
+  public metadata: { url: string };
   public failureStage: LinkProcessingFailureStage;
   constructor(
     message: string,
-    metadata: { urls: string[] },
+    metadata: { url: string },
     failureStage: LinkProcessingFailureStage,
     options?: { cause?: unknown }
   ) {
@@ -29,7 +29,7 @@ export class LinkValidationError extends ServiceSpecificError {
   constructor(
     message: string,
     errorType: LinkValidationErrorType,
-    metadata: { urls: string[] },
+    metadata: { url: string },
     options?: {
       cause?: unknown;
       statusCode?: number;
@@ -51,7 +51,7 @@ export class LinkValidationError extends ServiceSpecificError {
 export class ScrapingError extends ServiceSpecificError {
   constructor(
     message: string,
-    metadata: { urls: string[] },
+    metadata: { url: string },
     options?: { cause?: unknown }
   ) {
     super(
@@ -66,7 +66,7 @@ export class ScrapingError extends ServiceSpecificError {
 export class AIExtractionError extends ServiceSpecificError {
   constructor(
     message: string,
-    metadata: { urls: string[] },
+    metadata: { url: string },
     options?: { cause?: unknown }
   ) {
     super(
@@ -79,13 +79,7 @@ export class AIExtractionError extends ServiceSpecificError {
 }
 
 export class AIResponseEmptyError extends ServiceSpecificError {
-  constructor(message: string, metadata: { urls: string[] }) {
-    super(message, metadata, LinkProcessingFailureStage.EXTRACTION_FAILED);
-  }
-}
-
-export class InvalidJsonError extends ServiceSpecificError {
-  constructor(message: string, metadata: { urls: string[] }) {
+  constructor(message: string, metadata: { url: string }) {
     super(message, metadata, LinkProcessingFailureStage.EXTRACTION_FAILED);
   }
 }
@@ -119,17 +113,8 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
     const error = request.error;
     logError(error);
 
-    if (error instanceof SyntaxError) {
-      // Error thrown due to malformed JSON string that failed JSON.parse
-      request.response = {
-        statusCode: 400,
-        body: JSON.stringify({
-          message: 'Malformed JSON in request body',
-          failureStage: LinkProcessingFailureStage.PRE_VALIDATION_FAILED,
-        }),
-      };
-      return;
-    } else if (error instanceof ZodError) {
+    // Error thrown if does not pass EventBodySchema
+    if (error instanceof ZodError) {
       request.response = {
         statusCode: 400,
         body: JSON.stringify({

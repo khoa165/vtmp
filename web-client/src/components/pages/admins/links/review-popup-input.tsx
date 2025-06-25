@@ -3,7 +3,6 @@ import { Label } from '@/components/base/label';
 import { JobPostingData } from '@/components/pages/admins/links/validation';
 
 type FieldInForms =
-  | 'url'
   | 'companyName'
   | 'jobTitle'
   | 'location'
