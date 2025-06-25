@@ -26,7 +26,6 @@ import { SinonStub } from 'sinon';
 describe('InvitationService', () => {
   useMongoDB();
   const sandbox = useSandbox();
-
   const nextWeek = addDays(Date.now(), 7);
   const mockMenteeName = 'Mentee Viettech';
   const mockAdminId = getNewMongoId();
@@ -292,18 +291,18 @@ describe('InvitationService', () => {
       );
       await expect(
         InvitationService.validateInvitation(invalidStructureToken)
-      ).eventually.rejectedWith(Error);
+      ).eventually.rejectedWith('Required');
     });
 
     it('should return error message for token with invalid email format', async () => {
       const invalidEmailToken = jwt.sign(
-        { receiverEmail: 'invalid-email' }, 
+        { receiverEmail: 'invalid-email' },
         EnvConfig.get().JWT_SECRET,
         { expiresIn: '7d' }
       );
       await expect(
         InvitationService.validateInvitation(invalidEmailToken)
-      ).eventually.rejectedWith(Error);
+      ).eventually.rejectedWith('Invalid email');
     });
 
     it('should return error message for invitation not found', async () => {

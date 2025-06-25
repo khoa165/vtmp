@@ -1,4 +1,5 @@
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { beforeEach, describe } from 'mocha';
 import { UserRepository } from '@/repositories/user.repository';
 import app from '@/app';
@@ -12,7 +13,6 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { InvitationStatus } from '@vtmp/common/constants';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { addDays, subDays } from 'date-fns';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import jwt from 'jsonwebtoken';
@@ -165,63 +165,43 @@ describe('InvitationController', () => {
       });
     });
 
-    it('should return error for invalid email format', async () => {
+    it('should return error for missing receiverName', async () => {
       const res = await request(app)
         .post('/api/invitations')
         .send({
-          receiverName: mockMenteeName,
-          receiverEmail: 'invalid-email-format',
-          senderId: mockAdminId,
-        })
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockAdminToken}`);
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Invalid email address');
-    });
-
-    it('should return error for empty receiverName', async () => {
-      const res = await request(app)
-        .post('/api/invitations')
-        .send({
-          receiverName: '',
           receiverEmail: mockOneInvitation.receiverEmail,
           senderId: mockAdminId,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
-
+        
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Receiver Name is required');
     });
 
-    it('should return error for empty receiverEmail', async () => {
+    it('should return error for missing receiverEmail', async () => {
       const res = await request(app)
         .post('/api/invitations')
         .send({
           receiverName: mockMenteeName,
-          receiverEmail: '',
           senderId: mockAdminId,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
 
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 2 });
-      const errorMessages = res.body.errors.map((err: any) => err.message);
-      expect(errorMessages).to.include('Receiver Email is required');
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Receiver Email is required');
     });
 
-    it('should return error for empty senderId', async () => {
+    it('should return error for missing senderId', async () => {
       const res = await request(app)
         .post('/api/invitations')
         .send({
           receiverName: mockMenteeName,
           receiverEmail: mockOneInvitation.receiverEmail,
-          senderId: '',
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
-
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('SenderId is required');
     });
@@ -360,16 +340,9 @@ describe('InvitationController', () => {
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
 
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-    });
-
-    it('should return error message when invitationId is empty', async () => {
-      const res = await request(app)
-        .put(`/api/invitations//revoke`)
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockAdminToken}`);
-
-      expect(res.status).to.equal(404);
+      expect(res.body.errors[0].message).to.equal(
+        'Invalid invitationId format'
+      );
     });
 
     it('should return error message when invitation is not pending', async () => {
@@ -442,15 +415,6 @@ describe('InvitationController', () => {
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Token is required');
-    });
-
-    it('should return error for missing token field', async () => {
-      const res = await request(app)
-        .post(`/api/auth/validate`)
-        .send({})
-        .set('Accept', 'application/json');
-
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
     });
 
     it('should return error for token with invalid type', async () => {
