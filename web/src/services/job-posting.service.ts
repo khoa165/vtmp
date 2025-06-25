@@ -3,6 +3,16 @@ import { ResourceNotFoundError } from '@/utils/errors';
 import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
 
 export const JobPostingService = {
+  getJobPostingById: async (jobId: string) => {
+    const jobPosting = await JobPostingRepository.getJobPostingById(jobId);
+    if (!jobPosting) {
+      throw new ResourceNotFoundError('Job posting not found', {
+        jobId,
+      });
+    }
+
+    return jobPosting;
+  },
   updateJobPostingById: async (
     jobId: string,
     newUpdate: {
