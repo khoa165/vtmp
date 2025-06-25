@@ -10,4 +10,5 @@ export const MOCK_ENV = {
   GMAIL_APP_PASSWORD: 'azpj ibvt glaf ebcy',
   VTMP_WEB_URL: 'viettechmentorship.com',
   SEED_ENV: Environment.DEV,
+  LINK_PROCESSING_ENDPOINT: 'https://lambda-url.on.aws',
 };

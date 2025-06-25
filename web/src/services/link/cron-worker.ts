@@ -1,0 +1,68 @@
+import axios from 'axios';
+import cron from 'node-cron';
+
+import { LinkStatus } from '@vtmp/common/constants';
+
+import { EnvConfig } from '@/config/env';
+import { LinkRepository } from '@/repositories/link.repository';
+
+const getRetryFilter = () => ({
+  $or: [
+    { status: LinkStatus.PENDING_PROCESSING },
+    {
+      status: LinkStatus.PENDING_RETRY,
+      attemptsCount: { $lt: 4 },
+      $expr: {
+        $gt: [
+          {
+            $dateDiff: {
+              startDate: '$lastProcessedAt',
+              endDate: '$$NOW',
+              unit: 'minute',
+            },
+          },
+          30,
+        ],
+      },
+    },
+  ],
+});
+
+const api = axios.create({
+  baseURL: `${EnvConfig.get().LINK_PROCESSING_ENDPOINT}`,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// export const sendLinksToLambda = async (
+//   linksData: { _id: string; url: string; attemptsCount: number }[]
+// ) => {
+//   return api.request({
+//     method: 'POST',
+//     data: { linksData },
+//   });
+// };
+
+export const sendLinksToLambda = async (
+  linksData: {
+    _id: string;
+    originalUrl: string | undefined;
+    attemptsCount: number;
+  }[]
+) => {
+  return api.request({
+    method: 'POST',
+    data: {
+      version: '2.0',
+      routeKey: 'POST /',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ linksData }),
+    },
+  });
+};
+
+cron.schedule('*/30 * * * * *', async () => {
+  const links = await LinkRepository.getLinks(getRetryFilter());
+  console.log(links);
+});
