@@ -48,28 +48,34 @@ const _generateMetadata = async (
   if (!rawAIResponse)
     throw new AIResponseEmptyError('AI response was empty', { url });
 
-  const validatedAIResponse = RawAIResponseSchema.parse(
-    JSON.parse(rawAIResponse)
-  );
+  const {
+    jobTitle,
+    companyName,
+    location,
+    jobFunction,
+    jobType,
+    datePosted,
+    jobDescription,
+  } = RawAIResponseSchema.parse(JSON.parse(rawAIResponse));
 
   // Convert from string to Typescript enum, had to use a separate helper stringToEnumValue
   const formattedLinkMetadata = {
-    jobTitle: validatedAIResponse.jobTitle,
-    companyName: validatedAIResponse.companyName,
+    jobTitle,
+    companyName,
     location: stringToEnumValue({
-      stringValue: validatedAIResponse.location,
+      stringValue: location,
       enumObject: LinkRegion,
     }),
     jobFunction: stringToEnumValue({
-      stringValue: validatedAIResponse.jobFunction,
+      stringValue: jobFunction,
       enumObject: JobFunction,
     }),
     jobType: stringToEnumValue({
-      stringValue: validatedAIResponse.jobType,
+      stringValue: jobType,
       enumObject: JobType,
     }),
-    datePosted: validatedAIResponse.datePosted,
-    jobDescription: formatJobDescription(validatedAIResponse.jobDescription),
+    datePosted,
+    jobDescription: formatJobDescription(jobDescription),
   };
 
   return ExtractedLinkMetadataSchema.parse(formattedLinkMetadata);
