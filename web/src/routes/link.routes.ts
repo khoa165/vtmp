@@ -42,3 +42,7 @@ LinkRoutes.post(
     LinkController.rejectLink,
   ])
 );
+LinkRoutes.put(
+  '/:linkId/metaData',
+  wrappedHandlers([LinkController.updateLinkMetaData])
+);

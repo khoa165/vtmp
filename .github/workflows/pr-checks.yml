@@ -72,6 +72,9 @@ jobs:
       - name: Use common setups action
         uses: ./.github/actions/build-web-client
 
+  # run-lint:
+  #   uses: ./.github/workflows/lint.yml
+
   chromatic:
     needs: changes
     if: ${{ needs.changes.outputs.web-client == 'true' || needs.changes.outputs.ci == 'true' }}
