@@ -297,7 +297,6 @@ export const InterviewCreateForm = ({
                     }
                   />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -431,9 +430,8 @@ const InterviewSharingButton = ({
 }) => {
   const getShareStatusLabel = () => {
     if (!shareAt) return 'Share Interview';
-    if (isDisclosed === true) return 'Shared Publicly';
-    if (isDisclosed === false) return 'Shared Anonymously';
-    return 'Share Interview';
+    else if (isDisclosed === true) return 'Shared Publicly';
+    else if (isDisclosed === false) return 'Shared Anonymously';
   };
 
   return (
