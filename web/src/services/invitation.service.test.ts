@@ -22,6 +22,7 @@ import { describe } from 'mocha';
 import { omit } from 'remeda';
 import { getEmailService } from '@/utils/email';
 import { SinonStub } from 'sinon';
+import { ZodError } from 'zod';
 
 describe('InvitationService', () => {
   useMongoDB();
@@ -291,7 +292,7 @@ describe('InvitationService', () => {
       );
       await expect(
         InvitationService.validateInvitation(invalidStructureToken)
-      ).eventually.rejectedWith('Required');
+      ).eventually.rejectedWith(ZodError, 'Required');
     });
 
     it('should return error message for token with invalid email format', async () => {
@@ -302,7 +303,7 @@ describe('InvitationService', () => {
       );
       await expect(
         InvitationService.validateInvitation(invalidEmailToken)
-      ).eventually.rejectedWith('Invalid email');
+      ).eventually.rejectedWith(ZodError, 'Invalid email');
     });
 
     it('should return error message for invitation not found', async () => {
