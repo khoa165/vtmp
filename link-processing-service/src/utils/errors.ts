@@ -1,7 +1,7 @@
 import middy from '@middy/core';
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { ZodError } from 'zod';
-
+import { LinkValidationErrorType } from '@/utils/errors-enum';
 import { LinkProcessingFailureStage } from '@vtmp/common/constants';
 
 export abstract class ServiceSpecificError extends Error {
@@ -17,14 +17,23 @@ export abstract class ServiceSpecificError extends Error {
     this.name = this.constructor.name;
     this.metadata = metadata;
     this.failureStage = failureStage;
+    if (options?.cause) {
+      this.cause = options.cause;
+    }
   }
 }
 
 export class LinkValidationError extends ServiceSpecificError {
+  public statusCode?: number;
+  public errorType: LinkValidationErrorType;
   constructor(
     message: string,
+    errorType: LinkValidationErrorType,
     metadata: { url: string },
-    options?: { cause?: unknown }
+    options?: {
+      cause?: unknown;
+      statusCode?: number;
+    }
   ) {
     super(
       message,
@@ -32,6 +41,10 @@ export class LinkValidationError extends ServiceSpecificError {
       LinkProcessingFailureStage.VALIDATION_FAILED,
       options
     );
+    this.errorType = errorType;
+    if (options?.statusCode) {
+      this.statusCode = options?.statusCode;
+    }
   }
 }
 
@@ -94,7 +107,9 @@ export const handleErrorMiddleware = (): middy.MiddlewareObj<
   const onError: middy.MiddlewareFn<
     APIGatewayProxyEventV2,
     APIGatewayProxyResult
-  > = async (request) => {
+  > = async (
+    request: middy.Request<APIGatewayProxyEventV2, APIGatewayProxyResult>
+  ) => {
     const error = request.error;
     logError(error);
 

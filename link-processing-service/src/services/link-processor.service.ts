@@ -1,5 +1,6 @@
 // import { LinkValidatorService } from '@/services/link-validator.service';
 import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
+import { LinkValidatorService } from '@/services/link-validator.service';
 import { WebScrapingService } from '@/services/web-scraping.service';
 import {
   SubmittedLink,
@@ -15,27 +16,19 @@ export const LinkProcessorService = {
     failedLinks: FailedProcessedLink[];
   }> => {
     const failedLinks: FailedProcessedLink[] = [];
-    // const { validatedLinks, failedValidationLinks } =
-    //   LinkValidatorService.validateLinks(linksData);
-
-    // Simulate Validation stage: get validatedLinks and failedValidationLinks
-    // To be removed in Link Validation Service PR
-    const validatedLinks = linksData.map((linkData) => ({
-      originalRequest: linkData,
-      url: linkData.originalUrl,
-    }));
-    const failedValidationLinks: FailedProcessedLink[] = [];
+    const { validatedUrls, faultyUrls } =
+      await LinkValidatorService.validateLinks(linksData);
 
     // Scraping stage:
     const { scrapedLinks, failedScrapingLinks } =
-      await WebScrapingService.scrapeLinks(validatedLinks);
+      await WebScrapingService.scrapeLinks(validatedUrls);
 
     // AI Metadata extraction stage
     const { metadataExtractedLinks, failedMetadataExtractionLinks } =
       await ExtractLinkMetadataService.extractMetadata(scrapedLinks);
 
     failedLinks.push(
-      ...failedValidationLinks,
+      ...faultyUrls,
       ...failedScrapingLinks,
       ...failedMetadataExtractionLinks
     );
