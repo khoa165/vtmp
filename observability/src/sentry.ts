@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/node';
+
 import { EnvConfig } from '@/config/env';
 
 if (process.env.NODE_ENV !== 'test') {

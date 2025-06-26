@@ -1,6 +1,6 @@
+import * as Sentry from '@sentry/node';
 import winston from 'winston';
 import Transport from 'winston-transport';
-import * as Sentry from '@sentry/node';
 
 const SentryWithWinstonTransport =
   Sentry.createSentryWinstonTransport(Transport);
