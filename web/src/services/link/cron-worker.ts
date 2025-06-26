@@ -72,11 +72,13 @@ export const sendLinksToLambda = async (
   }
 };
 
-cron.schedule('0 0 * * * *', async () => {
+cron.schedule('0 0 0 * * *', async () => {
   console.log('Cron wakes up...');
   try {
     const links = await LinkRepository.getLinks(getRetryFilter());
     console.log('PENDING links retrieved from database: ', links);
+
+    // Return early if no links matches the getRetryFilter() filter
     if (links.length === 0) return;
 
     const linksData = links.map(({ _id, originalUrl, attemptsCount }) => ({
@@ -86,7 +88,7 @@ cron.schedule('0 0 * * * *', async () => {
     }));
     console.log('linksData payload before sending: ', linksData);
 
-    const results = await sendLinksToLambda(linksData); // This one could error out
+    const results = await sendLinksToLambda(linksData);
     console.log('Response from Lambda: ', results);
   } catch (error: unknown) {
     console.error('Cron error: ', error);
