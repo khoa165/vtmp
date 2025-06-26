@@ -7,6 +7,8 @@ import { EnvConfig } from '@/config/env';
 import { Environment } from '@/constants/enums';
 import { LinkRepository } from '@/repositories/link.repository';
 
+const ENABLE_LINK_PROCESSING = false;
+
 const getRetryFilter = () => ({
   $or: [
     { status: LinkStatus.PENDING_PROCESSING },
@@ -42,7 +44,7 @@ const api = axios.create({
  * @returns
  *
  * Switch the request format based on an env var
- * - local Lambda running with aws-lambda-runtime-interface-emulator: request body needs to be stirngified, it is the entire event object
+ * - local Lambda running with aws-lambda-runtime-interface-emulator: request body needs to be stringified, it is the entire event object
  * - cloud lambda on AWS: request body is sent as normal JSON body
  */
 
@@ -66,31 +68,35 @@ export const sendLinksToLambda = async (
     });
   } else {
     return api.request({
+      // prod,
       method: 'POST',
       data: { linksData },
     });
   }
 };
 
-cron.schedule('0 0 0 * * *', async () => {
-  console.log('Cron wakes up...');
-  try {
-    const links = await LinkRepository.getLinks(getRetryFilter());
-    console.log('PENDING links retrieved from database: ', links);
+// Disable cron-worker so that web is not able to trigger lambda
+if (ENABLE_LINK_PROCESSING) {
+  cron.schedule('0 0 * * * *', async () => {
+    console.log('Cron wakes up...');
+    try {
+      const links = await LinkRepository.getLinks(getRetryFilter());
+      console.log('PENDING links retrieved from database: ', links);
 
-    // Return early if no links matches the getRetryFilter() filter
-    if (links.length === 0) return;
+      // Return early if no links matches the getRetryFilter() filter
+      if (links.length === 0) return;
 
-    const linksData = links.map(({ _id, originalUrl, attemptsCount }) => ({
-      _id: _id.toString(),
-      originalUrl,
-      attemptsCount,
-    }));
-    console.log('linksData payload before sending: ', linksData);
+      const linksData = links.map(({ _id, originalUrl, attemptsCount }) => ({
+        _id: _id.toString(),
+        originalUrl,
+        attemptsCount,
+      }));
+      console.log('linksData payload before sending: ', linksData);
 
-    const results = await sendLinksToLambda(linksData);
-    console.log('Response from Lambda: ', results);
-  } catch (error: unknown) {
-    console.error('Cron error: ', error);
-  }
-});
+      const results = await sendLinksToLambda(linksData);
+      console.log('Response from Lambda: ', results);
+    } catch (error: unknown) {
+      console.error('Cron error: ', error);
+    }
+  });
+}
