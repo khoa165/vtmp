@@ -20,8 +20,12 @@ export const parseEnvConfig = <T extends ZodObject<ZodRawShape>>({
 }): z.infer<T> => {
   const envs = schema.safeParse(env);
   if (!envs.success) {
+    console.log('Problems with: ', envs.error.issues);
+    const issues = envs.error.issues
+      .map((issue) => `${issue.path[0]}: ${issue.message}`)
+      .join(', ');
     throw new Error(
-      'Environment variables are not set correctly. Please check your .env file.'
+      `Environment variables are not set correctly. Please check your .env file. Problems with: ${issues}`
     );
   }
   return envs.data;
