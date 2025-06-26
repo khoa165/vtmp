@@ -86,9 +86,13 @@ const linkProcessingJob = async () => {
     const now = new Date();
     while (
       domainLockQueue.length > 0 &&
-      domainLockQueue[0]!.nextTimeToExecute <= now
+      domainLockQueue[0] &&
+      domainLockQueue[0].nextTimeToExecute <= now
     ) {
-      const { lockedLink } = domainLockQueue.shift()!;
+      const item = domainLockQueue.shift();
+      if (!item) break; // safety check, though shouldn't happen
+
+      const { lockedLink } = item;
       const domain = new URL(lockedLink.originalUrl).hostname;
       domainLock.delete(domain);
     }
@@ -123,8 +127,10 @@ const linkProcessingJob = async () => {
 
     // If no links to submit and domain locks still active, wait a bit to avoid busy loop
     if (linksToSubmit.length === 0 && domainLockQueue.length > 0) {
-      const waitTimeMs =
-        domainLockQueue[0]!.nextTimeToExecute.getTime() - new Date().getTime();
+      const first = domainLockQueue[0];
+      const waitTimeMs = first?.nextTimeToExecute
+        ? first.nextTimeToExecute.getTime() - Date.now()
+        : 0;
       await new Promise((resolve) =>
         setTimeout(resolve, Math.max(waitTimeMs, 1000))
       ); // wait at least 1s
@@ -135,3 +141,9 @@ const linkProcessingJob = async () => {
 if (ENABLE_LINK_PROCESSING) {
   cron.schedule('0 0 * * * *', linkProcessingJob);
 }
+
+export const CronService = {
+  runImmediately: async () => {
+    await linkProcessingJob();
+  },
+};
