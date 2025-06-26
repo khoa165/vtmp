@@ -1,6 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import { SystemRole } from '@vtmp/common/constants';
-import { handleError, UnauthorizedError } from '@/utils/errors';
+import {
+  ApplicationSpecificError,
+  handleError,
+  UnauthorizedError,
+} from '@/utils/errors';
+import { logger } from '@vtmp/observability';
+import * as Sentry from '@sentry/node';
 
 interface AuthenticatedRequest extends Request {
   user: {
@@ -33,11 +39,37 @@ export const getServiceFromRequest = (
 
 export const routeErrorHandler = (
   err: unknown,
-  _req: Request,
+  req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
 ) => {
+  // Capture error in Sentry (only in non-test environments)
+  if (process.env.NODE_ENV !== 'test') {
+    const extra = {
+      url: req.url,
+      method: req.method,
+      headers: req.headers,
+      body: req.body,
+    };
+
+    if (err instanceof ApplicationSpecificError) {
+      console.log('should log here');
+      Sentry.captureException(err.message, {
+        extra,
+        tags: {
+          statusCode: err.statusCode,
+        },
+      });
+
+      logger.error(err.message, {
+        ...extra,
+        tags: {
+          statusCode: err.statusCode,
+        },
+      });
+    }
+  }
   const { statusCode, errors } = handleError(err);
   res.status(statusCode).json({ errors });
   return;
