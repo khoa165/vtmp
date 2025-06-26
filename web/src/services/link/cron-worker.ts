@@ -71,8 +71,12 @@ export const sendLinksToLambda = async (
     });
   }
 };
-
-cron.schedule('0 0 * * * *', async () => {
+let executing = false;
+const job = async () => {
+  if (executing) {
+    return;
+  }
+  executing = true;
   console.log('Cron wakes up...');
   const links = await LinkRepository.getLinks(getRetryFilter());
   console.log('PENDING links retrieved from database: ', links);
@@ -87,4 +91,6 @@ cron.schedule('0 0 * * * *', async () => {
 
   const results = await sendLinksToLambda(linksData);
   console.log('Response from Lambda: ', results);
-});
+  executing = false;
+};
+cron.schedule('0 0 * * * *', job);
