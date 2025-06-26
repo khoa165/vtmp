@@ -1,13 +1,25 @@
 import { expect } from 'chai';
+import { differenceInSeconds } from 'date-fns';
+
 import assert from 'assert';
+
+import {
+  JobFunction,
+  JobPostingRegion,
+  JobPostingSortField,
+  JobType,
+  SortOrder,
+} from '@vtmp/common/constants';
+
+import {
+  IJobPosting,
+  JobFilter,
+  JobPostingFilterSort,
+} from '@/models/job-posting.model';
+import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { getNewObjectId } from '@/testutils/mongoID.testutil';
-import { differenceInSeconds } from 'date-fns';
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { IJobPosting, JobFilter } from '@/models/job-posting.model';
-import { JobPostingRegion, JobFunction, JobType } from '@vtmp/common/constants';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 
 describe('JobPostingRepository', () => {
   useMongoDB();
@@ -520,6 +532,126 @@ describe('JobPostingRepository', () => {
               jobPosting?.jobFunction === JobFunction.SOFTWARE_ENGINEER &&
               jobPosting?.jobType === JobType.INTERNSHIP
           ),
+        });
+      });
+    });
+
+    describe('getJobPostingsUserHasNotAppliedTo with Pagination and Sort', () => {
+      const userIdA = getNewMongoId();
+
+      let jobPostings: (IJobPosting | undefined)[];
+      const limit = 10;
+      const totalJobPostings = 153;
+
+      const mockMultipleJobPostings = Array.from(
+        { length: totalJobPostings },
+        (_, i) => ({
+          linkId: getNewObjectId(),
+          url: `http://example${i + 1}.com/job-posting`,
+          jobFunction: Object.values(JobFunction)[i % 4],
+          jobTitle: `Software Engineer ${i % 2 === 0 ? 2 : 1}`,
+          companyName: `Example Company ${i + 1}`,
+          submittedBy: getNewObjectId(),
+          location: Object.values(JobPostingRegion)[i % 2],
+          datePosted: new Date(2023, 6, 31 + i / 2),
+        })
+      );
+
+      beforeEach(async () => {
+        jobPostings = await Promise.all(
+          mockMultipleJobPostings.map((jobPosting) =>
+            JobPostingRepository.createJobPosting({
+              jobPostingData: jobPosting,
+            })
+          )
+        );
+      });
+
+      const runPaginationTest = async ({
+        userId,
+        filters,
+        allJobPostings = [],
+      }: {
+        userId: string;
+        filters?: JobFilter;
+        allJobPostings: (IJobPosting | undefined)[];
+      }) => {
+        let page = 1;
+        let jobsNotAppliedByUser: IJobPosting[] = [];
+        let cursor = undefined;
+        const totalPage = Math.floor((allJobPostings.length - 1) / limit) + 1;
+
+        while (page <= totalPage) {
+          const paginationResult =
+            await JobPostingRepository.getJobPostingsUserHasNotAppliedToSort({
+              userId,
+              filters: {
+                ...filters,
+                limit,
+                cursor,
+              },
+            });
+          jobsNotAppliedByUser = paginationResult.data;
+          cursor = paginationResult.cursor;
+
+          expect(jobsNotAppliedByUser)
+            .to.be.an('array')
+            .that.has.length(
+              Math.min(allJobPostings.length - limit * (page - 1), limit)
+            );
+          jobsNotAppliedByUser.forEach((job) => {
+            assert(job);
+          });
+          expect(
+            jobsNotAppliedByUser.map((job) => job._id?.toString())
+          ).to.deep.equal(
+            allJobPostings
+              .slice((page - 1) * limit, page * limit)
+              .map((jobPosting) => jobPosting?._id.toString())
+          );
+
+          page += 1;
+        }
+      };
+
+      Object.values(JobPostingSortField).forEach((sortField) => {
+        it(`should return pages with correct sorting on ${sortField}`, async () => {
+          const filters: JobPostingFilterSort = {
+            limit,
+            sortField,
+            sortOrder: SortOrder.ASC,
+          };
+
+          const allJobPostingsSorted = [...jobPostings]
+            .filter(Boolean)
+            .sort((a, b) => {
+              const aVal = a?.[sortField];
+              const bVal = b?.[sortField];
+
+              if (aVal === undefined && bVal === undefined) return 0;
+              if (aVal === undefined) return -1;
+              if (bVal === undefined) return 1;
+
+              if (typeof aVal === 'string' && typeof bVal === 'string') {
+                const cmp = aVal.localeCompare(bVal);
+                if (cmp !== 0) return cmp;
+              }
+
+              if (aVal instanceof Date && bVal instanceof Date) {
+                const cmp = aVal.getTime() - bVal.getTime();
+                if (cmp !== 0) return cmp;
+              }
+
+              const aId = a?._id?.toString() ?? '';
+              const bId = b?._id?.toString() ?? '';
+              return aId.localeCompare(bId);
+            });
+
+          await runPaginationTest({
+            userId: userIdA,
+            filters,
+            allJobPostings: allJobPostingsSorted,
+          });
         });
       });
     });

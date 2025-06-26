@@ -79,6 +79,19 @@ export enum InterestLevel {
   HIGH = 'HIGH',
 }
 
+export enum SortOrder {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
+export enum JobPostingSortField {
+  DATE_POSTED = 'datePosted',
+  LOCATION = 'location',
+  COMPANY_NAME = 'companyName',
+  JOB_TYPE = 'jobType',
+  JOB_TITLE = 'jobTitle',
+}
+
 export enum CompanyName {
   SERVICE_NOW = 'SERVICE_NOW',
   LILLY = 'LILLY',
