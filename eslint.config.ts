@@ -115,6 +115,7 @@ export default tseslint.config(
       'web/app.test.ts',
       'web-client/**/*',
       'discord-service/**/*',
+      'link-processing-service/**/*',
     ],
     rules: {
       'customEslintRules/wrapped-handlers-in-router': 'off',

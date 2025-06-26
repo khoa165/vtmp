@@ -1,13 +1,11 @@
-// import { LinkValidatorService } from '@/services/link-validator.service';
 import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
+import { LinkValidatorService } from '@/services/link-validator.service';
 import { WebScrapingService } from '@/services/web-scraping.service';
 import {
   SubmittedLink,
   MetadataExtractedLink,
   FailedProcessedLink,
 } from '@/types/link-processing.types';
-import { LinkValidatorService } from '@/services/link-validator.service';
-
 
 export const LinkProcessorService = {
   processLinks: async (

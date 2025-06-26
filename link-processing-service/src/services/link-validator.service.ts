@@ -50,6 +50,15 @@ const LinkValidatorService = {
   }> {
     const validatedUrls: ValidatedLink[] = [];
     const faultyUrls: FailedProcessedLink[] = [];
+
+    // Early return
+    if (requests.length === 0) {
+      console.warn(
+        '[LinkValidatorService] WARN: Empty requests to validate links. Will not validate any links for this run.'
+      );
+      return { validatedUrls, faultyUrls };
+    }
+
     await Promise.allSettled(
       requests.map(async (request) => {
         try {

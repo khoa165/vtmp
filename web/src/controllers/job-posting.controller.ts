@@ -1,10 +1,12 @@
-import { Request, Response } from 'express';
-import { z } from 'zod';
-import { JobPostingService } from '@/services/job-posting.service';
-import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
-import { getUserFromRequest } from '@/middlewares/utils';
 import { parse } from 'date-fns';
+import { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import { z } from 'zod';
+
+import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
+
+import { getUserFromRequest } from '@/middlewares/utils';
+import { JobPostingService } from '@/services/job-posting.service';
 
 const JobPostingUpdateSchema = z
   .object({
@@ -73,6 +75,14 @@ const FilterSchema = z
   );
 
 export const JobPostingController = {
+  getJobPostingById: async (req: Request, res: Response) => {
+    const { jobPostingId } = JobPostingIdParamSchema.parse(req.params);
+    const jobPosting = await JobPostingService.getJobPostingById(jobPostingId);
+
+    res.status(200).json({
+      data: jobPosting,
+    });
+  },
   updateJobPosting: async (req: Request, res: Response) => {
     const { jobPostingId } = JobPostingIdParamSchema.parse(req.params);
     const jobPostingData = JobPostingUpdateSchema.parse(req.body);

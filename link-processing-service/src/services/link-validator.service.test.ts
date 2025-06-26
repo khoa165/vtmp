@@ -9,7 +9,7 @@ import { useSandbox } from '@/testutils/sandbox.testutil';
 import { SubmittedLink } from '@/types/link-processing.types';
 import { LinkValidationError } from '@/utils/errors';
 
-chai.use(wrappedHandlers([chaiAsPromised]));
+chai.use(chaiAsPromised);
 
 describe('LinkValidatorService', () => {
   const sandbox = useSandbox();

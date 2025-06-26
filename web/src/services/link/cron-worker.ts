@@ -8,6 +8,8 @@ import { Environment } from '@/constants/enums';
 import { ILink } from '@/models/link.model';
 import { LinkRepository } from '@/repositories/link.repository';
 
+const ENABLE_LINK_PROCESSING = false;
+
 const getRetryFilter = () => ({
   $or: [
     { status: LinkStatus.PENDING_PROCESSING },
@@ -43,7 +45,7 @@ const api = axios.create({
  * @returns
  *
  * Switch the request format based on an env var
- * - local Lambda running with aws-lambda-runtime-interface-emulator: request body needs to be stirngified, it is the entire event object
+ * - local Lambda running with aws-lambda-runtime-interface-emulator: request body needs to be stringified, it is the entire event object
  * - cloud lambda on AWS: request body is sent as normal JSON body
  */
 
@@ -67,13 +69,13 @@ export const sendLinksToLambda = async (
     });
   } else {
     return api.request({
+      // prod,
       method: 'POST',
       data: { linksData },
     });
   }
 };
-
-cron.schedule('*/30 * * * * *', async () => {
+const linkProcessingJob = async () => {
   const links = await LinkRepository.getLinks(getRetryFilter());
   const domainLock = new Set<string>();
   const domainLockQueue: { lockedLink: ILink; nextTimeToExecute: Date }[] = [];
@@ -128,4 +130,8 @@ cron.schedule('*/30 * * * * *', async () => {
       ); // wait at least 1s
     }
   }
-});
+};
+// Disable cron-worker so that web is not able to trigger lambda
+if (ENABLE_LINK_PROCESSING) {
+  cron.schedule('0 0 * * * *', linkProcessingJob);
+}
