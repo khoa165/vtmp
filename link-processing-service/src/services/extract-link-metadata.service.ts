@@ -16,6 +16,7 @@ import {
   ScrapedLink,
   FailedProcessedLink,
   MetadataExtractedLink,
+  SubmittedLink,
 } from '@/types/link-processing.types';
 import {
   AIExtractionError,
@@ -23,7 +24,6 @@ import {
   logError,
 } from '@/utils/errors';
 import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
-import { determineProcessStatus } from '@/utils/long-retry';
 import { buildPrompt } from '@/utils/prompts';
 
 const _getGoogleGenAI = async (): Promise<GoogleGenAI> => {
@@ -48,31 +48,52 @@ const _generateMetadata = async (
   if (!rawAIResponse)
     throw new AIResponseEmptyError('AI response was empty', { url });
 
-  const validatedAIResponse = RawAIResponseSchema.parse(
-    JSON.parse(rawAIResponse)
-  );
+  const {
+    jobTitle,
+    companyName,
+    location,
+    jobFunction,
+    jobType,
+    datePosted,
+    jobDescription,
+  } = RawAIResponseSchema.parse(JSON.parse(rawAIResponse));
 
   // Convert from string to Typescript enum, had to use a separate helper stringToEnumValue
   const formattedLinkMetadata = {
-    jobTitle: validatedAIResponse.jobTitle,
-    companyName: validatedAIResponse.companyName,
+    jobTitle,
+    companyName,
     location: stringToEnumValue({
-      stringValue: validatedAIResponse.location,
+      stringValue: location,
       enumObject: LinkRegion,
     }),
     jobFunction: stringToEnumValue({
-      stringValue: validatedAIResponse.jobFunction,
+      stringValue: jobFunction,
       enumObject: JobFunction,
     }),
     jobType: stringToEnumValue({
-      stringValue: validatedAIResponse.jobType,
+      stringValue: jobType,
       enumObject: JobType,
     }),
-    datePosted: validatedAIResponse.datePosted,
-    jobDescription: formatJobDescription(validatedAIResponse.jobDescription),
+    datePosted,
+    jobDescription: formatJobDescription(jobDescription),
   };
 
   return ExtractedLinkMetadataSchema.parse(formattedLinkMetadata);
+};
+
+/**
+ * Decide on whether link should be long retried.
+ * @param originalRequest
+ * @param maxLongRetry
+ */
+const _determineProcessStatus = (
+  originalRequest: SubmittedLink,
+  maxLongRetry: number
+): LinkStatus => {
+  if (originalRequest.attemptsCount >= maxLongRetry) {
+    return LinkStatus.PIPELINE_FAILED;
+  }
+  return LinkStatus.PENDING_RETRY;
 };
 
 export const ExtractLinkMetadataService = {
@@ -82,10 +103,17 @@ export const ExtractLinkMetadataService = {
     metadataExtractedLinks: MetadataExtractedLink[];
     failedMetadataExtractionLinks: FailedProcessedLink[];
   }> => {
-    const MAX_LONG_RETRY = 3;
+    const MAX_LONG_RETRY = 4;
 
     const metadataExtractedLinks: MetadataExtractedLink[] = [];
     const failedMetadataExtractionLinks: FailedProcessedLink[] = [];
+
+    if (scrapedLinks.length === 0) {
+      console.warn(
+        '[ExtractLinkMetadataService] WARN: Empty scrapedLinks. Will not extract metadata for any links for this run.'
+      );
+      return { metadataExtractedLinks, failedMetadataExtractionLinks };
+    }
 
     await Promise.all(
       scrapedLinks.map(async (link) => {
@@ -102,10 +130,9 @@ export const ExtractLinkMetadataService = {
           });
         } catch (error: unknown) {
           logError(error);
-
           failedMetadataExtractionLinks.push({
             ...link,
-            status: determineProcessStatus(
+            status: _determineProcessStatus(
               link.originalRequest,
               MAX_LONG_RETRY
             ),

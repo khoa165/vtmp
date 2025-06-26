@@ -85,8 +85,8 @@ export type SubmittedLink = z.infer<typeof SubmittedLinkSchema>;
  * Type of each element of failedValidationLinks is: FailedProcessedLink
  *
  * At all stage, in the failedValidationLinks, failedScrapingLinks, failedMetadataExtractionLinks, each element have type FailedProcessedLink
- *
- * The type ValidatedLink is also type of each element in the input array to the next WebScrapingService.scrapeLinks
+
+ * The type ValidatedLink is also type of each element in the input array to the next WebScrapingService.scrapeLinks()
  */
 
 export interface ValidatedLink {

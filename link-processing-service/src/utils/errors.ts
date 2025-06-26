@@ -1,9 +1,10 @@
 import middy from '@middy/core';
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { ZodError } from 'zod';
-import { LinkValidationErrorType } from '@/utils/errors-enum';
 
 import { LinkProcessingFailureStage } from '@vtmp/common/constants';
+
+import { LinkValidationErrorType } from '@/utils/errors-enum';
 
 export abstract class ServiceSpecificError extends Error {
   public metadata: { url: string };

@@ -2,15 +2,15 @@ import chromium from '@sparticuz/chromium';
 import pLimit from 'p-limit';
 import puppeteer, { Browser, Page } from 'puppeteer-core';
 
-import { LinkProcessingFailureStage } from '@vtmp/common/constants';
+import { LinkProcessingFailureStage, LinkStatus } from '@vtmp/common/constants';
 
 import {
   FailedProcessedLink,
   ScrapedLink,
   ValidatedLink,
+  SubmittedLink,
 } from '@/types/link-processing.types';
 import { logError, ScrapingError } from '@/utils/errors';
-import { determineProcessStatus } from '@/utils/long-retry';
 
 const _launchBrowserInstance = async (): Promise<Browser> => {
   const browser = await puppeteer.launch({
@@ -32,6 +32,21 @@ const _scrapeWebpage = async (page: Page, url: string): Promise<string> => {
   return bodyText;
 };
 
+/**
+ * Decide on whether link should be long retried.
+ * @param originalRequest
+ * @param maxLongRetry
+ */
+const _determineProcessStatus = (
+  originalRequest: SubmittedLink,
+  maxLongRetry: number
+): LinkStatus => {
+  if (originalRequest.attemptsCount >= maxLongRetry) {
+    return LinkStatus.PIPELINE_FAILED;
+  }
+  return LinkStatus.PENDING_RETRY;
+};
+
 export const WebScrapingService = {
   scrapeLinks: async (
     validatedLinks: ValidatedLink[]
@@ -39,13 +54,21 @@ export const WebScrapingService = {
     scrapedLinks: ScrapedLink[];
     failedScrapingLinks: FailedProcessedLink[];
   }> => {
+    const scrapedLinks: ScrapedLink[] = [];
+    const failedScrapingLinks: FailedProcessedLink[] = [];
+
+    // Early return
+    if (validatedLinks.length === 0) {
+      console.warn(
+        '[WebScrapingServce] WARN: Empty validatedLinks. Will not scrape any links for this run.'
+      );
+      return { scrapedLinks, failedScrapingLinks };
+    }
+
     // Create a limiter with CONCURRENCY_LIMIT
     const CONCURRENCY_LIMIT = 5;
     const limit = pLimit(CONCURRENCY_LIMIT);
-    const MAX_LONG_RETRY = 3;
-
-    const scrapedLinks: ScrapedLink[] = [];
-    const failedScrapingLinks: FailedProcessedLink[] = [];
+    const MAX_LONG_RETRY = 4;
 
     // Open only 1 Chrominum browser process
     const browser = await _launchBrowserInstance();
@@ -66,7 +89,7 @@ export const WebScrapingService = {
 
             failedScrapingLinks.push({
               ...validatedLink,
-              status: determineProcessStatus(
+              status: _determineProcessStatus(
                 validatedLink.originalRequest,
                 MAX_LONG_RETRY
               ),
