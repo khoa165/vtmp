@@ -108,6 +108,13 @@ export const ExtractLinkMetadataService = {
     const metadataExtractedLinks: MetadataExtractedLink[] = [];
     const failedMetadataExtractionLinks: FailedProcessedLink[] = [];
 
+    if (scrapedLinks.length === 0) {
+      console.warn(
+        '[ExtractLinkMetadataService] WARN: Empty scrapedLinks. Will not extract metadata for any links for this run.'
+      );
+      return { metadataExtractedLinks, failedMetadataExtractionLinks };
+    }
+
     await Promise.all(
       scrapedLinks.map(async (link) => {
         try {
@@ -123,7 +130,6 @@ export const ExtractLinkMetadataService = {
           });
         } catch (error: unknown) {
           logError(error);
-
           failedMetadataExtractionLinks.push({
             ...link,
             status: _determineProcessStatus(

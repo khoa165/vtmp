@@ -90,5 +90,5 @@ const lambdaHandler = async (
 };
 
 export const handler = middy(lambdaHandler)
-  .use(wrappedHandlers([httpJsonBodyParser()]))
-  .use(wrappedHandlers([handleErrorMiddleware()]));
+  .use(httpJsonBodyParser())
+  .use(handleErrorMiddleware());

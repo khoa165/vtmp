@@ -54,13 +54,21 @@ export const WebScrapingService = {
     scrapedLinks: ScrapedLink[];
     failedScrapingLinks: FailedProcessedLink[];
   }> => {
+    const scrapedLinks: ScrapedLink[] = [];
+    const failedScrapingLinks: FailedProcessedLink[] = [];
+
+    // Early return
+    if (validatedLinks.length === 0) {
+      console.warn(
+        '[WebScrapingServce] WARN: Empty validatedLinks. Will not scrape any links for this run.'
+      );
+      return { scrapedLinks, failedScrapingLinks };
+    }
+
     // Create a limiter with CONCURRENCY_LIMIT
     const CONCURRENCY_LIMIT = 5;
     const limit = pLimit(CONCURRENCY_LIMIT);
     const MAX_LONG_RETRY = 4;
-
-    const scrapedLinks: ScrapedLink[] = [];
-    const failedScrapingLinks: FailedProcessedLink[] = [];
 
     // Open only 1 Chrominum browser process
     const browser = await _launchBrowserInstance();
