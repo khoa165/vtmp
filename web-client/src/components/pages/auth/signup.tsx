@@ -69,10 +69,12 @@ const JWTDecodeSchema = z.object({
   receiverEmail: z.string(),
 });
 
+type JWTDecodeType = z.infer<typeof JWTDecodeSchema>;
+
 export const SignUpPage = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
-  let decodedToken: z.infer<typeof JWTDecodeSchema>;
+  let decodedToken: JWTDecodeType | null = null;
   if (!token) {
     return (
       <InvitationErrorPage message="You will need a valid invitation to sign up!" />
@@ -142,10 +144,9 @@ export const SignUpPage = () => {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       resetState();
-      navigate('/application-tracker');
+      navigate('/job-postings');
     },
     onError: (error) => {
-      console.log('Error in signup mutation', error);
       if (axios.isAxiosError(error) && error.response) {
         error.response.data.errors.forEach((err: { message: string }) => {
           if (
