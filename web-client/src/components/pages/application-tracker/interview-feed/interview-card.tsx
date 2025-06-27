@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { Circle, CircleUserRound, MapPin } from 'lucide-react';
 
 import { Button } from '@/components/base/button';
@@ -10,7 +11,7 @@ import {
 } from '@/components/base/card';
 import { Textarea } from '@/components/base/textarea';
 import { SharedInterviewData } from '@/components/pages/application-tracker/interview-feed/validation';
-import { formatRelativeDate } from '@/utils/date';
+import { formatRelativeDate, MONTH_DATE_YEAR } from '@/utils/date';
 
 export const InterviewCard = ({
   interview,
@@ -75,7 +76,9 @@ export const InterviewCard = ({
             <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Interview Date
             </div>
-            <p className="font-medium text-white">June 10, 2025</p>
+            <p className="font-medium text-white">
+              {format(new Date(interview.interviewOnDate), MONTH_DATE_YEAR)}
+            </p>
           </div>
         </div>
 
