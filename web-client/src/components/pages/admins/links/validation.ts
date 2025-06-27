@@ -75,3 +75,10 @@ export interface JobPostingData {
   jobDescription?: string;
   adminNote?: string;
 }
+
+export const CronJobResponseSchema = z.object({
+  message: z.string(),
+  data: z.object({}),
+});
+
+export type CronJobResponse = z.infer<typeof CronJobResponseSchema>;

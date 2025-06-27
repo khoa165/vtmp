@@ -5,7 +5,10 @@ import { Button } from '@/components/base/button';
 import { HeaderSorting } from '@/components/base/header';
 import { StatusDot } from '@/components/base/status-dot';
 import { ReviewPopupButton } from '@/components/pages/admins/links/review-popup-button';
-import { ILinkResponse , JobPostingData } from '@/components/pages/admins/links/validation';
+import {
+  ILinkResponse,
+  JobPostingData,
+} from '@/components/pages/admins/links/validation';
 import { LinksColorMapping } from '@/utils/constants';
 import { MONTH_DATE_YEAR } from '@/utils/date';
 

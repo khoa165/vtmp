@@ -7,7 +7,7 @@ export const CronController = {
     await CronService.runImmediately();
     res.status(200).json({
       message: 'Cron job has been triggered successfully.',
-      data: null,
+      data: {},
     });
   },
 };

@@ -4,20 +4,47 @@ import request from 'supertest';
 
 import app from '@/app';
 import { CronService } from '@/services/link/cron.service';
-import { expectSuccessfulResponse } from '@/testutils/response-assertion.testutil';
+import {
+  HTTPMethod,
+  runDefaultAuthMiddlewareTests,
+  runUserLogin,
+} from '@/testutils/auth.testutils';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import {
+  expectErrorsArray,
+  expectSuccessfulResponse,
+} from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 
 // Will add authentication test later on
-describe('CronController', () => {
+describe.only('CronController', () => {
+  useMongoDB();
   const sandbox = useSandbox();
   let stubRunFunction: sinon.SinonStub;
+  let mockUserToken: string, mockAdminToken: string;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     stubRunFunction = sandbox.stub(CronService, 'runImmediately').resolves();
+    ({ mockUserToken, mockAdminToken } = await runUserLogin());
+  });
+
+  runDefaultAuthMiddlewareTests({
+    route: '/api/cron/run-immediately',
+    method: HTTPMethod.POST,
+  });
+  it('should throw ForbiddenError when user try to reject link', async () => {
+    const res = await request(app)
+      .post(`/api/cron/run-immediately`)
+      .set('Authorization', `Bearer ${mockUserToken}`);
+
+    expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+    expect(res.body.errors[0].message).to.eq('Forbidden');
   });
 
   it('POST /cron/run-immediately', async () => {
-    const res = await request(app).post('/api/cron/run-immediately');
+    const res = await request(app)
+      .post('/api/cron/run-immediately')
+      .set('Authorization', `Bearer ${mockAdminToken}`);
 
     expectSuccessfulResponse({ res, statusCode: 200 });
     expect(res.body.message).to.equal(
