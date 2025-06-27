@@ -120,7 +120,7 @@ const AdminInterviewFilter = z
     )
   );
 
-const shareInterviewSchema = z
+const ShareInterviewSchema = z
   .object({
     isDisclosed: z.boolean().optional(),
   })
@@ -232,16 +232,17 @@ export const InterviewController = {
 
   shareInterview: async (req: Request, res: Response) => {
     const { interviewId } = InterviewIdParamsSchema.parse(req.params);
-    const { isDisclosed } = shareInterviewSchema.parse(req.body);
+    const { isDisclosed } = ShareInterviewSchema.parse(req.body);
     const userId = getUserFromRequest(req).user.id;
 
-    const sharedInterview = await InterviewService.updateInterviewSharingStatus(
-      {
-        interviewId,
-        userId,
-        isDisclosed,
-      }
-    );
+    const sharedInterview = await InterviewService.updateInterviewById({
+      interviewId,
+      userId,
+      newUpdate: {
+        isDisclosed: isDisclosed,
+      },
+      isShare: true,
+    });
 
     res.status(200).json({
       message: 'Interview shared successfully',
@@ -253,13 +254,11 @@ export const InterviewController = {
     const { interviewId } = InterviewIdParamsSchema.parse(req.params);
     const userId = getUserFromRequest(req).user.id;
 
-    const sharedInterview = await InterviewService.updateInterviewSharingStatus(
-      {
-        interviewId,
-        userId,
-        isShare: false,
-      }
-    );
+    const sharedInterview = await InterviewService.updateInterviewById({
+      interviewId,
+      userId,
+      isShare: false,
+    });
 
     res.status(200).json({
       message: 'Interview unshared successfully',

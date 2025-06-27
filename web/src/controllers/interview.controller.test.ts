@@ -668,9 +668,8 @@ describe('InterviewController', () => {
     });
 
     it('should return an error message with status code 404 if the interview is not found', async () => {
-      const fakeInterview = getNewMongoId();
       const res = await request(app)
-        .put(endpoint(fakeInterview))
+        .put(endpoint(getNewMongoId()))
         .set('Authorization', `Bearer ${mockToken_A}`)
         .send({ isDisclosed: false });
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
@@ -725,9 +724,8 @@ describe('InterviewController', () => {
     });
 
     it('should return an error message with status code 404 if the interview is not found', async () => {
-      const fakeInterview = getNewMongoId();
       const res = await request(app)
-        .put(endpoint(fakeInterview))
+        .put(endpoint(getNewMongoId()))
         .set('Authorization', `Bearer ${mockToken_A}`);
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Interview not found');

@@ -186,27 +186,4 @@ export const InterviewRepository = {
       { new: true }
     );
   },
-
-  updateInterviewSharing: async ({
-    interviewId,
-    userId,
-    shareOptions,
-  }: {
-    interviewId: string;
-    userId: string;
-    shareOptions: {
-      isDisclosed?: boolean;
-      sharedAt?: Date | null;
-    };
-  }): Promise<IInterview | null> => {
-    return InterviewModel.findOneAndUpdate(
-      { _id: interviewId, userId, deletedAt: null },
-      {
-        $set: {
-          ...shareOptions,
-        },
-      },
-      { new: true }
-    );
-  },
 };
