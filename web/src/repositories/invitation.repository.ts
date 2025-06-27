@@ -5,6 +5,7 @@ import { InvitationStatus } from '@vtmp/common/constants';
 export const InvitationRepository = {
   createInvitation: async (invitationData: {
     receiverEmail: string;
+    receiverName: string;
     sender: string;
     token: string;
     expiryDate: Date;
