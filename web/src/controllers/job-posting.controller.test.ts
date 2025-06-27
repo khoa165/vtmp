@@ -289,7 +289,7 @@ describe('JobPostingController', () => {
         .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
+      expect(res.body.data.data).to.be.an('array').that.have.lengthOf(0);
     });
 
     it('should return all job postings if user has not applied to any posting', async () => {
@@ -299,12 +299,12 @@ describe('JobPostingController', () => {
         .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data)
+      expect(res.body.data.data)
         .to.be.an('array')
         .that.have.lengthOf(mockMultipleJobPostings.length);
-      expect(res.body.data.map((job: IJobPosting) => job._id)).to.have.members(
-        jobPostings.map((jobPosting) => jobPosting?.id)
-      );
+      expect(
+        res.body.data.data.map((job: IJobPosting) => job._id)
+      ).to.have.members(jobPostings.map((jobPosting) => jobPosting?.id));
     });
 
     it('should exclude soft-deleted job postings from the returned array', async () => {
@@ -325,8 +325,8 @@ describe('JobPostingController', () => {
         .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
-      expect(res.body.data[0]._id).to.equal(jobPosting4?.id);
+      expect(res.body.data.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data.data[0]._id).to.equal(jobPosting4?.id);
     });
 
     it('should not exclude a job posting if the user applied to it but later deleted the application', async () => {
@@ -349,8 +349,8 @@ describe('JobPostingController', () => {
         .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
-      expect(res.body.data[0]._id).to.equal(jobPostings[0]?.id);
+      expect(res.body.data.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data.data[0]._id).to.equal(jobPostings[0]?.id);
     });
 
     it('should return all job postings that user has not applied to. Should not exclude job postings applied by another user', async () => {
@@ -374,11 +374,10 @@ describe('JobPostingController', () => {
         .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(2);
-      expect(res.body.data.map((job: IJobPosting) => job._id)).to.have.members([
-        jobPosting3?.id,
-        jobPosting4?.id,
-      ]);
+      expect(res.body.data.data).to.be.an('array').that.have.lengthOf(2);
+      expect(
+        res.body.data.data.map((job: IJobPosting) => job._id)
+      ).to.have.members([jobPosting3?.id, jobPosting4?.id]);
     });
   });
 
@@ -407,7 +406,7 @@ describe('JobPostingController', () => {
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
+      expect(res.body.data.data).to.be.an('array').that.have.lengthOf(0);
     });
 
     it('should return only the job postings not applied by the user and matching the company name filter', async () => {
@@ -421,8 +420,8 @@ describe('JobPostingController', () => {
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
-      expect(res.body.data[0]._id).to.equal(jobPosting1?.id);
+      expect(res.body.data.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data.data[0]._id).to.equal(jobPosting1?.id);
     });
 
     it('should return job postings not applied by user after applying to one, matching the filter criteria', async () => {
@@ -445,11 +444,10 @@ describe('JobPostingController', () => {
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(2);
-      expect(res.body.data.map((job: IJobPosting) => job._id)).to.have.members([
-        jobPosting3?.id,
-        jobPosting4?.id,
-      ]);
+      expect(res.body.data.data).to.be.an('array').that.have.lengthOf(2);
+      expect(
+        res.body.data.data.map((job: IJobPosting) => job._id)
+      ).to.have.members([jobPosting3?.id, jobPosting4?.id]);
     });
 
     it('should return job postings matching the date filter', async () => {
@@ -467,8 +465,8 @@ describe('JobPostingController', () => {
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
-      expect(res.body.data[0]._id).to.equal(jobPosting3?.id);
+      expect(res.body.data.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data.data[0]._id).to.equal(jobPosting3?.id);
     });
 
     it('should return an empty array when filter by field with no matching postings', async () => {
@@ -479,7 +477,7 @@ describe('JobPostingController', () => {
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
+      expect(res.body.data.data).to.be.an('array').that.have.lengthOf(0);
     });
 
     it('should return job postings matching jobTitle, companyName, and location', async () => {
@@ -497,8 +495,8 @@ describe('JobPostingController', () => {
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
-      expect(res.body.data[0]._id).to.equal(jobPosting2?.id);
+      expect(res.body.data.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data.data[0]._id).to.equal(jobPosting2?.id);
     });
 
     it('should return job posting if user deleted the application', async () => {
@@ -526,8 +524,8 @@ describe('JobPostingController', () => {
         .set('Accept', 'application/json');
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
-      expect(res.body.data[0]._id).to.equal(jobPosting2?.id);
+      expect(res.body.data.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data.data[0]._id).to.equal(jobPosting2?.id);
     });
   });
 });

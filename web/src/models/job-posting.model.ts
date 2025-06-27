@@ -25,19 +25,7 @@ export interface IJobPosting extends Document {
   jobType: JobType;
 }
 
-export interface JobFilter {
-  limit?: number;
-  cursor?: string;
-  jobTitle?: string;
-  companyName?: string;
-  location?: string;
-  jobFunction?: JobFunction;
-  jobType?: JobType;
-  postingDateRangeStart?: Date;
-  postingDateRangeEnd?: Date;
-}
-
-export interface JobPostingFilterSort {
+export interface JobPostingFilter {
   limit?: number;
   cursor?: string;
   sortField?: JobPostingSortField;

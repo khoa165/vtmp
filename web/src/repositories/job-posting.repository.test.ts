@@ -11,11 +11,7 @@ import {
   SortOrder,
 } from '@vtmp/common/constants';
 
-import {
-  IJobPosting,
-  JobFilter,
-  JobPostingFilterSort,
-} from '@/models/job-posting.model';
+import { IJobPosting, JobPostingFilter } from '@/models/job-posting.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
@@ -156,13 +152,12 @@ describe('JobPostingRepository', () => {
       (_, i) => ({
         linkId: getNewObjectId(),
         url: `http://example${i + 1}.com/job-posting`,
+        jobFunction: Object.values(JobFunction)[i % 4],
         jobTitle: `Software Engineer ${i % 2 === 0 ? 2 : 1}`,
-        companyName: `Example Company ${i + 1}`,
+        companyName: `Example Company ${(i % 3) + 1}`,
         submittedBy: getNewObjectId(),
         location: Object.values(JobPostingRegion)[i % 2],
-        datePosted: new Date(
-          i % 3 === 0 ? '2024-01-01' : new Date('2023-7-31')
-        ),
+        datePosted: new Date(2023, 6, 31 + i / 2),
       })
     );
 
@@ -200,13 +195,58 @@ describe('JobPostingRepository', () => {
       return remaining;
     };
 
+    // const runPaginationTest = async ({
+    //   userId,
+    //   filters,
+    //   allJobPostings = [],
+    // }: {
+    //   userId: string;
+    //   filters?: JobPostingFilter;
+    //   allJobPostings: (IJobPosting | undefined)[];
+    // }) => {
+    //   let page = 1;
+    //   let jobsNotAppliedByUser: IJobPosting[] = [];
+    //   let cursor = undefined;
+    //   const totalPage = Math.floor((allJobPostings.length - 1) / limit) + 1;
+
+    //   while (page <= totalPage) {
+    //     jobsNotAppliedByUser =
+    //       await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
+    //         userId,
+    //         filters,
+    //       });
+
+    //     expect(jobsNotAppliedByUser)
+    //       .to.be.an('array')
+    //       .that.has.length(
+    //         Math.min(allJobPostings.length - limit * (page - 1), limit)
+    //       );
+    //     jobsNotAppliedByUser.forEach((job) => {
+    //       assert(job);
+    //     });
+    //     expect(
+    //       jobsNotAppliedByUser.map((job) => job._id?.toString())
+    //     ).to.have.members(
+    //       allJobPostings
+    //         .slice((page - 1) * limit, page * limit)
+    //         .map((jobPosting) => jobPosting?._id.toString())
+    //     );
+
+    //     page += 1;
+    //     cursor = {
+    //       _id: String(
+    //         jobsNotAppliedByUser[jobsNotAppliedByUser.length - 1]?._id
+    //       ),
+    //     };
+    //   }
+    // };
     const runPaginationTest = async ({
       userId,
       filters,
       allJobPostings = [],
     }: {
       userId: string;
-      filters?: JobFilter;
+      filters?: JobPostingFilter;
       allJobPostings: (IJobPosting | undefined)[];
     }) => {
       let page = 1;
@@ -215,13 +255,17 @@ describe('JobPostingRepository', () => {
       const totalPage = Math.floor((allJobPostings.length - 1) / limit) + 1;
 
       while (page <= totalPage) {
-        jobsNotAppliedByUser =
+        const paginationResult =
           await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
             userId,
-            limit,
-            cursor,
-            filters,
+            filters: {
+              ...filters,
+              limit,
+              cursor,
+            },
           });
+        jobsNotAppliedByUser = paginationResult.data;
+        cursor = paginationResult.cursor;
 
         expect(jobsNotAppliedByUser)
           .to.be.an('array')
@@ -233,18 +277,13 @@ describe('JobPostingRepository', () => {
         });
         expect(
           jobsNotAppliedByUser.map((job) => job._id?.toString())
-        ).to.have.members(
+        ).to.deep.equal(
           allJobPostings
             .slice((page - 1) * limit, page * limit)
             .map((jobPosting) => jobPosting?._id.toString())
         );
 
         page += 1;
-        cursor = {
-          _id: String(
-            jobsNotAppliedByUser[jobsNotAppliedByUser.length - 1]?._id
-          ),
-        };
       }
     };
 
@@ -271,10 +310,12 @@ describe('JobPostingRepository', () => {
         const jobsNotAppliedByUserA =
           await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
             userId: userIdA,
-            limit,
+            filters: { limit },
           });
 
-        expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(0);
+        expect(jobsNotAppliedByUserA.data)
+          .to.be.an('array')
+          .that.have.lengthOf(0);
       });
 
       it(`should return ${limit} job postings on page i/3 that matches all available job postings in the system if user has no applied to any posting`, async () => {
@@ -313,12 +354,14 @@ describe('JobPostingRepository', () => {
         const jobsNotAppliedByUserA =
           await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
             userId: userIdA,
-            limit,
+            filters: { limit },
           });
 
-        expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
-        assert(jobsNotAppliedByUserA[0]);
-        expect(jobsNotAppliedByUserA[0]._id?.toString()).to.equal(
+        expect(jobsNotAppliedByUserA.data)
+          .to.be.an('array')
+          .that.have.lengthOf(1);
+        assert(jobsNotAppliedByUserA.data[0]);
+        expect(jobsNotAppliedByUserA.data[0]._id?.toString()).to.equal(
           jobPostings[0]?.id
         );
       });
@@ -379,11 +422,15 @@ describe('JobPostingRepository', () => {
         const jobsNotAppliedByUserA =
           await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
             userId: userIdA,
-            limit,
-            filters: { companyName: mockCompanyName },
+            filters: {
+              limit,
+              companyName: mockCompanyName,
+            },
           });
 
-        expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(0);
+        expect(jobsNotAppliedByUserA.data)
+          .to.be.an('array')
+          .that.have.lengthOf(0);
       });
 
       it('should return only the job postings not applied by the user and matching the company name filters', async () => {
@@ -503,16 +550,16 @@ describe('JobPostingRepository', () => {
         const jobs =
           await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
             userId: userIdA,
-            limit,
             filters: {
+              limit,
               companyName: 'Company 2',
               jobTitle: 'Engineer 1',
             },
           });
 
-        expect(jobs).to.be.an('array').with.lengthOf(1);
-        assert(jobs[0]);
-        expect(jobs[0]?._id.toString()).to.equal(jobPosting2?.id);
+        expect(jobs.data).to.be.an('array').with.lengthOf(1);
+        assert(jobs.data[0]);
+        expect(jobs.data[0]?._id.toString()).to.equal(jobPosting2?.id);
       });
 
       it('should returns job postings not applied by user after applying to one, matching the filters with Job Function and Type', async () => {
@@ -537,25 +584,53 @@ describe('JobPostingRepository', () => {
     });
 
     describe('getJobPostingsUserHasNotAppliedTo with Pagination and Sort', () => {
-      const userIdA = getNewMongoId();
+      const mockCompanyName = 'Company 1';
+      const mockJobTitle = 'Engineer 2';
+      const mockStartDate = new Date('2023-12-31');
+      const mockEndDate = new Date('2024-05-01');
 
-      let jobPostings: (IJobPosting | undefined)[];
-      const limit = 10;
-      const totalJobPostings = 153;
+      const runHelperPaginationWithSort = async ({
+        userId,
+        filters,
+        allJobPostings = [],
+        sortField,
+      }: {
+        userId: string;
+        filters?: JobPostingFilter;
+        allJobPostings: (IJobPosting | undefined)[];
+        sortField: JobPostingSortField;
+      }) => {
+        const allJobPostingsSorted = [...allJobPostings]
+          .filter(Boolean)
+          .sort((a, b) => {
+            const aVal = a?.[sortField];
+            const bVal = b?.[sortField];
 
-      const mockMultipleJobPostings = Array.from(
-        { length: totalJobPostings },
-        (_, i) => ({
-          linkId: getNewObjectId(),
-          url: `http://example${i + 1}.com/job-posting`,
-          jobFunction: Object.values(JobFunction)[i % 4],
-          jobTitle: `Software Engineer ${i % 2 === 0 ? 2 : 1}`,
-          companyName: `Example Company ${i + 1}`,
-          submittedBy: getNewObjectId(),
-          location: Object.values(JobPostingRegion)[i % 2],
-          datePosted: new Date(2023, 6, 31 + i / 2),
-        })
-      );
+            if (aVal === undefined && bVal === undefined) return 0;
+            if (aVal === undefined) return -1;
+            if (bVal === undefined) return 1;
+
+            if (typeof aVal === 'string' && typeof bVal === 'string') {
+              const cmp = aVal.localeCompare(bVal);
+              if (cmp !== 0) return cmp;
+            }
+
+            if (aVal instanceof Date && bVal instanceof Date) {
+              const cmp = aVal.getTime() - bVal.getTime();
+              if (cmp !== 0) return cmp;
+            }
+
+            const aId = a?._id?.toString() ?? '';
+            const bId = b?._id?.toString() ?? '';
+            return aId.localeCompare(bId);
+          });
+
+        await runPaginationTest({
+          userId: userId,
+          filters,
+          allJobPostings: allJobPostingsSorted,
+        });
+      };
 
       beforeEach(async () => {
         jobPostings = await Promise.all(
@@ -567,90 +642,149 @@ describe('JobPostingRepository', () => {
         );
       });
 
-      const runPaginationTest = async ({
-        userId,
-        filters,
-        allJobPostings = [],
-      }: {
-        userId: string;
-        filters?: JobFilter;
-        allJobPostings: (IJobPosting | undefined)[];
-      }) => {
-        let page = 1;
-        let jobsNotAppliedByUser: IJobPosting[] = [];
-        let cursor = undefined;
-        const totalPage = Math.floor((allJobPostings.length - 1) / limit) + 1;
-
-        while (page <= totalPage) {
-          const paginationResult =
-            await JobPostingRepository.getJobPostingsUserHasNotAppliedToSort({
-              userId,
-              filters: {
-                ...filters,
-                limit,
-                cursor,
-              },
-            });
-          jobsNotAppliedByUser = paginationResult.data;
-          cursor = paginationResult.cursor;
-
-          expect(jobsNotAppliedByUser)
-            .to.be.an('array')
-            .that.has.length(
-              Math.min(allJobPostings.length - limit * (page - 1), limit)
-            );
-          jobsNotAppliedByUser.forEach((job) => {
-            assert(job);
+      it(`should return empty array if not match any filters`, async () => {
+        const jobsNotAppliedByUserA =
+          await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
+            userId: userIdA,
+            filters: {
+              limit,
+              companyName: 'Does not exist',
+            },
           });
-          expect(
-            jobsNotAppliedByUser.map((job) => job._id?.toString())
-          ).to.deep.equal(
-            allJobPostings
-              .slice((page - 1) * limit, page * limit)
-              .map((jobPosting) => jobPosting?._id.toString())
-          );
 
-          page += 1;
-        }
-      };
+        expect(jobsNotAppliedByUserA.data)
+          .to.be.an('array')
+          .that.have.lengthOf(0);
+      });
 
       Object.values(JobPostingSortField).forEach((sortField) => {
         it(`should return pages with correct sorting on ${sortField}`, async () => {
-          const filters: JobPostingFilterSort = {
-            limit,
-            sortField,
-            sortOrder: SortOrder.ASC,
-          };
-
-          const allJobPostingsSorted = [...jobPostings]
-            .filter(Boolean)
-            .sort((a, b) => {
-              const aVal = a?.[sortField];
-              const bVal = b?.[sortField];
-
-              if (aVal === undefined && bVal === undefined) return 0;
-              if (aVal === undefined) return -1;
-              if (bVal === undefined) return 1;
-
-              if (typeof aVal === 'string' && typeof bVal === 'string') {
-                const cmp = aVal.localeCompare(bVal);
-                if (cmp !== 0) return cmp;
-              }
-
-              if (aVal instanceof Date && bVal instanceof Date) {
-                const cmp = aVal.getTime() - bVal.getTime();
-                if (cmp !== 0) return cmp;
-              }
-
-              const aId = a?._id?.toString() ?? '';
-              const bId = b?._id?.toString() ?? '';
-              return aId.localeCompare(bId);
-            });
-
-          await runPaginationTest({
+          await runHelperPaginationWithSort({
             userId: userIdA,
-            filters,
-            allJobPostings: allJobPostingsSorted,
+            sortField: sortField,
+            filters: {
+              limit,
+              sortField,
+              sortOrder: SortOrder.ASC,
+            },
+            allJobPostings: jobPostings,
+          });
+        });
+
+        it(`should return pages with correct sorting on ${sortField} after deleting some job postings`, async () => {
+          await randomRemoveJobPostings();
+          await randomRemoveJobPostings();
+          await runHelperPaginationWithSort({
+            userId: userIdA,
+            sortField: sortField,
+            filters: {
+              limit,
+              sortField,
+              sortOrder: SortOrder.ASC,
+            },
+            allJobPostings: jobPostings,
+          });
+        });
+
+        it(`should return pages with correct sorting on ${sortField} after deleting some job postings and user creats some applications`, async () => {
+          await randomRemoveJobPostings();
+          await randomRemoveJobPostings();
+          jobPostings = await randomCreateApplications({
+            userId: userIdA,
+            numApplications: 3,
+          });
+          await runHelperPaginationWithSort({
+            userId: userIdA,
+            sortField: sortField,
+            filters: {
+              limit,
+              sortField,
+              sortOrder: SortOrder.ASC,
+            },
+            allJobPostings: jobPostings,
+          });
+        });
+
+        it(`should return pages with correct sorting on ${sortField} after user creats some applications without excluding other users' applications`, async () => {
+          await randomRemoveJobPostings();
+          await randomRemoveJobPostings();
+          const jobPostingsA = await randomCreateApplications({
+            userId: userIdA,
+            numApplications: 3,
+          });
+
+          const jobPostingsB = await randomCreateApplications({
+            userId: userIdB,
+            numApplications: 4,
+          });
+
+          await runHelperPaginationWithSort({
+            userId: userIdA,
+            sortField: sortField,
+            filters: {
+              limit,
+              sortField,
+              sortOrder: SortOrder.ASC,
+            },
+            allJobPostings: jobPostingsA,
+          });
+
+          await runHelperPaginationWithSort({
+            userId: userIdB,
+            sortField: sortField,
+            filters: {
+              limit,
+              sortField,
+              sortOrder: SortOrder.ASC,
+            },
+            allJobPostings: jobPostingsB,
+          });
+        });
+
+        const filtersOptions = {
+          companyName: mockCompanyName,
+          jobTitle: mockJobTitle,
+          location: JobPostingRegion.US,
+          jobFunction: JobFunction.SOFTWARE_ENGINEER,
+        };
+
+        Object.entries(filtersOptions).forEach(([filterName, filterValue]) => {
+          const key = filterName as keyof IJobPosting;
+
+          it(`should return only the job postings not applied by the user and matching the ${filterName} filters`, async () => {
+            await runHelperPaginationWithSort({
+              userId: userIdA,
+              sortField: sortField,
+              filters: {
+                limit,
+                sortField,
+                [key]: filterValue,
+              },
+              allJobPostings: jobPostings.filter((jobPosting) =>
+                jobPosting?.[key]
+                  ?.toLowerCase()
+                  .includes(filterValue.toLowerCase())
+              ),
+            });
+          });
+        });
+
+        it('should returns job postings not applied by user after applying to one, matching the filters with date', async () => {
+          await runHelperPaginationWithSort({
+            userId: userIdA,
+            sortField: sortField,
+            filters: {
+              limit,
+              sortField,
+              postingDateRangeStart: mockStartDate,
+              postingDateRangeEnd: mockEndDate,
+            },
+            allJobPostings: jobPostings.filter(
+              (jobPosting) =>
+                jobPosting?.datePosted &&
+                jobPosting?.datePosted >= mockStartDate &&
+                jobPosting?.datePosted <= mockEndDate
+            ),
           });
         });
       });
