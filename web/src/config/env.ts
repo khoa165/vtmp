@@ -21,5 +21,10 @@ const webConfigSchema = z.object({
 });
 
 export const EnvConfig = {
-  get: () => parseEnvConfig({ env: process.env, schema: webConfigSchema }),
+  get: () =>
+    parseEnvConfig({
+      env: process.env,
+      schema: webConfigSchema,
+      workspaceName: 'web',
+    }),
 };
