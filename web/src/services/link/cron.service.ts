@@ -5,6 +5,7 @@ import { LinkStatus } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
 import { Environment } from '@/constants/enums';
+import { ILink } from '@/models/link.model';
 import { LinkRepository } from '@/repositories/link.repository';
 
 const ENABLE_LINK_PROCESSING = false;
@@ -83,16 +84,68 @@ const linkProcessingJob = async () => {
 
     // Return early if no links matches the getRetryFilter() filter
     if (links.length === 0) return;
+    const domainLock = new Set<string>();
+    const domainLockQueue: { lockedLink: ILink; nextTimeToExecute: Date }[] =
+      [];
 
-    const linksData = links.map(({ _id, originalUrl, attemptsCount }) => ({
-      _id: _id.toString(),
-      originalUrl,
-      attemptsCount,
-    }));
-    console.log('linksData payload before sending: ', linksData);
+    // Process links in batches to avoid overloading the Lambda function and create 5s delay by lock between 2 links from the same domain
+    while (links.length > 0 || domainLockQueue.length > 0) {
+      // Release expired domain locks first
+      const now = new Date();
+      while (
+        domainLockQueue.length > 0 &&
+        domainLockQueue[0] &&
+        domainLockQueue[0].nextTimeToExecute <= now
+      ) {
+        const item = domainLockQueue.shift();
+        if (!item) break; // safety check, though shouldn't happen
 
-    const results = await sendLinksToLambda(linksData);
-    console.log('Response from Lambda: ', results);
+        const { lockedLink } = item;
+        const domain = new URL(lockedLink.originalUrl).hostname;
+        domainLock.delete(domain);
+      }
+
+      // Pick next batch of links to try processing
+      const linkBatch = links.splice(0, 5);
+      const linksData = [];
+
+      for (const link of linkBatch) {
+        const domain = new URL(link.originalUrl).hostname;
+
+        if (!domainLock.has(domain)) {
+          // Lock domain and add to submission list
+          domainLock.add(domain);
+          linksData.push({
+            _id: link._id.toString(),
+            originalUrl: link.originalUrl,
+            attemptsCount: link.attemptsCount,
+          });
+          console.log('linksData payload before sending: ', linksData);
+        } else {
+          // Domain locked, queue for retry after 5 seconds
+          domainLockQueue.push({
+            lockedLink: link,
+            nextTimeToExecute: new Date(now.getTime() + 5 * 1000),
+          });
+        }
+      }
+
+      if (linksData.length > 0) {
+        const results = await sendLinksToLambda(linksData);
+        console.log('Response from Lambda: ', results);
+      }
+
+      // If no links to submit and domain locks still active, wait a bit to avoid busy loop
+      if (linksData.length === 0 && domainLockQueue.length > 0) {
+        const first = domainLockQueue[0];
+        const waitTimeMs = first?.nextTimeToExecute
+          ? first.nextTimeToExecute.getTime() - Date.now()
+          : 0; // or another fallback like undefined or throw
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.max(waitTimeMs, 1000))
+        ); // wait at least 1s
+      }
+    }
   } catch (error: unknown) {
     console.error('Cron error: ', error);
   }
