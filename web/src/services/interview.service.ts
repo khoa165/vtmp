@@ -1,7 +1,7 @@
-import { InterviewRepository } from '@/repositories/interview.repository';
-import { IInterview } from '@/models/interview.model';
-
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+
+import { IInterview } from '@/models/interview.model';
+import { InterviewRepository } from '@/repositories/interview.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
 
 export const InterviewService = {
@@ -40,72 +40,38 @@ export const InterviewService = {
 
   getInterviews: async ({
     filters = {},
+    isShared = false,
   }: {
     filters: {
       userId?: string;
       applicationId?: string;
-      status?: InterviewStatus;
-      companyName?: string;
-    };
-  }): Promise<IInterview[]> => {
-    return InterviewRepository.getInterviews({ filters });
-  },
-
-  getSharedInterviews: async ({
-    filters = {},
-  }: {
-    filters: {
       companyName?: string;
       types?: InterviewType[];
       status?: InterviewStatus;
     };
+    isShared?: boolean;
   }): Promise<IInterview[]> => {
-    const sharedInterviews = InterviewRepository.getSharedInterviews({
+    return InterviewRepository.getInterviews({
       filters,
+      isShared,
     });
-
-    return sharedInterviews;
   },
 
   updateInterviewById: async ({
     interviewId,
     userId,
     newUpdate,
+    isShare,
   }: {
     interviewId: string;
     userId: string;
-    newUpdate: {
+    newUpdate?: {
       types?: InterviewType[];
       status?: InterviewStatus;
       interviewOnDate?: Date;
       note?: string;
+      isDisclosed?: boolean;
     };
-  }): Promise<IInterview | null> => {
-    const updatedInterview = await InterviewRepository.updateInterviewById({
-      interviewId,
-      userId,
-      newUpdate,
-    });
-
-    if (!updatedInterview) {
-      throw new ResourceNotFoundError('Interview not found', {
-        interviewId,
-        userId,
-      });
-    }
-
-    return updatedInterview;
-  },
-
-  updateInterviewSharingStatus: async ({
-    interviewId,
-    userId,
-    isDisclosed,
-    isShare = true,
-  }: {
-    interviewId: string;
-    userId: string;
-    isDisclosed?: boolean;
     isShare?: boolean;
   }): Promise<IInterview | null> => {
     const interview = await InterviewRepository.getInterviewById({
@@ -120,35 +86,37 @@ export const InterviewService = {
       });
     }
 
-    if (isShare) {
-      if (interview.sharedAt) {
+    if (typeof isShare !== 'undefined') {
+      if (isShare) {
+        if (!interview.sharedAt) {
+          return await InterviewRepository.updateInterviewById({
+            interviewId,
+            userId,
+            newUpdate: {
+              isDisclosed: newUpdate?.isDisclosed,
+              sharedAt: new Date(),
+            },
+          });
+        }
+      } else {
         return await InterviewRepository.updateInterviewById({
           interviewId,
           userId,
           newUpdate: {
-            isDisclosed: isDisclosed,
-          },
-        });
-      } else {
-        return await InterviewRepository.updateInterviewSharing({
-          interviewId,
-          userId,
-          shareOptions: {
-            isDisclosed: isDisclosed,
-            sharedAt: new Date(),
+            isDisclosed: true,
+            sharedAt: null,
           },
         });
       }
-    } else {
-      return await InterviewRepository.updateInterviewSharing({
-        interviewId,
-        userId,
-        shareOptions: {
-          isDisclosed: true,
-          sharedAt: null,
-        },
-      });
     }
+
+    return await InterviewRepository.updateInterviewById({
+      interviewId,
+      userId,
+      newUpdate: {
+        ...newUpdate,
+      },
+    });
   },
 
   deleteInterviewById: async ({

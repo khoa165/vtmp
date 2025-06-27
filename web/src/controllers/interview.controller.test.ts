@@ -518,7 +518,6 @@ describe('InterviewController', () => {
         });
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
-      console.log(res.body.data[0]);
       expect(res.body.data[0]).to.deep.include({
         companyName: 'Meta',
         status: InterviewStatus.PASSED,
@@ -576,7 +575,6 @@ describe('InterviewController', () => {
         });
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
-      console.log(res.body.data[0]);
       expect(res.body.data[0]).to.deep.include({
         companyName: 'Meta',
         status: InterviewStatus.PASSED,
@@ -668,9 +666,8 @@ describe('InterviewController', () => {
     });
 
     it('should return an error message with status code 404 if the interview is not found', async () => {
-      const fakeInterview = getNewMongoId();
       const res = await request(app)
-        .put(endpoint(fakeInterview))
+        .put(endpoint(getNewMongoId()))
         .set('Authorization', `Bearer ${mockToken_A}`)
         .send({ isDisclosed: false });
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
@@ -725,9 +722,8 @@ describe('InterviewController', () => {
     });
 
     it('should return an error message with status code 404 if the interview is not found', async () => {
-      const fakeInterview = getNewMongoId();
       const res = await request(app)
-        .put(endpoint(fakeInterview))
+        .put(endpoint(getNewMongoId()))
         .set('Authorization', `Bearer ${mockToken_A}`);
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Interview not found');
