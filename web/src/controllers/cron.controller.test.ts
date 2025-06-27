@@ -8,7 +8,7 @@ import { expectSuccessfulResponse } from '@/testutils/response-assertion.testuti
 import { useSandbox } from '@/testutils/sandbox.testutil';
 
 // Will add authentication test later on
-describe.only('CronController', () => {
+describe('CronController', () => {
   const sandbox = useSandbox();
   let stubRunFunction: sinon.SinonStub;
 

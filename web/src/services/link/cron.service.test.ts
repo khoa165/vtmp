@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { CronService } from '@/services/link/cron.service';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 
-describe.only('CronService', () => {
+describe('CronService', () => {
   const sandbox = useSandbox();
   let stubRunFunction: sinon.SinonStub;
 
