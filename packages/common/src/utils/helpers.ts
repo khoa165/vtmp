@@ -26,7 +26,7 @@ export const parseEnvConfig = <T extends ZodObject<ZodRawShape>>({
       .map((issue) => `${issue.path[0]}: ${issue.message}`)
       .join(', ');
     throw new Error(
-      `Environment variables are not set correctly in ${workspaceName} workspace. Please check your .env file. Problems with: ${issues}`
+      `Environment variables are not set correctly in ${workspaceName} workspace. Please check your .env file.\n Problems with: ${issues}`
     );
   }
   return envs.data;
