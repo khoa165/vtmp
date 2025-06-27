@@ -25,6 +25,7 @@ import {
 } from '@/components/pages/admins/invitations/hooks/invitations';
 import { Navigate } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { AxiosError } from 'axios';
 
 export const SendInvitationPage = () => {
   const [userInput, setUserInput] = useState<IInvitationUserInput>({

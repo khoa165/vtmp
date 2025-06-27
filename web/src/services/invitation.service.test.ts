@@ -22,11 +22,11 @@ import { describe } from 'mocha';
 import { omit } from 'remeda';
 import { getEmailService } from '@/utils/email';
 import { SinonStub } from 'sinon';
+import { ZodError } from 'zod';
 
 describe('InvitationService', () => {
   useMongoDB();
   const sandbox = useSandbox();
-
   const nextWeek = addDays(Date.now(), 7);
   const mockMenteeName = 'Mentee Viettech';
   const mockAdminId = getNewMongoId();
@@ -38,6 +38,7 @@ describe('InvitationService', () => {
   });
 
   const mockOneInvitation = {
+    receiverName: mockMenteeName,
     receiverEmail: 'mentee@viettech.com',
     sender: mockAdminId,
     token: 'token-for-invitation',
@@ -46,6 +47,7 @@ describe('InvitationService', () => {
 
   const mockMultipleInvitations = [
     {
+      receiverName: 'Mentee 1 Viettech',
       receiverEmail: 'mentee1@viettech.com',
       sender: mockAdminId,
       token: 'token-for-invitation',
@@ -53,6 +55,7 @@ describe('InvitationService', () => {
     },
 
     {
+      receiverName: 'Mentee 2 Viettech',
       receiverEmail: 'mentee2@viettech.com',
       sender: mockAdminId,
       token: 'token-for-invitation',
@@ -60,6 +63,7 @@ describe('InvitationService', () => {
     },
 
     {
+      receiverName: 'Mentee 3 Viettech',
       receiverEmail: 'mentee3@viettech.com',
       sender: mockAdminId,
       token: 'token-for-invitation',
@@ -278,6 +282,28 @@ describe('InvitationService', () => {
       await expect(
         InvitationService.validateInvitation('invalid-token')
       ).eventually.rejectedWith(jwt.JsonWebTokenError);
+    });
+
+    it('should return error message for token with invalid structure', async () => {
+      const invalidStructureToken = jwt.sign(
+        { invalidField: 'test' },
+        EnvConfig.get().JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      await expect(
+        InvitationService.validateInvitation(invalidStructureToken)
+      ).eventually.rejectedWith(ZodError, 'Required');
+    });
+
+    it('should return error message for token with invalid email format', async () => {
+      const invalidEmailToken = jwt.sign(
+        { receiverEmail: 'invalid-email' },
+        EnvConfig.get().JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      await expect(
+        InvitationService.validateInvitation(invalidEmailToken)
+      ).eventually.rejectedWith(ZodError, 'Invalid email');
     });
 
     it('should return error message for invitation not found', async () => {
