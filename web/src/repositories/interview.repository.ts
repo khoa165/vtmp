@@ -1,6 +1,8 @@
-import { InterviewModel, IInterview } from '@/models/interview.model';
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 import { ClientSession, UpdateResult } from 'mongoose';
+
+import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+
+import { InterviewModel, IInterview } from '@/models/interview.model';
 
 export const InterviewRepository = {
   createInterview: async ({
@@ -157,29 +159,6 @@ export const InterviewRepository = {
     return InterviewModel.findOneAndUpdate(
       { _id: interviewId, userId, deletedAt: null },
       { $set: { deletedAt: new Date() } },
-      { new: true }
-    );
-  },
-
-  updateInterviewSharing: async ({
-    interviewId,
-    userId,
-    shareOptions,
-  }: {
-    interviewId: string;
-    userId: string;
-    shareOptions: {
-      isDisclosed?: boolean;
-      sharedAt?: Date | null;
-    };
-  }): Promise<IInterview | null> => {
-    return InterviewModel.findOneAndUpdate(
-      { _id: interviewId, userId, deletedAt: null },
-      {
-        $set: {
-          ...shareOptions,
-        },
-      },
       { new: true }
     );
   },

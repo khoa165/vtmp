@@ -1,16 +1,18 @@
-import assert from 'assert';
 import { expect } from 'chai';
+import { differenceInSeconds } from 'date-fns';
 
+import assert from 'assert';
+
+import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+
+import { IApplication } from '@/models/application.model';
+import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { InterviewService } from '@/services/interview.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 import { ResourceNotFoundError } from '@/utils/errors';
-import { differenceInSeconds } from 'date-fns';
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { IApplication } from '@/models/application.model';
 
 describe('InterviewService', () => {
   useMongoDB();
@@ -503,13 +505,19 @@ describe('InterviewService', () => {
     });
   });
 
-  describe('updateInterviewSharingStatus', () => {
+  describe('updateInterviewById', () => {
+    const newUpdate = {
+      status: InterviewStatus.PASSED,
+      interviewOnDate: new Date('2025-06-07'),
+      note: 'Updated note',
+    };
+
     it('should throw error if the interview does not exist', async () => {
       await expect(
-        InterviewService.updateInterviewSharingStatus({
+        InterviewService.updateInterviewById({
           interviewId: getNewMongoId(),
           userId: userId_A,
-          isDisclosed: true,
+          newUpdate: newUpdate,
         })
       ).eventually.to.be.rejectedWith(
         ResourceNotFoundError,
@@ -522,10 +530,10 @@ describe('InterviewService', () => {
         await InterviewRepository.createInterview(mockInterview_A0);
 
       await expect(
-        InterviewService.updateInterviewSharingStatus({
+        InterviewService.updateInterviewById({
           interviewId: interview_A0.id,
           userId: userId_B,
-          isDisclosed: true,
+          newUpdate: newUpdate,
         })
       ).eventually.to.be.rejectedWith(
         ResourceNotFoundError,
@@ -543,10 +551,10 @@ describe('InterviewService', () => {
       });
 
       await expect(
-        InterviewService.updateInterviewSharingStatus({
+        InterviewService.updateInterviewById({
           interviewId: interview_A1.id,
           userId: userId_A,
-          isDisclosed: true,
+          newUpdate: newUpdate,
         })
       ).eventually.to.be.rejectedWith(
         ResourceNotFoundError,
@@ -554,7 +562,7 @@ describe('InterviewService', () => {
       );
     });
 
-    it('should not update the shareAt date if the interview has been shared before', async () => {
+    it('should not update the sharedAt date if the interview has been shared before', async () => {
       const sharedDate = new Date('2025-06-07');
 
       const interview_A0 =
@@ -569,12 +577,13 @@ describe('InterviewService', () => {
         },
       });
 
-      const updatedInterview =
-        await InterviewService.updateInterviewSharingStatus({
-          interviewId: interview_A0.id,
-          userId: userId_A,
+      const updatedInterview = await InterviewService.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: userId_A,
+        newUpdate: {
           isDisclosed: false,
-        });
+        },
+      });
 
       assert(updatedInterview);
       expect(updatedInterview.isDisclosed).to.equal(false);
@@ -583,16 +592,15 @@ describe('InterviewService', () => {
       expect(updatedInterview.sharedAt).to.deep.equal(sharedDate);
     });
 
-    it('should update the interview disClose to true when unsharing an interview', async () => {
+    it('should update the interview isDisclosed to true when unsharing an interview', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
 
-      const updatedInterview =
-        await InterviewService.updateInterviewSharingStatus({
-          interviewId: interview_A0.id,
-          userId: userId_A,
-          isShare: true,
-        });
+      const updatedInterview = await InterviewService.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: userId_A,
+        isShare: true,
+      });
 
       assert(updatedInterview);
       expect(updatedInterview.isDisclosed).to.equal(true);
@@ -600,21 +608,50 @@ describe('InterviewService', () => {
       expect(updatedInterview.id).to.equal(interview_A0.id);
     });
 
-    it('should update the interview sharing status successfully', async () => {
+    it('should update the status isDisclosed of a shared interview successfully', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
 
-      const updatedInterview =
-        await InterviewService.updateInterviewSharingStatus({
-          interviewId: interview_A0.id,
-          userId: userId_A,
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: userId_A,
+        newUpdate: {
+          isDisclosed: true,
+          sharedAt: new Date('2025-06-07'),
+        },
+      });
+
+      const updatedInterview = await InterviewService.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: userId_A,
+        newUpdate: {
           isDisclosed: false,
-        });
+        },
+      });
 
       assert(updatedInterview);
       expect(updatedInterview.isDisclosed).to.equal(false);
       assert(updatedInterview.sharedAt);
       expect(updatedInterview.id).to.equal(interview_A0.id);
+    });
+
+    it('should update the interview with the provided newUpdate', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      const updatedInterview = await InterviewService.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: userId_A,
+        newUpdate: newUpdate,
+      });
+
+      assert(updatedInterview);
+      expect(updatedInterview.id).to.equal(interview_A0.id);
+      expect(updatedInterview.status).to.equal(newUpdate.status);
+      expect(updatedInterview.interviewOnDate).to.deep.equal(
+        newUpdate.interviewOnDate
+      );
+      expect(updatedInterview.note).to.equal(newUpdate.note);
     });
   });
 
