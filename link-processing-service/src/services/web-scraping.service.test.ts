@@ -4,10 +4,13 @@ import sinon from 'sinon';
 
 import { LinkProcessingFailureStage, LinkStatus } from '@vtmp/common/constants';
 
-import { ScrapingWebPage , WebScrapingService } from '@/services/web-scraping.service';
+import {
+  ScrapingWebPage,
+  WebScrapingService,
+} from '@/services/web-scraping.service';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { ValidatedLink } from '@/types/link-processing.types';
-import { ServiceSpecificError } from '@/utils/errors';
+import { ScrapingError } from '@/utils/errors';
 
 describe('WebScrapingService', () => {
   const sandbox = useSandbox();
@@ -90,9 +93,7 @@ describe('WebScrapingService', () => {
     expect(failedScrapingLinks[0]?.failureStage).to.equal(
       LinkProcessingFailureStage.SCRAPING_FAILED
     );
-    expect(failedScrapingLinks[0]?.error).to.be.instanceOf(
-      ServiceSpecificError
-    );
+    expect(failedScrapingLinks[0]?.error).to.be.instanceOf(ScrapingError);
   });
 
   it('should return 2 failures when both link scraping fails', async () => {
@@ -114,12 +115,8 @@ describe('WebScrapingService', () => {
     expect(failedScrapingLinks[1]?.failureStage).to.equal(
       LinkProcessingFailureStage.SCRAPING_FAILED
     );
-    expect(failedScrapingLinks[0]?.error).to.be.instanceOf(
-      ServiceSpecificError
-    );
-    expect(failedScrapingLinks[1]?.error).to.be.instanceOf(
-      ServiceSpecificError
-    );
+    expect(failedScrapingLinks[0]?.error).to.be.instanceOf(ScrapingError);
+    expect(failedScrapingLinks[1]?.error).to.be.instanceOf(ScrapingError);
   });
 
   it('should return 1 failure with correct status when link reach MAX_LONG_RETRY', async () => {
@@ -144,9 +141,7 @@ describe('WebScrapingService', () => {
     expect(failedScrapingLinks[0]?.failureStage).to.equal(
       LinkProcessingFailureStage.SCRAPING_FAILED
     );
-    expect(failedScrapingLinks[0]?.error).to.be.instanceOf(
-      ServiceSpecificError
-    );
+    expect(failedScrapingLinks[0]?.error).to.be.instanceOf(ScrapingError);
   });
 
   it('should log a warning and return empty arrays when no validated links are provided', async () => {

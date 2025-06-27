@@ -4364,7 +4364,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sinon@npm:^17.0.3, @types/sinon@npm:^17.0.4":
+"@types/sinon-chai@npm:^4":
+  version: 4.0.0
+  resolution: "@types/sinon-chai@npm:4.0.0"
+  dependencies:
+    "@types/chai": "npm:*"
+    "@types/sinon": "npm:*"
+  checksum: 10c0/9cc2b98ebd9d81cbb6fa234d81cf6d9a0f02af8e777bd19b66baa793455056c105640abc81e5108581f92ebd5753023920e99ee992fbd240e9dd28882bcd1276
+  languageName: node
+  linkType: hard
+
+"@types/sinon@npm:*, @types/sinon@npm:^17.0.3, @types/sinon@npm:^17.0.4":
   version: 17.0.4
   resolution: "@types/sinon@npm:17.0.4"
   dependencies:
@@ -5682,6 +5692,7 @@ __metadata:
     "@types/node": "npm:^22.14.1"
     "@types/retry": "npm:^0"
     "@types/sinon": "npm:^17.0.3"
+    "@types/sinon-chai": "npm:^4"
     "@vtmp/common": "npm:1.0.0"
     "@vtmp/server-common": "npm:1.0.0"
     axios: "npm:^1.9.0"
@@ -5694,6 +5705,7 @@ __metadata:
     puppeteer-core: "npm:^24.10.1"
     retry: "npm:^0.13.1"
     sinon: "npm:^19.0.2"
+    sinon-chai: "npm:^4.0.0"
     ts-node: "npm:^10.9.2"
     tsc-alias: "npm:^1.8.16"
     tsx: "npm:^4.19.4"
@@ -14544,6 +14556,16 @@ __metadata:
   version: 4.1.0
   resolution: "signal-exit@npm:4.1.0"
   checksum: 10c0/41602dce540e46d599edba9d9860193398d135f7ff72cab629db5171516cfae628d21e7bfccde1bbfdf11c48726bc2a6d1a8fb8701125852fbfda7cf19c6aa83
+  languageName: node
+  linkType: hard
+
+"sinon-chai@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "sinon-chai@npm:4.0.0"
+  peerDependencies:
+    chai: ^5.0.0
+    sinon: ">=4.0.0"
+  checksum: 10c0/c2be6f7d964fd05dcd0870807a1447bc180703aca0cdf5ba7ed21bf2a8a2e0c8d1d2e464b2289982870dfe1b58ae797000cc742e23eeac8dd2f6339dea7d717b
   languageName: node
   linkType: hard
 
