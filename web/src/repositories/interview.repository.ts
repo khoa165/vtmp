@@ -1,9 +1,10 @@
 import escapeStringRegexp from 'escape-string-regexp';
-import { ClientSession, UpdateResult } from 'mongoose';
+import { ClientSession, PipelineStage, UpdateResult } from 'mongoose';
 
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 
 import { InterviewModel, IInterview } from '@/models/interview.model';
+import { toMongoId } from '@/testutils/mongoID.testutil';
 
 export const InterviewRepository = {
   createInterview: async ({
@@ -47,36 +48,28 @@ export const InterviewRepository = {
 
   getInterviews: async ({
     filters = {},
-    session,
+    isShared = false,
   }: {
     filters: {
       userId?: string;
       applicationId?: string;
-      status?: InterviewStatus;
-      companyName?: string;
-    };
-    session?: ClientSession;
-  }): Promise<IInterview[]> => {
-    return InterviewModel.find(
-      {
-        deletedAt: null,
-        ...filters,
-      },
-      null,
-      session ? { session } : {}
-    );
-  },
-
-  getSharedInterviews: async ({
-    filters = {},
-  }: {
-    filters: {
       companyName?: string;
       types?: InterviewType[];
       status?: InterviewStatus;
     };
+    isShared?: boolean;
   }): Promise<IInterview[]> => {
-    const dynamicMatch: Record<string, unknown> = {};
+    const dynamicMatch: Record<string, unknown> = {
+      deletedAt: null,
+    };
+
+    if (filters?.userId) {
+      dynamicMatch.userId = toMongoId(filters.userId);
+    }
+
+    if (filters?.applicationId) {
+      dynamicMatch.applicationId = toMongoId(filters.applicationId);
+    }
 
     if (filters?.companyName) {
       dynamicMatch.companyName = {
@@ -84,48 +77,62 @@ export const InterviewRepository = {
         $options: 'i',
       };
     }
+
     if (filters?.types) {
       dynamicMatch.types = { $in: filters.types };
     }
+
     if (filters?.status) {
       dynamicMatch.status = filters.status;
     }
 
-    return await InterviewModel.aggregate([
-      {
-        $match: {
-          deletedAt: null,
-          sharedAt: { $ne: null },
-          ...dynamicMatch,
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'userId',
-          foreignField: '_id',
-          as: 'user',
-        },
-      },
-      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+    if (isShared) {
+      dynamicMatch.sharedAt = { $ne: null };
+    }
+
+    const pipeline: PipelineStage[] = [
+      { $match: dynamicMatch },
       {
         $addFields: {
-          user: {
-            $cond: {
-              if: { $not: ['$isDisclosed'] },
-              then: {
-                firstName: '$user.firstName',
-                lastName: '$user.lastName',
-              },
-              else: {
-                firstName: 'Anonymous',
-                lastName: 'User',
+          id: { $toString: '$_id' },
+        },
+      },
+    ];
+
+    if (isShared) {
+      pipeline.push(
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        {
+          $unwind: { path: '$user', preserveNullAndEmptyArrays: true },
+        },
+        {
+          $addFields: {
+            user: {
+              $cond: {
+                if: { $not: ['$isDisclosed'] },
+                then: {
+                  firstName: '$user.firstName',
+                  lastName: '$user.lastName',
+                },
+                else: {
+                  firstName: 'Anonymous',
+                  lastName: 'User',
+                },
               },
             },
           },
-        },
-      },
-    ]);
+        }
+      );
+    }
+
+    return await InterviewModel.aggregate(pipeline);
   },
 
   updateInterviewById: async ({

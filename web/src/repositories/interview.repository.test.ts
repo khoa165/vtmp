@@ -501,45 +501,8 @@ describe('Interview Repository', () => {
       expect(interviews[0].id).to.equal(interview_A2.id);
       expect(interviews[0].status).to.equal(InterviewStatus.PENDING);
     });
-  });
 
-  describe('getSharedInterviews', () => {
-    it('should return an empty array when no interviews are shared', async () => {
-      const interviews = await InterviewRepository.getSharedInterviews({
-        filters: {},
-      });
-
-      assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(0);
-    });
-
-    it('should not return soft-deleted interviews', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-
-      await InterviewRepository.updateInterviewById({
-        interviewId: interview_A0.id,
-        userId: user_A.id,
-        newUpdate: {
-          isDisclosed: true,
-          sharedAt: new Date(),
-        },
-      });
-
-      await InterviewRepository.deleteInterviewById({
-        interviewId: interview_A0.id,
-        userId: user_A.id,
-      });
-
-      const interviews = await InterviewRepository.getSharedInterviews({
-        filters: {},
-      });
-
-      assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(0);
-    });
-
-    it('should return only shared interviews', async () => {
+    it('should return interviews that have been shared when isShared is true', async () => {
       const [interview_A0] = await Promise.all(
         [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
           InterviewRepository.createInterview(mockInterview)
@@ -557,8 +520,9 @@ describe('Interview Repository', () => {
         },
       });
 
-      const interviews = await InterviewRepository.getSharedInterviews({
+      const interviews = await InterviewRepository.getInterviews({
         filters: {},
+        isShared: true,
       });
 
       assert(interviews);
@@ -584,12 +548,13 @@ describe('Interview Repository', () => {
         },
       });
 
-      const sharedInterviews = await InterviewRepository.getSharedInterviews({
+      const sharedInterviews = await InterviewRepository.getInterviews({
         filters: {
           companyName: 'Meta',
           types: [InterviewType.CODE_REVIEW],
           status: InterviewStatus.PASSED,
         },
+        isShared: true,
       });
 
       assert(sharedInterviews);
@@ -619,12 +584,13 @@ describe('Interview Repository', () => {
         },
       });
 
-      const sharedInterviews = await InterviewRepository.getSharedInterviews({
+      const sharedInterviews = await InterviewRepository.getInterviews({
         filters: {
           companyName: 'Meta',
           types: [InterviewType.CODE_REVIEW],
           status: InterviewStatus.PASSED,
         },
+        isShared: true,
       });
 
       assert(sharedInterviews);
@@ -641,7 +607,7 @@ describe('Interview Repository', () => {
       });
     });
 
-    it('should return only the interviews that match the provided companyName, interview status, and interview types', async () => {
+    it('should return shared interviews that match the provided companyName, interview status, and interview types', async () => {
       const [interview_A0, interview_A2, interview_B1] = await Promise.all(
         [mockInterview_A0, mockInterview_A1, mockInterview_B1].map(
           (mockInterview) => InterviewRepository.createInterview(mockInterview)
@@ -678,12 +644,13 @@ describe('Interview Repository', () => {
       assert(sharedInterviews);
       expect(sharedInterviews.id).to.equal(interview_A0.id);
 
-      const interviews = await InterviewRepository.getSharedInterviews({
+      const interviews = await InterviewRepository.getInterviews({
         filters: {
           companyName: 'Meta',
           types: [InterviewType.CODE_REVIEW],
           status: InterviewStatus.PASSED,
         },
+        isShared: true,
       });
 
       assert(interviews);

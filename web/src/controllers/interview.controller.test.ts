@@ -518,7 +518,6 @@ describe('InterviewController', () => {
         });
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
-      console.log(res.body.data[0]);
       expect(res.body.data[0]).to.deep.include({
         companyName: 'Meta',
         status: InterviewStatus.PASSED,
@@ -576,7 +575,6 @@ describe('InterviewController', () => {
         });
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
-      console.log(res.body.data[0]);
       expect(res.body.data[0]).to.deep.include({
         companyName: 'Meta',
         status: InterviewStatus.PASSED,
