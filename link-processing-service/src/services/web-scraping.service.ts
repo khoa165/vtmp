@@ -21,15 +21,17 @@ const _launchBrowserInstance = async (): Promise<Browser> => {
   return browser;
 };
 
-const _scrapeWebpage = async (page: Page, url: string): Promise<string> => {
-  // Instead of the default Puppeteer Chrominum browser, use the Chromium browser
-  // supplied by @sparticuz/chromium library for compatibility with serverless Lambda
-  await page.goto(url, { waitUntil: 'networkidle2' }); // Make sure the page is fully loaded before proceeding
-  const bodyText: string = await page.$eval(
-    'body',
-    (el: HTMLBodyElement) => el.innerText
-  );
-  return bodyText;
+export const ScrapingWebPage = {
+  getBodyText: async (page: Page, url: string): Promise<string> => {
+    // Instead of the default Puppeteer Chrominum browser, use the Chromium browser
+    // supplied by @sparticuz/chromium library for compatibility with serverless Lambda
+    await page.goto(url, { waitUntil: 'networkidle2' }); // Make sure the page is fully loaded before proceeding
+    const bodyText: string = await page.$eval(
+      'body',
+      (el: HTMLBodyElement) => el.innerText
+    );
+    return bodyText;
+  },
 };
 
 /**
@@ -82,7 +84,10 @@ export const WebScrapingService = {
           // Open a new Chromium tab
           const page = await browser.newPage();
           try {
-            const scrapedText = await _scrapeWebpage(page, validatedLink.url);
+            const scrapedText = await ScrapingWebPage.getBodyText(
+              page,
+              validatedLink.url
+            );
             scrapedLinks.push({ ...validatedLink, scrapedText });
           } catch (error: unknown) {
             logError(error);
