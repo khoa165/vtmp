@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
+
 import { parseEnvConfig } from '@vtmp/common/utils';
+
 import { Environment } from '@/constants/enums';
 
 dotenv.config();
@@ -15,8 +17,14 @@ const webConfigSchema = z.object({
   GMAIL_APP_PASSWORD: z.string(),
   VTMP_WEB_URL: z.string(),
   SEED_ENV: z.nativeEnum(Environment).default(Environment.DEV),
+  LINK_PROCESSING_ENDPOINT: z.string(),
 });
 
 export const EnvConfig = {
-  get: () => parseEnvConfig({ env: process.env, schema: webConfigSchema }),
+  get: () =>
+    parseEnvConfig({
+      env: process.env,
+      schema: webConfigSchema,
+      workspaceName: 'web',
+    }),
 };
