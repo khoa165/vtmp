@@ -11,10 +11,29 @@ services:
       - '8000:8000'
     env_file:
       - ./web/.env
+    environment:
+      - LINK_PROCESSING_ENDPOINT=http://link-processing-service:8080/2015-03-31/functions/function/invocations
     volumes:
       # This creates bind mount between local ./web/src and the container's /app/web/src
       # "./web/src" is relative to root (where the command "docker compose up" is run)
       - ./web/src:/app/web/src
+
+  link-processing-service:
+    container_name: link-processor
+    build:
+      context: .
+      dockerfile: link-processing-service/Dockerfile
+      args:
+        - NODE_ENV=development
+    platform: linux/amd64
+    ports:
+      - '9000:8080'
+    env_file:
+      - ./link-processing-service/.env
+    environment:
+      - API_URL=http://web:8000
+    depends_on:
+      - web
 
   discord-service:
     container_name: discord
