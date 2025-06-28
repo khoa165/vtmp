@@ -1,10 +1,8 @@
 import { format } from 'date-fns';
 import { Circle, CircleUserRound, MapPin } from 'lucide-react';
 
-import { Button } from '@/components/base/button';
 import {
   Card,
-  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
@@ -19,7 +17,7 @@ export const InterviewCard = ({
   interview: SharedInterviewData;
 }) => {
   return (
-    <Card className="rounded-xl bg-background border border-background p-6 mb-4 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3 ">
+    <Card className="rounded-xl bg-background border border-background p-6 mb-4 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3">
       <CardHeader className="mb-0">
         <CardTitle className="mt-1 flex items-center gap-4">
           <div className="flex items-center gap-2">
@@ -32,9 +30,6 @@ export const InterviewCard = ({
             {formatRelativeDate(interview.sharedAt)}
           </span>
         </CardTitle>
-        <CardAction>
-          <Button variant="link">Sign Up</Button>
-        </CardAction>
       </CardHeader>
       <CardContent>
         <div>
@@ -43,7 +38,7 @@ export const InterviewCard = ({
             <p className="text-xl font-bold text-foreground">
               {interview.companyName}
             </p>
-            <span className="mt-1 flex items-center text-foreground px-3 py-1 text-sm font-medium">
+            <span className="mt-1 flex items-center text-foreground rounded-full border border-foreground/50 px-3 py-1 text-sm font-medium">
               <MapPin className="w-3.5 h-3.5 mr-1" />
               {interview.location}
             </span>
@@ -54,12 +49,14 @@ export const InterviewCard = ({
           <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
             Interview Types
           </div>
-          <div className="flex flex-wrap gap-x-2">
-            {interview.types.map((type) => (
-              <span className="mt-1 flex items-center rounded-full border border-foreground/50 text-foreground px-3 py-1 text-sm font-medium">
-                {type}
-              </span>
-            ))}
+          <div className="h-16">
+            <div className="flex flex-wrap gap-x-2">
+              {interview.types.map((type) => (
+                <span className="mt-1 flex items-center rounded-full border border-foreground/50 text-foreground px-3 py-1 text-sm font-medium">
+                  {type}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
         <div className="mt-3 flex flex-row gap-6">

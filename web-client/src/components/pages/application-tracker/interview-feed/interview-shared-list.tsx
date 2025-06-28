@@ -22,12 +22,16 @@ export const InterviewSharedList = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
-      {(Array.isArray(sharedInterviewData) ? sharedInterviewData : []).map(
-        (interview) => (
-          <InterviewCard interview={interview} />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
+      {(Array.isArray(sharedInterviewData) ? sharedInterviewData : [])
+        .sort(
+          (a, b) =>
+            new Date(b.interviewOnDate).getTime() -
+            new Date(a.interviewOnDate).getTime()
         )
-      )}
+        .map((interview) => (
+          <InterviewCard interview={interview} />
+        ))}
     </div>
   );
 };

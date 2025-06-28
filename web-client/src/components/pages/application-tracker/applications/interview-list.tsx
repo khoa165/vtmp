@@ -75,8 +75,13 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
             createInterviewFn={createInterviewFn}
           />
         )}
-        {(Array.isArray(interviewsData) ? interviewsData : []).map(
-          (interview) => (
+        {(Array.isArray(interviewsData) ? interviewsData : [])
+          .sort(
+            (a, b) =>
+              new Date(b.interviewOnDate).getTime() -
+              new Date(a.interviewOnDate).getTime()
+          )
+          .map((interview) => (
             <InterviewUpdateForm
               key={interview._id}
               currentInterview={interview}
@@ -85,8 +90,7 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
               unsharedInterviewFn={unshareInterviewFn}
               deleteInterviewFn={deleteInterviewFn}
             />
-          )
-        )}
+          ))}
       </div>
     </div>
   );

@@ -277,6 +277,10 @@ export const useUpdateInterview = () => {
           res.data.applicationId,
         ],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_SHARED_INTERVIEW],
+        exact: false,
+      });
       toast.success(res.message);
     },
     onError: (error: unknown) => {
@@ -318,6 +322,10 @@ export const useShareInterview = () => {
           QueryKey.GET_INTERVIEW_BY_APPLICATION_ID,
           res.data.applicationId,
         ],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_SHARED_INTERVIEW],
+        exact: false,
       });
       toast.success(res.message);
     },
