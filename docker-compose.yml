@@ -11,10 +11,6 @@ services:
       - '8000:8000'
     env_file:
       - ./web/.env
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/vtmp-db?replicaSet=rs0 # This will override MONGO_URI loaded from .env above
-    depends_on:
-      - mongo
     volumes:
       # This creates bind mount between local ./web/src and the container's /app/web/src
       # "./web/src" is relative to root (where the command "docker compose up" is run)
@@ -83,8 +79,8 @@ services:
       retries: 10
     volumes:
       - mongo_data:/data/db
-      - mongo_config:/data/configdb # Another named volume to persist mongo container config between runs
+    profiles:
+      - local
 
 volumes:
   mongo_data:
-  mongo_config:
