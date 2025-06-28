@@ -1,6 +1,8 @@
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
 import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
+import { JWTUtils } from '@vtmp/server-common/utils';
+import z from 'zod';
 
 export const JobPostingService = {
   getJobPostingById: async (jobId: string) => {
@@ -57,6 +59,8 @@ export const JobPostingService = {
   }: {
     userId: string;
     filters?: {
+      limit?: number;
+      cursor?: string | undefined;
       jobTitle?: string;
       companyName?: string;
       location?: string;
@@ -66,9 +70,30 @@ export const JobPostingService = {
       postingDateRangeEnd?: Date;
     };
   }) => {
-    return JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
-      userId: userId,
-      filters: filters ?? {},
-    });
+    if (!filters?.cursor) {
+      filters = {
+        ...filters,
+        cursor: JWTUtils.peekAndParseToken(
+          filters?.cursor,
+          z.object({ _id: z.string() })
+        ),
+      };
+    }
+
+    const jobPostings =
+      await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
+        userId: userId,
+        filters: filters ?? {},
+      });
+    return {
+      data: jobPostings,
+      cursor:
+        jobPostings.length === filters?.limit
+          ? JWTUtils.createTokenWithPayload(
+              { _id: jobPostings[jobPostings.length - 1]?._id.toString() },
+              EnvConfig.get().JWT_SECRET
+            )
+          : undefined,
+    };
   },
 };
