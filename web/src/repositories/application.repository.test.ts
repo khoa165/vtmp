@@ -1,20 +1,23 @@
 import { expect } from 'chai';
-import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
 import { sortBy, times, zip } from 'remeda';
 
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import assert from 'assert';
+
 import {
   ApplicationStatus,
   InterestLevel,
   JobPostingRegion,
   SystemRole,
 } from '@vtmp/common/constants';
-import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
+
 import { IJobPosting } from '@/models/job-posting.model';
+import { ApplicationRepository } from '@/repositories/application.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { UserRepository } from '@/repositories/user.repository';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
+
 describe('ApplicationRepository', () => {
   useMongoDB();
 
@@ -531,7 +534,7 @@ describe('ApplicationRepository', () => {
         firstName: 'Test',
         lastName: 'Nguyen',
         email: 'test@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
+        encryptedPassword: 'encrypted-password-later',
       };
       const user = await UserRepository.createUser(mockOneUser);
       await Promise.all(
@@ -559,19 +562,19 @@ describe('ApplicationRepository', () => {
           firstName: 'user1',
           lastName: 'viettech',
           email: 'test1@example.com',
-          encryptedPassword: 'ecnrypted-password-later',
+          encryptedPassword: 'encrypted-password-later',
         },
         {
           firstName: 'user2',
           lastName: 'viettech',
           email: 'test2@example.com',
-          encryptedPassword: 'ecnrypted-password-later',
+          encryptedPassword: 'encrypted-password-later',
         },
         {
           firstName: 'user3',
           lastName: 'viettech',
           email: 'test3@example.com',
-          encryptedPassword: 'ecnrypted-password-later',
+          encryptedPassword: 'encrypted-password-later',
         },
       ];
       await Promise.all(
@@ -592,7 +595,7 @@ describe('ApplicationRepository', () => {
         firstName: 'Test',
         lastName: 'Nguyen',
         email: 'test@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
+        encryptedPassword: 'encrypted-password-later',
       };
       const user = await UserRepository.createUser(additionalUser);
       await Promise.all(
@@ -632,7 +635,7 @@ describe('ApplicationRepository', () => {
         firstName: 'Test',
         lastName: 'Nguyen',
         email: 'test@example.com',
-        encryptedPassword: 'ecnrypted-password-later',
+        encryptedPassword: 'encrypted-password-later',
       };
       const user = await UserRepository.createUser(mockOneUser);
       await Promise.all(
@@ -670,25 +673,25 @@ describe('ApplicationRepository', () => {
           firstName: 'user1',
           lastName: 'viettech',
           email: 'test1@example.com',
-          encryptedPassword: 'ecnrypted-password-later',
+          encryptedPassword: 'encrypted-password-later',
         },
         {
           firstName: 'user2',
           lastName: 'viettech',
           email: 'test2@example.com',
-          encryptedPassword: 'ecnrypted-password-later',
+          encryptedPassword: 'encrypted-password-later',
         },
         {
           firstName: 'user3',
           lastName: 'viettech',
           email: 'test3@example.com',
-          encryptedPassword: 'ecnrypted-password-later',
+          encryptedPassword: 'encrypted-password-later',
         },
         {
           firstName: 'user4',
           lastName: 'viettech',
           email: 'test4@example.com',
-          encryptedPassword: 'ecnrypted-password-later',
+          encryptedPassword: 'encrypted-password-later',
         },
       ];
       const mockNumberofApplications = [1, 12, 6, 4];
@@ -737,27 +740,27 @@ describe('ApplicationRepository', () => {
           firstName: 'admin',
           lastName: 'viettech',
           email: 'test1@example.com',
-          encryptedPassword: 'ecnrypted-password-later',
+          encryptedPassword: 'encrypted-password-later',
           role: SystemRole.ADMIN,
         },
         {
           firstName: 'moderator',
           lastName: 'viettech',
           email: 'test2@example.com',
-          encryptedPassword: 'ecnrypted-password-later',
+          encryptedPassword: 'encrypted-password-later',
           role: SystemRole.MODERATOR,
         },
         {
           firstName: 'user1',
           lastName: 'viettech',
           email: 'test3@example.com',
-          encryptedPassword: 'ecnrypted-password-later',
+          encryptedPassword: 'encrypted-password-later',
         },
         {
           firstName: 'user2',
           lastName: 'viettech',
           email: 'test4@example.com',
-          encryptedPassword: 'ecnrypted-password-later',
+          encryptedPassword: 'encrypted-password-later',
         },
       ];
       const mockNumberofApplications = [1, 12, 6, 4];
