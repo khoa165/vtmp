@@ -1,8 +1,12 @@
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { ResourceNotFoundError } from '@/utils/errors';
-import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
 import { JWTUtils } from '@vtmp/server-common/utils';
 import z from 'zod';
+
+import { JobPostingRegion } from '@vtmp/common/constants';
+
+import { EnvConfig } from '@/config/env';
+import { JobPostingFilter } from '@/models/job-posting.model';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { ResourceNotFoundError } from '@/utils/errors';
 
 export const JobPostingService = {
   getJobPostingById: async (jobId: string) => {
@@ -58,39 +62,32 @@ export const JobPostingService = {
     filters,
   }: {
     userId: string;
-    filters?: {
-      limit?: number;
-      cursor?: string | undefined;
-      jobTitle?: string;
-      companyName?: string;
-      location?: string;
-      jobFunction?: JobFunction;
-      jobType?: JobType;
-      postingDateRangeStart?: Date;
-      postingDateRangeEnd?: Date;
-    };
+    filters?: JobPostingFilter;
   }) => {
-    if (!filters?.cursor) {
+    if (filters?.cursor) {
       filters = {
         ...filters,
-        cursor: JWTUtils.peekAndParseToken(
-          filters?.cursor,
-          z.object({ _id: z.string() })
-        ),
+        cursor: filters?.cursor
+          ? JWTUtils.peekAndParseToken(
+              filters?.cursor,
+              z.object({ cursor: z.string() })
+            ).cursor
+          : undefined,
       };
     }
 
     const jobPostings =
       await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
-        userId: userId,
-        filters: filters ?? {},
+        userId,
+        filters: filters || {},
       });
+
     return {
-      data: jobPostings,
+      data: jobPostings.data,
       cursor:
-        jobPostings.length === filters?.limit
+        jobPostings.data.length === filters?.limit
           ? JWTUtils.createTokenWithPayload(
-              { _id: jobPostings[jobPostings.length - 1]?._id.toString() },
+              { cursor: jobPostings.cursor },
               EnvConfig.get().JWT_SECRET
             )
           : undefined,
