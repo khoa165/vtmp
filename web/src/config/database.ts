@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 
 import { EnvConfig } from '@/config/env';
+import { Environment } from '@/constants/enums';
 
 export const connectDB = async () => {
-  if (EnvConfig.get().NODE_ENV === 'TEST') {
+  if (EnvConfig.get().NODE_ENV === Environment.TEST) {
     console.log('Test environment');
     return;
   }
