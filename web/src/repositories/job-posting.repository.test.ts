@@ -195,51 +195,6 @@ describe('JobPostingRepository', () => {
       return remaining;
     };
 
-    // const runPaginationTest = async ({
-    //   userId,
-    //   filters,
-    //   allJobPostings = [],
-    // }: {
-    //   userId: string;
-    //   filters?: JobPostingFilter;
-    //   allJobPostings: (IJobPosting | undefined)[];
-    // }) => {
-    //   let page = 1;
-    //   let jobsNotAppliedByUser: IJobPosting[] = [];
-    //   let cursor = undefined;
-    //   const totalPage = Math.floor((allJobPostings.length - 1) / limit) + 1;
-
-    //   while (page <= totalPage) {
-    //     jobsNotAppliedByUser =
-    //       await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
-    //         userId,
-    //         filters,
-    //       });
-
-    //     expect(jobsNotAppliedByUser)
-    //       .to.be.an('array')
-    //       .that.has.length(
-    //         Math.min(allJobPostings.length - limit * (page - 1), limit)
-    //       );
-    //     jobsNotAppliedByUser.forEach((job) => {
-    //       assert(job);
-    //     });
-    //     expect(
-    //       jobsNotAppliedByUser.map((job) => job._id?.toString())
-    //     ).to.have.members(
-    //       allJobPostings
-    //         .slice((page - 1) * limit, page * limit)
-    //         .map((jobPosting) => jobPosting?._id.toString())
-    //     );
-
-    //     page += 1;
-    //     cursor = {
-    //       _id: String(
-    //         jobsNotAppliedByUser[jobsNotAppliedByUser.length - 1]?._id
-    //       ),
-    //     };
-    //   }
-    // };
     const runPaginationTest = async ({
       userId,
       filters,
