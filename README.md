@@ -53,29 +53,46 @@ git clone git@github.com:khoa165/vtmp.git
 
 ## Running the Application
 
-Without Docker
+### Without Docker
 
 ```bash
 yarn pp
 yarn dev
 ```
 
-With Docker
+### With Docker
 
 - Make sure you have Docker Desktop installed and running.
 - From repo root. After the first time, you won't need the `--build` flag:
+
+#### To run without local Mongo container (use the cloud Mongo):
 
 ```
 docker compose up --build
 ```
 
-This will start the application on `http://localhost:3000` and the server on `http://localhost:8000`.
+- This will start the application on `http://localhost:3000` and the server on `http://localhost:8000`.
+- Note that for this command to work, ensure web/.env have a valid MONGO_URI string (a valid cloud Mongo Atlas URI).
+
+#### To run with local Mongo container (instead of the cloud Mongo):
+
+```
+docker compose --profile local_mongo up
+```
+
+- This will start the application on `http://localhost:3000`, the server on `http://localhost:8000` and Mongo database on `http://localhost:27017`
+- Note that for this command to work, ensure web/.env have:
+  `MONGO_URI=mongodb://mongo:27017/vtmp-db?replicaSet=rs0`
+
+##### Seeding the local Mongo Database container:
 
 - Once the containers (server, client, and mongo) are up and running, you can seed the database. From root:
 
 ```
 yarn docker-seed
 ```
+
+##### Inspecting local Mongo container:
 
 - To connect to the local mongo container and inspect data, first download MongoDB Compass: https://www.mongodb.com/try/download/compass
 - After installation, in the GUI, create a connection to `mongodb://localhost:27017`
