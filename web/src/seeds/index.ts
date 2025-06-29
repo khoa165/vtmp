@@ -8,6 +8,7 @@ import { EnvConfig } from '@/config/env';
 import { Environment } from '@/constants/enums';
 import { loadApplications } from '@/seeds/applications';
 import { loadInterviews } from '@/seeds/interviews';
+import { loadInvitations } from '@/seeds/invitations';
 import { loadJobPostings } from '@/seeds/job-postings';
 import { loadLinks } from '@/seeds/links';
 import { loadUsers } from '@/seeds/users';
@@ -20,6 +21,7 @@ interface SeedCountConfiguration {
   linksCount: number;
   minApplicationsCountPerUser: number;
   maxApplicationsCountPerUser: number;
+  invitationsCount: number;
 }
 
 const defaultConfiguration: SeedCountConfiguration = {
@@ -27,6 +29,7 @@ const defaultConfiguration: SeedCountConfiguration = {
   linksCount: 30,
   minApplicationsCountPerUser: 10,
   maxApplicationsCountPerUser: 30,
+  invitationsCount: 20,
 };
 
 const allConfigurations: Partial<Record<Environment, SeedCountConfiguration>> =
@@ -36,6 +39,7 @@ const allConfigurations: Partial<Record<Environment, SeedCountConfiguration>> =
       linksCount: 500,
       minApplicationsCountPerUser: 100,
       maxApplicationsCountPerUser: 300,
+      invitationsCount: 100,
     },
   };
 
@@ -48,6 +52,7 @@ const runSeeds = async () => {
     linksCount,
     minApplicationsCountPerUser,
     maxApplicationsCountPerUser,
+    invitationsCount,
   } = allConfigurations[EnvConfig.get().SEED_ENV] ?? defaultConfiguration;
 
   const users = await loadUsers(usersCount);
@@ -67,6 +72,7 @@ const runSeeds = async () => {
     maxApplicationsCountPerUser,
   });
   await loadInterviews(users, applications);
+  await loadInvitations(invitationsCount);
 };
 
 runSeeds()

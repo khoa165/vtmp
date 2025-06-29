@@ -8,11 +8,7 @@ import {
   LinkStatus,
 } from '@vtmp/common/constants';
 
-import {
-  GoogleGenAIModel,
-  _generateMetadata,
-  ExtractLinkMetadataService,
-} from '@/services/extract-link-metadata.service';
+import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { ScrapedLink } from '@/types/link-processing.types';
 import { AIExtractionError, AIResponseEmptyError } from '@/utils/errors';
@@ -33,7 +29,10 @@ describe('ExtractLinkMetadatService', () => {
   let generateContentStub: sinon.SinonStub;
 
   beforeEach(() => {
-    generateContentStub = sandbox.stub(GoogleGenAIModel, 'generateContent');
+    generateContentStub = sandbox.stub(
+      ExtractLinkMetadataService,
+      '_generateContent'
+    );
     sandbox.stub(console, 'error'); // Suppress console errors in tests
   });
 
@@ -43,7 +42,7 @@ describe('ExtractLinkMetadatService', () => {
         text: '', // empty response
       });
       await expect(
-        _generateMetadata(fakeText, fakeUrl)
+        ExtractLinkMetadataService._generateMetadata(fakeText, fakeUrl)
       ).eventually.rejectedWith(AIResponseEmptyError);
     });
 
@@ -52,7 +51,7 @@ describe('ExtractLinkMetadatService', () => {
         text: '```json\nnot a json\n```',
       });
       await expect(
-        _generateMetadata(fakeText, fakeUrl)
+        ExtractLinkMetadataService._generateMetadata(fakeText, fakeUrl)
       ).eventually.rejectedWith(SyntaxError);
     });
 
@@ -61,7 +60,10 @@ describe('ExtractLinkMetadatService', () => {
         text: `\`\`\`json\n${JSON.stringify(fakeAIResponse)}\n\`\`\``,
       });
 
-      const result = await _generateMetadata(fakeText, fakeUrl);
+      const result = await ExtractLinkMetadataService._generateMetadata(
+        fakeText,
+        fakeUrl
+      );
 
       expect(result).to.deep.include({
         jobTitle: 'Software Engineer',
