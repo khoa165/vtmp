@@ -26,8 +26,6 @@ import {
 import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
 import { buildPrompt } from '@/utils/prompts';
 
-export const GoogleGenAIModel = {};
-
 export const ExtractLinkMetadataService = {
   async _generateContent(prompt: string): Promise<{ text: string }> {
     const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
