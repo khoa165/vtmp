@@ -43,6 +43,6 @@
   "scripts": {
     "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
     "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000",
-    "dev": "tsx watch src/index.ts"
+    "dev": "node -e 'console.warn(`To test link-processing-service, please run its Docker container.\nPlease refer to README.md for further details.`)'"
   }
 }

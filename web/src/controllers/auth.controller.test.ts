@@ -48,6 +48,7 @@ describe('AuthController', () => {
     );
     await InvitationRepository.createInvitation({
       receiverEmail: 'test123@gmail.com',
+      receiverName: 'Test User',
       sender: getNewMongoId(),
       expiryDate: addDays(Date.now(), 7),
       token: mockInvitationToken,

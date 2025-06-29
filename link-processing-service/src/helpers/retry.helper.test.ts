@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { executeWithRetry } from '@/helpers/retry.helper';
 import { assert, expect } from 'chai';
 import retry from 'retry';
-
-import { executeWithRetry } from '@/helpers/retry.helper';
-
 const RETRIES = 3;
 const retryConfig: retry.WrapOptions = {
   retries: RETRIES,
