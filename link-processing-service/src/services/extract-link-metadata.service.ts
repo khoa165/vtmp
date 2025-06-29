@@ -26,84 +26,81 @@ import {
 import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
 import { buildPrompt } from '@/utils/prompts';
 
-export const GoogleGenAIModel = {
-  generateContent: async (prompt: string) => {
+export const GoogleGenAIModel = {};
+
+export const ExtractLinkMetadataService = {
+  async _generateContent(prompt: string): Promise<{ text: string }> {
     const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
     const genAI = new GoogleGenAI({ apiKey: geminiApiKey });
     const response = await genAI.models.generateContent({
       model: 'gemini-2.0-flash',
       contents: prompt,
     });
+
     return { text: response.text ? response.text : '' };
   },
-};
+  async _generateMetadata(
+    text: string,
+    url: string
+  ): Promise<ExtractedLinkMetadata> {
+    const prompt = await buildPrompt(text);
+    const response = await this._generateContent(prompt);
+    // Get raw response from Gemini
+    const rawAIResponse = response.text?.replace(/```json|```/g, '').trim();
+    if (!rawAIResponse)
+      throw new AIResponseEmptyError('AI response was empty', { url });
 
-export const _generateMetadata = async (
-  text: string,
-  url: string
-): Promise<ExtractedLinkMetadata> => {
-  const prompt = await buildPrompt(text);
-  const response = await GoogleGenAIModel.generateContent(prompt);
-  // Get raw response from Gemini
-  const rawAIResponse = response.text?.replace(/```json|```/g, '').trim();
-  if (!rawAIResponse)
-    throw new AIResponseEmptyError('AI response was empty', { url });
+    const {
+      jobTitle,
+      companyName,
+      location,
+      jobFunction,
+      jobType,
+      datePosted,
+      jobDescription,
+    } = RawAIResponseSchema.parse(JSON.parse(rawAIResponse));
 
-  const {
-    jobTitle,
-    companyName,
-    location,
-    jobFunction,
-    jobType,
-    datePosted,
-    jobDescription,
-  } = RawAIResponseSchema.parse(JSON.parse(rawAIResponse));
+    // Convert from string to Typescript enum, had to use a separate helper stringToEnumValue
+    const formattedLinkMetadata = {
+      jobTitle,
+      companyName,
+      location: stringToEnumValue({
+        stringValue: location,
+        enumObject: LinkRegion,
+      }),
+      jobFunction: stringToEnumValue({
+        stringValue: jobFunction,
+        enumObject: JobFunction,
+      }),
+      jobType: stringToEnumValue({
+        stringValue: jobType,
+        enumObject: JobType,
+      }),
+      datePosted,
+      jobDescription: formatJobDescription(jobDescription),
+    };
 
-  // Convert from string to Typescript enum, had to use a separate helper stringToEnumValue
-  const formattedLinkMetadata = {
-    jobTitle,
-    companyName,
-    location: stringToEnumValue({
-      stringValue: location,
-      enumObject: LinkRegion,
-    }),
-    jobFunction: stringToEnumValue({
-      stringValue: jobFunction,
-      enumObject: JobFunction,
-    }),
-    jobType: stringToEnumValue({
-      stringValue: jobType,
-      enumObject: JobType,
-    }),
-    datePosted,
-    jobDescription: formatJobDescription(jobDescription),
-  };
+    return ExtractedLinkMetadataSchema.parse(formattedLinkMetadata);
+  },
+  /**
+   * Decide on whether link should be long retried.
+   * @param originalRequest
+   * @param maxLongRetry
+   */
+  _determineProcessStatus(
+    originalRequest: SubmittedLink,
+    maxLongRetry: number
+  ): LinkStatus {
+    if (originalRequest.attemptsCount >= maxLongRetry) {
+      return LinkStatus.PIPELINE_FAILED;
+    }
+    return LinkStatus.PENDING_RETRY;
+  },
 
-  return ExtractedLinkMetadataSchema.parse(formattedLinkMetadata);
-};
-
-/**
- * Decide on whether link should be long retried.
- * @param originalRequest
- * @param maxLongRetry
- */
-const _determineProcessStatus = (
-  originalRequest: SubmittedLink,
-  maxLongRetry: number
-): LinkStatus => {
-  if (originalRequest.attemptsCount >= maxLongRetry) {
-    return LinkStatus.PIPELINE_FAILED;
-  }
-  return LinkStatus.PENDING_RETRY;
-};
-
-export const ExtractLinkMetadataService = {
-  extractMetadata: async (
-    scrapedLinks: ScrapedLink[]
-  ): Promise<{
+  async extractMetadata(scrapedLinks: ScrapedLink[]): Promise<{
     metadataExtractedLinks: MetadataExtractedLink[];
     failedMetadataExtractionLinks: FailedProcessedLink[];
-  }> => {
+  }> {
     const MAX_LONG_RETRY = 4;
 
     const metadataExtractedLinks: MetadataExtractedLink[] = [];
@@ -119,7 +116,7 @@ export const ExtractLinkMetadataService = {
     await Promise.all(
       scrapedLinks.map(async (link) => {
         try {
-          const extractedMetadata = await _generateMetadata(
+          const extractedMetadata = await this._generateMetadata(
             link.scrapedText,
             link.url
           );
@@ -133,7 +130,7 @@ export const ExtractLinkMetadataService = {
           logError(error);
           failedMetadataExtractionLinks.push({
             ...link,
-            status: _determineProcessStatus(
+            status: this._determineProcessStatus(
               link.originalRequest,
               MAX_LONG_RETRY
             ),
