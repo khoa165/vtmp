@@ -80,22 +80,28 @@ services:
   mongo:
     container_name: mongo
     image: mongo:latest
-    command: ['--replSet', 'rs0', '--bind_ip_all', '--port', '27017'] # Enable replica set, which is required to use transaction
     ports:
       - '27017:27017'
-    healthcheck: # Use healthcheck to retry to intiate the replica set named rs0 (only single node)
-      test: >
-        mongosh --quiet --eval '
+    # Enable replica set, which is required to use transaction
+    # Run multiple commands in sequence.
+    # - Start mongod in the background, wait for it to be ready
+    # - Then run the replica set initiation with rs.initiate()
+    command: >
+      bash -c "
+        mongod --replSet rs0 --bind_ip_all --port 27017 &
+        until mongosh --eval \"db.adminCommand('ping')\"; do
+          echo 'Waiting for MongoDB to start...'
+          sleep 2
+        done
+        mongosh --eval \"
           try {
-            rs.status().ok || rs.initiate({ _id: "rs0", members: [ { _id: 0, host: "mongo:27017" } ] });
+            rs.status().ok || rs.initiate({ _id: 'rs0', members: [ { _id: 0, host: 'mongo:27017' } ] });
           } catch(e) {
-            rs.initiate({ _id: "rs0", members: [ { _id: 0, host: "mongo:27017" } ] });
+            rs.initiate({ _id: 'rs0', members: [ { _id: 0, host: 'mongo:27017' } ] });
           }
-        '
-      interval: 5s
-      timeout: 10s
-      start_period: 5s
-      retries: 10
+        \"
+        wait
+      "
     volumes:
       - mongo_data:/data/db
     profiles:
