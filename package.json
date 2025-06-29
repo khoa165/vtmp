@@ -38,7 +38,8 @@
     "web-client",
     "web",
     "discord-service",
-    "observability"
+    "observability",
+    "link-processing-service"
   ],
   "devDependencies": {
     "@eslint/js": "^9.22.0",
