@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 import { Circle, CircleUserRound, MapPin } from 'lucide-react';
 
 import {
@@ -8,8 +8,8 @@ import {
   CardTitle,
 } from '@/components/base/card';
 import { Textarea } from '@/components/base/textarea';
-import { SharedInterviewData } from '@/components/pages/application-tracker/interview-feed/validation';
-import { formatRelativeDate, MONTH_DATE_YEAR } from '@/utils/date';
+import { SharedInterviewData } from '@/components/pages/application-tracker/applications/validation';
+import { MONTH_DATE_YEAR } from '@/utils/date';
 
 export const InterviewCard = ({
   interview,
@@ -21,13 +21,13 @@ export const InterviewCard = ({
       <CardHeader className="mb-0">
         <CardTitle className="mt-1 flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <CircleUserRound />
+            <CircleUserRound className="scale-100" />
             <span className="text-sm font-medium">
               {interview.user.firstName} {interview.user.lastName}
             </span>
           </div>
           <span className="text-sm text-muted-foreground">
-            {formatRelativeDate(interview.sharedAt)}
+            {formatDistanceToNow(interview.sharedAt)} ago
           </span>
         </CardTitle>
       </CardHeader>

@@ -247,8 +247,6 @@ export const InterviewController = {
       isShare: true,
     });
 
-    console.log('sharedInterview', sharedInterview);
-
     res.status(200).json({
       message: 'Interview shared successfully',
       data: sharedInterview,

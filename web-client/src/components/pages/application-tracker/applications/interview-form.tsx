@@ -95,7 +95,7 @@ export const InterviewUpdateForm = ({
   }, [currentInterview]);
 
   return (
-    <div className="rounded-xl bg-background border border-background p-6 mb-4 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3">
+    <div className="rounded-xl bg-background border border-background p-6 mb-5 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3">
       <Form {...interviewForm}>
         <div>
           <FormField
