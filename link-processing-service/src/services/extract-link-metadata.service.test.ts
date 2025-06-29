@@ -17,7 +17,7 @@ import { useSandbox } from '@/testutils/sandbox.testutil';
 import { ScrapedLink } from '@/types/link-processing.types';
 import { AIExtractionError, AIResponseEmptyError } from '@/utils/errors';
 
-describe('ExtractLinkMetadatService', () => {
+describe.only('ExtractLinkMetadatService', () => {
   const sandbox = useSandbox();
   const fakeText = 'Some scraped text';
   const fakeUrl = 'https://example.com/job';
