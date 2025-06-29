@@ -84,6 +84,15 @@ export const InterviewSchema = z.object({
   interviewOnDate: z.coerce.date(),
   companyName: z.string().optional(),
   note: z.string().optional(),
+  sharedAt: z.preprocess((arg) => {
+    if (typeof arg === 'string' || typeof arg === 'number') {
+      const date = new Date(arg);
+      return isNaN(date.getTime()) ? undefined : date;
+    }
+    if (arg instanceof Date) return arg;
+    return undefined;
+  }, z.date().optional()),
+  isDisclosed: z.boolean().optional(),
 });
 
 export const InterviewsResponseSchema = z.object({
@@ -101,6 +110,8 @@ export interface InterviewData {
   status: InterviewStatus;
   interviewOnDate: Date;
   note?: string;
+  sharedAt?: Date;
+  isDisclosed?: boolean;
 }
 
 export const InterviewFormSchema = z.object({

@@ -71,6 +71,8 @@ export const InterviewUpdateForm = ({
     status,
     interviewOnDate,
     note,
+    sharedAt,
+    isDisclosed,
   } = currentInterview;
 
   const interviewForm = useForm<z.infer<typeof InterviewFormSchema>>({
@@ -219,6 +221,8 @@ export const InterviewUpdateForm = ({
               interviewId={interviewId}
               shareInterviewFn={shareInterviewFn}
               unsharedInterviewFn={unsharedInterviewFn}
+              sharedAt={sharedAt}
+              isDisclosed={isDisclosed}
             />
             <Button
               type="submit"
@@ -411,28 +415,46 @@ const InterviewSharingButton = ({
   interviewId,
   shareInterviewFn,
   unsharedInterviewFn,
-  shareAt,
+  sharedAt,
   isDisclosed,
 }: {
   interviewId: string;
-  shareInterviewFn: ({
-    interviewId,
-    body,
-  }: {
+  shareInterviewFn: (params: {
     interviewId: string;
-    body: {
-      isDisclosed: boolean;
-    };
+    body: { isDisclosed: boolean };
   }) => void;
   unsharedInterviewFn: ({ interviewId }: { interviewId: string }) => void;
-  shareAt?: Date;
+  sharedAt?: Date;
   isDisclosed?: boolean;
 }) => {
-  const getShareStatusLabel = () => {
-    if (!shareAt) return 'Share Interview';
-    else if (isDisclosed === true) return 'Shared Publicly';
-    else if (isDisclosed === false) return 'Shared Anonymously';
+  const getShareLabel = (sharedAt?: Date, isDisclosed?: boolean) => {
+    if (!sharedAt) return 'Share Interview';
+    if (isDisclosed === false) return 'Shared Publicly';
+    if (isDisclosed === true) return 'Shared Anonymously';
+    return 'Share Interview';
   };
+
+  const shareOptions = [
+    {
+      label: 'Publish publicly',
+      shouldShow: !sharedAt || isDisclosed === true,
+      onClick: () =>
+        shareInterviewFn({ interviewId, body: { isDisclosed: false } }),
+    },
+    {
+      label: 'Publish anonymously',
+      shouldShow: !sharedAt || isDisclosed === false,
+      onClick: () =>
+        shareInterviewFn({ interviewId, body: { isDisclosed: true } }),
+    },
+    {
+      label: 'Unshare',
+      shouldShow: !!sharedAt,
+      onClick: () => {
+        unsharedInterviewFn({ interviewId });
+      },
+    },
+  ];
 
   return (
     <DropdownMenu>
@@ -441,34 +463,17 @@ const InterviewSharingButton = ({
           variant="outline"
           className="h-7.5 gap-1.5 rounded-sm border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
         >
-          {getShareStatusLabel()}
+          {getShareLabel(sharedAt, isDisclosed)}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
-        <DropdownMenuItem
-          className="text-xs"
-          onClick={() => {
-            shareInterviewFn({ interviewId, body: { isDisclosed: false } });
-          }}
-        >
-          Publish to feed publicly
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="text-xs"
-          onClick={() => {
-            shareInterviewFn({ interviewId, body: { isDisclosed: true } });
-          }}
-        >
-          Publish to feed anonymously
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="text-xs"
-          onClick={() => {
-            unsharedInterviewFn({ interviewId });
-          }}
-        >
-          Unshare interview
-        </DropdownMenuItem>
+        {shareOptions
+          .filter((opt) => opt.shouldShow)
+          .map((opt, i) => (
+            <DropdownMenuItem key={i} className="text-xs" onClick={opt.onClick}>
+              {opt.label}
+            </DropdownMenuItem>
+          ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
