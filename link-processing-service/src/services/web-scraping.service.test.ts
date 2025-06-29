@@ -1,21 +1,18 @@
 import { expect } from 'chai';
-import puppeteer, { Browser } from 'puppeteer-core';
-import sinon from 'sinon';
+import puppeteer, { Browser, Page } from 'puppeteer-core';
+import sinon, { SinonStubbedInstance } from 'sinon';
 
 import { LinkProcessingFailureStage, LinkStatus } from '@vtmp/common/constants';
 
-import {
-  ScrapingWebPage,
-  WebScrapingService,
-} from '@/services/web-scraping.service';
+import { WebScrapingService } from '@/services/web-scraping.service';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { ValidatedLink } from '@/types/link-processing.types';
 import { ScrapingError } from '@/utils/errors';
 
 describe('WebScrapingService', () => {
   const sandbox = useSandbox();
-  let browserMock;
-  let pageMock;
+  let browserMock: SinonStubbedInstance<Browser>;
+  let pageMock: SinonStubbedInstance<Page>;
 
   let stubGetBodyTextFunction: sinon.SinonStub;
   const validatedLinkMock: ValidatedLink[] = [
@@ -42,20 +39,18 @@ describe('WebScrapingService', () => {
       goto: sandbox.stub(),
       evaluate: sandbox.stub(),
       close: sandbox.stub(),
-    };
+    } as SinonStubbedInstance<Page>;
 
     // Create mock for browser
     browserMock = {
       newPage: sandbox.stub().resolves(pageMock),
       close: sandbox.stub(),
-    };
+    } as SinonStubbedInstance<Browser>;
 
     // Stub puppeteer.launch to return our browser mock
-    sandbox
-      .stub(puppeteer, 'launch')
-      .resolves(browserMock as Partial<Browser> as Browser);
+    sandbox.stub(puppeteer, 'launch').resolves(browserMock);
 
-    stubGetBodyTextFunction = sandbox.stub(ScrapingWebPage, 'getBodyText');
+    stubGetBodyTextFunction = sandbox.stub(WebScrapingService, 'getBodyText');
     sandbox.stub(console, 'error');
   });
 
@@ -72,6 +67,10 @@ describe('WebScrapingService', () => {
     expect(scrapedLinks[1]?.url).to.equal('https://example2.com');
     expect(scrapedLinks[0]?.scrapedText).to.equal('Scraped content');
     expect(scrapedLinks[1]?.scrapedText).to.equal('Scraped content');
+
+    // Assert resources cleanup
+    expect(pageMock.close.callCount).to.equal(2);
+    expect(browserMock.close.callCount).to.equal(1);
   });
 
   it('should return 1 success and 1 failure when one link scraping fails', async () => {
@@ -94,6 +93,10 @@ describe('WebScrapingService', () => {
       LinkProcessingFailureStage.SCRAPING_FAILED
     );
     expect(failedScrapingLinks[0]?.error).to.be.instanceOf(ScrapingError);
+
+    // Assert resources cleanup
+    expect(pageMock.close.callCount).to.equal(2);
+    expect(browserMock.close.callCount).to.equal(1);
   });
 
   it('should return 2 failures when both link scraping fails', async () => {
@@ -117,6 +120,10 @@ describe('WebScrapingService', () => {
     );
     expect(failedScrapingLinks[0]?.error).to.be.instanceOf(ScrapingError);
     expect(failedScrapingLinks[1]?.error).to.be.instanceOf(ScrapingError);
+
+    // Assert resources cleanup
+    expect(pageMock.close.callCount).to.equal(2);
+    expect(browserMock.close.callCount).to.equal(1);
   });
 
   it('should return 1 failure with correct status when link reach MAX_LONG_RETRY', async () => {
@@ -142,6 +149,10 @@ describe('WebScrapingService', () => {
       LinkProcessingFailureStage.SCRAPING_FAILED
     );
     expect(failedScrapingLinks[0]?.error).to.be.instanceOf(ScrapingError);
+
+    // Assert resources cleanup
+    expect(pageMock.close.callCount).to.equal(1);
+    expect(browserMock.close.callCount).to.equal(1);
   });
 
   it('should log a warning and return empty arrays when no validated links are provided', async () => {
@@ -155,13 +166,9 @@ describe('WebScrapingService', () => {
     );
     expect(scrapedLinks).to.have.lengthOf(0);
     expect(failedScrapingLinks).to.have.lengthOf(0);
-  });
 
-  it('should return empty arrays when no validated links are provided', async () => {
-    const { scrapedLinks, failedScrapingLinks } =
-      await WebScrapingService.scrapeLinks([]);
-
-    expect(scrapedLinks).to.have.lengthOf(0);
-    expect(failedScrapingLinks).to.have.lengthOf(0);
+    // Assert resources cleanup
+    expect(pageMock.close.callCount).to.equal(0);
+    expect(browserMock.close.callCount).to.equal(0);
   });
 });

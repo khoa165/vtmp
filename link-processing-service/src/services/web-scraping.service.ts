@@ -21,8 +21,8 @@ const _launchBrowserInstance = async (): Promise<Browser> => {
   return browser;
 };
 
-export const ScrapingWebPage = {
-  getBodyText: async (page: Page, url: string): Promise<string> => {
+export const WebScrapingService = {
+  async getBodyText(page: Page, url: string): Promise<string> {
     // Instead of the default Puppeteer Chrominum browser, use the Chromium browser
     // supplied by @sparticuz/chromium library for compatibility with serverless Lambda
     await page.goto(url, { waitUntil: 'networkidle2' }); // Make sure the page is fully loaded before proceeding
@@ -32,30 +32,24 @@ export const ScrapingWebPage = {
     );
     return bodyText;
   },
-};
-
-/**
- * Decide on whether link should be long retried.
- * @param originalRequest
- * @param maxLongRetry
- */
-const _determineProcessStatus = (
-  originalRequest: SubmittedLink,
-  maxLongRetry: number
-): LinkStatus => {
-  if (originalRequest.attemptsCount >= maxLongRetry) {
-    return LinkStatus.PIPELINE_FAILED;
-  }
-  return LinkStatus.PENDING_RETRY;
-};
-
-export const WebScrapingService = {
-  scrapeLinks: async (
-    validatedLinks: ValidatedLink[]
-  ): Promise<{
+  /**
+   * Decide on whether link should be long retried.
+   * @param originalRequest
+   * @param maxLongRetry
+   */
+  _determineProcessStatus(
+    originalRequest: SubmittedLink,
+    maxLongRetry: number
+  ): LinkStatus {
+    if (originalRequest.attemptsCount >= maxLongRetry) {
+      return LinkStatus.PIPELINE_FAILED;
+    }
+    return LinkStatus.PENDING_RETRY;
+  },
+  async scrapeLinks(validatedLinks: ValidatedLink[]): Promise<{
     scrapedLinks: ScrapedLink[];
     failedScrapingLinks: FailedProcessedLink[];
-  }> => {
+  }> {
     const scrapedLinks: ScrapedLink[] = [];
     const failedScrapingLinks: FailedProcessedLink[] = [];
 
@@ -84,17 +78,14 @@ export const WebScrapingService = {
           // Open a new Chromium tab
           const page = await browser.newPage();
           try {
-            const scrapedText = await ScrapingWebPage.getBodyText(
-              page,
-              validatedLink.url
-            );
+            const scrapedText = await this.getBodyText(page, validatedLink.url);
             scrapedLinks.push({ ...validatedLink, scrapedText });
           } catch (error: unknown) {
             logError(error);
 
             failedScrapingLinks.push({
               ...validatedLink,
-              status: _determineProcessStatus(
+              status: this._determineProcessStatus(
                 validatedLink.originalRequest,
                 MAX_LONG_RETRY
               ),
