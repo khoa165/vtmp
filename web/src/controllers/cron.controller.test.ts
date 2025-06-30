@@ -13,11 +13,11 @@ describe('CronController', () => {
   let stubRunFunction: sinon.SinonStub;
 
   beforeEach(() => {
-    stubRunFunction = sandbox.stub(CronService, 'runImmediately').resolves();
+    stubRunFunction = sandbox.stub(CronService, 'trigger').resolves();
   });
 
-  it('POST /cron/run-immediately', async () => {
-    const res = await request(app).post('/api/cron/run-immediately');
+  it('POST /cron/trigger', async () => {
+    const res = await request(app).post('/api/cron/trigger');
 
     expectSuccessfulResponse({ res, statusCode: 200 });
     expect(res.body.message).to.equal(

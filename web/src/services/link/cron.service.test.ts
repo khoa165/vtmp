@@ -9,11 +9,11 @@ describe('CronService', () => {
   let stubRunFunction: sinon.SinonStub;
 
   beforeEach(() => {
-    stubRunFunction = sandbox.stub(CronService, 'runImmediately').resolves();
+    stubRunFunction = sandbox.stub(CronService, 'trigger').resolves();
   });
 
   it('should run immediately when called', async () => {
-    await CronService.runImmediately();
+    await CronService.trigger();
     expect(stubRunFunction.calledOnce).to.equal(true);
   });
 });
