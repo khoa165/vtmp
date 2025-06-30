@@ -36,6 +36,7 @@ test.describe('Application Status Card', () => {
     expect(updatedCount).toBeGreaterThanOrEqual(count);
   });
 });
+
 test.describe('Application Table', () => {
   test('should display all key application columns', async ({ page }) => {
     const expectedHeaders = [
@@ -55,6 +56,7 @@ test.describe('Application Table', () => {
       expect(text.trim()).toBe(name);
     }
   });
+
   test('should filter applications by company name', async ({ page }) => {
     const input = page.getByPlaceholder('Filter companies...');
     await input.fill('Go');
@@ -69,6 +71,7 @@ test.describe('Application Table', () => {
       await expect(companyCell).toContainText(/Goldman/i);
     }
   });
+
   test('should sort applications by date applied', async ({ page }) => {
     const dateHeader = page.getByRole('columnheader', { name: 'Date Applied' });
     const sortButton = dateHeader.locator('button');
@@ -90,6 +93,7 @@ test.describe('Application Table', () => {
       expect(validDates[i] >= validDates[i - 1]).toBeTruthy();
     }
   });
+
   test('should update status via dropdown in status column', async ({
     page,
   }) => {
@@ -110,6 +114,7 @@ test.describe('Application Table', () => {
       /offered/i
     );
   });
+
   test('should toggle column visibility via configuration dropdown', async ({
     page,
   }) => {

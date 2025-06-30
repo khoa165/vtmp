@@ -6,23 +6,24 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe('Job Posting Card', () => {
-  test('should appear correctly', async ({ page }) => {
+  test('should display job posting cards', async ({ page }) => {
     // Check cards are visible or not
-    const card_1 = page.getByTestId(`status-card-jobposting-1`);
-    await card_1.waitFor({ state: 'visible' });
-    await expect(card_1).toBeVisible();
+    const firstCard = page.getByTestId(`status-card-jobposting-1`);
+    await firstCard.waitFor({ state: 'visible' });
+    await expect(firstCard).toBeVisible();
 
-    const card_2 = page.getByTestId(`status-card-jobposting-2`);
-    await card_2.waitFor({ state: 'visible' });
-    await expect(card_2).toBeVisible();
+    const secondCard = page.getByTestId(`status-card-jobposting-2`);
+    await secondCard.waitFor({ state: 'visible' });
+    await expect(secondCard).toBeVisible();
     // Click the button or link labeled "Share a Job Link"
-    const button = card_2.locator('span', { hasText: 'Share a Job Link' });
+    const button = secondCard.locator('span', { hasText: 'Share a Job Link' });
     await expect(button).toBeVisible();
     await button.click();
     await expect(page).toHaveURL(/\/link-sharing$/);
   });
 });
-test.describe('Jobposting Table', () => {
+
+test.describe('Job posting Table', () => {
   test('should display all key job posting columns', async ({ page }) => {
     const headersLocator = page.locator(
       'th[role=columnheader][data-testid^="job-header-"]'
@@ -41,6 +42,7 @@ test.describe('Jobposting Table', () => {
 
     expect(headersCount).toEqual(7);
   });
+
   test('should filter jobs by company name', async ({ page }) => {
     const input = page.getByPlaceholder('Filter companies...');
     await input.fill('Goog');
@@ -55,6 +57,7 @@ test.describe('Jobposting Table', () => {
       await expect(companyCell).toContainText(/Google/i);
     }
   });
+
   test('should sort job posting by date posted', async ({ page }) => {
     const dateHeader = page.getByRole('columnheader', { name: 'Date Posted' });
     const sortButton = dateHeader.locator('button');
@@ -76,6 +79,7 @@ test.describe('Jobposting Table', () => {
       expect(validDates[i] >= validDates[i - 1]).toBeTruthy();
     }
   });
+
   test('should toggle column visibility via configuration dropdown', async ({
     page,
   }) => {
