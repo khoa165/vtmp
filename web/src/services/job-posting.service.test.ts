@@ -20,7 +20,23 @@ describe('JobPostingService', () => {
     companyName: 'Example Company',
     submittedBy: getNewObjectId(),
   };
+  describe('getJobPostingById', () => {
+    it('should throw an error when no job posting is found', async () => {
+      await expect(
+        JobPostingService.getJobPostingById(getNewMongoId())
+      ).eventually.rejectedWith(ResourceNotFoundError);
+    });
 
+    it('should not throw an error when a job posting is found', async () => {
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
+      await expect(JobPostingService.getJobPostingById(newJobPosting.id))
+        .eventually.fulfilled;
+    });
+  });
   describe('updateJobPostingById', () => {
     let newJobPosting: IJobPosting | undefined;
     const newUpdate = {

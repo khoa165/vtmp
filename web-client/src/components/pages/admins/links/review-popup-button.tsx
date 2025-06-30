@@ -1,5 +1,9 @@
-import { useState } from 'react';
 import { format } from 'date-fns';
+import { useState } from 'react';
+import { toast } from 'sonner';
+
+import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
+
 import { Button } from '@/components/base/button';
 import {
   Dialog,
@@ -9,11 +13,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/base/dialog';
+import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
 import { Textarea } from '@/components/base/textarea';
 import { ReviewPopupInput } from '@/components/pages/admins/links/review-popup-input';
-import { JobPostingRegion } from '@vtmp/common/constants';
 import { JobPostingData } from '@/components/pages/admins/links/validation';
+
+import { ReviewPopupSelect } from './review-popup-select';
 
 interface ReviewPopupButtonProps {
   currentLink: {
@@ -28,7 +34,6 @@ interface ReviewPopupButtonProps {
   }) => void;
   rejectLinkFn: ({ linkId }: { linkId: string }) => void;
 }
-
 export const ReviewPopupButton = ({
   currentLink,
   approveLinkFn,
@@ -40,14 +45,18 @@ export const ReviewPopupButton = ({
     companyName,
     jobTitle,
     location,
+    jobFunction,
+    jobType,
     datePosted,
     jobDescription,
   } = currentLink;
+
   const [reviewForm, setReviewForm] = useState<JobPostingData>({
-    url: url ?? '',
     companyName: companyName ?? '',
     jobTitle: jobTitle ?? '',
-    location: location ?? JobPostingRegion.US,
+    location: location ?? LinkRegion.UNKNOWN,
+    jobFunction: jobFunction ?? JobFunction.UNKNOWN,
+    jobType: jobType ?? JobType.UNKNOWN,
     datePosted: datePosted ? format(new Date(datePosted), 'MM/dd/yyyy') : '',
     jobDescription: jobDescription ?? '',
     adminNote: '',
@@ -60,6 +69,10 @@ export const ReviewPopupButton = ({
   };
 
   const handleReject = () => {
+    if (reviewForm.adminNote?.trim() === '') {
+      toast.error('Please give the reason for rejection.');
+      return;
+    }
     rejectLinkFn({ linkId });
   };
 
@@ -77,15 +90,12 @@ export const ReviewPopupButton = ({
           </DialogTitle>
         </DialogHeader>
 
-        <ReviewPopupInput
-          label="URL"
-          placeHolder="URL"
-          fieldInForm="url"
-          reviewForm={reviewForm}
-          setReviewForm={setReviewForm}
-          id="url"
-        />
-
+        <div className="flex flex-col items-start gap-2 w-full">
+          <Label htmlFor="link" className="sr-only">
+            Url
+          </Label>
+          <Input id="link" defaultValue={url} readOnly />
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <ReviewPopupInput
             label="Job Title"
@@ -106,13 +116,13 @@ export const ReviewPopupButton = ({
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <ReviewPopupInput
-            label="Country"
-            placeHolder="US/CANADA"
+          <ReviewPopupSelect
+            label="Location"
             fieldInForm="location"
             reviewForm={reviewForm}
             setReviewForm={setReviewForm}
-            id="country"
+            id="location"
+            fieldEnum={LinkRegion}
           />
           <ReviewPopupInput
             label="Date Posted"
@@ -121,6 +131,25 @@ export const ReviewPopupButton = ({
             reviewForm={reviewForm}
             setReviewForm={setReviewForm}
             id="date-posted"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <ReviewPopupSelect
+            label="Job Function"
+            fieldInForm="jobFunction"
+            reviewForm={reviewForm}
+            setReviewForm={setReviewForm}
+            id="job-function"
+            fieldEnum={JobFunction}
+          />
+          <ReviewPopupSelect
+            label="Job Type"
+            fieldInForm="jobType"
+            reviewForm={reviewForm}
+            setReviewForm={setReviewForm}
+            id="job-type"
+            fieldEnum={JobType}
           />
         </div>
 
@@ -154,18 +183,18 @@ export const ReviewPopupButton = ({
           />
         </div>
 
-        <DialogFooter className="flex-row justify-center items-center gap-4 mt-4">
+        <DialogFooter className="flex justify-center gap-4 w-full">
           <Button
             variant="outline"
             onClick={handleApprove}
-            className="cursor-pointer"
+            className="cursor-pointer text-vtmp-mint"
           >
             Approve
           </Button>
           <Button
             variant="outline"
             onClick={handleReject}
-            className="cursor-pointer"
+            className="cursor-pointer text-vtmp-orange"
           >
             Reject
           </Button>
