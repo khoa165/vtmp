@@ -32,6 +32,7 @@ export default tseslint.config(
             './packages/common/tsconfig.json',
             './custom-eslint/tsconfig.json',
             './discord-service/tsconfig.json',
+            './link-processing-service/tsconfig.json',
           ],
           noWarnOnMultipleProjects: true,
         },
@@ -114,6 +115,7 @@ export default tseslint.config(
       'web/app.test.ts',
       'web-client/**/*',
       'discord-service/**/*',
+      'link-processing-service/**/*',
     ],
     rules: {
       'customEslintRules/wrapped-handlers-in-router': 'off',

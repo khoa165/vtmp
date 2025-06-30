@@ -29,7 +29,6 @@
     "docker-run-backend": "docker run --env-file ./web/.env  --rm -it -p 8000:8000 vtmp/backend:local",
     "docker-build-frontend": "docker build -f web-client/Dockerfile -t vtmp/frontend:local .",
     "docker-run-frontend": "docker run --env-file ./web-client/.env -it -p 3000:3000 vtmp/frontend:local",
-    "docker-seed": "docker compose exec web yarn seed",
     "clean": "rm -rf node_modules packages/*/node_modules web/node_modules web-client/node_modules"
   },
   "workspaces": [
@@ -37,7 +36,8 @@
     "packages/server-common",
     "web-client",
     "web",
-    "discord-service"
+    "discord-service",
+    "link-processing-service"
   ],
   "devDependencies": {
     "@eslint/js": "^9.22.0",
