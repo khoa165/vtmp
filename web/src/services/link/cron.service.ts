@@ -1,10 +1,10 @@
+import { Environment } from '@vtmp/server-common/constants';
 import axios from 'axios';
 import cron from 'node-cron';
 
 import { LinkStatus } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
-import { Environment } from '@/constants/enums';
 import { LinkRepository } from '@/repositories/link.repository';
 
 const ENABLE_LINK_PROCESSING = false;

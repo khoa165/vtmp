@@ -1,3 +1,4 @@
+import { Environment } from '@vtmp/server-common/constants';
 import { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import { slowDown } from 'express-slow-down';
@@ -6,7 +7,7 @@ import { EnvConfig } from '@/config/env';
 import { handleError } from '@/utils/errors';
 
 export const rateLimitMiddleware = () => {
-  if (EnvConfig.get().NODE_ENV === 'TEST') {
+  if (EnvConfig.get().NODE_ENV === Environment.TEST) {
     return (_req: Request, _res: Response, next: NextFunction) => {
       next();
     };
