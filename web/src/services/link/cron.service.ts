@@ -1,10 +1,10 @@
+import { Environment } from '@vtmp/server-common/constants';
 import axios from 'axios';
 import cron from 'node-cron';
 
 import { LinkStatus } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
-import { Environment } from '@/constants/enums';
 import { LinkRepository } from '@/repositories/link.repository';
 
 const ENABLE_LINK_PROCESSING = false;
@@ -75,28 +75,35 @@ export const sendLinksToLambda = async (
   }
 };
 
+const linkProcessingJob = async () => {
+  console.log('Cron wakes up...');
+  try {
+    const links = await LinkRepository.getLinks(getRetryFilter());
+    console.log('PENDING links retrieved from database: ', links);
+
+    // Return early if no links matches the getRetryFilter() filter
+    if (links.length === 0) return;
+
+    const linksData = links.map(({ _id, originalUrl, attemptsCount }) => ({
+      _id: _id.toString(),
+      originalUrl,
+      attemptsCount,
+    }));
+    console.log('linksData payload before sending: ', linksData);
+
+    const results = await sendLinksToLambda(linksData);
+    console.log('Response from Lambda: ', results);
+  } catch (error: unknown) {
+    console.error('Cron error: ', error);
+  }
+};
 // Disable cron-worker so that web is not able to trigger lambda
 if (ENABLE_LINK_PROCESSING) {
-  cron.schedule('0 0 * * * *', async () => {
-    console.log('Cron wakes up...');
-    try {
-      const links = await LinkRepository.getLinks(getRetryFilter());
-      console.log('PENDING links retrieved from database: ', links);
-
-      // Return early if no links matches the getRetryFilter() filter
-      if (links.length === 0) return;
-
-      const linksData = links.map(({ _id, originalUrl, attemptsCount }) => ({
-        _id: _id.toString(),
-        originalUrl,
-        attemptsCount,
-      }));
-      console.log('linksData payload before sending: ', linksData);
-
-      const results = await sendLinksToLambda(linksData);
-      console.log('Response from Lambda: ', results);
-    } catch (error: unknown) {
-      console.error('Cron error: ', error);
-    }
-  });
+  cron.schedule('0 0 * * * *', linkProcessingJob);
 }
+
+export const CronService = {
+  trigger: async () => {
+    await linkProcessingJob();
+  },
+};
