@@ -1,0 +1,16 @@
+# Define a Github Actions reusable workflow
+name: Build discord-service
+
+on:
+  workflow_call:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/common-setups
+      - name: Build discord-service
+        run: yarn workspace @vtmp/discord-service build
