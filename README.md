@@ -84,14 +84,6 @@ docker compose --profile local_mongo up
 - Note that for this command to work, ensure web/.env have:
   `MONGO_URI=mongodb://mongo:27017/vtmp-db?replicaSet=rs0`
 
-##### Seeding the local Mongo Database container:
-
-- Once the containers (server, client, and mongo) are up and running, you can seed the database. From root:
-
-```
-yarn docker-seed
-```
-
 ##### Inspecting local Mongo container:
 
 - To connect to the local mongo container and inspect data, first download MongoDB Compass: https://www.mongodb.com/try/download/compass
@@ -100,6 +92,20 @@ yarn docker-seed
 
 ```
 docker compose down
+```
+
+### Seeding Mongo Database:
+
+To seed the database:
+
+- If using the cloud MongoDB (Mongo Atlas), ensure web/.env have a valid MONGO_URI string (a valid cloud Mongo Atlas URI).
+- If running the local Mongo container, ensure web/.env have:
+  `MONGO_URI=mongodb://mongo:27017/vtmp-db?replicaSet=rs0`
+
+Then, from root, run:
+
+```
+yarn seed
 ```
 
 ## Contributing
