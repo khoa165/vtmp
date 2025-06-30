@@ -1,15 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { request } from '@/utils/api';
-import { Method, QueryKey } from '@/utils/constants';
+import axios from 'axios';
 import { toast } from 'sonner';
+
+import { LinkStatus, API_ENDPOINTS } from '@vtmp/common/constants';
+
 import {
   LinksResponseSchema,
   JobPostingResponseSchema,
   JobPostingData,
   LinksCountByStatusSchema,
+  SingleLinkResponseSchema,
 } from '@/components/pages/admins/links/validation';
-import axios from 'axios';
-import { LinkStatus, API_ENDPOINTS } from '@vtmp/common/constants';
+import { request } from '@/utils/api';
+import { Method, QueryKey } from '@/utils/constants';
 
 const handleLinkMutationError = (error: unknown) => {
   const messages =
@@ -90,7 +93,7 @@ export const useRejectLink = () => {
       request({
         method: Method.POST,
         url: API_ENDPOINTS.REJECT_LINK(linkId),
-        schema: JobPostingResponseSchema,
+        schema: SingleLinkResponseSchema,
         options: { requireAuth: true },
       }),
     onSuccess: (res) => {

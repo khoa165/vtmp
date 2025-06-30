@@ -84,6 +84,8 @@ jobs:
         uses: ./.github/actions/test-web
         with:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  # run-lint:
+  #   uses: ./.github/workflows/lint.yml
 
   chromatic:
     needs: changes

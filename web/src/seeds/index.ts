@@ -1,15 +1,17 @@
 import dotenv from 'dotenv';
-import { connectDB } from '@/config/database';
-import { exit } from 'process';
-import { loadUsers } from '@/seeds/users';
-import { loadLinks } from '@/seeds/links';
-import { loadJobPostings } from '@/seeds/job-postings';
-import { loadApplications } from '@/seeds/applications';
-
 import mongoose from 'mongoose';
-import { loadInterviews } from '@/seeds/interviews';
+
+import { exit } from 'process';
+
+import { connectDB } from '@/config/database';
 import { EnvConfig } from '@/config/env';
 import { Environment } from '@/constants/enums';
+import { loadApplications } from '@/seeds/applications';
+import { loadInterviews } from '@/seeds/interviews';
+import { loadInvitations } from '@/seeds/invitations';
+import { loadJobPostings } from '@/seeds/job-postings';
+import { loadLinks } from '@/seeds/links';
+import { loadUsers } from '@/seeds/users';
 
 dotenv.config();
 connectDB();
@@ -19,6 +21,7 @@ interface SeedCountConfiguration {
   linksCount: number;
   minApplicationsCountPerUser: number;
   maxApplicationsCountPerUser: number;
+  invitationsCount: number;
 }
 
 const defaultConfiguration: SeedCountConfiguration = {
@@ -26,6 +29,7 @@ const defaultConfiguration: SeedCountConfiguration = {
   linksCount: 30,
   minApplicationsCountPerUser: 10,
   maxApplicationsCountPerUser: 30,
+  invitationsCount: 20,
 };
 
 const allConfigurations: Partial<Record<Environment, SeedCountConfiguration>> =
@@ -35,6 +39,7 @@ const allConfigurations: Partial<Record<Environment, SeedCountConfiguration>> =
       linksCount: 500,
       minApplicationsCountPerUser: 100,
       maxApplicationsCountPerUser: 300,
+      invitationsCount: 100,
     },
   };
 
@@ -47,13 +52,19 @@ const runSeeds = async () => {
     linksCount,
     minApplicationsCountPerUser,
     maxApplicationsCountPerUser,
+    invitationsCount,
   } = allConfigurations[EnvConfig.get().SEED_ENV] ?? defaultConfiguration;
 
   const users = await loadUsers(usersCount);
-  const links1 = await loadLinks(linksCount);
-  const links2 = await loadLinks(linksCount);
-  await loadJobPostings(links1);
-  const jobPostings = await loadJobPostings(links2);
+  const numLinksWithoutApplications = Math.floor(linksCount / 2);
+  const numLinksWithApplications = linksCount - numLinksWithoutApplications;
+
+  // const linksWithoutApplications = await loadLinks(numLinksWithoutApplications);
+  const linksWithApplications = await loadLinks(numLinksWithApplications);
+
+  // await loadJobPostings(linksWithoutApplications);
+  const jobPostings = await loadJobPostings(linksWithApplications);
+
   const applications = await loadApplications({
     users,
     jobPostings,
@@ -61,6 +72,7 @@ const runSeeds = async () => {
     maxApplicationsCountPerUser,
   });
   await loadInterviews(users, applications);
+  await loadInvitations(invitationsCount);
 };
 
 runSeeds()
