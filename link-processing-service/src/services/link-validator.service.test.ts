@@ -1,13 +1,13 @@
+import { safebrowsing_v4 } from '@googleapis/safebrowsing';
 import { expect } from 'chai';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import retry from 'retry';
-import { safebrowsing_v4 } from '@googleapis/safebrowsing';
 
 import { LinkValidatorService } from '@/services/link-validator.service';
-import { LinkValidationError } from '@/utils/errors';
-import { SubmittedLink } from '@/types/link-processing.types';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { SubmittedLink } from '@/types/link-processing.types';
+import { LinkValidationError } from '@/utils/errors';
 
 chai.use(chaiAsPromised);
 
