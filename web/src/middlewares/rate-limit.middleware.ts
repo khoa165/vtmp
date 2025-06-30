@@ -1,10 +1,12 @@
+import { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import { slowDown } from 'express-slow-down';
-import { NextFunction, Request, Response } from 'express';
+
+import { EnvConfig } from '@/config/env';
 import { handleError } from '@/utils/errors';
 
 export const rateLimitMiddleware = () => {
-  if (process.env.NODE_ENV === 'test') {
+  if (EnvConfig.get().NODE_ENV === 'TEST') {
     return (_req: Request, _res: Response, next: NextFunction) => {
       next();
     };
