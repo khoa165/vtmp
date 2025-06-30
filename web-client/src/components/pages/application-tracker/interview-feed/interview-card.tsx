@@ -49,14 +49,12 @@ export const InterviewCard = ({
           <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
             Interview Types
           </div>
-          <div className="h-16">
-            <div className="flex flex-wrap gap-x-2">
-              {interview.types.map((type) => (
-                <span className="mt-1 flex items-center rounded-full border border-foreground/50 text-foreground px-3 py-1 text-sm font-medium">
-                  {type}
-                </span>
-              ))}
-            </div>
+          <div className="flex flex-wrap gap-x-2">
+            {interview.types.map((type) => (
+              <span className="mt-1 flex items-center rounded-full border border-foreground/50 text-foreground px-3 py-1 text-sm font-medium">
+                {type}
+              </span>
+            ))}
           </div>
         </div>
         <div className="mt-3 flex flex-row gap-6">
