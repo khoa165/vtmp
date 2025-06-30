@@ -103,7 +103,7 @@ if (ENABLE_LINK_PROCESSING) {
 }
 
 export const CronService = {
-  runImmediately: async () => {
+  trigger: async () => {
     await linkProcessingJob();
   },
 };
