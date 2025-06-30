@@ -15,8 +15,8 @@ RUN yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common buil
 RUN yarn workspace @vtmp/web build
 
 # Prune devDependencies from the final node_modules if in production only
-ARG NODE_ENV=production
-RUN if [ "$NODE_ENV" = "production" ]; then \
+ARG BUILD_ENV=production
+RUN if [ "$BUILD_ENV" = "production" ]; then \
       yarn install --production --immutable --ignore-scripts; \
     fi
 
