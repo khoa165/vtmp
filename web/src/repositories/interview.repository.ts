@@ -66,44 +66,6 @@ export const InterviewRepository = {
     );
   },
 
-  getSharedInterviews: async ({
-    filters = {},
-  }: {
-    filters: {
-      companyName?: string;
-      types?: InterviewType[];
-      status?: InterviewStatus;
-    };
-    session?: ClientSession;
-  }): Promise<IInterview[]> => {
-    return InterviewModel.aggregate([
-      { $match: { deletedAt: null, isDisclosed: true, ...filters } },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'userId',
-          foreignField: '_id',
-          as: 'user',
-        },
-      },
-      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          user: {
-            $cond: {
-              if: '$isDisclosed',
-              then: {
-                firstName: '$user.firstName',
-                lastName: '$user.lastName',
-              },
-              else: undefined,
-            },
-          },
-        },
-      },
-    ]);
-  },
-
   updateInterviewById: async ({
     interviewId,
     userId,
