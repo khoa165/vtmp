@@ -130,7 +130,7 @@ describe('InterviewService', () => {
     mockInterview_A2 = {
       applicationId: metaApplication_A.id,
       userId: user_A.id,
-      types: [InterviewType.CODE_REVIEW],
+      types: [InterviewType.CODE_REVIEW, InterviewType.HIRING_MANAGER],
       interviewOnDate: new Date('2025-06-07'),
     };
 
@@ -382,32 +382,7 @@ describe('InterviewService', () => {
       ]);
     });
 
-    it('should return only interviews with the given status when no applicationId is provided', async () => {
-      await Promise.all(
-        [mockInterview_A0, mockInterview_A1].map((mockInterview) =>
-          InterviewRepository.createInterview(mockInterview)
-        )
-      );
-
-      const interviews = await InterviewService.getInterviews({
-        filters: {
-          userId: user_A.id,
-          status: InterviewStatus.FAILED,
-        },
-      });
-
-      assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(1);
-      assert(interviews[0]);
-      expect(interviews[0]).to.deep.include({
-        ...mockInterview_A1,
-        applicationId: toMongoId(mockInterview_A1.applicationId),
-        userId: toMongoId(user_A.id),
-        status: InterviewStatus.FAILED,
-      });
-    });
-
-    it('should return an empty array when filtering by a status that no interview has', async () => {
+    it('should return an empty array when there is no interview that match the filters', async () => {
       await Promise.all(
         [mockInterview_A0, mockInterview_A1].map((mockInterview) =>
           InterviewRepository.createInterview(mockInterview)
@@ -425,16 +400,25 @@ describe('InterviewService', () => {
       expect(interviews).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('should return an empty array when filtering by a companyName that no interview has', async () => {
-      await Promise.all(
-        [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
-          InterviewRepository.createInterview(mockInterview)
+    it('should not include soft-deleted interviews that match the filters', async () => {
+      const [interview_A0, interview_A2, interview_B1] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
         )
       );
 
+      assert(interview_A0 && interview_A2 && interview_B1);
+
+      await InterviewRepository.deleteInterviewById({
+        interviewId: interview_A2.id,
+        userId: user_A.id,
+      });
+
       const interviews = await InterviewService.getInterviews({
         filters: {
-          companyName: 'Google',
+          companyName: interview_A2.companyName,
+          status: interview_A2.status,
+          types: interview_A2.types,
         },
       });
 
@@ -442,84 +426,86 @@ describe('InterviewService', () => {
       expect(interviews).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('should return interviews of all users belongs to the provided companyName', async () => {
+    it('should return interviews of all users that match the filters', async () => {
       const [interview_A0, interview_A2, interview_B1] = await Promise.all(
         [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
           (mockInterview) => InterviewRepository.createInterview(mockInterview)
         )
       );
 
-      const interviews = await InterviewService.getInterviews({
-        filters: {
-          companyName: 'Meta',
-        },
-      });
-
-      assert(interviews);
-      assert(interview_A0);
-      assert(interview_A2);
-      assert(interview_B1);
-      expect(interviews).to.be.an('array').that.have.lengthOf(3);
-      expect(interviews.map((interview) => interview.id)).to.have.members([
-        interview_A0.id,
-        interview_A2.id,
-        interview_B1.id,
-      ]);
-    });
-
-    it('should not include soft-deleted interviews when filter by companyName', async () => {
-      const [interview_A0, interview_A2, interview_B1] = await Promise.all(
-        [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
-          (mockInterview) => InterviewRepository.createInterview(mockInterview)
-        )
-      );
-
-      assert(interview_A0);
-
-      await InterviewRepository.deleteInterviewById({
-        interviewId: interview_A0.id,
-        userId: user_A.id,
-      });
+      assert(interview_A0 && interview_A2 && interview_B1);
 
       const interviews = await InterviewService.getInterviews({
         filters: {
           companyName: 'Meta',
-        },
-      });
-
-      assert(interview_A2);
-      assert(interview_B1);
-      assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(2);
-      expect(interviews.map((interview) => interview.id)).to.have.members([
-        interview_A2.id,
-        interview_B1.id,
-      ]);
-    });
-
-    it('should return only the interviews belonging to the applicationId that have the provided status', async () => {
-      await Promise.all(
-        [mockInterview_A0, mockInterview_A1, mockInterview_B0].map(
-          (mockInterview) => InterviewRepository.createInterview(mockInterview)
-        )
-      );
-
-      const interviews = await InterviewService.getInterviews({
-        filters: {
-          userId: user_A.id,
-          applicationId: mockInterview_A0.applicationId,
-          status: InterviewStatus.PASSED,
+          types: [InterviewType.CODE_REVIEW, InterviewType.HIRING_MANAGER],
+          status: InterviewStatus.PENDING,
         },
       });
 
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(1);
-      assert(interviews[0]);
       expect(interviews[0]).to.deep.include({
-        ...mockInterview_A0,
-        applicationId: toMongoId(mockInterview_A0.applicationId),
-        userId: toMongoId(mockInterview_A0.userId),
-        status: InterviewStatus.PASSED,
+        ...mockInterview_A2,
+        applicationId: toMongoId(metaApplication_A.id),
+        userId: toMongoId(user_A.id),
+      });
+    });
+
+    it('should return shared interviews that match the filters', async () => {
+      const [interview_A0, interview_A2, interview_B1] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A0 && interview_A2 && interview_B1);
+
+      const sharedInterview = await InterviewRepository.updateInterviewById({
+        interviewId: interview_A2.id,
+        userId: user_A.id,
+        newUpdate: {
+          isDisclosed: true,
+          sharedAt: new Date(),
+        },
+      });
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: user_A.id,
+        newUpdate: {
+          isDisclosed: true,
+          sharedAt: new Date(),
+        },
+      });
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_B1.id,
+        userId: user_B.id,
+        newUpdate: {
+          isDisclosed: true,
+          sharedAt: new Date(),
+        },
+      });
+
+      assert(sharedInterview);
+      expect(sharedInterview.id).to.equal(interview_A2.id);
+
+      const interviews = await InterviewService.getInterviews({
+        filters: {
+          companyName: 'Meta',
+          types: [InterviewType.CODE_REVIEW, InterviewType.HIRING_MANAGER],
+          status: InterviewStatus.PENDING,
+        },
+        isShared: true,
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(1);
+      expect(interviews[0]).to.deep.include({
+        ...mockInterview_A2,
+        applicationId: toMongoId(metaApplication_A.id),
+        userId: toMongoId(user_A.id),
+        isDisclosed: true,
+        sharedAt: sharedInterview.sharedAt,
       });
     });
   });
@@ -536,7 +522,7 @@ describe('InterviewService', () => {
         InterviewService.updateInterviewById({
           interviewId: getNewMongoId(),
           userId: user_A.id,
-          newUpdate: newUpdate,
+          newUpdate,
         })
       ).eventually.to.be.rejectedWith(
         ResourceNotFoundError,
@@ -552,7 +538,7 @@ describe('InterviewService', () => {
         InterviewService.updateInterviewById({
           interviewId: interview_A0.id,
           userId: user_B.id,
-          newUpdate: newUpdate,
+          newUpdate,
         })
       ).eventually.to.be.rejectedWith(
         ResourceNotFoundError,
@@ -632,6 +618,7 @@ describe('InterviewService', () => {
         interviewId: interview_A0.id,
         userId: user_A.id,
         isShare: false,
+        newUpdate: {},
       });
 
       assert(unsharedInterview);

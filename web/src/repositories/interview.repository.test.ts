@@ -132,7 +132,7 @@ describe('Interview Repository', () => {
     mockInterview_A2 = {
       applicationId: metaApplication_A.id,
       userId: user_A.id,
-      types: [InterviewType.CODE_REVIEW],
+      types: [InterviewType.CODE_REVIEW, InterviewType.HIRING_MANAGER],
       interviewOnDate: new Date('2025-06-07'),
     };
 
@@ -370,52 +370,18 @@ describe('Interview Repository', () => {
       ]);
     });
 
-    it('should return only interviews with the given status when no applicationId is provided', async () => {
-      const [interview_A2] = await Promise.all(
-        [mockInterview_A2, mockInterview_A0].map((mockInterview) =>
-          InterviewRepository.createInterview(mockInterview)
-        )
-      );
-
-      const interviews = await InterviewRepository.getInterviews({
-        filters: {
-          userId: user_A.id,
-          status: InterviewStatus.PENDING,
-        },
-      });
-
-      assert(interview_A2);
-      assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(1);
-      assert(interviews[0]);
-      expect(interviews[0].id).to.equal(interview_A2.id);
-      expect(interviews[0].status).to.equal(InterviewStatus.PENDING);
-    });
-
-    it('should return an empty array when filtering by a status that no interview has', async () => {
-      await InterviewRepository.createInterview(mockInterview_A0);
-
-      const interviews = await InterviewRepository.getInterviews({
-        filters: {
-          userId: user_A.id,
-          status: InterviewStatus.PENDING,
-        },
-      });
-
-      assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(0);
-    });
-
-    it('should return an empty array when filtering by a companyName that no interview has', async () => {
+    it('should return an empty array when there is no interview that match the filters', async () => {
       await Promise.all(
-        [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
-          InterviewRepository.createInterview(mockInterview)
+        [mockInterview_A0, mockInterview_A1, mockInterview_B0].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
         )
       );
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
           companyName: 'Google',
+          status: InterviewStatus.PASSED,
+          types: [InterviewType.CODE_REVIEW],
         },
       });
 
@@ -423,7 +389,7 @@ describe('Interview Repository', () => {
       expect(interviews).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('should return interviews of all users with the provided companyName', async () => {
+    it('should return interviews of all users that match the filters', async () => {
       const [interview_A0, interview_A2, interview_B1] = await Promise.all(
         [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
           (mockInterview) => InterviewRepository.createInterview(mockInterview)
@@ -433,6 +399,8 @@ describe('Interview Repository', () => {
       const interviews = await InterviewRepository.getInterviews({
         filters: {
           companyName: 'Meta',
+          status: InterviewStatus.PENDING,
+          types: [InterviewType.CODE_REVIEW, InterviewType.HIRING_MANAGER],
         },
       });
 
@@ -440,15 +408,16 @@ describe('Interview Repository', () => {
       assert(interview_A2);
       assert(interview_B1);
       assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(3);
-      expect(interviews.map((interview) => interview.id)).to.have.members([
-        interview_A0.id,
-        interview_A2.id,
-        interview_B1.id,
-      ]);
+      expect(interviews).to.be.an('array').that.have.lengthOf(1);
+      expect(interviews[0]).to.deep.include({
+        ...mockInterview_A2,
+        applicationId: toMongoId(metaApplication_A.id),
+        userId: toMongoId(user_A.id),
+        status: InterviewStatus.PENDING,
+      });
     });
 
-    it('should not include soft-deleted interviews when filter by companyName', async () => {
+    it('should not include soft-deleted interviews that match the filters', async () => {
       const [interview_A0, interview_A2, interview_B1] = await Promise.all(
         [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
           (mockInterview) => InterviewRepository.createInterview(mockInterview)
@@ -502,7 +471,59 @@ describe('Interview Repository', () => {
       expect(interviews[0].status).to.equal(InterviewStatus.PENDING);
     });
 
-    it('should return interviews that have been shared when isShared is true', async () => {
+    it('should return an empty array when there is no shared interview that match the filters', async () => {
+      await Promise.all(
+        [mockInterview_A0, mockInterview_A1, mockInterview_B0].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      const interviews = await InterviewRepository.getInterviews({
+        filters: {
+          companyName: 'Google',
+          status: InterviewStatus.PASSED,
+          types: [InterviewType.CODE_REVIEW],
+        },
+        isShared: true,
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should return not return shared interview that has been soft-deleted', async () => {
+      const [interview_A0] = await Promise.all(
+        [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A0);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: user_A.id,
+        newUpdate: {
+          isDisclosed: true,
+          sharedAt: new Date(),
+        },
+      });
+
+      await InterviewRepository.deleteInterviewById({
+        interviewId: interview_A0.id,
+        userId: user_A.id,
+      });
+
+      const interviews = await InterviewRepository.getInterviews({
+        filters: {},
+        isShared: true,
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should return shared interviews when isShared is true', async () => {
       const [interview_A0] = await Promise.all(
         [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
           InterviewRepository.createInterview(mockInterview)
@@ -607,17 +628,17 @@ describe('Interview Repository', () => {
       });
     });
 
-    it('should return shared interviews that match the provided companyName, interview status, and interview types', async () => {
+    it('should return shared interviews that match the filters', async () => {
       const [interview_A0, interview_A2, interview_B1] = await Promise.all(
-        [mockInterview_A0, mockInterview_A1, mockInterview_B1].map(
+        [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
           (mockInterview) => InterviewRepository.createInterview(mockInterview)
         )
       );
 
       assert(interview_A0 && interview_A2 && interview_B1);
 
-      const sharedInterviews = await InterviewRepository.updateInterviewById({
-        interviewId: interview_A0.id,
+      const sharedInterview = await InterviewRepository.updateInterviewById({
+        interviewId: interview_A2.id,
         userId: user_A.id,
         newUpdate: {
           isDisclosed: true,
@@ -625,7 +646,7 @@ describe('Interview Repository', () => {
         },
       });
       await InterviewRepository.updateInterviewById({
-        interviewId: interview_A2.id,
+        interviewId: interview_A0.id,
         userId: user_A.id,
         newUpdate: {
           isDisclosed: true,
@@ -641,14 +662,14 @@ describe('Interview Repository', () => {
         },
       });
 
-      assert(sharedInterviews);
-      expect(sharedInterviews.id).to.equal(interview_A0.id);
+      assert(sharedInterview);
+      expect(sharedInterview.id).to.equal(interview_A2.id);
 
       const interviews = await InterviewRepository.getInterviews({
         filters: {
           companyName: 'Meta',
-          types: [InterviewType.CODE_REVIEW],
-          status: InterviewStatus.PASSED,
+          types: [InterviewType.CODE_REVIEW, InterviewType.HIRING_MANAGER],
+          status: InterviewStatus.PENDING,
         },
         isShared: true,
       });
@@ -656,11 +677,11 @@ describe('Interview Repository', () => {
       assert(interviews);
       expect(interviews).to.be.an('array').that.have.lengthOf(1);
       expect(interviews[0]).to.deep.include({
-        ...mockInterview_A0,
+        ...mockInterview_A2,
         applicationId: toMongoId(metaApplication_A.id),
         userId: toMongoId(user_A.id),
         isDisclosed: true,
-        sharedAt: sharedInterviews.sharedAt,
+        sharedAt: sharedInterview.sharedAt,
       });
     });
   });

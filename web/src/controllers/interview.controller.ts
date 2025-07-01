@@ -261,6 +261,7 @@ export const InterviewController = {
       interviewId,
       userId,
       isShare: false,
+      newUpdate: {},
     });
 
     res.status(200).json({

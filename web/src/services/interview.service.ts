@@ -65,7 +65,7 @@ export const InterviewService = {
   }: {
     interviewId: string;
     userId: string;
-    newUpdate?: {
+    newUpdate: {
       types?: InterviewType[];
       status?: InterviewStatus;
       interviewOnDate?: Date;
@@ -86,14 +86,14 @@ export const InterviewService = {
       });
     }
 
-    if (typeof isShare !== 'undefined') {
+    if (isShare !== undefined) {
       if (isShare) {
         if (!interview.sharedAt) {
           return await InterviewRepository.updateInterviewById({
             interviewId,
             userId,
             newUpdate: {
-              isDisclosed: newUpdate?.isDisclosed,
+              ...newUpdate,
               sharedAt: new Date(),
             },
           });
@@ -113,9 +113,7 @@ export const InterviewService = {
     return await InterviewRepository.updateInterviewById({
       interviewId,
       userId,
-      newUpdate: {
-        ...newUpdate,
-      },
+      newUpdate: newUpdate,
     });
   },
 

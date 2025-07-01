@@ -79,7 +79,7 @@ export const InterviewRepository = {
     }
 
     if (filters?.types) {
-      dynamicMatch.types = { $in: filters.types };
+      dynamicMatch.types = { $eq: filters.types };
     }
 
     if (filters?.status) {
@@ -110,7 +110,7 @@ export const InterviewRepository = {
           },
         },
         {
-          $unwind: { path: '$user', preserveNullAndEmptyArrays: true },
+          $unwind: { path: '$user' },
         },
         {
           $addFields: {
