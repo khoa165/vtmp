@@ -59,9 +59,8 @@ describe('CronController', () => {
     },
   ];
   const createFilteredLinks = async () => {
-    await Promise.all(
-      filteredLinks.map((link) => LinkRepository.createLink(link))
-    );
+    await LinkRepository.createLink(filteredLinks[0]);
+    await LinkRepository.createLink(filteredLinks[1]);
   };
   const createUnFilteredLinks = async () => {
     const unFilteredLinks = [
@@ -78,9 +77,8 @@ describe('CronController', () => {
         lastProcessedAt: new Date(),
       },
     ];
-    await Promise.all(
-      unFilteredLinks.map((link) => LinkRepository.createLink(link))
-    );
+    await LinkRepository.createLink(unFilteredLinks[0]);
+    await LinkRepository.createLink(unFilteredLinks[1]);
   };
   describe('POST /cron/trigger', () => {
     it('should throw error when _sendLinksToLambda fails', async () => {

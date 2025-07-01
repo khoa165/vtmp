@@ -53,9 +53,8 @@ describe('CronService', () => {
     },
   ];
   const createFilteredLinks = async () => {
-    await Promise.all(
-      filteredLinks.map((link) => LinkRepository.createLink({ ...link }))
-    );
+    await LinkRepository.createLink(filteredLinks[0]);
+    await LinkRepository.createLink(filteredLinks[1]);
   };
   const createUnFilteredLinks = async () => {
     const unFilteredLinks = [
@@ -72,9 +71,8 @@ describe('CronService', () => {
         lastProcessedAt: new Date(),
       },
     ];
-    await Promise.all(
-      unFilteredLinks.map((link) => LinkRepository.createLink(link))
-    );
+    await LinkRepository.createLink(unFilteredLinks[0]);
+    await LinkRepository.createLink(unFilteredLinks[1]);
   };
   describe('_getRetryFilter', () => {
     it('should return empty links', async () => {
@@ -107,8 +105,8 @@ describe('CronService', () => {
     it('should return empty successfulLinks and empty failedLinks successfully', async () => {
       await createUnFilteredLinks();
       const result = await CronService.trigger();
-      expect(result.successfulLinks).to.be.an('array').to.equal([]);
-      expect(result.failedLinks).to.be.an('array').to.equal([]);
+      expect(result.successfulLinks).to.be.an('array').to.deep.equal([]);
+      expect(result.failedLinks).to.be.an('array').to.deep.equal([]);
     });
 
     it('should return successfulLinks and failedLinks successfully', async () => {

@@ -11,9 +11,10 @@ jobs:
     permissions:
       pull-requests: read
     outputs:
-      common: ${{ steps.filter.outputs.common }}
-      web: ${{ steps.filter.outputs.web }}
-      web-client: ${{ steps.filter.outputs.web-client }}
+      common: ${{ steps.filter.outputs.common || steps.filter.outputs.ci  }}
+      web: ${{ steps.filter.outputs.web || steps.filter.outputs.ci }}
+      web-client: ${{ steps.filter.outputs.web-client || steps.filter.outputs.ci }}
+      discord-service: ${{ steps.filter.outputs.discord-service || steps.filter.outputs.ci }}
     steps:
       - uses: dorny/paths-filter@v3
         id: filter
@@ -27,12 +28,15 @@ jobs:
             web-client:
               - 'web-client/**'
               - 'packages/common/**'
+            discord-service:
+              - 'discord-service/**'
+              - 'packages/common/**'
             ci:
               - '.github/**'
 
   build-common:
     needs: changes
-    if: ${{ needs.changes.outputs.common == 'true' || needs.changes.outputs.ci == 'true' }}
+    if: ${{ needs.changes.outputs.common == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -42,42 +46,51 @@ jobs:
 
   build-web:
     needs: changes
-    if: ${{ needs.changes.outputs.web == 'true' || needs.changes.outputs.ci == 'true' }}
+    if: ${{ needs.changes.outputs.web == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Use common setups action
+      - name: Use build-web composite action
         uses: ./.github/actions/build-web
 
-  test-web:
+  build-discord-service:
     needs: changes
-    if: ${{ needs.changes.outputs.web == 'true' || needs.changes.outputs.ci == 'true' }}
+    if: ${{ needs.changes.outputs.discord-service == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Use common setups action
-        uses: ./.github/actions/test-web
-        with:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Use build-discord-service composite action
+        uses: ./.github/actions/build-discord-service
 
   build-web-client:
     needs: changes
-    if: ${{ needs.changes.outputs.web-client == 'true' || needs.changes.outputs.ci == 'true' }}
+    if: ${{ needs.changes.outputs.web-client == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Use common setups action
+      - name: Use build-web-client composite action
         uses: ./.github/actions/build-web-client
 
+  test-web:
+    needs: changes
+    if: ${{ needs.changes.outputs.web == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use test-web composite action
+        uses: ./.github/actions/test-web
+        with:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   # run-lint:
   #   uses: ./.github/workflows/lint.yml
 
   chromatic:
     needs: changes
-    if: ${{ needs.changes.outputs.web-client == 'true' || needs.changes.outputs.ci == 'true' }}
+    if: ${{ needs.changes.outputs.web-client == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
