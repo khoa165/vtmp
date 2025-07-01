@@ -36,7 +36,7 @@ export const LinkMetaDataSchema = z.object({
 
 export type LinkMetaDataType = z.infer<typeof LinkMetaDataSchema>;
 export const ExtractionLinkMetaDataSchema = z.object({
-  url: z.string(),
+  url: z.string().optional(),
   status: z.nativeEnum(LinkStatus, {
     message: 'Invalid link status',
   }),
