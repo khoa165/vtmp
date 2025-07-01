@@ -110,7 +110,7 @@ export const InterviewRepository = {
           },
         },
         {
-          $unwind: { path: '$user', preserveNullAndEmptyArrays: true },
+          $unwind: { path: '$user' },
         },
         {
           $addFields: {
