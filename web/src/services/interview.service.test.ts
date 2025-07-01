@@ -600,6 +600,7 @@ describe('InterviewService', () => {
         interviewId: interview_A0.id,
         userId: userId_A,
         isShare: true,
+        newUpdate: {},
       });
 
       assert(updatedInterview);
