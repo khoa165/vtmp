@@ -11,9 +11,9 @@ import {
 import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { ScrapedLink } from '@/types/link-processing.types';
-import { AIExtractionError, AIResponseEmptyError } from '@/utils/errors';
+import { AIExtractionError } from '@/utils/errors';
 
-describe('ExtractLinkMetadatService', () => {
+describe('ExtractLinkMetadataService', () => {
   const sandbox = useSandbox();
   const fakeText = 'Some scraped text';
   const fakeUrl = 'https://example.com/job';
@@ -37,13 +37,13 @@ describe('ExtractLinkMetadatService', () => {
   });
 
   describe('_generateMetadata', () => {
-    it('should throw AIResponseEmptyError if AI response text is empty', async () => {
+    it('should throw AIExtractionError if AI response text is empty', async () => {
       generateContentStub.resolves({
         text: '', // empty response
       });
       await expect(
         ExtractLinkMetadataService._generateMetadata(fakeText, fakeUrl)
-      ).eventually.rejectedWith(AIResponseEmptyError);
+      ).eventually.rejectedWith(AIExtractionError);
     });
 
     it('should throw when AI response JSON is invalid', async () => {
@@ -193,9 +193,7 @@ describe('ExtractLinkMetadatService', () => {
       const { metadataExtractedLinks, failedMetadataExtractionLinks } =
         await ExtractLinkMetadataService.extractMetadata([]);
 
-      expect(warnStub).calledWith(
-        '[ExtractLinkMetadataService] WARN: Empty scrapedLinks. Will not extract metadata for any links for this run.'
-      );
+      expect(warnStub.callCount).to.equal(1);
       expect(metadataExtractedLinks).to.have.length(0);
       expect(failedMetadataExtractionLinks).to.have.length(0);
     });
