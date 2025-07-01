@@ -7,14 +7,18 @@ import {
 import { useMemo, useState } from 'react';
 import { SortingState } from '@tanstack/react-table';
 import { Skeleton } from '@/components/base/skeleton';
+import { FilterSelectionButton } from '@/components/pages/application-tracker/job-postings/job-postings-filter';
+import type { FilterState } from './job-postings-drawer';
 
 export const JobPostingsContainer = (): React.JSX.Element | null => {
+  const [filters, setFilters] = useState<FilterState>({});
+
   const {
     isLoading,
     isError,
     error,
     data: jobPostingsData,
-  } = useGetJobPostings();
+  } = useGetJobPostings(filters);
   const { mutate: createApplicationFn } = useCreateApplication();
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -48,11 +52,15 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
   }
 
   return (
-    <JobPostingsTable
-      columns={columns}
-      data={jobPostingsData}
-      sorting={sorting}
-      setSorting={setSorting}
-    />
+    <>
+      <FilterSelectionButton onApply={setFilters}
+      />
+      <JobPostingsTable
+        columns={columns}
+        data={jobPostingsData}
+        sorting={sorting}
+        setSorting={setSorting}
+      />
+    </>
   );
 };
