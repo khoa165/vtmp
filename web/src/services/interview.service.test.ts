@@ -517,7 +517,7 @@ describe('InterviewService', () => {
         InterviewService.updateInterviewById({
           interviewId: getNewMongoId(),
           userId: userId_A,
-          newUpdate: newUpdate,
+          newUpdate,
         })
       ).eventually.to.be.rejectedWith(
         ResourceNotFoundError,
@@ -533,7 +533,7 @@ describe('InterviewService', () => {
         InterviewService.updateInterviewById({
           interviewId: interview_A0.id,
           userId: userId_B,
-          newUpdate: newUpdate,
+          newUpdate,
         })
       ).eventually.to.be.rejectedWith(
         ResourceNotFoundError,
