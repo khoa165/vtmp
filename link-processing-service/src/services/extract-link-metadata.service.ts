@@ -18,20 +18,18 @@ import {
   MetadataExtractedLink,
   SubmittedLink,
 } from '@/types/link-processing.types';
-import {
-  AIExtractionError,
-  AIResponseEmptyError,
-  logError,
-} from '@/utils/errors';
+import { AIExtractionError, logError } from '@/utils/errors';
 import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
 import { buildPrompt } from '@/utils/prompts';
 
+const MAX_LONG_RETRY = 4;
 export const ExtractLinkMetadataService = {
   async _generateContent(prompt: string): Promise<{ text: string }> {
     const geminiApiKey = EnvConfig.get().GOOGLE_GEMINI_API_KEY;
     const genAI = new GoogleGenAI({ apiKey: geminiApiKey });
+    const MODEL_NAME = 'gemini-2.0-flash';
     const response = await genAI.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: MODEL_NAME,
       contents: prompt,
     });
 
@@ -46,7 +44,7 @@ export const ExtractLinkMetadataService = {
     // Get raw response from Gemini
     const rawAIResponse = response.text?.replace(/```json|```/g, '').trim();
     if (!rawAIResponse)
-      throw new AIResponseEmptyError('AI response was empty', { url });
+      throw new AIExtractionError('AI response was empty', { url });
 
     const {
       jobTitle,
@@ -99,8 +97,6 @@ export const ExtractLinkMetadataService = {
     metadataExtractedLinks: MetadataExtractedLink[];
     failedMetadataExtractionLinks: FailedProcessedLink[];
   }> {
-    const MAX_LONG_RETRY = 4;
-
     const metadataExtractedLinks: MetadataExtractedLink[] = [];
     const failedMetadataExtractionLinks: FailedProcessedLink[] = [];
 
