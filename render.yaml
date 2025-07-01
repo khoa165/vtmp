@@ -24,6 +24,10 @@ services:
         sync: false
       - key: SERVICE_NAME
         sync: false
+      - key: LINK_PROCESSING_ENDPOINT
+        sync: false
+      - key: NODE_ENV
+        sync: false
     region: oregon
     buildCommand:
       yarn install && yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace
@@ -32,9 +36,6 @@ services:
     autoDeployTrigger: off
     previews:
       generation: off # Disable service previews
-    buildFilter:
-      ignoredPaths:
-        - web-client/**
     healthCheckPath: /health
 
   - type: web
@@ -66,9 +67,6 @@ services:
     autoDeployTrigger: off
     previews:
       generation: off # Disable service previews
-    buildFilter:
-      ignoredPaths:
-        - web/**
 
   - type: web
     name: vtmp-discord-service
@@ -98,9 +96,6 @@ services:
     autoDeployTrigger: off
     previews:
       generation: off # Disable service previews
-    buildFilter:
-      paths:
-        - discord-service/**
     rootDir: .
 
 version: '1'
