@@ -39,7 +39,7 @@
     "zod": "^3.25.51"
   },
   "scripts": {
-    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
+    "build": "tsc --build tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000",
     "dev": "node -e 'console.warn(`To test link-processing-service, please run its Docker container.\nPlease refer to README.md for further details.`)'"
   }
