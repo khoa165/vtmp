@@ -31,13 +31,6 @@ const getRetryFilter = () => ({
   ],
 });
 
-const api = axios.create({
-  baseURL: `${EnvConfig.get().LINK_PROCESSING_ENDPOINT}`,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
 /**
  *
  * @param linksData
@@ -55,6 +48,12 @@ export const sendLinksToLambda = async (
     attemptsCount: number;
   }[]
 ) => {
+  const api = axios.create({
+    baseURL: `${EnvConfig.get().LINK_PROCESSING_ENDPOINT}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
   const NODE_ENV = EnvConfig.get().NODE_ENV;
   if (NODE_ENV === Environment.DEV) {
     return api.request({
