@@ -1,15 +1,14 @@
 import chromium from '@sparticuz/chromium';
+import {
+  FailedProcessedLink,
+  SubmittedLink,
+} from '@vtmp/server-common/constants';
 import pLimit from 'p-limit';
 import puppeteer, { Browser, Page } from 'puppeteer-core';
 
 import { LinkProcessingFailureStage, LinkStatus } from '@vtmp/common/constants';
 
-import {
-  FailedProcessedLink,
-  ScrapedLink,
-  ValidatedLink,
-  SubmittedLink,
-} from '@/types/link-processing.types';
+import { ScrapedLink, ValidatedLink } from '@/types/link-processing.types';
 import { logError, ScrapingError } from '@/utils/errors';
 
 const _launchBrowserInstance = async (): Promise<Browser> => {

@@ -1,16 +1,15 @@
 import { GlobalOptions, safebrowsing_v4 } from '@googleapis/safebrowsing';
-import { Environment } from '@vtmp/server-common/constants';
+import { Environment ,
+  SubmittedLink,
+  FailedProcessedLink,
+} from '@vtmp/server-common/constants';
 import retry from 'retry';
 
 import { LinkStatus, LinkProcessingFailureStage } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
 import { executeWithRetry, httpErrorNoRetry } from '@/helpers/retry.helper';
-import {
-  SubmittedLink,
-  ValidatedLink,
-  FailedProcessedLink,
-} from '@/types/link-processing.types';
+import { ValidatedLink } from '@/types/link-processing.types';
 import { LinkValidationError } from '@/utils/errors';
 import { LinkValidationErrorType } from '@/utils/errors-enum';
 

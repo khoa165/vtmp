@@ -1,9 +1,8 @@
-import { AuthType } from '@vtmp/server-common/constants';
+import { AuthType , UpdateLinkPayload } from '@vtmp/server-common/constants';
 import { JWTUtils } from '@vtmp/server-common/utils';
 import axios from 'axios';
 
 import { EnvConfig } from '@/config/env';
-import { UpdateLinkPayload } from '@/types/link-processing.types';
 
 const api = axios.create({
   baseURL: `${EnvConfig.get().API_URL}/api`,

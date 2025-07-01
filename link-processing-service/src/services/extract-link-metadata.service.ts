@@ -1,4 +1,11 @@
 import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
+import {
+  ExtractedLinkMetadataSchema,
+  ExtractedLinkMetadata,
+  FailedProcessedLink,
+  MetadataExtractedLink,
+  SubmittedLink,
+} from '@vtmp/server-common/constants';
 
 import {
   JobFunction,
@@ -10,13 +17,8 @@ import {
 
 import { EnvConfig } from '@/config/env';
 import {
-  ExtractedLinkMetadata,
-  ExtractedLinkMetadataSchema,
   RawAIResponseSchema,
   ScrapedLink,
-  FailedProcessedLink,
-  MetadataExtractedLink,
-  SubmittedLink,
 } from '@/types/link-processing.types';
 import {
   AIExtractionError,
