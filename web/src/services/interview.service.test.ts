@@ -536,7 +536,7 @@ describe('InterviewService', () => {
         InterviewService.updateInterviewById({
           interviewId: getNewMongoId(),
           userId: user_A.id,
-          newUpdate: newUpdate,
+          newUpdate,
         })
       ).eventually.to.be.rejectedWith(
         ResourceNotFoundError,
@@ -552,7 +552,7 @@ describe('InterviewService', () => {
         InterviewService.updateInterviewById({
           interviewId: interview_A0.id,
           userId: user_B.id,
-          newUpdate: newUpdate,
+          newUpdate,
         })
       ).eventually.to.be.rejectedWith(
         ResourceNotFoundError,
@@ -632,6 +632,7 @@ describe('InterviewService', () => {
         interviewId: interview_A0.id,
         userId: user_A.id,
         isShare: false,
+        newUpdate: {},
       });
 
       assert(unsharedInterview);
