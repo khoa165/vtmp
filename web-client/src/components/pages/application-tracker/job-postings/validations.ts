@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { JobPostingSortField, SortOrder } from '@vtmp/common/constants';
+
 const JobPostingSchema = z.object({
   _id: z.string(),
   url: z.string(),
@@ -13,8 +15,27 @@ const JobPostingSchema = z.object({
 
 export const JobPostingsResponseSchema = z.object({
   message: z.string(),
-  data: z.array(JobPostingSchema),
+  data: z.object({
+    data: z.array(JobPostingSchema),
+    cursor: z.string().optional(),
+  }),
 });
 
-export type IJobPostings = z.infer<typeof JobPostingsResponseSchema>['data'];
+export type IJobPostings = z.infer<
+  typeof JobPostingsResponseSchema
+>['data']['data'];
 export type IJobPosting = z.infer<typeof JobPostingSchema>;
+
+export interface JobPostingFilters {
+  limit: number;
+  cursor?: string;
+  sortField?: JobPostingSortField;
+  sortOrder?: SortOrder;
+  companyName?: string;
+  jobTitle?: string;
+  location?: string;
+  jobFunction?: string;
+  jobType?: string;
+  postingDateRangeStart?: Date;
+  postingDateRangeEnd?: Date;
+}

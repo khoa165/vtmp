@@ -1,28 +1,100 @@
-import { JobPostingsTable } from '@/components/pages/application-tracker/job-postings/job-postings-table';
-import { jobPostingsTableColumns } from '@/components/pages/application-tracker/job-postings/job-postings-table-columns';
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  getCoreRowModel,
+  SortingState,
+  useReactTable,
+  VisibilityState,
+} from '@tanstack/react-table';
+import { useEffect, useMemo, useState } from 'react';
+
+import { JobPostingSortField, SortOrder } from '@vtmp/common/constants';
+
+import { Input } from '@/components/base/input';
+import { Skeleton } from '@/components/base/skeleton';
 import {
   useCreateApplication,
   useGetJobPostings,
 } from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
-import { useMemo, useState } from 'react';
-import { SortingState } from '@tanstack/react-table';
-import { Skeleton } from '@/components/base/skeleton';
+import { jobPostingsTableColumns } from '@/components/pages/application-tracker/job-postings/job-postings-table-columns';
+import {
+  IJobPosting,
+  JobPostingFilters,
+} from '@/components/pages/application-tracker/job-postings/validations';
+import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
+import { ResizableTable } from '@/components/pages/shared/resizable-table';
 
 export const JobPostingsContainer = (): React.JSX.Element | null => {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
+  const [sortField, setSortField] = useState<JobPostingSortField>(
+    JobPostingSortField.DATE_POSTED
+  );
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
+  const filters: JobPostingFilters = useMemo(
+    () => ({
+      limit: pagination.pageSize,
+      cursor: undefined,
+      sortField,
+      sortOrder,
+      companyName: undefined,
+      jobTitle: undefined,
+      location: undefined,
+      jobFunction: undefined,
+      jobType: undefined,
+      postingDateRangeStart: undefined,
+      postingDateRangeEnd: undefined,
+    }),
+    [pagination.pageSize, sortField, sortOrder]
+  );
+
+  useEffect(() => {
+    if (sorting.length > 0) {
+      const { id, desc } = sorting[0];
+      setSortField(id as JobPostingSortField);
+      setSortOrder(desc ? SortOrder.DESC : SortOrder.ASC);
+    }
+  }, [sorting]);
+
+  const { mutate: createApplicationFn } = useCreateApplication();
+
+  const columns = useMemo(
+    () => jobPostingsTableColumns({ createApplicationFn }),
+    [createApplicationFn]
+  ) as ColumnDef<IJobPosting, unknown>[];
+
   const {
     isLoading,
     isError,
     error,
     data: jobPostingsData,
-  } = useGetJobPostings();
-  const { mutate: createApplicationFn } = useCreateApplication();
+  } = useGetJobPostings(filters);
 
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  const columns = useMemo(
-    () => jobPostingsTableColumns({ createApplicationFn }),
-    [createApplicationFn]
-  );
+  const table = useReactTable({
+    data: jobPostingsData?.data ?? [],
+    columns,
+    manualPagination: true,
+    manualSorting: true,
+    manualFiltering: true,
+    autoResetPageIndex: true,
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      pagination,
+      sorting,
+      columnFilters,
+      columnVisibility,
+    },
+  });
 
   if (isLoading) {
     return (
@@ -37,22 +109,24 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
   }
 
   if (isError) {
-    // TODO-(QuangMinhNguyen27405): Remove this console log and add a toast error message
     console.error('Error fetching job postings data:', error);
     return null;
   }
 
-  if (!jobPostingsData || jobPostingsData.length === 0) {
-    // TODO-(QuangMinhNguyen27405): Replace `return null` with an empty state message or component
-    return null;
-  }
-
   return (
-    <JobPostingsTable
-      columns={columns}
-      data={jobPostingsData}
-      sorting={sorting}
-      setSorting={setSorting}
-    />
+    <>
+      <section className="flex items-center justify-between py-4">
+        <Input
+          placeholder="Filter companies..."
+          value={table.getColumn('companyName')?.getFilterValue() as string}
+          onChange={(event) =>
+            table.getColumn('companyName')?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <ColumnVisibilityConfiguration table={table} />
+      </section>
+      <ResizableTable table={table} columns={columns} />
+    </>
   );
 };

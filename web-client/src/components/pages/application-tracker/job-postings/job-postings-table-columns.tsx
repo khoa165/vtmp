@@ -1,10 +1,11 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { Checkbox } from '@/components/base/checkbox';
-import { Link } from 'lucide-react';
 import { format } from 'date-fns';
-import { IJobPosting } from '@/components/pages/application-tracker/job-postings/validations';
-import { JobPostingsAction } from '@/components/pages/application-tracker/job-postings/job-postings-action';
+import { Link } from 'lucide-react';
+
+import { Checkbox } from '@/components/base/checkbox';
 import { HeaderSorting } from '@/components/base/header';
+import { JobPostingsAction } from '@/components/pages/application-tracker/job-postings/job-postings-action';
+import { IJobPosting } from '@/components/pages/application-tracker/job-postings/validations';
 import { MONTH_DATE_YEAR } from '@/utils/date';
 
 export const jobPostingsTableColumns = ({
@@ -48,7 +49,7 @@ export const jobPostingsTableColumns = ({
       return <HeaderSorting column={column} headerName="Position" />;
     },
     cell: ({ row }) => {
-      // // TODO-(QuangMinhNguyen27405): Modify column width for better visibility
+      // TODO-(QuangMinhNguyen27405): Modify column width for better visibility
       return (
         <a
           href={row.original.url}

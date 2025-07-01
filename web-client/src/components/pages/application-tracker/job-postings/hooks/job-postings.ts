@@ -1,19 +1,24 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { request } from '@/utils/api';
-import { Method, QueryKey } from '@/utils/constants';
-import { JobPostingsResponseSchema } from '@/components/pages/application-tracker/job-postings/validations';
-import { ApplicationResponseSchema } from '@/components/pages/application-tracker/applications/validation';
-import { toast } from 'sonner';
 import axios from 'axios';
 import { sub } from 'date-fns';
+import { toast } from 'sonner';
 
-export const useGetJobPostings = () => {
+import { ApplicationResponseSchema } from '@/components/pages/application-tracker/applications/validation';
+import {
+  JobPostingFilters,
+  JobPostingsResponseSchema,
+} from '@/components/pages/application-tracker/job-postings/validations';
+import { request } from '@/utils/api';
+import { Method, QueryKey } from '@/utils/constants';
+
+export const useGetJobPostings = (jobPostingsFilters: JobPostingFilters) => {
   return useQuery({
     queryKey: [QueryKey.GET_JOB_POSTINGS],
     queryFn: () =>
       request({
         method: Method.GET,
         url: '/job-postings/not-applied',
+        data: jobPostingsFilters,
         schema: JobPostingsResponseSchema,
         options: { includeOnlyDataField: true, requireAuth: true },
       }),
@@ -55,6 +60,7 @@ export const useCreateApplication = () => {
     onSuccess: (res) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_JOB_POSTINGS],
+        exact: false,
       });
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS],
