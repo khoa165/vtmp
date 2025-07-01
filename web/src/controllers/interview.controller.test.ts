@@ -442,7 +442,7 @@ describe('InterviewController', () => {
   describe('GET /api/interviews/share', () => {
     const endpoint = `/api/interviews/share`;
 
-    it('should return an empty array if no interviews found', async () => {
+    it('should return an empty array if no shared interview match the filters', async () => {
       const res = await request(app)
         .get(endpoint)
         .set('Authorization', `Bearer ${mockToken_A}`)
@@ -472,7 +472,7 @@ describe('InterviewController', () => {
       ]);
     });
 
-    it('should return the shared interviews with user firstName and lastName as Anonymouse User when isDisclosed is true', async () => {
+    it('should return shared interviews with user firstName and lastName as Anonymouse User when isDisclosed is true', async () => {
       const sharedAt = new Date();
 
       const [interview_A0, interview_A2, interview_B1] = await Promise.all(
@@ -529,7 +529,7 @@ describe('InterviewController', () => {
       });
     });
 
-    it('should return interviews with the given status, types, and companyName', async () => {
+    it('should return shared interviews that match the filters', async () => {
       const sharedAt = new Date();
 
       const [interview_A0, interview_A2, interview_B1] = await Promise.all(
