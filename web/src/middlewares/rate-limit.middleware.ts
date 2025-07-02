@@ -27,7 +27,11 @@ const rateLimiter = rateLimit({
   },
 });
 
-// Export a single middleware factory function
+/**
+ * This is a factory function that returns a middleware function.
+ * In app.ts, when app.use(rateLimitMiddleware()), rateLimitMiddleware() is called,
+ * it immediately returns a middlware function. Express registers this function in its middleware stack.
+ */
 export const rateLimitMiddleware = () => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (EnvConfig.get().NODE_ENV === Environment.TEST) {
