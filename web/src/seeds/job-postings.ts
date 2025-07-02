@@ -1,12 +1,14 @@
-import { IJobPosting, JobPostingModel } from '@/models/job-posting.model';
-import { ILink } from '@/models/link.model';
 import { faker } from '@faker-js/faker';
+
 import {
   CompanyName,
   JobPostingRegion,
-  JobTitle,
+  JobFunction,
 } from '@vtmp/common/constants';
 import { formatEnumName } from '@vtmp/common/utils';
+
+import { IJobPosting, JobPostingModel } from '@/models/job-posting.model';
+import { ILink } from '@/models/link.model';
 
 export const loadJobPostings = async (
   links: ILink[]
@@ -19,7 +21,7 @@ export const loadJobPostings = async (
     return {
       linkId: link._id,
       url: link.url,
-      jobTitle: formatEnumName(faker.helpers.enumValue(JobTitle)),
+      jobTitle: formatEnumName(faker.helpers.enumValue(JobFunction)),
       companyName: formatEnumName(faker.helpers.enumValue(CompanyName)),
       datePosted,
       location: faker.helpers.enumValue(JobPostingRegion),

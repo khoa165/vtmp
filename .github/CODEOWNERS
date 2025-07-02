@@ -1,32 +1,33 @@
-.github/ @khoa165
-.husky/ @khoa165
-.vscode/ @khoa165
+.github/ @khoa165 @dsmai @Euclid0192
+.husky/ @khoa165 @dsmai @Euclid0192
+.vscode/ @khoa165 @dsmai @Euclid0192
 .yarn/ @khoa165
 
 cookiecutter/ @khoa165
 scripts/ @khoa165
 
+packages/ @khoa165 @dsmai
 packages/common/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 
-web/ @khoa165
+web/ @khoa165 @dsmai @Euclid0192 @hongantran3804
 web/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 
-web-client/ @khoa165
+web-client/ @khoa165 @dsmai @Euclid0192 @hongantran3804
 web-client/src/blogs/content/ @khoa165
 web-client/src/components/base/ @khoa165 @sonmac1203 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 web-client/src/components/pages/ @khoa165 @sonmac1203 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 
-.gitattributes @khoa165
-.gitignore @khoa165
-.prettierignore @khoa165
-.prettierrc @khoa165
-.yarnrc.yml @khoa165
-eslint.config.js @khoa165
+.gitattributes @khoa165 @dsmai
+.gitignore @khoa165 @dsmai
+.prettierignore @khoa165 @dsmai
+.prettierrc @khoa165 @dsmai
+.yarnrc.yml @khoa165 @dsmai
+eslint.config.js @khoa165 @dsmai @Euclid0192
 
 CODE_OF_CONDUCT.md @khoa165
 LICENSE @khoa165
 README.md @khoa165
 
-package.json @khoa165
+package.json @khoa165 @dsmai
 
-docker-compose.yml @khoa165
+docker-compose.yml @khoa165 @dsmai
