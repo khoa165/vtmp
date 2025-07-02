@@ -70,7 +70,7 @@
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
     "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
-    "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000",
+    "test": "cross-env NODE_ENV=TEST mocha ./**/*.test.ts --recursive --exit --timeout 600000",
     "seed": "tsx src/seeds/index.ts",
     "coverage": "c8 yarn test"
   }

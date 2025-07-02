@@ -7,6 +7,7 @@ import { customEslintRules } from './custom-eslint';
 import stylistic from '@stylistic/eslint-plugin';
 import checkFile from 'eslint-plugin-check-file';
 import importPlugin from 'eslint-plugin-import';
+import typescriptSortKeys from 'eslint-plugin-typescript-sort-keys';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -25,6 +26,7 @@ export default tseslint.config(
       stylistic,
       checkFile,
       boundaries,
+      typescriptSortKeys,
     },
     settings: {
       'import/resolver': {
@@ -144,7 +146,8 @@ export default tseslint.config(
       '@typescript-eslint/no-var-requires': 'error',
       'customEslintRules/no-try-in-controller-or-middleware': 'error',
       'customEslintRules/enforce-uppercase-enum-values': 'error',
-      'customEslintRules/enforce-sorted-enum-keys': 'error',
+      'typescriptSortKeys/interface': 'error',
+      'typescriptSortKeys/string-enum': 'error',
       'boundaries/element-types': [
         'error',
         {
@@ -182,7 +185,7 @@ export default tseslint.config(
       'link-processing-service/**/*',
     ],
     rules: {
-      'customEslintRules/wrapped-handlers-in-router': 'off', // 🔧 Updated prefix
+      'customEslintRules/wrapped-handlers-in-router': 'off', 
     },
   },
 

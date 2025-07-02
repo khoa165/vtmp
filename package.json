@@ -29,7 +29,6 @@
     "docker-run-backend": "docker run --env-file ./web/.env  --rm -it -p 8000:8000 vtmp/backend:local",
     "docker-build-frontend": "docker build -f web-client/Dockerfile -t vtmp/frontend:local .",
     "docker-run-frontend": "docker run --env-file ./web-client/.env -it -p 3000:3000 vtmp/frontend:local",
-    "docker-seed": "docker compose exec web yarn seed",
     "clean": "rm -rf node_modules packages/*/node_modules web/node_modules web-client/node_modules"
   },
   "workspaces": [
@@ -53,6 +52,7 @@
     "eslint-import-resolver-typescript": "^4.4.3",
     "eslint-plugin-check-file": "^3.2.0",
     "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-typescript-sort-keys": "^3.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.0.0",
     "prettier": "^3.5.3",

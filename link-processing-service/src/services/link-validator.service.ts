@@ -1,4 +1,5 @@
 import { GlobalOptions, safebrowsing_v4 } from '@googleapis/safebrowsing';
+import { Environment } from '@vtmp/server-common/constants';
 import retry from 'retry';
 
 import { LinkStatus, LinkProcessingFailureStage } from '@vtmp/common/constants';
@@ -107,7 +108,7 @@ const LinkValidatorService = {
     );
 
     if (!this.config.enableVirusScan) {
-      if (EnvConfig.get().NODE_ENV !== 'test') {
+      if (EnvConfig.get().NODE_ENV !== Environment.TEST) {
         throw new Error(
           '[LinkValidatorService] Can only disable virus scan in test environment'
         );
