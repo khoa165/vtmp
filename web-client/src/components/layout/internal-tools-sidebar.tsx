@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   ShieldUser,
   ExternalLink,
@@ -6,7 +5,12 @@ import {
   BriefcaseBusiness,
   UserRoundPlus,
 } from 'lucide-react';
+import { useMemo } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 
+import { SystemRole } from '@vtmp/common/constants';
+
+import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
 import {
   Sidebar,
   SidebarContent,
@@ -17,11 +21,12 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from '@/components/base/sidebar';
+import {
+  TooltipContent,
+  Tooltip,
+  TooltipTrigger,
+} from '@/components/base/tooltip';
 import { VTMPLogo } from '@/components/base/vtmp-logo';
-import { Avatar } from '@/components/base/avatar';
-import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
-import { SystemRole } from '@vtmp/common/constants';
-import { Link, Navigate } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export const InternalToolsSidebar = () => {
@@ -32,39 +37,93 @@ export const InternalToolsSidebar = () => {
 
   const items = [
     {
-      title: 'Users',
+      title: 'Manage Users',
       url: '/admin/invitations',
-      icon: ShieldUser,
+      icon: (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <ShieldUser />
+          </TooltipTrigger>
+          <TooltipContent>
+            <h3>Manage Users</h3>
+          </TooltipContent>
+        </Tooltip>
+      ),
       roles: [SystemRole.ADMIN],
     },
     {
-      title: 'Invitations Sending',
+      title: 'Send Invites',
       url: '/admin/send-invitation',
-      icon: UserRoundPlus,
+      icon: (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <UserRoundPlus />
+          </TooltipTrigger>
+          <TooltipContent>
+            <h3>Send Invites</h3>
+          </TooltipContent>
+        </Tooltip>
+      ),
       roles: [SystemRole.ADMIN],
     },
     {
-      title: 'Pending Links',
+      title: 'Review Links',
       url: '/admin/links',
-      icon: BriefcaseBusiness,
+      icon: (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <BriefcaseBusiness />
+          </TooltipTrigger>
+          <TooltipContent>
+            <h3>Review Links</h3>
+          </TooltipContent>
+        </Tooltip>
+      ),
       roles: [SystemRole.ADMIN, SystemRole.MODERATOR],
     },
     {
-      title: 'Jobs',
+      title: 'Job Postings',
       url: '/job-postings',
-      icon: LayoutDashboard,
+      icon: (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <LayoutDashboard />
+          </TooltipTrigger>
+          <TooltipContent>
+            <h3>Job Postings</h3>
+          </TooltipContent>
+        </Tooltip>
+      ),
       roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
     },
     {
       title: 'Applications',
       url: '/application-tracker',
-      icon: BriefcaseBusiness,
+      icon: (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <BriefcaseBusiness />
+          </TooltipTrigger>
+          <TooltipContent>
+            <h3>Applications</h3>
+          </TooltipContent>
+        </Tooltip>
+      ),
       roles: [SystemRole.USER],
     },
     {
-      title: 'Share Link',
+      title: 'Share Links',
       url: '/link-sharing',
-      icon: ExternalLink,
+      icon: (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <ExternalLink />
+          </TooltipTrigger>
+          <TooltipContent>
+            <h3>Share Links</h3>
+          </TooltipContent>
+        </Tooltip>
+      ),
       roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
     },
   ];
@@ -98,7 +157,7 @@ export const InternalToolsSidebar = () => {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <Link to={item.url} aria-label={item.title}>
-                      <item.icon />
+                      {item.icon}
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -110,7 +169,6 @@ export const InternalToolsSidebar = () => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <Avatar />
               <SidebarTrigger />
             </SidebarMenu>
           </SidebarGroupContent>
