@@ -17,7 +17,7 @@ export const InterviewCard = ({
   interview: SharedInterviewData;
 }) => {
   return (
-    <Card className="rounded-xl bg-background border border-background p-6 mb-4 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3">
+    <Card className="rounded-xl bg-background border border-background p-6 mb-10 shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
       <CardHeader className="mb-0">
         <CardTitle className="mt-1 flex items-center gap-4">
           <div className="flex items-center gap-2">

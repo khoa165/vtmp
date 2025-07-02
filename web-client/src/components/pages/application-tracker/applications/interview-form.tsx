@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Save, Trash2 } from 'lucide-react';
+import { Check, Save, Share2, Trash2 } from 'lucide-react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -459,10 +459,12 @@ const InterviewSharingButton = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          className="h-7.5 gap-1.5 rounded-sm border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
-        >
+        <Button className="h-7.5 gap-1.5 rounded-sm border border-green-500 px-4 text-xs text-green-500 bg-background hover:bg-background hover:border-green-600 hover:text-green-600 transition">
+          {sharedAt ? (
+            <Check className="scale-90" />
+          ) : (
+            <Share2 className="scale-90" />
+          )}
           {getShareLabel(sharedAt, isDisclosed)}
         </Button>
       </DropdownMenuTrigger>
