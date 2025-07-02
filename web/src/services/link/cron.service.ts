@@ -32,15 +32,10 @@ const getRetryFilter = () => ({
 });
 
 /**
- *
- * @param linksData
- * @returns
- *
  * Switch the request format based on an env var
- * - local Lambda running with aws-lambda-runtime-interface-emulator: request body needs to be stringified, it is the entire event object
- * - cloud lambda on AWS: request body is sent as normal JSON body
+ * - Local Lambda running with aws-lambda-runtime-interface-emulator: request body needs to be stringified, it is the entire event object
+ * - Cloud lambda on AWS: request body is sent as normal JSON body
  */
-
 export const sendLinksToLambda = async (
   linksData: {
     _id: string;
@@ -54,8 +49,7 @@ export const sendLinksToLambda = async (
       'Content-Type': 'application/json',
     },
   });
-  const NODE_ENV = EnvConfig.get().NODE_ENV;
-  if (NODE_ENV === Environment.DEV) {
+  if (EnvConfig.get().NODE_ENV === Environment.DEV) {
     return api.request({
       method: 'POST',
       data: {
@@ -67,7 +61,6 @@ export const sendLinksToLambda = async (
     });
   } else {
     return api.request({
-      // prod,
       method: 'POST',
       data: { linksData },
     });
