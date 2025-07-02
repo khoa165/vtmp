@@ -2,12 +2,12 @@ import mongoose, { ClientSession } from 'mongoose';
 
 import { LinkStatus } from '@vtmp/common/constants';
 
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { LinkRepository } from '@/repositories/link.repository';
 import {
   ExtractionLinkMetaDataType,
   LinkMetaDataType,
-} from '@/types/link.types';
+} from '@/constants/link.types';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { LinkRepository } from '@/repositories/link.repository';
 import {
   DuplicateResourceError,
   LinkProcessingBadRequest,
@@ -20,7 +20,10 @@ export const LinkService = {
       return await LinkRepository.createLink(linkMetaData);
     } catch (error: unknown) {
       if (error instanceof Error && 'code' in error && error.code === 11000) {
-        throw new DuplicateResourceError('Duplicate url', linkMetaData);
+        throw new DuplicateResourceError(
+          'Link is already submitted',
+          linkMetaData
+        );
       }
       throw error;
     }

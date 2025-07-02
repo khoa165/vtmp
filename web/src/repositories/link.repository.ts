@@ -2,11 +2,11 @@ import { Types, ClientSession, FilterQuery } from 'mongoose';
 
 import { LinkStatus } from '@vtmp/common/constants';
 
-import { LinkModel, ILink } from '@/models/link.model';
 import {
   LinkMetaDataType,
   ExtractionLinkMetaDataType,
-} from '@/types/link.types';
+} from '@/constants/link.types';
+import { LinkModel, ILink } from '@/models/link.model';
 
 export const LinkRepository = {
   createLink: async (linkMetaData: LinkMetaDataType): Promise<ILink> => {

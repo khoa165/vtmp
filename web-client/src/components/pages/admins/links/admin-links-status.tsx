@@ -52,7 +52,7 @@ export const AdminLinksStatusCards = ({
   }
 
   return (
-    <div className="grid grid-cols-4 gap-4 w-full max-md:grid-rows-6">
+    <div className="grid grid-cols-4 gap-4 w-full max-md:grid-rows-6 pb-4">
       {allStatuses.map((status) => {
         const isSelected = selectedStatus === status;
         const cardStyle = isSelected

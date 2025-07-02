@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 
-import { LinkService } from '@/services/link.service';
 import {
   LinkFilterSchema,
   LinkIdSchema,
   LinkMetaDataSchema,
   JobPostingDataSchema,
   ExtractionLinkMetaDataSchema,
-} from '@/types/link.types';
+} from '@/constants/link.types';
+import { LinkService } from '@/services/link.service';
 
 export const LinkController = {
   submitLink: async (req: Request, res: Response) => {
