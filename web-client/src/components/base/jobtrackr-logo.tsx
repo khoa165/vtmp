@@ -4,8 +4,6 @@ export const JobTrackrLogo = () => {
   return (
     <div className="jobtrackrlogo-container w-full">
       <svg
-        // width="50"
-        // height="25"
         className="w-full h-full"
         viewBox="0 0 150 25"
         fill="none"
