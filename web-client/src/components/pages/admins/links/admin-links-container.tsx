@@ -45,7 +45,7 @@ export const AdminLinksContainer = ({
     );
   }
 
-  if (!error) {
+  if (error) {
     throw new CustomError('Error fetching links data');
   }
 
