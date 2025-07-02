@@ -459,7 +459,7 @@ const InterviewSharingButton = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="h-7.5 gap-1.5 rounded-sm border border-green-500 px-4 text-xs text-green-500 bg-background hover:bg-background hover:border-green-600 hover:text-green-600 transition">
+        <Button className="h-7.5 gap-1.5 rounded-sm border border-green-400 px-4 text-xs text-green-400 bg-background hover:bg-background hover:border-green-600 hover:text-green-600 transition">
           {sharedAt ? (
             <Check className="scale-90" />
           ) : (
