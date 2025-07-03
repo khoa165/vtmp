@@ -1,28 +1,65 @@
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
+
 import { beforeEach, describe } from 'mocha';
 import bcrypt from 'bcryptjs';
 import { UserRepository } from '@/repositories/user.repository';
+
 import app from '@/app';
 import request from 'supertest';
 import { expect } from 'chai';
+
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
+
 import { SystemRole } from '@vtmp/common/constants';
 import { AuthType } from '@vtmp/server-common/constants';
 import { JWTUtils } from '@vtmp/server-common/utils';
 import assert from 'assert';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
+import { InvitationRepository } from '@/repositories/invitation.repository';
+import { addDays } from 'date-fns';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { omit } from 'remeda';
 
 describe('AuthController', () => {
   useMongoDB();
   const sandbox = useSandbox();
-  beforeEach(() => {
+  let mockInvitationToken: string;
+  let signupBody: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    token: string;
+  };
+
+  beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+    mockInvitationToken = JWTUtils.createTokenWithPayload(
+      { receiverEmail: 'test123@gmail.com' },
+      EnvConfig.get().JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    await InvitationRepository.createInvitation({
+      receiverEmail: 'test123@gmail.com',
+      receiverName: 'Test User',
+      sender: getNewMongoId(),
+      expiryDate: addDays(Date.now(), 7),
+      token: mockInvitationToken,
+    });
+    signupBody = {
+      firstName: 'admin',
+      lastName: 'viettech',
+      email: 'test123@gmail.com',
+      password: 'Test!123',
+      token: mockInvitationToken,
+    };
   });
 
   describe('POST /auth/login', () => {
@@ -106,14 +143,50 @@ describe('AuthController', () => {
   });
 
   describe('POST /auth/signup', () => {
+    it('should return error message for no invitation token', async () => {
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send(omit(signupBody, ['token']));
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'An invitation token is required'
+      );
+    });
+
+    it('should return error message for invalid invitation token', async () => {
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          ...signupBody,
+          token: 'invalid-token',
+        });
+      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('jwt malformed');
+    });
+
+    it('should return error message for invitation not existed with associated email', async () => {
+      const invalidToken = JWTUtils.createTokenWithPayload(
+        { receiverEmail: 'notfound@gmail.com' },
+        EnvConfig.get().JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          ...signupBody,
+          token: invalidToken,
+        });
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Invitation not found');
+    });
+
     it('should return error message for unrecognized field', async () => {
-      const res = await request(app).post('/api/auth/signup').send({
-        firstName: 'admin',
-        lastName: 'viettech',
-        password: 'Test!123',
-        email: 'test123@gmail.com',
-        role: SystemRole.ADMIN,
-      });
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          ...signupBody,
+          role: SystemRole.ADMIN,
+        });
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal(
         "Unrecognized key(s) in object: 'role'"
@@ -123,11 +196,7 @@ describe('AuthController', () => {
     it('should return error message for missing email', async () => {
       const res = await request(app)
         .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          password: 'Test!123',
-        })
+        .send(omit(signupBody, ['email']))
         .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
@@ -138,9 +207,7 @@ describe('AuthController', () => {
       const res = await request(app)
         .post('/api/auth/signup')
         .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
+          ...signupBody,
           password: 'vT1?',
         })
         .set('Accept', 'application/json');
@@ -155,9 +222,7 @@ describe('AuthController', () => {
       const res = await request(app)
         .post('/api/auth/signup')
         .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
+          ...signupBody,
           password: 'Thisisasuperlongpasswordthatcouldbeshortened!123',
         })
         .set('Accept', 'application/json');
@@ -172,9 +237,7 @@ describe('AuthController', () => {
       const res = await request(app)
         .post('/api/auth/signup')
         .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
+          ...signupBody,
           password: 'Test1234',
         })
         .set('Accept', 'application/json');
@@ -189,9 +252,7 @@ describe('AuthController', () => {
       const res = await request(app)
         .post('/api/auth/signup')
         .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
+          ...signupBody,
           password: 'test123!',
         })
         .set('Accept', 'application/json');
@@ -206,9 +267,7 @@ describe('AuthController', () => {
       const res = await request(app)
         .post('/api/auth/signup')
         .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
+          ...signupBody,
           password: 'TEST!123',
         })
         .set('Accept', 'application/json');
@@ -223,9 +282,7 @@ describe('AuthController', () => {
       const res = await request(app)
         .post('/api/auth/signup')
         .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
+          ...signupBody,
           password: 'Test!!!@@',
         })
         .set('Accept', 'application/json');
@@ -240,19 +297,14 @@ describe('AuthController', () => {
       const mockUser = {
         firstName: 'admin',
         lastName: 'viettech',
-        email: 'test@gmail.com',
+        email: 'test123@gmail.com',
         encryptedPassword: 'Test!123',
       };
       await UserRepository.createUser(mockUser);
 
       const res = await request(app)
         .post('/api/auth/signup')
-        .send({
-          firstName: 'admin',
-          lastName: 'viettech',
-          email: 'test@gmail.com',
-          password: 'Test!123',
-        })
+        .send(signupBody)
         .set('Accept', 'application/json');
 
       expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
@@ -262,12 +314,7 @@ describe('AuthController', () => {
     });
 
     it('should return new user', async () => {
-      const res = await request(app).post('/api/auth/signup').send({
-        firstName: 'admin',
-        lastName: 'viettech',
-        password: 'Test!123',
-        email: 'test123@gmail.com',
-      });
+      const res = await request(app).post('/api/auth/signup').send(signupBody);
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('token');
     });
@@ -275,12 +322,9 @@ describe('AuthController', () => {
 
   describe('POST /auth/signup + POST /auth/login', () => {
     it('should not allow user to login after signup if wrong password', async () => {
-      const resSignup = await request(app).post('/api/auth/signup').send({
-        firstName: 'admin',
-        lastName: 'viettech',
-        password: 'Test!123',
-        email: 'test123@gmail.com',
-      });
+      const resSignup = await request(app)
+        .post('/api/auth/signup')
+        .send(signupBody);
       expectSuccessfulResponse({ res: resSignup, statusCode: 200 });
       expect(resSignup.body.data).to.have.property('token');
 
@@ -293,12 +337,9 @@ describe('AuthController', () => {
     });
 
     it('should allow user to login after signup', async () => {
-      const resSignup = await request(app).post('/api/auth/signup').send({
-        firstName: 'admin',
-        lastName: 'viettech',
-        password: 'Test!123',
-        email: 'test123@gmail.com',
-      });
+      const resSignup = await request(app)
+        .post('/api/auth/signup')
+        .send(signupBody);
       expectSuccessfulResponse({ res: resSignup, statusCode: 200 });
       expect(resSignup.body.data).to.have.property('token');
 
