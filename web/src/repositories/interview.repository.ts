@@ -1,6 +1,8 @@
-import { InterviewModel, IInterview } from '@/models/interview.model';
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 import { ClientSession, UpdateResult } from 'mongoose';
+
+import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+
+import { InterviewModel, IInterview } from '@/models/interview.model';
 
 export const InterviewRepository = {
   createInterview: async ({
@@ -14,9 +16,9 @@ export const InterviewRepository = {
     applicationId: string;
     userId: string;
     types: InterviewType[];
-    status?: InterviewStatus;
+    status?: InterviewStatus | undefined;
     interviewOnDate: Date;
-    note?: string;
+    note?: string | undefined;
   }): Promise<IInterview> => {
     return InterviewModel.create({
       applicationId,
