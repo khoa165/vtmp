@@ -6,32 +6,41 @@ import { slowDown } from 'express-slow-down';
 import { EnvConfig } from '@/config/env';
 import { handleError } from '@/utils/errors';
 
-export const rateLimitMiddleware = () => {
-  if (EnvConfig.get().NODE_ENV === Environment.TEST) {
-    return (_req: Request, _res: Response, next: NextFunction) => {
-      next();
-    };
-  }
-  return [
-    slowDown({
-      windowMs: 15 * 60 * 1000,
-      delayAfter: 500,
-      delayMs: () => 2000,
-    }),
+const slowDownMiddleware = slowDown({
+  windowMs: 15 * 60 * 1000,
+  delayAfter: 500,
+  delayMs: () => 2000,
+});
 
-    rateLimit({
-      windowMs: 15 * 60 * 1000,
-      max: 500,
-      handler: (
-        _req: Request,
-        res: Response,
-        _next: NextFunction,
-        err: unknown
-      ) => {
-        const { statusCode, errors } = handleError(err);
-        res.status(statusCode).json({ errors });
-        return;
-      },
-    }),
-  ];
+const rateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 500,
+  handler: (
+    _req: Request,
+    res: Response,
+    _next: NextFunction,
+    err: unknown
+  ) => {
+    const { statusCode, errors } = handleError(err);
+    res.status(statusCode).json({ errors });
+    return;
+  },
+});
+
+/**
+ * This is a factory function that returns a middleware function.
+ * In app.ts, when app.use(rateLimitMiddleware()), rateLimitMiddleware() is called,
+ * it immediately returns a middlware function. Express registers this function in its middleware stack.
+ */
+export const rateLimitMiddleware = () => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (EnvConfig.get().NODE_ENV === Environment.TEST) {
+      return next();
+    }
+    // Compose the middlewares manually
+    slowDownMiddleware(req, res, (err?: unknown) => {
+      if (err) return next(err);
+      rateLimiter(req, res, next);
+    });
+  };
 };

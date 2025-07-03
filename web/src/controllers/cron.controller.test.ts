@@ -6,8 +6,10 @@ import request from 'supertest';
 import { LinkStatus } from '@vtmp/common/constants';
 
 import app from '@/app';
+import { EnvConfig } from '@/config/env';
 import { LinkRepository } from '@/repositories/link.repository';
 import { CronService } from '@/services/link/cron.service';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import {
   expectErrorsArray,
@@ -31,6 +33,7 @@ describe('CronController', () => {
     error: 'Failed to scrape',
   };
   beforeEach(async () => {
+    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
     stubSendLinkToLambda = sandbox
       .stub(CronService, '_sendLinksToLambda')
       .resolves({
