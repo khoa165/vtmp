@@ -27,6 +27,7 @@ import {
   TooltipTrigger,
 } from '@/components/base/tooltip';
 import { VTMPLogo } from '@/components/base/vtmp-logo';
+import { LogoutButton } from '@/components/base/logout-button';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export const InternalToolsSidebar = () => {
@@ -169,6 +170,13 @@ export const InternalToolsSidebar = () => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+              <LogoutButton
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start"
+              >
+                Logout
+              </LogoutButton>
               <SidebarTrigger />
             </SidebarMenu>
           </SidebarGroupContent>

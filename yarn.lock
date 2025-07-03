@@ -4364,7 +4364,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sinon@npm:^17.0.3, @types/sinon@npm:^17.0.4":
+"@types/sinon-chai@npm:^4":
+  version: 4.0.0
+  resolution: "@types/sinon-chai@npm:4.0.0"
+  dependencies:
+    "@types/chai": "npm:*"
+    "@types/sinon": "npm:*"
+  checksum: 10c0/9cc2b98ebd9d81cbb6fa234d81cf6d9a0f02af8e777bd19b66baa793455056c105640abc81e5108581f92ebd5753023920e99ee992fbd240e9dd28882bcd1276
+  languageName: node
+  linkType: hard
+
+"@types/sinon@npm:*, @types/sinon@npm:^17.0.3, @types/sinon@npm:^17.0.4":
   version: 17.0.4
   resolution: "@types/sinon@npm:17.0.4"
   dependencies:
@@ -5682,6 +5692,7 @@ __metadata:
     "@types/node": "npm:^22.14.1"
     "@types/retry": "npm:^0"
     "@types/sinon": "npm:^17.0.3"
+    "@types/sinon-chai": "npm:^4"
     "@vtmp/common": "npm:1.0.0"
     "@vtmp/server-common": "npm:1.0.0"
     axios: "npm:^1.9.0"
@@ -5694,6 +5705,7 @@ __metadata:
     puppeteer-core: "npm:^24.10.1"
     retry: "npm:^0.13.1"
     sinon: "npm:^19.0.2"
+    sinon-chai: "npm:^4.0.0"
     ts-node: "npm:^10.9.2"
     tsc-alias: "npm:^1.8.16"
     tsx: "npm:^4.19.4"
@@ -5797,6 +5809,7 @@ __metadata:
     storybook: "npm:^8.6.12"
     tailwind-merge: "npm:^3.1.0"
     tailwindcss: "npm:^4.1.3"
+    tooltip: "npm:^1.6.1"
     tw-animate-css: "npm:^1.2.5"
     typescript: "npm:^5.8.3"
     use-image: "npm:^1.1.1"
@@ -6975,6 +6988,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clone@npm:^1.0.2":
+  version: 1.0.4
+  resolution: "clone@npm:1.0.4"
+  checksum: 10c0/2176952b3649293473999a95d7bebfc9dc96410f6cbd3d2595cf12fd401f63a4bf41a7adbfd3ab2ff09ed60cb9870c58c6acdd18b87767366fabfc163700f13b
+  languageName: node
+  linkType: hard
+
 "clsx@npm:^2.0.0, clsx@npm:^2.1.1":
   version: 2.1.1
   resolution: "clsx@npm:2.1.1"
@@ -7134,6 +7154,13 @@ __metadata:
     conc: dist/bin/concurrently.js
     concurrently: dist/bin/concurrently.js
   checksum: 10c0/88e00269366aa885ca2b97fd53b04e7af2b0f31774d991bfc0e88c0de61cdebdf115ddacc9c897fbd1f1b90369014637fa77045a171d072a75693332b36dcc70
+  languageName: node
+  linkType: hard
+
+"contains@npm:0.1.1":
+  version: 0.1.1
+  resolution: "contains@npm:0.1.1"
+  checksum: 10c0/a7324d5ac4e0936d210bbba28e80ad54c47320794937bee3200d7724d7cd9a05eb2710300530c1daa158b74b9c15b153bc5e31a65c7a8a5fb85225d9fe88df3d
   languageName: node
   linkType: hard
 
@@ -8401,7 +8428,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"escape-html@npm:^1.0.3, escape-html@npm:~1.0.3":
+"escape-html@npm:^1.0.2, escape-html@npm:^1.0.3, escape-html@npm:~1.0.3":
   version: 1.0.3
   resolution: "escape-html@npm:1.0.3"
   checksum: 10c0/524c739d776b36c3d29fa08a22e03e8824e3b2fd57500e5e44ecf3cc4707c34c60f9ca0781c0e33d191f2991161504c295e98f68c78fe7baa6e57081ec6ac0a3
@@ -9755,6 +9782,13 @@ __metadata:
   dependencies:
     function-bind: "npm:^1.1.2"
   checksum: 10c0/3769d434703b8ac66b209a4cca0737519925bbdb61dd887f93a16372b14694c63ff4e797686d87c90f08168e81082248b9b028bad60d4da9e0d1148766f56eb9
+  languageName: node
+  linkType: hard
+
+"hasown@npm:~1.x.x":
+  version: 1.0.1
+  resolution: "hasown@npm:1.0.1"
+  checksum: 10c0/10f80ec6da274a803362c9013e65477b78396981ed66f5e360189799be592a656fc2d4394c988e8ba7dd2c5b1c92251361759a1a8457e4ca228403e59841ea32
   languageName: node
   linkType: hard
 
@@ -11515,6 +11549,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"matches-selector@npm:^1.0.0":
+  version: 1.2.0
+  resolution: "matches-selector@npm:1.2.0"
+  checksum: 10c0/a0bb9457e8fe59a38cb17ca1bf66ac0c31db163b9141254906808f99ce2a734f7e888753b34c4f7631069cf63e34d10eff1a0501a541a0cd233323392f4b71b1
+  languageName: node
+  linkType: hard
+
 "math-expression-evaluator@npm:^1.2.14":
   version: 1.4.0
   resolution: "math-expression-evaluator@npm:1.4.0"
@@ -12549,6 +12590,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"newify@npm:^1.1.9":
+  version: 1.1.9
+  resolution: "newify@npm:1.1.9"
+  checksum: 10c0/c7649f879e4bd70b365cdbb76900febc387251f88ab745b45925cd2308aad222070e98c36a69f43982611f5388cc7e998949ec6b48c50fa9a5f334eb64ddd5c0
+  languageName: node
+  linkType: hard
+
 "nise@npm:^6.1.1":
   version: 6.1.1
   resolution: "nise@npm:6.1.1"
@@ -12698,7 +12746,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object-assign@npm:^4, object-assign@npm:^4.1.1":
+"object-assign@npm:^2.0.0":
+  version: 2.1.1
+  resolution: "object-assign@npm:2.1.1"
+  checksum: 10c0/c481245a25ab944cc728fe80bfffbc5957f79ba05b4fe579eb06c0cf9af6737f0228b3e96e73c3c29450b2b359231f5ce7714b4e817976518ca134a19cc1bebb
+  languageName: node
+  linkType: hard
+
+"object-assign@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "object-assign@npm:3.0.0"
+  checksum: 10c0/88d1b93de35a2073df309239486829b8b3252ef86196a0d5e06fae20f9e6e5830a33ccaa1c675bd63191eec4310961797ff577fa586583a92a09ece53e668416
+  languageName: node
+  linkType: hard
+
+"object-assign@npm:^4, object-assign@npm:^4.0.1, object-assign@npm:^4.1.1":
   version: 4.1.1
   resolution: "object-assign@npm:4.1.1"
   checksum: 10c0/1f4df9945120325d041ccf7b86f31e8bcc14e73d29171e37a7903050e96b81323784ec59f93f102ec635bcf6fa8034ba3ea0a8c7e69fa202b87ae3b6cec5a414
@@ -13751,6 +13813,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-style-normalizer@npm:^1.2.8":
+  version: 1.2.8
+  resolution: "react-style-normalizer@npm:1.2.8"
+  checksum: 10c0/c77611cd3fa7bba7df04e89bb99eb1e49b5dc36aa6a1b305346feab9927eff78cbeab3ddfedd0aa3d4dcd944bed7f6ddc2d26f723ad97c6b97b9eacedf9d5b91
+  languageName: node
+  linkType: hard
+
 "react-style-singleton@npm:^2.2.2, react-style-singleton@npm:^2.2.3":
   version: 2.2.3
   resolution: "react-style-singleton@npm:2.2.3"
@@ -13977,6 +14046,27 @@ __metadata:
     gopd: "npm:^1.2.0"
     set-function-name: "npm:^2.0.2"
   checksum: 10c0/83b88e6115b4af1c537f8dabf5c3744032cb875d63bc05c288b1b8c0ef37cbe55353f95d8ca817e8843806e3e150b118bc624e4279b24b4776b4198232735a77
+  languageName: node
+  linkType: hard
+
+"region-align@npm:^2.1.2":
+  version: 2.1.3
+  resolution: "region-align@npm:2.1.3"
+  dependencies:
+    object-assign: "npm:^4.0.1"
+    region: "npm:^2.1.2"
+  checksum: 10c0/a1f03fee3617071aff17bacf1edd5efc1470b4f6ec21fa769f42a7520242c37a2924726e5d527515eafebc63e39a81f73f5b7d96021913defdd02ffb0564586b
+  languageName: node
+  linkType: hard
+
+"region@npm:^2.1.2":
+  version: 2.1.2
+  resolution: "region@npm:2.1.2"
+  dependencies:
+    hasown: "npm:~1.x.x"
+    newify: "npm:^1.1.9"
+    object-assign: "npm:^2.0.0"
+  checksum: 10c0/32c999a7829dc4e3f09c33f879424ca7aa1ef2e6a8122d2efeafcd0691ee19cd0ba3240670a43e12211f97ce196348aea26e5328208d91bd15b3a43ea642662d
   languageName: node
   linkType: hard
 
@@ -14612,6 +14702,16 @@ __metadata:
   version: 4.1.0
   resolution: "signal-exit@npm:4.1.0"
   checksum: 10c0/41602dce540e46d599edba9d9860193398d135f7ff72cab629db5171516cfae628d21e7bfccde1bbfdf11c48726bc2a6d1a8fb8701125852fbfda7cf19c6aa83
+  languageName: node
+  linkType: hard
+
+"sinon-chai@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "sinon-chai@npm:4.0.0"
+  peerDependencies:
+    chai: ^5.0.0
+    sinon: ">=4.0.0"
+  checksum: 10c0/c2be6f7d964fd05dcd0870807a1447bc180703aca0cdf5ba7ed21bf2a8a2e0c8d1d2e464b2289982870dfe1b58ae797000cc742e23eeac8dd2f6339dea7d717b
   languageName: node
   linkType: hard
 
@@ -15488,10 +15588,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"to-style@npm:^1.3.3":
+  version: 1.3.3
+  resolution: "to-style@npm:1.3.3"
+  checksum: 10c0/c65d063df922a59ebd484bf89a216b922ccc6d296566424793a6d495d248190520b77e6da67b244ec619f2acde589d9cf7312fe0235d884bc3478eee544891a1
+  languageName: node
+  linkType: hard
+
 "toidentifier@npm:1.0.1":
   version: 1.0.1
   resolution: "toidentifier@npm:1.0.1"
   checksum: 10c0/93937279934bd66cc3270016dd8d0afec14fb7c94a05c72dc57321f8bd1fa97e5bea6d1f7c89e728d077ca31ea125b78320a616a6c6cd0e6b9cb94cb864381c1
+  languageName: node
+  linkType: hard
+
+"tooltip@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "tooltip@npm:1.6.1"
+  dependencies:
+    clone: "npm:^1.0.2"
+    contains: "npm:0.1.1"
+    escape-html: "npm:^1.0.2"
+    matches-selector: "npm:^1.0.0"
+    object-assign: "npm:^3.0.0"
+    react-style-normalizer: "npm:^1.2.8"
+    region-align: "npm:^2.1.2"
+    to-style: "npm:^1.3.3"
+  checksum: 10c0/7af350e80368a20a577cc58eb452ee133323f076ea0829bbe7167889a01dcf66b7fa3f27d6c6efd4bb88f6f93b1532bfd0754da908f01381dc4136119a56ea3b
   languageName: node
   linkType: hard
 
