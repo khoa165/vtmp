@@ -20,6 +20,7 @@ import {
 import { VTMPLogo } from '@/components/base/vtmp-logo';
 import { Avatar } from '@/components/base/avatar';
 import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
+import { LogoutButton } from '@/components/base/logout-button';
 import { SystemRole } from '@vtmp/common/constants';
 import { Link, Navigate } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
@@ -111,6 +112,13 @@ export const InternalToolsSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <Avatar />
+              <LogoutButton
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start"
+              >
+                Logout
+              </LogoutButton>
               <SidebarTrigger />
             </SidebarMenu>
           </SidebarGroupContent>
