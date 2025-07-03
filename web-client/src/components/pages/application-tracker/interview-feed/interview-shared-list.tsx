@@ -120,7 +120,7 @@ export const InterviewSharedList = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 p-6 mt-5 space-y-3">
+    <div className="grid grid-cols-1 md:grid-cols-3 p-6 mt-5 space-x-5">
       <div className="col-span-1 md:col-span-2">
         {(Array.isArray(sharedInterviewData) ? sharedInterviewData : [])
           .sort(
