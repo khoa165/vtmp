@@ -1,9 +1,9 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import { VisualizationService } from '@/services/visualization.service';
 
 export const VisualizationController = {
-  getVisualizationStats: async (res: Response) => {
+  getVisualizationStats: async (_req: Request, res: Response) => {
     const visualizationStats =
       await VisualizationService.getVisualizationStats();
 
