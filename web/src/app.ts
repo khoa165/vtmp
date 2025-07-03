@@ -5,7 +5,6 @@ import { xss } from 'express-xss-sanitizer';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
-import { connectDB } from '@/config/database';
 import { rateLimitMiddleware } from '@/middlewares/rate-limit.middleware';
 import { sanitizeMiddileWare } from '@/middlewares/sanitize.middleware';
 import { routeErrorHandler } from '@/middlewares/utils';
@@ -14,9 +13,6 @@ import routes from '@/routes/index';
 dotenv.config();
 
 const app: Express = express();
-
-// Connect to database
-connectDB();
 
 // Global middlewares
 app.use(cors());
