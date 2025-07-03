@@ -100,14 +100,9 @@ const AdminInterviewFilter = z
 
 const ShareInterviewSchema = z
   .object({
-    isDisclosed: z.boolean().optional(),
+    isDisclosed: z.boolean(),
   })
-  .strict()
-  .transform((data) =>
-    Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== undefined)
-    )
-  );
+  .strict();
 
 export const InterviewController = {
   createInterview: async (req: Request, res: Response) => {
@@ -217,7 +212,7 @@ export const InterviewController = {
       interviewId,
       userId,
       newUpdate: {
-        isDisclosed: isDisclosed,
+        isDisclosed,
       },
       isShare: true,
     });
