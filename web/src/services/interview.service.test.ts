@@ -416,7 +416,7 @@ describe('InterviewService', () => {
 
       const interviews = await InterviewService.getInterviews({
         filters: {
-          companyName: interview_A2.companyName,
+          companyName: interview_A2.companyName || 'Meta',
           status: interview_A2.status,
           types: interview_A2.types,
         },
