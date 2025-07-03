@@ -1,10 +1,6 @@
 import { UserRepository } from '@/repositories/user.repository';
 import { getEmailService } from '@/utils/email';
-import {
-  DuplicateResourceError,
-  UnauthorizedError,
-  ResourceNotFoundError,
-} from '@/utils/errors';
+import { DuplicateResourceError, UnauthorizedError } from '@/utils/errors';
 import { JWTUtils } from '@vtmp/server-common/utils';
 import bcrypt from 'bcryptjs';
 import { omit } from 'remeda';
@@ -69,7 +65,7 @@ export const AuthService = {
       includePasswordField: true,
     });
     if (!user) {
-      throw new ResourceNotFoundError('User not found', { email });
+      throw new UnauthorizedError('User not found', { email });
     }
 
     const passwordMatched = await bcrypt.compare(
@@ -94,7 +90,7 @@ export const AuthService = {
   requestPasswordReset: async ({ email }: { email: string }) => {
     const user = await UserRepository.getUserByEmail(email);
     if (!user) {
-      throw new ResourceNotFoundError('User not found', { email });
+      throw new UnauthorizedError('User not found', { email });
     }
 
     const resetToken = JWTUtils.createTokenWithPayload(
@@ -137,7 +133,7 @@ export const AuthService = {
     });
 
     if (!user) {
-      throw new ResourceNotFoundError('User not found', {
+      throw new UnauthorizedError('User not found', {
         userId: decoded.id,
         context: 'resetPassword',
       });

@@ -115,7 +115,7 @@ describe('AuthController', () => {
         .post('/api/auth/login')
         .send({ email: 'notfound@gmail.com', password: 'test password' });
 
-      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
 
       const errors = res.body.errors;
       expect(errors[0].message).to.equal('User not found');

@@ -6,11 +6,7 @@ import bcrypt from 'bcryptjs';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import {
-  DuplicateResourceError,
-  ResourceNotFoundError,
-  UnauthorizedError,
-} from '@/utils/errors';
+import { DuplicateResourceError, UnauthorizedError } from '@/utils/errors';
 import assert from 'assert';
 import { expect } from 'chai';
 import { SystemRole } from '@vtmp/common/constants';
@@ -48,7 +44,7 @@ describe('AuthService', () => {
         password: 'test password',
       };
       await expect(AuthService.login(userData)).eventually.rejectedWith(
-        ResourceNotFoundError
+        UnauthorizedError
       );
     });
 
@@ -148,7 +144,7 @@ describe('AuthService', () => {
       const userData = { email: 'fake@gmail.com' };
       await expect(
         AuthService.requestPasswordReset(userData)
-      ).eventually.rejectedWith(ResourceNotFoundError);
+      ).eventually.rejectedWith(UnauthorizedError);
     });
 
     it('should send password reset email successfully', async () => {
@@ -251,7 +247,7 @@ describe('AuthService', () => {
           token: invalidToken,
           newPassword: 'newpassword',
         })
-      ).eventually.rejectedWith(ResourceNotFoundError);
+      ).eventually.rejectedWith(UnauthorizedError);
     });
 
     it('should throw error if the new password is the same as the old one', async () => {
