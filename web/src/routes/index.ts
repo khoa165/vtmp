@@ -8,16 +8,18 @@ import { InvitationRoutes } from '@/routes/invitation.routes';
 import { JobPostingRoutes } from '@/routes/job-posting.routes';
 import { LinkRoutes } from '@/routes/link.routes';
 import { UserRoutes } from '@/routes/user.routes';
+import { VisualizationRoutes } from '@/routes/visualization.routes';
 
 const router = Router();
 
-router.use('/users', UserRoutes); // User module
-router.use('/invitations', InvitationRoutes); // Invitation module
-router.use('/applications', ApplicationRoutes); // Application module
-router.use('/interviews', InterviewRoutes); // Interview module
-router.use('/job-postings', JobPostingRoutes); // Job Posting module
-router.use('/links', LinkRoutes); // Link module
-router.use('/auth', AuthRoutes); // Authentication module
-router.use('/cron', CronRoutes); // Cron job module
+router.use('/users', UserRoutes);
+router.use('/invitations', InvitationRoutes);
+router.use('/applications', ApplicationRoutes);
+router.use('/interviews', InterviewRoutes);
+router.use('/job-postings', JobPostingRoutes);
+router.use('/links', LinkRoutes);
+router.use('/auth', AuthRoutes);
+router.use('/cron', CronRoutes);
+router.use('/visualization', VisualizationRoutes);
 
 export default router;

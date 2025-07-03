@@ -113,7 +113,12 @@ export default tseslint.config(
       ],
       'export/sort-exports': [
         'error',
-        { sortDir: 'asc', ignoreCase: true, sortExportKindFirst: 'type' },
+        {
+          sortDir: 'asc',
+          ignoreCase: true,
+          sortExportKindFirst: 'type',
+          pattern: '**/index.ts',
+        },
       ],
     },
   },
