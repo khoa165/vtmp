@@ -19,6 +19,9 @@ web-client/src/blogs/content/ @khoa165
 web-client/src/components/base/ @khoa165 @sonmac1203 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 web-client/src/components/pages/ @khoa165 @sonmac1203 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 
+link-processing-service/ @khoa165 @dsmai @hongantran3804 @sarah-vo
+apps/mongo-migrations @khoa165 @dsmai
+
 .gitattributes @khoa165 @dsmai
 .gitignore @khoa165 @dsmai
 .prettierignore @khoa165 @dsmai
