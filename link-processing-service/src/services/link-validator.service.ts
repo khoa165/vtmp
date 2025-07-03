@@ -5,7 +5,10 @@ import retry from 'retry';
 import { LinkStatus, LinkProcessingFailureStage } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
-import { executeWithRetry, httpErrorNoRetry } from '@/helpers/retry.helper';
+import {
+  executeWithRetry,
+  httpErrorNoShortRetry,
+} from '@/helpers/retry.helper';
 import {
   SubmittedLink,
   ValidatedLink,
@@ -102,7 +105,7 @@ const LinkValidatorService = {
         return (
           error instanceof LinkValidationError &&
           error.statusCode !== undefined &&
-          !httpErrorNoRetry.includes(error.statusCode)
+          !httpErrorNoShortRetry.includes(error.statusCode)
         );
       }
     );
