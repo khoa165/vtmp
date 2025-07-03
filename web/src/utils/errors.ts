@@ -51,6 +51,12 @@ export class BadRequest extends ApplicationSpecificError {
 
 export class LinkProcessingBadRequest extends BadRequest {}
 
+export class EmailError extends ApplicationSpecificError {
+  constructor(message: string, metadata: object) {
+    super(message, metadata, 500);
+  }
+}
+
 export const handleError = (error: unknown) => {
   if (error instanceof ZodError) {
     return {
