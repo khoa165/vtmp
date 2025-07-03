@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Check, Save, Share2, Trash2 } from 'lucide-react';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -36,16 +35,29 @@ import {
 } from '@/components/pages/application-tracker/applications/validation';
 import { interviewTypeOptions } from '@/utils/helpers';
 
-export const InterviewUpdateForm = ({
+export const InterviewForm = ({
   currentInterview,
+  createInterviewFn,
   updateInterviewFn,
   shareInterviewFn,
-  unsharedInterviewFn,
+  unshareInterviewFn,
   deleteInterviewFn,
+  applicationId,
 }: {
-  currentInterview: {
+  currentInterview?: {
     _id: string;
   } & InterviewData;
+  createInterviewFn: ({
+    body,
+  }: {
+    body: {
+      applicationId: string;
+      interviewOnDate: Date;
+      types: InterviewType[];
+      status: InterviewStatus;
+      note?: string;
+    };
+  }) => void;
   updateInterviewFn: ({
     interviewId,
     body,
@@ -62,42 +74,22 @@ export const InterviewUpdateForm = ({
       isDisclosed: boolean;
     };
   }) => void;
-  unsharedInterviewFn: ({ interviewId }: { interviewId: string }) => void;
+  applicationId: string;
+  unshareInterviewFn: ({ interviewId }: { interviewId: string }) => void;
   deleteInterviewFn: (interviewId: string) => void;
 }) => {
-  const {
-    _id: interviewId,
-    types,
-    status,
-    interviewOnDate,
-    note,
-    sharedAt,
-    isDisclosed,
-  } = currentInterview;
-
   const interviewForm = useForm<z.infer<typeof InterviewFormSchema>>({
     resolver: zodResolver(InterviewFormSchema),
     defaultValues: {
-      types: types,
-      status: status,
-      interviewOnDate: interviewOnDate,
-      note: note,
+      types: currentInterview?.types ?? [],
+      status: currentInterview?.status ?? InterviewStatus.PENDING,
+      interviewOnDate: currentInterview?.interviewOnDate ?? new Date(),
+      note: currentInterview?.note ?? '',
     },
   });
 
-  useEffect(() => {
-    if (currentInterview) {
-      interviewForm.reset({
-        types: currentInterview.types,
-        status: currentInterview.status,
-        interviewOnDate: currentInterview.interviewOnDate,
-        note: currentInterview.note,
-      });
-    }
-  }, [currentInterview]);
-
   return (
-    <div className="rounded-xl bg-background border border-background p-6 mb-5 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3">
+    <div className="rounded-xl bg-background border border-background p-6 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3">
       <Form {...interviewForm}>
         <div>
           <FormField
@@ -206,206 +198,61 @@ export const InterviewUpdateForm = ({
           />
         </div>
 
-        <div className="flex justify-between pt-2 px-1">
-          <Button
-            type="button"
-            className="flex items-center h-7.5 gap-1.5 rounded-sm border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
-            variant="secondary"
-            onClick={() => deleteInterviewFn(interviewId)}
-          >
-            <Trash2 className="scale-85" />
-            Delete
-          </Button>
-          <div className="flex items-center gap-2">
-            <InterviewSharingButton
-              interviewId={interviewId}
-              shareInterviewFn={shareInterviewFn}
-              unsharedInterviewFn={unsharedInterviewFn}
-              sharedAt={sharedAt}
-              isDisclosed={isDisclosed}
-            />
+        {currentInterview ? (
+          <div className="flex justify-between pt-2 px-1">
+            <Button
+              type="button"
+              className="flex items-center h-7.5 gap-1.5 rounded-sm border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
+              variant="secondary"
+              onClick={() => deleteInterviewFn(currentInterview?._id)}
+            >
+              <Trash2 className="scale-85" />
+              Delete
+            </Button>
+            <div className="flex items-center gap-2">
+              <InterviewSharingButton
+                interviewId={currentInterview?._id}
+                shareInterviewFn={shareInterviewFn}
+                unshareInterviewFn={unshareInterviewFn}
+                sharedAt={currentInterview?.sharedAt}
+                isDisclosed={currentInterview?.isDisclosed}
+              />
+              <Button
+                type="submit"
+                onClick={() =>
+                  updateInterviewFn({
+                    interviewId: currentInterview?._id,
+                    body: {
+                      ...interviewForm.getValues(),
+                    },
+                  })
+                }
+                className="flex items-center h-7.5 gap-1.5 rounded-sm border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
+              >
+                <Save className="scale-85" />
+                Save
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-end pt-2 pr-1">
             <Button
               type="submit"
-              onClick={() =>
-                updateInterviewFn({
-                  interviewId: interviewId,
+              onClick={() => {
+                createInterviewFn({
                   body: {
                     ...interviewForm.getValues(),
+                    applicationId,
                   },
-                })
-              }
-              className="flex items-center h-7.5 gap-1.5 rounded-sm border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
+                });
+              }}
+              className="h-7.5 gap-1.5 rounded-sm border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
             >
               <Save className="scale-85" />
               Save
             </Button>
           </div>
-        </div>
-      </Form>
-    </div>
-  );
-};
-
-export const InterviewCreateForm = ({
-  applicationId,
-  createInterviewFn,
-}: {
-  applicationId: string;
-  createInterviewFn: ({
-    body,
-  }: {
-    body: {
-      applicationId: string;
-      interviewOnDate: Date;
-      types: InterviewType[];
-      status: InterviewStatus;
-      note?: string;
-    };
-  }) => void;
-}) => {
-  const interviewForm = useForm<z.infer<typeof InterviewFormSchema>>({
-    resolver: zodResolver(InterviewFormSchema),
-    defaultValues: {
-      types: [],
-      status: InterviewStatus.PENDING,
-      interviewOnDate: new Date(),
-      note: '',
-    },
-  });
-
-  return (
-    <div className="rounded-xl bg-neutral-700 border border-background p-6 mb-4 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3">
-      <Form {...interviewForm}>
-        <div>
-          <FormField
-            control={interviewForm.control}
-            name="types"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Interview Types
-                </FormLabel>
-                <FormControl>
-                  <MultiSelect
-                    {...field}
-                    selected={(field.value ?? []).map(
-                      (type: InterviewType) => ({
-                        label: type.toString(),
-                        value: type,
-                      })
-                    )}
-                    placeholder="Types"
-                    options={interviewTypeOptions}
-                    onChange={(options) =>
-                      field.onChange(options.map((opt) => opt.value))
-                    }
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="flex flex-row gap-6">
-          <div className="flex-1">
-            <FormField
-              control={interviewForm.control}
-              name="status"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Status
-                    </FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value ?? InterviewStatus.PENDING}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="w-full rounded-lg p-2 border border-input px-3 py-2 text-sm shadow-sm">
-                          <span>{field.value ?? InterviewStatus.PENDING}</span>
-                        </SelectTrigger>
-                        <SelectContent className="z-50">
-                          {Object.values(InterviewStatus)
-                            .filter(
-                              (value) => value !== interviewForm.watch('status')
-                            )
-                            .map((dropdownStatus, index) => (
-                              <SelectItem key={index} value={dropdownStatus}>
-                                {dropdownStatus}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-          </div>
-
-          <div className="flex-1">
-            <FormField
-              control={interviewForm.control}
-              name="interviewOnDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Interview Date
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      value={new Date(field.value).toISOString().split('T')[0]}
-                      placeholder="Date of interview"
-                      type="date"
-                      onChange={(e) => field.onChange(new Date(e.target.value))}
-                      className="w-full rounded-lg border border-input px-3 py-2 text-sm shadow-sm focus:outline-none"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        <div>
-          <FormField
-            control={interviewForm.control}
-            name="note"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Note
-                </FormLabel>
-                <FormControl>
-                  <Textarea {...field} placeholder="Add interview note" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="flex justify-end pt-2 pr-1">
-          <Button
-            type="submit"
-            onClick={() => {
-              createInterviewFn({
-                body: {
-                  ...interviewForm.getValues(),
-                  applicationId,
-                },
-              });
-            }}
-            className="h-7.5 gap-1.5 rounded-sm border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
-          >
-            <Save className="scale-85" />
-            Save
-          </Button>
-        </div>
+        )}
       </Form>
     </div>
   );
@@ -414,7 +261,7 @@ export const InterviewCreateForm = ({
 const InterviewSharingButton = ({
   interviewId,
   shareInterviewFn,
-  unsharedInterviewFn,
+  unshareInterviewFn,
   sharedAt,
   isDisclosed,
 }: {
@@ -423,7 +270,7 @@ const InterviewSharingButton = ({
     interviewId: string;
     body: { isDisclosed: boolean };
   }) => void;
-  unsharedInterviewFn: ({ interviewId }: { interviewId: string }) => void;
+  unshareInterviewFn: ({ interviewId }: { interviewId: string }) => void;
   sharedAt?: Date;
   isDisclosed?: boolean;
 }) => {
@@ -451,7 +298,7 @@ const InterviewSharingButton = ({
       label: 'Unshare',
       shouldShow: !!sharedAt,
       onClick: () => {
-        unsharedInterviewFn({ interviewId });
+        unshareInterviewFn({ interviewId });
       },
     },
   ];

@@ -40,6 +40,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "framer-motion": "^12.23.0",
     "konva": "^9.3.16",
     "lucide-react": "^0.503.0",
     "moment": "^2.29.4",

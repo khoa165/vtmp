@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 
 import { Button } from '@/components/base/button';
@@ -10,10 +11,7 @@ import {
   useShareInterview,
   useUnshareInterview,
 } from '@/components/pages/application-tracker/applications/hooks/applications';
-import {
-  InterviewUpdateForm,
-  InterviewCreateForm,
-} from '@/components/pages/application-tracker/applications/interview-form';
+import { InterviewForm } from '@/components/pages/application-tracker/applications/interview-form';
 
 export const InterviewList = ({ applicationId }: { applicationId: string }) => {
   const {
@@ -68,13 +66,44 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
         </Button>
       </div>
 
-      <div>
-        {showCreateForm && (
-          <InterviewCreateForm
-            applicationId={applicationId}
-            createInterviewFn={createInterviewFn}
-          />
-        )}
+      <div className="list-container gap-3">
+        <AnimatePresence>
+          {showCreateForm && (
+            <motion.div
+              layout
+              className="relative"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{
+                height: 'auto',
+                opacity: 1,
+                transition: {
+                  type: 'spring',
+                  bounce: 0.3,
+                  opacity: { delay: 0.5, duration: 0.3 },
+                },
+              }}
+              exit={{
+                height: 0,
+                opacity: 0,
+                transition: {
+                  type: 'spring',
+                  duration: 0.8,
+                  opacity: { duration: 0.4 },
+                },
+              }}
+            >
+              <InterviewForm
+                applicationId={applicationId}
+                createInterviewFn={createInterviewFn}
+                updateInterviewFn={updateInterviewFn}
+                shareInterviewFn={shareInterviewFn}
+                unshareInterviewFn={unshareInterviewFn}
+                deleteInterviewFn={deleteInterviewFn}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {(Array.isArray(interviewsData) ? interviewsData : [])
           .sort(
             (a, b) =>
@@ -82,12 +111,14 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
               new Date(a.interviewOnDate).getTime()
           )
           .map((interview) => (
-            <InterviewUpdateForm
+            <InterviewForm
+              applicationId={applicationId}
               key={interview._id}
               currentInterview={interview}
+              createInterviewFn={createInterviewFn}
               updateInterviewFn={updateInterviewFn}
               shareInterviewFn={shareInterviewFn}
-              unsharedInterviewFn={unshareInterviewFn}
+              unshareInterviewFn={unshareInterviewFn}
               deleteInterviewFn={deleteInterviewFn}
             />
           ))}
