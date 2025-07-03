@@ -8,6 +8,7 @@ scripts/ @khoa165
 
 packages/ @khoa165 @dsmai
 packages/common/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
+packages/mongo/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 packages/server-common/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 
 web/ @khoa165 @dsmai @Euclid0192 @hongantran3804
