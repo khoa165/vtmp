@@ -1,19 +1,20 @@
-import { useMemo, useState } from 'react';
 import { SortingState } from '@tanstack/react-table';
-import { InvitationTable } from '@/components/pages/admins/users/invitation-dashboard/invitation-table';
-import { invitationsTableColumns } from '@/components/pages/admins/users/invitation-dashboard/invitations-table-columns';
+import { useMemo, useState } from 'react';
+
+import { Skeleton } from '@/components/base/skeleton';
 import {
   useGetInvitations,
   useSendInvitation,
   useRevokeInvitation,
-} from '@/components/pages/admins/invitations/hooks/useInvitation';
-import { Skeleton } from '@/components/base/skeleton';
+} from '@/components/pages/admins/invitations/hooks/invitations';
+import { InvitationTable } from '@/components/pages/admins/invitations/invitation-table';
+import { invitationsTableColumns } from '@/components/pages/admins/invitations/invitations-table-columns';
 import { CustomError } from '@/utils/errors';
 
 export const InvitationContainer = (): React.JSX.Element | null => {
   const { isLoading, error, data: invitations } = useGetInvitations();
   const { mutate: revokeInvitation } = useRevokeInvitation();
-  const { mutate: sendInvitation } = useSendInvitation();
+  const { mutate: sendInvitation } = useSendInvitation({});
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
