@@ -81,7 +81,7 @@ export const InterviewRepository = {
     }
 
     if (filters?.types) {
-      dynamicMatch.types = { $eq: filters.types };
+      dynamicMatch.types = { $all: filters.types };
     }
 
     if (filters?.status) {
@@ -134,7 +134,10 @@ export const InterviewRepository = {
       );
     }
 
-    return await InterviewModel.aggregate(pipeline).session(session || null);
+    if (session) {
+      return await InterviewModel.aggregate(pipeline).session(session);
+    }
+    return await InterviewModel.aggregate(pipeline);
   },
 
   updateInterviewById: async ({
