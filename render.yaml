@@ -75,10 +75,6 @@ services:
     branch: main
     plan: free
     envVars:
-      - key: LOGIN_PASSWORD
-        sync: false
-      - key: LOGIN_EMAIL
-        sync: false
       - key: DISCORD_PUBLIC_KEY
         sync: false
       - key: DISCORD_BOT_TOKEN
@@ -88,6 +84,12 @@ services:
       - key: PORT
         sync: false
       - key: API_URL
+        sync: false
+      - key: SERVICE_JWT_SECRET
+        sync: false
+      - key: SERVICE_NAME
+        sync: false
+      - key: AUDIENCE_SERVICE_NAME
         sync: false
     region: oregon
     healthCheckPath: /health
