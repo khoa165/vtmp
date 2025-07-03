@@ -5,20 +5,35 @@ services:
       context: .
       dockerfile: web/Dockerfile
       args:
-        - NODE_ENV=development
+        - BUILD_ENV=development
     command: yarn dev # override the default 'CMD ["yarn", "start"]' in web/Dockerfile. This is for hot-reloading in dev mode
     ports:
       - '8000:8000'
     env_file:
       - ./web/.env
     environment:
-      - MONGO_URI=mongodb://mongo:27017/vtmp-db # This will override MONGO_URI loaded from .env above
-    depends_on:
-      - mongo
+      - LINK_PROCESSING_ENDPOINT=http://link-processing-service:8080/2015-03-31/functions/function/invocations
     volumes:
       # This creates bind mount between local ./web/src and the container's /app/web/src
       # "./web/src" is relative to root (where the command "docker compose up" is run)
       - ./web/src:/app/web/src
+
+  link-processing-service:
+    container_name: link-processor
+    build:
+      context: .
+      dockerfile: link-processing-service/Dockerfile
+      args:
+        - BUILD_ENV=development
+    platform: linux/amd64
+    ports:
+      - '9000:8080'
+    env_file:
+      - ./link-processing-service/.env
+    environment:
+      - API_URL=http://web:8000
+    depends_on:
+      - web
 
   discord-service:
     container_name: discord
@@ -26,7 +41,7 @@ services:
       context: .
       dockerfile: discord-service/Dockerfile
       args:
-        - NODE_ENV=development
+        - BUILD_ENV=development
     command: yarn dev
     ports:
       - '4000:4000'
@@ -67,8 +82,30 @@ services:
     image: mongo:latest
     ports:
       - '27017:27017'
+    # Enable replica set, which is required to use transaction
+    # Run multiple commands in sequence.
+    # - Start mongod in the background, wait for it to be ready
+    # - Then run the replica set initiation with rs.initiate()
+    command: >
+      bash -c "
+        mongod --replSet rs0 --bind_ip_all --port 27017 &
+        until mongosh --eval \"db.adminCommand('ping')\"; do
+          echo 'Waiting for MongoDB to start...'
+          sleep 2
+        done
+        mongosh --eval \"
+          try {
+            rs.status().ok || rs.initiate({ _id: 'rs0', members: [ { _id: 0, host: 'mongo:27017' } ] });
+          } catch(e) {
+            rs.initiate({ _id: 'rs0', members: [ { _id: 0, host: 'mongo:27017' } ] });
+          }
+        \"
+        wait
+      "
     volumes:
       - mongo_data:/data/db
+    profiles:
+      - local_mongo
 
 volumes:
   mongo_data:

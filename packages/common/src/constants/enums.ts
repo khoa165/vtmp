@@ -41,10 +41,10 @@ export enum JobPostingRegion {
   CANADA = 'CANADA',
 }
 
-export enum LinkStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
+export enum LinkRegion {
+  US = 'US',
+  CANADA = 'CANADA',
+  UNKNOWN = 'UNKNOWN',
 }
 
 export enum SystemRole {
@@ -71,6 +71,8 @@ export enum Permission {
   VIEW_INTERVIEW = 'VIEW_INTERVIEW',
   VIEW_ALL_DATA = 'VIEW_ALL_DATA',
   MANAGE_INTERVIEW = 'MANAGE_INTERVIEW',
+
+  VIEW_VISUALIZATION = 'VIEW_VISUALIZATION',
 }
 
 export enum InterestLevel {
@@ -199,22 +201,45 @@ export enum Department {
   PD = 'PD',
 }
 
-export enum JobTitle {
-  SOFTWARE_ENGINEER = 'SOFTWARE_ENGINEER',
-  DATA_SCIENTIST = 'DATA_SCIENTIST',
-  PRODUCT_DESIGNER = 'PRODUCT_DESIGNER',
-  DATA_ENGINEER = 'DATA_ENGINEER',
-}
-
 export enum JobFunction {
   SOFTWARE_ENGINEER = 'SOFTWARE_ENGINEER',
   DATA_SCIENTIST = 'DATA_SCIENTIST',
   PRODUCT_DESIGNER = 'PRODUCT_DESIGNER',
   DATA_ENGINEER = 'DATA_ENGINEER',
+  UNKNOWN = 'UNKNOWN',
 }
 
 export enum JobType {
   INTERNSHIP = 'INTERNSHIP',
   NEW_GRAD = 'NEW_GRAD',
   INDUSTRY = 'INDUSTRY',
+  UNKNOWN = 'UNKNOWN',
+}
+
+export enum LinkStatus {
+  // ---- MUST NOT CONTAIN LinkProcessingFailureStage ----
+  // New links to process.
+  PENDING_PROCESSING = 'PENDING_PROCESSING',
+  // link finished processing successfully, pending manual review.
+  PENDING_ADMIN_REVIEW = 'PENDING_ADMIN_REVIEW',
+  // admin manually approved link
+  ADMIN_APPROVED = 'ADMIN_APPROVED',
+  // admin manually rejected link
+  ADMIN_REJECTED = 'ADMIN_REJECTED',
+
+  // ---- MUST CONTAIN LinkProcessingFailureStage ----
+  // Links to retry after failing any processing stage
+  PENDING_RETRY = 'PENDING_RETRY',
+  // failed to process link even after retry (ex: attempsCount > 4). Manual intervention needed (e.g. 403 Forbidden)
+  PIPELINE_FAILED = 'PIPELINE_FAILED',
+  // when link should no longer be processed (e.g. virus link), abandon any long retry
+  PIPELINE_REJECTED = 'PIPELINE_REJECTED',
+}
+
+export enum LinkProcessingFailureStage {
+  PRE_VALIDATION_FAILED = 'PRE_VALIDATION_FAILED',
+  VALIDATION_FAILED = 'VALIDATION_FAILED',
+  SCRAPING_FAILED = 'SCRAPING_FAILED',
+  EXTRACTION_FAILED = 'EXTRACTION_FAILED',
+  UNKNOWN_FAILED = 'UNKNOWN_FAILED',
 }

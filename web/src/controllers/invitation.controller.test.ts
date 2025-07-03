@@ -1,4 +1,5 @@
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { beforeEach, describe } from 'mocha';
 import { UserRepository } from '@/repositories/user.repository';
 import app from '@/app';
@@ -12,7 +13,6 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { InvitationStatus } from '@vtmp/common/constants';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { addDays, subDays } from 'date-fns';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import jwt from 'jsonwebtoken';
@@ -47,6 +47,7 @@ describe('InvitationController', () => {
   const mockAdminId = getNewMongoId();
 
   const mockOneInvitation = {
+    receiverName: mockMenteeName,
     receiverEmail: 'mentee@viettech.com',
     sender: mockAdminId,
     token: 'token-for-invitation',
@@ -55,6 +56,7 @@ describe('InvitationController', () => {
 
   const mockMultipleInvitations = [
     {
+      receiverName: 'Mentee 1 Viettech',
       receiverEmail: 'mentee1@viettech.com',
       sender: mockAdminId,
       token: 'token-for-invitation',
@@ -62,6 +64,7 @@ describe('InvitationController', () => {
     },
 
     {
+      receiverName: 'Mentee 2 Viettech',
       receiverEmail: 'mentee2@viettech.com',
       sender: mockAdminId,
       token: 'token-for-invitation',
@@ -69,6 +72,7 @@ describe('InvitationController', () => {
     },
 
     {
+      receiverName: 'Mentee 3 Viettech',
       receiverEmail: 'mentee3@viettech.com',
       sender: mockAdminId,
       token: 'token-for-invitation',
@@ -123,6 +127,7 @@ describe('InvitationController', () => {
 
       expect(
         res.body.data.map((inv: IInvitation) => ({
+          receiverName: inv.receiverName,
           receiverEmail: inv.receiverEmail,
           sender: inv.sender,
           token: inv.token,
@@ -169,7 +174,7 @@ describe('InvitationController', () => {
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
-
+        
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Receiver Name is required');
     });
@@ -197,7 +202,6 @@ describe('InvitationController', () => {
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
-
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('SenderId is required');
     });
@@ -330,6 +334,17 @@ describe('InvitationController', () => {
       expect(res.body.errors[0].message).to.equal('Invitation not found');
     });
 
+    it('should return error message when invitationId is invalid format', async () => {
+      const res = await request(app)
+        .put(`/api/invitations/invalid-id-format/revoke`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`);
+
+      expect(res.body.errors[0].message).to.equal(
+        'Invalid invitationId format'
+      );
+    });
+
     it('should return error message when invitation is not pending', async () => {
       const newInvitation = await InvitationRepository.createInvitation({
         ...mockOneInvitation,
@@ -398,8 +413,17 @@ describe('InvitationController', () => {
         .send({ token: '' })
         .set('Accept', 'application/json');
 
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('jwt must be provided');
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Token is required');
+    });
+
+    it('should return error for token with invalid type', async () => {
+      const res = await request(app)
+        .post(`/api/auth/validate`)
+        .send({ token: 123 })
+        .set('Accept', 'application/json');
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
     });
 
     it('should return error message for invalid token', async () => {
