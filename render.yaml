@@ -24,6 +24,10 @@ services:
         sync: false
       - key: SERVICE_NAME
         sync: false
+      - key: LINK_PROCESSING_ENDPOINT
+        sync: false
+      - key: NODE_ENV
+        sync: false
     region: oregon
     buildCommand:
       yarn install && yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace
@@ -32,9 +36,6 @@ services:
     autoDeployTrigger: off
     previews:
       generation: off # Disable service previews
-    buildFilter:
-      ignoredPaths:
-        - web-client/**
     healthCheckPath: /health
 
   - type: web
@@ -66,9 +67,6 @@ services:
     autoDeployTrigger: off
     previews:
       generation: off # Disable service previews
-    buildFilter:
-      ignoredPaths:
-        - web/**
 
   - type: web
     name: vtmp-discord-service
@@ -77,10 +75,6 @@ services:
     branch: main
     plan: free
     envVars:
-      - key: LOGIN_PASSWORD
-        sync: false
-      - key: LOGIN_EMAIL
-        sync: false
       - key: DISCORD_PUBLIC_KEY
         sync: false
       - key: DISCORD_BOT_TOKEN
@@ -91,6 +85,12 @@ services:
         sync: false
       - key: API_URL
         sync: false
+      - key: SERVICE_JWT_SECRET
+        sync: false
+      - key: SERVICE_NAME
+        sync: false
+      - key: AUDIENCE_SERVICE_NAME
+        sync: false
     region: oregon
     healthCheckPath: /health
     dockerContext: .
@@ -98,9 +98,6 @@ services:
     autoDeployTrigger: off
     previews:
       generation: off # Disable service previews
-    buildFilter:
-      paths:
-        - discord-service/**
     rootDir: .
 
 version: '1'
