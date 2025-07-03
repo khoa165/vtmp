@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
+
 import { parseEnvConfig } from '@vtmp/common/utils';
 
 dotenv.config();
@@ -16,5 +17,10 @@ const discordConfigSchema = z.object({
 });
 
 export const EnvConfig = {
-  get: () => parseEnvConfig({ env: process.env, schema: discordConfigSchema }),
+  get: () =>
+    parseEnvConfig({
+      env: process.env,
+      schema: discordConfigSchema,
+      workspaceName: 'discord-service',
+    }),
 };

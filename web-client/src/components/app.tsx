@@ -15,7 +15,7 @@ import { Mentorship2025Proposal } from './proposal';
 import LoginPage from '@/components/pages/auth/login';
 import { PageWithSidebar } from '@/components/layout/page-with-sidebar';
 import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
-import { UserInvitationPage } from './pages/admins/users/invitation-dashboard/invitation-page';
+import { UserInvitationPage } from '@/components/pages/admins/users/invitation-dashboard/invitation-page';
 import { JobPostingsPage } from '@/components/pages/application-tracker/job-postings/job-postings-page';
 import { PageWithToast } from '@/components/layout/page-with-toast';
 import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
@@ -84,7 +84,7 @@ export const App = () => {
               path="/admin"
               element={<PageWithPermission roles={[SystemRole.ADMIN]} />}
             >
-              <Route path="user-invitation" element={<UserInvitationPage />} />
+              <Route path="invitations" element={<UserInvitationPage />} />
               <Route path="links" element={<AdminLinksPage />} />
               <Route path="send-invitation" element={<SendInvitationPage />} />
             </Route>
