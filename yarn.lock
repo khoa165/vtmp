@@ -4237,6 +4237,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^24.0.10":
+  version: 24.0.10
+  resolution: "@types/node@npm:24.0.10"
+  dependencies:
+    undici-types: "npm:~7.8.0"
+  checksum: 10c0/11dbd869d3e12ee7b7818113588950e538783e45d227122174c763cb05977defbd1e01b44b5ccd4b8997e42c3df7f7b83c6ee05cfa43d924c8882886bc5f6582
+  languageName: node
+  linkType: hard
+
 "@types/nodemailer@npm:^6":
   version: 6.4.17
   resolution: "@types/nodemailer@npm:6.4.17"
@@ -5714,6 +5723,31 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@vtmp/mongo-migrations@workspace:apps/mongo-migrations":
+  version: 0.0.0-use.local
+  resolution: "@vtmp/mongo-migrations@workspace:apps/mongo-migrations"
+  dependencies:
+    "@types/node": "npm:^24.0.10"
+    "@vtmp/common": "npm:1.0.0"
+    "@vtmp/mongo": "npm:1.0.0"
+    dotenv: "npm:^17.0.1"
+    ts-node: "npm:^10.9.2"
+    tsc-alias: "npm:^1.8.16"
+    tsx: "npm:^4.20.3"
+    typescript: "npm:^5.8.3"
+  languageName: unknown
+  linkType: soft
+
+"@vtmp/mongo@npm:1.0.0, @vtmp/mongo@workspace:packages/mongo":
+  version: 0.0.0-use.local
+  resolution: "@vtmp/mongo@workspace:packages/mongo"
+  dependencies:
+    "@types/jsonwebtoken": "npm:^9"
+    jsonwebtoken: "npm:9.0.2"
+    typescript: "npm:^5.8.3"
+  languageName: unknown
+  linkType: soft
+
 "@vtmp/server-common@npm:1.0.0, @vtmp/server-common@workspace:packages/server-common":
   version: 0.0.0-use.local
   resolution: "@vtmp/server-common@workspace:packages/server-common"
@@ -5839,6 +5873,7 @@ __metadata:
     "@types/nodemailer": "npm:^6"
     "@types/supertest": "npm:^6.0.3"
     "@vtmp/common": "npm:1.0.0"
+    "@vtmp/mongo": "npm:1.0.0"
     "@vtmp/server-common": "npm:1.0.0"
     axios: "npm:^1.9.0"
     bcryptjs: "npm:^3.0.2"
@@ -8000,6 +8035,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv@npm:^17.0.1":
+  version: 17.0.1
+  resolution: "dotenv@npm:17.0.1"
+  checksum: 10c0/79d3381832ffc6ada0cab8158120c6190e8f8680c1ff985e9d4d1345229219923b23b800969ff47412a71f965da582c7a86a5ea0d257f9106f8f3522ceb5befa
+  languageName: node
+  linkType: hard
+
 "dunder-proto@npm:^1.0.0, dunder-proto@npm:^1.0.1":
   version: 1.0.1
   resolution: "dunder-proto@npm:1.0.1"
@@ -8566,6 +8608,17 @@ __metadata:
   peerDependencies:
     eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8 || ^9
   checksum: 10c0/e21d116ddd1900e091ad120b3eb68c5dd5437fe2c930f1211781cd38b246f090a6b74d5f3800b8255a0ed29782591521ad44eb21c5534960a8f1fb4040fd913a
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-sort-exports@npm:^0.9.1":
+  version: 0.9.1
+  resolution: "eslint-plugin-sort-exports@npm:0.9.1"
+  dependencies:
+    minimatch: "npm:^9.0.3"
+  peerDependencies:
+    eslint: ">=5.0.0"
+  checksum: 10c0/f1ef9f51bcf17848b863fd6948e186361d298f7b5fabdb0b324008e0f7a1df67370df7cafd956d573e2888033afb3f190bae56c5698a600e372d2fb0f92ea7d5
   languageName: node
   linkType: hard
 
@@ -12038,7 +12091,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:9.0.5, minimatch@npm:^9.0.4, minimatch@npm:^9.0.5":
+"minimatch@npm:9.0.5, minimatch@npm:^9.0.3, minimatch@npm:^9.0.4, minimatch@npm:^9.0.5":
   version: 9.0.5
   resolution: "minimatch@npm:9.0.5"
   dependencies:
@@ -15719,6 +15772,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tsx@npm:^4.20.3":
+  version: 4.20.3
+  resolution: "tsx@npm:4.20.3"
+  dependencies:
+    esbuild: "npm:~0.25.0"
+    fsevents: "npm:~2.3.3"
+    get-tsconfig: "npm:^4.7.5"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    tsx: dist/cli.mjs
+  checksum: 10c0/6ff0d91ed046ec743fac7ed60a07f3c025e5b71a5aaf58f3d2a6b45e4db114c83e59ebbb078c8e079e48d3730b944a02bc0de87695088aef4ec8bbc705dc791b
+  languageName: node
+  linkType: hard
+
 "tw-animate-css@npm:^1.2.5":
   version: 1.3.4
   resolution: "tw-animate-css@npm:1.3.4"
@@ -15915,6 +15984,13 @@ __metadata:
   version: 6.21.0
   resolution: "undici-types@npm:6.21.0"
   checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~7.8.0":
+  version: 7.8.0
+  resolution: "undici-types@npm:7.8.0"
+  checksum: 10c0/9d9d246d1dc32f318d46116efe3cfca5a72d4f16828febc1918d94e58f6ffcf39c158aa28bf5b4fc52f410446bc7858f35151367bd7a49f21746cab6497b709b
   languageName: node
   linkType: hard
 
@@ -16669,6 +16745,7 @@ __metadata:
     eslint-import-resolver-typescript: "npm:^4.4.1"
     eslint-plugin-check-file: "npm:^3.2.0"
     eslint-plugin-import: "npm:^2.31.0"
+    eslint-plugin-sort-exports: "npm:^0.9.1"
     husky: "npm:^9.1.7"
     lint-staged: "npm:^16.0.0"
     prettier: "npm:^3.5.3"

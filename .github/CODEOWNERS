@@ -1,13 +1,14 @@
 .github/ @khoa165 @dsmai @Euclid0192
 .husky/ @khoa165 @dsmai @Euclid0192
 .vscode/ @khoa165 @dsmai @Euclid0192
-.yarn/ @khoa165
+.yarn/ @khoa165 @dsmai
 
 cookiecutter/ @khoa165
 scripts/ @khoa165
 
 packages/ @khoa165 @dsmai
 packages/common/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
+packages/server-common/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 
 web/ @khoa165 @dsmai @Euclid0192 @hongantran3804
 web/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
@@ -26,8 +27,8 @@ eslint.config.js @khoa165 @dsmai @Euclid0192
 
 CODE_OF_CONDUCT.md @khoa165
 LICENSE @khoa165
-README.md @khoa165
+README.md @khoa165 @dsmai
 
-package.json @khoa165 @dsmai
+package.json @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 
-docker-compose.yml @khoa165 @dsmai
+docker-compose.yml @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
