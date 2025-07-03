@@ -5744,7 +5744,7 @@ __metadata:
   dependencies:
     "@types/mongoose": "npm:^5.11.97"
     mongodb: "npm:^6.17.0"
-    mongoose: "npm:^8.16.1"
+    mongoose: "npm:8.16.1"
     mongoose-lean-virtuals: "npm:^2.0.0"
     typescript: "npm:^5.8.3"
   languageName: unknown
@@ -5899,7 +5899,7 @@ __metadata:
     mocha: "npm:^11.1.0"
     mongodb: "npm:^6.15.0"
     mongodb-memory-server: "npm:^10.1.4"
-    mongoose: "npm:^8.12.0"
+    mongoose: "npm:8.16.1"
     mongoose-lean-virtuals: "npm:^1.1.0"
     morgan: "npm:^1.10.0"
     multer: "npm:^1.4.5-lts.1"
@@ -12427,7 +12427,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongoose@npm:*, mongoose@npm:^8.12.0":
+"mongoose@npm:*":
   version: 8.15.1
   resolution: "mongoose@npm:8.15.1"
   dependencies:
@@ -12442,7 +12442,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongoose@npm:^8.16.1":
+"mongoose@npm:8.16.1":
   version: 8.16.1
   resolution: "mongoose@npm:8.16.1"
   dependencies:

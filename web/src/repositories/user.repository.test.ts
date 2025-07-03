@@ -42,6 +42,7 @@ describe('UserRepository', () => {
   ];
 
   describe('createUser', () => {
+    // console.log('Mongoose instance in test setup:', mongoose);
     it('should create an user', async () => {
       const user = await UserRepository.createUser(mockOneUser);
       expect(user).to.deep.include(mockOneUser);

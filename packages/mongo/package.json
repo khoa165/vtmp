@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "mongodb": "^6.17.0",
-    "mongoose": "^8.16.1",
+    "mongoose": "8.16.1",
     "mongoose-lean-virtuals": "^2.0.0"
   },
   "devDependencies": {
