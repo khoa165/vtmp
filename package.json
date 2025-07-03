@@ -21,7 +21,7 @@
     "type-check": "tsc --noEmit --project ./web && tsc --noEmit --project ./packages/common && tsc --noEmit --project ./web-client/tsconfig.app.json",
     "lint": "yarn eslint . && yarn type-check",
     "lint-fix": "yarn eslint . --fix",
-    "test": "yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/web run test",
+    "test": "yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/web run test && yarn workspace @vtmp/link-processing-service run test",
     "tslint": "tslint --project tsconfig.json --config tslint.json",
     "tslint-fix": "tslint --project tsconfig.json --config tslint.json --fix",
     "postinstall": "husky",
