@@ -1,12 +1,12 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { Button } from '@/components/base/button';
-import { ILinkResponse } from '@/components/pages/admins/links/validation';
 import { format } from 'date-fns';
-import { ReviewPopupButton } from '@/components/pages/admins/links/review-popup-button';
-import { StatusDot } from '@/components/base/status-dot';
-import { JobPostingData } from './validation';
+
+import { Button } from '@/components/base/button';
 import { HeaderSorting } from '@/components/base/header';
-import { StatusToColorMapping } from '@/utils/constants';
+import { StatusDot } from '@/components/base/status-dot';
+import { ReviewPopupButton } from '@/components/pages/admins/links/review-popup-button';
+import { ILinkResponse , JobPostingData } from '@/components/pages/admins/links/validation';
+import { LinksColorMapping } from '@/utils/constants';
 import { MONTH_DATE_YEAR } from '@/utils/date';
 
 interface AdminLinksTableColumnsProps {
@@ -41,7 +41,7 @@ export const adminLinksTableColumns = ({
         <Button variant="outline">
           <StatusDot
             status={row.original.status}
-            colorMapping={StatusToColorMapping}
+            colorMapping={LinksColorMapping}
           />
           <span className="ml-2">{row.original.status}</span>
         </Button>

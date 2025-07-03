@@ -1,14 +1,17 @@
 import { expect } from 'chai';
+import { differenceInSeconds } from 'date-fns';
+
 import assert from 'assert';
-import { JobPostingService } from '@/services/job-posting.service';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
+
+import { JobPostingRegion } from '@vtmp/common/constants';
+
+import { IJobPosting } from '@/models/job-posting.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { JobPostingService } from '@/services/job-posting.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { ResourceNotFoundError } from '@/utils/errors';
-import { differenceInSeconds } from 'date-fns';
-import { IJobPosting } from '@/models/job-posting.model';
-import { JobPostingRegion } from '@vtmp/common/constants';
 
 describe('JobPostingService', () => {
   useMongoDB();
@@ -20,7 +23,23 @@ describe('JobPostingService', () => {
     companyName: 'Example Company',
     submittedBy: getNewObjectId(),
   };
+  describe('getJobPostingById', () => {
+    it('should throw an error when no job posting is found', async () => {
+      await expect(
+        JobPostingService.getJobPostingById(getNewMongoId())
+      ).eventually.rejectedWith(ResourceNotFoundError);
+    });
 
+    it('should not throw an error when a job posting is found', async () => {
+      const newJobPosting = await JobPostingRepository.createJobPosting({
+        jobPostingData: mockJobPosting,
+      });
+      assert(newJobPosting);
+
+      await expect(JobPostingService.getJobPostingById(newJobPosting.id))
+        .eventually.fulfilled;
+    });
+  });
   describe('updateJobPostingById', () => {
     let newJobPosting: IJobPosting | undefined;
     const newUpdate = {
