@@ -9,11 +9,13 @@
     "build": "tsc",
     "dev": "tsc -w"
   },
-  "devDependencies": {
-    "@types/jsonwebtoken": "^9",
-    "typescript": "^5.8.3"
-  },
   "dependencies": {
-    "jsonwebtoken": "9.0.2"
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.16.1",
+    "mongoose-lean-virtuals": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.11.97",
+    "typescript": "^5.8.3"
   }
 }
