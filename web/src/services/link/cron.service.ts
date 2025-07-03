@@ -14,6 +14,8 @@ import { LinkRepository } from '@/repositories/link.repository';
 import { InternalServerError } from '@/utils/errors';
 
 const ENABLE_LINK_PROCESSING = false;
+const MAX_LONG_RETRY_ATTEMPTS = 4;
+const MAX_DURATION_BETWEEN_RETRIES = 30; // in minutes
 export const CronService = {
   _getRetryFilter() {
     return {
@@ -21,7 +23,7 @@ export const CronService = {
         { status: LinkStatus.PENDING_PROCESSING },
         {
           status: LinkStatus.PENDING_RETRY,
-          attemptsCount: { $lt: 4 },
+          attemptsCount: { $lt: MAX_LONG_RETRY_ATTEMPTS },
           $expr: {
             $gte: [
               {
@@ -31,7 +33,7 @@ export const CronService = {
                   unit: 'minute',
                 },
               },
-              30,
+              MAX_DURATION_BETWEEN_RETRIES,
             ],
           },
         },
@@ -75,7 +77,7 @@ export const CronService = {
       });
     }
   },
-  async _linkProcessingJob(): Promise<{
+  async trigger(): Promise<{
     successfulLinks: MetadataExtractedLink[];
     failedLinks: FailedProcessedLink[];
   }> {
@@ -111,16 +113,9 @@ export const CronService = {
     }
   },
 
-  async trigger(): Promise<{
-    successfulLinks: MetadataExtractedLink[];
-    failedLinks: FailedProcessedLink[];
-  }> {
-    return this._linkProcessingJob();
-  },
-
   scheduleCronjob() {
     if (ENABLE_LINK_PROCESSING) {
-      cron.schedule('0 0 * * * *', this._linkProcessingJob);
+      cron.schedule('0 0 0 * * *', this.trigger);
       console.log('Cron job scheduled for link processing.');
     } else {
       console.log('Cron job for link processing is disabled.');

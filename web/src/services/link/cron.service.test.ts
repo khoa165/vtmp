@@ -93,7 +93,7 @@ describe('CronService', () => {
       expect(result[1]).to.deep.include(filteredLinks[1]);
     });
   });
-  describe('trigger - _linkProcessingJob', () => {
+  describe('trigger', () => {
     it('should throw error when _sendLinksToLambda fails', async () => {
       await createFilteredLinks();
       stubSendLinkToLambda.throws();
