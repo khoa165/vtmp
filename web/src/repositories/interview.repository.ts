@@ -49,6 +49,7 @@ export const InterviewRepository = {
   getInterviews: async ({
     filters = {},
     isShared = false,
+    session,
   }: {
     filters: {
       userId?: string;
@@ -58,6 +59,7 @@ export const InterviewRepository = {
       status?: InterviewStatus;
     };
     isShared?: boolean;
+    session?: ClientSession;
   }): Promise<IInterview[]> => {
     const dynamicMatch: Record<string, unknown> = {
       deletedAt: null,
@@ -132,7 +134,7 @@ export const InterviewRepository = {
       );
     }
 
-    return await InterviewModel.aggregate(pipeline);
+    return await InterviewModel.aggregate(pipeline).session(session || null);
   },
 
   updateInterviewById: async ({
