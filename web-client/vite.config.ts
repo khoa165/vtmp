@@ -1,8 +1,9 @@
-import path from 'path';
-import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react-swc';
 import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react-swc';
 import svgr from 'vite-plugin-svgr';
+import { defineConfig } from 'vitest/config';
+
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -26,8 +27,10 @@ export default defineConfig({
     preserveSymlinks: true,
     alias: {
       src: '/src',
+      '#vtmp/web-client': path.resolve(__dirname, 'src'),
       '@': path.resolve(__dirname, './src'),
       '@vtmp/common': path.resolve(__dirname, '../packages/common/src'),
+      '#vtmp/common': path.resolve(__dirname, '../packages/common/src'),
     },
   },
   server: {

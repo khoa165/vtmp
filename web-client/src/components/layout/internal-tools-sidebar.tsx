@@ -11,7 +11,7 @@ import { Link, Navigate } from 'react-router-dom';
 
 import { SystemRole } from '@vtmp/common/constants';
 
-import { Avatar } from '@/components/base/avatar';
+import { Avatar } from '#vtmp/web-client/components/base/avatar';
 import {
   Sidebar,
   SidebarContent,
@@ -22,11 +22,11 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
   useSidebar,
-} from '@/components/base/sidebar';
-import { TreverseFullLogo } from '@/components/base/treverse-full-logo';
-import { TreverseLogo } from '@/components/base/treverse-logo';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { useLogout } from '@/hooks/useLogout';
+} from '#vtmp/web-client/components/base/sidebar';
+import { TreverseFullLogo } from '#vtmp/web-client/components/base/treverse-full-logo';
+import { TreverseLogo } from '#vtmp/web-client/components/base/treverse-logo';
+import { useCurrentUser } from '#vtmp/web-client/hooks/useCurrentUser';
+import { useLogout } from '#vtmp/web-client/hooks/useLogout';
 
 export const InternalToolsSidebar = () => {
   const user = useCurrentUser();

@@ -3,6 +3,7 @@ import eslint from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import checkFile from 'eslint-plugin-check-file';
 import importPlugin from 'eslint-plugin-import';
+import noRelativeImportPaths from 'eslint-plugin-no-relative-import-paths';
 import sortExports from 'eslint-plugin-sort-exports';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -48,6 +49,19 @@ export default tseslint.config(
   // Frontend rules - needs to figure out later why this needs separate config
   {
     files: ['web-client/**/*.{ts,tsx}'],
+    plugins: {
+      'no-relative-import-paths': noRelativeImportPaths,
+    },
+    rules: {
+      'no-relative-import-paths/no-relative-import-paths': [
+        'error',
+        {
+          allowSameFolder: false,
+          rootDir: 'web-client/src',
+          prefix: '#vtmp/web-client',
+        },
+      ],
+    },
     settings: {
       'import/resolver': {
         typescript: {
