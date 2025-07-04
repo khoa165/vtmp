@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 
-import { mentorshipPeople } from '@vtmp/common/people';
+import { mentorshipPeople, offerCompanies } from '@vtmp/common/people';
 
-import { offerCompanies } from '@/data/companies';
 import { CompanyMetadataWithOffers } from '@/types';
 
 export const useOffersData = () => {

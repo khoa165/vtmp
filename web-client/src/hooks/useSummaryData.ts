@@ -2,10 +2,9 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { map, uniqueBy } from 'remeda';
 
-import { mentorshipPeople } from '@vtmp/common/people';
+import { mentorshipPeople, offerCompanies } from '@vtmp/common/people';
 
 import { EnvConfig } from '@/config/env';
-import { offerCompanies } from '@/data/companies';
 
 const parseData = (data: string) => {
   const rows = data.split(/\r?\n/).slice(5);

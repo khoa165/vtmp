@@ -4,13 +4,16 @@ import { map, uniqueBy, sumBy, countBy, flatMap, filter } from 'remeda';
 import { InterviewType } from '@vtmp/common/constants';
 import { mentorshipPeople, MentorshipTerm } from '@vtmp/common/people';
 
-import { interviewTypeAbbreviation, MentorshipYear } from '#vtmp/web-client/utils/constants';
 import {
   DateWithCount,
   InterviewData,
   InterviewRecordsPerCompany,
   MergedDateWithCount,
-} from '@/types';
+} from '#vtmp/web-client/types';
+import {
+  interviewTypeAbbreviation,
+  MentorshipYear,
+} from '#vtmp/web-client/utils/constants';
 import { isSome } from '@/utils/maybe';
 
 interface InterviewCell {

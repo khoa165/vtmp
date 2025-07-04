@@ -5,6 +5,12 @@ import {
   OfferType,
 } from '#vtmp/common/constants/enums';
 
+export interface CompanyMetadata {
+  displayName: string;
+  logoFilename: string;
+  maxLogoSize: number;
+  isPartTimeOffer?: boolean;
+}
 export interface MentorshipOffer {
   name: CompanyName;
   type: OfferType;
