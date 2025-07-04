@@ -1,10 +1,17 @@
-import { MentorshipYear } from '@/utils/constants';
 import {
   CompanyName,
   MentorshipRole,
   OfferChannel,
   OfferType,
 } from '@vtmp/common/constants';
+
+import { MentorshipYear } from '#vtmp/web-client/utils/constants';
+
+export type BlogFileMapping = Record<string, BlogFileMetadata>;
+
+interface BlogFileMetadata extends BlogMetadata {
+  path: string;
+}
 
 export interface BlogMetadata {
   name: string;
@@ -18,41 +25,33 @@ export interface BlogMetadata {
   tags: string[];
 }
 
-interface BlogFileMetadata extends BlogMetadata {
-  path: string;
+export interface CompanyMetadata {
+  displayName: string;
+  logoFilename: string;
+  maxLogoSize: number;
+  isPartTimeOffer?: boolean;
 }
 
-export type BlogFileMapping = Record<string, BlogFileMetadata>;
+export type CompanyMetadataWithOffers = CompanyMetadata & {
+  logoUrl: string;
+  offersCountTotal: number;
+  offersCountByYear: Record<number, number>;
+};
 
-export interface MentorshipOffer {
-  name: CompanyName;
-  type: OfferType;
-  channel: OfferChannel;
+export interface DateWithCount {
   date: string;
+  count: number;
 }
 
-export interface MentorshipTerm {
-  year: number;
-  title?: string;
-  roles: MentorshipRole[];
-  offers?: MentorshipOffer[];
-  teamName?: string;
-  teamNumber?: number;
-  teammates?: string[];
-  mentors?: string[];
-  projectAdvisors?: string[];
-}
-
-export interface MentorshipPerson {
-  name: string;
-  firstLast: string;
-  alias: string;
-  trackingName: string;
-  professionalTitle: string;
-  hobbies: string;
-  avatar: string;
-  terms: MentorshipTerm[];
-  hasNeverBeenMenteeOfProgram?: boolean;
+export interface InterviewData {
+  totalInvitationsCount: number;
+  totalInterviewsCount: number;
+  totalMixedCount: number;
+  totalTechnicalCount: number;
+  totalBehavioralCount: number;
+  totalPracticalCount: number;
+  datesWithCount: DateWithCount[];
+  data: InterviewRecordsPerCompany[];
 }
 
 export interface InterviewRecordsPerCompany {
@@ -70,46 +69,40 @@ export interface InterviewRecordsPerCompany {
   company: string;
 }
 
-export type MergedInterviewRecordsPerCompany = Partial<
-  Record<
-    MentorshipYear,
-    {
-      invitationsCount: number;
-      interviewsCount: number;
-      mixedCount: number;
-      technicalCount: number;
-      behavioralCount: number;
-      practicalCount: number;
-      interviews: {
-        date: string;
-        type: string;
-        person: string;
-      }[];
-    }
-  >
-> & {
-  company: string;
-};
-
-export interface DateWithCount {
+export interface MentorshipOffer {
+  name: CompanyName;
+  type: OfferType;
+  channel: OfferChannel;
   date: string;
-  count: number;
+}
+
+export interface MentorshipPerson {
+  name: string;
+  firstLast: string;
+  alias: string;
+  trackingName: string;
+  professionalTitle: string;
+  hobbies: string;
+  avatar: string;
+  terms: MentorshipTerm[];
+  hasNeverBeenMenteeOfProgram?: boolean;
+}
+
+export interface MentorshipTerm {
+  year: number;
+  title?: string;
+  roles: MentorshipRole[];
+  offers?: MentorshipOffer[];
+  teamName?: string;
+  teamNumber?: number;
+  teammates?: string[];
+  mentors?: string[];
+  projectAdvisors?: string[];
 }
 
 export type MergedDateWithCount = Partial<Record<MentorshipYear, number>> & {
   date: string;
 };
-
-export interface InterviewData {
-  totalInvitationsCount: number;
-  totalInterviewsCount: number;
-  totalMixedCount: number;
-  totalTechnicalCount: number;
-  totalBehavioralCount: number;
-  totalPracticalCount: number;
-  datesWithCount: DateWithCount[];
-  data: InterviewRecordsPerCompany[];
-}
 
 export type MergedInterviewData = Partial<
   Record<
@@ -131,15 +124,23 @@ export type MergedInterviewData = Partial<
   datesWithCount: MergedDateWithCount[];
 };
 
-export interface CompanyMetadata {
-  displayName: string;
-  logoFilename: string;
-  maxLogoSize: number;
-  isPartTimeOffer?: boolean;
-}
-
-export type CompanyMetadataWithOffers = CompanyMetadata & {
-  logoUrl: string;
-  offersCountTotal: number;
-  offersCountByYear: Record<number, number>;
+export type MergedInterviewRecordsPerCompany = Partial<
+  Record<
+    MentorshipYear,
+    {
+      invitationsCount: number;
+      interviewsCount: number;
+      mixedCount: number;
+      technicalCount: number;
+      behavioralCount: number;
+      practicalCount: number;
+      interviews: {
+        date: string;
+        type: string;
+        person: string;
+      }[];
+    }
+  >
+> & {
+  company: string;
 };

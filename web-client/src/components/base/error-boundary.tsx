@@ -1,8 +1,13 @@
-import { Alert, AlertDescription, AlertTitle } from '@/components/base/alert';
-import { Button } from '@/components/base/button';
 import { ErrorBoundary } from 'react-error-boundary';
-import { handleError } from '@/utils/errors';
 import { useNavigate } from 'react-router-dom';
+
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '#vtmp/web-client/components/base/alert';
+import { Button } from '#vtmp/web-client/components/base/button';
+import { handleError } from '#vtmp/web-client/utils/errors';
 
 export const ErrorBoundaryWrapper = ({
   customText,

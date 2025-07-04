@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Button } from '@/components/base/button';
+import { Button } from '#vtmp/web-client/components/base/button';
 
 const meta = {
   component: Button,

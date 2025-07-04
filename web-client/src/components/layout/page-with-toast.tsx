@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
-import { Toaster } from '@/components/base/sonner';
-import { ThemeProvider } from '@/components/layout/theme-provider';
+
+import { Toaster } from '#vtmp/web-client/components/base/sonner';
+import { ThemeProvider } from '#vtmp/web-client/components/layout/theme-provider';
 
 export const PageWithToast = () => {
   return (
