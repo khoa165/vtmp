@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   ShieldUser,
   ExternalLink,
@@ -6,7 +5,14 @@ import {
   BriefcaseBusiness,
   UserRoundPlus,
 } from 'lucide-react';
+import { useMemo } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 
+import { SystemRole } from '@vtmp/common/constants';
+
+import { Avatar } from '@/components/base/avatar';
+import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
+import { LogoutButton } from '@/components/base/logout-button';
 import {
   Sidebar,
   SidebarContent,
@@ -18,11 +24,6 @@ import {
   SidebarTrigger,
 } from '@/components/base/sidebar';
 import { VTMPLogo } from '@/components/base/vtmp-logo';
-import { Avatar } from '@/components/base/avatar';
-import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
-import { LogoutButton } from '@/components/base/logout-button';
-import { SystemRole } from '@vtmp/common/constants';
-import { Link, Navigate } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export const InternalToolsSidebar = () => {

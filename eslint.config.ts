@@ -3,6 +3,7 @@ import eslint from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import checkFile from 'eslint-plugin-check-file';
 import importPlugin from 'eslint-plugin-import';
+import sortExports from 'eslint-plugin-sort-exports';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -21,6 +22,7 @@ export default tseslint.config(
     plugins: {
       customEslintRules,
       import: importPlugin,
+      export: sortExports,
       stylistic,
       checkFile,
     },
@@ -28,11 +30,14 @@ export default tseslint.config(
       'import/resolver': {
         typescript: {
           project: [
-            './web/tsconfig.json',
             './packages/common/tsconfig.json',
+            './packages/server-common/tsconfig.json',
+            './packages/mongo/tsconfig.json',
+            './web/tsconfig.json',
             './custom-eslint/tsconfig.json',
             './discord-service/tsconfig.json',
             './link-processing-service/tsconfig.json',
+            './apps/mongo-migrations/tsconfig.json',
           ],
           noWarnOnMultipleProjects: true,
         },
@@ -104,6 +109,15 @@ export default tseslint.config(
         },
         {
           ignoreMiddleExtensions: true,
+        },
+      ],
+      'export/sort-exports': [
+        'error',
+        {
+          sortDir: 'asc',
+          ignoreCase: true,
+          sortExportKindFirst: 'type',
+          pattern: '**/index.ts',
         },
       ],
     },
