@@ -12,7 +12,7 @@ interface IProject extends Document {
   activities: IProjectActivity[];
 }
 
-const ProjectSchema = new Schema<IProject>({
+const ProjectSchema = new mongoose.Schema<IProject>({
   teamName: {
     type: String,
     required: true,

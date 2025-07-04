@@ -1,8 +1,9 @@
+import { Navigate } from 'react-router-dom';
+
 import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
 import { JobPostingsContainer } from '@/components/pages/application-tracker/job-postings/job-postings-container';
 import { JobPostingStatusCards } from '@/components/pages/application-tracker/job-postings/job-postings-status';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { Navigate } from 'react-router-dom';
 
 export const JobPostingsPage = () => {
   const user = useCurrentUser();

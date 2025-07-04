@@ -1,18 +1,20 @@
+import { IUser } from '@vtmp/mongo/models';
+import { expect } from 'chai';
+import request from 'supertest';
+
+import { SystemRole } from '@vtmp/common/constants';
+
 import app from '@/app';
+import { EnvConfig } from '@/config/env';
 import { AuthService } from '@/services/auth.service';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import request from 'supertest';
-import { expect } from 'chai';
-import { IUser } from '@/models/user.model';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { SystemRole } from '@vtmp/common/constants';
 import { useSandbox } from '@/testutils/sandbox.testutil';
-import { EnvConfig } from '@/config/env';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 
 describe('UserController', () => {
   useMongoDB();

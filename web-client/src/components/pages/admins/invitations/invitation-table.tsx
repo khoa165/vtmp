@@ -1,5 +1,3 @@
-import { Input } from '@/components/base/input';
-import { useState } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,6 +10,9 @@ import {
   OnChangeFn,
   ColumnSizingState,
 } from '@tanstack/react-table';
+import { useState } from 'react';
+
+import { Input } from '@/components/base/input';
 import { ResizableTable } from '@/components/pages/shared/resizable-table';
 
 interface DataTableProps<TData, TValue> {

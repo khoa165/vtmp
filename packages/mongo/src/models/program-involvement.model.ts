@@ -1,5 +1,6 @@
-import { Department, ProgramRole } from '@vtmp/common/constants';
 import mongoose, { Document, Schema, Types } from 'mongoose';
+
+import { Department, ProgramRole } from '@vtmp/common/constants';
 
 interface IProgramInvolvement extends Document {
   programProfileId: Types.ObjectId;
@@ -12,7 +13,7 @@ interface IProgramInvolvement extends Document {
   mentors: Types.ObjectId[];
 }
 
-const ProgramInvolvementSchema = new Schema<IProgramInvolvement>({
+const ProgramInvolvementSchema = new mongoose.Schema<IProgramInvolvement>({
   programProfileId: {
     type: Schema.Types.ObjectId,
     ref: 'ProgramProfile',
