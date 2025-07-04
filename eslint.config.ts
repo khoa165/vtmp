@@ -89,6 +89,8 @@ export default tseslint.config(
         },
       },
     },
+  },
+  {
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'warn',
       '@typescript-eslint/no-dynamic-delete': 'off',
@@ -185,7 +187,7 @@ export default tseslint.config(
       'link-processing-service/**/*',
     ],
     rules: {
-      'customEslintRules/wrapped-handlers-in-router': 'off', 
+      'customEslintRules/wrapped-handlers-in-router': 'off',
     },
   },
 
