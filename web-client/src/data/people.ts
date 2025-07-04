@@ -1,10 +1,11 @@
-import { MentorshipPerson } from '@/types';
 import {
   CompanyName,
   MentorshipRole,
   OfferChannel,
   OfferType,
 } from '@vtmp/common/constants';
+
+import { MentorshipPerson } from '@/types';
 import { PeopleName, ProjectName } from '@/utils/constants';
 
 export const mentorshipPeople: Record<string, MentorshipPerson> = {
@@ -1353,7 +1354,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Nguyen',
     alias: PeopleName.PHAN_ANH,
     trackingName: 'Phan Anh',
-    professionalTitle: 'SWE Intern @ Amazon',
+    professionalTitle: 'SWE Intern @ Robinhood',
     hobbies: 'soccer, running, coding',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phananh.jpg',

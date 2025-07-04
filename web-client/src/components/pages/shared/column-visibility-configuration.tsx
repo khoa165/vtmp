@@ -46,14 +46,13 @@ export function ColumnVisibilityConfiguration<TData>({
           }
 
           function hasDisplayName(
-            meta: object
+            meta: unknown
           ): meta is { displayName: string } {
             return (
               typeof meta === 'object' &&
               meta !== null &&
               'displayName' in meta &&
-              typeof (meta as { displayName?: unknown }).displayName ===
-                'string'
+              typeof meta.displayName === 'string'
             );
           }
 
