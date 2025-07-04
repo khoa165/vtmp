@@ -63,7 +63,7 @@ export function InvitationTable<TData, TValue>({
     <>
       <section className="flex items-center justify-between py-4">
         <Input
-          placeholder="Filter Receiver Email"
+          placeholder="Search by email"
           value={table.getColumn('receiverEmail')?.getFilterValue() as string}
           onChange={(event) =>
             table.getColumn('receiverEmail')?.setFilterValue(event.target.value)

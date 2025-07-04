@@ -69,7 +69,7 @@ export const SendInvitation = () => {
   return (
     <div className="grid grid-cols-12 gap-4">
       <div className="col-start-1 col-span-6 flex flex-col justify-start">
-        <Card className="bg-transparent border-0 shadow-none h-full justify-center gap-0">
+        <Card className="bg-transparent border-0  shadow-none h-full justify-center gap-0 pb-0">
           <CardHeader className="px-0">
             <CardTitle className="text-4xl font-bold">Invitations</CardTitle>
             <CardDescription className="text-2xl">
@@ -85,7 +85,7 @@ export const SendInvitation = () => {
                 <Input
                   id="name"
                   name="name"
-                  placeholder="Receiver name"
+                  placeholder="Name"
                   type="text"
                   required
                   value={userInput.name}
@@ -96,7 +96,7 @@ export const SendInvitation = () => {
                 <Input
                   id="email"
                   name="email"
-                  placeholder="Receiver email"
+                  placeholder="Email"
                   type="email"
                   required
                   value={userInput.email}
@@ -111,11 +111,14 @@ export const SendInvitation = () => {
               </Button>
             </form>
           </CardContent>
-          <CardFooter className="flex flex-start px-0 text-vtmp-orange">
+          <CardFooter className="flex flex-col flex-start items-start px-0 text-vtmp-orange">
             {inputErrors.name.length > 0 && <p>{inputErrors.name[0]}</p>}
             {inputErrors.email.length > 0 && <p>{inputErrors.email[0]}</p>}
           </CardFooter>
         </Card>
+      </div>
+      <div className="col-span-12">
+        <hr className="w-full border-vtmp-dark-grey" />
       </div>
     </div>
   );
