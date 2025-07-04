@@ -1,7 +1,7 @@
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Outlet } from 'react-router-dom';
-import '@/styles/scss/app.scss';
+import '#vtmp/web-client/styles/scss/app.scss';
 
 export const VTMPWrapper = () => {
   const darkTheme = createTheme({

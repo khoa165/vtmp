@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { mentorshipPeople, offerCompanies } from '@vtmp/common/people';
 
-import { CompanyMetadataWithOffers } from '@/types';
+import { CompanyMetadataWithOffers } from '#vtmp/web-client/types';
 
 export const useOffersData = () => {
   return useMemo(() => {

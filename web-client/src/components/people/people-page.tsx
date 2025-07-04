@@ -8,12 +8,12 @@ import { useSearchParams } from 'react-router-dom';
 import { MentorshipRole } from '@vtmp/common/constants';
 
 import { PeopleGrid } from '#vtmp/web-client/components/people/people-grid';
-import { useMentorshipPeople } from '@/hooks/useMentorshipPeople';
-import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
-import { useOffersData } from '@/hooks/useOffersData';
-import { PeopleSortColumn } from '@/utils/constants';
-import { DEFAULT_ROLES, getRoleDisplayName } from '@/utils/data';
-import { peopleSortColumnDisplayName } from '@/utils/display-name';
+import { useMentorshipPeople } from '#vtmp/web-client/hooks/useMentorshipPeople';
+import { useNavigatePreserveQueryParams } from '#vtmp/web-client/hooks/useNavigatePreserveQueryParams';
+import { useOffersData } from '#vtmp/web-client/hooks/useOffersData';
+import { PeopleSortColumn } from '#vtmp/web-client/utils/constants';
+import { DEFAULT_ROLES, getRoleDisplayName } from '#vtmp/web-client/utils/data';
+import { peopleSortColumnDisplayName } from '#vtmp/web-client/utils/display-name';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;

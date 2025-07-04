@@ -8,8 +8,8 @@ import { InterviewsBarChart } from '#vtmp/web-client/components/stats/interviews
 import { OffersBarChart } from '#vtmp/web-client/components/stats/offers-bar-chart';
 import { OfferLogos } from '#vtmp/web-client/components/stats/offers-logos';
 import { Timeline } from '#vtmp/web-client/components/stats/timeline';
-import { useInterviewData } from '@/hooks/useInterviewData';
-import { StatsType } from '@/utils/constants';
+import { useInterviewData } from '#vtmp/web-client/hooks/useInterviewData';
+import { StatsType } from '#vtmp/web-client/utils/constants';
 
 interface StatsPageProps {
   type: StatsType;

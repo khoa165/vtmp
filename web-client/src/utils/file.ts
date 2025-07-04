@@ -1,4 +1,4 @@
-import { BlogFileMapping, BlogMetadata } from '@/types';
+import { BlogFileMapping, BlogMetadata } from '#vtmp/web-client/types';
 
 export const getFileName = (filepath: string): string => {
   console.log('filepath', filepath);

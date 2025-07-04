@@ -9,12 +9,15 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/base/tooltip';
-import { Avatar } from '@/components/layout/avatar';
-import { MiniCompaniesList } from '@/components/layout/mini-companies-list';
-import { MiniPeopleList } from '@/components/layout/mini-people-list';
-import { CompanyMetadataWithOffers, MentorshipPerson } from '@/types';
-import { PeopleSortColumn } from '@/utils/constants';
+} from '#vtmp/web-client/components/base/tooltip';
+import { Avatar } from '#vtmp/web-client/components/layout/avatar';
+import { MiniCompaniesList } from '#vtmp/web-client/components/layout/mini-companies-list';
+import { MiniPeopleList } from '#vtmp/web-client/components/layout/mini-people-list';
+import {
+  CompanyMetadataWithOffers,
+  MentorshipPerson,
+} from '#vtmp/web-client/types';
+import { PeopleSortColumn } from '#vtmp/web-client/utils/constants';
 import {
   getRoleDisplayName,
   isMenteeRole,
@@ -22,8 +25,8 @@ import {
   isHiddenRole,
   isReturnOfferForInternship,
   isReturnOfferForNewGrad,
-} from '@/utils/data';
-import { projectDisplayName } from '@/utils/display-name';
+} from '#vtmp/web-client/utils/data';
+import { projectDisplayName } from '#vtmp/web-client/utils/display-name';
 
 interface PeopleCardProps extends React.HTMLAttributes<HTMLDivElement> {
   year: number | 'all';

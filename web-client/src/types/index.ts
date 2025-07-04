@@ -5,7 +5,7 @@ import {
   OfferType,
 } from '@vtmp/common/constants';
 
-import { MentorshipYear } from '@/utils/constants';
+import { MentorshipYear } from '#vtmp/web-client/utils/constants';
 
 export type BlogFileMapping = Record<string, BlogFileMetadata>;
 

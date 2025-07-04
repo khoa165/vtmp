@@ -14,7 +14,7 @@ import {
   interviewTypeAbbreviation,
   MentorshipYear,
 } from '#vtmp/web-client/utils/constants';
-import { isSome } from '@/utils/maybe';
+import { isSome } from '#vtmp/web-client/utils/maybe';
 
 interface InterviewCell {
   date: string;
