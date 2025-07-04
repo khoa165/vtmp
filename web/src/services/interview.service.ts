@@ -1,7 +1,7 @@
-import { InterviewRepository } from '@/repositories/interview.repository';
-import { IInterview } from '@/models/interview.model';
-
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+
+import { IInterview } from '@/models/interview.model';
+import { InterviewRepository } from '@/repositories/interview.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
 
 export const InterviewService = {
@@ -9,9 +9,9 @@ export const InterviewService = {
     applicationId: string;
     userId: string;
     types: InterviewType[];
-    status?: InterviewStatus;
+    status?: InterviewStatus | undefined;
     interviewOnDate: Date;
-    note?: string;
+    note?: string | undefined;
   }): Promise<IInterview> => {
     return InterviewRepository.createInterview(interviewData);
   },
