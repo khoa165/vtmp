@@ -8,7 +8,7 @@ on:
       - dson/gh-action-label
 
 jobs:
-  # Only run if PR has the "run-checks" label
+  # Only run if PR has the "run-checks" labe
   check-labels:
     runs-on: ubuntu-latest
     outputs:
