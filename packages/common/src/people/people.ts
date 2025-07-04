@@ -3,10 +3,9 @@ import {
   MentorshipRole,
   OfferChannel,
   OfferType,
-} from '@vtmp/common/constants';
-
-import { MentorshipPerson } from '@/types';
-import { PeopleName, ProjectName } from '@/utils/constants';
+} from '#vtmp/common/constants/enums';
+import { PeopleName, ProjectName } from '#vtmp/common/people/enums';
+import { MentorshipPerson } from '#vtmp/common/people/types';
 
 export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.KHOA_LE]: {
