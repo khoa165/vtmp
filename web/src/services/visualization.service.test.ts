@@ -1,12 +1,15 @@
-import { UserRepository } from '@/repositories/user.repository';
 import { expect } from 'chai';
-import assert from 'assert';
 import { sortBy, times, zip } from 'remeda';
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { VisualizationService } from '@/services/visualization.service';
+
+import assert from 'assert';
+
 import { SystemRole } from '@vtmp/common/constants';
+
+import { ApplicationRepository } from '@/repositories/application.repository';
+import { UserRepository } from '@/repositories/user.repository';
+import { VisualizationService } from '@/services/visualization.service';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 describe('VisualizationService', () => {
   useMongoDB();

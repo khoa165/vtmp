@@ -8,6 +8,7 @@ import stylistic from '@stylistic/eslint-plugin';
 import checkFile from 'eslint-plugin-check-file';
 import importPlugin from 'eslint-plugin-import';
 import typescriptSortKeys from 'eslint-plugin-typescript-sort-keys';
+import sortExports from 'eslint-plugin-sort-exports';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -23,6 +24,7 @@ export default tseslint.config(
     plugins: {
       customEslintRules,
       import: importPlugin,
+      export: sortExports,
       stylistic,
       checkFile,
       boundaries,
@@ -32,11 +34,14 @@ export default tseslint.config(
       'import/resolver': {
         typescript: {
           project: [
-            './web/tsconfig.json',
             './packages/common/tsconfig.json',
+            './packages/server-common/tsconfig.json',
+            './packages/mongo/tsconfig.json',
+            './web/tsconfig.json',
             './custom-eslint/tsconfig.json',
             './discord-service/tsconfig.json',
             './link-processing-service/tsconfig.json',
+            './apps/mongo-migrations/tsconfig.json',
           ],
           noWarnOnMultipleProjects: true,
         },
@@ -79,7 +84,6 @@ export default tseslint.config(
       ],
     },
   },
-
   {
     files: ['web-client/**/*.{ts,tsx}'],
     settings: {
@@ -174,9 +178,17 @@ export default tseslint.config(
           ],
         },
       ],
+      'export/sort-exports': [
+        'error',
+        {
+          sortDir: 'asc',
+          ignoreCase: true,
+          sortExportKindFirst: 'type',
+          pattern: '**/index.ts',
+        },
+      ],
     },
   },
-
   {
     files: [
       'web/src/app.ts',
@@ -190,7 +202,6 @@ export default tseslint.config(
       'customEslintRules/wrapped-handlers-in-router': 'off',
     },
   },
-
   {
     files: [
       '**/{app,index,main}.{ts,tsx}',

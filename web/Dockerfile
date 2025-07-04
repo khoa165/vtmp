@@ -11,7 +11,7 @@ COPY web ./web
 RUN yarn install --immutable
 
 # Build steps:
-RUN yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build
+RUN yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build
 RUN yarn workspace @vtmp/web build
 
 # Prune devDependencies from the final node_modules if in production only
