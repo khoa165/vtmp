@@ -2,12 +2,12 @@ import mongoose, { ClientSession } from 'mongoose';
 
 import { LinkStatus } from '@vtmp/common/constants';
 
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { LinkRepository } from '@/repositories/link.repository';
 import {
   ExtractionLinkMetaDataType,
   LinkMetaDataType,
-} from '@/constants/link.types';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { LinkRepository } from '@/repositories/link.repository';
+} from '@/types/link.types';
 import {
   DuplicateResourceError,
   LinkProcessingBadRequest,
