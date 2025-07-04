@@ -13,7 +13,7 @@ interface IProgramInvolvement extends Document {
   mentors: Types.ObjectId[];
 }
 
-const ProgramInvolvementSchema = new Schema<IProgramInvolvement>({
+const ProgramInvolvementSchema = new mongoose.Schema<IProgramInvolvement>({
   programProfileId: {
     type: Schema.Types.ObjectId,
     ref: 'ProgramProfile',
