@@ -14,7 +14,6 @@ import {
   CardTitle,
 } from '@/components/base/card';
 import { Input } from '@/components/base/input';
-import { Label } from '@/components/base/label';
 import {
   IInvitationInputErrors,
   IInvitationUserInput,
@@ -72,9 +71,7 @@ export const SendInvitation = () => {
       <div className="col-start-1 col-span-6 flex flex-col justify-start">
         <Card className="bg-transparent border-0 shadow-none h-full justify-center gap-0">
           <CardHeader className="px-0">
-            <CardTitle className="text-4xl font-bold">
-              Send an invitation
-            </CardTitle>
+            <CardTitle className="text-4xl font-bold">Invitations</CardTitle>
             <CardDescription className="text-2xl">
               Invite mentors and mentees to use this app
             </CardDescription>
@@ -85,13 +82,10 @@ export const SendInvitation = () => {
               className="grid grid-cols-10 w-full items-end gap-4"
             >
               <div className="col-start-1 col-span-4 flex flex-col space-y-1.5">
-                <Label htmlFor="name" className="pb-2">
-                  Receiver Name
-                </Label>
                 <Input
                   id="name"
                   name="name"
-                  placeholder="Name"
+                  placeholder="Receiver name"
                   type="text"
                   required
                   value={userInput.name}
@@ -99,13 +93,10 @@ export const SendInvitation = () => {
                 />
               </div>
               <div className="col-start-5 col-span-4 flex flex-col space-y-1.5">
-                <Label htmlFor="email" className="pb-2">
-                  Receiver Email
-                </Label>
                 <Input
                   id="email"
                   name="email"
-                  placeholder="Email"
+                  placeholder="Receiver email"
                   type="email"
                   required
                   value={userInput.email}
