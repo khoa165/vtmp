@@ -93,6 +93,7 @@ describe('InvitationService', () => {
   });
 
   describe('sendInvitation', () => {
+    const mockWebUrl = 'https://google.com';
     it('should return error message when user associated with invitation receiver email already exists', async () => {
       const mockUser = {
         firstName: 'Admin',
@@ -106,7 +107,8 @@ describe('InvitationService', () => {
         InvitationService.sendInvitation(
           `${mockUser.firstName} ${mockUser.lastName}`,
           mockUser.email,
-          mockAdminId
+          mockAdminId,
+          mockWebUrl
         )
       ).eventually.rejectedWith(
         DuplicateResourceError,
@@ -124,7 +126,8 @@ describe('InvitationService', () => {
         InvitationService.sendInvitation(
           mockMenteeName,
           mockOneInvitation.receiverEmail,
-          mockAdminId
+          mockAdminId,
+          mockWebUrl
         )
       ).eventually.rejectedWith(
         InternalServerError,
@@ -138,7 +141,8 @@ describe('InvitationService', () => {
         InvitationService.sendInvitation(
           mockMenteeName,
           mockOneInvitation.receiverEmail,
-          mockAdminId
+          mockAdminId,
+          mockWebUrl
         )
       ).eventually.fulfilled;
       expect(sendEmailStub.calledOnce).to.equal(true);
@@ -153,7 +157,8 @@ describe('InvitationService', () => {
         InvitationService.sendInvitation(
           mockMenteeName,
           mockOneInvitation.receiverEmail,
-          mockAdminId
+          mockAdminId,
+          mockWebUrl
         )
       ).eventually.fulfilled;
       expect(sendEmailStub.calledOnce).to.equal(true);
@@ -169,7 +174,8 @@ describe('InvitationService', () => {
         await InvitationService.sendInvitation(
           mockMenteeName,
           mockOneInvitation.receiverEmail,
-          mockAdminId
+          mockAdminId,
+          mockWebUrl
         );
       assert(invitationWithNewExpiryDate);
       expect(invitationWithNewExpiryDate.toObject()).to.deep.include(
@@ -193,7 +199,8 @@ describe('InvitationService', () => {
         InvitationService.sendInvitation(
           mockMenteeName,
           mockOneInvitation.receiverEmail,
-          mockAdminId
+          mockAdminId,
+          mockWebUrl
         )
       ).eventually.fulfilled;
       expect(sendEmailStub.calledOnce).to.equal(true);
@@ -203,7 +210,8 @@ describe('InvitationService', () => {
       const createdInvitation = await InvitationService.sendInvitation(
         mockMenteeName,
         mockOneInvitation.receiverEmail,
-        mockAdminId
+        mockAdminId,
+        mockWebUrl
       );
 
       assert(createdInvitation);

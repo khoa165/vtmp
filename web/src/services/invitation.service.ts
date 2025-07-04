@@ -26,7 +26,8 @@ export const InvitationService = {
   sendInvitation: async (
     receiverName: string,
     receiverEmail: string,
-    senderId: string
+    senderId: string,
+    webUrl: string
   ): Promise<IInvitation | null> => {
     const foundUser = await UserRepository.getUserByEmail(receiverEmail);
     if (foundUser) {
@@ -89,7 +90,8 @@ export const InvitationService = {
     const emailTemplate = getEmailService().getInvitationEmailTemplate(
       receiverName,
       receiverEmail,
-      token
+      token,
+      webUrl
     );
     await getEmailService().sendEmail(emailTemplate);
     return newInvitation || latestPendingInvitation;

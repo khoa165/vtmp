@@ -17,11 +17,12 @@ export class EmailService {
     });
   }
 
-  getInvitationEmailTemplate(name: string, email: string, token: string) {
-    const webUrl =
-      EnvConfig.get().NODE_ENV === 'DEV'
-        ? 'http://localhost:3000'
-        : EnvConfig.get().VTMP_WEB_URL;
+  getInvitationEmailTemplate(
+    name: string,
+    email: string,
+    token: string,
+    webUrl: string
+  ) {
     const link = `${webUrl}/signup?token=${token}`;
     return {
       email,

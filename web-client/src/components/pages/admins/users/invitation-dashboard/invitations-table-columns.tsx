@@ -8,6 +8,7 @@ import { StatusDot } from '@/components/base/status-dot';
 import { InvitationStatusToColorMapping } from '@/utils/constants';
 import { InvitationStatus } from '@vtmp/common/constants';
 import { toast } from 'sonner';
+import { getClientOrigin } from '@/utils/helpers';
 
 export const invitationsTableColumns = (
   revokeInvitation: (id: string) => void,
@@ -15,6 +16,7 @@ export const invitationsTableColumns = (
     receiverName: string;
     receiverEmail: string;
     senderId: string;
+    webUrl: string;
   }) => void
 ): ColumnDef<IInvitationSchema>[] => {
   return [
@@ -128,6 +130,7 @@ export const invitationsTableColumns = (
             receiverEmail: invitation.receiverEmail,
             receiverName: invitation.receiverName,
             senderId: invitation._id,
+            webUrl: getClientOrigin(),
           });
         };
 

@@ -25,7 +25,7 @@ import {
 } from '@/components/pages/admins/invitations/hooks/invitations';
 import { Navigate } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { AxiosError } from 'axios';
+import { getClientOrigin } from '@/utils/helpers';
 
 export const SendInvitationPage = () => {
   const [userInput, setUserInput] = useState<IInvitationUserInput>({
@@ -67,6 +67,7 @@ export const SendInvitationPage = () => {
       receiverName: userInput.name,
       receiverEmail: userInput.email,
       senderId: user._id,
+      webUrl: getClientOrigin(),
     });
   };
 

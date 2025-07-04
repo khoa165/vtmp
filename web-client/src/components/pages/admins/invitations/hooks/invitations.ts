@@ -31,6 +31,7 @@ export const useSendInvitation = ({
       receiverEmail: string;
       senderId: string;
       role?: SystemRole;
+      webUrl: string;
     }) =>
       request({
         method: Method.POST,
