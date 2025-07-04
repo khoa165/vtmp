@@ -1,14 +1,16 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { HeaderSorting } from '@/components/base/header';
-import { IInvitationSchema } from '@/components/pages/admins/users/invitation-dashboard/validation';
-import { Button } from '@/components/base/button';
 import { capitalize } from 'remeda';
-import { StatusDot } from '@/components/base/status-dot';
-import { InvitationStatusToColorMapping } from '@/utils/constants';
-import { InvitationStatus } from '@vtmp/common/constants';
 import { toast } from 'sonner';
 import { getClientOrigin } from '@/utils/helpers';
+
+import { InvitationStatus } from '@vtmp/common/constants';
+
+import { Button } from '@/components/base/button';
+import { HeaderSorting } from '@/components/base/header';
+import { StatusDot } from '@/components/base/status-dot';
+import { IInvitationSchema } from '@/components/pages/admins/invitations/validation';
+import { InvitationStatusToColorMapping } from '@/utils/constants';
 
 export const invitationsTableColumns = (
   revokeInvitation: (id: string) => void,
