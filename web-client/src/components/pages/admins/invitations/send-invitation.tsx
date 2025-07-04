@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react';
+import { Send } from 'lucide-react';
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
@@ -13,12 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/base/card';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/base/dropdown-menu';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
 import {
@@ -76,7 +70,7 @@ export const SendInvitation = () => {
   return (
     <div className="grid grid-cols-12 gap-4">
       <div className="col-start-1 col-span-6 flex flex-col justify-start">
-        <Card className="bg-transparent border-0 shadow-none h-full justify-center">
+        <Card className="bg-transparent border-0 shadow-none h-full justify-center gap-0">
           <CardHeader className="px-0">
             <CardTitle className="text-4xl font-bold">
               Send an invitation
@@ -86,78 +80,49 @@ export const SendInvitation = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col space-y-4 my-3 px-0">
-            <form onSubmit={(e) => e.preventDefault()}>
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="name" className="pb-2">
-                    Receiver Name
-                  </Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder="Name"
-                    type="text"
-                    required
-                    value={userInput.name}
-                    onChange={handleInputChange}
-                    errors={inputErrors.name}
-                  />
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="email" className="pb-2">
-                    Receiver Email
-                  </Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    placeholder="Email"
-                    type="email"
-                    required
-                    value={userInput.email}
-                    onChange={handleInputChange}
-                    errors={inputErrors.email}
-                  />
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="role" className="pb-2">
-                    Role
-                  </Label>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger>
-                      <Button
-                        variant="outline"
-                        justify="between"
-                        size="sm"
-                        className="w-full text-left"
-                      >
-                        <div>{userInput.role}</div>
-                        <ChevronDown />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      onCloseAutoFocus={(e) => e.preventDefault()}
-                    >
-                      {Object.values(SystemRole).map((dropdownRole, index) => (
-                        <DropdownMenuCheckboxItem
-                          key={index}
-                          onClick={() => {
-                            setUserInput({ ...userInput, role: dropdownRole });
-                          }}
-                          checked={userInput.role === dropdownRole}
-                        >
-                          {dropdownRole}
-                        </DropdownMenuCheckboxItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+            <form
+              onSubmit={(e) => e.preventDefault()}
+              className="grid grid-cols-10 w-full items-end gap-4"
+            >
+              <div className="col-start-1 col-span-4 flex flex-col space-y-1.5">
+                <Label htmlFor="name" className="pb-2">
+                  Receiver Name
+                </Label>
+                <Input
+                  id="name"
+                  name="name"
+                  placeholder="Name"
+                  type="text"
+                  required
+                  value={userInput.name}
+                  onChange={handleInputChange}
+                />
               </div>
+              <div className="col-start-5 col-span-4 flex flex-col space-y-1.5">
+                <Label htmlFor="email" className="pb-2">
+                  Receiver Email
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  placeholder="Email"
+                  type="email"
+                  required
+                  value={userInput.email}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <Button
+                className="text-black w-full col-start-9 col-span-1"
+                onClick={handleSend}
+              >
+                <Send />
+              </Button>
             </form>
           </CardContent>
-          <CardFooter className="flex flex-col px-0">
-            <Button className="text-black w-full" onClick={handleSend}>
-              Send Invitation
-            </Button>
+          <CardFooter className="flex flex-start px-0 text-vtmp-orange">
+            {inputErrors.name.length > 0 && <p>{inputErrors.name[0]}</p>}
+            {inputErrors.email.length > 0 && <p>{inputErrors.email[0]}</p>}
           </CardFooter>
         </Card>
       </div>

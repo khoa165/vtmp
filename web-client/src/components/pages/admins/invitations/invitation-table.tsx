@@ -68,7 +68,7 @@ export function InvitationTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn('receiverEmail')?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm text-white"
         />
       </section>
       <ResizableTable table={table} columns={columns} />
