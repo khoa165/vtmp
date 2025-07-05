@@ -5,6 +5,8 @@ on:
     types: [labeled, opened]
     branches:
       - main
+  pull_request_review:
+    types: [submitted]
 
 jobs:
   # Only run if PR has the "run-checks" label
@@ -16,7 +18,9 @@ jobs:
       - name: Check if should run
         id: check
         run: |
-          if [[ "${{ github.event.action }}" == "labeled" && "${{ github.event.label.name }}" == "run-checks" ]]; then
+          if [[ "${{ github.event_name }}" == "pull_request_review" && "${{ github.event.review.state }}" == "approved" ]]; then
+            echo "should-run=true" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event.action }}" == "labeled" && "${{ github.event.label.name }}" == "run-checks" ]]; then
             echo "should-run=true" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event.action }}" == "opened" ]]; then
             # Check if PR already has the label (when PR is first created)
@@ -146,13 +150,14 @@ jobs:
     needs:
       [
         check-labels,
+        changes,
         build-common,
         build-web,
         build-discord-service,
         build-web-client,
         test-web,
       ]
-    if: ${{ always() && needs.check-labels.outputs.should-run == 'true' }}
+    if: ${{ always() && needs.check-labels.outputs.should-run == 'true' && github.event_name != 'pull_request_review' }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
