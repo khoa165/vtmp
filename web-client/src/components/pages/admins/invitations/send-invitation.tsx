@@ -6,7 +6,10 @@ import { toast } from 'sonner';
 import { getClientOrigin } from '#vtmp/web-client/utils/helpers';
 import { Button } from '@/components/base/button';
 import { Input } from '@/components/base/input';
-import { useSendInvitation , IInvitationUserInput } from '@/components/pages/admins/invitations/hooks/invitations';
+import {
+  useSendInvitation,
+  IInvitationUserInput,
+} from '@/components/pages/admins/invitations/hooks/invitations';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 export const SendInvitation = () => {
@@ -47,9 +50,9 @@ export const SendInvitation = () => {
   return (
     <form
       onSubmit={(e) => e.preventDefault()}
-      className="grid grid-cols-10 w-full items-end gap-4 text-white"
+      className="grid grid-cols-20 w-full items-end gap-2 text-white"
     >
-      <div className="col-start-5 col-span-2 flex flex-col space-y-1.5">
+      <div className="col-start-10 col-span-4 flex flex-col space-y-1.5">
         <Input
           id="name"
           name="name"
@@ -60,7 +63,7 @@ export const SendInvitation = () => {
           onChange={handleInputChange}
         />
       </div>
-      <div className="col-start-7 col-span-3 flex flex-col space-y-1.5">
+      <div className="col-start-14 col-span-6 flex flex-col space-y-1.5">
         <Input
           id="email"
           name="email"
@@ -72,7 +75,7 @@ export const SendInvitation = () => {
         />
       </div>
       <Button
-        className="text-black w-full col-start-10 col-span-1"
+        className="text-black w-full col-start-20 col-span-1"
         onClick={handleSend}
       >
         <Send />
