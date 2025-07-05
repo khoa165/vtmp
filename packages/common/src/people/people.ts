@@ -48,6 +48,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         ],
       },
     ],
+    isFounder: true,
     hasNeverBeenMenteeOfProgram: true,
   },
   [PeopleName.HUY_ANH]: {
@@ -84,6 +85,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         ],
       },
     ],
+    isFounder: true,
     hasNeverBeenMenteeOfProgram: true,
   },
   [PeopleName.CHAN_LE]: {
@@ -297,6 +299,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
+    externallyRecruited: true,
   },
   [PeopleName.NICK_DOAN]: {
     name: 'Nick Doan',
@@ -320,6 +323,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
+    externallyRecruited: true,
   },
   [PeopleName.SARAH_VO]: {
     name: 'Sarah Vo',
@@ -338,6 +342,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       },
     ],
     hasNeverBeenMenteeOfProgram: true,
+    externallyRecruited: true,
   },
   [PeopleName.HUU_DANG]: {
     name: 'Huu Dang',
@@ -557,7 +562,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
       {
         year: 2025,
         title: 'SWE Intern @ Microsoft',
-        roles: [MentorshipRole.COMMUNITY_MEMBER],
+        roles: [],
       },
     ],
   },

@@ -11,6 +11,7 @@ export interface IUser extends Document {
   encryptedPassword: string;
   role: SystemRole;
   deletedAt?: Date;
+  activated?: boolean;
 }
 
 const UserSchema = new mongoose.Schema<IUser>(
@@ -39,6 +40,10 @@ const UserSchema = new mongoose.Schema<IUser>(
     },
     deletedAt: {
       type: Date,
+    },
+    activated: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }

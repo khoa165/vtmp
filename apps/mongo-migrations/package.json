@@ -10,7 +10,8 @@
   "dependencies": {
     "@vtmp/common": "1.0.0",
     "@vtmp/mongo": "1.0.0",
-    "dotenv": "^17.0.1"
+    "dotenv": "^17.0.1",
+    "remeda": "^2.24.0"
   },
   "scripts": {
     "migrate": "tsx src/index.ts",

@@ -27,7 +27,9 @@ export interface MentorshipPerson {
   hobbies: string;
   avatar: string;
   terms: MentorshipTerm[];
+  isFounder?: boolean;
   hasNeverBeenMenteeOfProgram?: boolean;
+  externallyRecruited?: boolean;
 }
 
 export interface MentorshipTerm {
