@@ -9,7 +9,7 @@ on:
     types: [submitted]
 
 jobs:
-  # Only run if PR has the "run-checks" labe
+  # Only run if PR has the "run-checks" label
   check-labels:
     runs-on: ubuntu-latest
     outputs:
