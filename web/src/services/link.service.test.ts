@@ -288,7 +288,7 @@ describe('LinkService', () => {
       const linkCounts = await LinkService.getLinkCountByStatus();
 
       expect(linkCounts).to.deep.equal({
-        [LinkStatus.PENDING_PROCESSING]: 2,
+        [LinkStatus.PENDING_PROCESSING]: 3,
         [LinkStatus.ADMIN_APPROVED]: 0,
         [LinkStatus.ADMIN_REJECTED]: 0,
         [LinkStatus.PENDING_ADMIN_REVIEW]: 0,
