@@ -34,6 +34,5 @@
   },
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit"
-  },
-  "typescript.tsdk": "node_modules/typescript/lib"
+  }
 }

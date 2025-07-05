@@ -13,6 +13,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Khoa Le',
     alias: PeopleName.KHOA_LE,
     trackingName: 'Khoa',
+    school: 'University of Wisconsin-Madison',
+    linkedin: 'https://www.linkedin.com/in/khoalethien',
     professionalTitle: 'Software Engineer II @ Vanta',
     hobbies: 'board games, chess, reality shows',
     avatar:
@@ -56,6 +58,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Nguyen',
     alias: PeopleName.HUY_ANH,
     trackingName: 'Huy Anh',
+    school: 'Texas A&M University',
+    linkedin: 'https://www.linkedin.com/in/anh-henry-ng',
     professionalTitle: 'Software Engineer @ Netflix',
     hobbies: 'cats, startups, capybara',
     avatar:
@@ -93,6 +97,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Chan Le',
     alias: PeopleName.CHAN_LE,
     trackingName: 'Chân',
+    school: 'Georgia Tech',
+    linkedin: 'https://www.linkedin.com/in/chanlvh',
     professionalTitle: 'Viet Tech Founder',
     hobbies: 'real estate, real estate, real estate',
     avatar:
@@ -116,6 +122,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Nguyen Vu',
     alias: PeopleName.NGUYEN_VU,
     trackingName: 'Nguyên',
+    school: 'University of Waterloo',
+    linkedin: 'https://www.linkedin.com/in/zoeyvu',
     professionalTitle: 'Software Engineer @ Mastercard',
     hobbies: 'hiking, nature, cooking',
     avatar:
@@ -144,6 +152,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Pham',
     alias: PeopleName.THU_ANH,
     trackingName: 'Thu Anh',
+    school: 'Fairleigh Dickinson University',
+    linkedin: 'https://www.linkedin.com/in/anhpham604',
     professionalTitle: 'Software Engineer II @ Mastercard',
     hobbies: 'reading, writing, corgi',
     avatar:
@@ -172,6 +182,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Kevin Luu',
     alias: PeopleName.KEVIN_LUU,
     trackingName: 'Kevin',
+    school: 'University of California, Berkeley',
+    linkedin: 'https://www.linkedin.com/in/khluu',
     professionalTitle: 'Software Engineer II @ Anyscale',
     hobbies: 'travel, pickle ball, badminton',
     avatar:
@@ -200,6 +212,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Jenny Quach',
     alias: PeopleName.JENNY_QUACH,
     trackingName: 'Jenny',
+    school: 'University of California, San Diego',
+    linkedin: 'https://www.linkedin.com/in/jennyquach11',
     professionalTitle: 'Software Engineer @ LinkedIn',
     hobbies: 'board games, anime, food',
     avatar:
@@ -282,6 +296,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Son Mac',
     alias: PeopleName.THIEN_SON,
     trackingName: 'Thiên Sơn',
+    school: 'University of Arizona',
+    linkedin: 'https://www.linkedin.com/in/sonmac1203/',
     professionalTitle: 'Software Engineer II @ Vanta',
     hobbies: 'frontend, cats, travel',
     avatar:
@@ -306,6 +322,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Nick Doan',
     alias: PeopleName.NICK_DOAN,
     trackingName: 'Nick',
+    school: 'Tufts University',
+    linkedin: 'https://www.linkedin.com/in/nick-huy-doan',
     professionalTitle: 'Software Engineer @ Palantir',
     hobbies: 'coding, running, games',
     avatar:
@@ -330,6 +348,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Sarah Vo',
     alias: PeopleName.SARAH_VO,
     trackingName: 'Sarah',
+    school: 'Simon Fraser University',
+    linkedin: 'https://www.linkedin.com/in/sarahvo604',
     professionalTitle: 'Software Engineer @ Amazon',
     hobbies: 'board games, PC games, cooking',
     avatar:
@@ -349,6 +369,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Dang Pham',
     alias: PeopleName.HUU_DANG,
     trackingName: 'Đăng',
+    school: 'University of South Florida',
+    linkedin: 'https://www.linkedin.com/in/dangdei',
     professionalTitle: 'SWE Intern @ Meta',
     hobbies: 'reading, writing, gaming',
     avatar:
@@ -413,6 +435,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Robin Hoang',
     alias: PeopleName.ROBIN_HOANG,
     trackingName: 'Robin',
+    school: 'Colby College',
+    linkedin: 'https://www.linkedin.com/in/tlhoang',
     professionalTitle: 'Software Engineer @ Microsoft',
     hobbies: 'solo trip, pole dance, beach',
     avatar:
@@ -477,6 +501,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Phuoc Ong',
     alias: PeopleName.PHUOC_ONG,
     trackingName: 'Phước',
+    school: 'DePauw University',
+    linkedin: 'https://www.linkedin.com/in/peterong208/',
     professionalTitle: 'SWE Intern @ Microsoft',
     hobbies: 'gym, food, dog',
     avatar:
@@ -571,6 +597,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Khue Tang',
     alias: PeopleName.KHUE_TANG,
     trackingName: 'Khuê',
+    school: 'Providence College',
+    linkedin: 'https://www.linkedin.com/in/khuetang',
     professionalTitle: 'Software Engineer @ LinkedIn',
     hobbies: 'pekking duck, cooking, hiking',
     avatar:
@@ -629,6 +657,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Phuong Cao',
     alias: PeopleName.PHUONG_CAO,
     trackingName: 'Phương',
+    school: 'Bucknell University',
+    linkedin: 'https://www.linkedin.com/in/phuong-cao-pc',
     professionalTitle: 'SWE Intern @ NVIDIA',
     hobbies: 'pekking duck, anime, music',
     avatar:
@@ -699,6 +729,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Ngoc Doan',
     alias: PeopleName.NGOC_DOAN,
     trackingName: 'Ngọc',
+    school: 'Soka University of America',
+    linkedin: 'https://www.linkedin.com/in/pn-ngocdoan',
     professionalTitle: 'Software Engineer @ DoorDash',
     hobbies: 'road trip, food, concert',
     avatar:
@@ -757,6 +789,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Cuong Nguyen',
     alias: PeopleName.CUONG_NGUYEN,
     trackingName: 'Cường',
+    school: 'Amherst College',
+    linkedin: 'https://www.linkedin.com/in/vnguyen24',
     professionalTitle: 'Software Engineer @ Google',
     hobbies: 'board games, PC games, anime',
     avatar:
@@ -833,6 +867,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Quan Le',
     alias: PeopleName.MINH_QUAN,
     trackingName: 'Minh Quân',
+    school: 'University of Cincinnati',
+    linkedin: 'https://www.linkedin.com/in/lennmquan',
     professionalTitle: 'Software Engineer @ Meta',
     hobbies: 'cosplay, board games, music',
     avatar:
@@ -897,6 +933,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Trang Vu',
     alias: PeopleName.TRANG_VU,
     trackingName: 'Trang Vũ',
+    school: 'York University',
+    linkedin: 'https://www.linkedin.com/in/tranguv',
     professionalTitle: 'SWE Intern @ Shopify',
     hobbies: 'board games, K-drama, flowers',
     avatar:
@@ -954,6 +992,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Hieu Vuong',
     alias: PeopleName.HIEU_VUONG,
     trackingName: 'Hiếu',
+    school: 'University of Toronto',
+    linkedin: 'https://www.linkedin.com/in/lucas-vuong-495b54199',
     professionalTitle: 'Former SWE Intern @ SAP',
     hobbies: 'karaoke, beauty salon, travel',
     avatar:
@@ -998,6 +1038,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Thanh Nguyen',
     alias: PeopleName.THANH_NGUYEN,
     trackingName: 'Thành',
+    school: 'University of British Columbia',
+    linkedin: 'https://www.linkedin.com/in/gsthanhnguyen',
     professionalTitle: 'Student @ UBC',
     hobbies: 'beach, solo travel, writing',
     avatar:
@@ -1052,6 +1094,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Hung Ngo',
     alias: PeopleName.HUNG_NGO,
     trackingName: 'Hưng',
+    school: 'University of Massachusetts Amherst',
+    linkedin: 'https://www.linkedin.com/in/hungngo1607',
     professionalTitle: 'SWE Intern @ PlayStation',
     hobbies: 'keyboard, music, League',
     avatar:
@@ -1104,6 +1148,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Tran',
     alias: PeopleName.NGOC_ANH_TRAN,
     trackingName: 'Ngọc Anh',
+    school: 'Mount Holyoke College',
+    linkedin: 'https://www.linkedin.com/in/anhngtran',
     professionalTitle: 'SWE Intern @ Robinhood',
     hobbies: 'cooking, Chinese dramas, dogs',
     avatar:
@@ -1168,6 +1214,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Vy Nguyen',
     alias: PeopleName.VY_NGUYEN,
     trackingName: 'Thuý Vy',
+    school: 'Catholic University of America',
+    linkedin: 'https://www.linkedin.com/in/vy-nguyen-7275b2157',
     professionalTitle: 'Student @ Catholic',
     hobbies: 'music, cooking, travel',
     avatar:
@@ -1203,6 +1251,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Vien Nguyen',
     alias: PeopleName.VIEN_NGUYEN,
     trackingName: 'Viên',
+    school: 'University of South Florida',
+    linkedin: 'https://www.linkedin.com/in/vienng',
     professionalTitle: 'SWE Intern @ ServiceNow',
     hobbies: 'fencing, table tennis, travelling',
     avatar:
@@ -1252,6 +1302,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Hoang',
     alias: PeopleName.THUC_ANH,
     trackingName: 'Thục Anh',
+    school: 'Lehigh University',
+    linkedin: 'https://www.linkedin.com/in/ally-hoang-4b4562223',
     professionalTitle: 'SWE Intern @ Palantir',
     hobbies: 'cooking, embroidery, travel',
     avatar:
@@ -1315,6 +1367,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Giang Pham',
     alias: PeopleName.GIANG_PHAM,
     trackingName: 'Giang',
+    school: 'Colby College',
+    linkedin: 'https://www.linkedin.com/in/giang-pham-17925222b',
     professionalTitle: 'Software Engineer @ Amazon',
     hobbies: 'Kpop, cooking, japanese books',
     avatar:
@@ -1358,6 +1412,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Nguyen',
     alias: PeopleName.PHAN_ANH,
     trackingName: 'Phan Anh',
+    school: 'DePauw University',
+    linkedin: 'https://www.linkedin.com/in/phanng',
     professionalTitle: 'SWE Intern @ Robinhood',
     hobbies: 'soccer, running, coding',
     avatar:
@@ -1403,6 +1459,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Quy Nguyen',
     alias: PeopleName.QUY_NGUYEN,
     trackingName: 'Quý',
+    school: 'University of Windsor',
+    linkedin: 'https://www.linkedin.com/in/quy-nguyen-b658aa243',
     professionalTitle: 'Student @ Windsor',
     hobbies: 'sports, soccer games, movies',
     avatar:
@@ -1443,6 +1501,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Thang Nguyen',
     alias: PeopleName.THANG_NGUYEN,
     trackingName: 'Thắng',
+    school: 'Toronto Metropolitan University',
+    linkedin: 'https://www.linkedin.com/in/thang-nguyen98',
     professionalTitle: 'Student @ Toronto Metropolitan',
     hobbies: 'badminton, basketball, video game',
     avatar:
@@ -1474,6 +1534,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Quynh Tran',
     alias: PeopleName.QUYNH_TRAN,
     trackingName: 'Quỳnh',
+    school: 'DePauw University',
+    linkedin: 'https://www.linkedin.com/in/quynhtran158',
     professionalTitle: 'SWE Intern @ Microsoft',
     hobbies: 'cats, K-pop, travel',
     avatar:
@@ -1531,6 +1593,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Phuong Le',
     alias: PeopleName.PHUONG_LE,
     trackingName: 'Phượng',
+    school: 'Denison University',
+    linkedin: 'https://www.linkedin.com/in/phuong-le-p2',
     professionalTitle: 'SWE Intern @ TBD',
     hobbies: 'films, novels, pop ballad',
     avatar:
@@ -1576,6 +1640,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Quan Nguyen',
     alias: PeopleName.BA_QUAN,
     trackingName: 'Bá Quân',
+    school: 'University of South Florida',
+    linkedin: 'https://www.linkedin.com/in/quanmichaelnguyen',
     professionalTitle: 'SWE Intern @ Ryco.io',
     hobbies: 'guitar, photography, fishing',
     avatar:
@@ -1615,6 +1681,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Vy Tran',
     alias: PeopleName.VY_TRAN,
     trackingName: 'Vy Trần',
+    school: 'Bucknell University',
+    linkedin: 'https://www.linkedin.com/in/vytran1203',
     professionalTitle: 'Data Engineer Intern @ Meta',
     hobbies: 'soccer, mountains, dogs',
     avatar:
@@ -1672,6 +1740,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Linh Tran',
     alias: PeopleName.TRANG_LINH,
     trackingName: 'Trang Linh',
+    school: 'Hobart & William Smith Colleges',
+    linkedin: 'https://www.linkedin.com/in/linh-trant',
     professionalTitle: 'SWE Intern @ Microsoft',
     hobbies: 'draw, sleep, axolotl',
     avatar:
@@ -1717,6 +1787,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Khang Nguyen',
     alias: PeopleName.PHUC_KHANG,
     trackingName: 'Phúc Khang',
+    school: 'York University',
+    linkedin: 'https://www.linkedin.com/in/jimmynguyen152',
     professionalTitle: 'SWE Intern @ Shopify',
     hobbies: 'ice-skating, MUN, skywatching',
     avatar:
@@ -1756,6 +1828,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Long Dau',
     alias: PeopleName.LONG_DAU,
     trackingName: 'Long',
+    school: 'Texas Christian University',
+    linkedin: 'https://www.linkedin.com/in/long-dau-722399238/',
     professionalTitle: 'SWE Intern @ ServiceNow',
     hobbies: 'sports, video game, rap',
     avatar:
@@ -1810,6 +1884,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Hoang Nguyen',
     alias: PeopleName.HOANG_NGUYEN,
     trackingName: 'Hoàng',
+    school: 'University of Alberta',
+    linkedin: 'https://www.linkedin.com/in/hoanglui1010',
     professionalTitle: 'SWE Intern @ Shopify + Amazon',
     hobbies: 'indie, k-drama, solo travel',
     avatar:
@@ -1864,6 +1940,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Linh Nguyen',
     alias: PeopleName.HA_LINH,
     trackingName: 'Hà Linh',
+    school: 'Tufts University',
+    linkedin: 'https://www.linkedin.com/in/linh-nguyen-b07788215',
     professionalTitle: 'SWE Intern @ Adobe',
     hobbies: 'food, music, roller coaster',
     avatar:
@@ -1906,6 +1984,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Linh Hoang',
     alias: PeopleName.KHANH_LINH,
     trackingName: 'Khánh Linh',
+    school: 'Dickinson College',
+    linkedin: 'https://www.linkedin.com/in/linhhoang04',
     professionalTitle: 'SWE Intern @ Amazon',
     hobbies: 'music, dumb tv shows, sunbathing',
     avatar:
@@ -1957,6 +2037,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Khang Nguyen',
     alias: PeopleName.HUU_KHANG,
     trackingName: 'Hữu Khang',
+    school: 'University of Massachusetts Amherst',
+    linkedin: 'https://www.linkedin.com/in/ken107',
     professionalTitle: 'SWE Intern @ Amazon',
     hobbies: 'J-pop, gaming, anime',
     avatar:
@@ -2008,6 +2090,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Trang Do',
     alias: PeopleName.TRANG_DO,
     trackingName: 'Trang Đỗ',
+    school: 'Northeastern University',
+    linkedin: 'https://www.linkedin.com/in/trang-jenny-do',
     professionalTitle: 'SWE Intern @ Asana',
     hobbies: 'kdrama, cooking, Vpop',
     avatar:
@@ -2065,6 +2149,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Nguyen',
     alias: PeopleName.HAI_ANH,
     trackingName: 'Hải Anh',
+    school: 'Fordham University',
+    linkedin: 'https://www.linkedin.com/in/hennessy-nguyen',
     professionalTitle: 'SWE Intern @ Slack',
     hobbies: 'walking, bike riding, road trip',
     avatar:
@@ -2113,6 +2199,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Nam Nguyen',
     alias: PeopleName.NAM_NGUYEN,
     trackingName: 'Nam',
+    school: 'Michigan State University',
+    linkedin: 'https://www.linkedin.com/in/namnguyen0192',
     professionalTitle: 'SWE Intern @ Health Enhancement Systems',
     hobbies: 'soccer, One Piece, piano',
     avatar:
@@ -2162,6 +2250,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Tri Hoang',
     alias: PeopleName.TRI_HOANG,
     trackingName: 'Trí',
+    school: 'Rice University',
+    linkedin: 'https://www.linkedin.com/in/minhtrihoang/',
     professionalTitle: 'SWE Intern @ Meta',
     hobbies: 'sports, traveling, movies',
     avatar:
@@ -2249,6 +2339,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Van Nguyen',
     alias: PeopleName.VAN_NGUYEN,
     trackingName: 'Vân',
+    school: 'University of Toronto',
+    linkedin: 'https://www.linkedin.com/in/vannguyen22',
     professionalTitle: 'SWE Intern @ Microsoft',
     hobbies: 'kdrama, tarot, drums',
     avatar:
@@ -2354,6 +2446,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Kha Tran',
     alias: PeopleName.KHA_TRAN,
     trackingName: 'Kha',
+    school: 'University of Manitoba',
+    linkedin: 'https://www.linkedin.com/in/duy-kha-tran-b53a43279',
     professionalTitle: 'Student @ Manitoba',
     hobbies: 'coding, reading, gaming',
     avatar:
@@ -2396,6 +2490,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Quan Vu',
     alias: PeopleName.HUE_QUAN,
     trackingName: 'Huệ Quân',
+    school: 'School of the Art Institute of Chicago',
+    linkedin: 'https://www.linkedin.com/in/jackie-vu-669282212/',
     professionalTitle: 'Product Design Intern @ Meta',
     hobbies: '',
     avatar:
@@ -2413,6 +2509,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Tran Vo',
     alias: PeopleName.TRAN_VO,
     trackingName: 'Trân',
+    school: 'Drexel University',
+    linkedin: 'https://www.linkedin.com/in/tran-cheryl-vo',
     professionalTitle: 'UX Designer @ Vanguard',
     hobbies: 'museums, cafe-hopping, Disneyland',
     avatar:
@@ -2430,6 +2528,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Diep Nguyen',
     alias: PeopleName.DIEP_NGUYEN,
     trackingName: 'Diệp',
+    school: 'Drexel University',
+    linkedin: 'https://www.linkedin.com/in/kaylie-diep-nguyen',
     professionalTitle: 'Product Design Intern @ Microsoft',
     hobbies: '',
     avatar:
@@ -2447,6 +2547,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Monica Huynh',
     alias: PeopleName.MONICA_HUYNH,
     trackingName: 'Monica',
+    school: 'University of British Columbia',
+    linkedin: 'https://www.linkedin.com/in/monicachauhuynh',
     professionalTitle: 'Former Student @ UBC',
     hobbies: '',
     avatar:
@@ -2475,6 +2577,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Phuc Truong',
     alias: PeopleName.PHUC_TRUONG,
     trackingName: 'Jun',
+    school: 'University of South Florida',
+    linkedin: 'https://www.linkedin.com/in/phuctruong105',
     professionalTitle: 'Student @ USF',
     hobbies: '',
     avatar:
@@ -2503,6 +2607,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'An Tran',
     alias: PeopleName.AN_TRAN,
     trackingName: 'Ân',
+    school: 'California State Polytechnic University, Pomona',
+    linkedin: 'https://www.linkedin.com/in/hong-an-tran-4846b6255',
     professionalTitle: 'Student @ Pomona',
     hobbies: '',
     avatar:
@@ -2531,6 +2637,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Minh Nguyen',
     alias: PeopleName.QUANG_MINH,
     trackingName: 'Quang Minh',
+    school: 'Florida State University',
+    linkedin: 'https://www.linkedin.com/in/minh-nguyen-a4a8ab28b',
     professionalTitle: 'Student @ FSU',
     hobbies: '',
     avatar:
@@ -2559,6 +2667,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Son Mai',
     alias: PeopleName.DANG_SON,
     trackingName: 'Đăng Sơn',
+    school: 'Western Governors University',
+    linkedin: 'https://www.linkedin.com/in/dsmai',
     professionalTitle: 'Student @ Western Governors',
     hobbies: '',
     avatar:
@@ -2587,6 +2697,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Linh Le',
     alias: PeopleName.NGOC_LINH,
     trackingName: 'Ngọc Linh',
+    school: 'Mount Holyoke College',
+    linkedin: 'https://www.linkedin.com/in/ngoclinhle15',
     professionalTitle: 'Student @ Mount Holyoke',
     hobbies: '',
     avatar:
@@ -2613,6 +2725,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Duc Nguyen',
     alias: PeopleName.DUC_NGUYEN,
     trackingName: 'Đức',
+    school: 'George Mason University',
+    linkedin: 'https://www.linkedin.com/in/minhduc29',
     professionalTitle: 'Student @ George Mason',
     hobbies: '',
     avatar:
@@ -2639,6 +2753,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Tran',
     alias: PeopleName.XUAN_ANH,
     trackingName: 'Xuân Anh',
+    school: 'Soka University of America',
+    linkedin: 'https://www.linkedin.com/in/xuan-anh-tran-450368332',
     professionalTitle: 'Student @ Soka',
     hobbies: '',
     avatar:
@@ -2665,6 +2781,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Dat Vu',
     alias: PeopleName.DAT_VU,
     trackingName: 'Đạt',
+    school: 'California State University San Marcos',
+    linkedin: 'https://www.linkedin.com/in/thanhdatvu111',
     professionalTitle: 'Student @ CSUSM',
     hobbies: '',
     avatar:
@@ -2691,6 +2809,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Chau Tran',
     alias: PeopleName.CHAU_TRAN,
     trackingName: 'Châu Trần',
+    school: 'University of Massachusetts Amherst',
+    linkedin: 'https://www.linkedin.com/in/chau-tran-hoangminh',
     professionalTitle: 'Student @ UMass. Amherst',
     hobbies: '',
     avatar:
@@ -2717,6 +2837,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Ngo',
     alias: PeopleName.TUAN_ANH,
     trackingName: 'Tuấn Anh',
+    school: 'Colby College',
+    linkedin: 'https://www.linkedin.com/in/ngo-tuananh',
     professionalTitle: 'Student @ Colby',
     hobbies: '',
     avatar:
@@ -2743,6 +2865,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Quyen Doan',
     alias: PeopleName.QUYEN_DOAN,
     trackingName: 'Quyên',
+    school: 'Augustana College',
+    linkedin: 'https://www.linkedin.com/in/quyendoan51',
     professionalTitle: 'Student @ Augustana',
     hobbies: '',
     avatar:
@@ -2769,6 +2893,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Nhat Le',
     alias: PeopleName.NHAT_LE,
     trackingName: 'Nhật',
+    school: 'Iowa State University',
+    linkedin: 'https://www.linkedin.com/in/nhat-le05',
     professionalTitle: 'Student @ Iowa State',
     hobbies: '',
     avatar:
@@ -2795,6 +2921,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Dan Nguyen',
     alias: PeopleName.DAN_NGUYEN,
     trackingName: 'Đan',
+    school: 'George Mason University',
+    linkedin: 'https://www.linkedin.com/in/dannguyen24',
     professionalTitle: 'Student @ George Mason',
     hobbies: '',
     avatar:
@@ -2821,6 +2949,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Tam Nguyen',
     alias: PeopleName.TAM_NGUYEN,
     trackingName: 'Tâm Nguyễn',
+    school: 'Minerva University',
+    linkedin: 'https://www.linkedin.com/in/tam-nguyen-m',
     professionalTitle: 'Student @ Minerva',
     hobbies: '',
     avatar:
@@ -2847,6 +2977,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Uyen Hoang',
     alias: PeopleName.UYEN_HOANG,
     trackingName: 'Uyên',
+    school: 'Cornell University',
+    linkedin: 'https://www.linkedin.com/in/uyenhoang2903',
     professionalTitle: 'Student @ Cornell',
     hobbies: '',
     avatar:
@@ -2874,6 +3006,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Dang Nguyen',
     alias: PeopleName.THAI_DANG,
     trackingName: 'Thái Đăng',
+    school: 'University of Massachusetts Amherst',
+    linkedin: 'https://www.linkedin.com/in/dang-nguyen-49132527a',
     professionalTitle: 'Student @ UMass. Amherst',
     hobbies: '',
     avatar:
@@ -2901,6 +3035,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Minh Le',
     alias: PeopleName.NGOC_MINH,
     trackingName: 'Ngọc Minh',
+    school: 'Dickinson College',
+    linkedin: 'https://www.linkedin.com/in/minhnnle',
     professionalTitle: 'Student @ Dickinson',
     hobbies: '',
     avatar:
@@ -2928,6 +3064,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Tri Nguyen',
     alias: PeopleName.TRI_NGUYEN,
     trackingName: 'Trí Nguyễn',
+    school: 'Minerva University',
+    linkedin: 'https://www.linkedin.com/in/tri-nguyen52',
     professionalTitle: 'Student @ Minerva',
     hobbies: '',
     avatar:
@@ -2955,6 +3093,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Tam Dang',
     alias: PeopleName.TAM_DANG,
     trackingName: 'Tâm Đặng',
+    school: 'University of South Florida',
+    linkedin: 'https://www.linkedin.com/in/dahomita',
     professionalTitle: 'Student @ USF',
     hobbies: '',
     avatar:
@@ -2982,6 +3122,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Hoang',
     alias: PeopleName.NGOC_ANH_HOANG,
     trackingName: 'Ngọc Anh Hoàng',
+    school: 'Tufts University',
+    linkedin: 'https://www.linkedin.com/in/ahoang04',
     professionalTitle: 'Student @ Tufts',
     hobbies: '',
     avatar:
@@ -3009,6 +3151,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Kevin Doan',
     alias: PeopleName.KEVIN_DOAN,
     trackingName: 'Kevin Đoàn',
+    school: 'Texas Christian University',
+    linkedin: 'https://www.linkedin.com/in/kevin-doan-tcu',
     professionalTitle: 'Student @ TCU',
     hobbies: '',
     avatar:
@@ -3036,6 +3180,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Linh Nguyen',
     alias: PeopleName.THUY_LINH,
     trackingName: 'Thùy Linh',
+    school: 'Florida State University',
+    linkedin: 'https://www.linkedin.com/in/linh--nguyen',
     professionalTitle: 'Student @ FSU',
     hobbies: '',
     avatar:
@@ -3063,6 +3209,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Kien Tran',
     alias: PeopleName.KIEN_TRAN,
     trackingName: 'Kiên Trần',
+    school: 'Lehigh University',
+    linkedin: 'https://www.linkedin.com/in/kientran2912',
     professionalTitle: 'Student @ Lehigh',
     hobbies: '',
     avatar:
@@ -3090,6 +3238,8 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Ha Nguyen',
     alias: PeopleName.HA_NGUYEN,
     trackingName: 'Hà Nguyễn',
+    school: 'Tufts University',
+    linkedin: 'https://www.linkedin.com/in/hanguyen1125',
     professionalTitle: 'Student @ Tufts',
     hobbies: '',
     avatar:

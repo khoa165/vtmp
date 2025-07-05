@@ -6,6 +6,8 @@ interface IProgramProfile extends Document {
   yearJoined: number;
   isActive: boolean;
   hobbies: string[];
+  school?: string;
+  linkedin?: string;
   currentProfessionalTitle: string;
   isFounder: boolean;
   wasMentee: boolean;
@@ -35,6 +37,12 @@ const ProgramProfileSchema = new mongoose.Schema<IProgramProfile>({
   hobbies: {
     type: [String],
     default: [],
+  },
+  school: {
+    type: String,
+  },
+  linkedin: {
+    type: String,
   },
   currentProfessionalTitle: {
     type: String,

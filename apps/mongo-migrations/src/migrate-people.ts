@@ -76,6 +76,8 @@ export const migratePeople = async () => {
             yearJoined: person.terms[0].year,
             isActive: hasAtLeast(currentRoles, 1),
             hobbies: person.hobbies.split(', '),
+            school: person.school,
+            linkedin: person.linkedin,
             currentProfessionalTitle: person.professionalTitle,
             isFounder: person.isFounder ?? false,
             wasMentee: !person.hasNeverBeenMenteeOfProgram,

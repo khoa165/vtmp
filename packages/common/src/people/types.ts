@@ -27,6 +27,8 @@ export interface MentorshipPerson {
   hobbies: string;
   avatar: string;
   terms: MentorshipTerm[];
+  school?: string;
+  linkedin?: string;
   isFounder?: boolean;
   hasNeverBeenMenteeOfProgram?: boolean;
   externallyRecruited?: boolean;
