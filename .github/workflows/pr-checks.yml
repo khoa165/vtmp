@@ -4,7 +4,8 @@ on:
   pull_request:
     types: [labeled, opened]
     branches:
-      - main
+      # - main
+      - dson/gh-action-label
 
 jobs:
   # Only run if PR has the "run-checks" label
