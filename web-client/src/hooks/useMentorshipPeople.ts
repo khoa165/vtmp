@@ -1,13 +1,15 @@
 import { useMemo } from 'react';
+import { first, sortBy, sumBy } from 'remeda';
+
+import { MentorshipRole } from '@vtmp/common/constants';
+import { mentorshipPeople } from '@vtmp/common/people';
+
+import { MentorshipPerson } from '#vtmp/web-client/types';
+import { PeopleSortColumn } from '#vtmp/web-client/utils/constants';
 import {
   doesPersonHaveAtLeastOneRoleInYear,
   getPersonPriorityInYear,
-} from '@/utils/data';
-import { PeopleSortColumn } from '@/utils/constants';
-import { mentorshipPeople } from '@/data/people';
-import { first, sortBy, sumBy } from 'remeda';
-import { MentorshipRole } from '@vtmp/common/constants';
-import { MentorshipPerson } from '@/types';
+} from '#vtmp/web-client/utils/data';
 
 export const useMentorshipPeople = (
   year: number | 'all',

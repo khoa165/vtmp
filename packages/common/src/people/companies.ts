@@ -1,5 +1,6 @@
-import { CompanyMetadata } from '@/types';
 import { CompanyName } from '@vtmp/common/constants';
+
+import { CompanyMetadata } from '#vtmp/common/people/types';
 
 export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   [CompanyName.MICROSOFT]: {

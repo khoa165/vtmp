@@ -1,5 +1,7 @@
 import { MentorshipGroup, MentorshipRole } from '@vtmp/common/constants';
-import { PeopleSortColumn, ProjectName } from './constants';
+import { ProjectName } from '@vtmp/common/people';
+
+import { PeopleSortColumn } from '#vtmp/web-client/utils/constants';
 
 export const groupDisplayName: Record<MentorshipGroup, string> = {
   [MentorshipGroup.ORGANIZER]: 'Organizers',
