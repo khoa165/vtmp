@@ -1,17 +1,3 @@
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-
-import { beforeEach, describe } from 'mocha';
-import bcrypt from 'bcryptjs';
-import { UserRepository } from '@/repositories/user.repository';
-
-import app from '@/app';
-import request from 'supertest';
-import { expect } from 'chai';
-
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import { EnvConfig } from '@/config/env';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
@@ -20,12 +6,24 @@ import {
 import { SystemRole } from '@vtmp/common/constants';
 import { AuthType } from '@vtmp/server-common/constants';
 import { JWTUtils } from '@vtmp/server-common/utils';
+import bcrypt from 'bcryptjs';
+import { expect } from 'chai';
 import assert from 'assert';
+
+import { addDays } from 'date-fns';
+import { beforeEach, describe } from 'mocha';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+
+import { omit } from 'remeda';
+import request from 'supertest';
+import app from '@/app';
+import { EnvConfig } from '@/config/env';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
 import { InvitationRepository } from '@/repositories/invitation.repository';
-import { addDays } from 'date-fns';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { omit } from 'remeda';
+import { UserRepository } from '@/repositories/user.repository';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
 
 describe('AuthController', () => {
   useMongoDB();
@@ -115,7 +113,7 @@ describe('AuthController', () => {
         .post('/api/auth/login')
         .send({ email: 'notfound@gmail.com', password: 'test password' });
 
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
 
       const errors = res.body.errors;
       expect(errors[0].message).to.equal('User not found');
@@ -126,7 +124,7 @@ describe('AuthController', () => {
         .post('/api/auth/login')
         .send({ email: 'test@gmail.com', password: 'wrong password' });
 
-      expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
 
       const errors = res.body.errors;
       expect(errors[0].message).to.equal('Wrong password');
@@ -331,7 +329,7 @@ describe('AuthController', () => {
       const resLogin = await request(app)
         .post('/api/auth/login')
         .send({ email: 'test123@gmail.com', password: 'test Password' });
-      expectErrorsArray({ res: resLogin, statusCode: 401, errorsCount: 1 });
+      expectErrorsArray({ res: resLogin, statusCode: 404, errorsCount: 1 });
       const errors = resLogin.body.errors;
       expect(errors[0].message).to.equal('Wrong password');
     });

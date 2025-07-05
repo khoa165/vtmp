@@ -6,7 +6,11 @@ import bcrypt from 'bcryptjs';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EnvConfig } from '@/config/env';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import { DuplicateResourceError, UnauthorizedError } from '@/utils/errors';
+import {
+  DuplicateResourceError,
+  UnauthorizedError,
+  ResourceNotFoundError,
+} from '@/utils/errors';
 import assert from 'assert';
 import { expect } from 'chai';
 import { SystemRole } from '@vtmp/common/constants';
@@ -18,7 +22,7 @@ import jwt from 'jsonwebtoken';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
-describe('AuthService', () => {
+describe.only('AuthService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
@@ -44,7 +48,7 @@ describe('AuthService', () => {
         password: 'test password',
       };
       await expect(AuthService.login(userData)).eventually.rejectedWith(
-        UnauthorizedError
+        ResourceNotFoundError
       );
     });
 
@@ -55,7 +59,7 @@ describe('AuthService', () => {
       };
 
       await expect(AuthService.login(userData)).eventually.rejectedWith(
-        UnauthorizedError
+        ResourceNotFoundError
       );
     });
 

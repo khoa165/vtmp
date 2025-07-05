@@ -57,9 +57,14 @@ export const authenticate = async (
       DecodedJWTSchema,
       EnvConfig.get().JWT_SECRET
     );
-    const user = await UserService.getUserById(parsed.id);
 
-    req.user = { id: String(user._id), role: user.role };
+    try {
+      const user = await UserService.getUserById(parsed.id);
+
+      req.user = { id: String(user._id), role: user.role };
+    } catch {
+      throw new UnauthorizedError('User not found', {});
+    }
   } else {
     const parsed = JWTUtils.verifyAndParseToken(
       token,

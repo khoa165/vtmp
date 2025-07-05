@@ -1,6 +1,10 @@
 import { UserRepository } from '@/repositories/user.repository';
 import { getEmailService } from '@/utils/email';
-import { DuplicateResourceError, UnauthorizedError } from '@/utils/errors';
+import {
+  DuplicateResourceError,
+  ResourceNotFoundError,
+  UnauthorizedError,
+} from '@/utils/errors';
 import { JWTUtils } from '@vtmp/server-common/utils';
 import bcrypt from 'bcryptjs';
 import { omit } from 'remeda';
@@ -65,7 +69,7 @@ export const AuthService = {
       includePasswordField: true,
     });
     if (!user) {
-      throw new UnauthorizedError('User not found', { email });
+      throw new ResourceNotFoundError('User not found', { email });
     }
 
     const passwordMatched = await bcrypt.compare(
@@ -73,7 +77,7 @@ export const AuthService = {
       user.encryptedPassword
     );
     if (!passwordMatched) {
-      throw new UnauthorizedError('Wrong password', { email });
+      throw new ResourceNotFoundError('Wrong password', { email });
     }
 
     const token = JWTUtils.createTokenWithPayload(

@@ -38,7 +38,7 @@ describe('AuthMiddleware', () => {
     expect(res.body.errors[0].message).to.eq('jwt malformed');
   });
 
-  it('should throw ResourceNotFoundError for cannot find user', async () => {
+  it('should throw Unauthorized for cannot find user', async () => {
     const token = jwt.sign(
       { id: getNewMongoId(), authType: AuthType.USER },
       MOCK_ENV.JWT_SECRET,
@@ -54,7 +54,7 @@ describe('AuthMiddleware', () => {
 
     expectErrorsArray({
       res,
-      statusCode: 404,
+      statusCode: 401,
       errorsCount: 1,
     });
     expect(res.body.errors[0].message).to.eq('User not found');
