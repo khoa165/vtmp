@@ -1,12 +1,17 @@
-import { useMemo } from 'react';
 import {
-  ShieldUser,
-  ExternalLink,
   LayoutDashboard,
-  BriefcaseBusiness,
-  UserRoundPlus,
+  LogOut,
+  MailPlus,
+  Link2,
+  SquareCheckBig,
+  Share2,
 } from 'lucide-react';
+import { useMemo } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 
+import { SystemRole } from '@vtmp/common/constants';
+
+import { Avatar } from '@/components/base/avatar';
 import {
   Sidebar,
   SidebarContent,
@@ -16,14 +21,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  useSidebar,
 } from '@/components/base/sidebar';
-import { VTMPLogo } from '@/components/base/vtmp-logo';
-import { Avatar } from '@/components/base/avatar';
-import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
-import { LogoutButton } from '@/components/base/logout-button';
-import { SystemRole } from '@vtmp/common/constants';
-import { Link, Navigate } from 'react-router-dom';
+import { TreverseFullLogo } from '@/components/base/treverse-full-logo';
+import { TreverseLogo } from '@/components/base/treverse-logo';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useLogout } from '@/hooks/useLogout';
 
 export const InternalToolsSidebar = () => {
   const user = useCurrentUser();
@@ -33,39 +36,33 @@ export const InternalToolsSidebar = () => {
 
   const items = [
     {
-      title: 'Users',
+      title: 'Invitations',
       url: '/admin/invitations',
-      icon: ShieldUser,
-      roles: [SystemRole.ADMIN],
-    },
-    {
-      title: 'Invitations Sending',
-      url: '/admin/send-invitation',
-      icon: UserRoundPlus,
+      icon: MailPlus,
       roles: [SystemRole.ADMIN],
     },
     {
       title: 'Pending Links',
       url: '/admin/links',
-      icon: BriefcaseBusiness,
+      icon: Link2,
       roles: [SystemRole.ADMIN, SystemRole.MODERATOR],
     },
     {
       title: 'Jobs',
-      url: '/job-postings',
+      url: '/jobs',
       icon: LayoutDashboard,
       roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
     },
     {
       title: 'Applications',
-      url: '/application-tracker',
-      icon: BriefcaseBusiness,
+      url: '/applications',
+      icon: SquareCheckBig,
       roles: [SystemRole.USER],
     },
     {
       title: 'Share Link',
-      url: '/link-sharing',
-      icon: ExternalLink,
+      url: '/links',
+      icon: Share2,
       roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
     },
   ];
@@ -80,6 +77,9 @@ export const InternalToolsSidebar = () => {
     [user, items]
   );
 
+  const { logout } = useLogout();
+  const { state } = useSidebar();
+
   return (
     <Sidebar collapsible="icon" variant="sidebar">
       <SidebarContent>
@@ -88,9 +88,12 @@ export const InternalToolsSidebar = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/job-postings" className="w-full" aria-label="Home">
-                    <VTMPLogo />
-                    <JobTrackrLogo />
+                  <Link to="/jobs" className="w-full" aria-label="Home">
+                    {state === 'collapsed' ? (
+                      <TreverseLogo />
+                    ) : (
+                      <TreverseFullLogo />
+                    )}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -105,6 +108,16 @@ export const InternalToolsSidebar = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {state !== 'collapsed' && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link to="/login" aria-label="Log out" onClick={logout}>
+                      <LogOut />
+                      <span>Log out</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -112,13 +125,6 @@ export const InternalToolsSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <Avatar />
-              <LogoutButton
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start"
-              >
-                Logout
-              </LogoutButton>
               <SidebarTrigger />
             </SidebarMenu>
           </SidebarGroupContent>

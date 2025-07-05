@@ -1,0 +1,21 @@
+{
+  "name": "@vtmp/mongo",
+  "version": "1.0.0",
+  "exports": {
+    "./models": "./dist/models/index.js",
+    "./utils": "./dist/utils/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w"
+  },
+  "dependencies": {
+    "mongodb": "^6.17.0",
+    "mongoose": "8.16.1",
+    "mongoose-lean-virtuals": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.11.97",
+    "typescript": "^5.8.3"
+  }
+}
