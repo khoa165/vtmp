@@ -1,15 +1,20 @@
+import { Menu } from 'lucide-react';
 import React from 'react';
-import { useGate } from 'statsig-react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/base/button';
+import { useGate } from 'statsig-react';
+
+import { Button } from '#vtmp/web-client/components/base/button';
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from '@/components/base/navigation-menu';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/base/sheet';
-import { Menu } from 'lucide-react';
+} from '#vtmp/web-client/components/base/navigation-menu';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '#vtmp/web-client/components/base/sheet';
 
 export const Navbar = () => {
   const { value: show_experimental_features, isLoading } = useGate(

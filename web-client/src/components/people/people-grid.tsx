@@ -1,7 +1,11 @@
 import React from 'react';
-import { PeopleCard } from '@/components/people/people-card';
-import { CompanyMetadataWithOffers, MentorshipPerson } from '@/types';
-import { PeopleSortColumn } from '@/utils/constants';
+
+import { PeopleCard } from '#vtmp/web-client/components/people/people-card';
+import {
+  CompanyMetadataWithOffers,
+  MentorshipPerson,
+} from '#vtmp/web-client/types';
+import { PeopleSortColumn } from '#vtmp/web-client/utils/constants';
 
 interface PeopleGridProps {
   year: number | 'all';

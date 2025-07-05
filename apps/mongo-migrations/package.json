@@ -1,0 +1,26 @@
+{
+  "name": "@vtmp/mongo-migrations",
+  "version": "1.0.0",
+  "repository": "git@github.com:khoa165/vtmp.git",
+  "author": "Viet Tech Mentorship Program <viettechmentorshipprogram@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "dependencies": {
+    "@vtmp/common": "1.0.0",
+    "@vtmp/mongo": "1.0.0",
+    "dotenv": "^17.0.1"
+  },
+  "scripts": {
+    "migrate": "tsx src/index.ts",
+    "build": "tsc --build tsconfig.build.json && tsc-alias -p tsconfig.build.json"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}

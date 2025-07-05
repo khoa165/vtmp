@@ -1,6 +1,8 @@
 import mongoose, { Document, Types } from 'mongoose';
+
 import { SystemRole } from '@vtmp/common/constants';
 
+// console.log('Mongoose instance in test setup:', mongoose);
 export interface IUser extends Document {
   _id: Types.ObjectId;
   firstName: string;

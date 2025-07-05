@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
-import { useOffersData } from '@/hooks/useOffersData';
 import { sortBy } from 'remeda';
-import { CompanyLogo } from '@/components/layout/company-logo';
-import { CompanyMetadataWithOffers } from '@/types';
+
+import { CompanyLogo } from '#vtmp/web-client/components/layout/company-logo';
+import { useOffersData } from '#vtmp/web-client/hooks/useOffersData';
+import { CompanyMetadataWithOffers } from '#vtmp/web-client/types';
 
 export const OfferLogos = () => {
   const populatedData = useOffersData();

@@ -1,11 +1,11 @@
-import { MentorshipPerson } from '@/types';
 import {
   CompanyName,
   MentorshipRole,
   OfferChannel,
   OfferType,
-} from '@vtmp/common/constants';
-import { PeopleName, ProjectName } from '@/utils/constants';
+} from '#vtmp/common/constants/enums';
+import { PeopleName, ProjectName } from '#vtmp/common/people/enums';
+import { MentorshipPerson } from '#vtmp/common/people/types';
 
 export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.KHOA_LE]: {
@@ -1353,7 +1353,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     firstLast: 'Anh Nguyen',
     alias: PeopleName.PHAN_ANH,
     trackingName: 'Phan Anh',
-    professionalTitle: 'SWE Intern @ Amazon',
+    professionalTitle: 'SWE Intern @ Robinhood',
     hobbies: 'soccer, running, coding',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phananh.jpg',
