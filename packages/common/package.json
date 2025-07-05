@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "exports": {
     "./constants": "./dist/constants/index.js",
-    "./utils": "./dist/utils/index.js"
+    "./utils": "./dist/utils/index.js",
+    "./people": "./dist/people/index.js"
   },
   "scripts": {
     "build": "tsc",
