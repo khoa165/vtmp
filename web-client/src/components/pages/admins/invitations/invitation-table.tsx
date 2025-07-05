@@ -1,6 +1,5 @@
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
   getCoreRowModel,
   getPaginationRowModel,
@@ -9,9 +8,12 @@ import {
   useReactTable,
   OnChangeFn,
   ColumnSizingState,
+  Row,
 } from '@tanstack/react-table';
 import { useState } from 'react';
 
+import { SendInvitation } from '#vtmp/web-client/components/pages/admins/invitations/send-invitation';
+import { IInvitationSchema } from '#vtmp/web-client/components/pages/admins/invitations/validation';
 import { Input } from '@/components/base/input';
 import { ResizableTable } from '@/components/pages/shared/resizable-table';
 
@@ -20,7 +22,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function InvitationTable<TData, TValue>({
+export function InvitationTable<TData extends IInvitationSchema, TValue>({
   columns,
   data,
   sorting,
@@ -29,9 +31,20 @@ export function InvitationTable<TData, TValue>({
   sorting: SortingState;
   setSorting: OnChangeFn<SortingState>;
 }) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [globalFilter, setGlobalFilter] = useState('');
+  const globalFilterFn = (
+    row: Row<TData>,
+    _columnId: string,
+    filterValue: string
+  ) => {
+    const name = row.original.receiverName.toLowerCase();
+    const email = row.original.receiverEmail.toLowerCase();
+    const searchValue = filterValue.toLowerCase();
+
+    return name.includes(searchValue) || email.includes(searchValue);
+  };
 
   const table = useReactTable({
     data,
@@ -40,17 +53,17 @@ export function InvitationTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnSizingChange: setColumnSizing,
     onRowSelectionChange: setRowSelection,
     enableColumnResizing: true,
     columnResizeMode: 'onChange',
+    globalFilterFn,
     state: {
       sorting,
-      columnFilters,
       columnSizing,
       rowSelection,
+      globalFilter,
     },
     defaultColumn: {
       size: 200,
@@ -63,13 +76,12 @@ export function InvitationTable<TData, TValue>({
     <>
       <section className="flex items-center justify-between py-4">
         <Input
-          placeholder="Search by email"
-          value={table.getColumn('receiverEmail')?.getFilterValue() as string}
-          onChange={(event) =>
-            table.getColumn('receiverEmail')?.setFilterValue(event.target.value)
-          }
+          placeholder="Search"
+          value={globalFilter}
+          onChange={(event) => setGlobalFilter(event.target.value)}
           className="max-w-sm text-white"
         />
+        <SendInvitation />
       </section>
       <ResizableTable table={table} columns={columns} />
     </>
