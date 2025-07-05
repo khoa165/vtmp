@@ -9,7 +9,7 @@ jobs:
   deploy-backend-staging:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy backend to staging
+      - name: Deploy backend to stagin
         run: curl ${{ secrets.RENDER_STAGING_BACKEND_DEPLOY_HOOK }}
 
   deploy-frontend-staging:
