@@ -1,16 +1,17 @@
 import axios from 'axios';
-import { groupBy, sortBy } from 'remeda';
 import { useEffect, useState } from 'react';
+import { groupBy, sortBy } from 'remeda';
+
+import { EnvConfig } from '#vtmp/web-client/config/env';
 import {
   DateWithCount,
   InterviewRecordsPerCompany,
   MergedDateWithCount,
   MergedInterviewData,
   MergedInterviewRecordsPerCompany,
-} from '@/types';
-import { MentorshipYear } from '@/utils/constants';
-import { parseInterviewRecords } from '@/utils/parse';
-import { EnvConfig } from '@/config/env';
+} from '#vtmp/web-client/types';
+import { MentorshipYear } from '#vtmp/web-client/utils/constants';
+import { parseInterviewRecords } from '#vtmp/web-client/utils/parse';
 
 export const useInterviewData = () => {
   const [data, setData] = useState<MergedInterviewData>({

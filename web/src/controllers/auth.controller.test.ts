@@ -1,21 +1,16 @@
-import {
-  expectErrorsArray,
-  expectSuccessfulResponse,
-} from '@/testutils/response-assertion.testutil';
-
-import { SystemRole } from '@vtmp/common/constants';
 import { AuthType } from '@vtmp/server-common/constants';
 import { JWTUtils } from '@vtmp/server-common/utils';
 import bcrypt from 'bcryptjs';
 import { expect } from 'chai';
-import assert from 'assert';
-
 import { addDays } from 'date-fns';
 import { beforeEach, describe } from 'mocha';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-
 import { omit } from 'remeda';
 import request from 'supertest';
+
+import assert from 'assert';
+
+import { SystemRole } from '@vtmp/common/constants';
+
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
@@ -23,6 +18,11 @@ import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import {
+  expectErrorsArray,
+  expectSuccessfulResponse,
+} from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 
 describe('AuthController', () => {

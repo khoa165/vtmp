@@ -1,11 +1,12 @@
-import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
-import { LinkValidatorService } from '@/services/link-validator.service';
-import { WebScrapingService } from '@/services/web-scraping.service';
 import {
   SubmittedLink,
   MetadataExtractedLink,
   FailedProcessedLink,
-} from '@/types/link-processing.types';
+} from '@vtmp/server-common/constants';
+
+import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
+import { LinkValidatorService } from '@/services/link-validator.service';
+import { WebScrapingService } from '@/services/web-scraping.service';
 
 export const LinkProcessorService = {
   processLinks: async (

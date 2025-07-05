@@ -1,13 +1,17 @@
-import { describe } from 'mocha';
-import UserService from './user.service';
+import { IUser } from '@vtmp/mongo/models';
 import { expect } from 'chai';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { UserRepository } from '@/repositories/user.repository';
-import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { describe } from 'mocha';
+
 import assert from 'assert';
+
 import { SystemRole } from '@vtmp/common/constants';
-import { IUser } from '@/models/user.model';
+
+import { UserRepository } from '@/repositories/user.repository';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
+
+import UserService from './user.service';
 
 describe('User Service', () => {
   useMongoDB();

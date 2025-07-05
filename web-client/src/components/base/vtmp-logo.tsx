@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const VTMPLogo = () => {
   return (
     <div className="vtmplogo-container">

@@ -1,4 +1,5 @@
-import { IUser, UserModel } from '@/models/user.model';
+import { IUser, UserModel } from '@vtmp/mongo/models';
+
 import { SystemRole } from '@vtmp/common/constants';
 
 export const UserRepository = {

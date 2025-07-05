@@ -22,7 +22,7 @@ import jwt from 'jsonwebtoken';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
-describe.only('AuthService', () => {
+describe('AuthService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
