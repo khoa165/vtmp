@@ -9,6 +9,7 @@ import { InvitationStatus } from '@vtmp/common/constants';
 import { EnvConfig } from '@/config/env';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
 import { IInvitation } from '@/models/invitation.model';
+import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { InvitationService } from '@/services/invitation.service';
 import { getEmailService } from '@/utils/email';
@@ -91,7 +92,7 @@ export const AuthService = {
       });
     }
 
-    await InvitationService.updateInvitation(invitation._id.toString(), {
+    await InvitationRepository.updateInvitationById(invitation._id.toString(), {
       status: InvitationStatus.ACCEPTED,
     });
 
