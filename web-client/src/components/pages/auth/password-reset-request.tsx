@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
-import { X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { z } from 'zod';
 
 import { Button } from '@/components/base/button';
 import {
@@ -21,6 +21,22 @@ interface PasswordResetRequestModalProps {
   onClose: () => void;
 }
 
+interface ErrorResponse {
+  response?: {
+    data?: {
+      errors?: { message: string }[];
+    };
+  };
+}
+
+// Simple schema for password reset request response
+const PasswordResetRequestSchema = z.object({
+  data: z.object({
+    reqPasswordReset: z.any(),
+  }),
+  message: z.string(),
+});
+
 export const PasswordResetRequestModal = ({
   isOpen,
   onClose,
@@ -29,12 +45,14 @@ export const PasswordResetRequestModal = ({
   const [emailErrors, setEmailErrors] = useState<string[]>([]);
 
   const { mutate: requestPasswordReset, isPending } = useMutation({
-    mutationFn: (body: { email: string }) =>
-      request({
+    mutationFn: async (body: { email: string }) => {
+      return request({
         method: Method.POST,
         url: '/auth/request-password-reset',
         data: body,
-      }),
+        schema: PasswordResetRequestSchema,
+      });
+    },
     onSuccess: () => {
       toast.success(
         'If an account exists with this email, you will receive a password reset link shortly.'
@@ -43,11 +61,10 @@ export const PasswordResetRequestModal = ({
       setEmailErrors([]);
       onClose();
     },
-    onError: (error: any) => {
+    onError: (error: ErrorResponse) => {
       if (error?.response?.data?.errors) {
-        const emailError = error.response.data.errors.find(
-          (err: { message: string }) =>
-            err.message.toLowerCase().includes('email')
+        const emailError = error.response.data.errors.find((err) =>
+          err.message.toLowerCase().includes('email')
         );
         if (emailError) {
           setEmailErrors([emailError.message]);
