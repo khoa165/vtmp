@@ -97,6 +97,19 @@ export const InvitationService = {
     return newInvitation || latestPendingInvitation;
   },
 
+  updateInvitation: async (
+    invitationId: string,
+    updateInvitationInfo: {
+      status?: InvitationStatus;
+      expiryDate?: Date;
+    }
+  ): Promise<IInvitation | null> => {
+    return InvitationRepository.updateInvitationById(
+      invitationId,
+      updateInvitationInfo
+    );
+  },
+
   revokeInvitation: async (
     invitationId: string
   ): Promise<IInvitation | null> => {

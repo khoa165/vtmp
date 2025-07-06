@@ -131,7 +131,6 @@ export const SignUpPage = () => {
     mutationFn: (body: {
       firstName: string;
       lastName: string;
-      email: string;
       password: string;
     }) =>
       request({
@@ -193,7 +192,6 @@ export const SignUpPage = () => {
 
     signUpFn({
       ...omit(userInput, ['confirmPassword']),
-      email: emailInput,
     });
   };
 

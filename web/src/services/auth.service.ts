@@ -4,9 +4,13 @@ import bcrypt from 'bcryptjs';
 import { omit } from 'remeda';
 import { z } from 'zod';
 
+import { InvitationStatus } from '@vtmp/common/constants';
+
 import { EnvConfig } from '@/config/env';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
+import { IInvitation } from '@/models/invitation.model';
 import { UserRepository } from '@/repositories/user.repository';
+import { InvitationService } from '@/services/invitation.service';
 import { getEmailService } from '@/utils/email';
 import {
   DuplicateResourceError,
@@ -23,35 +27,37 @@ const ResetTokenPayloadSchema = z.object({
 });
 
 export const AuthService = {
-  signup: async (
-    {
-      firstName,
-      lastName,
-      email,
-      password,
-    }: {
-      firstName: string;
-      lastName: string;
-      email: string;
-      password: string;
-    },
-    invitationName?: string
-  ) => {
-    const userByEmail = await UserRepository.getUserByEmail(email);
+  signup: async ({
+    firstName,
+    lastName,
+    password,
+    invitationToken,
+  }: {
+    firstName: string;
+    lastName: string;
+    password: string;
+    invitationToken: string;
+  }) => {
+    const invitation: IInvitation =
+      await InvitationService.validateInvitation(invitationToken);
+
+    const userByEmail = await UserRepository.getUserByEmail(
+      invitation.receiverEmail
+    );
 
     if (userByEmail) {
       throw new DuplicateResourceError(
         'Email is already taken, please sign up with a different email',
         {
-          email,
+          email: invitation.receiverEmail,
         }
       );
     }
 
     let existingUser;
-    if (invitationName) {
+    if (invitation.receiverName) {
       existingUser = await UserRepository.getUserByName(
-        splitFirstAndLastName(invitationName)
+        splitFirstAndLastName(invitation.receiverName)
       );
     }
 
@@ -63,16 +69,15 @@ export const AuthService = {
       user = await UserRepository.updateUserById(existingUser._id.toString(), {
         firstName,
         lastName,
-        email,
+        email: invitation.receiverEmail,
         encryptedPassword,
         activated: true,
       });
     } else {
-      console.log('khoale165 create user');
       user = await UserRepository.createUser({
         firstName,
         lastName,
-        email,
+        email: invitation.receiverEmail,
         encryptedPassword,
       });
     }
@@ -81,10 +86,14 @@ export const AuthService = {
       throw new InternalServerError('Unknown error creating or updating user', {
         firstName,
         lastName,
-        email,
-        invitationName,
+        email: invitation.receiverEmail,
+        invitationName: invitation.receiverName,
       });
     }
+
+    await InvitationService.updateInvitation(invitation._id.toString(), {
+      status: InvitationStatus.ACCEPTED,
+    });
 
     const token = JWTUtils.createTokenWithPayload(
       { id: user._id.toString(), authType: AuthType.USER },
@@ -94,7 +103,7 @@ export const AuthService = {
       }
     );
 
-    return { token, user: omit(user, ['encryptedPassword']) };
+    return { token, user: omit(user.toObject(), ['encryptedPassword']) };
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {
