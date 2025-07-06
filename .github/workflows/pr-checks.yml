@@ -18,7 +18,7 @@ jobs:
       - name: Check if should run
         id: check
         run: |
-          if [[ "${{ github.event_name }}" == "pull_request_review" && "${{ github.event.review.state }}" == "approved" ]]; then
+          if [[ "${{ github.event.pull_request.base.ref }}" == "main" && "${{ github.event_name }}" == "pull_request_review" && "${{ github.event.review.state }}" == "approved" ]]; then
             echo "should-run=true" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event.action }}" == "labeled" && "${{ github.event.label.name }}" == "run-checks" ]]; then
             echo "should-run=true" >> $GITHUB_OUTPUT
