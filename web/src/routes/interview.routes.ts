@@ -65,14 +65,6 @@ InterviewRoutes.put(
   ])
 );
 
-InterviewRoutes.put(
-  '/unshare/:interviewId',
-  wrappedHandlers([
-    hasPermission(Permission.MANAGE_INTERVIEW),
-    InterviewController.unshareInterview,
-  ])
-);
-
 InterviewRoutes.delete(
   '/:interviewId',
   wrappedHandlers([

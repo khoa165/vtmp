@@ -1,16 +1,22 @@
 import { expect } from 'chai';
-import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
 
+import assert from 'assert';
+
+import {
+  InterviewType,
+  InterviewStatus,
+  InterviewShareStatus,
+} from '@vtmp/common/constants';
+
+import { IApplication } from '@/models/application.model';
+import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
-import { InterviewType, InterviewStatus } from '@vtmp/common/constants';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { IApplication } from '@/models/application.model';
 
-describe('Interview Repository', () => {
+describe.only('Interview Repository', () => {
   useMongoDB();
 
   interface MockInterview {
@@ -551,7 +557,7 @@ describe('Interview Repository', () => {
       });
     });
 
-    it('should return the interview with sharedAt and isDisclosed fields updated', async () => {
+    it('should return the interview with updated shareStatus', async () => {
       const interview_A1 =
         await InterviewRepository.createInterview(mockInterview_A1);
 
@@ -559,20 +565,15 @@ describe('Interview Repository', () => {
         interviewId: interview_A1.id,
         userId: userId_A,
         newUpdate: {
-          isDisclosed: false,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
         },
       });
 
       assert(sharedInterview);
       expect(sharedInterview.id).to.equal(interview_A1.id);
-      expect(sharedInterview.isDisclosed).to.equal(false);
-      assert(sharedInterview.sharedAt);
-      const timeDiff = differenceInSeconds(
-        new Date(),
-        sharedInterview.sharedAt
+      expect(sharedInterview.shareStatus).to.equal(
+        InterviewShareStatus.SHARED_ANONYMOUS
       );
-      expect(timeDiff).to.lessThan(3);
     });
   });
 

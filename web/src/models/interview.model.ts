@@ -1,5 +1,11 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+
+import {
+  InterviewStatus,
+  InterviewType,
+  InterviewShareStatus,
+} from '@vtmp/common/constants';
+
 import { ApplicationModel } from '@/models/application.model';
 
 export interface IInterview extends Document {
@@ -11,8 +17,7 @@ export interface IInterview extends Document {
   interviewOnDate: Date;
   companyName?: string;
   note?: string;
-  isDisclosed?: boolean;
-  sharedAt?: Date;
+  shareStatus?: string;
   deletedAt?: Date;
 }
 
@@ -46,13 +51,10 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
   note: {
     type: String,
   },
-  isDisclosed: {
-    type: Boolean,
-    default: true,
-  },
-  sharedAt: {
-    type: Date,
-    default: null,
+  shareStatus: {
+    type: String,
+    enum: Object.values(InterviewShareStatus),
+    default: InterviewShareStatus.UNSHARED,
   },
   deletedAt: {
     type: Date,

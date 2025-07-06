@@ -1,6 +1,10 @@
 import { ClientSession, UpdateResult } from 'mongoose';
 
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import {
+  InterviewShareStatus,
+  InterviewStatus,
+  InterviewType,
+} from '@vtmp/common/constants';
 
 import { InterviewModel, IInterview } from '@/models/interview.model';
 
@@ -78,8 +82,7 @@ export const InterviewRepository = {
       status?: InterviewStatus;
       interviewOnDate?: Date;
       note?: string;
-      isDisclosed?: boolean;
-      sharedAt?: Date | null;
+      shareStatus?: InterviewShareStatus;
     };
   }): Promise<IInterview | null> => {
     return InterviewModel.findOneAndUpdate(
