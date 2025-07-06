@@ -21,6 +21,8 @@ export const useSendInvitation = ({
 }: {
   setUserInput?: React.Dispatch<React.SetStateAction<IInvitationUserInput>>;
 }) => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (body: {
       receiverName: string;
@@ -41,6 +43,9 @@ export const useSendInvitation = ({
       setUserInput?.({
         name: '',
         email: '',
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_INVITATIONS],
       });
     },
     onError: (error) => {
