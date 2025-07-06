@@ -10,7 +10,7 @@ on:
 
 jobs:
   # Only run if PR has the "run-checks" label
-  check-labels:
+  should-run-checks:
     runs-on: ubuntu-latest
     outputs:
       should-run: ${{ steps.check.outputs.should-run }}
@@ -27,13 +27,12 @@ jobs:
           fi
 
   changes:
-    needs: check-labels
-    if: ${{ needs.check-labels.outputs.should-run == 'true' }}
+    needs: should-run-checks
+    if: ${{ needs.should-run-checks.outputs.should-run == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
     outputs:
-      common: ${{ steps.filter.outputs.common == 'true' || steps.filter.outputs.ci == 'true' }}
       web: ${{ steps.filter.outputs.web == 'true' || steps.filter.outputs.ci == 'true' }}
       web-client: ${{ steps.filter.outputs.web-client == 'true' || steps.filter.outputs.ci == 'true' }}
       discord-service: ${{ steps.filter.outputs.discord-service == 'true' || steps.filter.outputs.ci == 'true' }}
@@ -42,29 +41,17 @@ jobs:
         id: filter
         with:
           filters: |
-            common:
-              - 'packages/common/**'
             web:
               - 'web/**'
-              - 'packages/common/**'
+              - 'packages/**'
             web-client:
               - 'web-client/**'
               - 'packages/common/**'
             discord-service:
               - 'discord-service/**'
-              - 'packages/common/**'
+              - 'packages/**'
             ci:
               - '.github/**'
-
-  build-common:
-    needs: changes
-    if: ${{ needs.changes.outputs.common == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Use common setups action
-        uses: ./.github/actions/build-common
 
   build-web:
     needs: changes
@@ -142,15 +129,14 @@ jobs:
   cleanup:
     needs:
       [
-        check-labels,
+        should-run-checks,
         changes,
-        build-common,
         build-web,
         build-discord-service,
         build-web-client,
         test-web,
       ]
-    if: ${{ always() && needs.check-labels.outputs.should-run == 'true' && github.event_name != 'pull_request_review' }}
+    if: ${{ always() && needs.should-run-checks.outputs.should-run == 'true' && github.event_name != 'pull_request_review' }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
