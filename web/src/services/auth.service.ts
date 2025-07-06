@@ -68,7 +68,6 @@ export const AuthService = {
         activated: true,
       });
     } else {
-      console.log('khoale165 create user');
       user = await UserRepository.createUser({
         firstName,
         lastName,

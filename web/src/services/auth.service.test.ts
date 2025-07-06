@@ -25,7 +25,7 @@ import {
   UnauthorizedError,
 } from '@/utils/errors';
 
-describe.only('AuthService', () => {
+describe('AuthService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 

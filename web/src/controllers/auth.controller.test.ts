@@ -25,7 +25,7 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 
-describe.only('AuthController', () => {
+describe('AuthController', () => {
   useMongoDB();
   const sandbox = useSandbox();
   let mockInvitationToken: string;
