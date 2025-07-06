@@ -3,7 +3,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { EyeOff, Eye, TriangleAlert, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { omit } from 'remeda';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -22,7 +22,6 @@ import { Label } from '@/components/base/label';
 import { useValidateInvitation } from '@/components/pages/auth/hooks/validate-invitation-hook';
 import { InvitationErrorPage } from '@/components/pages/auth/invitation-error';
 import { AuthResponseSchema } from '@/components/pages/auth/validation';
-import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { cn } from '@/lib/utils';
 import { request } from '@/utils/api';
 import {
@@ -110,7 +109,7 @@ export const SignUpPage = () => {
     firstNameErrors: [],
     lastNameErrors: [],
   });
-  const navigate = useNavigatePreserveQueryParams();
+  const navigate = useNavigate();
 
   const resetState = () => {
     setUserInput({
@@ -132,11 +131,12 @@ export const SignUpPage = () => {
       firstName: string;
       lastName: string;
       password: string;
+      invitationToken: string;
     }) =>
       request({
         method: Method.POST,
-        url: `/auth/signup?token=${token}`,
-        data: { ...body, token },
+        url: `/auth/signup`,
+        data: body,
         schema: AuthResponseSchema,
       }),
     onSuccess: (res) => {
@@ -147,6 +147,7 @@ export const SignUpPage = () => {
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response) {
+        toast.error(error.response.data.errors[0].message);
         error.response.data.errors.forEach((err: { message: string }) => {
           if (
             err.message.toLocaleLowerCase().includes('email') ||
@@ -192,6 +193,7 @@ export const SignUpPage = () => {
 
     signUpFn({
       ...omit(userInput, ['confirmPassword']),
+      invitationToken: token,
     });
   };
 

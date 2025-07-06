@@ -103,7 +103,10 @@ export const AuthService = {
       }
     );
 
-    return { token, user: omit(user.toObject(), ['encryptedPassword']) };
+    return {
+      token,
+      user: omit(user.toObject ? user.toObject() : user, ['encryptedPassword']),
+    };
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {

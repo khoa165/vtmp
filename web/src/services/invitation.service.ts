@@ -31,7 +31,7 @@ export const InvitationService = {
     senderId: string
   ): Promise<IInvitation | null> => {
     const foundUser = await UserRepository.getUserByEmail(receiverEmail);
-    if (foundUser) {
+    if (foundUser && foundUser.activated) {
       throw new DuplicateResourceError(
         'User associated with this email already has an account',
         { receiverEmail }
