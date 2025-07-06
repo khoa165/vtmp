@@ -1,13 +1,15 @@
-import { useMemo } from 'react';
-import { mentorshipPeople } from '@/data/people';
-import { OffersBarChart } from './offers-bar-chart';
-import { useInterviewData } from '@/hooks/useInterviewData';
-import { InterviewsBarChart } from './interviews-bar-chart';
 import { Tabs, Tab, Box } from '@mui/material';
-import { StatsType } from '@/utils/constants';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Timeline } from './timeline';
-import { OfferLogos } from './offers-logos';
+
+import { mentorshipPeople } from '@vtmp/common/people';
+
+import { InterviewsBarChart } from '#vtmp/web-client/components/stats/interviews-bar-chart';
+import { OffersBarChart } from '#vtmp/web-client/components/stats/offers-bar-chart';
+import { OfferLogos } from '#vtmp/web-client/components/stats/offers-logos';
+import { Timeline } from '#vtmp/web-client/components/stats/timeline';
+import { useInterviewData } from '#vtmp/web-client/hooks/useInterviewData';
+import { StatsType } from '#vtmp/web-client/utils/constants';
 
 interface StatsPageProps {
   type: StatsType;

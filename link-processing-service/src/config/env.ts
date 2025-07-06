@@ -17,5 +17,9 @@ const linkProcessorConfigSchema = z.object({
 
 export const EnvConfig = {
   get: () =>
-    parseEnvConfig({ env: process.env, schema: linkProcessorConfigSchema }),
+    parseEnvConfig({
+      env: process.env,
+      schema: linkProcessorConfigSchema,
+      workspaceName: 'link-processing-service',
+    }),
 };

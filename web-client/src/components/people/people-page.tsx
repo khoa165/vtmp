@@ -1,17 +1,19 @@
-import React, { useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { DEFAULT_ROLES, getRoleDisplayName } from '@/utils/data';
-import { PeopleSortColumn } from '@/utils/constants';
-import { PeopleGrid } from './people-grid';
-import { Autocomplete, Button, Checkbox, TextField } from '@mui/material';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import { useMentorshipPeople } from '@/hooks/useMentorshipPeople';
-import { useOffersData } from '@/hooks/useOffersData';
-import { peopleSortColumnDisplayName } from '@/utils/displayName';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import { Autocomplete, Button, Checkbox, TextField } from '@mui/material';
+import React, { useMemo, useState } from 'react';
 import { FaArrowUpWideShort, FaArrowDownWideShort } from 'react-icons/fa6';
-import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
+import { useSearchParams } from 'react-router-dom';
+
 import { MentorshipRole } from '@vtmp/common/constants';
+
+import { PeopleGrid } from '#vtmp/web-client/components/people/people-grid';
+import { useMentorshipPeople } from '#vtmp/web-client/hooks/useMentorshipPeople';
+import { useNavigatePreserveQueryParams } from '#vtmp/web-client/hooks/useNavigatePreserveQueryParams';
+import { useOffersData } from '#vtmp/web-client/hooks/useOffersData';
+import { PeopleSortColumn } from '#vtmp/web-client/utils/constants';
+import { DEFAULT_ROLES, getRoleDisplayName } from '#vtmp/web-client/utils/data';
+import { peopleSortColumnDisplayName } from '#vtmp/web-client/utils/display-name';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;

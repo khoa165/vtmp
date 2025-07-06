@@ -66,6 +66,7 @@ export const InvitationService = {
 
       newInvitation = await InvitationRepository.createInvitation({
         receiverEmail,
+        receiverName,
         sender: senderId,
         token,
         expiryDate: addDays(Date.now(), 7),

@@ -1,12 +1,15 @@
+import { IUser } from '@vtmp/mongo/models';
 import { expect } from 'chai';
-import { InvitationRepository } from '@/repositories/invitation.repository';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { UserRepository } from '@/repositories/user.repository';
-import { IUser } from '@/models/user.model';
-import { InvitationStatus } from '@vtmp/common/constants';
 import { add, differenceInSeconds } from 'date-fns';
+
 import assert from 'assert';
+
+import { InvitationStatus } from '@vtmp/common/constants';
+
 import { IInvitation } from '@/models/invitation.model';
+import { InvitationRepository } from '@/repositories/invitation.repository';
+import { UserRepository } from '@/repositories/user.repository';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 describe('InvitationRepository', () => {
@@ -15,18 +18,21 @@ describe('InvitationRepository', () => {
 
   const mockMultipleInvitations = [
     {
+      receiverName: 'Mentee 1 Viettech',
       receiverEmail: 'mentee1@viettech.com',
       token: 'this is the token',
       expiryDate: nextDay,
     },
 
     {
+      receiverName: 'Mentee 2 Viettech',
       receiverEmail: 'mentee2@viettech.com',
       token: 'this is the token',
       expiryDate: nextDay,
     },
 
     {
+      receiverName: 'Mentee 3 Viettech',
       receiverEmail: 'mentee3@viettech.com',
       token: 'this is the token',
       expiryDate: nextDay,
@@ -34,6 +40,7 @@ describe('InvitationRepository', () => {
   ];
 
   const mockOneInvitation = {
+    receiverName: 'Mentee Viettech',
     receiverEmail: 'mentee@viettech.com',
     token: 'this is the token',
     expiryDate: nextDay,

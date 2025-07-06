@@ -6,6 +6,10 @@ import {
   LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
+import {
+  MetadataExtractedLinkSchema,
+  FailedProcessedLinkSchema,
+} from '@vtmp/server-common/constants';
 
 export const LinkResponseSchema = z.object({
   _id: z.string(),
@@ -78,7 +82,10 @@ export interface JobPostingData {
 
 export const CronJobResponseSchema = z.object({
   message: z.string(),
-  data: z.object({}),
+  data: z.object({
+    successfulLinks: z.array(MetadataExtractedLinkSchema),
+    failedLinks: z.array(FailedProcessedLinkSchema),
+  }),
 });
 
 export type CronJobResponse = z.infer<typeof CronJobResponseSchema>;

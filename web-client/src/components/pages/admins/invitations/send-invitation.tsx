@@ -1,4 +1,9 @@
+import { ChevronDown } from 'lucide-react';
 import React, { useState } from 'react';
+import { Navigate } from 'react-router-dom';
+
+import { SystemRole } from '@vtmp/common/constants';
+
 import { Button } from '@/components/base/button';
 import {
   Card,
@@ -8,25 +13,22 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/base/card';
-import { Input } from '@/components/base/input';
-import { Label } from '@/components/base/label';
-import { SystemRole } from '@vtmp/common/constants';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/base/dropdown-menu';
-import { ChevronDown } from 'lucide-react';
+import { Input } from '@/components/base/input';
+import { Label } from '@/components/base/label';
 import {
   IInvitationInputErrors,
   IInvitationUserInput,
   useSendInvitation,
 } from '@/components/pages/admins/invitations/hooks/invitations';
-import { Navigate } from 'react-router-dom';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
-export const SendInvitationPage = () => {
+export const SendInvitation = () => {
   const [userInput, setUserInput] = useState<IInvitationUserInput>({
     name: '',
     email: '',
@@ -70,10 +72,10 @@ export const SendInvitationPage = () => {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-4 px-20 py-15">
+    <div className="grid grid-cols-12 gap-4">
       <div className="col-start-1 col-span-6 flex flex-col justify-start">
         <Card className="bg-transparent border-0 shadow-none h-full justify-center">
-          <CardHeader>
+          <CardHeader className="px-0">
             <CardTitle className="text-4xl font-bold">
               Send an invitation
             </CardTitle>
@@ -81,7 +83,7 @@ export const SendInvitationPage = () => {
               Invite mentors and mentees to use this app
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col space-y-4 my-3">
+          <CardContent className="flex flex-col space-y-4 my-3 px-0">
             <form onSubmit={(e) => e.preventDefault()}>
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-col space-y-1.5">
@@ -150,7 +152,7 @@ export const SendInvitationPage = () => {
               </div>
             </form>
           </CardContent>
-          <CardFooter className="flex flex-col">
+          <CardFooter className="flex flex-col px-0">
             <Button className="text-black w-full" onClick={handleSend}>
               Send Invitation
             </Button>

@@ -1,6 +1,7 @@
-import { IUser, UserModel } from '@/models/user.model';
-import bcrypt from 'bcryptjs';
 import { faker } from '@faker-js/faker';
+import { IUser, UserModel } from '@vtmp/mongo/models';
+import bcrypt from 'bcryptjs';
+
 import { SystemRole } from '@vtmp/common/constants';
 
 const specificUsers = [

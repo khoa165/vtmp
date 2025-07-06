@@ -49,7 +49,7 @@ export function ResizableTable<TData, TValue>({
   return (
     <>
       <section className="rounded-md border border-foreground">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto rounded-md">
           <Table>
             <TableHeader className="bg-foreground">
               {table.getHeaderGroups().map((headerGroup) => (

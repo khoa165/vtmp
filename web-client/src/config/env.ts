@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { parseEnvConfig } from '@vtmp/common/utils';
 
 const clientConfigSchema = z.object({
@@ -10,5 +11,9 @@ const clientConfigSchema = z.object({
 
 export const EnvConfig = {
   get: () =>
-    parseEnvConfig({ env: import.meta.env, schema: clientConfigSchema }),
+    parseEnvConfig({
+      env: import.meta.env,
+      schema: clientConfigSchema,
+      workspaceName: 'web-client',
+    }),
 };

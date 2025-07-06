@@ -1,15 +1,16 @@
-import React from 'react';
 import moment from 'moment';
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+import { Badge } from '#vtmp/web-client/components/base/badge';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/base/card';
-import { Badge } from '@/components/base/badge';
-import { Link } from 'react-router-dom';
-import { BlogMetadata } from '@/types';
+} from '#vtmp/web-client/components/base/card';
+import { BlogMetadata } from '#vtmp/web-client/types';
 
 interface TreeCardProps {
   blog: BlogMetadata;

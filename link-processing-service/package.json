@@ -12,11 +12,13 @@
     "@types/node": "^22.14.1",
     "@types/retry": "^0",
     "@types/sinon": "^17.0.3",
+    "@types/sinon-chai": "^4",
     "chai": "^5.1.2",
     "chai-as-promised": "^8.0.1",
     "cross-env": "^7.0.3",
     "mocha": "^11.6.0",
     "sinon": "^19.0.2",
+    "sinon-chai": "^4.0.0",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.16",
     "tsx": "^4.19.4",
@@ -39,8 +41,8 @@
     "zod": "^3.25.51"
   },
   "scripts": {
-    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
-    "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000",
-    "dev": "tsx watch src/index.ts"
+    "build": "tsc --build tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "test": "cross-env NODE_ENV=TEST mocha ./**/*.test.ts --recursive --exit --timeout 600000",
+    "dev": "node -e 'console.warn(`To test link-processing-service, please run its Docker container.\nPlease refer to README.md for further details.`)'"
   }
 }

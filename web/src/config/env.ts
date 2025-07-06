@@ -1,9 +1,8 @@
+import { Environment } from '@vtmp/server-common/constants';
 import dotenv from 'dotenv';
 import { z } from 'zod';
 
 import { parseEnvConfig } from '@vtmp/common/utils';
-
-import { Environment } from '@/constants/enums';
 
 dotenv.config();
 
@@ -22,5 +21,10 @@ const webConfigSchema = z.object({
 });
 
 export const EnvConfig = {
-  get: () => parseEnvConfig({ env: process.env, schema: webConfigSchema }),
+  get: () =>
+    parseEnvConfig({
+      env: process.env,
+      schema: webConfigSchema,
+      workspaceName: 'web',
+    }),
 };

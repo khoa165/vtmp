@@ -57,7 +57,10 @@ export const ReviewPopupButton = ({
     location: location ?? LinkRegion.UNKNOWN,
     jobFunction: jobFunction ?? JobFunction.UNKNOWN,
     jobType: jobType ?? JobType.UNKNOWN,
-    datePosted: datePosted ? format(new Date(datePosted), 'MM/dd/yyyy') : '',
+    datePosted: format(
+      new Date(datePosted ? datePosted : new Date()),
+      'MM/dd/yyyy'
+    ),
     jobDescription: jobDescription ?? '',
     adminNote: '',
   });

@@ -1,15 +1,11 @@
 import { safebrowsing_v4 } from '@googleapis/safebrowsing';
+import { SubmittedLink } from '@vtmp/server-common/constants';
 import { expect } from 'chai';
-import * as chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import retry from 'retry';
 
 import { LinkValidatorService } from '@/services/link-validator.service';
 import { useSandbox } from '@/testutils/sandbox.testutil';
-import { SubmittedLink } from '@/types/link-processing.types';
 import { LinkValidationError } from '@/utils/errors';
-
-chai.use(chaiAsPromised);
 
 describe('LinkValidatorService', () => {
   const sandbox = useSandbox();

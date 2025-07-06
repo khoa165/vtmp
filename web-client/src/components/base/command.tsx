@@ -1,15 +1,15 @@
-import * as React from 'react';
 import { Command as CommandPrimitive } from 'cmdk';
 import { SearchIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/base/dialog';
+} from '#vtmp/web-client/components/base/dialog';
+import { cn } from '#vtmp/web-client/lib/utils';
 
 function Command({
   className,
