@@ -98,8 +98,8 @@ export const PasswordResetRequestPage = ({
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="reset-email" className="text-white">
+          <div className="space-y-2 ">
+            <Label htmlFor="reset-email" className="text-white mb-4">
               Email
             </Label>
             <Input
@@ -107,6 +107,7 @@ export const PasswordResetRequestPage = ({
               type="email"
               placeholder="Enter your email"
               value={email}
+              className="text-white"
               onChange={(e) => {
                 setEmail(e.target.value);
                 setEmailErrors([]);
@@ -114,13 +115,13 @@ export const PasswordResetRequestPage = ({
               errors={emailErrors}
             />
           </div>
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-2 mt-5">
             <Button
               type="button"
               variant="outline"
               onClick={handleClose}
               disabled={isPending}
-              className="hover:bg-black hover:text-white transition-colors"
+              className=" hover:text-white transition-colors"
             >
               Cancel
             </Button>
