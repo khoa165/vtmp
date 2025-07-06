@@ -1,3 +1,9 @@
+import { addDays, isBefore } from 'date-fns';
+import jwt from 'jsonwebtoken';
+import { z } from 'zod';
+
+import { InvitationStatus } from '@vtmp/common/constants';
+
 import { EnvConfig } from '@/config/env';
 import { IInvitation } from '@/models/invitation.model';
 import { InvitationRepository } from '@/repositories/invitation.repository';
@@ -9,10 +15,6 @@ import {
   InternalServerError,
   ResourceNotFoundError,
 } from '@/utils/errors';
-import { InvitationStatus } from '@vtmp/common/constants';
-import { addDays, isBefore } from 'date-fns';
-import jwt from 'jsonwebtoken';
-import { z } from 'zod';
 
 const DecodedJWTSchema = z.object({
   receiverEmail: z.string().email(),
@@ -66,6 +68,7 @@ export const InvitationService = {
 
       newInvitation = await InvitationRepository.createInvitation({
         receiverEmail,
+        receiverName,
         sender: senderId,
         token,
         expiryDate: addDays(Date.now(), 7),

@@ -1,3 +1,4 @@
+import { IUser } from '@vtmp/mongo/models';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
 
@@ -6,7 +7,6 @@ import assert from 'assert';
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 
 import { IApplication } from '@/models/application.model';
-import { IUser } from '@/models/user.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -416,7 +416,7 @@ describe('InterviewService', () => {
 
       const interviews = await InterviewService.getInterviews({
         filters: {
-          companyName: interview_A2.companyName,
+          companyName: interview_A2.companyName || 'Meta',
           status: interview_A2.status,
           types: interview_A2.types,
         },

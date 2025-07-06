@@ -1,3 +1,11 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { EyeOff, Eye } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Navigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
+
+import LogoMint from '@/assets/images/logo-full-mint.svg?react';
 import { Button } from '@/components/base/button';
 import {
   Card,
@@ -10,19 +18,17 @@ import {
 import { Checkbox } from '@/components/base/checkbox';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-import React, { useEffect, useState } from 'react';
-import LogoMint from '@/assets/images/logo-full-mint.svg?react';
-import { EyeOff, Eye } from 'lucide-react';
-import { request } from '@/utils/api';
-import axios from 'axios';
-import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
-import { Method } from '@/utils/constants';
-import { useMutation } from '@tanstack/react-query';
 import { AuthResponseSchema } from '@/components/pages/auth/validation';
-import { toast } from 'sonner';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
+import { request } from '@/utils/api';
+import { Method } from '@/utils/constants';
 
-const LoginPage = () => {
+export const LoginPage = () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    return <Navigate to="/jobs" />;
+  }
+
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     const redirected = searchParams.get('redirected');
@@ -52,7 +58,7 @@ const LoginPage = () => {
       console.log('Login successfully: ', res);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
-      navigate('/job-postings');
+      navigate('/jobs');
     },
     onError: (error) => {
       console.log('Error in useMutation login', error);
@@ -182,5 +188,3 @@ const LoginPage = () => {
     </div>
   );
 };
-
-export default LoginPage;

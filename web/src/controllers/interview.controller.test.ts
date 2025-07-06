@@ -1,3 +1,4 @@
+import { IUser } from '@vtmp/mongo/models';
 import bcrypt from 'bcryptjs';
 import { assert, expect } from 'chai';
 import { omit } from 'remeda';
@@ -13,7 +14,6 @@ import app from '@/app';
 import { EnvConfig } from '@/config/env';
 import { IApplication } from '@/models/application.model';
 import { IInterview } from '@/models/interview.model';
-import { IUser } from '@/models/user.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';

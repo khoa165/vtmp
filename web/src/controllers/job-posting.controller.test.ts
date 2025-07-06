@@ -1,26 +1,29 @@
-import assert from 'assert';
-import request from 'supertest';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
+import request from 'supertest';
+
+import assert from 'assert';
+
+import { JobPostingRegion } from '@vtmp/common/constants';
+
 import app from '@/app';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { EnvConfig } from '@/config/env';
 import { IJobPosting } from '@/models/job-posting.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import { EnvConfig } from '@/config/env';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import {
-  expectErrorsArray,
-  expectSuccessfulResponse,
-} from '@/testutils/response-assertion.testutil';
-import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
   runUserLogin,
 } from '@/testutils/auth.testutils';
-import { JobPostingRegion } from '@vtmp/common/constants';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import {
+  expectErrorsArray,
+  expectSuccessfulResponse,
+} from '@/testutils/response-assertion.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
 
 describe('JobPostingController', () => {
   useMongoDB();
@@ -35,14 +38,14 @@ describe('JobPostingController', () => {
   };
   const mockMultipleJobPostings = [
     {
-      linkId: getNewObjectId(),
+      linkId: getNewMongoId(),
       url: 'http://example1.com/job-posting',
       jobTitle: 'Software Engineer 1',
       companyName: 'Example Company 1',
-      submittedBy: getNewObjectId(),
+      submittedBy: getNewMongoId(),
     },
     {
-      linkId: getNewObjectId(),
+      linkId: getNewMongoId(),
       url: 'http://example2.com/job-posting',
       jobTitle: 'Software Engineer 2',
       companyName: 'Example Company 2',
@@ -50,7 +53,7 @@ describe('JobPostingController', () => {
       location: JobPostingRegion.CANADA,
     },
     {
-      linkId: getNewObjectId(),
+      linkId: getNewMongoId(),
       url: 'http://example3.com/job-posting',
       jobTitle: 'Software Engineer 3',
       companyName: 'Example Company 3',
@@ -79,6 +82,41 @@ describe('JobPostingController', () => {
       )
     );
     assert(jobPostings);
+  });
+  describe('GET /job-postings/:jobPostingId', () => {
+    runDefaultAuthMiddlewareTests({
+      route: `/api/job-postings/${getNewMongoId()}`,
+      method: HTTPMethod.GET,
+    });
+
+    it('should return 400 for invalid job posting ID format', async () => {
+      const res = await request(app)
+        .get('/api/job-postings/invalid-id')
+        .set('Authorization', `Bearer ${mockAdminToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Invalid job posting ID format'
+      );
+    });
+
+    it('should return error message for no job posting found', async () => {
+      const res = await request(app)
+        .get(`/api/job-postings/${getNewMongoId()}`)
+        .set('Authorization', `Bearer ${mockAdminToken}`);
+
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Job posting not found');
+    });
+
+    it('should return a job posting', async () => {
+      const res = await request(app)
+        .get(`/api/job-postings/${jobPostings[0]?.id}`)
+        .set('Authorization', `Bearer ${mockAdminToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.deep.include(mockMultipleJobPostings[0]);
+    });
   });
 
   describe('PUT /job-postings/:jobId', () => {

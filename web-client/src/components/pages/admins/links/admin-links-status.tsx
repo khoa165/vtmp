@@ -1,11 +1,12 @@
-import { Card } from '@/components/base/card';
-import { StatusDot } from '@/components/base/status-dot';
-import { Skeleton } from '@/components/base/skeleton';
-import { useGetLinksCountByStatus } from '@/components/pages/admins/links/hooks/admin-links';
-import { formatStatus } from '@/utils/helpers';
-import { LinkStatus } from '@vtmp/common/constants';
 import { useState } from 'react';
-import { StatusToColorMapping } from '@/utils/constants';
+
+import { LinkStatus } from '@vtmp/common/constants';
+
+import { Card } from '@/components/base/card';
+import { Skeleton } from '@/components/base/skeleton';
+import { StatusDot } from '@/components/base/status-dot';
+import { useGetLinksCountByStatus } from '@/components/pages/admins/links/hooks/admin-links';
+import { LinksColorMapping } from '@/utils/constants';
 import { CustomError } from '@/utils/errors';
 
 interface AdminLinkStatusCardsProps {
@@ -46,11 +47,12 @@ export const AdminLinksStatusCards = ({
   }
 
   if (error) {
+    console.log(error);
     throw new CustomError('Error fetching links status count');
   }
 
   return (
-    <div className="grid grid-cols-3 gap-4 w-full max-md:grid-rows-6">
+    <div className="grid grid-cols-4 gap-4 w-full max-md:grid-rows-6 pb-4">
       {allStatuses.map((status) => {
         const isSelected = selectedStatus === status;
         const cardStyle = isSelected
@@ -69,12 +71,9 @@ export const AdminLinksStatusCards = ({
                 {linksCountByStatus?.[status] ?? 0}
               </div>
               <div className="flex items-center gap-2">
-                <StatusDot
-                  status={status}
-                  colorMapping={StatusToColorMapping}
-                />
+                <StatusDot status={status} colorMapping={LinksColorMapping} />
                 <span className="font-bold text-wrap max-lg:text-[0.7rem]">
-                  {formatStatus(status)}
+                  {status}
                 </span>
               </div>
             </section>

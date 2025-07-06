@@ -1,12 +1,12 @@
+import { capitalize } from 'remeda';
+
 import {
   ApplicationStatus,
   InterviewStatus,
   InterviewType,
-  LinkStatus,
 } from '@vtmp/common/constants';
-import { capitalize } from 'remeda';
 
-export const formatStatus = (status: ApplicationStatus | LinkStatus) => {
+export const formatStatus = (status: ApplicationStatus) => {
   return status === ApplicationStatus.OA ? status : capitalize(status);
 };
 

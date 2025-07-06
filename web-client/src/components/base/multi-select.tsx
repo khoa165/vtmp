@@ -3,8 +3,8 @@
 import { Check, ChevronsUpDown, X } from 'lucide-react';
 import * as React from 'react';
 
-import { Badge } from '@/components/base/badge';
-import { Button } from '@/components/base/button';
+import { Badge } from '#vtmp/web-client/components/base/badge';
+import { Button } from '#vtmp/web-client/components/base/button';
 import {
   Command,
   CommandEmpty,
@@ -13,13 +13,13 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '@/components/base/command';
+} from '#vtmp/web-client/components/base/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/base/popover';
-import { cn } from '@/lib/utils';
+} from '#vtmp/web-client/components/base/popover';
+import { cn } from '#vtmp/web-client/lib/utils';
 
 export interface Option {
   label: string;

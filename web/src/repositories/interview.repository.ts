@@ -18,9 +18,9 @@ export const InterviewRepository = {
     applicationId: string;
     userId: string;
     types: InterviewType[];
-    status?: InterviewStatus;
+    status?: InterviewStatus | undefined;
     interviewOnDate: Date;
-    note?: string;
+    note?: string | undefined;
   }): Promise<IInterview> => {
     return InterviewModel.create({
       applicationId,
@@ -49,6 +49,7 @@ export const InterviewRepository = {
   getInterviews: async ({
     filters = {},
     isShared = false,
+    session,
   }: {
     filters: {
       userId?: string;
@@ -58,6 +59,7 @@ export const InterviewRepository = {
       status?: InterviewStatus;
     };
     isShared?: boolean;
+    session?: ClientSession;
   }): Promise<IInterview[]> => {
     const dynamicMatch: Record<string, unknown> = {
       deletedAt: null,
@@ -79,7 +81,7 @@ export const InterviewRepository = {
     }
 
     if (filters?.types) {
-      dynamicMatch.types = { $eq: filters.types };
+      dynamicMatch.types = { $all: filters.types };
     }
 
     if (filters?.status) {
@@ -132,6 +134,9 @@ export const InterviewRepository = {
       );
     }
 
+    if (session) {
+      return await InterviewModel.aggregate(pipeline).session(session);
+    }
     return await InterviewModel.aggregate(pipeline);
   },
 

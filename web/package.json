@@ -9,7 +9,9 @@
   "main": "dist/server.js",
   "dependencies": {
     "@vtmp/common": "1.0.0",
+    "@vtmp/mongo": "1.0.0",
     "@vtmp/server-common": "1.0.0",
+    "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
@@ -24,10 +26,11 @@
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.15.0",
-    "mongoose": "^8.12.0",
+    "mongoose": "8.16.1",
     "mongoose-lean-virtuals": "^1.1.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "node-cron": "^4.1.0",
     "nodemailer": "^6.10.1",
     "normalize-url": "^8.0.1",
     "remeda": "^2.22.5",
@@ -65,8 +68,9 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
-    "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json",
-    "test": "cross-env NODE_ENV=test mocha ./**/*.test.ts --recursive --exit --timeout 600000",
+    "build": "tsc --build tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "pretest": "yarn workspace @vtmp/mongo build",
+    "test": "cross-env NODE_ENV=TEST mocha ./**/*.test.ts --recursive --exit --timeout 600000",
     "seed": "tsx src/seeds/index.ts",
     "coverage": "c8 yarn test"
   }
