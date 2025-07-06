@@ -21,6 +21,7 @@ import JobtrackrLanding from '#vtmp/web-client/components/pages/application-trac
 import { LinksPage } from '#vtmp/web-client/components/pages/application-tracker/links/links-page';
 import { LoginPage } from '#vtmp/web-client/components/pages/auth/login';
 import { RequireAuth } from '#vtmp/web-client/components/pages/auth/require-auth';
+import { ResetPasswordPage } from '#vtmp/web-client/components/pages/auth/reset-password';
 import { SignUpPage } from '#vtmp/web-client/components/pages/auth/signup';
 import { NotFoundPage } from '#vtmp/web-client/components/pages/shared/not-found-page';
 import { PeopleContainer } from '#vtmp/web-client/components/people';
@@ -91,6 +92,7 @@ export const App = () => {
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/*" element={<NotFoundPage />} />
         </Route>
       </Routes>
