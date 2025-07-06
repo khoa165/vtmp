@@ -75,13 +75,13 @@ export function InvitationTable<TData extends IInvitationSchema, TValue>({
   return (
     <>
       <section className="flex items-center justify-between py-4">
+        <SendInvitation />
         <Input
           placeholder="Search"
           value={globalFilter}
           onChange={(event) => setGlobalFilter(event.target.value)}
           className="max-w-sm text-white"
         />
-        <SendInvitation />
       </section>
       <ResizableTable table={table} columns={columns} />
     </>

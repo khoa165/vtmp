@@ -52,7 +52,7 @@ export const SendInvitation = () => {
       onSubmit={(e) => e.preventDefault()}
       className="grid grid-cols-20 w-full items-end gap-2 text-white"
     >
-      <div className="col-start-10 col-span-4 flex flex-col space-y-1.5">
+      <div className="col-start-1 col-span-4 flex flex-col space-y-1.5">
         <Input
           id="name"
           name="name"
@@ -63,7 +63,7 @@ export const SendInvitation = () => {
           onChange={handleInputChange}
         />
       </div>
-      <div className="col-start-14 col-span-6 flex flex-col space-y-1.5">
+      <div className="col-start-5 col-span-6 flex flex-col space-y-1.5">
         <Input
           id="email"
           name="email"
@@ -75,7 +75,7 @@ export const SendInvitation = () => {
         />
       </div>
       <Button
-        className="text-black w-full col-start-20 col-span-1"
+        className="text-black w-full col-start-11 col-span-1"
         onClick={handleSend}
       >
         <Send />
