@@ -93,7 +93,7 @@ export const AuthService = {
       }
     );
 
-    return { token, user: omit(user, ['encryptedPassword']) };
+    return { token, user: omit(user.toObject(), ['encryptedPassword']) };
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {
@@ -120,7 +120,7 @@ export const AuthService = {
       }
     );
 
-    return { token, user: omit(user.toObject(), ['encryptedPassword']) };
+    return { token, user: omit(user, ['encryptedPassword']) };
   },
 
   requestPasswordReset: async ({ email }: { email: string }) => {
