@@ -20,7 +20,10 @@ export const LinkService = {
       return await LinkRepository.createLink(linkMetaData);
     } catch (error: unknown) {
       if (error instanceof Error && 'code' in error && error.code === 11000) {
-        throw new DuplicateResourceError('Duplicate url', linkMetaData);
+        throw new DuplicateResourceError(
+          'Link is already submitted',
+          linkMetaData
+        );
       }
       throw error;
     }
