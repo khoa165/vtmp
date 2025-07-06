@@ -120,7 +120,7 @@ export const AuthService = {
       }
     );
 
-    return { token, user: omit(user, ['encryptedPassword']) };
+    return { token, user: omit(user.toObject(), ['encryptedPassword']) };
   },
 
   requestPasswordReset: async ({ email }: { email: string }) => {
