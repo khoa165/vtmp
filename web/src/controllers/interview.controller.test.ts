@@ -32,7 +32,7 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 
-describe.only('InterviewController', () => {
+describe('InterviewController', () => {
   useMongoDB();
   const sandbox = useSandbox();
   let mockToken_A: string;

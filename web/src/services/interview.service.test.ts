@@ -18,7 +18,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 import { BadRequest, ResourceNotFoundError } from '@/utils/errors';
 
-describe.only('InterviewService', () => {
+describe('InterviewService', () => {
   useMongoDB();
 
   interface MockInterview {

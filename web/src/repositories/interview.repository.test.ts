@@ -16,7 +16,7 @@ import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 
-describe.only('Interview Repository', () => {
+describe('Interview Repository', () => {
   useMongoDB();
 
   interface MockInterview {
