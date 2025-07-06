@@ -10,6 +10,7 @@
   "dependencies": {
     "@vtmp/common": "1.0.0",
     "@vtmp/mongo": "1.0.0",
+    "@vtmp/server-common": "1.0.0",
     "dotenv": "^17.0.1",
     "remeda": "^2.24.0"
   },

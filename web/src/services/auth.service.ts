@@ -1,17 +1,19 @@
+import { AuthType } from '@vtmp/server-common/constants';
+import { JWTUtils, splitFirstAndLastName } from '@vtmp/server-common/utils';
+import bcrypt from 'bcryptjs';
+import { omit } from 'remeda';
+import { z } from 'zod';
+
+import { EnvConfig } from '@/config/env';
+import { JWT_TOKEN_TYPE } from '@/constants/enums';
 import { UserRepository } from '@/repositories/user.repository';
 import { getEmailService } from '@/utils/email';
 import {
   DuplicateResourceError,
   UnauthorizedError,
   ResourceNotFoundError,
+  InternalServerError,
 } from '@/utils/errors';
-import { JWTUtils } from '@vtmp/server-common/utils';
-import bcrypt from 'bcryptjs';
-import { omit } from 'remeda';
-import { JWT_TOKEN_TYPE } from '@/constants/enums';
-import { z } from 'zod';
-import { EnvConfig } from '@/config/env';
-import { AuthType } from '@vtmp/server-common/constants';
 
 const ResetTokenPayloadSchema = z.object({
   id: z.string(),
@@ -21,17 +23,20 @@ const ResetTokenPayloadSchema = z.object({
 });
 
 export const AuthService = {
-  signup: async ({
-    firstName,
-    lastName,
-    email,
-    password,
-  }: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-  }) => {
+  signup: async (
+    {
+      firstName,
+      lastName,
+      email,
+      password,
+    }: {
+      firstName: string;
+      lastName: string;
+      email: string;
+      password: string;
+    },
+    invitationName?: string
+  ) => {
     const userByEmail = await UserRepository.getUserByEmail(email);
 
     if (userByEmail) {
@@ -43,15 +48,43 @@ export const AuthService = {
       );
     }
 
+    let existingUser;
+    if (invitationName) {
+      existingUser = await UserRepository.getUserByName(
+        splitFirstAndLastName(invitationName)
+      );
+    }
+
     const saltRounds = 10;
     const encryptedPassword = await bcrypt.hash(password, saltRounds);
 
-    const user = await UserRepository.createUser({
-      firstName,
-      lastName,
-      email,
-      encryptedPassword,
-    });
+    let user;
+    if (existingUser) {
+      user = await UserRepository.updateUserById(existingUser._id.toString(), {
+        firstName,
+        lastName,
+        email,
+        encryptedPassword,
+        activated: true,
+      });
+    } else {
+      console.log('khoale165 create user');
+      user = await UserRepository.createUser({
+        firstName,
+        lastName,
+        email,
+        encryptedPassword,
+      });
+    }
+
+    if (!user) {
+      throw new InternalServerError('Unknown error creating or updating user', {
+        firstName,
+        lastName,
+        email,
+        invitationName,
+      });
+    }
 
     const token = JWTUtils.createTokenWithPayload(
       { id: user._id.toString(), authType: AuthType.USER },
@@ -61,7 +94,7 @@ export const AuthService = {
       }
     );
 
-    return { token, user: omit(user.toObject(), ['encryptedPassword']) };
+    return { token, user: omit(user, ['encryptedPassword']) };
   },
 
   login: async ({ email, password }: { email: string; password: string }) => {

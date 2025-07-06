@@ -52,6 +52,7 @@ export class BadRequest extends ApplicationSpecificError {
 export class LinkProcessingBadRequest extends BadRequest {}
 
 export const handleError = (error: unknown) => {
+  console.dir(error, { depth: null });
   if (error instanceof ZodError) {
     return {
       statusCode: 400,

@@ -24,7 +24,7 @@
     "lint": "yarn eslint . && yarn type-check",
     "lint-config": "npx @eslint/config-inspector@latest",
     "lint-fix": "yarn eslint . --fix",
-    "test": "yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build && yarn workspace @vtmp/web run test && yarn workspace @vtmp/link-processing-service run test",
+    "test": "yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build && yarn workspace @vtmp/web test && yarn workspace @vtmp/link-processing-service test",
     "tslint": "tslint --project tsconfig.json --config tslint.json",
     "tslint-fix": "tslint --project tsconfig.json --config tslint.json --fix",
     "postinstall": "husky",

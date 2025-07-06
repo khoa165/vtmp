@@ -5731,6 +5731,7 @@ __metadata:
     "@types/node": "npm:^24.0.10"
     "@vtmp/common": "npm:1.0.0"
     "@vtmp/mongo": "npm:1.0.0"
+    "@vtmp/server-common": "npm:1.0.0"
     dotenv: "npm:^17.0.1"
     remeda: "npm:^2.24.0"
     ts-node: "npm:^10.9.2"
@@ -5758,6 +5759,7 @@ __metadata:
   dependencies:
     "@types/jsonwebtoken": "npm:^9"
     jsonwebtoken: "npm:9.0.2"
+    remeda: "npm:^2.24.0"
     typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft

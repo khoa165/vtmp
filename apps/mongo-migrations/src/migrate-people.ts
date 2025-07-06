@@ -1,5 +1,6 @@
 import { ProgramProfileModel, UserModel } from '@vtmp/mongo/models';
 import { useMongoDB } from '@vtmp/mongo/utils';
+import { splitFirstAndLastName } from '@vtmp/server-common/utils';
 import mongoose from 'mongoose';
 import { hasAtLeast, values } from 'remeda';
 
@@ -29,22 +30,12 @@ export const migratePeople = async () => {
         const programProfileBatch = [];
 
         for (const person of people) {
-          const firstAndLastName = person.name.split(' ');
-
-          if (
-            !hasAtLeast(firstAndLastName, 2) ||
-            !hasAtLeast(person.terms, 1)
-          ) {
-            console.log(
-              `Skipping ${person.name}: Invalid name format or no terms`,
-              firstAndLastName,
-              person.terms.length
-            );
+          if (!hasAtLeast(person.terms, 1)) {
+            console.log(`Skipping ${person.name}: No mentorship term found`);
             continue;
           }
 
-          const firstName = firstAndLastName.slice(0, -1).join('');
-          const lastName = firstAndLastName.at(-1);
+          const { firstName, lastName } = splitFirstAndLastName(person.name);
 
           // Prepare user data
           userBatch.push({
