@@ -36,6 +36,7 @@ jobs:
       web: ${{ steps.filter.outputs.web == 'true' || steps.filter.outputs.ci == 'true' }}
       web-client: ${{ steps.filter.outputs.web-client == 'true' || steps.filter.outputs.ci == 'true' }}
       discord-service: ${{ steps.filter.outputs.discord-service == 'true' || steps.filter.outputs.ci == 'true' }}
+      has-changes: ${{ steps.filter.outputs.web == 'true' || steps.filter.outputs.web-client == 'true' || steps.filter.outputs.discord-service == 'true' || steps.filter.outputs.ci == 'true' }}
     steps:
       - uses: dorny/paths-filter@v3
         id: filter
@@ -53,47 +54,85 @@ jobs:
             ci:
               - '.github/**'
 
-  build-web:
+  # setup:
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.has-change == 'true' }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #     - name: Use common setups action
+  #       uses: ./.github/actions/common-setups
+  #     - name: Save workspace to cache
+  #       uses: actions/cache/save@v4
+  #       with:
+  #         path: |
+  #           .yarn/cache
+  #           .yarn/install-state.gz
+  #           node_modules
+  #           */node_modules
+  #           packages/common/dist
+  #           packages/server-common/dist
+  #           packages/mongo/dist
+  #         key: workspace-${{ github.sha }}-${{ hashFiles('yarn.lock', 'packages/*/package.json') }}
+
+  single-job:
     needs: changes
-    if: ${{ needs.changes.outputs.web == 'true' }}
+    if: ${{ needs.changes.outputs.has-changes == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Use build-web composite action
+      - name: Use common setups action
+        uses: ./.github/actions/common-setups
+      - name: Build web
+        if: ${{ needs.changes.outputs.web == 'true' }}
         uses: ./.github/actions/build-web
-
-  build-discord-service:
-    needs: changes
-    if: ${{ needs.changes.outputs.discord-service == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Use build-discord-service composite action
-        uses: ./.github/actions/build-discord-service
-
-  build-web-client:
-    needs: changes
-    if: ${{ needs.changes.outputs.web-client == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Use build-web-client composite action
-        uses: ./.github/actions/build-web-client
-
-  test-web:
-    needs: changes
-    if: ${{ needs.changes.outputs.web == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Use test-web composite action
+      - name: Test web
+        if: ${{ needs.changes.outputs.web == 'true' }}
         uses: ./.github/actions/test-web
         with:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Build web client
+        if: ${{ needs.changes.outputs.web-client == 'true' }}
+        uses: ./.github/actions/build-web-client
+      - name: Build discord service
+        if: ${{ needs.changes.outputs.discord-service == 'true' }}
+        uses: ./.github/actions/build-discord-service
+
+  # build-discord-service:
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.discord-service == 'true' }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #     - name: Use build-discord-service composite action
+  #       uses: ./.github/actions/build-discord-service
+
+  # build-web-client:
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.web-client == 'true' }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #     - name: Use build-web-client composite action
+  #       uses: ./.github/actions/build-web-client
+
+  # build-and-test-web:
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.web == 'true' }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #     - name: Use build-web composite action
+  #       uses: ./.github/actions/build-web
+  #     - name: Use test-web composite action
+  #       uses: ./.github/actions/test-web
+  #       with:
+  #         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   # run-lint:
   #   uses: ./.github/workflows/lint.yml
 
@@ -127,14 +166,13 @@ jobs:
 
   # Remove label after all jobs complete
   cleanup:
-    needs:
-      [
+    needs: [
         should-run-checks,
         changes,
-        build-web,
-        build-discord-service,
-        build-web-client,
-        test-web,
+        single-job,
+        # build-and-test-web,
+        # build-discord-service,
+        # build-web-client,
       ]
     if: ${{ always() && needs.should-run-checks.outputs.should-run == 'true' && github.event_name != 'pull_request_review' }}
     runs-on: ubuntu-latest

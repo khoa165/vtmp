@@ -3,12 +3,6 @@ name: Build web-client
 runs:
   using: 'composite'
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Use common setups action
-      uses: ./.github/actions/common-setups
-
     - name: Build web-client
       run: yarn workspace @vtmp/web-client build
       shell: bash

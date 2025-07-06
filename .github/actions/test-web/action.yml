@@ -8,12 +8,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Use common setups action
-      uses: ./.github/actions/common-setups
-
     - name: Run tests and collect coverage
       run: yarn workspace @vtmp/web coverage
       shell: bash
