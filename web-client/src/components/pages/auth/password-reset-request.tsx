@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -16,20 +17,11 @@ import { Label } from '@/components/base/label';
 import { request } from '@/utils/api';
 import { Method } from '@/utils/constants';
 
-interface PasswordResetRequestModalProps {
+interface PasswordResetRequestPageProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface ErrorResponse {
-  response?: {
-    data?: {
-      errors?: { message: string }[];
-    };
-  };
-}
-
-// Simple schema for password reset request response
 const PasswordResetRequestSchema = z.object({
   data: z.object({
     reqPasswordReset: z.any(),
@@ -37,10 +29,10 @@ const PasswordResetRequestSchema = z.object({
   message: z.string(),
 });
 
-export const PasswordResetRequestModal = ({
+export const PasswordResetRequestPage = ({
   isOpen,
   onClose,
-}: PasswordResetRequestModalProps) => {
+}: PasswordResetRequestPageProps) => {
   const [email, setEmail] = useState('');
   const [emailErrors, setEmailErrors] = useState<string[]>([]);
 
@@ -61,8 +53,8 @@ export const PasswordResetRequestModal = ({
       setEmailErrors([]);
       onClose();
     },
-    onError: (error: ErrorResponse) => {
-      if (error?.response?.data?.errors) {
+    onError: (error: unknown) => {
+      if (axios.isAxiosError(error) && error.response?.data?.errors) {
         const emailError = error.response.data.errors.find((err) =>
           err.message.toLowerCase().includes('email')
         );
@@ -95,9 +87,9 @@ export const PasswordResetRequestModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md [&>button]:hover:text-white [&>button]:hover:bg-white/10">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">
+          <DialogTitle className="text-2xl text-white font-bold">
             Reset Password
           </DialogTitle>
           <DialogDescription className="text-base">
@@ -107,7 +99,9 @@ export const PasswordResetRequestModal = ({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="reset-email">Email</Label>
+            <Label htmlFor="reset-email" className="text-white">
+              Email
+            </Label>
             <Input
               id="reset-email"
               type="email"
@@ -126,6 +120,7 @@ export const PasswordResetRequestModal = ({
               variant="outline"
               onClick={handleClose}
               disabled={isPending}
+              className="hover:bg-black hover:text-white transition-colors"
             >
               Cancel
             </Button>

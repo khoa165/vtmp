@@ -18,8 +18,8 @@ import {
 import { Checkbox } from '@/components/base/checkbox';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
+import { PasswordResetRequestPage } from '@/components/pages/auth/password-reset-request';
 import { AuthResponseSchema } from '@/components/pages/auth/validation';
-import { PasswordResetRequestModal } from '#vtmp/web-client/components/pages/auth/password-reset-request';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { request } from '@/utils/api';
 import { Method } from '@/utils/constants';
@@ -194,7 +194,7 @@ export const LoginPage = () => {
         </div>
       </div>
 
-      <PasswordResetRequestModal
+      <PasswordResetRequestPage
         isOpen={showPasswordResetModal}
         onClose={() => setShowPasswordResetModal(false)}
       />
