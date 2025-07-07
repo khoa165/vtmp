@@ -523,29 +523,6 @@ describe('InterviewController', () => {
       expect(res.body.errors[0].message).to.equal('Interview not found');
     });
 
-    it('should return an error message with status code 400 if the interview is already shared', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-
-      await InterviewRepository.updateInterviewById({
-        interviewId: interview_A0.id,
-        userId: userId_A,
-        newUpdate: { shareStatus: InterviewShareStatus.SHARED_ANONYMOUS },
-      });
-
-      const res = await request(app)
-        .put(endpoint(interview_A0.id))
-        .set('Authorization', `Bearer ${mockToken_A}`)
-        .send({
-          note: 'update',
-          status: InterviewStatus.PASSED,
-        });
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal(
-        'Cannot update a shared interview'
-      );
-    });
-
     it('should return the successfully updated interview object', async () => {
       const interview =
         await InterviewRepository.createInterview(mockInterview_A0);

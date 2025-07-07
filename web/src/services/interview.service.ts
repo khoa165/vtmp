@@ -69,30 +69,18 @@ export const InterviewService = {
       note?: string;
     };
   }): Promise<IInterview | null> => {
-    const interview = await InterviewRepository.getInterviewById({
-      interviewId,
-      userId,
-    });
-
-    if (!interview) {
-      throw new ResourceNotFoundError('Interview not found', {
-        interviewId,
-        userId,
-      });
-    }
-
-    if (interview.shareStatus !== InterviewShareStatus.UNSHARED) {
-      throw new BadRequest('Cannot update a shared interview', {
-        interviewId,
-        userId,
-      });
-    }
-
     const updatedInterview = await InterviewRepository.updateInterviewById({
       interviewId,
       userId,
       newUpdate: newUpdate,
     });
+
+    if (!updatedInterview) {
+      throw new ResourceNotFoundError('Interview not found', {
+        interviewId,
+        userId,
+      });
+    }
 
     return updatedInterview;
   },
