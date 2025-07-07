@@ -18,6 +18,8 @@ jobs:
       link-processing-service: ${{ steps.check.outputs.should-run == 'true' && (steps.filter.outputs.link-processing-service == 'true') }}
       has-changes: ${{ steps.check.outputs.should-run == 'true' && (steps.filter.outputs.web == 'true' || steps.filter.outputs.web-client == 'true' || steps.filter.outputs.discord-service == 'true' || steps.filter.outputs.link-processing-service == 'true') }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Check if pipeline should run
         id: check
         run: |
