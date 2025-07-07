@@ -1,4 +1,5 @@
 name: Test web
+description: 'Runs tests for the web workspace and uploads coverage to Codecov'
 
 inputs:
   CODECOV_TOKEN:

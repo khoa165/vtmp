@@ -1,8 +1,0 @@
-name: Build web-client
-
-runs:
-  using: 'composite'
-  steps:
-    - name: Build web-client
-      run: yarn workspace @vtmp/web-client build
-      shell: bash

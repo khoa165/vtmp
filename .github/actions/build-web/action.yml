@@ -1,8 +1,0 @@
-name: Build web
-
-runs:
-  using: 'composite'
-  steps:
-    - name: Build web
-      run: yarn workspace @vtmp/web build
-      shell: bash

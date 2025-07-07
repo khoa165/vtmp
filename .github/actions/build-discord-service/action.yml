@@ -1,8 +1,0 @@
-name: Build discord-service
-
-runs:
-  using: 'composite'
-  steps:
-    - name: Build discord-service
-      run: yarn workspace @vtmp/discord-service build
-      shell: bash
