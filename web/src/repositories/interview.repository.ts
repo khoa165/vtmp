@@ -85,7 +85,7 @@ export const InterviewRepository = {
     }
 
     if (filters?.types) {
-      dynamicMatch.types = { $all: filters.types };
+      dynamicMatch.types = { $in: filters.types };
     }
 
     if (filters?.status) {
@@ -93,7 +93,7 @@ export const InterviewRepository = {
     }
 
     if (isShared) {
-      dynamicMatch.sharedAt = { $ne: null };
+      dynamicMatch.shareStatus = { $ne: InterviewShareStatus.UNSHARED };
     }
 
     const pipeline: PipelineStage[] = [
@@ -122,7 +122,9 @@ export const InterviewRepository = {
           $addFields: {
             user: {
               $cond: {
-                if: { $not: ['$isDisclosed'] },
+                if: {
+                  $eq: ['$shareStatus', InterviewShareStatus.SHARED_PUBLIC],
+                },
                 then: {
                   firstName: '$user.firstName',
                   lastName: '$user.lastName',

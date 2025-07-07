@@ -420,14 +420,20 @@ describe('InterviewService', () => {
 
       const interviews = await InterviewService.getInterviews({
         filters: {
-          companyName: interview_A2.companyName || 'Meta',
-          status: interview_A2.status,
-          types: interview_A2.types,
+          companyName: 'Meta',
+          status: InterviewStatus.PENDING,
+          types: [InterviewType.CODE_REVIEW, InterviewType.HIRING_MANAGER],
         },
       });
 
       assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(0);
+      expect(interviews).to.be.an('array').that.have.lengthOf(1);
+      expect(interviews[0]).to.deep.include({
+        ...mockInterview_B1,
+        applicationId: toMongoId(metaApplication_B.id),
+        userId: toMongoId(user_B.id),
+        status: InterviewStatus.PENDING,
+      });
     });
 
     it('should return interviews of all users that match the filters', async () => {
@@ -448,11 +454,78 @@ describe('InterviewService', () => {
       });
 
       assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(1);
-      expect(interviews[0]).to.deep.include({
-        ...mockInterview_A2,
+      expect(interviews).to.be.an('array').that.have.lengthOf(2);
+      expect(interviews.map((interview) => interview.id)).to.include.members([
+        interview_A2.id,
+        interview_B1.id,
+      ]);
+    });
+
+    it('should return the shared interviews with firstName and lastName of the user', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: user_A.id,
+        newUpdate: {
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
+        },
+      });
+
+      const sharedInterviews = await InterviewService.getInterviews({
+        filters: {
+          companyName: 'Meta',
+          types: [InterviewType.CODE_REVIEW],
+          status: InterviewStatus.PASSED,
+        },
+        isShared: true,
+      });
+
+      assert(sharedInterviews);
+      expect(sharedInterviews).to.be.an('array').that.have.lengthOf(1);
+      expect(sharedInterviews[0]).to.deep.include({
+        ...mockInterview_A0,
         applicationId: toMongoId(metaApplication_A.id),
         userId: toMongoId(user_A.id),
+        user: {
+          firstName: user_A.firstName,
+          lastName: user_A.lastName,
+        },
+      });
+    });
+
+    it('should return the shared interviews with user firstName and lastName as Anonymouse User', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: user_A.id,
+        newUpdate: {
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
+        },
+      });
+
+      const sharedInterviews = await InterviewService.getInterviews({
+        filters: {
+          companyName: 'Meta',
+          types: [InterviewType.CODE_REVIEW],
+          status: InterviewStatus.PASSED,
+        },
+        isShared: true,
+      });
+
+      assert(sharedInterviews);
+      expect(sharedInterviews).to.be.an('array').that.have.lengthOf(1);
+      expect(sharedInterviews[0]).to.deep.include({
+        ...mockInterview_A0,
+        applicationId: toMongoId(metaApplication_A.id),
+        userId: toMongoId(user_A.id),
+        user: {
+          firstName: 'Anonymous',
+          lastName: 'User',
+        },
       });
     });
 
@@ -465,33 +538,27 @@ describe('InterviewService', () => {
 
       assert(interview_A0 && interview_A2 && interview_B1);
 
-      const sharedInterview = await InterviewRepository.updateInterviewById({
+      await InterviewRepository.updateInterviewById({
         interviewId: interview_A2.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: true,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
         },
       });
       await InterviewRepository.updateInterviewById({
         interviewId: interview_A0.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: true,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
         },
       });
       await InterviewRepository.updateInterviewById({
         interviewId: interview_B1.id,
         userId: user_B.id,
         newUpdate: {
-          isDisclosed: true,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
         },
       });
-
-      assert(sharedInterview);
-      expect(sharedInterview.id).to.equal(interview_A2.id);
 
       const interviews = await InterviewService.getInterviews({
         filters: {
@@ -503,14 +570,11 @@ describe('InterviewService', () => {
       });
 
       assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(1);
-      expect(interviews[0]).to.deep.include({
-        ...mockInterview_A2,
-        applicationId: toMongoId(metaApplication_A.id),
-        userId: toMongoId(user_A.id),
-        isDisclosed: true,
-        sharedAt: sharedInterview.sharedAt,
-      });
+      expect(interviews).to.be.an('array').that.have.lengthOf(2);
+      expect(interviews.map((interview) => interview.id)).to.include.members([
+        interview_A2.id,
+        interview_B1.id,
+      ]);
     });
   });
 
@@ -596,7 +660,7 @@ describe('InterviewService', () => {
       await expect(
         InterviewService.updateInterviewShareStatus({
           interviewId: getNewMongoId(),
-          userId: userId_A,
+          userId: user_A.id,
           shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
         })
       ).eventually.to.be.rejectedWith(
@@ -611,7 +675,7 @@ describe('InterviewService', () => {
 
       await InterviewRepository.updateInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_A,
+        userId: user_A.id,
         newUpdate: {
           shareStatus: InterviewShareStatus.SHARED_PUBLIC,
         },
@@ -620,7 +684,7 @@ describe('InterviewService', () => {
       await expect(
         InterviewService.updateInterviewShareStatus({
           interviewId: interview_A0.id,
-          userId: userId_A,
+          userId: user_A.id,
           shareStatus: InterviewShareStatus.UNSHARED,
         })
       ).eventually.to.be.rejectedWith(
@@ -641,14 +705,14 @@ describe('InterviewService', () => {
       const updatedInterview_A0 =
         await InterviewService.updateInterviewShareStatus({
           interviewId: interview_A0.id,
-          userId: userId_A,
+          userId: user_A.id,
           shareStatus: InterviewShareStatus.SHARED_PUBLIC,
         });
 
       const updatedInterview_B1 =
         await InterviewService.updateInterviewShareStatus({
           interviewId: interview_B1.id,
-          userId: userId_B,
+          userId: user_B.id,
           shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
         });
 

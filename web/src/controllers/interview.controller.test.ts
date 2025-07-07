@@ -68,15 +68,15 @@ describe('InterviewController', () => {
     const encryptedPassword = await bcrypt.hash('test password', 10);
     const mockUsers = [
       {
-        firstName: 'admin',
-        lastName: 'viettech',
+        firstName: 'admin_A',
+        lastName: 'viettech_A',
         email: 'testA@gmail.com',
         encryptedPassword,
         role: SystemRole.ADMIN,
       },
       {
-        firstName: 'admin',
-        lastName: 'viettech',
+        firstName: 'admin_B',
+        lastName: 'viettech_B',
         email: 'testB@gmail.com',
         encryptedPassword,
         role: SystemRole.USER,
@@ -473,29 +473,12 @@ describe('InterviewController', () => {
       ]);
     });
 
-    it('should return shared interviews with user firstName and lastName as Anonymouse User when isDisclosed is true', async () => {
-      const [interview_A0, interview_A2, interview_B1] = await Promise.all(
-        [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
-          (mockInterview) => InterviewRepository.createInterview(mockInterview)
-        )
-      );
+    it('should return shared interviews with user firstName and lastName', async () => {
+      const interview_B1 =
+        await InterviewRepository.createInterview(mockInterview_B1);
 
-      assert(interview_A0 && interview_A2 && interview_B1);
+      assert(interview_B1);
 
-      await InterviewRepository.updateInterviewById({
-        interviewId: interview_A0.id,
-        userId: user_A.id,
-        newUpdate: {
-          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
-        },
-      });
-      await InterviewRepository.updateInterviewById({
-        interviewId: interview_A2.id,
-        userId: user_A.id,
-        newUpdate: {
-          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
-        },
-      });
       await InterviewRepository.updateInterviewById({
         interviewId: interview_B1.id,
         userId: user_B.id,
@@ -509,7 +492,7 @@ describe('InterviewController', () => {
         .set('Authorization', `Bearer ${mockToken_B}`)
         .query({
           status: InterviewStatus.PASSED,
-          'types[]': [InterviewType.CODE_REVIEW],
+          'types[]': [InterviewType.PROJECT_WALKTHROUGH],
           companyName: 'Meta',
         });
       expectSuccessfulResponse({ res, statusCode: 200 });
@@ -517,7 +500,42 @@ describe('InterviewController', () => {
       expect(res.body.data[0]).to.deep.include({
         companyName: 'Meta',
         status: InterviewStatus.PASSED,
-        types: [InterviewType.CODE_REVIEW],
+        types: [InterviewType.PROJECT_WALKTHROUGH],
+        user: {
+          firstName: user_B.firstName,
+          lastName: user_B.lastName,
+        },
+      });
+    });
+
+    it('should return shared interviews with user firstName and lastName as Anonymouse User', async () => {
+      const interview_B1 =
+        await InterviewRepository.createInterview(mockInterview_B1);
+
+      assert(interview_B1);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_B1.id,
+        userId: user_B.id,
+        newUpdate: {
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
+        },
+      });
+
+      const res = await request(app)
+        .get(endpoint)
+        .set('Authorization', `Bearer ${mockToken_B}`)
+        .query({
+          status: InterviewStatus.PASSED,
+          'types[]': [InterviewType.PROJECT_WALKTHROUGH],
+          companyName: 'Meta',
+        });
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data[0]).to.deep.include({
+        companyName: 'Meta',
+        status: InterviewStatus.PASSED,
+        types: [InterviewType.PROJECT_WALKTHROUGH],
         user: {
           firstName: 'Anonymous',
           lastName: 'User',

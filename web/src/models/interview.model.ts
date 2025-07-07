@@ -77,10 +77,16 @@ InterviewSchema.pre('save', async function () {
     _id: this.applicationId,
     deletedAt: null,
   });
-  if (application && application.companyName !== undefined) {
-    this.companyName = application.companyName;
-    this.jobTitle = application.jobTitle;
-    this.location = application.location;
+  if (application) {
+    if (application.companyName) {
+      this.companyName = application.companyName;
+    }
+    if (application.jobTitle) {
+      this.jobTitle = application.jobTitle;
+    }
+    if (application.location) {
+      this.location = application.location;
+    }
   }
 });
 
