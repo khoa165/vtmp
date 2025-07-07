@@ -1,7 +1,11 @@
 import escapeStringRegexp from 'escape-string-regexp';
 import { ClientSession, PipelineStage, UpdateResult } from 'mongoose';
 
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import {
+  InterviewShareStatus,
+  InterviewStatus,
+  InterviewType,
+} from '@vtmp/common/constants';
 
 import { InterviewModel, IInterview } from '@/models/interview.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
@@ -152,8 +156,7 @@ export const InterviewRepository = {
       status?: InterviewStatus;
       interviewOnDate?: Date;
       note?: string;
-      isDisclosed?: boolean;
-      sharedAt?: Date | null;
+      shareStatus?: InterviewShareStatus;
     };
   }): Promise<IInterview | null> => {
     return InterviewModel.findOneAndUpdate(

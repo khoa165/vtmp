@@ -1,16 +1,17 @@
+import { IUser } from '@vtmp/mongo/models';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
 
 import assert from 'assert';
 
 import {
-  InterviewStatus,
   InterviewType,
+  InterviewStatus,
   JobPostingRegion,
+  InterviewShareStatus,
 } from '@vtmp/common/constants';
 
 import { IApplication } from '@/models/application.model';
-import { IUser } from '@/models/user.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -761,7 +762,7 @@ describe('Interview Repository', () => {
       });
     });
 
-    it('should return the interview with sharedAt and isDisclosed fields updated', async () => {
+    it('should return the interview with updated shareStatus', async () => {
       const interview_A1 =
         await InterviewRepository.createInterview(mockInterview_A1);
 
@@ -769,20 +770,15 @@ describe('Interview Repository', () => {
         interviewId: interview_A1.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: false,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
         },
       });
 
       assert(sharedInterview);
       expect(sharedInterview.id).to.equal(interview_A1.id);
-      expect(sharedInterview.isDisclosed).to.equal(false);
-      assert(sharedInterview.sharedAt);
-      const timeDiff = differenceInSeconds(
-        new Date(),
-        sharedInterview.sharedAt
+      expect(sharedInterview.shareStatus).to.equal(
+        InterviewShareStatus.SHARED_ANONYMOUS
       );
-      expect(timeDiff).to.lessThan(3);
     });
   });
 

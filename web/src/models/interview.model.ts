@@ -4,6 +4,7 @@ import {
   InterviewStatus,
   InterviewType,
   JobPostingRegion,
+  InterviewShareStatus,
 } from '@vtmp/common/constants';
 
 import { ApplicationModel } from '@/models/application.model';
@@ -19,8 +20,7 @@ export interface IInterview extends Document {
   jobTitle?: string;
   location?: JobPostingRegion;
   note?: string;
-  isDisclosed?: boolean;
-  sharedAt?: Date;
+  shareStatus?: string;
   deletedAt?: Date;
 }
 
@@ -62,13 +62,10 @@ const InterviewSchema = new mongoose.Schema<IInterview>({
   note: {
     type: String,
   },
-  isDisclosed: {
-    type: Boolean,
-    default: true,
-  },
-  sharedAt: {
-    type: Date,
-    default: null,
+  shareStatus: {
+    type: String,
+    enum: Object.values(InterviewShareStatus),
+    default: InterviewShareStatus.UNSHARED,
   },
   deletedAt: {
     type: Date,

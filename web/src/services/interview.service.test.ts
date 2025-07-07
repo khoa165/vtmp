@@ -1,12 +1,16 @@
+import { IUser } from '@vtmp/mongo/models';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
 
 import assert from 'assert';
 
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import {
+  InterviewShareStatus,
+  InterviewStatus,
+  InterviewType,
+} from '@vtmp/common/constants';
 
 import { IApplication } from '@/models/application.model';
-import { IUser } from '@/models/user.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -14,7 +18,7 @@ import { UserRepository } from '@/repositories/user.repository';
 import { InterviewService } from '@/services/interview.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
-import { ResourceNotFoundError } from '@/utils/errors';
+import { BadRequest, ResourceNotFoundError } from '@/utils/errors';
 
 describe('InterviewService', () => {
   useMongoDB();
@@ -567,93 +571,6 @@ describe('InterviewService', () => {
       );
     });
 
-    it('should not update the sharedAt date if the interview has been shared before', async () => {
-      const sharedDate = new Date('2025-06-07');
-
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-
-      await InterviewRepository.updateInterviewById({
-        interviewId: interview_A0.id,
-        userId: user_A.id,
-        newUpdate: {
-          isDisclosed: true,
-          sharedAt: sharedDate,
-        },
-      });
-
-      const updatedInterview = await InterviewService.updateInterviewById({
-        interviewId: interview_A0.id,
-        userId: user_A.id,
-        newUpdate: {
-          isDisclosed: false,
-        },
-      });
-
-      assert(updatedInterview);
-      expect(updatedInterview.isDisclosed).to.equal(false);
-      assert(updatedInterview.sharedAt);
-      expect(updatedInterview.id).to.equal(interview_A0.id);
-      const timeDiff = differenceInSeconds(
-        updatedInterview.sharedAt,
-        sharedDate
-      );
-      expect(timeDiff).to.lessThan(3);
-    });
-
-    it('should update the interview isDisclosed to true when unsharing an interview', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-
-      await InterviewRepository.updateInterviewById({
-        interviewId: interview_A0.id,
-        userId: user_A.id,
-        newUpdate: {
-          isDisclosed: false,
-          sharedAt: null,
-        },
-      });
-
-      const unsharedInterview = await InterviewService.updateInterviewById({
-        interviewId: interview_A0.id,
-        userId: user_A.id,
-        isShare: false,
-        newUpdate: {},
-      });
-
-      assert(unsharedInterview);
-      expect(unsharedInterview.id).to.equal(interview_A0.id);
-      expect(unsharedInterview.isDisclosed).to.equal(true);
-      assert(!unsharedInterview.sharedAt);
-    });
-
-    it('should update the status isDisclosed of a shared interview successfully', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-
-      await InterviewRepository.updateInterviewById({
-        interviewId: interview_A0.id,
-        userId: user_A.id,
-        newUpdate: {
-          isDisclosed: true,
-          sharedAt: new Date('2025-06-07'),
-        },
-      });
-
-      const updatedInterview = await InterviewService.updateInterviewById({
-        interviewId: interview_A0.id,
-        userId: user_A.id,
-        newUpdate: {
-          isDisclosed: false,
-        },
-      });
-
-      assert(updatedInterview);
-      expect(updatedInterview.isDisclosed).to.equal(false);
-      assert(updatedInterview.sharedAt);
-      expect(updatedInterview.id).to.equal(interview_A0.id);
-    });
-
     it('should update the interview with the provided newUpdate', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
@@ -671,6 +588,79 @@ describe('InterviewService', () => {
         newUpdate.interviewOnDate
       );
       expect(updatedInterview.note).to.equal(newUpdate.note);
+    });
+  });
+
+  describe('updateInterviewShareStatus', () => {
+    it('should throw error if the interview does not exist', async () => {
+      await expect(
+        InterviewService.updateInterviewShareStatus({
+          interviewId: getNewMongoId(),
+          userId: userId_A,
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
+        })
+      ).eventually.to.be.rejectedWith(
+        ResourceNotFoundError,
+        'Interview not found'
+      );
+    });
+
+    it('should throw error when unsharing an interview that has been shared before', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: userId_A,
+        newUpdate: {
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
+        },
+      });
+
+      await expect(
+        InterviewService.updateInterviewShareStatus({
+          interviewId: interview_A0.id,
+          userId: userId_A,
+          shareStatus: InterviewShareStatus.UNSHARED,
+        })
+      ).eventually.to.be.rejectedWith(
+        BadRequest,
+        'Cannot unshare an interview that is already shared'
+      );
+    });
+
+    it('should update the shareStatus of an unshared interview', async () => {
+      const [interview_A0, interview_B1] = await Promise.all(
+        [mockInterview_A0, mockInterview_B1].map((mockInterview) =>
+          InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      assert(interview_A0 && interview_B1);
+
+      const updatedInterview_A0 =
+        await InterviewService.updateInterviewShareStatus({
+          interviewId: interview_A0.id,
+          userId: userId_A,
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
+        });
+
+      const updatedInterview_B1 =
+        await InterviewService.updateInterviewShareStatus({
+          interviewId: interview_B1.id,
+          userId: userId_B,
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
+        });
+
+      assert(updatedInterview_A0 && updatedInterview_B1);
+      expect(updatedInterview_A0.id).to.equal(interview_A0.id);
+      expect(updatedInterview_A0.shareStatus).to.equal(
+        InterviewShareStatus.SHARED_PUBLIC
+      );
+      expect(updatedInterview_B1.id).to.equal(interview_B1.id);
+      expect(updatedInterview_B1.shareStatus).to.equal(
+        InterviewShareStatus.SHARED_ANONYMOUS
+      );
     });
   });
 

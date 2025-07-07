@@ -2,7 +2,11 @@ import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { z } from 'zod';
 
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import {
+  InterviewShareStatus,
+  InterviewStatus,
+  InterviewType,
+} from '@vtmp/common/constants';
 
 import { getUserFromRequest } from '@/middlewares/utils';
 import { InterviewService } from '@/services/interview.service';
@@ -122,7 +126,9 @@ const AdminInterviewFilter = z
 
 const ShareInterviewSchema = z
   .object({
-    isDisclosed: z.boolean(),
+    shareStatus: z.nativeEnum(InterviewShareStatus, {
+      message: 'Invalid interview share status',
+    }),
   })
   .strict();
 
@@ -230,37 +236,17 @@ export const InterviewController = {
 
   shareInterview: async (req: Request, res: Response) => {
     const { interviewId } = InterviewIdParamsSchema.parse(req.params);
-    const { isDisclosed } = ShareInterviewSchema.parse(req.body);
+    const { shareStatus } = ShareInterviewSchema.parse(req.body);
     const userId = getUserFromRequest(req).user.id;
 
-    const sharedInterview = await InterviewService.updateInterviewById({
+    const sharedInterview = await InterviewService.updateInterviewShareStatus({
       interviewId,
       userId,
-      newUpdate: {
-        isDisclosed,
-      },
-      isShare: true,
+      shareStatus,
     });
 
     res.status(200).json({
       message: 'Interview shared successfully',
-      data: sharedInterview,
-    });
-  },
-
-  unshareInterview: async (req: Request, res: Response) => {
-    const { interviewId } = InterviewIdParamsSchema.parse(req.params);
-    const userId = getUserFromRequest(req).user.id;
-
-    const sharedInterview = await InterviewService.updateInterviewById({
-      interviewId,
-      userId,
-      isShare: false,
-      newUpdate: {},
-    });
-
-    res.status(200).json({
-      message: 'Interview unshared successfully',
       data: sharedInterview,
     });
   },

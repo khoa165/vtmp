@@ -1,9 +1,11 @@
+import { IUser } from '@vtmp/mongo/models';
 import bcrypt from 'bcryptjs';
 import { assert, expect } from 'chai';
 import { omit } from 'remeda';
 import request from 'supertest';
 
 import {
+  InterviewShareStatus,
   InterviewStatus,
   InterviewType,
   SystemRole,
@@ -13,7 +15,6 @@ import app from '@/app';
 import { EnvConfig } from '@/config/env';
 import { IApplication } from '@/models/application.model';
 import { IInterview } from '@/models/interview.model';
-import { IUser } from '@/models/user.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -473,8 +474,6 @@ describe('InterviewController', () => {
     });
 
     it('should return shared interviews with user firstName and lastName as Anonymouse User when isDisclosed is true', async () => {
-      const sharedAt = new Date();
-
       const [interview_A0, interview_A2, interview_B1] = await Promise.all(
         [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
           (mockInterview) => InterviewRepository.createInterview(mockInterview)
@@ -487,24 +486,21 @@ describe('InterviewController', () => {
         interviewId: interview_A0.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: true,
-          sharedAt: sharedAt,
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
         },
       });
       await InterviewRepository.updateInterviewById({
         interviewId: interview_A2.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: true,
-          sharedAt: sharedAt,
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
         },
       });
       await InterviewRepository.updateInterviewById({
         interviewId: interview_B1.id,
         userId: user_B.id,
         newUpdate: {
-          isDisclosed: false,
-          sharedAt: sharedAt,
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
         },
       });
 
@@ -530,8 +526,6 @@ describe('InterviewController', () => {
     });
 
     it('should return shared interviews that match the filters', async () => {
-      const sharedAt = new Date();
-
       const [interview_A0, interview_A2, interview_B1] = await Promise.all(
         [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
           (mockInterview) => InterviewRepository.createInterview(mockInterview)
@@ -544,24 +538,21 @@ describe('InterviewController', () => {
         interviewId: interview_A0.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: false,
-          sharedAt: sharedAt,
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
         },
       });
       await InterviewRepository.updateInterviewById({
         interviewId: interview_A2.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: true,
-          sharedAt: sharedAt,
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
         },
       });
       await InterviewRepository.updateInterviewById({
         interviewId: interview_B1.id,
         userId: user_B.id,
         newUpdate: {
-          isDisclosed: false,
-          sharedAt: sharedAt,
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
         },
       });
 
@@ -625,6 +616,29 @@ describe('InterviewController', () => {
       expect(res.body.errors[0].message).to.equal('Interview not found');
     });
 
+    it('should return an error message with status code 400 if the interview is already shared', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: user_A.id,
+        newUpdate: { shareStatus: InterviewShareStatus.SHARED_ANONYMOUS },
+      });
+
+      const res = await request(app)
+        .put(endpoint(interview_A0.id))
+        .set('Authorization', `Bearer ${mockToken_A}`)
+        .send({
+          note: 'update',
+          status: InterviewStatus.PASSED,
+        });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Cannot update a shared interview'
+      );
+    });
+
     it('should return the successfully updated interview object', async () => {
       const interview =
         await InterviewRepository.createInterview(mockInterview_A0);
@@ -669,7 +683,7 @@ describe('InterviewController', () => {
       const res = await request(app)
         .put(endpoint(getNewMongoId()))
         .set('Authorization', `Bearer ${mockToken_A}`)
-        .send({ isDisclosed: false });
+        .send({ shareStatus: InterviewShareStatus.SHARED_ANONYMOUS });
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Interview not found');
     });
@@ -681,82 +695,44 @@ describe('InterviewController', () => {
       const res = await request(app)
         .put(endpoint(interview_A0.id))
         .set('Authorization', `Bearer ${mockToken_B}`)
-        .send({ isDisclosed: false });
+        .send({ shareStatus: InterviewShareStatus.SHARED_ANONYMOUS });
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Interview not found');
     });
 
-    it('should return the successfully updated interview object with isDisclosed set to false', async () => {
+    it('should return an error message with status code 400 if unsharing an interview', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: user_A.id,
+        newUpdate: { shareStatus: InterviewShareStatus.SHARED_ANONYMOUS },
+      });
+
+      const res = await request(app)
+        .put(endpoint(interview_A0.id))
+        .set('Authorization', `Bearer ${mockToken_A}`)
+        .send({ shareStatus: InterviewShareStatus.UNSHARED });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Cannot unshare an interview that is already shared'
+      );
+    });
+
+    it('should return the successfully shared interview', async () => {
       const interview =
         await InterviewRepository.createInterview(mockInterview_A0);
 
       const res = await request(app)
         .put(endpoint(interview.id))
         .set('Authorization', `Bearer ${mockToken_A}`)
-        .send({ isDisclosed: false });
+        .send({ shareStatus: InterviewShareStatus.SHARED_ANONYMOUS });
 
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.include({
         _id: interview.id,
-        isDisclosed: false,
-      });
-    });
-  });
-
-  describe('PUT /api/interviews/unshare/:interviewId', () => {
-    const endpoint = (id: string) => `/api/interviews/unshare/${id}`;
-
-    runDefaultAuthMiddlewareTests({
-      route: endpoint(getNewMongoId()),
-      method: HTTPMethod.PUT,
-    });
-
-    it('should return an error message with status code 400 if the interviewId is not valid', async () => {
-      const res = await request(app)
-        .put(endpoint('not-a-valid-id'))
-        .set('Authorization', `Bearer ${mockToken_A}`);
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal(
-        'Invalid interview ID format'
-      );
-    });
-
-    it('should return an error message with status code 404 if the interview is not found', async () => {
-      const res = await request(app)
-        .put(endpoint(getNewMongoId()))
-        .set('Authorization', `Bearer ${mockToken_A}`);
-      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Interview not found');
-    });
-
-    it('should return an error message with status code 404 if the interview does not belong to the authorized user', async () => {
-      const interview_A0 =
-        await InterviewRepository.createInterview(mockInterview_A0);
-
-      const res = await request(app)
-        .put(endpoint(interview_A0.id))
-        .set('Authorization', `Bearer ${mockToken_B}`);
-      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Interview not found');
-    });
-
-    it('should return the successfully unshare interview object with isDisclosed set to true', async () => {
-      const interview =
-        await InterviewRepository.createInterview(mockInterview_A0);
-
-      await request(app)
-        .post(`/api/interviews/unshare/${interview.id}`)
-        .set('Authorization', `Bearer ${mockToken_A}`);
-
-      const res = await request(app)
-        .put(endpoint(interview.id))
-        .set('Authorization', `Bearer ${mockToken_A}`);
-
-      expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.include({
-        _id: interview.id,
-        isDisclosed: true,
-        sharedAt: null,
+        shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
       });
     });
   });
@@ -777,9 +753,8 @@ describe('InterviewController', () => {
     });
 
     it('should return an error message with status code 404 if the interview is not found', async () => {
-      const fakeInterview = getNewMongoId();
       const res = await request(app)
-        .delete(endpoint(fakeInterview))
+        .delete(endpoint(getNewMongoId()))
         .set('Authorization', `Bearer ${mockToken_A}`);
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
     });
@@ -793,6 +768,25 @@ describe('InterviewController', () => {
         .set('Authorization', `Bearer ${mockToken_B}`)
         .send({ note: 'update' });
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+    });
+
+    it('should return an error message with status code 400 if the interview is already shared', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: user_A.id,
+        newUpdate: { shareStatus: InterviewShareStatus.SHARED_ANONYMOUS },
+      });
+
+      const res = await request(app)
+        .delete(endpoint(interview_A0.id))
+        .set('Authorization', `Bearer ${mockToken_A}`);
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Cannot delete a shared interview'
+      );
     });
 
     it('should return the successfully deleted interview', async () => {
