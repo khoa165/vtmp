@@ -1,0 +1,131 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    types: [labeled]
+    branches:
+      - main
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  pipeline-setup:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    outputs:
+      should-run: ${{ steps.check.outputs.should-run }}
+      web: ${{ steps.check.outputs.should-run == 'true' && (steps.filter.outputs.web == 'true' || steps.filter.outputs.ci == 'true') }}
+      web-client: ${{ steps.check.outputs.should-run == 'true' && (steps.filter.outputs.web-client == 'true' || steps.filter.outputs.ci == 'true') }}
+      discord-service: ${{ steps.check.outputs.should-run == 'true' && (steps.filter.outputs.discord-service == 'true' || steps.filter.outputs.ci == 'true') }}
+      link-processing-service: ${{ steps.check.outputs.should-run == 'true' && (steps.filter.outputs.link-processing-service == 'true' || steps.filter.outputs.ci == 'true') }}
+      has-changes: ${{ steps.check.outputs.should-run == 'true' && (steps.filter.outputs.web == 'true' || steps.filter.outputs.web-client == 'true' || steps.filter.outputs.discord-service == 'true' || steps.filter.outputs.link-processing-service == 'true' || steps.filter.outputs.ci == 'true') }}
+    steps:
+      - name: Check if pipeline should run
+        id: check
+        run: |
+          if [[ "${{ github.event.pull_request.base.ref }}" == "main" && "${{ github.event_name }}" == "pull_request_review" && "${{ github.event.review.state }}" == "approved" ]]; then
+            echo "should-run=true" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event.action }}" == "labeled" && "${{ github.event.label.name }}" == "run-checks" ]]; then
+            echo "should-run=true" >> $GITHUB_OUTPUT
+          else
+            echo "should-run=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Detect changes
+        if: ${{ steps.check.outputs.should-run == 'true' }}
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            web:
+              - 'web/**'
+              - 'packages/**'
+            web-client:
+              - 'web-client/**'
+              - 'packages/common/**'
+            discord-service:
+              - 'discord-service/**'
+              - 'packages/**'
+            link-processing-service:
+              - 'link-processing-service/**'
+              - 'packages/**'
+            ci:
+              - '.github/**'
+
+      - name: Remove run-checks label
+        if: ${{ steps.check.outputs.should-run == 'true' && github.event_name != 'pull_request_review' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: 'run-checks'
+              });
+              console.log('✅ Label removed successfully');
+            } catch (error) {
+              console.log('Label may not exist or already removed');
+            }
+
+  build-and-test:
+    needs: pipeline-setup
+    if: ${{ needs.pipeline-setup.outputs.should-run == 'true' && needs.pipeline-setup.outputs.has-changes == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Use common setups action
+        uses: ./.github/actions/common-setups
+      - name: Build web
+        if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
+        run: yarn workspace @vtmp/web build
+      - name: Test web
+        if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
+        uses: ./.github/actions/test-web
+        with:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Build web client
+        if: ${{ needs.pipeline-setup.outputs.web-client == 'true' }}
+        run: yarn workspace @vtmp/web-client build
+      - name: Build discord service
+        if: ${{ needs.pipeline-setup.outputs.discord-service == 'true' }}
+        run: yarn workspace @vtmp/discord-service build
+      - name: Build link processing service
+        if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}
+        run: yarn workspace @vtmp/link-processing-service build
+      - name: Test link processing service
+        if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}
+        run: yarn workspace @vtmp/link-processing-service test
+      # run-lint:
+      # uses: ./.github/workflows/lint.yml
+
+  # chromatic:
+  #   needs: changes
+  #   if: ${{ needs.changes.outputs.web-client == 'true' }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+
+  #     - name: Use Node.js 22.x
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 22.x
+  #         cache: 'yarn'
+
+  #     - name: Use latest yarn version
+  #       run: yarn set version stable
+
+  #     - name: Install dependencies
+  #       run: yarn install --immutable
+
+  #     - name: Run Chromatic
+  #       uses: chromaui/action@latest
+  #       with:
+  #         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+  #         workingDir: web-client
