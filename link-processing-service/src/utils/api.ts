@@ -1,6 +1,8 @@
-import { AuthType , UpdateLinkPayload } from '@vtmp/server-common/constants';
+import { AuthType } from '@vtmp/server-common/constants';
 import { JWTUtils } from '@vtmp/server-common/utils';
 import axios from 'axios';
+
+import { UpdateLinkPayload } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
 

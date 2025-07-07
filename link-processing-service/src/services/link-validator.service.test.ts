@@ -1,7 +1,8 @@
 import { safebrowsing_v4 } from '@googleapis/safebrowsing';
-import { SubmittedLink } from '@vtmp/server-common/constants';
 import { expect } from 'chai';
 import retry from 'retry';
+
+import { SubmittedLink } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
 import { LinkValidatorService } from '@/services/link-validator.service';

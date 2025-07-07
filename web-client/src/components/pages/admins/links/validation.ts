@@ -1,15 +1,13 @@
 import { z } from 'zod';
 
 import {
+  MetadataExtractedLinkSchema,
+  FailedProcessedLinkSchema,
   JobFunction,
   JobType,
   LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
-import {
-  MetadataExtractedLinkSchema,
-  FailedProcessedLinkSchema,
-} from '@vtmp/server-common/constants';
 
 export const LinkResponseSchema = z.object({
   _id: z.string(),

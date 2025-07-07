@@ -1,8 +1,6 @@
-import {
-  SubmittedLinkSchema,
-  SubmittedLink,
-} from '@vtmp/server-common/constants';
 import { z } from 'zod';
+
+import { SubmittedLinkSchema, SubmittedLink } from '@vtmp/common/constants';
 
 /**
  * These schema are specifically for zod validation at AI metadata extraction stage
