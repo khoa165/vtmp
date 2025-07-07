@@ -1,5 +1,4 @@
-import escapeStringRegexp from 'escape-string-regexp';
-import { ClientSession, PipelineStage, UpdateResult } from 'mongoose';
+import { ClientSession, UpdateResult } from 'mongoose';
 
 import {
   InterviewShareStatus,
@@ -8,7 +7,6 @@ import {
 } from '@vtmp/common/constants';
 
 import { InterviewModel, IInterview } from '@/models/interview.model';
-import { toMongoId } from '@/testutils/mongoID.testutil';
 
 export const InterviewRepository = {
   createInterview: async ({
@@ -52,98 +50,24 @@ export const InterviewRepository = {
 
   getInterviews: async ({
     filters = {},
-    isShared = false,
     session,
   }: {
     filters: {
       userId?: string;
       applicationId?: string;
-      companyName?: string;
-      types?: InterviewType[];
       status?: InterviewStatus;
+      companyName?: string;
     };
-    isShared?: boolean;
     session?: ClientSession;
   }): Promise<IInterview[]> => {
-    const dynamicMatch: Record<string, unknown> = {
-      deletedAt: null,
-    };
-
-    if (filters?.userId) {
-      dynamicMatch.userId = toMongoId(filters.userId);
-    }
-
-    if (filters?.applicationId) {
-      dynamicMatch.applicationId = toMongoId(filters.applicationId);
-    }
-
-    if (filters?.companyName) {
-      dynamicMatch.companyName = {
-        $regex: escapeStringRegexp(filters.companyName),
-        $options: 'i',
-      };
-    }
-
-    if (filters?.types) {
-      dynamicMatch.types = { $in: filters.types };
-    }
-
-    if (filters?.status) {
-      dynamicMatch.status = filters.status;
-    }
-
-    if (isShared) {
-      dynamicMatch.shareStatus = { $ne: InterviewShareStatus.UNSHARED };
-    }
-
-    const pipeline: PipelineStage[] = [
-      { $match: dynamicMatch },
+    return InterviewModel.find(
       {
-        $addFields: {
-          id: { $toString: '$_id' },
-        },
+        deletedAt: null,
+        ...filters,
       },
-    ];
-
-    if (isShared) {
-      pipeline.push(
-        {
-          $lookup: {
-            from: 'users',
-            localField: 'userId',
-            foreignField: '_id',
-            as: 'user',
-          },
-        },
-        {
-          $unwind: { path: '$user' },
-        },
-        {
-          $addFields: {
-            user: {
-              $cond: {
-                if: {
-                  $eq: ['$shareStatus', InterviewShareStatus.SHARED_PUBLIC],
-                },
-                then: {
-                  firstName: '$user.firstName',
-                  lastName: '$user.lastName',
-                },
-                else: {
-                  firstName: 'Anonymous',
-                  lastName: 'User',
-                },
-              },
-            },
-          },
-        }
-      );
-    }
-
-    if (session) {
-      return await InterviewModel.aggregate(pipeline).session(session);
-    }
-    return await InterviewModel.aggregate(pipeline);
+      null,
+      session ? { session } : {}
+    );
   },
 
   updateInterviewById: async ({

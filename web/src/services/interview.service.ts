@@ -44,21 +44,15 @@ export const InterviewService = {
 
   getInterviews: async ({
     filters = {},
-    isShared = false,
   }: {
     filters: {
       userId?: string;
       applicationId?: string;
-      companyName?: string;
-      types?: InterviewType[];
       status?: InterviewStatus;
+      companyName?: string;
     };
-    isShared?: boolean;
   }): Promise<IInterview[]> => {
-    return InterviewRepository.getInterviews({
-      filters,
-      isShared,
-    });
+    return InterviewRepository.getInterviews({ filters });
   },
 
   updateInterviewById: async ({

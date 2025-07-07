@@ -18,15 +18,13 @@ InterviewRoutes.get(
     InterviewController.getInterviewsByApplicationId,
   ])
 );
-
 InterviewRoutes.get(
-  '/share',
+  '/by-company',
   wrappedHandlers([
     hasPermission(Permission.VIEW_INTERVIEW),
-    InterviewController.getSharedInterviews,
+    InterviewController.getInterviewsByCompanyName,
   ])
 );
-
 InterviewRoutes.get(
   '/',
   wrappedHandlers([

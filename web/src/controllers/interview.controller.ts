@@ -26,25 +26,15 @@ const InterviewCreateSchema = z
     applicationId: z
       .string({ required_error: 'Application ID is required' })
       .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-        message: 'Invalid application ID',
+        message: 'Invalid application ID format',
       }),
     types: z
-      .array(
-        z.nativeEnum(InterviewType, {
-          message: 'Invalid interview type',
-        }),
-        {
-          message: 'Interview types is required',
-        }
-      )
-      .min(1, {
-        message: 'At least one interview type is required',
-      }),
-    status: z
-      .nativeEnum(InterviewStatus, {
-        message: 'Invalid interview status',
+      .array(z.nativeEnum(InterviewType), {
+        required_error: 'Interview types is required',
+        invalid_type_error: 'Invalid interview type format',
       })
-      .optional(),
+      .min(1, { message: 'Must select at least 1 interview type' }),
+    status: z.nativeEnum(InterviewStatus).optional(),
     interviewOnDate: z.coerce.date(),
     note: z.string().optional(),
   })
@@ -79,21 +69,9 @@ const InterviewApplicationFilter = z
     )
   );
 
-const SharedInterviewFilter = z
+const InterviewCompanyFilter = z
   .object({
-    companyName: z.string().optional(),
-    types: z
-      .array(
-        z.nativeEnum(InterviewType, {
-          message: 'Invalid interview type',
-        })
-      )
-      .optional(),
-    status: z
-      .nativeEnum(InterviewStatus, {
-        message: 'Invalid interview status',
-      })
-      .optional(),
+    companyName: z.string({ required_error: 'Company Name is required' }),
   })
   .strict()
   .transform((data) =>
@@ -177,8 +155,8 @@ export const InterviewController = {
     });
   },
 
-  getInterviews: async (req: Request, res: Response) => {
-    const filters = AdminInterviewFilter.parse(req.query);
+  getInterviewsByCompanyName: async (req: Request, res: Response) => {
+    const filters = InterviewCompanyFilter.parse(req.query);
 
     const interviews = await InterviewService.getInterviews({ filters });
 
@@ -188,13 +166,10 @@ export const InterviewController = {
     });
   },
 
-  getSharedInterviews: async (req: Request, res: Response) => {
-    const filters = SharedInterviewFilter.parse(req.query);
+  getInterviews: async (req: Request, res: Response) => {
+    const filters = AdminInterviewFilter.parse(req.query);
 
-    const interviews = await InterviewService.getInterviews({
-      filters,
-      isShared: true,
-    });
+    const interviews = await InterviewService.getInterviews({ filters });
 
     res.status(200).json({
       message: 'Interviews retrieved successfully',
