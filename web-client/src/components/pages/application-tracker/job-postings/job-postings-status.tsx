@@ -1,3 +1,7 @@
+import axios from 'axios';
+import { ExternalLink } from 'lucide-react';
+
+import { useLogout } from '#vtmp/web-client/hooks/useLogout';
 import { Card } from '@/components/base/card';
 import { Skeleton } from '@/components/base/skeleton';
 import {
@@ -5,12 +9,11 @@ import {
   useGetJobPostingsInADay,
 } from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
-import { ExternalLink } from 'lucide-react';
 import { CustomError } from '@/utils/errors';
 
 export const JobPostingStatusCards = (): React.JSX.Element | null => {
   const navigate = useNavigatePreserveQueryParams();
-
+  const { logout } = useLogout();
   const {
     isLoading: isLoadingInADay,
     error: errorInADay,
@@ -33,6 +36,9 @@ export const JobPostingStatusCards = (): React.JSX.Element | null => {
   }
 
   if (errorInADay || errorNotApplied) {
+    if (axios.isAxiosError(errorNotApplied) && errorNotApplied.response) {
+      if (errorNotApplied.response.status === 401) logout();
+    }
     throw new CustomError('Error fetching job postings data');
   }
 

@@ -1,23 +1,27 @@
-import { applicationsTableColumns } from '@/components/pages/application-tracker/applications/applications-table-columns';
+import { SortingState } from '@tanstack/react-table';
+import axios from 'axios';
+import { useMemo, useState } from 'react';
+
+import { useLogout } from '#vtmp/web-client/hooks/useLogout';
+import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
+import { Skeleton } from '@/components/base/skeleton';
+import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
 import { ApplicationsTable } from '@/components/pages/application-tracker/applications/applications-table';
+import { applicationsTableColumns } from '@/components/pages/application-tracker/applications/applications-table-columns';
 import {
   useGetApplications,
   useDeleteApplication,
   useUpdateApplicationStatus,
 } from '@/components/pages/application-tracker/applications/hooks/applications';
-import { useMemo, useState } from 'react';
-import { SortingState } from '@tanstack/react-table';
-import { Skeleton } from '@/components/base/skeleton';
-import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
-import { CustomError } from '@/utils/errors';
 import { InterviewDrawer } from '@/components/pages/application-tracker/applications/interview-drawer';
-import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
+import { CustomError } from '@/utils/errors';
 
 export const ApplicationsContainer = ({
   applicationFilter,
 }: {
   applicationFilter: ApplicationsFilter;
 }): React.JSX.Element | null => {
+  const { logout } = useLogout();
   const {
     isLoading,
     error,
@@ -61,7 +65,9 @@ export const ApplicationsContainer = ({
   }
 
   if (error) {
-    console.error('Error fetching applications data:', error);
+    if (axios.isAxiosError(error) && error.response) {
+      if (error.response.status === 401) logout();
+    }
     throw new CustomError('Error fetching applications data');
   }
 

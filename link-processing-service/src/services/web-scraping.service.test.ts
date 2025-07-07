@@ -4,7 +4,9 @@ import sinon, { SinonStubbedInstance } from 'sinon';
 
 import { LinkProcessingFailureStage, LinkStatus } from '@vtmp/common/constants';
 
+import { EnvConfig } from '@/config/env';
 import { WebScrapingService } from '@/services/web-scraping.service';
+import { LINK_PROCESSING_MOCK_ENV } from '@/testutils/link-processing-mock-env.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { ValidatedLink } from '@/types/link-processing.types';
 import { ScrapingError } from '@/utils/errors';
@@ -52,6 +54,7 @@ describe('WebScrapingService', () => {
 
     stubGetBodyTextFunction = sandbox.stub(WebScrapingService, 'getBodyText');
     sandbox.stub(console, 'error');
+    sandbox.stub(EnvConfig, 'get').returns(LINK_PROCESSING_MOCK_ENV);
   });
 
   it('should return 2 successes when both link scraping successfully', async () => {

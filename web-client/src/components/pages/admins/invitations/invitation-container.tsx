@@ -1,6 +1,8 @@
 import { SortingState } from '@tanstack/react-table';
+import axios from 'axios';
 import { useMemo, useState } from 'react';
 
+import { useLogout } from '#vtmp/web-client/hooks/useLogout';
 import { Skeleton } from '@/components/base/skeleton';
 import {
   useGetInvitations,
@@ -22,6 +24,7 @@ export const InvitationContainer = (): React.JSX.Element | null => {
     () => invitationsTableColumns(revokeInvitation, sendInvitation),
     [revokeInvitation, sendInvitation]
   );
+  const { logout } = useLogout();
 
   if (isLoading) {
     return (
@@ -36,7 +39,9 @@ export const InvitationContainer = (): React.JSX.Element | null => {
   }
 
   if (error) {
-    console.log('error while fetching invitations', error);
+    if (axios.isAxiosError(error) && error.response) {
+      if (error.response.status === 401) logout();
+    }
     throw new CustomError('Error fetching invitations data');
   }
 

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { sub } from 'date-fns';
 import { toast } from 'sonner';
 
+import { useLogout } from '#vtmp/web-client/hooks/useLogout';
 import { ApplicationResponseSchema } from '@/components/pages/application-tracker/applications/validation';
 import { JobPostingsResponseSchema } from '@/components/pages/application-tracker/job-postings/validations';
 import { request } from '@/utils/api';
@@ -66,7 +67,9 @@ export const useCreateApplication = () => {
       toast.success(res.message);
     },
     onError: (error: unknown) => {
+      const { logout } = useLogout();
       if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 401) logout();
         const errorMessages = error.response.data.errors.map(
           (err) => err.message
         );
