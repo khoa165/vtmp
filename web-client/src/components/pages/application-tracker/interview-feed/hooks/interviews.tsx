@@ -1,11 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { SharedInterviewsResponseSchema } from '@/components/pages/application-tracker/applications/validation';
-import { InterviewFilter } from '@/components/pages/application-tracker/interview-feed/interview-feed-container';
+import {
+  SharedInterviewFilter,
+  SharedInterviewsResponseSchema,
+} from '@/components/pages/application-tracker/applications/validation';
 import { request } from '@/utils/api';
 import { Method, QueryKey } from '@/utils/constants';
 
-export const useGetSharedInterviews = (interviewFilter: InterviewFilter) =>
+export const useGetSharedInterviews = (
+  interviewFilter: SharedInterviewFilter
+) =>
   useQuery({
     queryKey: [QueryKey.GET_SHARED_INTERVIEW, interviewFilter],
     queryFn: () =>

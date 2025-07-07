@@ -1,3 +1,4 @@
+import { Card } from '#vtmp/web-client/components/base/card';
 import {
   Accordion,
   AccordionContent,
@@ -5,14 +6,14 @@ import {
   AccordionTrigger,
 } from '@/components/base/accordion';
 import { Skeleton } from '@/components/base/skeleton';
+import { SharedInterviewFilter } from '@/components/pages/application-tracker/applications/validation';
 import { useGetSharedInterviews } from '@/components/pages/application-tracker/interview-feed/hooks/interviews';
 import { InterviewCard } from '@/components/pages/application-tracker/interview-feed/interview-card';
-import { InterviewFilter } from '@/components/pages/application-tracker/interview-feed/interview-feed-container';
 
 export const InterviewSharedList = ({
   interviewFilter,
 }: {
-  interviewFilter: InterviewFilter;
+  interviewFilter: SharedInterviewFilter;
 }) => {
   const {
     isLoading,
@@ -116,21 +117,31 @@ export const InterviewSharedList = ({
   }
 
   if (isError) {
-    throw new Error('Error loading interviews');
+    throw new Error('Error loading interviews.');
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 p-6 mt-5 space-x-5">
+    <div className="grid grid-cols-1 md:grid-cols-3 mt-5 gap-10">
       <div className="col-span-1 md:col-span-2">
-        {(Array.isArray(sharedInterviewData) ? sharedInterviewData : [])
-          .sort(
-            (a, b) =>
-              new Date(b.interviewOnDate).getTime() -
-              new Date(a.interviewOnDate).getTime()
-          )
-          .map((interview) => (
-            <InterviewCard interview={interview} />
-          ))}
+        {Array.isArray(sharedInterviewData) &&
+        sharedInterviewData.length > 0 ? (
+          sharedInterviewData
+            .sort(
+              (a, b) =>
+                new Date(b.interviewOnDate).getTime() -
+                new Date(a.interviewOnDate).getTime()
+            )
+            .map((interview) => <InterviewCard interview={interview} />)
+        ) : (
+          <Card className="rounded-xl bg-background border border-background py-6 mb-10 h-100 shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
+            <div className="flex flex-col items-center justify-center my-auto text-center">
+              <h3 className="text-2xl font-semibold mb-4">
+                No Shared Interviews Found
+              </h3>
+              <p className="text-gray-500">No one shared any interviews yet.</p>
+            </div>
+          </Card>
+        )}
       </div>
       <InterviewAccordion />
     </div>
@@ -139,7 +150,7 @@ export const InterviewSharedList = ({
 
 const InterviewAccordion = () => {
   return (
-    <div className="bg-emerald-300 p-4 rounded-xl text-background h-fit sticky top-20">
+    <div className="col-span-1 md:col-span-1 bg-emerald-300 p-4 rounded-xl text-background h-fit sticky top-20">
       <h3 className="text-background font-semibold text-sm mb-3">
         Interview Tips
       </h3>

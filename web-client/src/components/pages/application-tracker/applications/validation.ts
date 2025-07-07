@@ -3,6 +3,7 @@ import { z } from 'zod';
 import {
   ApplicationStatus,
   InterestLevel,
+  InterviewShareStatus,
   InterviewStatus,
   InterviewType,
   JobPostingRegion,
@@ -84,15 +85,9 @@ export const InterviewSchema = z.object({
   interviewOnDate: z.coerce.date(),
   companyName: z.string().optional(),
   note: z.string().optional(),
-  sharedAt: z.preprocess((arg) => {
-    if (typeof arg === 'string' || typeof arg === 'number') {
-      const date = new Date(arg);
-      return isNaN(date.getTime()) ? undefined : date;
-    }
-    if (arg instanceof Date) return arg;
-    return undefined;
-  }, z.date().optional()),
-  isDisclosed: z.boolean().optional(),
+  shareStatus: z.nativeEnum(InterviewShareStatus, {
+    message: 'Invalid interview share status',
+  }),
 });
 
 export const InterviewsResponseSchema = z.object({
@@ -110,8 +105,7 @@ export interface InterviewData {
   status: InterviewStatus;
   interviewOnDate: Date;
   note?: string;
-  sharedAt?: Date;
-  isDisclosed?: boolean;
+  shareStatus?: InterviewShareStatus;
 }
 
 export const InterviewFormSchema = z.object({
@@ -123,12 +117,18 @@ export const InterviewFormSchema = z.object({
 
 export type IInterviews = z.infer<typeof InterviewsResponseSchema>['data'];
 
+export interface SharedInterviewFilter {
+  status?: InterviewStatus;
+  types?: InterviewType[];
+  interviewOnDate?: Date;
+  companyName?: string;
+}
+
 const SharedInterviewSchema = InterviewSchema.extend({
   jobTitle: z.string(),
   location: z.nativeEnum(JobPostingRegion),
   companyName: z.string(),
-  sharedAt: z.coerce.date(),
-  isDisclosed: z.boolean(),
+  shareStatus: z.nativeEnum(InterviewShareStatus),
   user: z.object({
     firstName: z.string(),
     lastName: z.string(),
@@ -147,10 +147,9 @@ export const SharedInterviewsResponseSchema = z.object({
 
 export interface SharedInterviewData extends InterviewData {
   jobTitle: string;
-  location: JobPostingRegion;
+  location: string;
   companyName: string;
-  sharedAt: Date;
-  isDisclosed: boolean;
+  shareStatus: InterviewShareStatus;
   user: {
     firstName: string;
     lastName: string;

@@ -8,12 +8,8 @@ import {
   useUpdateInterview,
   useDeleteInterview,
   useShareInterview,
-  useUnshareInterview,
 } from '@/components/pages/application-tracker/applications/hooks/applications';
-import {
-  InterviewUpdateForm,
-  InterviewCreateForm,
-} from '@/components/pages/application-tracker/applications/interview-form';
+import { InterviewForm } from '@/components/pages/application-tracker/applications/interview-form';
 
 export const InterviewList = ({ applicationId }: { applicationId: string }) => {
   const {
@@ -27,7 +23,6 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
   );
   const { mutate: updateInterviewFn } = useUpdateInterview();
   const { mutate: shareInterviewFn } = useShareInterview();
-  const { mutate: unshareInterviewFn } = useUnshareInterview();
   const { mutate: deleteInterviewFn } = useDeleteInterview();
 
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -70,9 +65,12 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
 
       <div>
         {showCreateForm && (
-          <InterviewCreateForm
+          <InterviewForm
             applicationId={applicationId}
             createInterviewFn={createInterviewFn}
+            updateInterviewFn={updateInterviewFn}
+            shareInterviewFn={shareInterviewFn}
+            deleteInterviewFn={deleteInterviewFn}
           />
         )}
         {(Array.isArray(interviewsData) ? interviewsData : [])
@@ -82,12 +80,13 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
               new Date(a.interviewOnDate).getTime()
           )
           .map((interview) => (
-            <InterviewUpdateForm
+            <InterviewForm
               key={interview._id}
+              applicationId={applicationId}
               currentInterview={interview}
+              createInterviewFn={createInterviewFn}
               updateInterviewFn={updateInterviewFn}
               shareInterviewFn={shareInterviewFn}
-              unsharedInterviewFn={unshareInterviewFn}
               deleteInterviewFn={deleteInterviewFn}
             />
           ))}

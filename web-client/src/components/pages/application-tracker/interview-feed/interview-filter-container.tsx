@@ -1,3 +1,8 @@
+import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+
+import { StatusDot } from '#vtmp/web-client/components/base/status-dot';
+import { SharedInterviewFilter } from '#vtmp/web-client/components/pages/application-tracker/applications/validation';
+import { InterviewStatusToColorMapping } from '#vtmp/web-client/utils/constants';
 import { Input } from '@/components/base/input';
 import { MultiSelect } from '@/components/base/multi-select';
 import {
@@ -6,20 +11,18 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/base/select';
-import { InterviewFilter } from '@/components/pages/application-tracker/interview-feed/interview-feed-container';
 import {
   convertToInterviewStatusEnum,
   convertToInterviewType,
   interviewTypeOptions,
 } from '@/utils/helpers';
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 
 export const InterviewFilterContainer = ({
   interviewFilter,
   setInterviewFilter,
 }: {
-  interviewFilter: InterviewFilter;
-  setInterviewFilter: (filters: InterviewFilter) => void;
+  interviewFilter: SharedInterviewFilter;
+  setInterviewFilter: (filters: SharedInterviewFilter) => void;
 }) => {
   return (
     <div className="flex items-center gap-2 my-3">
@@ -54,6 +57,12 @@ export const InterviewFilterContainer = ({
           }}
         >
           <SelectTrigger className="rounded-lg p-2 border border-input px-3 py-2 text-sm text-foreground shadow-sm w-full">
+            {interviewFilter.status && (
+              <StatusDot
+                status={interviewFilter.status}
+                colorMapping={InterviewStatusToColorMapping}
+              />
+            )}
             <span
               className={!interviewFilter.status ? 'text-muted-foreground' : ''}
             >
@@ -66,6 +75,10 @@ export const InterviewFilterContainer = ({
               .filter((value) => value !== interviewFilter?.status)
               .map((dropdownStatus, index) => (
                 <SelectItem key={index} value={dropdownStatus}>
+                  <StatusDot
+                    status={dropdownStatus}
+                    colorMapping={InterviewStatusToColorMapping}
+                  />
                   {dropdownStatus}
                 </SelectItem>
               ))}

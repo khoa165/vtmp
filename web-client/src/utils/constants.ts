@@ -4,6 +4,7 @@ import {
   ApplicationStatus,
   InvitationStatus,
   LinkStatus,
+  InterviewStatus,
 } from '@vtmp/common/constants';
 
 export const rolePriority: Record<MentorshipRole, number> = {
@@ -104,5 +105,13 @@ export const InvitationStatusToColorMapping: Record<InvitationStatus, string> =
     [InvitationStatus.PENDING]: 'bg-(--vtmp-yellow)',
     [InvitationStatus.REVOKED]: 'bg-(--vtmp-orange)',
   };
+
+export const InterviewStatusToColorMapping: Record<InterviewStatus, string> = {
+  [InterviewStatus.PENDING]: 'bg-(--vtmp-yellow)',
+  [InterviewStatus.FAILED]: 'bg-red-400',
+  [InterviewStatus.PASSED]: 'bg-(--vtmp-green)',
+  [InterviewStatus.UPCOMING]: 'bg-(--vtmp-blue)',
+  [InterviewStatus.WITHDRAWN]: 'bg-gray-600',
+};
 export const MIN_PASSWORD_LENGTH = 8;
 export const MAX_PASSWORD_LENGTH = 20;

@@ -2,7 +2,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { toast } from 'sonner';
 
-import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
+import {
+  ApplicationStatus,
+  InterestLevel,
+  InterviewShareStatus,
+} from '@vtmp/common/constants';
 
 import {
   ApplicationsResponseSchema,
@@ -306,7 +310,7 @@ export const useShareInterview = () => {
     }: {
       interviewId: string;
       body: {
-        isDisclosed: boolean;
+        shareStatus: InterviewShareStatus;
       };
     }) =>
       request({
@@ -339,39 +343,6 @@ export const useShareInterview = () => {
         toast.error(
           error instanceof Error ? error.message : 'Unexpected error'
         );
-      }
-    },
-  });
-};
-
-export const useUnshareInterview = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ interviewId }: { interviewId: string }) =>
-      request({
-        method: Method.PUT,
-        url: `/interviews/unshare/${interviewId}`,
-        schema: InterviewResponseSchema,
-        options: { requireAuth: true },
-      }),
-    onSuccess: (res) => {
-      queryClient.invalidateQueries({
-        queryKey: [
-          QueryKey.GET_INTERVIEW_BY_APPLICATION_ID,
-          res.data.applicationId,
-        ],
-      });
-      toast.success(res.message);
-    },
-    onError: (error: unknown) => {
-      if (axios.isAxiosError(error) && error.response) {
-        const errorMessages = error.response.data.errors.map(
-          (err) => err.message
-        );
-        toast.error(errorMessages.join('\n'));
-      } else {
-        toast.error('Unexpected error');
       }
     },
   });
