@@ -1,12 +1,19 @@
-import request from 'supertest';
-import { expect } from 'chai';
-import app from '@/app';
-import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
+import { JWTUtils } from '@vtmp/server-common/utils';
 import bcrypt from 'bcryptjs';
+import { expect } from 'chai';
+import { addDays } from 'date-fns';
 import { toLowerCase } from 'remeda';
+import request from 'supertest';
+
+import { SystemRole } from '@vtmp/common/constants';
+
+import app from '@/app';
+import { EnvConfig } from '@/config/env';
+import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { AuthService } from '@/services/auth.service';
-import { SystemRole } from '@vtmp/common/constants';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
 
 export enum HTTPMethod {
   GET = 'GET',
@@ -111,5 +118,27 @@ export const runDefaultAuthMiddlewareTests = ({
       expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
       expect(res.body.errors[0].message).to.eq('jwt malformed');
     });
+  });
+};
+
+export const createMockInvitation = async (receiverEmail: string) => {
+  const mockInvitation = {
+    receiverName: 'admin viettech',
+    receiverEmail,
+    sender: getNewMongoId(),
+    expiryDate: addDays(Date.now(), 7),
+  };
+
+  const token = JWTUtils.createTokenWithPayload(
+    { receiverEmail: mockInvitation.receiverEmail },
+    EnvConfig.get().JWT_SECRET,
+    {
+      expiresIn: '7d',
+    }
+  );
+
+  return await InvitationRepository.createInvitation({
+    ...mockInvitation,
+    token,
   });
 };
