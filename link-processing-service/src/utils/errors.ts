@@ -25,6 +25,29 @@ export abstract class ServiceSpecificError extends Error {
   }
 }
 
+export class LinkAccessError extends ServiceSpecificError {
+  public statusCode?: number;
+
+  constructor(
+    message: string,
+    metadata: { url: string },
+    options?: {
+      cause?: unknown;
+      statusCode?: number;
+    }
+  ) {
+    super(
+      message,
+      metadata,
+      LinkProcessingFailureStage.VALIDATION_FAILED,
+      options
+    );
+    if (options?.statusCode) {
+      this.statusCode = options?.statusCode;
+    }
+  }
+}
+
 export class LinkValidationError extends ServiceSpecificError {
   public statusCode?: number;
   public errorType: LinkValidationErrorType;

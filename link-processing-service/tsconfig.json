@@ -32,7 +32,7 @@
     "strictNullChecks": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.testutil.ts"],
+  "exclude": ["node_modules", "dist"],
   "tsc-alias": {
     "verbose": false,
     "resolveFullPaths": true,
