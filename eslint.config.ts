@@ -8,6 +8,7 @@ import stylistic from '@stylistic/eslint-plugin';
 import checkFile from 'eslint-plugin-check-file';
 import importPlugin from 'eslint-plugin-import';
 import typescriptSortKeys from 'eslint-plugin-typescript-sort-keys';
+import noRelativeImportPaths from 'eslint-plugin-no-relative-import-paths';
 import sortExports from 'eslint-plugin-sort-exports';
 
 export default tseslint.config(
@@ -86,6 +87,19 @@ export default tseslint.config(
   },
   {
     files: ['web-client/**/*.{ts,tsx}'],
+    plugins: {
+      'no-relative-import-paths': noRelativeImportPaths,
+    },
+    rules: {
+      'no-relative-import-paths/no-relative-import-paths': [
+        'error',
+        {
+          allowSameFolder: false,
+          rootDir: 'web-client/src',
+          prefix: '#vtmp/web-client',
+        },
+      ],
+    },
     settings: {
       'import/resolver': {
         typescript: {

@@ -31,5 +31,15 @@
     "**/dist": true,
     "**/node_modules": true,
     "**/.yarn": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": [
+      ".github/workflows/*.yml",
+      ".github/workflows/*.yaml"
+    ],
+    "https://render.com/schema/render.yaml.json": "render.yaml"
   }
 }

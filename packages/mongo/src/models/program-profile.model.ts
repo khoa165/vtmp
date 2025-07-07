@@ -5,8 +5,9 @@ interface IProgramProfile extends Document {
   userId: Types.ObjectId;
   yearJoined: number;
   isActive: boolean;
-  hobies: string[];
-  school: string;
+  hobbies: string[];
+  school?: string;
+  linkedin?: string;
   currentProfessionalTitle: string;
   isFounder: boolean;
   wasMentee: boolean;
@@ -24,7 +25,6 @@ const ProgramProfileSchema = new mongoose.Schema<IProgramProfile>({
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
   },
   yearJoined: {
     type: Number,
@@ -34,13 +34,15 @@ const ProgramProfileSchema = new mongoose.Schema<IProgramProfile>({
     type: Boolean,
     required: true,
   },
-  hobies: {
+  hobbies: {
     type: [String],
     default: [],
   },
   school: {
     type: String,
-    required: true,
+  },
+  linkedin: {
+    type: String,
   },
   currentProfessionalTitle: {
     type: String,

@@ -1,9 +1,23 @@
 import React, { useMemo } from 'react';
 import { FaArrowTrendUp, FaCode } from 'react-icons/fa6';
 import { RiTeamFill } from 'react-icons/ri';
-import { Avatar } from '@/components/layout/avatar';
-import { MiniPeopleList } from '@/components/layout/mini-people-list';
-import { CompanyMetadataWithOffers, MentorshipPerson } from '@/types';
+import { useSearchParams } from 'react-router-dom';
+import { useGate } from 'statsig-react';
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '#vtmp/web-client/components/base/tooltip';
+import { Avatar } from '#vtmp/web-client/components/layout/avatar';
+import { MiniCompaniesList } from '#vtmp/web-client/components/layout/mini-companies-list';
+import { MiniPeopleList } from '#vtmp/web-client/components/layout/mini-people-list';
+import {
+  CompanyMetadataWithOffers,
+  MentorshipPerson,
+} from '#vtmp/web-client/types';
+import { PeopleSortColumn } from '#vtmp/web-client/utils/constants';
 import {
   getRoleDisplayName,
   isMenteeRole,
@@ -11,18 +25,8 @@ import {
   isHiddenRole,
   isReturnOfferForInternship,
   isReturnOfferForNewGrad,
-} from '@/utils/data';
-import { useGate } from 'statsig-react';
-import { MiniCompaniesList } from '@/components/layout/mini-companies-list';
-import { PeopleSortColumn } from '@/utils/constants';
-import { useSearchParams } from 'react-router-dom';
-import { projectDisplayName } from '@/utils/displayName';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/base/tooltip';
+} from '#vtmp/web-client/utils/data';
+import { projectDisplayName } from '#vtmp/web-client/utils/display-name';
 
 interface PeopleCardProps extends React.HTMLAttributes<HTMLDivElement> {
   year: number | 'all';

@@ -1,26 +1,29 @@
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { beforeEach, describe } from 'mocha';
-import { AuthService } from '@/services/auth.service';
-import { UserRepository } from '@/repositories/user.repository';
+import { AuthType } from '@vtmp/server-common/constants';
+import { JWTUtils } from '@vtmp/server-common/utils';
 import bcrypt from 'bcryptjs';
-import { useSandbox } from '@/testutils/sandbox.testutil';
+import { expect } from 'chai';
+import jwt from 'jsonwebtoken';
+import { beforeEach, describe } from 'mocha';
+import { ZodError } from 'zod';
+
+import assert from 'assert';
+
+import { SystemRole } from '@vtmp/common/constants';
+
 import { EnvConfig } from '@/config/env';
+import { JWT_TOKEN_TYPE } from '@/constants/enums';
+import { UserRepository } from '@/repositories/user.repository';
+import { AuthService } from '@/services/auth.service';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import { EmailService } from '@/utils/email';
 import {
   DuplicateResourceError,
   ResourceNotFoundError,
   UnauthorizedError,
 } from '@/utils/errors';
-import assert from 'assert';
-import { expect } from 'chai';
-import { SystemRole } from '@vtmp/common/constants';
-import { AuthType } from '@vtmp/server-common/constants';
-import { JWTUtils } from '@vtmp/server-common/utils';
-import { EmailService } from '@/utils/email';
-import { ZodError } from 'zod';
-import jwt from 'jsonwebtoken';
-import { JWT_TOKEN_TYPE } from '@/constants/enums';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 describe('AuthService', () => {
   useMongoDB();

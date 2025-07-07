@@ -1,7 +1,9 @@
 import React from 'react';
-import { SystemRole } from '@vtmp/common/constants';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
+
+import { SystemRole } from '@vtmp/common/constants';
+
+import { useCurrentUser } from '#vtmp/web-client/hooks/useCurrentUser';
 
 export const PageWithPermission = ({ roles }: { roles: SystemRole[] }) => {
   const user = useCurrentUser();
