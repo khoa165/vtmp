@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Drawer, DrawerContent } from '@/components/base/drawer';
 import { ScrollArea } from '@/components/base/scroll-area';
 import { Input } from '@/components/base/input';
@@ -38,11 +39,44 @@ export function FilterDrawer({
   onApply,
   onChange,
 }: FilterDrawerProps) {
-  const [filters, setFilters] = useState<FilterState>({});
+  const [filterParams, setFilterParams] = useSearchParams();
+  const queryClient = useQueryClient();
+
+  const initialFilters: FilterState = {
+    jobTitle: filterParams.get('jobTitle') ?? undefined,
+    location: filterParams.get('location') ?? undefined,
+    jobFunction: filterParams.get('jobFunction') as JobFunction | undefined,
+    jobType: filterParams.get('jobType') as JobType | undefined,
+    postingDateRangeStart: filterParams.get('startDate')
+      ? new Date(filterParams.get('startDate')!)
+      : undefined,
+    postingDateRangeEnd: filterParams.get('endDate')
+      ? new Date(filterParams.get('endDate')!)
+      : undefined,
+  };
+
+  const [filters, setFilters] = useState<FilterState>(initialFilters);
 
   useEffect(() => {
     setFilters(value);
   }, [value]);
+
+  useEffect(() => {
+    const updatedFilters: FilterState = {
+      jobTitle: filterParams.get('jobTitle') ?? undefined,
+      location: filterParams.get('location') ?? undefined,
+      jobFunction: filterParams.get('jobFunction') as JobFunction | undefined,
+      jobType: filterParams.get('jobType') as JobType | undefined,
+      postingDateRangeStart: filterParams.get('startDate')
+        ? new Date(filterParams.get('startDate')!)
+        : undefined,
+      postingDateRangeEnd: filterParams.get('endDate')
+        ? new Date(filterParams.get('endDate')!)
+        : undefined,
+    };
+    setFilters(updatedFilters);
+    onChange(updatedFilters);
+  }, [filterParams]);
 
   useEffect(() => {
     onChange(filters);
@@ -63,8 +97,6 @@ export function FilterDrawer({
     [JobFunction.UNKNOWN]: 'Unknown',
   };
 
-  const queryClient = useQueryClient();
-
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent
@@ -75,7 +107,7 @@ export function FilterDrawer({
           <div className="mx-auto p-9 text-foreground space-y-6">
             <h2 className="text-2xl font-semibold mb-2">Select Filters</h2>
 
-            {/* ✅ Job Title */}
+            {/* Job Title */}
             <div
               onDoubleClick={() =>
                 setFilters({ ...filters, jobTitle: undefined })
@@ -93,7 +125,7 @@ export function FilterDrawer({
               />
             </div>
 
-            {/* ✅ Location */}
+            {/* Location */}
             <div
               onDoubleClick={() =>
                 setFilters({ ...filters, location: undefined })
@@ -125,7 +157,7 @@ export function FilterDrawer({
               </Select>
             </div>
 
-            {/* ✅ Job Function */}
+            {/* Job Function */}
             <div
               onDoubleClick={() =>
                 setFilters({ ...filters, jobFunction: undefined })
@@ -165,7 +197,7 @@ export function FilterDrawer({
               </Select>
             </div>
 
-            {/* ✅ Job Type */}
+            {/* Job Type */}
             <div
               onDoubleClick={() =>
                 setFilters({ ...filters, jobType: undefined })
@@ -201,7 +233,7 @@ export function FilterDrawer({
               </Select>
             </div>
 
-            {/* ✅ Posting Date Range */}
+            {/* Posting Date Range */}
             <div
               className="grid grid-cols-2 gap-4"
               onDoubleClick={() =>
@@ -236,7 +268,7 @@ export function FilterDrawer({
               </div>
             </div>
 
-            {/* ✅ Buttons */}
+            {/* Buttons */}
             <div className="flex justify-between pt-4">
               <Button variant="ghost" onClick={() => setFilters({})}>
                 Clear All
@@ -244,6 +276,29 @@ export function FilterDrawer({
               <Button
                 variant="default"
                 onClick={() => {
+                  const newParams = new URLSearchParams();
+
+                  if (filters.jobTitle)
+                    newParams.set('jobTitle', filters.jobTitle);
+                  if (filters.location)
+                    newParams.set('location', filters.location);
+                  if (filters.jobFunction)
+                    newParams.set('jobFunction', filters.jobFunction);
+                  if (filters.jobType)
+                    newParams.set('jobType', filters.jobType);
+                  if (filters.postingDateRangeStart)
+                    newParams.set(
+                      'startDate',
+                      filters.postingDateRangeStart.toISOString().split('T')[0]
+                    );
+                  if (filters.postingDateRangeEnd)
+                    newParams.set(
+                      'endDate',
+                      filters.postingDateRangeEnd.toISOString().split('T')[0]
+                    );
+
+                  setFilterParams(newParams);
+
                   onApply?.(filters);
                   onOpenChange(false);
                   queryClient.invalidateQueries({

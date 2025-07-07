@@ -12,8 +12,7 @@ export function FilterSelectionButton({
   onApply: (filters: FilterState) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [filters, setFilters] = useState({})
-
+  const [filters, setFilters] = useState({});
   return (
     <>
       <Button

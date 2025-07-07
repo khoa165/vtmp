@@ -9,9 +9,38 @@ import { SortingState } from '@tanstack/react-table';
 import { Skeleton } from '@/components/base/skeleton';
 import { FilterSelectionButton } from '@/components/pages/application-tracker/job-postings/job-postings-filter';
 import type { FilterState } from './job-postings-drawer';
+import { useSearchParams } from 'react-router-dom';
+import { JobFunction, JobType } from '@vtmp/common/constants';
 
 export const JobPostingsContainer = (): React.JSX.Element | null => {
-  const [filters, setFilters] = useState<FilterState>({});
+  const [searchParams] = useSearchParams();
+  const isJobFunction = (val: any): val is JobFunction =>
+    Object.values(JobFunction).includes(val as JobFunction);
+
+  const isJobType = (val: any): val is JobType =>
+    Object.values(JobType).includes(val as JobType);
+  
+  const filtersFromParams = useMemo(() => {
+    const jobFunctionParam = searchParams.get('jobFunction');
+    const jobTypeParam = searchParams.get('jobType');
+
+    return {
+      jobTitle: searchParams.get('jobTitle') ?? undefined,
+      location: searchParams.get('location') ?? undefined,
+      jobFunction: isJobFunction(jobFunctionParam)
+        ? jobFunctionParam
+        : undefined,
+      jobType: isJobType(jobTypeParam) ? jobTypeParam : undefined,
+      postingDateRangeStart: searchParams.get('startDate')
+        ? new Date(searchParams.get('startDate')!)
+        : undefined,
+      postingDateRangeEnd: searchParams.get('endDate')
+        ? new Date(searchParams.get('endDate')!)
+        : undefined,
+    };
+  }, [searchParams]);
+
+  const [filters, setFilters] = useState<FilterState>(filtersFromParams);
 
   const {
     isLoading,
@@ -53,8 +82,7 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
 
   return (
     <>
-      <FilterSelectionButton onApply={setFilters}
-      />
+      <FilterSelectionButton onApply={setFilters} />
       <JobPostingsTable
         columns={columns}
         data={jobPostingsData}
