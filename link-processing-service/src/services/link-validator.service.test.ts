@@ -1,15 +1,13 @@
-import { expect } from 'chai';
-import * as chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import retry from 'retry';
 import { safebrowsing_v4 } from '@googleapis/safebrowsing';
+import { SubmittedLink } from '@vtmp/server-common/constants';
+import { expect } from 'chai';
+import retry from 'retry';
 
+import { EnvConfig } from '@/config/env';
 import { LinkValidatorService } from '@/services/link-validator.service';
-import { LinkValidationError } from '@/utils/errors';
-import { SubmittedLink } from '@/types/link-processing.types';
+import { LINK_PROCESSING_MOCK_ENV } from '@/testutils/link-processing-mock-env.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
-
-chai.use(chaiAsPromised);
+import { LinkValidationError } from '@/utils/errors';
 
 describe('LinkValidatorService', () => {
   const sandbox = useSandbox();
@@ -43,6 +41,7 @@ describe('LinkValidatorService', () => {
     sandbox.stub(console, 'warn');
     LinkValidatorService.config.resolveLinkRetryConfig = testRetryConfig;
     LinkValidatorService.config.enableVirusScan = false;
+    sandbox.stub(EnvConfig, 'get').returns(LINK_PROCESSING_MOCK_ENV);
   });
 
   afterEach(() => {

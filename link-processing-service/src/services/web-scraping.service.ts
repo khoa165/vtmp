@@ -1,15 +1,14 @@
 import chromium from '@sparticuz/chromium';
+import {
+  FailedProcessedLink,
+  SubmittedLink,
+} from '@vtmp/server-common/constants';
 import pLimit from 'p-limit';
 import puppeteer, { Browser, Page } from 'puppeteer-core';
 
 import { LinkProcessingFailureStage, LinkStatus } from '@vtmp/common/constants';
 
-import {
-  FailedProcessedLink,
-  ScrapedLink,
-  ValidatedLink,
-  SubmittedLink,
-} from '@/types/link-processing.types';
+import { ScrapedLink, ValidatedLink } from '@/types/link-processing.types';
 import { logError, ScrapingError } from '@/utils/errors';
 
 const _launchBrowserInstance = async (): Promise<Browser> => {
@@ -21,39 +20,35 @@ const _launchBrowserInstance = async (): Promise<Browser> => {
   return browser;
 };
 
-const _scrapeWebpage = async (page: Page, url: string): Promise<string> => {
-  // Instead of the default Puppeteer Chrominum browser, use the Chromium browser
-  // supplied by @sparticuz/chromium library for compatibility with serverless Lambda
-  await page.goto(url, { waitUntil: 'networkidle2' }); // Make sure the page is fully loaded before proceeding
-  const bodyText: string = await page.$eval(
-    'body',
-    (el: HTMLBodyElement) => el.innerText
-  );
-  return bodyText;
-};
-
-/**
- * Decide on whether link should be long retried.
- * @param originalRequest
- * @param maxLongRetry
- */
-const _determineProcessStatus = (
-  originalRequest: SubmittedLink,
-  maxLongRetry: number
-): LinkStatus => {
-  if (originalRequest.attemptsCount >= maxLongRetry) {
-    return LinkStatus.PIPELINE_FAILED;
-  }
-  return LinkStatus.PENDING_RETRY;
-};
-
 export const WebScrapingService = {
-  scrapeLinks: async (
-    validatedLinks: ValidatedLink[]
-  ): Promise<{
+  async getBodyText(page: Page, url: string): Promise<string> {
+    // Instead of the default Puppeteer Chrominum browser, use the Chromium browser
+    // supplied by @sparticuz/chromium library for compatibility with serverless Lambda
+    await page.goto(url, { waitUntil: 'networkidle2' }); // Make sure the page is fully loaded before proceeding
+    const bodyText: string = await page.$eval(
+      'body',
+      (el: HTMLBodyElement) => el.innerText
+    );
+    return bodyText;
+  },
+  /**
+   * Decide on whether link should be long retried.
+   * @param originalRequest
+   * @param maxLongRetry
+   */
+  _determineProcessStatus(
+    originalRequest: SubmittedLink,
+    maxLongRetry: number
+  ): LinkStatus {
+    if (originalRequest.attemptsCount >= maxLongRetry) {
+      return LinkStatus.PIPELINE_FAILED;
+    }
+    return LinkStatus.PENDING_RETRY;
+  },
+  async scrapeLinks(validatedLinks: ValidatedLink[]): Promise<{
     scrapedLinks: ScrapedLink[];
     failedScrapingLinks: FailedProcessedLink[];
-  }> => {
+  }> {
     const scrapedLinks: ScrapedLink[] = [];
     const failedScrapingLinks: FailedProcessedLink[] = [];
 
@@ -82,14 +77,14 @@ export const WebScrapingService = {
           // Open a new Chromium tab
           const page = await browser.newPage();
           try {
-            const scrapedText = await _scrapeWebpage(page, validatedLink.url);
+            const scrapedText = await this.getBodyText(page, validatedLink.url);
             scrapedLinks.push({ ...validatedLink, scrapedText });
           } catch (error: unknown) {
             logError(error);
 
             failedScrapingLinks.push({
               ...validatedLink,
-              status: _determineProcessStatus(
+              status: this._determineProcessStatus(
                 validatedLink.originalRequest,
                 MAX_LONG_RETRY
               ),

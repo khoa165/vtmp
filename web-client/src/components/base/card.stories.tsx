@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { Button } from '#vtmp/web-client/components/base/button';
 import {
   Card,
   CardContent,
@@ -7,8 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/base/card';
-import { Button } from '@/components/base/button';
+} from '#vtmp/web-client/components/base/card';
 
 const meta = {
   component: Card,

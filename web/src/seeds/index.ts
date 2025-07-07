@@ -1,3 +1,4 @@
+import { Environment } from '@vtmp/server-common/constants';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
@@ -5,7 +6,6 @@ import { exit } from 'process';
 
 import { connectDB } from '@/config/database';
 import { EnvConfig } from '@/config/env';
-import { Environment } from '@/constants/enums';
 import { loadApplications } from '@/seeds/applications';
 import { loadInterviews } from '@/seeds/interviews';
 import { loadInvitations } from '@/seeds/invitations';
@@ -59,10 +59,10 @@ const runSeeds = async () => {
   const numLinksWithoutApplications = Math.floor(linksCount / 2);
   const numLinksWithApplications = linksCount - numLinksWithoutApplications;
 
-  // const linksWithoutApplications = await loadLinks(numLinksWithoutApplications);
+  const linksWithoutApplications = await loadLinks(numLinksWithoutApplications);
   const linksWithApplications = await loadLinks(numLinksWithApplications);
 
-  // await loadJobPostings(linksWithoutApplications);
+  await loadJobPostings(linksWithoutApplications);
   const jobPostings = await loadJobPostings(linksWithApplications);
 
   const applications = await loadApplications({

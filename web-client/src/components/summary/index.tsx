@@ -1,11 +1,12 @@
-import { useMemo } from 'react';
-import { useOffersData } from '@/hooks/useOffersData';
-import { sortBy } from 'remeda';
-import { CompanyLogo } from '@/components/layout/company-logo';
-import { CompanyMetadataWithOffers } from '@/types';
-import { useSummaryData } from '@/hooks/useSummaryData';
 import { useQuery } from '@tanstack/react-query';
-import { getSummaryData } from '@/fetch-data/summary';
+import { useMemo } from 'react';
+import { sortBy } from 'remeda';
+
+import { CompanyLogo } from '#vtmp/web-client/components/layout/company-logo';
+import { getSummaryData } from '#vtmp/web-client/fetch-data/summary';
+import { useOffersData } from '#vtmp/web-client/hooks/useOffersData';
+import { useSummaryData } from '#vtmp/web-client/hooks/useSummaryData';
+import { CompanyMetadataWithOffers } from '#vtmp/web-client/types';
 
 export const SummaryContainer = () => {
   const { isLoading, isError, data, error } = useQuery({

@@ -1,13 +1,14 @@
 import React, { Fragment, useMemo } from 'react';
-import { getAvatar, getName } from '@/utils/data';
-import { Avatar } from '@/components/layout/avatar';
 import { chunk } from 'remeda';
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/base/tooltip';
+} from '#vtmp/web-client/components/base/tooltip';
+import { Avatar } from '#vtmp/web-client/components/layout/avatar';
+import { getAvatar, getName } from '#vtmp/web-client/utils/data';
 
 interface MiniPeopleListProps {
   peopleList: string[];

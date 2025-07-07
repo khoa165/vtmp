@@ -1,15 +1,19 @@
 import { GlobalOptions, safebrowsing_v4 } from '@googleapis/safebrowsing';
+import {
+  Environment,
+  SubmittedLink,
+  FailedProcessedLink,
+} from '@vtmp/server-common/constants';
 import retry from 'retry';
 
 import { LinkStatus, LinkProcessingFailureStage } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
-import { executeWithRetry, httpErrorNoRetry } from '@/helpers/retry.helper';
 import {
-  SubmittedLink,
-  ValidatedLink,
-  FailedProcessedLink,
-} from '@/types/link-processing.types';
+  executeWithRetry,
+  httpErrorNoShortRetry,
+} from '@/helpers/retry.helper';
+import { ValidatedLink } from '@/types/link-processing.types';
 import { LinkValidationError } from '@/utils/errors';
 import { LinkValidationErrorType } from '@/utils/errors-enum';
 
@@ -101,13 +105,13 @@ const LinkValidatorService = {
         return (
           error instanceof LinkValidationError &&
           error.statusCode !== undefined &&
-          !httpErrorNoRetry.includes(error.statusCode)
+          !httpErrorNoShortRetry.includes(error.statusCode)
         );
       }
     );
 
     if (!this.config.enableVirusScan) {
-      if (EnvConfig.get().NODE_ENV !== 'test') {
+      if (EnvConfig.get().NODE_ENV !== Environment.TEST) {
         throw new Error(
           '[LinkValidatorService] Can only disable virus scan in test environment'
         );

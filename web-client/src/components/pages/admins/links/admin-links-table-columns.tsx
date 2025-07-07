@@ -5,7 +5,10 @@ import { Button } from '@/components/base/button';
 import { HeaderSorting } from '@/components/base/header';
 import { StatusDot } from '@/components/base/status-dot';
 import { ReviewPopupButton } from '@/components/pages/admins/links/review-popup-button';
-import { ILinkResponse , JobPostingData } from '@/components/pages/admins/links/validation';
+import {
+  ILinkResponse,
+  JobPostingData,
+} from '@/components/pages/admins/links/validation';
 import { LinksColorMapping } from '@/utils/constants';
 import { MONTH_DATE_YEAR } from '@/utils/date';
 
@@ -26,12 +29,23 @@ export const adminLinksTableColumns = ({
 }: AdminLinksTableColumnsProps): ColumnDef<ILinkResponse>[] => [
   {
     accessorKey: 'jobTitle',
-    header: () => <div className="ml-4">Job Title</div>,
-    cell: ({ row }) => <div className="ml-4">{row.original.jobTitle}</div>,
+    header: 'Job Title',
+    cell: ({ row }) => (
+      <div className="ml-4">
+        {row.original.jobTitle ? row.original.jobTitle : 'N/A'}
+      </div>
+    ),
   },
   {
     accessorKey: 'companyName',
     header: 'Company',
+    cell: ({ row }) => {
+      return (
+        <div className="ml-4">
+          {row.original.companyName ? row.original.companyName : 'N/A'}
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'status',
@@ -55,7 +69,7 @@ export const adminLinksTableColumns = ({
     ),
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('datePosted');
-      if (!isoDate) return <div>-</div>;
+      if (!isoDate) return <div>{format(new Date(), MONTH_DATE_YEAR)}</div>;
       const date = new Date(isoDate);
       return <div>{format(date, MONTH_DATE_YEAR)}</div>;
     },

@@ -1,12 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { request } from '@/utils/api';
-import { Method, QueryKey } from '@/utils/constants';
-import { JobPostingsResponseSchema } from '@/components/pages/application-tracker/job-postings/validations';
-import { ApplicationResponseSchema } from '@/components/pages/application-tracker/applications/validation';
-import { toast } from 'sonner';
 import axios from 'axios';
 import { sub } from 'date-fns';
 import { FilterState } from '@/components/pages/application-tracker/job-postings/job-postings-drawer';
+import { toast } from 'sonner';
+
+import { ApplicationResponseSchema } from '@/components/pages/application-tracker/applications/validation';
+import { JobPostingsResponseSchema } from '@/components/pages/application-tracker/job-postings/validations';
+import { request } from '@/utils/api';
+import { Method, QueryKey } from '@/utils/constants';
 
 export const useGetJobPostings = (filters?: FilterState) => {
   return useQuery({
@@ -60,6 +61,9 @@ export const useCreateApplication = () => {
       });
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_APPLICATIONS_COUNT_BY_STATUS],
       });
       toast.success(res.message);
     },
