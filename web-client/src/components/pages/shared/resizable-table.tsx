@@ -106,13 +106,12 @@ export function ResizableTable<TData, TValue>({
           </Table>
         </div>
       </section>
-      <section className="flex items-center justify-end space-x-2 py-4">
+      <section className="flex items-center justify-end space-x-2 py-4 text-white">
         <Button
           variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
-          className="text-foreground hover:text-background hover:bg-foreground"
         >
           Previous
         </Button>
@@ -121,7 +120,6 @@ export function ResizableTable<TData, TValue>({
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
-          className="text-foreground hover:text-background hover:bg-foreground"
         >
           Next
         </Button>

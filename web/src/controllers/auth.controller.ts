@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { AuthService } from '@/services/auth.service';
 import { z } from 'zod';
-import { InvitationService } from '@/services/invitation.service';
+
+import { AuthService } from '@/services/auth.service';
 
 const PasswordSchema = z
   .string({ required_error: 'Password is required' })
@@ -54,11 +54,10 @@ const SignupSchema = z
   .object({
     firstName: z.string({ required_error: 'Firstname is required' }),
     lastName: z.string({ required_error: 'Lastname is required' }),
-    email: z
-      .string({ required_error: 'Email is required' })
-      .email({ message: 'Invalid email address' }),
     password: PasswordSchema,
-    token: z.string({ required_error: 'An invitation token is required' }),
+    invitationToken: z.string({
+      required_error: 'An invitation token is required',
+    }),
   })
   .strict();
 
@@ -83,7 +82,6 @@ const ResetPasswordSchema = z.object({
 export const AuthController = {
   signup: async (req: Request, res: Response) => {
     const validatedBody = SignupSchema.parse(req.body);
-    await InvitationService.validateInvitation(validatedBody.token);
     const { token, user } = await AuthService.signup(validatedBody);
     res.status(200).json({ data: { token, user } });
   },

@@ -576,6 +576,32 @@ describe('InterviewService', () => {
         interview_B1.id,
       ]);
     });
+
+    it('should return only the interviews belonging to the applicationId that have the provided status', async () => {
+      await Promise.all(
+        [mockInterview_A0, mockInterview_A1, mockInterview_B0].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
+        )
+      );
+
+      const interviews = await InterviewService.getInterviews({
+        filters: {
+          userId: user_A.id,
+          applicationId: mockInterview_A0.applicationId,
+          status: InterviewStatus.PASSED,
+        },
+      });
+
+      assert(interviews);
+      expect(interviews).to.be.an('array').that.have.lengthOf(1);
+      assert(interviews[0]);
+      expect(interviews[0]).to.deep.include({
+        ...mockInterview_A0,
+        applicationId: toMongoId(mockInterview_A0.applicationId),
+        userId: toMongoId(mockInterview_A0.userId),
+        status: InterviewStatus.PASSED,
+      });
+    });
   });
 
   describe('updateInterviewById', () => {
