@@ -80,9 +80,9 @@ jobs:
         if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}
         run: yarn workspace @vtmp/link-processing-service test
       # run-lint:
-      # uses: ./.github/workflows/lint.yml
+      # uses: ./.github/workflows/lint.ym
 
-  # chromatic:
+  # chromatic
   #   needs: changes
   #   if: ${{ needs.changes.outputs.web-client == 'true' }}
   #   runs-on: ubuntu-latest
