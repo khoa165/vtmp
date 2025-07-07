@@ -1,13 +1,13 @@
-import {
-  Environment,
-  FailedProcessedLink,
-  MetadataExtractedLink,
-  SubmittedLink,
-} from '@vtmp/server-common/constants';
+import { Environment } from '@vtmp/server-common/constants';
 import axios from 'axios';
 import cron from 'node-cron';
 
-import { LinkStatus } from '@vtmp/common/constants';
+import {
+  FailedProcessedLink,
+  MetadataExtractedLink,
+  SubmittedLink,
+  LinkStatus,
+} from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
 import { LinkRepository } from '@/repositories/link.repository';
