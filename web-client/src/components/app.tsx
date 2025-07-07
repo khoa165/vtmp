@@ -81,7 +81,7 @@ export const App = () => {
             <Route path="/links" element={<LinksPage />} />
             <Route path="/jobs" element={<JobPostingsPage />} />
             <Route path="/applications" element={<ApplicationsPage />} />
-            <Route path="/interview-feed" element={<InterviewFeedPage />} />
+            <Route path="/interviews" element={<InterviewFeedPage />} />
             <Route
               path="/admin"
               element={<PageWithPermission roles={[SystemRole.ADMIN]} />}
