@@ -6,20 +6,12 @@ on:
       - main
 
 jobs:
-  deploy-backend-staging:
+  deploy-staging:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy backend to staging
         run: curl ${{ secrets.RENDER_STAGING_BACKEND_DEPLOY_HOOK }}
-
-  deploy-frontend-staging:
-    runs-on: ubuntu-latest
-    steps:
       - name: Deploy frontend to staging
         run: curl ${{ secrets.RENDER_STAGING_FRONTEND_DEPLOY_HOOK }}
-
-  deploy-discord:
-    runs-on: ubuntu-latest
-    steps:
       - name: Deploy discord service
         run: curl ${{ secrets.RENDER_DISCORD_DEPLOY_HOOK }}
