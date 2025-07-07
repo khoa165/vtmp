@@ -3,7 +3,6 @@ import axios from 'axios';
 import { sub } from 'date-fns';
 import { FilterState } from '@/components/pages/application-tracker/job-postings/job-postings-drawer';
 import { toast } from 'sonner';
-
 import { ApplicationResponseSchema } from '@/components/pages/application-tracker/applications/validation';
 import { JobPostingsResponseSchema } from '@/components/pages/application-tracker/job-postings/validations';
 import { request } from '@/utils/api';

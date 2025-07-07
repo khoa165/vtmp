@@ -11,9 +11,10 @@ import {
   SelectItem,
 } from '@/components/base/select';
 import { JobFunction, JobType } from '@vtmp/common/constants';
-import { DatePicker } from '@/components/base/DatePicker';
+
 import { useQueryClient } from '@tanstack/react-query';
 import { QueryKey } from '@/utils/constants';
+import { Calendar } from 'lucide-react';
 
 export interface FilterState {
   jobTitle?: string;
@@ -96,6 +97,18 @@ export function FilterDrawer({
     [JobFunction.DATA_ENGINEER]: 'Data Engineer',
     [JobFunction.UNKNOWN]: 'Unknown',
   };
+
+  const [postingStartInput, setPostingStartInput] = useState(
+    filters.postingDateRangeStart
+      ? filters.postingDateRangeStart.toISOString().slice(0, 10)
+      : ''
+  );
+
+  const [postingEndInput, setPostingEndInput] = useState(
+    filters.postingDateRangeEnd
+      ? filters.postingDateRangeEnd.toISOString().slice(0, 10)
+      : ''
+  );
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -244,27 +257,60 @@ export function FilterDrawer({
                 })
               }
             >
-              <div>
+              {/* Posted After */}
+              <div className="relative">
                 <label className="block mb-1 text-sm font-medium">
                   Posted After
                 </label>
-                <DatePicker
-                  value={filters.postingDateRangeStart}
-                  onChange={(date) =>
-                    setFilters({ ...filters, postingDateRangeStart: date })
-                  }
+                <Input
+                  type="text"
+                  placeholder="YYYY-MM-DD"
+                  className="pr-10"
+                  value={postingStartInput}
+                  onChange={(e) => {
+                    const input = e.target.value;
+                    setPostingStartInput(input); // ✅ allow user to type freely
+
+                    const parsed = new Date(input);
+                    if (!isNaN(parsed.getTime())) {
+                      setFilters({ ...filters, postingDateRangeStart: parsed });
+                    } else {
+                      setFilters({
+                        ...filters,
+                        postingDateRangeStart: undefined,
+                      });
+                    }
+                  }}
                 />
+                <Calendar className="absolute right-3 top-9 w-4 h-4 text-muted-foreground pointer-events-none" />
               </div>
-              <div>
+
+              {/* Posted Before */}
+              <div className="relative">
                 <label className="block mb-1 text-sm font-medium">
                   Posted Before
                 </label>
-                <DatePicker
-                  value={filters.postingDateRangeEnd}
-                  onChange={(date) =>
-                    setFilters({ ...filters, postingDateRangeEnd: date })
-                  }
+                <Input
+                  type="text"
+                  placeholder="YYYY-MM-DD"
+                  className="pr-10"
+                  value={postingEndInput}
+                  onChange={(e) => {
+                    const input = e.target.value;
+                    setPostingEndInput(input); // ✅ allow user to type freely
+
+                    const parsed = new Date(input);
+                    if (!isNaN(parsed.getTime())) {
+                      setFilters({ ...filters, postingDateRangeStart: parsed });
+                    } else {
+                      setFilters({
+                        ...filters,
+                        postingDateRangeStart: undefined,
+                      });
+                    }
+                  }}
                 />
+                <Calendar className="absolute right-3 top-9 w-4 h-4 text-muted-foreground pointer-events-none" />
               </div>
             </div>
 
