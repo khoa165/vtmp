@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { AuthService } from '@/services/auth.service';
 import { z } from 'zod';
+
+import { AuthService } from '@/services/auth.service';
 import { InvitationService } from '@/services/invitation.service';
 
 const PasswordSchema = z
@@ -83,8 +84,13 @@ const ResetPasswordSchema = z.object({
 export const AuthController = {
   signup: async (req: Request, res: Response) => {
     const validatedBody = SignupSchema.parse(req.body);
-    await InvitationService.validateInvitation(validatedBody.token);
-    const { token, user } = await AuthService.signup(validatedBody);
+    const invitation = await InvitationService.validateInvitation(
+      validatedBody.token
+    );
+    const { token, user } = await AuthService.signup(
+      validatedBody,
+      invitation.receiverName
+    );
     res.status(200).json({ data: { token, user } });
   },
 

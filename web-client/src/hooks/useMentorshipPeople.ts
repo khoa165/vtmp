@@ -40,6 +40,9 @@ export const useMentorshipPeople = (
         doesPersonHaveAtLeastOneRoleInYear(p, roles, year)
       );
     }
+    filteredPeople = filteredPeople.filter(
+      (p) => p.terms.at(-1).teamName !== 'FILTER_PLACEHOLDER'
+    );
     let sortedPeople = filteredPeople;
     if (sortColumn === PeopleSortColumn.NAME) {
       sortedPeople = sortBy(filteredPeople, (p: MentorshipPerson) => p.name);
