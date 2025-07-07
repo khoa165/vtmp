@@ -1,16 +1,17 @@
+import { IUser } from '@vtmp/mongo/models';
 import { expect } from 'chai';
 import { differenceInSeconds } from 'date-fns';
 
 import assert from 'assert';
 
 import {
-  InterviewStatus,
   InterviewType,
+  InterviewStatus,
   JobPostingRegion,
+  InterviewShareStatus,
 } from '@vtmp/common/constants';
 
 import { IApplication } from '@/models/application.model';
-import { IUser } from '@/models/user.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -408,13 +409,11 @@ describe('Interview Repository', () => {
       assert(interview_A2);
       assert(interview_B1);
       assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(1);
-      expect(interviews[0]).to.deep.include({
-        ...mockInterview_A2,
-        applicationId: toMongoId(metaApplication_A.id),
-        userId: toMongoId(user_A.id),
-        status: InterviewStatus.PENDING,
-      });
+      expect(interviews).to.be.an('array').that.have.lengthOf(2);
+      expect(interviews.map((interview) => interview.id)).to.include.members([
+        interview_A2.id,
+        interview_B1.id,
+      ]);
     });
 
     it('should not include soft-deleted interviews that match the filters', async () => {
@@ -491,7 +490,7 @@ describe('Interview Repository', () => {
       expect(interviews).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('should return not return shared interview that has been soft-deleted', async () => {
+    it('should not return shared interview that has been soft-deleted', async () => {
       const [interview_A0] = await Promise.all(
         [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
           InterviewRepository.createInterview(mockInterview)
@@ -504,8 +503,7 @@ describe('Interview Repository', () => {
         interviewId: interview_A0.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: true,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
         },
       });
 
@@ -523,7 +521,7 @@ describe('Interview Repository', () => {
       expect(interviews).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('should return shared interviews when isShared is true', async () => {
+    it('should return shared interviews', async () => {
       const [interview_A0] = await Promise.all(
         [mockInterview_A0, mockInterview_A2].map((mockInterview) =>
           InterviewRepository.createInterview(mockInterview)
@@ -536,8 +534,7 @@ describe('Interview Repository', () => {
         interviewId: interview_A0.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: true,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
         },
       });
 
@@ -556,7 +553,7 @@ describe('Interview Repository', () => {
       });
     });
 
-    it('should return the shared interviews with user firstName and lastName when isDisclosed is false', async () => {
+    it('should return the shared interviews with firstName and lastName of the user', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
 
@@ -564,8 +561,7 @@ describe('Interview Repository', () => {
         interviewId: interview_A0.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: false,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
         },
       });
 
@@ -584,7 +580,6 @@ describe('Interview Repository', () => {
         ...mockInterview_A0,
         applicationId: toMongoId(metaApplication_A.id),
         userId: toMongoId(user_A.id),
-        isDisclosed: false,
         user: {
           firstName: user_A.firstName,
           lastName: user_A.lastName,
@@ -592,7 +587,7 @@ describe('Interview Repository', () => {
       });
     });
 
-    it('should return the shared interviews with user firstName and lastName as Anonymouse User when isDisclosed is true', async () => {
+    it('should return the shared interviews with user firstName and lastName as Anonymouse User', async () => {
       const interview_A0 =
         await InterviewRepository.createInterview(mockInterview_A0);
 
@@ -600,8 +595,7 @@ describe('Interview Repository', () => {
         interviewId: interview_A0.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: true,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
         },
       });
 
@@ -620,7 +614,6 @@ describe('Interview Repository', () => {
         ...mockInterview_A0,
         applicationId: toMongoId(metaApplication_A.id),
         userId: toMongoId(user_A.id),
-        isDisclosed: true,
         user: {
           firstName: 'Anonymous',
           lastName: 'User',
@@ -641,24 +634,21 @@ describe('Interview Repository', () => {
         interviewId: interview_A2.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: true,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
         },
       });
       await InterviewRepository.updateInterviewById({
         interviewId: interview_A0.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: true,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
         },
       });
       await InterviewRepository.updateInterviewById({
         interviewId: interview_B1.id,
         userId: user_B.id,
         newUpdate: {
-          isDisclosed: true,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
         },
       });
 
@@ -675,14 +665,11 @@ describe('Interview Repository', () => {
       });
 
       assert(interviews);
-      expect(interviews).to.be.an('array').that.have.lengthOf(1);
-      expect(interviews[0]).to.deep.include({
-        ...mockInterview_A2,
-        applicationId: toMongoId(metaApplication_A.id),
-        userId: toMongoId(user_A.id),
-        isDisclosed: true,
-        sharedAt: sharedInterview.sharedAt,
-      });
+      expect(interviews).to.be.an('array').that.have.lengthOf(2);
+      expect(interviews.map((interview) => interview.id)).to.include.members([
+        interview_A2.id,
+        interview_B1.id,
+      ]);
     });
   });
 
@@ -761,7 +748,7 @@ describe('Interview Repository', () => {
       });
     });
 
-    it('should return the interview with sharedAt and isDisclosed fields updated', async () => {
+    it('should return the interview with updated shareStatus', async () => {
       const interview_A1 =
         await InterviewRepository.createInterview(mockInterview_A1);
 
@@ -769,20 +756,15 @@ describe('Interview Repository', () => {
         interviewId: interview_A1.id,
         userId: user_A.id,
         newUpdate: {
-          isDisclosed: false,
-          sharedAt: new Date(),
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
         },
       });
 
       assert(sharedInterview);
       expect(sharedInterview.id).to.equal(interview_A1.id);
-      expect(sharedInterview.isDisclosed).to.equal(false);
-      assert(sharedInterview.sharedAt);
-      const timeDiff = differenceInSeconds(
-        new Date(),
-        sharedInterview.sharedAt
+      expect(sharedInterview.shareStatus).to.equal(
+        InterviewShareStatus.SHARED_ANONYMOUS
       );
-      expect(timeDiff).to.lessThan(3);
     });
   });
 
