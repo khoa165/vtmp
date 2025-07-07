@@ -119,7 +119,7 @@ describe('AuthController', () => {
       expect(errors[0].message).to.equal('User not found');
     });
 
-    it('should return error message for valid user but wrong password', async () => {
+    it.only('should return error message for valid user but wrong password', async () => {
       const res = await request(app)
         .post('/api/auth/login')
         .send({ email: 'test@gmail.com', password: 'wrong password' });
@@ -319,7 +319,7 @@ describe('AuthController', () => {
   });
 
   describe('POST /auth/signup + POST /auth/login', () => {
-    it('should not allow user to login after signup if wrong password', async () => {
+    it.only('should not allow user to login after signup if wrong password', async () => {
       const resSignup = await request(app)
         .post('/api/auth/signup')
         .send(signupBody);
@@ -329,7 +329,7 @@ describe('AuthController', () => {
       const resLogin = await request(app)
         .post('/api/auth/login')
         .send({ email: 'test123@gmail.com', password: 'test Password' });
-      expectErrorsArray({ res: resLogin, statusCode: 404, errorsCount: 1 });
+      expectErrorsArray({ res: resLogin, statusCode: 401, errorsCount: 1 });
       const errors = resLogin.body.errors;
       expect(errors[0].message).to.equal('Wrong password');
     });

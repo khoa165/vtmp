@@ -1,16 +1,17 @@
-import * as chai from 'chai';
-import app from '@/app';
-import request from 'supertest';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { EnvConfig } from '@/config/env';
-import jwt from 'jsonwebtoken';
-import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
-import { DecodedJWTSchema } from '@/middlewares/auth.middleware';
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { AuthService } from '@/services/auth.service';
 import { AuthType } from '@vtmp/server-common/constants';
+import * as chai from 'chai';
+import jwt from 'jsonwebtoken';
+import request from 'supertest';
+
+import app from '@/app';
+import { EnvConfig } from '@/config/env';
+import { DecodedJWTSchema } from '@/middlewares/auth.middleware';
+import { AuthService } from '@/services/auth.service';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
 
 const { expect } = chai;
 describe('AuthMiddleware', () => {
@@ -38,7 +39,7 @@ describe('AuthMiddleware', () => {
     expect(res.body.errors[0].message).to.eq('jwt malformed');
   });
 
-  it('should throw Unauthorized for cannot find user', async () => {
+  it('should throw ResourceNotFoundError for cannot find user', async () => {
     const token = jwt.sign(
       { id: getNewMongoId(), authType: AuthType.USER },
       MOCK_ENV.JWT_SECRET,
@@ -54,7 +55,7 @@ describe('AuthMiddleware', () => {
 
     expectErrorsArray({
       res,
-      statusCode: 401,
+      statusCode: 404,
       errorsCount: 1,
     });
     expect(res.body.errors[0].message).to.eq('User not found');

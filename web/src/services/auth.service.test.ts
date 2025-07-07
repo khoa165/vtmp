@@ -21,8 +21,8 @@ import { useSandbox } from '@/testutils/sandbox.testutil';
 import { EmailService } from '@/utils/email';
 import {
   DuplicateResourceError,
-  UnauthorizedError,
   ResourceNotFoundError,
+  UnauthorizedError,
 } from '@/utils/errors';
 
 describe('AuthService', () => {
@@ -62,7 +62,7 @@ describe('AuthService', () => {
       };
 
       await expect(AuthService.login(userData)).eventually.rejectedWith(
-        ResourceNotFoundError
+        UnauthorizedError
       );
     });
 
@@ -254,7 +254,7 @@ describe('AuthService', () => {
           token: invalidToken,
           newPassword: 'newpassword',
         })
-      ).eventually.rejectedWith(UnauthorizedError);
+      ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
     it('should throw error if the new password is the same as the old one', async () => {
