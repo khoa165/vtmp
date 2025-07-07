@@ -1,9 +1,11 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
+
 import {
   ApplicationStatus,
   InterestLevel,
   JobPostingRegion,
 } from '@vtmp/common/constants';
+
 import { JobPostingModel } from '@/models/job-posting.model';
 
 export interface IApplication extends Document {
@@ -91,6 +93,8 @@ ApplicationSchema.pre('save', async function () {
     this.url = jobPosting.url;
   }
 });
+
+ApplicationSchema.index({ userId: 1 });
 
 export const ApplicationModel = mongoose.model<IApplication>(
   'Application',
