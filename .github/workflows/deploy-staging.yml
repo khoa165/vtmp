@@ -1,0 +1,17 @@
+name: Deploy to staging
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy backend to staging
+        run: curl ${{ secrets.RENDER_STAGING_BACKEND_DEPLOY_HOOK }}
+      - name: Deploy frontend to staging
+        run: curl ${{ secrets.RENDER_STAGING_FRONTEND_DEPLOY_HOOK }}
+      - name: Deploy discord service
+        run: curl ${{ secrets.RENDER_DISCORD_DEPLOY_HOOK }}

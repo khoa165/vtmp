@@ -59,7 +59,10 @@ const runSeeds = async () => {
   const numLinksWithoutApplications = Math.floor(linksCount / 2);
   const numLinksWithApplications = linksCount - numLinksWithoutApplications;
 
-  const linksWithoutApplications = await loadLinks(numLinksWithoutApplications);
+  const linksWithoutApplications = await loadLinks(
+    numLinksWithoutApplications,
+    { seedRealLinks: true }
+  );
   const linksWithApplications = await loadLinks(numLinksWithApplications);
 
   await loadJobPostings(linksWithoutApplications);
