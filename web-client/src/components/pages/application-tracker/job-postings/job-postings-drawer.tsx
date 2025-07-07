@@ -269,7 +269,7 @@ export function FilterDrawer({
                   value={postingStartInput}
                   onChange={(e) => {
                     const input = e.target.value;
-                    setPostingStartInput(input); // ✅ allow user to type freely
+                    setPostingStartInput(input); 
 
                     const parsed = new Date(input);
                     if (!isNaN(parsed.getTime())) {

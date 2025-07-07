@@ -20,7 +20,7 @@ export function FilterSelectionButton({
         className="text-foreground"
         onClick={() => setOpen(true)}
       >
-        Select Filters <Filter className="ml-2 w-4 h-4" />
+        Select Filters <Filter fill="#66ffcc" className="ml-2 w-4 h-4" />
       </Button>
       <FilterDrawer
         open={open}
