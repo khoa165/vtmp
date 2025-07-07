@@ -196,8 +196,6 @@ export const InterviewController = {
       isShared: true,
     });
 
-    console.log('Shared interviews:', interviews);
-
     res.status(200).json({
       message: 'Interviews retrieved successfully',
       data: interviews,

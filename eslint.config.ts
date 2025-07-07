@@ -161,5 +161,11 @@ export default tseslint.config(
       'import/no-default-export': 'off',
     },
   },
+  {
+    files: ['**/mongoDB.testutil.ts', '**/mongoID.testutil.ts'],
+    rules: {
+      'checkFile/filename-naming-convention': 'off',
+    },
+  },
   { ignores: ['cookiecutter/', 'scripts/', '**/*.{js,d.ts,d.tsx}'] }
 );

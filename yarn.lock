@@ -5711,6 +5711,7 @@ __metadata:
   resolution: "@vtmp/common@workspace:packages/common"
   dependencies:
     remeda: "npm:^2.22.5"
+    tsc-alias: "npm:^1.8.16"
     typescript: "npm:^5.8.3"
     zod: "npm:^3.25.51"
   languageName: unknown
@@ -5783,7 +5784,9 @@ __metadata:
     "@types/node": "npm:^24.0.10"
     "@vtmp/common": "npm:1.0.0"
     "@vtmp/mongo": "npm:1.0.0"
+    "@vtmp/server-common": "npm:1.0.0"
     dotenv: "npm:^17.0.1"
+    remeda: "npm:^2.24.0"
     ts-node: "npm:^10.9.2"
     tsc-alias: "npm:^1.8.16"
     tsx: "npm:^4.20.3"
@@ -5809,6 +5812,7 @@ __metadata:
   dependencies:
     "@types/jsonwebtoken": "npm:^9"
     jsonwebtoken: "npm:9.0.2"
+    remeda: "npm:^2.24.0"
     typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
@@ -14174,6 +14178,15 @@ __metadata:
   dependencies:
     type-fest: "npm:^4.41.0"
   checksum: 10c0/473e40d52f63b22ee1c51f8c59e87650e41b792f6024e150cee904a5018b6d1a2714d0f646bb71a908c520e03a141705e1a18afe2330f5f31d6fc095639f9acb
+  languageName: node
+  linkType: hard
+
+"remeda@npm:^2.24.0":
+  version: 2.24.0
+  resolution: "remeda@npm:2.24.0"
+  dependencies:
+    type-fest: "npm:^4.41.0"
+  checksum: 10c0/a6deaa9427f16b65ceb70febcb90aada5d93a1595d1321cb1eb2bf11386a860f1a818fb1e1029c5154f59aa8df6db6afa645d74921dafd9b3bb7b40724d3ec9b
   languageName: node
   linkType: hard
 

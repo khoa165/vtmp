@@ -15,6 +15,7 @@ import { IInvitation } from '@/models/invitation.model';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { InvitationService } from '@/services/invitation.service';
+import { createMockInvitation } from '@/testutils/auth.testutils';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
@@ -267,18 +268,9 @@ describe('InvitationService', () => {
     let pendingInvitation: IInvitation;
 
     beforeEach(async () => {
-      const token = jwt.sign(
-        { receiverEmail: mockOneInvitation.receiverEmail },
-        EnvConfig.get().JWT_SECRET,
-        {
-          expiresIn: '7d',
-        }
+      pendingInvitation = await createMockInvitation(
+        mockOneInvitation.receiverEmail
       );
-
-      pendingInvitation = await InvitationRepository.createInvitation({
-        ...mockOneInvitation,
-        token,
-      });
     });
 
     it('should return error message for invalid token', async () => {
