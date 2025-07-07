@@ -1,3 +1,9 @@
+import chromium from '@sparticuz/chromium';
+import {
+  SubmittedLink,
+  FailedProcessedLink,
+} from '@vtmp/server-common/constants';
+import pLimit from 'p-limit';
 import puppeteer, { Browser, Page } from 'puppeteer-core';
 import retry from 'retry';
 
@@ -7,17 +13,13 @@ import {
   executeWithRetry,
   httpErrorNoShortRetry,
 } from '@/helpers/retry.helper';
-import {
-  FailedProcessedLink,
-  ScrapedLink,
-  SubmittedLink,
-} from '@/types/link-processing.types';
+import { ScrapedLink } from '@/types/link-processing.types';
 import { LinkAccessError, logError, ScrapingError } from '@/utils/errors';
 
 const _launchBrowserInstance = async (): Promise<Browser> => {
   const browser = await puppeteer.launch({
     args: chromium.args,
-    executablePath: '/Applications/Chromium.app/Contents/MacOS/Chromium',
+    executablePath: await chromium.executablePath(),
     headless: true,
   });
   return browser;
