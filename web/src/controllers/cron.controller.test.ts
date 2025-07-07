@@ -3,12 +3,19 @@ import { expect } from 'chai';
 import { beforeEach, describe } from 'mocha';
 import request from 'supertest';
 
+import assert from 'assert';
+
 import { LinkStatus } from '@vtmp/common/constants';
 
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
 import { LinkRepository } from '@/repositories/link.repository';
 import { CronService } from '@/services/link/cron.service';
+import {
+  HTTPMethod,
+  runDefaultAuthMiddlewareTests,
+  runUserLogin,
+} from '@/testutils/auth.testutils';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import {
@@ -16,13 +23,6 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
-import {
-  HTTPMethod,
-  runDefaultAuthMiddlewareTests,
-  runUserLogin,
-} from '@/testutils/auth.testutils';
-
-import assert from 'assert';
 
 // Will add authentication test later on
 describe('CronController', () => {
@@ -44,7 +44,6 @@ describe('CronController', () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
     ({ mockUserToken, mockAdminToken } = await runUserLogin());
 
-    
     stubSendLinkToLambda = sandbox
       .stub(CronService, '_sendLinksToLambda')
       .resolves({

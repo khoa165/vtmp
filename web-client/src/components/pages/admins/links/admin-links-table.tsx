@@ -66,7 +66,7 @@ export function AdminLinksTable<TData, TValue>({
         />
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={triggerCronFn}>
-            Run Cron Job
+            Run Processing Pipeline
           </Button>
           <ColumnVisibilityConfiguration table={table} />
         </div>

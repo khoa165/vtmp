@@ -2,6 +2,8 @@ import { AxiosResponse } from 'axios';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
+import assert from 'assert';
+
 import { LinkStatus } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
@@ -11,8 +13,6 @@ import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { InternalServerError } from '@/utils/errors';
-
-import assert from 'assert';
 
 describe('CronService', () => {
   useMongoDB();
@@ -29,7 +29,7 @@ describe('CronService', () => {
     error: 'Failed to scrape',
   };
   beforeEach(async () => {
-    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV)
+    sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
     stubSendLinkToLambda = sandbox
       .stub(CronService, '_sendLinksToLambda')
       .resolves({
