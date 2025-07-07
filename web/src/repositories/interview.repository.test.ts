@@ -1,14 +1,20 @@
 import { expect } from 'chai';
-import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
 
+import assert from 'assert';
+
+import {
+  InterviewType,
+  InterviewStatus,
+  InterviewShareStatus,
+} from '@vtmp/common/constants';
+
+import { IApplication } from '@/models/application.model';
+import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
-import { InterviewType, InterviewStatus } from '@vtmp/common/constants';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { IApplication } from '@/models/application.model';
 
 describe('Interview Repository', () => {
   useMongoDB();
@@ -481,7 +487,7 @@ describe('Interview Repository', () => {
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: getNewMongoId(),
         userId: userId_A,
-        updatedMetadata: { interviewOnDate: new Date('2025-08-10') },
+        newUpdate: { interviewOnDate: new Date('2025-08-10') },
       });
 
       assert(!updatedInterview);
@@ -494,7 +500,7 @@ describe('Interview Repository', () => {
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: interview_A0.id,
         userId: userId_B,
-        updatedMetadata: { interviewOnDate: new Date('2025-08-10') },
+        newUpdate: { interviewOnDate: new Date('2025-08-10') },
       });
 
       assert(!updatedInterview);
@@ -512,20 +518,20 @@ describe('Interview Repository', () => {
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: interview.id,
         userId: userId_B,
-        updatedMetadata: { interviewOnDate: new Date('2025-08-10') },
+        newUpdate: { interviewOnDate: new Date('2025-08-10') },
       });
 
       assert(!updatedInterview);
     });
 
-    it('should return the interview with updated fields', async () => {
+    it('should return the interview with updated metadata fields', async () => {
       const interview =
         await InterviewRepository.createInterview(mockInterview_A1);
 
       const updatedInterview = await InterviewRepository.updateInterviewById({
         interviewId: interview.id,
         userId: userId_A,
-        updatedMetadata: {
+        newUpdate: {
           interviewOnDate: new Date('2025-08-10'),
           types: [
             InterviewType.PROJECT_WALKTHROUGH,
@@ -549,6 +555,25 @@ describe('Interview Repository', () => {
         companyName: 'Google',
         note: 'This interview is updated.',
       });
+    });
+
+    it('should return the interview with updated shareStatus', async () => {
+      const interview_A1 =
+        await InterviewRepository.createInterview(mockInterview_A1);
+
+      const sharedInterview = await InterviewRepository.updateInterviewById({
+        interviewId: interview_A1.id,
+        userId: userId_A,
+        newUpdate: {
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
+        },
+      });
+
+      assert(sharedInterview);
+      expect(sharedInterview.id).to.equal(interview_A1.id);
+      expect(sharedInterview.shareStatus).to.equal(
+        InterviewShareStatus.SHARED_ANONYMOUS
+      );
     });
   });
 

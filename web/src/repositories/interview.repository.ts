@@ -1,6 +1,10 @@
 import { ClientSession, UpdateResult } from 'mongoose';
 
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import {
+  InterviewShareStatus,
+  InterviewStatus,
+  InterviewType,
+} from '@vtmp/common/constants';
 
 import { InterviewModel, IInterview } from '@/models/interview.model';
 
@@ -69,20 +73,21 @@ export const InterviewRepository = {
   updateInterviewById: async ({
     interviewId,
     userId,
-    updatedMetadata,
+    newUpdate,
   }: {
     interviewId: string;
     userId: string;
-    updatedMetadata: {
+    newUpdate: {
       types?: InterviewType[];
       status?: InterviewStatus;
       interviewOnDate?: Date;
       note?: string;
+      shareStatus?: InterviewShareStatus;
     };
   }): Promise<IInterview | null> => {
     return InterviewModel.findOneAndUpdate(
       { _id: interviewId, userId, deletedAt: null },
-      { $set: updatedMetadata },
+      { $set: newUpdate },
       { new: true }
     );
   },
