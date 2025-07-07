@@ -2,6 +2,8 @@ import { AxiosResponse } from 'axios';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
+import assert from 'assert';
+
 import { LinkStatus } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
@@ -56,6 +58,8 @@ describe('CronService', () => {
     },
   ];
   const createFilteredLinks = async () => {
+    assert(filteredLinks[0]);
+    assert(filteredLinks[1]);
     await LinkRepository.createLink(filteredLinks[0]);
     await LinkRepository.createLink(filteredLinks[1]);
   };
@@ -74,6 +78,9 @@ describe('CronService', () => {
         lastProcessedAt: new Date(),
       },
     ];
+
+    assert(unFilteredLinks[0]);
+    assert(unFilteredLinks[1]);
     await LinkRepository.createLink(unFilteredLinks[0]);
     await LinkRepository.createLink(unFilteredLinks[1]);
   };
