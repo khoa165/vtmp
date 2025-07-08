@@ -1,8 +1,6 @@
 import { SortingState } from '@tanstack/react-table';
-import axios from 'axios';
 import { useMemo, useState } from 'react';
 
-import { useLogout } from '#vtmp/web-client/hooks/useLogout';
 import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
 import { Skeleton } from '@/components/base/skeleton';
 import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
@@ -21,7 +19,6 @@ export const ApplicationsContainer = ({
 }: {
   applicationFilter: ApplicationsFilter;
 }): React.JSX.Element | null => {
-  const { logout } = useLogout();
   const {
     isLoading,
     error,
@@ -65,9 +62,7 @@ export const ApplicationsContainer = ({
   }
 
   if (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      if (error.response.status === 401) logout();
-    }
+    console.error('Error fetching applications data:', error);
     throw new CustomError('Error fetching applications data');
   }
 

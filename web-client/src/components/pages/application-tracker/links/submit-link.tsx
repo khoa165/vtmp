@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { useLogout } from '#vtmp/web-client/hooks/useLogout';
 import { Button } from '@/components/base/button';
 import {
   Card,
@@ -38,10 +37,7 @@ export const SubmitLink = () => {
       setLinkInput('');
     },
     onError: (error) => {
-      const { logout } = useLogout();
       if (axios.isAxiosError(error) && error.response) {
-        if (error.response.status === 401) logout();
-
         const errorMessages = error.response.data.errors.map(
           (err) => err.message
         );

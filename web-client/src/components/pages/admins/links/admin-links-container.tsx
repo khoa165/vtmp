@@ -1,9 +1,7 @@
-import axios from 'axios';
 import { useMemo } from 'react';
 
 import { LinkStatus } from '@vtmp/common/constants';
 
-import { useLogout } from '#vtmp/web-client/hooks/useLogout';
 import { Skeleton } from '@/components/base/skeleton';
 import { AdminLinksTable } from '@/components/pages/admins/links/admin-links-table';
 import { adminLinksTableColumns } from '@/components/pages/admins/links/admin-links-table-columns';
@@ -36,7 +34,6 @@ export const AdminLinksContainer = ({
       }),
     [linksData, approveLinkFn, rejectLinkFn, triggerCronFn]
   );
-  const { logout } = useLogout();
 
   if (isLoading) {
     return (
@@ -51,9 +48,6 @@ export const AdminLinksContainer = ({
   }
 
   if (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      if (error.response.status === 401) logout();
-    }
     throw new CustomError('Error fetching links data');
   }
 

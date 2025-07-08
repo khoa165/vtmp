@@ -1,7 +1,5 @@
-import axios from 'axios';
 import { useState } from 'react';
 
-import { useLogout } from '#vtmp/web-client/hooks/useLogout';
 import { Button } from '@/components/base/button';
 import { Skeleton } from '@/components/base/skeleton';
 import {
@@ -16,7 +14,6 @@ import {
 } from '@/components/pages/application-tracker/applications/interview-form';
 
 export const InterviewList = ({ applicationId }: { applicationId: string }) => {
-  const { logout } = useLogout();
   const {
     isLoading: isLoadingInterviews,
     error: interviewsError,
@@ -48,9 +45,6 @@ export const InterviewList = ({ applicationId }: { applicationId: string }) => {
   }
 
   if (interviewsError) {
-    if (axios.isAxiosError(interviewsError) && interviewsError.response) {
-      if (interviewsError.response.status === 401) logout();
-    }
     throw new Error('Error retrieving interviews: ', interviewsError);
   }
 

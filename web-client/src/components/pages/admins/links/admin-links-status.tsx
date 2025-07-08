@@ -1,9 +1,7 @@
-import axios from 'axios';
 import { useState } from 'react';
 
 import { LinkStatus } from '@vtmp/common/constants';
 
-import { useLogout } from '#vtmp/web-client/hooks/useLogout';
 import { Card } from '@/components/base/card';
 import { Skeleton } from '@/components/base/skeleton';
 import { StatusDot } from '@/components/base/status-dot';
@@ -19,7 +17,6 @@ export const AdminLinksStatusCards = ({
   setLinksFilter,
 }: AdminLinkStatusCardsProps): React.JSX.Element | null => {
   const [selectedStatus, setSelectedStatus] = useState<LinkStatus | null>(null);
-  const { logout } = useLogout();
 
   const {
     isLoading,
@@ -50,9 +47,7 @@ export const AdminLinksStatusCards = ({
   }
 
   if (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      if (error.response.status === 401) logout();
-    }
+    console.log(error);
     throw new CustomError('Error fetching links status count');
   }
 

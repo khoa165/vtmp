@@ -1,9 +1,7 @@
-import axios from 'axios';
 import { useState } from 'react';
 
 import { ApplicationStatus } from '@vtmp/common/constants';
 
-import { useLogout } from '#vtmp/web-client/hooks/useLogout';
 import { Skeleton } from '@/components/base/skeleton';
 import { ApplicationStatusCard } from '@/components/pages/application-tracker/applications/application-status-card';
 import { ApplicationsFilter } from '@/components/pages/application-tracker/applications/applications-page';
@@ -17,7 +15,7 @@ export const ApplicationStatusContainer = ({
 }): React.JSX.Element | null => {
   const [selectedStatus, setSelectedStatus] =
     useState<ApplicationStatus | null>(null);
-  const { logout } = useLogout();
+
   const {
     isLoading,
     error,
@@ -35,9 +33,6 @@ export const ApplicationStatusContainer = ({
   }
 
   if (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      if (error.response.status === 401) logout();
-    }
     throw new CustomError('Error fetching applications status count');
   }
 
