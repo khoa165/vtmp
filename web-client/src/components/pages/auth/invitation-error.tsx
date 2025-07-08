@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Particles } from '@/components/magicui/particles';
 
 export const InvitationErrorPage = ({ message }: { message: string }) => {

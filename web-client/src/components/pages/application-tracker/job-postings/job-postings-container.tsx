@@ -1,16 +1,4 @@
-import { jobPostingsTableColumns } from '@/components/pages/application-tracker/job-postings/job-postings-table-columns';
 import {
-  useCreateApplication,
-  useGetJobPostings,
-} from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
-import { useMemo, useState } from 'react';
-import { Skeleton } from '@/components/base/skeleton';
-import { FilterSelectionButton } from '@/components/pages/application-tracker/job-postings/job-postings-filter';
-import type { FilterState } from './job-postings-drawer';
-import { useSearchParams } from 'react-router-dom';
-import { JobFunction, JobType } from '@vtmp/common/constants';
-import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -19,11 +7,23 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
-  OnChangeFn,
 } from '@tanstack/react-table';
+import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+
+import { JobFunction, JobType } from '@vtmp/common/constants';
+
+import type { FilterState } from '#vtmp/web-client/components/pages/application-tracker/job-postings/job-postings-drawer';
+import { Input } from '@/components/base/input';
+import { Skeleton } from '@/components/base/skeleton';
+import {
+  useCreateApplication,
+  useGetJobPostings,
+} from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
+import { FilterSelectionButton } from '@/components/pages/application-tracker/job-postings/job-postings-filter';
+import { jobPostingsTableColumns } from '@/components/pages/application-tracker/job-postings/job-postings-table-columns';
 import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
 import { ResizableTable } from '@/components/pages/shared/resizable-table';
-import { Input } from '@/components/base/input';
 import { CustomError } from '@/utils/errors';
 
 export const JobPostingsContainer = (): React.JSX.Element | null => {
