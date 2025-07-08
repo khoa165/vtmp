@@ -1,6 +1,21 @@
-import { ApplicationFormSchema } from '@/components/pages/application-tracker/applications/validation';
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/base/button';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
+import {
+  Clock,
+  ExternalLink,
+  MapPin,
+  RotateCw,
+  Save,
+  Trash2,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+import { capitalize } from 'remeda';
+import { z } from 'zod';
+
+import { InterestLevel } from '@vtmp/common/constants';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,6 +26,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/base/alert-dialog';
+import { Button } from '@/components/base/button';
+import {
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/base/drawer';
 import {
   Form,
   FormControl,
@@ -19,34 +40,16 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/base/form';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { InterestLevel } from '@vtmp/common/constants';
 import { Input } from '@/components/base/input';
-import { Textarea } from '@/components/base/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
 } from '@/components/base/select';
+import { Skeleton } from '@/components/base/skeleton';
+import { Textarea } from '@/components/base/textarea';
 import { ApplicationInterestDropDown } from '@/components/pages/application-tracker/applications/application-interest-column';
-import {
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/base/drawer';
-import {
-  Clock,
-  ExternalLink,
-  MapPin,
-  RotateCw,
-  Save,
-  Trash2,
-} from 'lucide-react';
-import { format } from 'date-fns';
-import { MONTH_DATE_YEAR } from '@/utils/date';
 import { DrawerStatusDropDown } from '@/components/pages/application-tracker/applications/drawer-status-dropdown';
 import {
   useDeleteApplication,
@@ -54,9 +57,8 @@ import {
   useUpdateApplicationMetadata,
   useUpdateApplicationStatus,
 } from '@/components/pages/application-tracker/applications/hooks/applications';
-import { Skeleton } from '@/components/base/skeleton';
-import { capitalize } from 'remeda';
-import { Link } from 'react-router-dom';
+import { ApplicationFormSchema } from '@/components/pages/application-tracker/applications/validation';
+import { MONTH_DATE_YEAR } from '@/utils/date';
 
 export const ApplicationForm = ({
   applicationId,
@@ -105,10 +107,10 @@ export const ApplicationForm = ({
       <DrawerHeader>
         <div className="space-y-2">
           <DrawerTitle className="mb-3">
-            <Skeleton className="h-10 w-3/4 rounded-md" />
+            <Skeleton className="h-10 w-3/4 rounded-sm" />
           </DrawerTitle>
           <DrawerDescription>
-            <Skeleton className="h-6 w-1/3 rounded-md" />
+            <Skeleton className="h-6 w-1/3 rounded-sm" />
           </DrawerDescription>
 
           <div className="flex flex-wrap gap-2 mt-4 mb-6">
@@ -177,7 +179,7 @@ export const ApplicationForm = ({
             <div className="flex gap-2">
               <Button
                 type="button"
-                className="flex items-center h-7.5 gap-1.5 rounded-md border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
+                className="flex items-center h-7.5 gap-1.5 rounded-sm border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
                 variant="secondary"
                 onClick={() => {
                   setIsEditingApplication(false);
@@ -198,7 +200,7 @@ export const ApplicationForm = ({
                     setIsEditingApplication(false);
                   }
                 )}
-                className="h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
+                className="h-7.5 gap-1.5 rounded-sm border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
               >
                 <Save className="scale-85" />
                 Save
@@ -208,7 +210,7 @@ export const ApplicationForm = ({
             <div className="flex gap-2">
               <Button
                 type="button"
-                className="flex items-center h-7.5 gap-1.5 rounded-md border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
+                className="flex items-center h-7.5 gap-1.5 rounded-sm border border-orange-300 px-4 text-xs text-orange-300 bg-background hover:bg-background hover:text-orange-400 hover:border-orange-400 transition"
                 onClick={() => setIsDialogOpen(true)}
               >
                 <Trash2 className="scale-85" />
@@ -217,7 +219,7 @@ export const ApplicationForm = ({
               <Button
                 type="button"
                 onClick={() => setIsEditingApplication(true)}
-                className="h-7.5 gap-1.5 rounded-md border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
+                className="h-7.5 gap-1.5 rounded-sm border border-foreground px-4 text-xs text-foreground bg-background hover:bg-background hover:text-gray-300 hover:border-gray-300 transition"
               >
                 <Save className="scale-85" />
                 Edit
