@@ -5,7 +5,7 @@ import {
 } from '@vtmp/server-common/constants';
 
 import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
-import { LinkValidatorService } from '@/services/link-validator.service';
+import { LinkSafetyCheckService } from '@/services/link-safety-check.service';
 import { WebScrapingService } from '@/services/web-scraping.service';
 
 export const LinkProcessorService = {
@@ -16,20 +16,21 @@ export const LinkProcessorService = {
     failedLinks: FailedProcessedLink[];
   }> => {
     const failedLinks: FailedProcessedLink[] = [];
-    const { validatedUrls, faultyUrls } =
-      await LinkValidatorService.validateLinks(linksData);
-
     // Scraping stage:
     const { scrapedLinks, failedScrapingLinks } =
-      await WebScrapingService.scrapeLinks(validatedUrls);
+      await WebScrapingService.scrapeLinks(linksData);
+
+    // Virus scan stage
+    const { scannedLinks, failedVirusLinks } =
+      await LinkSafetyCheckService.checkSafety(scrapedLinks);
 
     // AI Metadata extraction stage
     const { metadataExtractedLinks, failedMetadataExtractionLinks } =
-      await ExtractLinkMetadataService.extractMetadata(scrapedLinks);
+      await ExtractLinkMetadataService.extractMetadata(scannedLinks);
 
     failedLinks.push(
-      ...faultyUrls,
       ...failedScrapingLinks,
+      ...failedVirusLinks,
       ...failedMetadataExtractionLinks
     );
 
