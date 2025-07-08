@@ -2,7 +2,7 @@ import {
   SubmittedLink,
   MetadataExtractedLink,
   FailedProcessedLink,
-} from '@vtmp/server-common/constants';
+} from '@vtmp/common/constants';
 
 import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
 import { LinkValidatorService } from '@/services/link-validator.service';

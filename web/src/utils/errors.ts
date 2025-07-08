@@ -58,6 +58,7 @@ export class EmailError extends ApplicationSpecificError {
 }
 
 export const handleError = (error: unknown) => {
+  // console.dir(error, { depth: null });
   if (error instanceof ZodError) {
     return {
       statusCode: 400,

@@ -31,6 +31,7 @@ import { SummaryContainer } from '#vtmp/web-client/components/summary';
 import { TreeContainer } from '#vtmp/web-client/components/tree';
 import { BlogFileMapping } from '#vtmp/web-client/types';
 import { buildFileMetadata } from '#vtmp/web-client/utils/file';
+import { InterviewFeedPage } from '@/components/pages/application-tracker/interview-feed/interview-feed-page';
 
 export const App = () => {
   useEffect(() => {
@@ -80,7 +81,7 @@ export const App = () => {
             <Route path="/links" element={<LinksPage />} />
             <Route path="/jobs" element={<JobPostingsPage />} />
             <Route path="/applications" element={<ApplicationsPage />} />
-
+            <Route path="/interviews" element={<InterviewFeedPage />} />
             <Route
               path="/admin"
               element={<PageWithPermission roles={[SystemRole.ADMIN]} />}

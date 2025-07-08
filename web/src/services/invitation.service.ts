@@ -32,7 +32,7 @@ export const InvitationService = {
     webUrl: string
   ): Promise<IInvitation | null> => {
     const foundUser = await UserRepository.getUserByEmail(receiverEmail);
-    if (foundUser) {
+    if (foundUser && foundUser.activated) {
       throw new DuplicateResourceError(
         'User associated with this email already has an account',
         { receiverEmail }
@@ -97,6 +97,19 @@ export const InvitationService = {
     );
     await getEmailService().sendEmail(emailTemplate);
     return newInvitation || latestPendingInvitation;
+  },
+
+  updateInvitation: async (
+    invitationId: string,
+    updateInvitationInfo: {
+      status?: InvitationStatus;
+      expiryDate?: Date;
+    }
+  ): Promise<IInvitation | null> => {
+    return InvitationRepository.updateInvitationById(
+      invitationId,
+      updateInvitationInfo
+    );
   },
 
   revokeInvitation: async (
