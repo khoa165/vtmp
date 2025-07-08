@@ -26,7 +26,7 @@ interface SeedCountConfiguration {
 
 const defaultConfiguration: SeedCountConfiguration = {
   usersCount: 10,
-  linksCount: 30,
+  linksCount: 4,
   minApplicationsCountPerUser: 10,
   maxApplicationsCountPerUser: 30,
   invitationsCount: 20,

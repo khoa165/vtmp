@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import { Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -87,7 +88,7 @@ export const ReviewPopupButton = ({
           Review
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-fit text-white border-none">
+      <DialogContent className="w-[50vw] h-[80vh] overflow-auto text-white border-none">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
             Review Link Submission
@@ -99,11 +100,12 @@ export const ReviewPopupButton = ({
           <Input id="link" defaultValue={url} readOnly />
         </div>
         <div className="flex flex-col items-start gap-2 w-full">
-          <Label htmlFor="aiNote">AI Note</Label>
+          <Label htmlFor="aiNote" className="flex items-center">
+            AI Insight <Sparkles className="text-yellow-500" />
+          </Label>
           <Textarea
             id="aiNote"
             defaultValue={aiNote ?? ''}
-            className="h-[36px]"
             style={{ resize: 'vertical' }}
             readOnly
           />
@@ -169,8 +171,7 @@ export const ReviewPopupButton = ({
             id="job-description"
             placeholder="Type job description here."
             value={reviewForm.jobDescription}
-            className="h-[36px]"
-            style={{ resize: 'vertical' }} // optional: allow vertical resizing
+            style={{ resize: 'vertical' }}
             onChange={(e) =>
               setReviewForm(() => ({
                 ...reviewForm,
