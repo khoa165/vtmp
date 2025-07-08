@@ -4,8 +4,9 @@ import {
   InterviewType,
 } from '@vtmp/common/constants';
 
-import { IInterview } from '@/models/interview.model';
+import { IInterview, InterviewInsights } from '@/models/interview.model';
 import { InterviewRepository } from '@/repositories/interview.repository';
+import { InterviewInsightService } from '@/services/interview-insights/interview-insight.service';
 import { BadRequest, ResourceNotFoundError } from '@/utils/errors';
 
 export const InterviewService = {
@@ -44,7 +45,6 @@ export const InterviewService = {
 
   getInterviews: async ({
     filters = {},
-    isShared = false,
   }: {
     filters: {
       userId?: string;
@@ -53,12 +53,41 @@ export const InterviewService = {
       types?: InterviewType[];
       status?: InterviewStatus;
     };
-    isShared?: boolean;
   }): Promise<IInterview[]> => {
-    return InterviewRepository.getInterviews({
+    return await InterviewRepository.getInterviews({
       filters,
-      isShared,
     });
+  },
+
+  getSharedInterviews: async ({
+    filters = {},
+  }: {
+    filters: {
+      userId?: string;
+      applicationId?: string;
+      companyName?: string;
+      types?: InterviewType[];
+      status?: InterviewStatus;
+    };
+  }): Promise<{ data: IInterview[]; insights?: InterviewInsights }> => {
+    const interviews = await InterviewRepository.getInterviews({
+      filters,
+      isShared: true,
+    });
+
+    const sharedInterviewsResponse: {
+      data: IInterview[];
+      insights?: InterviewInsights;
+    } = {
+      data: interviews,
+    };
+
+    if (filters.companyName && interviews.length > 0) {
+      sharedInterviewsResponse.insights =
+        await InterviewInsightService.getInterviewInsight(interviews);
+    }
+
+    return sharedInterviewsResponse;
   },
 
   updateInterviewById: async ({
