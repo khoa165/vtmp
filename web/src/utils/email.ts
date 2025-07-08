@@ -1,5 +1,7 @@
-import { EnvConfig } from '@/config/env';
 import nodemailer from 'nodemailer';
+
+import { EnvConfig } from '@/config/env';
+import { EmailError } from '@/utils/errors';
 
 export class EmailService {
   private transporter: nodemailer.Transporter;
@@ -15,8 +17,13 @@ export class EmailService {
     });
   }
 
-  getInvitationEmailTemplate(name: string, email: string, token: string) {
-    const link = `${EnvConfig.get().VTMP_WEB_URL}/signup?token=${token}`;
+  getInvitationEmailTemplate(
+    name: string,
+    email: string,
+    token: string,
+    webUrl: string
+  ) {
+    const link = `${webUrl}/signup?token=${token}`;
     return {
       email,
       subject: 'Invitation to join VTMP',
@@ -30,7 +37,11 @@ export class EmailService {
   }
 
   getPasswordResetTemplate(name: string, email: string, token: string) {
-    const link = `${EnvConfig.get().VTMP_WEB_URL}/reset-password?token=${token}`;
+    const webUrl =
+      EnvConfig.get().NODE_ENV === 'DEV'
+        ? 'http://localhost:3000'
+        : EnvConfig.get().VTMP_WEB_URL;
+    const link = `${webUrl}/reset-password?token=${token}`;
     return {
       email,
       subject: 'Reset Your Password',
@@ -58,7 +69,11 @@ export class EmailService {
       html: body,
     };
 
-    await this.transporter.sendMail(mailOptions);
+    try {
+      await this.transporter.sendMail(mailOptions);
+    } catch (error) {
+      throw new EmailError('Failed to send email', { error });
+    }
   }
 }
 
