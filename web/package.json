@@ -17,8 +17,6 @@
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "escape-string-regexp": "^5.0.0",
-    "eslint": "^9.28.0",
-    "eslint-plugin-react": "^7.37.5",
     "express": "^4.21.2",
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.5.0",

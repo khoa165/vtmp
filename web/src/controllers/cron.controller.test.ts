@@ -17,7 +17,7 @@ import {
 } from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 
-// Will add authentication test later on AAAA
+// Will add authentication test later on
 describe('CronController', () => {
   useMongoDB();
   const sandbox = useSandbox();
