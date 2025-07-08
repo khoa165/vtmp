@@ -1,15 +1,34 @@
-name: Deploy to staging
+name: Deploy web, web-client, discord-service to staging
 
 on:
   workflow_dispatch:
+    inputs:
+      deploy-web:
+        description: 'Deploy web to staging ?'
+        required: false
+        default: true
+        type: boolean
+      deploy-web-client:
+        description: 'Deploy web-client to staging ?'
+        required: false
+        default: true
+        type: boolean
+      deploy-discord-service:
+        description: 'Deploy discord-service ?'
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   deploy-staging:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy backend to staging
+      - name: Deploy web to staging
+        if: ${{ inputs.deploy-web == 'true' }}
         run: curl ${{ secrets.RENDER_STAGING_BACKEND_DEPLOY_HOOK }}
-      - name: Deploy frontend to staging
+      - name: Deploy web-client to staging
+        if: ${{ inputs.deploy-web-client == 'true' }}
         run: curl ${{ secrets.RENDER_STAGING_FRONTEND_DEPLOY_HOOK }}
-      - name: Deploy discord service
+      - name: Deploy discord-service
+        if: ${{ inputs.deploy-discord-service == 'true' }}
         run: curl ${{ secrets.RENDER_DISCORD_DEPLOY_HOOK }}

@@ -77,30 +77,39 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Use common setups action
         uses: ./.github/actions/common-setups
+
       - name: Build web
         if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
         run: yarn workspace @vtmp/web build
+
       - name: Test web
         if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
         uses: ./.github/actions/test-web
         with:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Build web client
         if: ${{ needs.pipeline-setup.outputs.web-client == 'true' }}
         run: yarn workspace @vtmp/web-client build
+
       - name: Build discord service
         if: ${{ needs.pipeline-setup.outputs.discord-service == 'true' }}
         run: yarn workspace @vtmp/discord-service build
+
       - name: Build link processing service
         if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}
         run: yarn workspace @vtmp/link-processing-service build
+
       - name: Test link processing service
         if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}
         run: yarn workspace @vtmp/link-processing-service test
-      # run-lint:
-      # uses: ./.github/workflows/lint.yml
+
+      - name: Build link-processing-service Docker image
+        if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}
+        uses: ./.github/actions/build-link-processing
 
   # chromatic:
   #   needs: changes

@@ -1,0 +1,65 @@
+name: Deploy link-processing-service to AWS Lambda
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'link-processing-service/**'
+      - 'packages/**'
+      - '.github/**'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: vtmp-link-processor
+  LAMBDA_FUNCTION_NAME: vtmp-link-processor-function
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-link-processing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push Docker image to ECR
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: link-processing-service/Dockerfile
+          platforms: linux/amd64
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+
+      - name: Update Lambda function to use new image
+        run: |
+          aws lambda update-function-code \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --image-uri ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }} \
+            --region ${{ env.AWS_REGION }}
