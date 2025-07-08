@@ -26,7 +26,7 @@ interface SeedCountConfiguration {
 
 const defaultConfiguration: SeedCountConfiguration = {
   usersCount: 10,
-  linksCount: 4,
+  linksCount: 30,
   minApplicationsCountPerUser: 10,
   maxApplicationsCountPerUser: 30,
   invitationsCount: 20,
@@ -43,8 +43,6 @@ const allConfigurations: Partial<Record<Environment, SeedCountConfiguration>> =
     },
   };
 
-const LINKS_WITHOUT_APPLICATIONS_RATIO = 0.5;
-
 const runSeeds = async () => {
   await mongoose.connection.dropDatabase();
   console.log('Successfully clear database before seeding.');
@@ -58,16 +56,10 @@ const runSeeds = async () => {
   } = allConfigurations[EnvConfig.get().SEED_ENV] ?? defaultConfiguration;
 
   const users = await loadUsers(usersCount);
-
-  const numLinksWithoutApplications = Math.floor(
-    linksCount * LINKS_WITHOUT_APPLICATIONS_RATIO
-  );
+  const numLinksWithoutApplications = Math.floor(linksCount / 2);
   const numLinksWithApplications = linksCount - numLinksWithoutApplications;
 
-  const linksWithoutApplications = await loadLinks(
-    numLinksWithoutApplications,
-    { seedRealLinks: true }
-  );
+  const linksWithoutApplications = await loadLinks(numLinksWithoutApplications);
   const linksWithApplications = await loadLinks(numLinksWithApplications);
 
   await loadJobPostings(linksWithoutApplications);
