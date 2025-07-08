@@ -29,7 +29,15 @@ export const loadLinks = async (
     datePosted: faker.date.recent({ days: 90 }),
     jobDescription: faker.lorem.paragraph(),
     location: faker.helpers.enumValue(LinkRegion),
-    status: faker.helpers.enumValue(LinkStatus),
+    status: faker.helpers.weightedArrayElement([
+      { value: LinkStatus.PENDING_PROCESSING, weight: 5 },
+      { value: LinkStatus.PENDING_RETRY, weight: 5 },
+      { value: LinkStatus.PENDING_ADMIN_REVIEW, weight: 10 },
+      { value: LinkStatus.ADMIN_APPROVED, weight: 20 },
+      { value: LinkStatus.ADMIN_REJECTED, weight: 20 },
+      { value: LinkStatus.PIPELINE_FAILED, weight: 20 },
+      { value: LinkStatus.PIPELINE_REJECTED, weight: 20 },
+    ]),
   });
 
   const _generateRealLink = (url: string) => ({
@@ -89,6 +97,14 @@ export const loadLinks = async (
   }
 
   const links = await LinkModel.insertMany(allLinks.map(_postProcessLink));
-  console.log(`Successfully seeded ${links.length} links.`);
+  if (seedRealLinks) {
+    console.log(
+      `Successfully seeded ${links.length} links without associated applications.`
+    );
+  } else {
+    console.log(
+      `Successfully seeded ${links.length} links with associated applications.`
+    );
+  }
   return links;
 };
