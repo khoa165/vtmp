@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 
 import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
 
+import { ReviewPopupSelect } from '#vtmp/web-client/components/pages/admins/links/review-popup-select';
 import { Button } from '@/components/base/button';
 import {
   Dialog,
@@ -17,14 +18,13 @@ import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
 import { Textarea } from '@/components/base/textarea';
 import { ReviewPopupInput } from '@/components/pages/admins/links/review-popup-input';
-import { JobPostingData } from '@/components/pages/admins/links/validation';
-
-import { ReviewPopupSelect } from './review-popup-select';
+import {
+  JobPostingData,
+  LinkResponseType,
+} from '@/components/pages/admins/links/validation';
 
 interface ReviewPopupButtonProps {
-  currentLink: {
-    _id: string;
-  } & JobPostingData;
+  currentLink: LinkResponseType;
   approveLinkFn: ({
     linkId,
     newUpdate,
@@ -49,6 +49,7 @@ export const ReviewPopupButton = ({
     jobType,
     datePosted,
     jobDescription,
+    aiNote,
   } = currentLink;
 
   const [reviewForm, setReviewForm] = useState<JobPostingData>({
@@ -94,12 +95,20 @@ export const ReviewPopupButton = ({
         </DialogHeader>
 
         <div className="flex flex-col items-start gap-2 w-full">
-          <Label htmlFor="link" className="sr-only">
-            Url
-          </Label>
+          <Label htmlFor="link">URL</Label>
           <Input id="link" defaultValue={url} readOnly />
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col items-start gap-2 w-full">
+          <Label htmlFor="aiNote">AI Note</Label>
+          <Textarea
+            id="aiNote"
+            defaultValue={aiNote ?? ''}
+            className="h-[36px]"
+            style={{ resize: 'vertical' }}
+            readOnly
+          />
+        </div>
+        <div className="grid grid-cols-3 gap-2">
           <ReviewPopupInput
             label="Job Title"
             placeHolder="Job Title"
@@ -116,17 +125,7 @@ export const ReviewPopupButton = ({
             setReviewForm={setReviewForm}
             id="company-name"
           />
-        </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <ReviewPopupSelect
-            label="Location"
-            fieldInForm="location"
-            reviewForm={reviewForm}
-            setReviewForm={setReviewForm}
-            id="location"
-            fieldEnum={LinkRegion}
-          />
           <ReviewPopupInput
             label="Date Posted"
             placeHolder="MM/dd/yyyy"
@@ -137,7 +136,15 @@ export const ReviewPopupButton = ({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-2">
+          <ReviewPopupSelect
+            label="Location"
+            fieldInForm="location"
+            reviewForm={reviewForm}
+            setReviewForm={setReviewForm}
+            id="location"
+            fieldEnum={LinkRegion}
+          />
           <ReviewPopupSelect
             label="Job Function"
             fieldInForm="jobFunction"
@@ -162,6 +169,8 @@ export const ReviewPopupButton = ({
             id="job-description"
             placeholder="Type job description here."
             value={reviewForm.jobDescription}
+            className="h-[36px]"
+            style={{ resize: 'vertical' }} // optional: allow vertical resizing
             onChange={(e) =>
               setReviewForm(() => ({
                 ...reviewForm,
@@ -177,6 +186,7 @@ export const ReviewPopupButton = ({
             id="admin-note"
             placeholder="Type your message here."
             value={reviewForm.adminNote}
+            style={{ resize: 'vertical' }} // optional: allow vertical resizing
             onChange={(e) =>
               setReviewForm(() => ({
                 ...reviewForm,

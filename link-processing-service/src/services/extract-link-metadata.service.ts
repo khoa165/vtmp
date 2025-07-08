@@ -54,7 +54,9 @@ export const ExtractLinkMetadataService = {
       jobType,
       datePosted,
       jobDescription,
+      aiNote,
     } = RawAIResponseSchema.parse(JSON.parse(rawAIResponse));
+    console.log(rawAIResponse);
 
     // Convert from string to Typescript enum, had to use a separate helper stringToEnumValue
     const formattedLinkMetadata = {
@@ -74,8 +76,9 @@ export const ExtractLinkMetadataService = {
       }),
       datePosted,
       jobDescription: formatJobDescription(jobDescription),
+      aiNote,
     };
-
+    console.log(formattedLinkMetadata);
     return ExtractedLinkMetadataSchema.parse(formattedLinkMetadata);
   },
   /**

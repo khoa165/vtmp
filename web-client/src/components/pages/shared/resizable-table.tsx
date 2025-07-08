@@ -83,7 +83,10 @@ export function ResizableTable<TData, TValue>({
                     className="border-white"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="text-foreground py-4">
+                      <TableCell
+                        key={cell.id}
+                        className="text-foreground py-4 whitespace-normal"
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

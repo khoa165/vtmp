@@ -48,6 +48,7 @@ export const request: IRequest = async <T extends { data: object }>({
   options?: { includeOnlyDataField?: boolean; requireAuth?: boolean };
 }): Promise<T['data'] | T> => {
   const { includeOnlyDataField = false } = options;
+  console.log(url);
   const response = await api.request({
     method,
     url,
@@ -59,6 +60,7 @@ export const request: IRequest = async <T extends { data: object }>({
         : {}),
     },
   });
+  console.log(response.data);
   const parsedData = schema.parse(response.data);
 
   return includeOnlyDataField ? parsedData.data : parsedData;
