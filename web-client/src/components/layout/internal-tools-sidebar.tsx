@@ -5,6 +5,7 @@ import {
   Link2,
   SquareCheckBig,
   Share2,
+  MessageSquareQuote,
 } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link, Navigate } from 'react-router-dom';
@@ -58,6 +59,12 @@ export const InternalToolsSidebar = () => {
       url: '/applications',
       icon: SquareCheckBig,
       roles: [SystemRole.USER],
+    },
+    {
+      title: 'Interview Feed',
+      url: '/interviews',
+      icon: MessageSquareQuote,
+      roles: [SystemRole.USER, SystemRole.ADMIN, SystemRole.MODERATOR],
     },
     {
       title: 'Share Link',
