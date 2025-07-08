@@ -2,7 +2,6 @@ import mongoose, { Document, Types } from 'mongoose';
 
 import { SystemRole } from '@vtmp/common/constants';
 
-// console.log('Mongoose instance in test setup:', mongoose);
 export interface IUser extends Document {
   _id: Types.ObjectId;
   firstName: string;
@@ -11,6 +10,7 @@ export interface IUser extends Document {
   encryptedPassword: string;
   role: SystemRole;
   deletedAt?: Date;
+  activated?: boolean;
 }
 
 const UserSchema = new mongoose.Schema<IUser>(
@@ -39,6 +39,10 @@ const UserSchema = new mongoose.Schema<IUser>(
     },
     deletedAt: {
       type: Date,
+    },
+    activated: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }

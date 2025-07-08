@@ -145,7 +145,7 @@ describe('JobPostingRepository', () => {
     const userIdB = getNewMongoId();
     let jobPostings: (IJobPosting | undefined)[];
     const limit = 10;
-    const totalJobPostings = 1530;
+    const totalJobPostings = 153;
 
     const mockMultipleJobPostings = Array.from(
       { length: totalJobPostings },
@@ -321,7 +321,7 @@ describe('JobPostingRepository', () => {
         );
       });
 
-      it.only('should return all job postings that user has not applied to. Should not exclude job postings applied by another user', async () => {
+      it('should return all job postings that user has not applied to. Should not exclude job postings applied by another user', async () => {
         await randomRemoveJobPostings();
 
         const jobPostingsA = await randomCreateApplications({

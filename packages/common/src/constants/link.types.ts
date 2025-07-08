@@ -66,6 +66,15 @@ export interface MetadataExtractedLink {
   failureStage: null;
 }
 
+export const MetadataExtractedLinkSchema = z.object({
+  originalRequest: SubmittedLinkSchema,
+  url: z.string().url(),
+  scrapedText: z.string(),
+  extractedMetadata: ExtractedLinkMetadataSchema,
+  status: z.nativeEnum(LinkStatus, { message: 'Invalid LinkStatus' }),
+  failureStage: z.null(), // always null
+});
+
 export interface FailedProcessedLink {
   originalRequest: SubmittedLink;
   url?: string;
@@ -74,3 +83,14 @@ export interface FailedProcessedLink {
   failureStage: LinkProcessingFailureStage;
   error: unknown;
 }
+
+export const FailedProcessedLinkSchema = z.object({
+  originalRequest: SubmittedLinkSchema,
+  url: z.string().url().optional(),
+  scrapedText: z.string().optional(),
+  status: z.nativeEnum(LinkStatus, { message: 'Invalid LinkStatus' }),
+  failureStage: z.nativeEnum(LinkProcessingFailureStage, {
+    message: 'Invalid failure stage',
+  }),
+  error: z.unknown(), // since error is type `unknown`
+});

@@ -151,14 +151,6 @@ export const JobPostingRepository = {
           deletedAt: null,
         },
       },
-      ...(cursor ? [{ $match: paginationMatch }] : []),
-      {
-        $sort: {
-          [sortField]: sortDirection,
-          _id: sortDirection,
-        },
-      },
-      { $limit: limit + 1 },
       {
         $lookup: {
           from: 'applications',
@@ -189,9 +181,15 @@ export const JobPostingRepository = {
           userApplication: 0,
         },
       },
+      ...(cursor ? [{ $match: paginationMatch }] : []),
+      {
+        $sort: {
+          [sortField]: sortDirection,
+          _id: sortDirection,
+        },
+      },
+      { $limit: limit + 1 },
     ]);
-
-    while (data.length < limit) {}
 
     let hasNextPage = false;
     let results = data;

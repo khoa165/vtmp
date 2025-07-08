@@ -10,6 +10,7 @@ import {
   JobPostingData,
   LinksCountByStatusSchema,
   SingleLinkResponseSchema,
+  CronJobResponseSchema,
 } from '@/components/pages/admins/links/validation';
 import { request } from '@/utils/api';
 import { Method, QueryKey } from '@/utils/constants';
@@ -94,6 +95,25 @@ export const useRejectLink = () => {
         method: Method.POST,
         url: API_ENDPOINTS.REJECT_LINK(linkId),
         schema: SingleLinkResponseSchema,
+        options: { requireAuth: true },
+      }),
+    onSuccess: (res) => {
+      invalidateLinkQueries(queryClient);
+      toast.success(res.message);
+    },
+    onError: handleLinkMutationError,
+  });
+};
+
+export const useTriggerCron = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () =>
+      request({
+        method: Method.POST,
+        url: API_ENDPOINTS.TRIGGER_CRON,
+        schema: CronJobResponseSchema,
         options: { requireAuth: true },
       }),
     onSuccess: (res) => {
