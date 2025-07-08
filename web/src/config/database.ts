@@ -1,8 +1,10 @@
+import { Environment } from '@vtmp/server-common/constants';
 import mongoose from 'mongoose';
+
 import { EnvConfig } from '@/config/env';
 
 export const connectDB = async () => {
-  if (process.env.NODE_ENV === 'test') {
+  if (EnvConfig.get().NODE_ENV === Environment.TEST) {
     console.log('Test environment');
     return;
   }

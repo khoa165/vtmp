@@ -29,6 +29,12 @@ export enum InterviewStatus {
   PENDING = 'PENDING',
 }
 
+export enum InterviewShareStatus {
+  UNSHARED = 'UNSHARED',
+  SHARED_PUBLIC = 'SHARED_PUBLIC',
+  SHARED_ANONYMOUS = 'SHARED_ANONYMOUS',
+}
+
 export enum InvitationStatus {
   ACCEPTED = 'ACCEPTED',
   EXPIRED = 'EXPIRED',
@@ -71,6 +77,8 @@ export enum Permission {
   VIEW_INTERVIEW = 'VIEW_INTERVIEW',
   VIEW_ALL_DATA = 'VIEW_ALL_DATA',
   MANAGE_INTERVIEW = 'MANAGE_INTERVIEW',
+
+  VIEW_VISUALIZATION = 'VIEW_VISUALIZATION',
 }
 
 export enum InterestLevel {

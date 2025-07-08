@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 import {
+  MetadataExtractedLinkSchema,
+  FailedProcessedLinkSchema,
   JobFunction,
   JobType,
   LinkRegion,
@@ -75,3 +77,13 @@ export interface JobPostingData {
   jobDescription?: string;
   adminNote?: string;
 }
+
+export const CronJobResponseSchema = z.object({
+  message: z.string(),
+  data: z.object({
+    successfulLinks: z.array(MetadataExtractedLinkSchema),
+    failedLinks: z.array(FailedProcessedLinkSchema),
+  }),
+});
+
+export type CronJobResponse = z.infer<typeof CronJobResponseSchema>;

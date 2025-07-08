@@ -1,5 +1,6 @@
 import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
-import { Button } from '@/components/base/button';
+
+import { Button } from '#vtmp/web-client/components/base/button';
 
 type SortingState = 'asc' | 'desc';
 type ArrowIcon = typeof ArrowUp | typeof ArrowDown;

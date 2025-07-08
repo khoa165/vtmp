@@ -326,7 +326,7 @@ describe('JobPostingRepository', () => {
 
         const jobPostingsA = await randomCreateApplications({
           userId: userIdA,
-          numApplications: 4,
+          numApplications: 600,
         });
 
         const jobPostingsB = await randomCreateApplications({
