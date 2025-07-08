@@ -62,7 +62,7 @@ export const InternalToolsSidebar = () => {
     },
     {
       title: 'Interview Feed',
-      url: '/interview-feed',
+      url: '/interviews',
       icon: MessageSquareQuote,
       roles: [SystemRole.USER, SystemRole.ADMIN, SystemRole.MODERATOR],
     },
