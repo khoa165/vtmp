@@ -10,6 +10,7 @@ import { HeaderSorting } from '@/components/base/header';
 import { StatusDot } from '@/components/base/status-dot';
 import { IInvitationSchema } from '@/components/pages/admins/invitations/validation';
 import { InvitationStatusToColorMapping } from '@/utils/constants';
+import { getClientOrigin } from '@/utils/helpers';
 
 export const invitationsTableColumns = (
   revokeInvitation: (id: string) => void,
@@ -17,6 +18,7 @@ export const invitationsTableColumns = (
     receiverName: string;
     receiverEmail: string;
     senderId: string;
+    webUrl: string;
   }) => void
 ): ColumnDef<IInvitationSchema>[] => {
   return [
@@ -24,16 +26,14 @@ export const invitationsTableColumns = (
       accessorKey: 'receiverName',
       header: ({ column }) => {
         return (
-          <div className="flex justify-center">
+          <div className="flex flex-start">
             <HeaderSorting column={column} headerName="Receiver Name" />
           </div>
         );
       },
       cell: ({ row }) => {
         const invitation = row.original;
-        return (
-          <div className="flex justify-center">{invitation.receiverName}</div>
-        );
+        return <div className="flex flex-start">{invitation.receiverName}</div>;
       },
       enableResizing: true,
     },
@@ -41,7 +41,7 @@ export const invitationsTableColumns = (
       accessorKey: 'receiverEmail',
       header: ({ column }) => {
         return (
-          <div className="flex justify-center">
+          <div className="flex flex-start">
             <HeaderSorting column={column} headerName="Send To" />
           </div>
         );
@@ -49,7 +49,7 @@ export const invitationsTableColumns = (
       cell: ({ row }) => {
         const invitation = row.original;
         return (
-          <div className="flex justify-center">{invitation.receiverEmail}</div>
+          <div className="flex flex-start">{invitation.receiverEmail}</div>
         );
       },
       enableResizing: true,
@@ -58,7 +58,7 @@ export const invitationsTableColumns = (
       accessorKey: 'status',
       header: ({ column }) => {
         return (
-          <div className="flex justify-center">
+          <div className="flex flex-start">
             <HeaderSorting column={column} headerName="Status" />
           </div>
         );
@@ -66,9 +66,9 @@ export const invitationsTableColumns = (
       cell: ({ row }) => {
         const invitation = row.original;
         return (
-          <div className="flex justify-center">
+          <div className="flex flex-start">
             <Button
-              variant="outline"
+              variant="ghost"
               justify="between"
               size="sm"
               className="w-[170px]"
@@ -90,7 +90,7 @@ export const invitationsTableColumns = (
       accessorKey: 'expiryDate',
       header: ({ column }) => {
         return (
-          <div className="flex justify-center">
+          <div className="flex flex-start">
             <HeaderSorting column={column} headerName="Expiry Date" />
           </div>
         );
@@ -99,9 +99,7 @@ export const invitationsTableColumns = (
         const isoDate = row.original.expiryDate;
         const date = new Date(isoDate);
         return (
-          <div className="flex justify-center">
-            {format(date, 'MMM d, yyyy')}
-          </div>
+          <div className="flex flex-start">{format(date, 'MMM d, yyyy')}</div>
         );
       },
       enableResizing: true,
@@ -130,15 +128,17 @@ export const invitationsTableColumns = (
             receiverEmail: invitation.receiverEmail,
             receiverName: invitation.receiverName,
             senderId: invitation._id,
+            webUrl: getClientOrigin(),
           });
         };
 
         return (
-          <div className="flex justify-center gap-1">
+          <div className="flex flex-start gap-1">
             <Button
+              variant="outline"
               justify="between"
               size="sm"
-              className="bg-(--vtmp-orange)"
+              className="bg-vtmp-orange"
               onClick={handleRevoke}
               disabled={!isPending}
             >
@@ -147,7 +147,7 @@ export const invitationsTableColumns = (
             <Button
               justify="between"
               size="sm"
-              className="bg-[#E1FFFA]"
+              className="bg-vtmp-mint"
               onClick={handleResend}
               disabled={!isPending}
             >

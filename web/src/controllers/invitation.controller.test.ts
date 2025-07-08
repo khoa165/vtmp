@@ -140,6 +140,7 @@ describe('InvitationController', () => {
   });
 
   describe('POST /invitations', () => {
+    const mockWebUrl = 'https://google.com';
     runDefaultAuthMiddlewareTests({
       route: '/api/invitations',
       method: HTTPMethod.POST,
@@ -147,6 +148,7 @@ describe('InvitationController', () => {
         receiverName: mockMenteeName,
         receiverEmail: mockOneInvitation.receiverEmail,
         senderId: mockAdminId,
+        webUrl: mockWebUrl,
       },
     });
 
@@ -158,6 +160,7 @@ describe('InvitationController', () => {
             receiverName: mockMenteeName,
             receiverEmail: mockOneInvitation.receiverEmail,
             senderId: mockAdminId,
+            webUrl: mockWebUrl,
           })
           .set('Accept', 'application/json')
           .set('Authorization', `Bearer ${token}`);
@@ -173,6 +176,7 @@ describe('InvitationController', () => {
         .send({
           receiverEmail: mockOneInvitation.receiverEmail,
           senderId: mockAdminId,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
@@ -187,6 +191,7 @@ describe('InvitationController', () => {
         .send({
           receiverName: mockMenteeName,
           senderId: mockAdminId,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
@@ -195,17 +200,48 @@ describe('InvitationController', () => {
       expect(res.body.errors[0].message).to.equal('Receiver Email is required');
     });
 
+    it('should return error for invalid receiverEmail', async () => {
+      const res = await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverName: mockMenteeName,
+          receiverEmail: 'invalid-email',
+          senderId: mockAdminId,
+          webUrl: mockWebUrl,
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Invalid email address');
+    });
+
     it('should return error for missing senderId', async () => {
       const res = await request(app)
         .post('/api/invitations')
         .send({
           receiverName: mockMenteeName,
           receiverEmail: mockOneInvitation.receiverEmail,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('SenderId is required');
+    });
+
+    it('should return error for missing webUrl', async () => {
+      const res = await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverName: mockMenteeName,
+          receiverEmail: mockOneInvitation.receiverEmail,
+          senderId: mockAdminId,
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`);
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('WebUrl is required');
     });
 
     it('should return error message when user associated with invitation receiver email already exists', async () => {
@@ -223,6 +259,7 @@ describe('InvitationController', () => {
           receiverName: `${mockUser.firstName} ${mockUser.lastName}`,
           receiverEmail: mockUser.email,
           senderId: mockAdminId,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
@@ -245,6 +282,7 @@ describe('InvitationController', () => {
           receiverName: mockMenteeName,
           receiverEmail: mockOneInvitation.receiverEmail,
           senderId: mockAdminId,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
@@ -268,6 +306,7 @@ describe('InvitationController', () => {
           receiverName: mockMenteeName,
           receiverEmail: mockOneInvitation.receiverEmail,
           senderId: mockAdminId,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
@@ -293,6 +332,7 @@ describe('InvitationController', () => {
           receiverName: mockMenteeName,
           receiverEmail: mockOneInvitation.receiverEmail,
           senderId: mockAdminId,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);

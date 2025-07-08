@@ -10,6 +10,8 @@ export const formatStatus = (status: ApplicationStatus) => {
   return status === ApplicationStatus.OA ? status : capitalize(status);
 };
 
+export const getClientOrigin = (): string => window.location.origin;
+
 export const convertToInterviewStatusEnum = (
   str: string
 ): InterviewStatus | undefined => {
