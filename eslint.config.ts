@@ -166,7 +166,6 @@ export default tseslint.config(
       '@typescript-eslint/no-var-requires': 'error',
       'customEslintRules/no-try-in-controller-or-middleware': 'error',
       'customEslintRules/enforce-uppercase-enum-values': 'error',
-      'typescriptSortKeys/interface': 'error',
       'typescriptSortKeys/string-enum': 'error',
       'boundaries/element-types': [
         'error',
