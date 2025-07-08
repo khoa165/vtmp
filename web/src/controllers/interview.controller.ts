@@ -1,10 +1,15 @@
 import { Request, Response } from 'express';
-import { z } from 'zod';
 import mongoose from 'mongoose';
+import { z } from 'zod';
 
-import { InterviewService } from '@/services/interview.service';
+import {
+  InterviewShareStatus,
+  InterviewStatus,
+  InterviewType,
+} from '@vtmp/common/constants';
+
 import { getUserFromRequest } from '@/middlewares/utils';
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import { InterviewService } from '@/services/interview.service';
 
 const InterviewIdParamsSchema = z
   .object({
@@ -21,15 +26,25 @@ const InterviewCreateSchema = z
     applicationId: z
       .string({ required_error: 'Application ID is required' })
       .refine((id) => mongoose.Types.ObjectId.isValid(id), {
-        message: 'Invalid application ID format',
+        message: 'Invalid application ID',
       }),
     types: z
-      .array(z.nativeEnum(InterviewType), {
-        required_error: 'Interview types is required',
-        invalid_type_error: 'Invalid interview type format',
+      .array(
+        z.nativeEnum(InterviewType, {
+          message: 'Invalid interview type',
+        }),
+        {
+          message: 'Interview types is required',
+        }
+      )
+      .min(1, {
+        message: 'At least one interview type is required',
+      }),
+    status: z
+      .nativeEnum(InterviewStatus, {
+        message: 'Invalid interview status',
       })
-      .min(1, { message: 'Must select at least 1 interview type' }),
-    status: z.nativeEnum(InterviewStatus).optional(),
+      .optional(),
     interviewOnDate: z.coerce.date(),
     note: z.string().optional(),
   })
@@ -64,9 +79,21 @@ const InterviewApplicationFilter = z
     )
   );
 
-const InterviewCompanyFilter = z
+const SharedInterviewFilter = z
   .object({
-    companyName: z.string({ required_error: 'Company Name is required' }),
+    companyName: z.string().optional(),
+    types: z
+      .array(
+        z.nativeEnum(InterviewType, {
+          message: 'Invalid interview type',
+        })
+      )
+      .optional(),
+    status: z
+      .nativeEnum(InterviewStatus, {
+        message: 'Invalid interview status',
+      })
+      .optional(),
   })
   .strict()
   .transform((data) =>
@@ -96,6 +123,14 @@ const AdminInterviewFilter = z
       Object.entries(data).filter(([, value]) => value !== undefined)
     )
   );
+
+const ShareInterviewSchema = z
+  .object({
+    shareStatus: z.nativeEnum(InterviewShareStatus, {
+      message: 'Invalid interview share status',
+    }),
+  })
+  .strict();
 
 export const InterviewController = {
   createInterview: async (req: Request, res: Response) => {
@@ -142,17 +177,6 @@ export const InterviewController = {
     });
   },
 
-  getInterviewsByCompanyName: async (req: Request, res: Response) => {
-    const filters = InterviewCompanyFilter.parse(req.query);
-
-    const interviews = await InterviewService.getInterviews({ filters });
-
-    res.status(200).json({
-      message: 'Interviews retrieved successfully',
-      data: interviews,
-    });
-  },
-
   getInterviews: async (req: Request, res: Response) => {
     const filters = AdminInterviewFilter.parse(req.query);
 
@@ -164,15 +188,29 @@ export const InterviewController = {
     });
   },
 
+  getSharedInterviews: async (req: Request, res: Response) => {
+    const filters = SharedInterviewFilter.parse(req.query);
+
+    const interviews = await InterviewService.getInterviews({
+      filters,
+      isShared: true,
+    });
+
+    res.status(200).json({
+      message: 'Interviews retrieved successfully',
+      data: interviews,
+    });
+  },
+
   updateInterviewById: async (req: Request, res: Response) => {
     const { interviewId } = InterviewIdParamsSchema.parse(req.params);
     const userId = getUserFromRequest(req).user.id;
-    const updatedMetadata = InterviewUpdateSchema.parse(req.body);
+    const newUpdate = InterviewUpdateSchema.parse(req.body);
 
     const updatedInterview = await InterviewService.updateInterviewById({
       interviewId,
       userId,
-      updatedMetadata,
+      newUpdate,
     });
 
     res.status(200).json({
@@ -193,6 +231,23 @@ export const InterviewController = {
     res.status(200).json({
       message: 'Interview deleted successfully',
       data: deletedInterview,
+    });
+  },
+
+  shareInterview: async (req: Request, res: Response) => {
+    const { interviewId } = InterviewIdParamsSchema.parse(req.params);
+    const { shareStatus } = ShareInterviewSchema.parse(req.body);
+    const userId = getUserFromRequest(req).user.id;
+
+    const sharedInterview = await InterviewService.updateInterviewShareStatus({
+      interviewId,
+      userId,
+      shareStatus,
+    });
+
+    res.status(200).json({
+      message: 'Interview shared successfully',
+      data: sharedInterview,
     });
   },
 };

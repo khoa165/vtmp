@@ -1,59 +1,50 @@
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { beforeEach, describe } from 'mocha';
+import { AuthType } from '@vtmp/server-common/constants';
+import { JWTUtils } from '@vtmp/server-common/utils';
 import bcrypt from 'bcryptjs';
-import { UserRepository } from '@/repositories/user.repository';
-import app from '@/app';
-import request from 'supertest';
 import { expect } from 'chai';
-import { useSandbox } from '@/testutils/sandbox.testutil';
+import { beforeEach, describe } from 'mocha';
+import { omit } from 'remeda';
+import request from 'supertest';
+
+import assert from 'assert';
+
+import { SystemRole } from '@vtmp/common/constants';
+
+import app from '@/app';
 import { EnvConfig } from '@/config/env';
+import { JWT_TOKEN_TYPE } from '@/constants/enums';
+import { IInvitation } from '@/models/invitation.model';
+import { UserRepository } from '@/repositories/user.repository';
+import { createMockInvitation } from '@/testutils/auth.testutils';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import { SystemRole } from '@vtmp/common/constants';
-import { AuthType } from '@vtmp/server-common/constants';
-import { JWTUtils } from '@vtmp/server-common/utils';
-import assert from 'assert';
-import { JWT_TOKEN_TYPE } from '@/constants/enums';
-import { InvitationRepository } from '@/repositories/invitation.repository';
-import { addDays } from 'date-fns';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { omit } from 'remeda';
+import { useSandbox } from '@/testutils/sandbox.testutil';
 
 describe('AuthController', () => {
   useMongoDB();
   const sandbox = useSandbox();
-  let mockInvitationToken: string;
+  let mockInvitation: IInvitation;
   let signupBody: {
     firstName: string;
     lastName: string;
-    email: string;
     password: string;
-    token: string;
+    invitationToken: string;
   };
 
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
-    mockInvitationToken = JWTUtils.createTokenWithPayload(
-      { receiverEmail: 'test123@gmail.com' },
-      EnvConfig.get().JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-    await InvitationRepository.createInvitation({
-      receiverEmail: 'test123@gmail.com',
-      receiverName: 'Test User',
-      sender: getNewMongoId(),
-      expiryDate: addDays(Date.now(), 7),
-      token: mockInvitationToken,
-    });
+
+    mockInvitation = await createMockInvitation('test123@gmail.com');
+
     signupBody = {
       firstName: 'admin',
       lastName: 'viettech',
-      email: 'test123@gmail.com',
       password: 'Test!123',
-      token: mockInvitationToken,
+      invitationToken: mockInvitation.token,
     };
   });
 
@@ -141,7 +132,7 @@ describe('AuthController', () => {
     it('should return error message for no invitation token', async () => {
       const res = await request(app)
         .post('/api/auth/signup')
-        .send(omit(signupBody, ['token']));
+        .send(omit(signupBody, ['invitationToken']));
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal(
         'An invitation token is required'
@@ -153,7 +144,7 @@ describe('AuthController', () => {
         .post('/api/auth/signup')
         .send({
           ...signupBody,
-          token: 'invalid-token',
+          invitationToken: 'invalid-token',
         });
       expectErrorsArray({ res, statusCode: 401, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('jwt malformed');
@@ -169,13 +160,13 @@ describe('AuthController', () => {
         .post('/api/auth/signup')
         .send({
           ...signupBody,
-          token: invalidToken,
+          invitationToken: invalidToken,
         });
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Invitation not found');
     });
 
-    it('should return error message for unrecognized field', async () => {
+    it('should return error message for unrecognized field Role', async () => {
       const res = await request(app)
         .post('/api/auth/signup')
         .send({
@@ -188,14 +179,17 @@ describe('AuthController', () => {
       );
     });
 
-    it('should return error message for missing email', async () => {
+    it('should return error message for unrecognized field Email', async () => {
       const res = await request(app)
         .post('/api/auth/signup')
-        .send(omit(signupBody, ['email']))
-        .set('Accept', 'application/json');
-
+        .send({
+          ...signupBody,
+          email: 'test123@gmail.com',
+        });
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Email is required');
+      expect(res.body.errors[0].message).to.equal(
+        "Unrecognized key(s) in object: 'email'"
+      );
     });
 
     it('should return error message for password being too short', async () => {
@@ -308,10 +302,11 @@ describe('AuthController', () => {
       );
     });
 
-    it('should return new user', async () => {
+    it('should return new user with email from invitation', async () => {
       const res = await request(app).post('/api/auth/signup').send(signupBody);
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('token');
+      expect(res.body.data.user.email).to.equal('test123@gmail.com');
     });
   });
 

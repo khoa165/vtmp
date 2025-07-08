@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { StatsPage } from './stats-page';
-import { StatsType } from '@/utils/constants';
+
+import { StatsPage } from '#vtmp/web-client/components/stats/stats-page';
+import { StatsType } from '#vtmp/web-client/utils/constants';
 
 export const StatsContainer = () => {
   return (

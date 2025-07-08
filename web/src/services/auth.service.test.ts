@@ -1,32 +1,38 @@
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { beforeEach, describe } from 'mocha';
-import { AuthService } from '@/services/auth.service';
-import { UserRepository } from '@/repositories/user.repository';
+import { AuthType } from '@vtmp/server-common/constants';
+import { JWTUtils } from '@vtmp/server-common/utils';
 import bcrypt from 'bcryptjs';
-import { useSandbox } from '@/testutils/sandbox.testutil';
+import { expect } from 'chai';
+import jwt from 'jsonwebtoken';
+import { beforeEach, describe } from 'mocha';
+import { ZodError } from 'zod';
+
+import assert from 'assert';
+
+import { InvitationStatus, SystemRole } from '@vtmp/common/constants';
+
 import { EnvConfig } from '@/config/env';
+import { JWT_TOKEN_TYPE } from '@/constants/enums';
+import { IInvitation } from '@/models/invitation.model';
+import { InvitationRepository } from '@/repositories/invitation.repository';
+import { UserRepository } from '@/repositories/user.repository';
+import { AuthService } from '@/services/auth.service';
+import { createMockInvitation } from '@/testutils/auth.testutils';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import { EmailService } from '@/utils/email';
 import {
   DuplicateResourceError,
   ResourceNotFoundError,
   UnauthorizedError,
 } from '@/utils/errors';
-import assert from 'assert';
-import { expect } from 'chai';
-import { SystemRole } from '@vtmp/common/constants';
-import { AuthType } from '@vtmp/server-common/constants';
-import { JWTUtils } from '@vtmp/server-common/utils';
-import { EmailService } from '@/utils/email';
-import { ZodError } from 'zod';
-import jwt from 'jsonwebtoken';
-import { JWT_TOKEN_TYPE } from '@/constants/enums';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 describe('AuthService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
   });
 
@@ -83,7 +89,26 @@ describe('AuthService', () => {
   });
 
   describe('signup', () => {
-    it('should fail to signup due to duplicate email', async () => {
+    let pendingInvitation: IInvitation;
+    let signupData: {
+      firstName: string;
+      lastName: string;
+      password: string;
+      invitationToken: string;
+    };
+
+    beforeEach(async () => {
+      pendingInvitation = await createMockInvitation('test@gmail.com');
+
+      signupData = {
+        firstName: 'admin123',
+        lastName: 'viettech',
+        password: 'test',
+        invitationToken: pendingInvitation.token,
+      };
+    });
+
+    it('should return DuplicateResourceError when signup due to duplicate email', async () => {
       const mockUser = {
         firstName: 'admin',
         lastName: 'viettech',
@@ -92,42 +117,31 @@ describe('AuthService', () => {
       };
       await UserRepository.createUser(mockUser);
 
-      const userData = {
-        firstName: 'admin123',
-        lastName: 'viettech',
-        email: 'test@gmail.com',
-        password: 'test',
-      };
-
-      await expect(AuthService.signup(userData)).eventually.rejectedWith(
+      await expect(AuthService.signup(signupData)).eventually.rejectedWith(
         DuplicateResourceError
       );
     });
 
     it('should signup successfully', async () => {
-      const userData = {
-        firstName: 'admin123',
-        lastName: 'viettech',
-        email: 'test12@gmail.com',
-        password: 'test',
-      };
-
-      await expect(AuthService.signup(userData)).eventually.fulfilled;
+      await expect(AuthService.signup(signupData)).eventually.fulfilled;
     });
 
-    it('should signup successfully with the same information', async () => {
-      const userData = {
-        firstName: 'admin123',
-        lastName: 'viettech',
-        email: 'test12@gmail.com',
-        password: 'test',
-      };
-
-      const data = await AuthService.signup(userData);
+    it('should signup successfully with first name, last name and password from user inputs and email from invitation', async () => {
+      const data = await AuthService.signup(signupData);
 
       assert(data);
       expect(data).to.have.property('token');
       expect(data.user.role).to.eq(SystemRole.USER);
+      expect(data.user.email).to.eq(pendingInvitation.receiverEmail);
+    });
+
+    it('should signup successfully and update invitation status to Accepted', async () => {
+      await AuthService.signup(signupData);
+      const updatedInvitation = await InvitationRepository.getInvitationById(
+        pendingInvitation._id.toString()
+      );
+      assert(updatedInvitation);
+      expect(updatedInvitation.status).to.eq(InvitationStatus.ACCEPTED);
     });
   });
 

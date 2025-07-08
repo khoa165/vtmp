@@ -1,12 +1,10 @@
-import { JWTUtils } from '@vtmp/server-common/utils';
 import z from 'zod';
-
-import { JobPostingRegion } from '@vtmp/common/constants';
-
 import { EnvConfig } from '@/config/env';
 import { JobPostingFilter } from '@/models/job-posting.model';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
+import { JobPostingRegion } from '@vtmp/common/constants';
+import { JWTUtils } from '@vtmp/server-common/utils';
 
 export const JobPostingService = {
   getJobPostingById: async (jobId: string) => {

@@ -6,22 +6,12 @@ on:
       - main
 
 jobs:
-  test-web:
-    uses: ./.github/workflows/test-web.yml
-
-  build-web-client:
-    uses: ./.github/workflows/build-web-client.yml
-
-  deploy-backend-staging:
-    needs: [test-web]
+  deploy-staging:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy backend
+      - name: Deploy backend to staging
         run: curl ${{ secrets.RENDER_STAGING_BACKEND_DEPLOY_HOOK }}
-
-  deploy-frontend-staging:
-    needs: [build-web-client]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy frontend
+      - name: Deploy frontend to staging
         run: curl ${{ secrets.RENDER_STAGING_FRONTEND_DEPLOY_HOOK }}
+      - name: Deploy discord service
+        run: curl ${{ secrets.RENDER_DISCORD_DEPLOY_HOOK }}

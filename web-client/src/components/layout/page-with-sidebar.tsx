@@ -1,8 +1,9 @@
 import React from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
-import { InternalToolsSidebar } from '@/components/layout/internal-tools-sidebar';
-import { SidebarProvider } from '@/components/base/sidebar';
 import { toast } from 'sonner';
+
+import { SidebarProvider } from '#vtmp/web-client/components/base/sidebar';
+import { InternalToolsSidebar } from '#vtmp/web-client/components/layout/internal-tools-sidebar';
 
 export const PageWithSidebar = () => {
   const open = document.cookie.split('=')[1];

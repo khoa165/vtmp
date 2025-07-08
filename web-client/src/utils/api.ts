@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import { EnvConfig } from '@/config/env';
-import { Method } from '@/utils/constants';
+import { EnvConfig } from '#vtmp/web-client/config/env';
+import { Method } from '#vtmp/web-client/utils/constants';
 
 const api = axios.create({
   baseURL: `${EnvConfig.get().VITE_API_URL}/api`,

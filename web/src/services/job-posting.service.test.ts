@@ -325,7 +325,7 @@ describe('JobPostingService', () => {
       });
     });
 
-    describe.only('getJobPostingsUserHasNotAppliedTo With Filter', () => {
+    describe('getJobPostingsUserHasNotAppliedTo With Filter', () => {
       const mockCompanyName = 'Company 1';
       const mockJobTitle = 'Engineer 2';
       const mockStartDate = new Date('2023-12-31');
@@ -506,7 +506,7 @@ describe('JobPostingService', () => {
       });
     });
 
-    describe.only('getJobPostingsUserHasNotAppliedTo with Pagination and Sort', () => {
+    describe('getJobPostingsUserHasNotAppliedTo with Pagination and Sort', () => {
       const mockCompanyName = 'Company 1';
       const mockJobTitle = 'Engineer 2';
       const mockStartDate = new Date('2023-12-31');
