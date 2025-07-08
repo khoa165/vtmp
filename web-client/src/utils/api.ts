@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 import { EnvConfig } from '#vtmp/web-client/config/env';
-import { useLogout } from '#vtmp/web-client/hooks/useLogout';
 import { Method } from '#vtmp/web-client/utils/constants';
 
 const api = axios.create({
@@ -42,8 +41,8 @@ api.interceptors.response.use(
       const status = error.response.status;
 
       if (status === 401) {
-        const { logout } = useLogout();
-        logout();
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
       }
     }
     return Promise.reject(error);
