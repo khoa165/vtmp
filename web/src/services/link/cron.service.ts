@@ -16,7 +16,7 @@ import { BadRequest, InternalServerError } from '@/utils/errors';
 const ENABLE_LINK_PROCESSING = false;
 const MAX_LONG_RETRY_ATTEMPTS = 4;
 const MAX_DURATION_BETWEEN_RETRIES = 30; // in minutes
-let PIPELINE_IN_PROCESS = false;
+export let PIPELINE_IN_PROCESS = false;
 export const CronService = {
   _getRetryFilter() {
     return {
@@ -61,7 +61,6 @@ export const CronService = {
 
     const NODE_ENV = EnvConfig.get().NODE_ENV;
     if (NODE_ENV === Environment.DEV) {
-      console.log(NODE_ENV);
       return api.request({
         method: 'POST',
         data: {
@@ -93,7 +92,10 @@ export const CronService = {
       console.log('PENDING links retrieved from database: ', links);
 
       // Return early if no links matches the getRetryFilter() filter
-      if (links.length === 0) return { successfulLinks: [], failedLinks: [] };
+      if (links.length === 0) {
+        PIPELINE_IN_PROCESS = false;
+        return { successfulLinks: [], failedLinks: [] };
+      }
 
       const linksData: SubmittedLink[] = links.map(
         ({ _id, originalUrl, attemptsCount }) => ({
