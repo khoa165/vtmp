@@ -81,6 +81,10 @@ jobs:
         if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
         run: yarn workspace @vtmp/web build
 
+      - name: Build web Docker image
+        if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
+        uses: ./.github/actions/build-web-docker
+
       - name: Test web
         if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
         uses: ./.github/actions/test-web
@@ -105,7 +109,7 @@ jobs:
 
       - name: Build link-processing-service Docker image
         if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}
-        uses: ./.github/actions/build-link-processing
+        uses: ./.github/actions/build-link-processing-docker
 
   # chromatic:
   #   needs: changes
