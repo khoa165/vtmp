@@ -5858,8 +5858,6 @@ __metadata:
     date-fns: "npm:^4.1.0"
     dotenv: "npm:^16.4.7"
     escape-string-regexp: "npm:^5.0.0"
-    eslint: "npm:^9.28.0"
-    eslint-plugin-react: "npm:^7.37.5"
     express: "npm:^4.21.2"
     express-mongo-sanitize: "npm:^2.2.0"
     express-rate-limit: "npm:^7.5.0"
