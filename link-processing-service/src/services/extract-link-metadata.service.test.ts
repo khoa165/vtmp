@@ -38,6 +38,7 @@ describe('ExtractLinkMetadataService', () => {
       '_generateContent'
     );
     sandbox.stub(console, 'error'); // Suppress console errors in tests
+    sandbox.stub(console, 'log');
   });
 
   describe('_generateMetadata', () => {
