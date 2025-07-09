@@ -43,7 +43,7 @@ export const InternalToolsSidebar = () => {
       roles: [SystemRole.ADMIN],
     },
     {
-      title: 'Pending Links',
+      title: 'Links',
       url: '/admin/links',
       icon: Link2,
       roles: [SystemRole.ADMIN, SystemRole.MODERATOR],
@@ -61,7 +61,7 @@ export const InternalToolsSidebar = () => {
       roles: [SystemRole.USER],
     },
     {
-      title: 'Interview Feed',
+      title: 'Interviews',
       url: '/interviews',
       icon: MessageSquareQuote,
       roles: [SystemRole.USER, SystemRole.ADMIN, SystemRole.MODERATOR],
