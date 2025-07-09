@@ -1,15 +1,13 @@
 import { z } from 'zod';
 
 import {
+  MetadataExtractedLinkSchema,
+  FailedProcessedLinkSchema,
   JobFunction,
   JobType,
   LinkRegion,
   LinkStatus,
 } from '@vtmp/common/constants';
-import {
-  MetadataExtractedLinkSchema,
-  FailedProcessedLinkSchema,
-} from '@vtmp/server-common/constants';
 
 export const LinkResponseSchema = z.object({
   _id: z.string(),
@@ -37,8 +35,10 @@ export const LinkResponseSchema = z.object({
     .optional(),
   datePosted: z.string().optional(),
   jobDescription: z.string().optional(),
+  aiNote: z.string().optional(),
 });
 
+export type LinkResponseType = z.infer<typeof LinkResponseSchema>;
 export const LinksResponseSchema = z.object({
   message: z.string(),
   data: z.array(LinkResponseSchema),

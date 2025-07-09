@@ -70,6 +70,7 @@ export const ExtractionLinkMetaDataSchema = z.object({
     })
     .optional(),
   jobDescription: z.string().optional(),
+  aiNote: z.string().optional(),
   attemptsCount: z.number({ required_error: 'attemptsCount is required' }),
   lastProcessedAt: z
     .string({ required_error: 'lastProcessedAt is required' })

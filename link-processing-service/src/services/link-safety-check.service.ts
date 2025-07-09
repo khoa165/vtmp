@@ -1,11 +1,12 @@
 import { GlobalOptions, safebrowsing_v4 } from '@googleapis/safebrowsing';
+import retry from 'retry';
+
 import {
   FailedProcessedLink,
   SubmittedLink,
-} from '@vtmp/server-common/constants';
-import retry from 'retry';
-
-import { LinkProcessingFailureStage, LinkStatus } from '@vtmp/common/constants';
+  LinkProcessingFailureStage,
+  LinkStatus,
+} from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
 import { executeWithRetry } from '@/helpers/retry.helper';

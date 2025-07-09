@@ -1,13 +1,14 @@
 import chromium from '@sparticuz/chromium';
-import {
-  SubmittedLink,
-  FailedProcessedLink,
-} from '@vtmp/server-common/constants';
 import pLimit from 'p-limit';
 import puppeteer, { Browser, Page } from 'puppeteer-core';
 import retry from 'retry';
 
-import { LinkProcessingFailureStage, LinkStatus } from '@vtmp/common/constants';
+import {
+  SubmittedLink,
+  FailedProcessedLink,
+  LinkProcessingFailureStage,
+  LinkStatus,
+} from '@vtmp/common/constants';
 
 import {
   executeWithRetry,

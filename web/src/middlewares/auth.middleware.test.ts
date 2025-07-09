@@ -56,7 +56,7 @@ describe('AuthMiddleware', () => {
 
     expectErrorsArray({
       res,
-      statusCode: 404,
+      statusCode: 401,
       errorsCount: 1,
     });
     expect(res.body.errors[0].message).to.eq('User not found');
