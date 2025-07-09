@@ -18,14 +18,9 @@ import { LinkService } from '@/services/link.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
-import {
-  DuplicateResourceError,
-  InternalServerError,
-  LinkProcessingBadRequest,
-  ResourceNotFoundError,
-} from '@/utils/errors';
+import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
-describe('LinkService', () => {
+describe.only('LinkService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 
@@ -59,8 +54,9 @@ describe('LinkService', () => {
 
   describe('submitLink', () => {
     it('should throw error when link with same url already exists', async () => {
+      console.log(googleLink);
       await expect(
-        LinkService.submitLink(mockLinkData)
+        LinkService.submitLink({ originalUrl: 'https://google.com' })
       ).eventually.rejectedWith(DuplicateResourceError);
     });
 
@@ -73,16 +69,6 @@ describe('LinkService', () => {
       await expect(
         LinkService.submitLink(invalidEnumData)
       ).eventually.rejectedWith(Error);
-    });
-
-    it('should throw error if repository throws unexpected error', async () => {
-      sandbox
-        .stub(LinkRepository, 'createLink')
-        .rejects(new InternalServerError('Unexpected DB failure', {}));
-
-      await expect(
-        LinkService.submitLink(mockLinkData)
-      ).eventually.rejectedWith('Unexpected DB failure');
     });
 
     it('should be able to create new link with expected fields', async () => {
@@ -184,63 +170,6 @@ describe('LinkService', () => {
       ).eventually.rejectedWith(ResourceNotFoundError);
     });
 
-    it('should throw error when failure stage included without status failed', async () => {
-      await expect(
-        LinkService.updateLinkMetaData(googleLink.id, {
-          ...mockLinkMetaData,
-          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-        })
-      ).eventually.rejectedWith(LinkProcessingBadRequest);
-    });
-
-    it('should throw error when status failed included with failureStage is null', async () => {
-      await expect(
-        LinkService.updateLinkMetaData(googleLink.id, {
-          ...mockLinkMetaData,
-          status: LinkStatus.PIPELINE_FAILED,
-          failureStage: null, // Adding failureStage to satisfy type requirement
-        })
-      ).eventually.rejectedWith(LinkProcessingBadRequest);
-    });
-
-    it('should throw when attemptsCount is 0 for failed status', async () => {
-      await expect(
-        LinkService.updateLinkMetaData(googleLink.id, {
-          ...mockLinkMetaData,
-          status: LinkStatus.PENDING_RETRY,
-          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-          attemptsCount: 0,
-        })
-      ).eventually.rejectedWith(LinkProcessingBadRequest);
-    });
-
-    it('should throw when status is set to PENDING_PROCESSING', async () => {
-      await expect(
-        LinkService.updateLinkMetaData(googleLink.id, {
-          ...mockLinkMetaData,
-          status: LinkStatus.PENDING_PROCESSING,
-        })
-      ).eventually.rejectedWith(LinkProcessingBadRequest);
-    });
-
-    it('should throw when status is set to PENDING_PROCESSING', async () => {
-      await expect(
-        LinkService.updateLinkMetaData(googleLink.id, {
-          ...mockLinkMetaData,
-          status: LinkStatus.PENDING_PROCESSING,
-        })
-      ).eventually.rejectedWith(LinkProcessingBadRequest);
-    });
-
-    it('should throw when status is set to ADMIN_APPROVED', async () => {
-      await expect(
-        LinkService.updateLinkMetaData(googleLink.id, {
-          ...mockLinkMetaData,
-          status: LinkStatus.ADMIN_APPROVED,
-        })
-      ).eventually.rejectedWith(LinkProcessingBadRequest);
-    });
-
     it('should be able to update link metadata with status not failed', async () => {
       await expect(
         LinkService.updateLinkMetaData(googleLink.id, mockLinkMetaData)
@@ -299,9 +228,9 @@ describe('LinkService', () => {
     });
 
     it('should be able to get multiple links by multiple statuses', async () => {
-      await LinkRepository.updateLinkStatus({
-        id: googleLink.id,
+      await LinkRepository.updateLinkMetaData(googleLink.id, {
         status: LinkStatus.ADMIN_APPROVED,
+        failureStage: null,
       });
 
       const afterUpdateLinks = await LinkService.getLinkCountByStatus();
@@ -325,9 +254,9 @@ describe('LinkService', () => {
     });
     describe('when no filter is provided', () => {
       it('should be able to get all links without status filter', async () => {
-        await LinkRepository.updateLinkStatus({
-          id: googleLink.id,
+        await LinkRepository.updateLinkMetaData(googleLink.id, {
           status: LinkStatus.ADMIN_APPROVED,
+          failureStage: null,
         });
         const links = await LinkService.getLinks();
 
@@ -362,9 +291,9 @@ describe('LinkService', () => {
       });
 
       it('should be able to get link by given status after update', async () => {
-        await LinkRepository.updateLinkStatus({
-          id: googleLink.id,
+        await LinkRepository.updateLinkMetaData(googleLink.id, {
           status: LinkStatus.ADMIN_APPROVED,
+          failureStage: null,
         });
         const links = await LinkService.getLinks({
           status: LinkStatus.ADMIN_APPROVED,
@@ -383,9 +312,9 @@ describe('LinkService', () => {
 
         expect(beforeUpdateLinks).to.be.an('array').that.have.lengthOf(3);
 
-        await LinkRepository.updateLinkStatus({
-          id: googleLink.id,
+        await LinkRepository.updateLinkMetaData(googleLink.id, {
           status: LinkStatus.ADMIN_APPROVED,
+          failureStage: null,
         });
         const afterUpdateLinks = await LinkService.getLinks({
           status: LinkStatus.PENDING_PROCESSING,

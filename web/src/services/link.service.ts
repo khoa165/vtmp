@@ -4,23 +4,20 @@ import { LinkStatus } from '@vtmp/common/constants';
 
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { LinkRepository } from '@/repositories/link.repository';
+import { LinkDeduplicatorService } from '@/services/link/link-deduplicator.service';
 import {
   ExtractionLinkMetaDataType,
   LinkMetaDataType,
 } from '@/types/link.types';
-import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
+import { ResourceNotFoundError } from '@/utils/errors';
 
 export const LinkService = {
   submitLink: async (linkMetaData: LinkMetaDataType) => {
     try {
+      await LinkDeduplicatorService.checkDuplicate(linkMetaData.originalUrl);
       return await LinkRepository.createLink(linkMetaData);
     } catch (error: unknown) {
-      if (error instanceof Error && 'code' in error && error.code === 11000) {
-        throw new DuplicateResourceError(
-          'Link is already submitted',
-          linkMetaData
-        );
-      }
+      console.log(error);
       throw error;
     }
   },
@@ -80,9 +77,9 @@ export const LinkService = {
   },
 
   rejectLink: async (linkId: string) => {
-    const updatedLink = await LinkRepository.updateLinkStatus({
-      id: linkId,
+    const updatedLink = await LinkRepository.updateLinkMetaData(linkId, {
       status: LinkStatus.ADMIN_REJECTED,
+      failureStage: null,
     });
     if (!updatedLink) {
       throw new ResourceNotFoundError('Link not found', {
