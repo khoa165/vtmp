@@ -29,6 +29,7 @@ export const ExtractedLinkMetadataSchema = z
       .optional(),
     datePosted: z.string().optional(),
     jobDescription: z.string().optional(),
+    aiNote: z.string().optional(),
   })
   .strict();
 
