@@ -16,7 +16,7 @@ import { LinkRepository } from '@/repositories/link.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 
-describe('LinkRepository', () => {
+describe.only('LinkRepository', () => {
   useMongoDB();
   const mockLinkData = {
     originalUrl: 'https://google.com',
