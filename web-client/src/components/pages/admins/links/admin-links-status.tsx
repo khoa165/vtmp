@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { LinkStatus } from '@vtmp/common/constants';
+import { formatEnumName } from '@vtmp/common/utils';
 
 import { Card } from '@/components/base/card';
 import { Skeleton } from '@/components/base/skeleton';
@@ -73,7 +74,7 @@ export const AdminLinksStatusCards = ({
               <div className="flex items-center gap-2">
                 <StatusDot status={status} colorMapping={LinksColorMapping} />
                 <span className="font-bold text-wrap max-lg:text-[0.7rem]">
-                  {status}
+                  {formatEnumName(status, { uppercase: true })}
                 </span>
               </div>
             </section>
