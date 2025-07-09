@@ -7,8 +7,8 @@ COPY package.json yarn.lock tsconfig.base.json ./
 COPY packages ./packages
 COPY link-processing-service ./link-processing-service
 
-# Enable Corepack and set Yarn version (required for Yarn 4+)
-RUN corepack enable && corepack prepare yarn@4.9.2 --activate
+# Install Yarn
+RUN corepack enable
 
 # Install deps
 RUN yarn install --immutable
