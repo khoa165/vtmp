@@ -137,8 +137,21 @@ export const InternalToolsSidebar = () => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <Avatar />
-              <SidebarTrigger />
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  className="!p-1 group-data-[collapsible=icon]:!p-1"
+                >
+                  <Link to="#">
+                    <Avatar userName={user.firstName + ' ' + user.lastName} />
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild className="flex justify-start">
+                  <SidebarTrigger />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
