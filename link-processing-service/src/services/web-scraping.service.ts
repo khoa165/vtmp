@@ -111,7 +111,7 @@ export const WebScrapingService = {
       submittedLinks.map((submittedLink) =>
         // Instead of calling async function directly, wrap it with the limiter
         // The limiter ensures that only CONCURRENCY_LIMIT promises are running at anytime
-        // When one batch finises, the next queued tasks batch starts
+        // When one batch finishes, the next queued tasks batch starts
         limit(async () => {
           const { userAgent, timeout } = this.config.scrapingConfig;
           // Open a new Chromium tab
