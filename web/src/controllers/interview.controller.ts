@@ -2,7 +2,11 @@ import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { z } from 'zod';
 
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
+import {
+  InterviewShareStatus,
+  InterviewStatus,
+  InterviewType,
+} from '@vtmp/common/constants';
 
 import { getUserFromRequest } from '@/middlewares/utils';
 import { InterviewService } from '@/services/interview.service';
@@ -98,6 +102,14 @@ const AdminInterviewFilter = z
     )
   );
 
+const ShareInterviewSchema = z
+  .object({
+    shareStatus: z.nativeEnum(InterviewShareStatus, {
+      message: 'Invalid interview share status',
+    }),
+  })
+  .strict();
+
 export const InterviewController = {
   createInterview: async (req: Request, res: Response) => {
     const userId = getUserFromRequest(req).user.id;
@@ -168,12 +180,12 @@ export const InterviewController = {
   updateInterviewById: async (req: Request, res: Response) => {
     const { interviewId } = InterviewIdParamsSchema.parse(req.params);
     const userId = getUserFromRequest(req).user.id;
-    const updatedMetadata = InterviewUpdateSchema.parse(req.body);
+    const newUpdate = InterviewUpdateSchema.parse(req.body);
 
     const updatedInterview = await InterviewService.updateInterviewById({
       interviewId,
       userId,
-      updatedMetadata,
+      newUpdate,
     });
 
     res.status(200).json({
@@ -194,6 +206,23 @@ export const InterviewController = {
     res.status(200).json({
       message: 'Interview deleted successfully',
       data: deletedInterview,
+    });
+  },
+
+  shareInterview: async (req: Request, res: Response) => {
+    const { interviewId } = InterviewIdParamsSchema.parse(req.params);
+    const { shareStatus } = ShareInterviewSchema.parse(req.body);
+    const userId = getUserFromRequest(req).user.id;
+
+    const sharedInterview = await InterviewService.updateInterviewShareStatus({
+      interviewId,
+      userId,
+      shareStatus,
+    });
+
+    res.status(200).json({
+      message: 'Interview shared successfully',
+      data: sharedInterview,
     });
   },
 };

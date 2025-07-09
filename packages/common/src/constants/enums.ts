@@ -29,6 +29,12 @@ export enum InterviewStatus {
   PENDING = 'PENDING',
 }
 
+export enum InterviewShareStatus {
+  UNSHARED = 'UNSHARED',
+  SHARED_PUBLIC = 'SHARED_PUBLIC',
+  SHARED_ANONYMOUS = 'SHARED_ANONYMOUS',
+}
+
 export enum InvitationStatus {
   ACCEPTED = 'ACCEPTED',
   EXPIRED = 'EXPIRED',
