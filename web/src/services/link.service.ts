@@ -13,13 +13,8 @@ import { ResourceNotFoundError } from '@/utils/errors';
 
 export const LinkService = {
   submitLink: async (linkMetaData: LinkMetaDataType) => {
-    try {
-      await LinkDeduplicatorService.checkDuplicate(linkMetaData.originalUrl);
-      return await LinkRepository.createLink(linkMetaData);
-    } catch (error: unknown) {
-      console.log(error);
-      throw error;
-    }
+    await LinkDeduplicatorService.checkDuplicate(linkMetaData.originalUrl);
+    return await LinkRepository.createLink(linkMetaData);
   },
 
   approveLinkAndCreateJobPosting: async (

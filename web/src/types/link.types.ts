@@ -80,6 +80,7 @@ export const ExtractionLinkMetaDataSchema = z.object({
       message: 'lastProcessedAt must be a valid ISO date string',
     })
     .optional(),
+  aiNote: z.string().optional(),
 });
 
 export type ExtractionLinkMetaDataType = z.infer<
