@@ -127,7 +127,7 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
             onChange={(event) =>
               table.getColumn('companyName')?.setFilterValue(event.target.value)
             }
-            className="max-w-sm flex-grow"
+            className="max-w-sm flex-grow text-white"
           />
           <FilterSelectionButton onApply={setFilters} />
         </div>
