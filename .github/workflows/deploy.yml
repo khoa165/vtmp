@@ -29,7 +29,7 @@ permissions:
   contents: read
 
 jobs:
-  deploy-staging:
+  deploy-services:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
