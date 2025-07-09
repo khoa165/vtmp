@@ -49,8 +49,8 @@ runs:
         file: link-processing-service/Dockerfile
         platforms: linux/amd64
         provenance: false # <--- disables provenance metadata, required for Lambda
-        # cache-from: type=local,src=/tmp/.buildx-cache
-        # cache-to: type=local,dest=/tmp/.buildx-cache
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache
         push: true
         tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr-repository }}:${{ github.sha }}
 
