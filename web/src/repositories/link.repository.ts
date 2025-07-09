@@ -35,12 +35,13 @@ export const LinkRepository = {
 
   updateLinkMetaData: async (
     id: string,
-    linkMetaData: ExtractionLinkMetaDataType
+    linkMetaData: ExtractionLinkMetaDataType,
+    session?: ClientSession
   ): Promise<ILink | null> => {
     return LinkModel.findOneAndUpdate(
       { _id: new Types.ObjectId(id) },
       { $set: linkMetaData },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true, session: session ?? null }
     ).lean();
   },
 

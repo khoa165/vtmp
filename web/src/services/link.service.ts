@@ -8,11 +8,7 @@ import {
   ExtractionLinkMetaDataType,
   LinkMetaDataType,
 } from '@/types/link.types';
-import {
-  DuplicateResourceError,
-  LinkProcessingBadRequest,
-  ResourceNotFoundError,
-} from '@/utils/errors';
+import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
 export const LinkService = {
   submitLink: async (linkMetaData: LinkMetaDataType) => {
@@ -37,10 +33,10 @@ export const LinkService = {
     session.startTransaction();
     let jobPosting;
     try {
-      const updatedLink = await LinkRepository.updateLinkStatus({
-        id: linkId,
+      const updatedLink = await LinkRepository.updateLinkMetaData(linkId, {
+        ...jobPostingData,
         status: LinkStatus.ADMIN_APPROVED,
-        session,
+        failureStage: null,
       });
       if (!updatedLink) {
         throw new ResourceNotFoundError('Link not found', {
@@ -72,17 +68,6 @@ export const LinkService = {
     linkId: string,
     linkMetaData: ExtractionLinkMetaDataType
   ) => {
-    const { status } = linkMetaData;
-    if (
-      status === LinkStatus.ADMIN_APPROVED ||
-      status === LinkStatus.ADMIN_REJECTED
-    ) {
-      throw new LinkProcessingBadRequest(
-        'Link status cannot be ADMIN_APPROVED or ADMIN_REJECTED when updating metadata',
-        { linkMetaData, linkId }
-      );
-    }
-
     const updatedLink = await LinkRepository.updateLinkMetaData(
       linkId,
       linkMetaData
