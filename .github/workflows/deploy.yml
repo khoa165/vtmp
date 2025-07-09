@@ -5,22 +5,22 @@ on:
   workflow_dispatch:
     inputs:
       deploy-web:
-        description: 'Deploy web to staging on Render ?'
+        description: 'Deploy web to staging'
         required: false
         default: true
         type: boolean
       deploy-web-client:
-        description: 'Deploy web-client to staging on Render ?'
+        description: 'Deploy web-client to staging'
         required: false
         default: true
         type: boolean
       deploy-discord-service:
-        description: 'Deploy discord-service to Render ?'
+        description: 'Deploy discord-service'
         required: false
         default: true
         type: boolean
       deploy-link-processing-service:
-        description: 'Deploy link-processing-service to AWS Lambda ?'
+        description: 'Deploy link-processing-service to AWS Lambda'
         required: false
         default: true
         type: boolean
