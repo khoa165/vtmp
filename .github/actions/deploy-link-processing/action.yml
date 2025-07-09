@@ -21,9 +21,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
@@ -51,6 +48,7 @@ runs:
         context: .
         file: link-processing-service/Dockerfile
         platforms: linux/amd64
+        provenance: false # disables provenance metadata, required for Lambda
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
         push: true
