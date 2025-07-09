@@ -10,8 +10,12 @@ runs:
         node-version: 22.x
         cache: 'yarn'
 
-    - name: Use latest yarn version
-      run: yarn set version stable
+    # - name: Use latest yarn version
+    #   run: yarn set version stable
+    #   shell: bash
+
+    - name: Use Yarn 4.9.2
+      run: yarn set version 4.9.2
       shell: bash
 
     - name: Install dependencies
