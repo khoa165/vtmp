@@ -34,6 +34,21 @@ interface IRequest {
   ): Promise<T>;
 }
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      const status = error.response.status;
+
+      if (status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const request: IRequest = async <T extends { data: object }>({
   method,
   url,

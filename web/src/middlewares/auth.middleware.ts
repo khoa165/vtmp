@@ -1,12 +1,14 @@
+import { AuthType } from '@vtmp/server-common/constants';
 import { JWTUtils } from '@vtmp/server-common/utils';
-import { UnauthorizedError } from '@/utils/errors';
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
-import UserService from '@/services/user.service';
-import { EnvConfig } from '@/config/env';
+
 import { SystemRole } from '@vtmp/common/constants';
-import { AuthType } from '@vtmp/server-common/constants';
+
+import { EnvConfig } from '@/config/env';
 import { AllowedIssuer } from '@/constants/enums';
+import UserService from '@/services/user.service';
+import { ResourceNotFoundError, UnauthorizedError } from '@/utils/errors';
 
 export const DecodedJWTSchema = z.object({
   id: z.string({ required_error: 'Id is required' }),
@@ -57,9 +59,15 @@ export const authenticate = async (
       DecodedJWTSchema,
       EnvConfig.get().JWT_SECRET
     );
-    const user = await UserService.getUserById(parsed.id);
 
-    req.user = { id: String(user._id), role: user.role };
+    try {
+      const user = await UserService.getUserById(parsed.id);
+      req.user = { id: String(user._id), role: user.role };
+    } catch (error) {
+      if (error instanceof ResourceNotFoundError)
+        throw new UnauthorizedError('User not found', {});
+      throw error;
+    }
   } else {
     const parsed = JWTUtils.verifyAndParseToken(
       token,
