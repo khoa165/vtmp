@@ -32,19 +32,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy web to staging
-        if: ${{ inputs.deploy-web == 'true' }}
+        if: ${{ inputs.deploy-web == true }}
         run: curl ${{ secrets.RENDER_STAGING_BACKEND_DEPLOY_HOOK }}
 
       - name: Deploy web-client to staging
-        if: ${{ inputs.deploy-web-client == 'true' }}
+        if: ${{ inputs.deploy-web-client == true }}
         run: curl ${{ secrets.RENDER_STAGING_FRONTEND_DEPLOY_HOOK }}
 
       - name: Deploy discord-service
-        if: ${{ inputs.deploy-discord-service == 'true' }}
+        if: ${{ inputs.deploy-discord-service == true }}
         run: curl ${{ secrets.RENDER_DISCORD_DEPLOY_HOOK }}
 
       - name: Deploy link-processing-service to AWS Lambda
-        if: ${{ inputs.deploy-link-processing-service == 'true' }}
+        if: ${{ inputs.deploy-link-processing-service == true }}
         uses: ./.github/actions/deploy-link-processing
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
