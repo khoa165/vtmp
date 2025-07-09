@@ -20,7 +20,7 @@ import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
-describe.only('LinkService', () => {
+describe('LinkService', () => {
   useMongoDB();
   const sandbox = useSandbox();
 

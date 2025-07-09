@@ -96,7 +96,7 @@ describe('LinkController', () => {
         .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Link is already submitted');
+      expect(res.body.errors[0].message).to.equal('Duplicate link found');
     });
 
     it('should return a link', async () => {
