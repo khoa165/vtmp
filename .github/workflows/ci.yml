@@ -77,35 +77,31 @@ jobs:
       - name: Use common setups action
         uses: ./.github/actions/common-setups
 
-      # - name: Build web
-      #   if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
-      #   run: yarn workspace @vtmp/web build
+      - name: Build web
+        if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
+        run: yarn workspace @vtmp/web build
 
-      # - name: Build web Docker image
-      #   if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
-      #   uses: ./.github/actions/build-web-docker
+      - name: Build web Docker image
+        if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
+        uses: ./.github/actions/build-web-docker
 
-      # - name: Test web
-      #   if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
-      #   uses: ./.github/actions/test-web
-      #   with:
-      #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Test web
+        if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
+        uses: ./.github/actions/test-web
+        with:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-      # - name: Build web client
-      #   if: ${{ needs.pipeline-setup.outputs.web-client == 'true' }}
-      #   run: yarn workspace @vtmp/web-client build
+      - name: Build web client
+        if: ${{ needs.pipeline-setup.outputs.web-client == 'true' }}
+        run: yarn workspace @vtmp/web-client build
 
-      # - name: Build discord service
-      #   if: ${{ needs.pipeline-setup.outputs.discord-service == 'true' }}
-      #   run: yarn workspace @vtmp/discord-service build
+      - name: Build discord service
+        if: ${{ needs.pipeline-setup.outputs.discord-service == 'true' }}
+        run: yarn workspace @vtmp/discord-service build
 
-      # - name: Build link processing service
-      #   if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}
-      #   run: yarn workspace @vtmp/link-processing-service build
-
-      # - name: Test link processing service
-      #   if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}
-      #   run: yarn workspace @vtmp/link-processing-service test
+      - name: Test link processing service
+        if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}
+        run: yarn workspace @vtmp/link-processing-service test
 
       - name: Build link-processing-service Docker image
         if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}
