@@ -1,7 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 
-import { Button } from '@/components/base/button';
+import { formatEnumName } from '@vtmp/common/utils';
+
 import { HeaderSorting } from '@/components/base/header';
 import { StatusDot } from '@/components/base/status-dot';
 import { ReviewPopupButton } from '@/components/pages/admins/links/review-popup-button';
@@ -52,26 +53,26 @@ export const adminLinksTableColumns = ({
     header: 'Status',
     cell: ({ row }) => {
       return (
-        <Button variant="outline">
+        <div className="flex items-center gap-2">
           <StatusDot
             status={row.original.status}
             colorMapping={LinksColorMapping}
           />
-          <span className="ml-2">{row.original.status}</span>
-        </Button>
+          {formatEnumName(row.original.status, { uppercase: true })}
+        </div>
       );
     },
   },
   {
     accessorKey: 'datePosted',
     header: ({ column }) => (
-      <HeaderSorting column={column} headerName="Date Posted" />
+      <HeaderSorting column={column} headerName="Submitted" />
     ),
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('datePosted');
       if (!isoDate) return <div>{format(new Date(), MONTH_DATE_YEAR)}</div>;
       const date = new Date(isoDate);
-      return <div>{format(date, MONTH_DATE_YEAR)}</div>;
+      return <div>{formatDistanceToNow(date, { addSuffix: true })}</div>;
     },
   },
   {
