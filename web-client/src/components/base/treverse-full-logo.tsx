@@ -6,8 +6,7 @@ export const TreverseFullLogo = ({ className }: TreverseFullLogoProps) => {
   return (
     <div className={className}>
       <svg
-        width="106"
-        height="16"
+        className={className}
         viewBox="0 0 639 98"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
