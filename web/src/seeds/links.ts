@@ -30,13 +30,11 @@ export const loadLinks = async (
     jobDescription: faker.lorem.paragraph(),
     location: faker.helpers.enumValue(LinkRegion),
     status: faker.helpers.weightedArrayElement([
-      { value: LinkStatus.PENDING_PROCESSING, weight: 5 },
-      { value: LinkStatus.PENDING_RETRY, weight: 5 },
-      { value: LinkStatus.PENDING_ADMIN_REVIEW, weight: 10 },
-      { value: LinkStatus.ADMIN_APPROVED, weight: 20 },
-      { value: LinkStatus.ADMIN_REJECTED, weight: 20 },
-      { value: LinkStatus.PIPELINE_FAILED, weight: 20 },
-      { value: LinkStatus.PIPELINE_REJECTED, weight: 20 },
+      { value: LinkStatus.PENDING_ADMIN_REVIEW, weight: 40 },
+      { value: LinkStatus.ADMIN_APPROVED, weight: 30 },
+      { value: LinkStatus.ADMIN_REJECTED, weight: 10 },
+      { value: LinkStatus.PIPELINE_FAILED, weight: 10 },
+      { value: LinkStatus.PIPELINE_REJECTED, weight: 10 },
     ]),
   });
 
