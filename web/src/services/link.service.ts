@@ -4,7 +4,6 @@ import { LinkStatus } from '@vtmp/common/constants';
 
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { LinkRepository } from '@/repositories/link.repository';
-import { LinkDeduplicatorService } from '@/services/link/link-deduplicator.service';
 import {
   ExtractionLinkMetaDataType,
   LinkMetaDataType,
@@ -13,7 +12,6 @@ import { ResourceNotFoundError } from '@/utils/errors';
 
 export const LinkService = {
   submitLink: async (linkMetaData: LinkMetaDataType) => {
-    await LinkDeduplicatorService.checkDuplicate(linkMetaData.originalUrl);
     return await LinkRepository.createLink(linkMetaData);
   },
 

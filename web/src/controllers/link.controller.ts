@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 
+import { LinkDeduplicatorService } from '@/services/link/link-deduplicator.service';
 import { LinkService } from '@/services/link.service';
 import {
   LinkFilterSchema,
@@ -12,7 +13,7 @@ import {
 export const LinkController = {
   submitLink: async (req: Request, res: Response) => {
     const parsedLink = LinkMetaDataSchema.parse(req.body);
-
+    await LinkDeduplicatorService.checkDuplicate(parsedLink.originalUrl);
     const submitLink = await LinkService.submitLink(parsedLink);
     res.status(201).json({
       message: 'Link has been submitted successfully.',
