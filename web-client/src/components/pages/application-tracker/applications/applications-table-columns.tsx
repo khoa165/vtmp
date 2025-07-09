@@ -54,6 +54,7 @@ export const applicationsTableColumns = ({
         </div>
       );
     },
+    meta: { displayName: 'Company' },
     enableResizing: true,
   },
   {
@@ -66,6 +67,7 @@ export const applicationsTableColumns = ({
         </div>
       );
     },
+    meta: { displayName: 'Status' },
     cell: ({ row }) => {
       const application = row.original;
       return (
@@ -89,6 +91,7 @@ export const applicationsTableColumns = ({
         </div>
       );
     },
+    meta: { displayName: 'Date Applied' },
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('appliedOnDate');
       if (!isoDate) return <div>-</div>;
@@ -101,6 +104,7 @@ export const applicationsTableColumns = ({
     accessorKey: 'portalLink',
     size: 300, // in pixels
     header: () => <div className="pl-2">Portal Link</div>,
+    meta: { displayName: 'Portal Link' },
     cell: ({ row }) => {
       return (
         <a
@@ -126,12 +130,9 @@ export const applicationsTableColumns = ({
         </div>
       );
     },
+    meta: { displayName: 'Interest' },
     cell: ({ row }) => {
-      return (
-        <div className="pl-2">
-          <ApplicationInterestColumn interest={row.original.interest} />
-        </div>
-      );
+      return <ApplicationInterestColumn interest={row.original.interest} />;
     },
     enableResizing: true,
   },
@@ -139,11 +140,13 @@ export const applicationsTableColumns = ({
     accessorKey: 'referrer',
     size: 130, // in pixels
     header: () => <div className="pl-2">Referrer</div>,
+    meta: { displayName: 'Referrer' },
     enableResizing: true,
   },
   {
     accessorKey: 'note',
     header: () => <div className="pl-2">Note</div>,
+    meta: { displayName: 'Note' },
     enableResizing: true,
   },
 ];
