@@ -26,6 +26,7 @@ describe('ExtractLinkMetadataService', () => {
     jobFunction: JobFunction.SOFTWARE_ENGINEER,
     jobType: JobType.INTERNSHIP,
     datePosted: '2024-05-10',
+    aiNote: 'hello',
   };
 
   let generateContentStub: sinon.SinonStub;
@@ -37,6 +38,7 @@ describe('ExtractLinkMetadataService', () => {
       '_generateContent'
     );
     sandbox.stub(console, 'error'); // Suppress console errors in tests
+    sandbox.stub(console, 'log');
   });
 
   describe('_generateMetadata', () => {
