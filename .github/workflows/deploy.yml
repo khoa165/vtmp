@@ -32,6 +32,9 @@ jobs:
   deploy-staging:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Deploy web to staging
         if: ${{ inputs.deploy-web == true }}
         run: curl ${{ secrets.RENDER_STAGING_BACKEND_DEPLOY_HOOK }}
