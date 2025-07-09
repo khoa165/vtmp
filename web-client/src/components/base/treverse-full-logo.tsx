@@ -1,6 +1,10 @@
-export const TreverseFullLogo = () => {
+interface TreverseFullLogoProps {
+  className?: string;
+}
+
+export const TreverseFullLogo = ({ className }: TreverseFullLogoProps) => {
   return (
-    <div>
+    <div className={className}>
       <svg
         width="106"
         height="16"

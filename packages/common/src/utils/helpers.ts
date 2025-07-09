@@ -1,11 +1,16 @@
 import { capitalize } from 'remeda';
 import { z, ZodObject, ZodRawShape } from 'zod';
 
-export const formatEnumName = (name: string) => {
+export const formatEnumName = (
+  name: string,
+  options?: {
+    uppercase: boolean;
+  }
+) => {
   return name
     .toLowerCase()
     .split('_')
-    .map((word) => capitalize(word))
+    .map((word) => (options?.uppercase ? word.toUpperCase() : capitalize(word)))
     .join(' ');
 };
 

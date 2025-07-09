@@ -331,7 +331,10 @@ export const ApplicationForm = ({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+              <AlertDialogCancel
+                className="text-vtmp-light-grey"
+                onClick={() => setIsDialogOpen(false)}
+              >
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction
