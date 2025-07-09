@@ -50,6 +50,6 @@ export const LinkRepository = {
   },
 
   getLinkByUrl: async (url: string): Promise<ILink | null> => {
-    return LinkModel.findOne({ url }).lean();
+    return LinkModel.findOne({ $or: [{ originalUrl: url }, { url }] }).lean();
   },
 };

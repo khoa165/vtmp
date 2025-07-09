@@ -8,10 +8,16 @@ import {
   ExtractionLinkMetaDataType,
   LinkMetaDataType,
 } from '@/types/link.types';
-import { ResourceNotFoundError } from '@/utils/errors';
+import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
 export const LinkService = {
   submitLink: async (linkMetaData: LinkMetaDataType) => {
+    const foundLink = await LinkRepository.getLinkByUrl(
+      linkMetaData.originalUrl
+    );
+    if (foundLink) {
+      throw new DuplicateResourceError('Duplicate link found', linkMetaData);
+    }
     return await LinkRepository.createLink(linkMetaData);
   },
 
