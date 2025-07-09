@@ -53,26 +53,6 @@ describe('LinkRepository', () => {
     });
   });
 
-  describe('updateLinkStatus', () => {
-    it('should throw error when link does not exist', async () => {
-      const link = await LinkRepository.updateLinkStatus({
-        id: getNewMongoId(),
-        status: LinkStatus.ADMIN_APPROVED,
-      });
-      assert(!link);
-    });
-
-    it('should be able to update link status', async () => {
-      const link = await LinkRepository.updateLinkStatus({
-        id: googleLink.id,
-        status: LinkStatus.ADMIN_APPROVED,
-      });
-
-      assert(link);
-      expect(link.status).to.equal(LinkStatus.ADMIN_APPROVED);
-    });
-  });
-
   describe('updateLinkMetaData', () => {
     const mockLinkMetaData = {
       url: 'https://google.com',
@@ -151,9 +131,9 @@ describe('LinkRepository', () => {
     });
 
     it('should be able to get multiple links by multiple statuses', async () => {
-      await LinkRepository.updateLinkStatus({
-        id: googleLink.id,
+      await LinkRepository.updateLinkMetaData(googleLink.id, {
         status: LinkStatus.ADMIN_APPROVED,
+        failureStage: null,
       });
 
       const afterUpdateLinks = await LinkRepository.getLinkCountByStatus();
@@ -187,9 +167,9 @@ describe('LinkRepository', () => {
     });
     describe('when no filter is provided', () => {
       it('should be able to get all links without status filter', async () => {
-        await LinkRepository.updateLinkStatus({
-          id: googleLink.id,
+        await LinkRepository.updateLinkMetaData(googleLink.id, {
           status: LinkStatus.ADMIN_APPROVED,
+          failureStage: null,
         });
         const links = await LinkRepository.getLinks();
 
@@ -224,9 +204,9 @@ describe('LinkRepository', () => {
       });
 
       it('should be able to get link by given status after update', async () => {
-        await LinkRepository.updateLinkStatus({
-          id: googleLink.id,
+        await LinkRepository.updateLinkMetaData(googleLink.id, {
           status: LinkStatus.ADMIN_APPROVED,
+          failureStage: null,
         });
         const links = await LinkRepository.getLinks({
           status: LinkStatus.ADMIN_APPROVED,
@@ -245,9 +225,9 @@ describe('LinkRepository', () => {
 
         expect(beforeUpdateLinks).to.be.an('array').that.have.lengthOf(3);
 
-        await LinkRepository.updateLinkStatus({
-          id: googleLink.id,
+        await LinkRepository.updateLinkMetaData(googleLink.id, {
           status: LinkStatus.ADMIN_APPROVED,
+          failureStage: null,
         });
         const afterUpdateLinks = await LinkRepository.getLinks({
           status: LinkStatus.PENDING_PROCESSING,
