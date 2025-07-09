@@ -6,7 +6,6 @@
   "license": "MIT",
   "private": true,
   "type": "module",
-  "packageManager": "yarn@4.9.2",
   "scripts": {
     "frontend": "yarn workspace @vtmp/common build && yarn workspace @vtmp/web-client dev",
     "backend": "yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build && yarn workspace @vtmp/web dev",
