@@ -30,11 +30,15 @@ export const LinkService = {
     session.startTransaction();
     let jobPosting;
     try {
-      const updatedLink = await LinkRepository.updateLinkMetaData(linkId, {
-        ...jobPostingData,
-        status: LinkStatus.ADMIN_APPROVED,
-        failureStage: null,
-      });
+      const updatedLink = await LinkRepository.updateLinkMetaData(
+        linkId,
+        {
+          ...jobPostingData,
+          status: LinkStatus.ADMIN_APPROVED,
+          failureStage: null,
+        },
+        session
+      );
       if (!updatedLink) {
         throw new ResourceNotFoundError('Link not found', {
           linkId,
