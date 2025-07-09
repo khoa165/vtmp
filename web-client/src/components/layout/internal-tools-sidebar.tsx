@@ -8,7 +8,7 @@ import {
   MessageSquareQuote,
 } from 'lucide-react';
 import { useMemo } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 
 import { SystemRole } from '@vtmp/common/constants';
 
@@ -87,6 +87,9 @@ export const InternalToolsSidebar = () => {
   const { logout } = useLogout();
   const { state } = useSidebar();
 
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <Sidebar collapsible="icon" variant="sidebar">
       <SidebarContent>
@@ -107,7 +110,10 @@ export const InternalToolsSidebar = () => {
 
               {visibleItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={item.url === currentPath}
+                  >
                     <Link to={item.url} aria-label={item.title}>
                       <item.icon />
                       <span>{item.title}</span>
