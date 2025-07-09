@@ -3,7 +3,7 @@ import { InterviewFeedContainer } from '@/components/pages/application-tracker/i
 
 export const InterviewFeedPage = () => {
   return (
-    <div className="container mx-auto py-10">
+    <div className="container-fluid p-10">
       <h1 className="text-3xl font-bold text-foreground mb-4">
         Interview Feed
       </h1>

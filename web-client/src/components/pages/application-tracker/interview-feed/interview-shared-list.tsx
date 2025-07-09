@@ -214,53 +214,6 @@ const InterviewAccordion = () => {
             role. It demonstrates engagement.
           </AccordionContent>
         </AccordionItem>
-
-        <AccordionItem value="tip5">
-          <AccordionTrigger className="text-left text-lg font-semibold px-0 hover:no-underline">
-            <div className="flex items-start gap-3 w-full text-start">
-              <div className="text-2xl font-bold text-background opacity-70">
-                5
-              </div>
-              <span>
-                How do I handle nervousness before or during an interview?
-              </span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="text-medium font-semibold">
-            Practice helps. Take deep breaths, stay positive, and focus on the
-            conversation instead of perfection.
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="tip6">
-          <AccordionTrigger className="text-left text-lg font-semibold px-0 hover:no-underline">
-            <div className="flex items-start gap-3 w-full text-start">
-              <div className="text-2xl font-bold text-background opacity-70">
-                6
-              </div>
-              <span>How important is body language during interviews?</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="text-medium font-semibold">
-            Very important. Sit upright, make eye contact, smile when
-            appropriate, and avoid fidgeting.
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="tip7">
-          <AccordionTrigger className="text-left text-lg font-semibold px-0 hover:no-underline">
-            <div className="flex items gap-3 w-full text-start">
-              <div className="text-2xl font-bold text-background opacity-70">
-                7
-              </div>
-              <span>Should I follow up after the interview?</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="text-medium font-semibold">
-            Yes. Send a brief thank-you email within 24 hours to express
-            appreciation and reiterate interest.
-          </AccordionContent>
-        </AccordionItem>
       </Accordion>
     </div>
   );
