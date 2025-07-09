@@ -18,7 +18,11 @@ import { LinkService } from '@/services/link.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
-import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
+import {
+  DuplicateResourceError,
+  LinkProcessingBadRequest,
+  ResourceNotFoundError,
+} from '@/utils/errors';
 
 describe('LinkService', () => {
   useMongoDB();
@@ -168,6 +172,54 @@ describe('LinkService', () => {
       await expect(
         LinkService.updateLinkMetaData(getNewMongoId(), mockLinkMetaData)
       ).eventually.rejectedWith(ResourceNotFoundError);
+    });
+
+    it('should throw error when failure stage included without status failed', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
+        })
+      ).eventually.rejectedWith(LinkProcessingBadRequest);
+    });
+
+    it('should throw error when status failed included with failureStage is null', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          status: LinkStatus.PIPELINE_FAILED,
+          failureStage: null, // Adding failureStage to satisfy type requirement
+        })
+      ).eventually.rejectedWith(LinkProcessingBadRequest);
+    });
+
+    it('should throw when attemptsCount is 0 for failed status', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          status: LinkStatus.PENDING_RETRY,
+          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
+          attemptsCount: 0,
+        })
+      ).eventually.rejectedWith(LinkProcessingBadRequest);
+    });
+
+    it('should throw when status is set to PENDING_PROCESSING', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          status: LinkStatus.PENDING_PROCESSING,
+        })
+      ).eventually.rejectedWith(LinkProcessingBadRequest);
+    });
+
+    it('should throw when status is set to PENDING_PROCESSING', async () => {
+      await expect(
+        LinkService.updateLinkMetaData(googleLink.id, {
+          ...mockLinkMetaData,
+          status: LinkStatus.PENDING_PROCESSING,
+        })
+      ).eventually.rejectedWith(LinkProcessingBadRequest);
     });
 
     it('should be able to update link metadata with status not failed', async () => {

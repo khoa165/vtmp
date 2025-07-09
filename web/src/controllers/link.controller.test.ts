@@ -280,6 +280,21 @@ describe('LinkController', () => {
       expect(res.body.message).to.equal('Link metadata has been updated!');
     });
 
+    it('should return error when trying to reset status to PENDING_PROCESSING', async () => {
+      const res = await request(app)
+        .put(`/api/links/${googleLink.id}/metadata`)
+        .send({
+          ...mockLinkMetaData,
+          status: LinkStatus.PENDING_PROCESSING,
+          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
+        })
+        .set('Authorization', `Bearer ${mockAdminToken}`);
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.include(
+        'status cannot be reset to PENDING_PROCESSING'
+      );
+    });
+
     it('should return link with updated metadata with status failed', async () => {
       const res = await request(app)
         .put(`/api/links/${googleLink.id}/metadata`)
