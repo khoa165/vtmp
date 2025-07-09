@@ -31,7 +31,14 @@ export const loadApplications = async ({
   ): Partial<IApplication> => ({
     userId: user._id,
     jobPostingId: jobPosting._id,
-    status: faker.helpers.enumValue(ApplicationStatus),
+    status: faker.helpers.weightedArrayElement([
+      { value: ApplicationStatus.SUBMITTED, weight: 70 },
+      { value: ApplicationStatus.OA, weight: 10 },
+      { value: ApplicationStatus.INTERVIEWING, weight: 3 },
+      { value: ApplicationStatus.OFFERED, weight: 2 },
+      { value: ApplicationStatus.REJECTED, weight: 5 },
+      { value: ApplicationStatus.WITHDRAWN, weight: 10 },
+    ]),
     referrer: faker.person.firstName(),
     portalLink: formatPortalLink(jobPosting.companyName),
     interest: faker.helpers.enumValue(InterestLevel),

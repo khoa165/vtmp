@@ -8,6 +8,7 @@ import {
   InterviewStatus,
   InterviewType,
 } from '@vtmp/common/constants';
+import { formatEnumName } from '@vtmp/common/utils';
 
 import { StatusDot } from '#vtmp/web-client/components/base/status-dot';
 import { InterviewStatusToColorMapping } from '#vtmp/web-client/utils/constants';
@@ -93,7 +94,7 @@ export const InterviewForm = ({
   });
 
   return (
-    <div className="rounded-xl bg-background border border-background p-6 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3">
+    <div className="rounded-xl bg-background border border-background p-6 mb-8 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3">
       <Form {...interviewForm}>
         <div>
           <FormField
@@ -108,7 +109,7 @@ export const InterviewForm = ({
                   <MultiSelect
                     {...field}
                     selected={field.value.map((type: InterviewType) => ({
-                      label: type.toString(),
+                      label: formatEnumName(type),
                       value: type,
                     }))}
                     placeholder="Types"

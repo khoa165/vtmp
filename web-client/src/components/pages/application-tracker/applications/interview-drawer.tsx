@@ -1,8 +1,8 @@
 import { Drawer, DrawerContent } from '@/components/base/drawer';
+import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
 import { ScrollArea } from '@/components/base/scroll-area';
 import { ApplicationForm } from '@/components/pages/application-tracker/applications/application-form';
 import { InterviewList } from '@/components/pages/application-tracker/applications/interview-list';
-import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
 
 interface InterviewDrawerProps {
   open: boolean;
@@ -19,7 +19,7 @@ export function InterviewDrawer({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent
         side="right"
-        className="min-w-[35vw] shadow-xl shadow-emerald-950/50"
+        className="min-w-[40vw] shadow-xl shadow-emerald-950/50"
       >
         <ScrollArea className="h-full w-full">
           <div className="mx-auto p-9 text-foreground">

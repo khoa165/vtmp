@@ -10,7 +10,7 @@ export const LandingPage = () => {
       title: 'Application Tracker',
       url: '/applications',
       overview:
-        'Track your various job application status, and interview stages seamlessly',
+        'Track your job application status, and interview stages seamlessly',
     },
     {
       logo: Calendar,
@@ -45,8 +45,8 @@ export const LandingPage = () => {
             For Viet Tech, by Viet Tech
           </h2>
           <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            Track applications, manage interviews, and get helpful insights from
-            a strong network of mentors and mentees
+            Track applications, manage interviews, and gain helpful insights
+            from a strong network of mentors and mentees
           </p>
         </div>
         <div></div>
