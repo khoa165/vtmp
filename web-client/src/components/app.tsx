@@ -8,6 +8,7 @@ import { allBlogsMetadata } from '#vtmp/web-client/blogs/metadata';
 import { Mentorship2025Apply } from '#vtmp/web-client/components/apply';
 import { BlogContainer } from '#vtmp/web-client/components/blogs';
 import { LandingContainer } from '#vtmp/web-client/components/landing';
+import { LandingPage } from '#vtmp/web-client/components/landing-page';
 import { PageWithNavigation } from '#vtmp/web-client/components/layout/page-with-navigation';
 import { PageWithPermission } from '#vtmp/web-client/components/layout/page-with-permission';
 import { PageWithSidebar } from '#vtmp/web-client/components/layout/page-with-sidebar';
@@ -70,6 +71,7 @@ export const App = () => {
           </Route>
         </Route>
         <Route path="/jobtrackr" element={<JobtrackrLanding />} />
+        <Route path="/treverse" element={<LandingPage />} />
         <Route element={<PageWithToast />}>
           <Route
             element={
