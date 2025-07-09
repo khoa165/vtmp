@@ -1,4 +1,5 @@
-name: Deploy web, web-client, discord-service to staging. Deploy link-processing-service to AWS Lambda
+# Deploy web, web-client, discord-service to staging. Deploy link-processing-service to AWS Lambda
+name: Deploy
 
 on:
   workflow_dispatch:
