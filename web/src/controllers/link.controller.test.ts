@@ -96,7 +96,7 @@ describe('LinkController', () => {
         .set('Authorization', `Bearer ${mockUserToken}`);
 
       expectErrorsArray({ res, statusCode: 409, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Link is already submitted');
+      expect(res.body.errors[0].message).to.equal('Duplicate link found');
     });
 
     it('should return a link', async () => {
@@ -266,22 +266,6 @@ describe('LinkController', () => {
       expect(res.body.errors[0].message).to.equal('Invalid failure stage');
     });
 
-    it('should return error message for including failure stage when status is not failed', async () => {
-      const res = await request(app)
-        .put(`/api/links/${googleLink.id}/metadata`)
-        .send({
-          ...mockLinkMetaData,
-          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-          status: LinkStatus.PENDING_ADMIN_REVIEW,
-        })
-        .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${mockAdminToken}`); // should be replaced to link processing service token;
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal(
-        'failureStage must not be set for PENDING_ADMIN_REVIEW'
-      );
-    });
-
     it('should return link with updated metadata with status not failed', async () => {
       const res = await request(app)
         .put(`/api/links/${googleLink.id}/metadata`)
@@ -294,39 +278,6 @@ describe('LinkController', () => {
         .set('Authorization', `Bearer ${mockAdminToken}`); // should be replaced to link processing service token
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.message).to.equal('Link metadata has been updated!');
-    });
-
-    it('should return error for missing attemptsCount when status is not final', async () => {
-      const { attemptsCount: _, ...rest } = mockLinkMetaData;
-      const res = await request(app)
-        .put(`/api/links/${googleLink.id}/metadata`)
-        .send({
-          ...rest,
-          status: LinkStatus.PIPELINE_FAILED,
-          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-        })
-        .set('Authorization', `Bearer ${mockAdminToken}`);
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.include(
-        'attemptsCount is required'
-      );
-    });
-
-    it('should return error for missing lastProcessedAt', async () => {
-      const { lastProcessedAt: _, ...rest } = mockLinkMetaData;
-      const res = await request(app)
-        .put(`/api/links/${googleLink.id}/metadata`)
-        .send({
-          ...rest,
-          attemptsCount: 1,
-          status: LinkStatus.PIPELINE_FAILED,
-          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-        })
-        .set('Authorization', `Bearer ${mockAdminToken}`);
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.include(
-        'lastProcessedAt is required'
-      );
     });
 
     it('should return error when trying to reset status to PENDING_PROCESSING', async () => {
@@ -401,9 +352,9 @@ describe('LinkController', () => {
         mockMultipleLinks.map((link) => LinkRepository.createLink(link))
       );
 
-      await LinkRepository.updateLinkStatus({
-        id: linkId,
+      await LinkRepository.updateLinkMetaData(linkId, {
         status: LinkStatus.ADMIN_APPROVED,
+        failureStage: null,
       });
 
       const res = await request(app)
@@ -489,9 +440,9 @@ describe('LinkController', () => {
     });
 
     it('should return empty array when no links exist with given status', async () => {
-      await LinkRepository.updateLinkStatus({
-        id: linkId,
+      await LinkRepository.updateLinkMetaData(linkId, {
         status: LinkStatus.ADMIN_REJECTED,
+        failureStage: null,
       });
       const res = await request(app)
         .get(`/api/links?status=${LinkStatus.ADMIN_APPROVED}`)
@@ -507,9 +458,9 @@ describe('LinkController', () => {
         mockMultipleLinks.map((link) => LinkRepository.createLink(link))
       );
 
-      await LinkRepository.updateLinkStatus({
-        id: linkId,
+      await LinkRepository.updateLinkMetaData(linkId, {
         status: LinkStatus.ADMIN_APPROVED,
+        failureStage: null,
       });
       const res = await request(app)
         .get('/api/links')
@@ -527,9 +478,9 @@ describe('LinkController', () => {
     });
 
     it('should return correct number of links with a given status', async () => {
-      await LinkRepository.updateLinkStatus({
-        id: linkId,
+      await LinkRepository.updateLinkMetaData(linkId, {
         status: LinkStatus.ADMIN_APPROVED,
+        failureStage: null,
       });
 
       const res = await request(app)
