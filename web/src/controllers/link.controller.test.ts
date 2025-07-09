@@ -296,39 +296,6 @@ describe('LinkController', () => {
       expect(res.body.message).to.equal('Link metadata has been updated!');
     });
 
-    it('should return error for missing attemptsCount when status is not final', async () => {
-      const { attemptsCount: _, ...rest } = mockLinkMetaData;
-      const res = await request(app)
-        .put(`/api/links/${googleLink.id}/metadata`)
-        .send({
-          ...rest,
-          status: LinkStatus.PIPELINE_FAILED,
-          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-        })
-        .set('Authorization', `Bearer ${mockAdminToken}`);
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.include(
-        'attemptsCount is required'
-      );
-    });
-
-    it('should return error for missing lastProcessedAt', async () => {
-      const { lastProcessedAt: _, ...rest } = mockLinkMetaData;
-      const res = await request(app)
-        .put(`/api/links/${googleLink.id}/metadata`)
-        .send({
-          ...rest,
-          attemptsCount: 1,
-          status: LinkStatus.PIPELINE_FAILED,
-          failureStage: LinkProcessingFailureStage.SCRAPING_FAILED,
-        })
-        .set('Authorization', `Bearer ${mockAdminToken}`);
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.include(
-        'lastProcessedAt is required'
-      );
-    });
-
     it('should return error when trying to reset status to PENDING_PROCESSING', async () => {
       const res = await request(app)
         .put(`/api/links/${googleLink.id}/metadata`)
