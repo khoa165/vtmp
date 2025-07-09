@@ -1,0 +1,28 @@
+name: Build web Docker image
+description: 'Build Docker image for web with buildx'
+
+runs:
+  using: composite
+  steps:
+    # Set up Docker Buildx for multi-platform builds and caching
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # Cache Docker build layers to speed up future builds
+    - name: Cache Docker layers
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: ${{ runner.os }}-buildx-
+
+    - name: Build web Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: web/Dockerfile
+        platforms: linux/amd64
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache
+        push: false
+        tags: ci-web:${{ github.sha }}

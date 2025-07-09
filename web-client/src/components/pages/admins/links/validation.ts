@@ -35,8 +35,10 @@ export const LinkResponseSchema = z.object({
     .optional(),
   datePosted: z.string().optional(),
   jobDescription: z.string().optional(),
+  aiNote: z.string().optional(),
 });
 
+export type LinkResponseType = z.infer<typeof LinkResponseSchema>;
 export const LinksResponseSchema = z.object({
   message: z.string(),
   data: z.array(LinkResponseSchema),
