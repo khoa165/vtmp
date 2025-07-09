@@ -77,10 +77,6 @@ jobs:
       - name: Use common setups action
         uses: ./.github/actions/common-setups
 
-      - name: Build web
-        if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
-        run: yarn workspace @vtmp/web build
-
       - name: Build web Docker image
         if: ${{ needs.pipeline-setup.outputs.web == 'true' }}
         uses: ./.github/actions/build-web-docker
