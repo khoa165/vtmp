@@ -94,7 +94,7 @@ export const InterviewForm = ({
   });
 
   return (
-    <div className="rounded-xl bg-background border border-background p-6 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3">
+    <div className="rounded-xl bg-background border border-background p-6 mb-8 shadow-[0_8px_30px_rgba(0,0,0,0.35)] space-y-3">
       <Form {...interviewForm}>
         <div>
           <FormField
