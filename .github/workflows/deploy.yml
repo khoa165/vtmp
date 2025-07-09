@@ -5,17 +5,17 @@ on:
   workflow_dispatch:
     inputs:
       deploy-web:
-        description: 'Deploy web to staging'
+        description: 'Deploy web to staging Render'
         required: false
         default: true
         type: boolean
       deploy-web-client:
-        description: 'Deploy web-client to staging'
+        description: 'Deploy web-client to staging Render'
         required: false
         default: true
         type: boolean
       deploy-discord-service:
-        description: 'Deploy discord-service'
+        description: 'Deploy discord-service to Render'
         required: false
         default: true
         type: boolean
