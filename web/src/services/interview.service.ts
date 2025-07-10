@@ -56,17 +56,10 @@ export const InterviewService = {
     };
     isShared?: boolean;
   }): Promise<IInterview[]> => {
-    console.log(
-      'Fetching interviews with filters:',
-      filters,
-      'isShared:',
-      isShared
-    );
     const interviews = await InterviewRepository.getInterviews({
       filters,
       isShared,
     });
-    console.log('Fetched Interviews:', interviews);
     return interviews;
   },
 
