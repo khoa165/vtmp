@@ -1,5 +1,6 @@
 import React from 'react';
-import { CompanyMetadataWithOffers } from '@/types';
+
+import { CompanyMetadataWithOffers } from '#vtmp/web-client/types';
 
 interface CompanyLogoProps {
   company: CompanyMetadataWithOffers;

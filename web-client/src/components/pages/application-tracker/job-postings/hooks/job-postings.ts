@@ -13,7 +13,7 @@ import { Method, QueryKey } from '@/utils/constants';
 
 export const useGetJobPostings = (jobPostingsFilters: JobPostingFilters) => {
   return useQuery({
-    queryKey: [QueryKey.GET_JOB_POSTINGS],
+    queryKey: [QueryKey.GET_JOB_POSTINGS, jobPostingsFilters],
     queryFn: () =>
       request({
         method: Method.GET,
@@ -64,6 +64,9 @@ export const useCreateApplication = () => {
       });
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_APPLICATIONS_COUNT_BY_STATUS],
       });
       toast.success(res.message);
     },

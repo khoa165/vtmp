@@ -2,9 +2,8 @@ import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { Link } from 'lucide-react';
 
-import { Checkbox } from '@/components/base/checkbox';
+import { Button } from '@/components/base/button';
 import { HeaderSorting } from '@/components/base/header';
-import { JobPostingsAction } from '@/components/pages/application-tracker/job-postings/job-postings-action';
 import { IJobPosting } from '@/components/pages/application-tracker/job-postings/validations';
 import { MONTH_DATE_YEAR } from '@/utils/date';
 
@@ -14,40 +13,18 @@ export const jobPostingsTableColumns = ({
   createApplicationFn: (body: { jobPostingId: string }) => void;
 }): ColumnDef<IJobPosting>[] => [
   {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="ml-4 border border-background hover:bg-background"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="ml-4"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: 'companyName',
     header: ({ column }) => {
       return <HeaderSorting column={column} headerName="Company" />;
     },
+    meta: { displayName: 'Company' },
   },
   {
     accessorKey: 'jobTitle',
     header: ({ column }) => {
       return <HeaderSorting column={column} headerName="Position" />;
     },
+    meta: { displayName: 'Position' },
     cell: ({ row }) => {
       // TODO-(QuangMinhNguyen27405): Modify column width for better visibility
       return (
@@ -68,12 +45,14 @@ export const jobPostingsTableColumns = ({
     header: ({ column }) => {
       return <HeaderSorting column={column} headerName="Location" />;
     },
+    meta: { displayName: 'Location' },
   },
   {
     accessorKey: 'datePosted',
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Date Posted" />;
+      return <HeaderSorting column={column} headerName="Posting date" />;
     },
+    meta: { displayName: 'Posting date' },
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('datePosted');
       const date = new Date(isoDate);
@@ -82,7 +61,8 @@ export const jobPostingsTableColumns = ({
   },
   {
     accessorKey: 'adminNotes',
-    header: 'Note',
+    header: 'Admin notes',
+    meta: { displayName: 'Admin notes' },
   },
   {
     id: 'actions',
@@ -90,10 +70,16 @@ export const jobPostingsTableColumns = ({
     cell: ({ row }) => {
       const jobPosting = row.original;
       return (
-        <JobPostingsAction
-          jobPosting={jobPosting}
-          createApplicationFn={createApplicationFn}
-        />
+        <div className="text-center">
+          <Button
+            size="lg"
+            onClick={() =>
+              createApplicationFn({ jobPostingId: jobPosting._id })
+            }
+          >
+            Mark as applied
+          </Button>
+        </div>
       );
     },
   },

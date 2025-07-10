@@ -1,16 +1,18 @@
-import * as chai from 'chai';
-import app from '@/app';
-import request from 'supertest';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { EnvConfig } from '@/config/env';
-import jwt from 'jsonwebtoken';
-import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
-import { DecodedJWTSchema } from '@/middlewares/auth.middleware';
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { AuthService } from '@/services/auth.service';
 import { AuthType } from '@vtmp/server-common/constants';
+import * as chai from 'chai';
+import jwt from 'jsonwebtoken';
+import request from 'supertest';
+
+import app from '@/app';
+import { EnvConfig } from '@/config/env';
+import { DecodedJWTSchema } from '@/middlewares/auth.middleware';
+import { AuthService } from '@/services/auth.service';
+import { createMockInvitation } from '@/testutils/auth.testutils';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { expectErrorsArray } from '@/testutils/response-assertion.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
 
 const { expect } = chai;
 describe('AuthMiddleware', () => {
@@ -61,17 +63,19 @@ describe('AuthMiddleware', () => {
   });
 
   it('should allow user to login, return a token and get user profile', async () => {
+    const mockInvitation = await createMockInvitation('test@gmail.com');
+
     await AuthService.signup({
       firstName: 'admin',
       lastName: 'viettech',
-      email: 'test@example.com',
       password: 'Test!123',
+      invitationToken: mockInvitation.token,
     });
 
     const resLogin = await request(app)
       .post('/api/auth/login')
       .send({
-        email: 'test@example.com',
+        email: mockInvitation.receiverEmail,
         password: 'Test!123',
       })
       .set('Accept', 'application/json');

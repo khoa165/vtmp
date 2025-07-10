@@ -1,0 +1,48 @@
+{
+  "name": "@vtmp/link-processing-service",
+  "version": "1.0.0",
+  "repository": "git@github.com:khoa165/vtmp.git",
+  "author": "Viet Tech Mentorship Program <viettechmentorshipprogram@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.149",
+    "@types/node": "^22.14.1",
+    "@types/retry": "^0",
+    "@types/sinon": "^17.0.3",
+    "@types/sinon-chai": "^4",
+    "chai": "^5.1.2",
+    "chai-as-promised": "^8.0.1",
+    "cross-env": "^7.0.3",
+    "mocha": "^11.6.0",
+    "sinon": "^19.0.2",
+    "sinon-chai": "^4.0.0",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@google/genai": "^1.4.0",
+    "@googleapis/safebrowsing": "^11.0.1",
+    "@middy/core": "^6.3.1",
+    "@middy/http-json-body-parser": "^6.3.1",
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "@sparticuz/chromium": "^137.0.1",
+    "@vtmp/common": "1.0.0",
+    "@vtmp/server-common": "1.0.0",
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
+    "p-limit": "^6.2.0",
+    "puppeteer-core": "^24.10.1",
+    "retry": "^0.13.1",
+    "zod": "^3.25.51"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "test": "cross-env NODE_ENV=TEST mocha ./**/*.test.ts --recursive --exit --timeout 600000",
+    "dev": "node -e 'console.warn(`To test link-processing-service, please run its Docker container.\nPlease refer to README.md for further details.`)'"
+  }
+}

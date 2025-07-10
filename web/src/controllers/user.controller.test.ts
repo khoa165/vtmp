@@ -1,18 +1,21 @@
+import { IUser } from '@vtmp/mongo/models';
+import { expect } from 'chai';
+import request from 'supertest';
+
+import { SystemRole } from '@vtmp/common/constants';
+
 import app from '@/app';
+import { EnvConfig } from '@/config/env';
 import { AuthService } from '@/services/auth.service';
+import { createMockInvitation } from '@/testutils/auth.testutils';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import request from 'supertest';
-import { expect } from 'chai';
-import { IUser } from '@/models/user.model';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { SystemRole } from '@vtmp/common/constants';
 import { useSandbox } from '@/testutils/sandbox.testutil';
-import { EnvConfig } from '@/config/env';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 
 describe('UserController', () => {
   useMongoDB();
@@ -20,6 +23,7 @@ describe('UserController', () => {
 
   let mockToken: string;
   let mockUserId: string;
+  let mockInvitationToken: string;
   const mockOneUser = {
     firstName: 'admin1',
     lastName: 'viettech',
@@ -44,11 +48,16 @@ describe('UserController', () => {
 
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
+    const mockInvitation = await createMockInvitation(mockOneUser.email);
+    mockInvitationToken = mockInvitation.token;
 
     ({
       token: mockToken,
       user: { _id: mockUserId },
-    } = await AuthService.signup(mockOneUser));
+    } = await AuthService.signup({
+      ...mockOneUser,
+      invitationToken: mockInvitationToken,
+    }));
   });
 
   describe('GET /users', () => {
@@ -64,7 +73,14 @@ describe('UserController', () => {
 
     it('should return an array of all existing users without encryptedPassword field', async () => {
       await Promise.all(
-        mockMultipleUsers.map((mockUser) => AuthService.signup(mockUser))
+        mockMultipleUsers.map(async (mockUser) => {
+          const mockInvitation = await createMockInvitation(mockUser.email);
+
+          return AuthService.signup({
+            ...mockUser,
+            invitationToken: mockInvitation.token,
+          });
+        })
       );
 
       const res = await request(app)

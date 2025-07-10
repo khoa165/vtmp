@@ -1,6 +1,7 @@
-import { Banner } from '@/components/layout/banner';
 import React from 'react';
-import { Navbar } from '@/components/layout/navigation-bar';
+
+import { Banner } from '#vtmp/web-client/components/layout/banner';
+import { Navbar } from '#vtmp/web-client/components/layout/navigation-bar';
 
 interface BannerPageProps {
   contentRef: React.RefObject<HTMLDivElement | null>;

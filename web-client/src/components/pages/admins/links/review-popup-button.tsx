@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 
 import { JobFunction, JobType, LinkRegion } from '@vtmp/common/constants';
 
+import { ReviewPopupSelect } from '#vtmp/web-client/components/pages/admins/links/review-popup-select';
 import { Button } from '@/components/base/button';
 import {
   Dialog,
@@ -18,8 +19,6 @@ import { Label } from '@/components/base/label';
 import { Textarea } from '@/components/base/textarea';
 import { ReviewPopupInput } from '@/components/pages/admins/links/review-popup-input';
 import { JobPostingData } from '@/components/pages/admins/links/validation';
-
-import { ReviewPopupSelect } from './review-popup-select';
 
 interface ReviewPopupButtonProps {
   currentLink: {
@@ -57,7 +56,10 @@ export const ReviewPopupButton = ({
     location: location ?? LinkRegion.UNKNOWN,
     jobFunction: jobFunction ?? JobFunction.UNKNOWN,
     jobType: jobType ?? JobType.UNKNOWN,
-    datePosted: datePosted ? format(new Date(datePosted), 'MM/dd/yyyy') : '',
+    datePosted: format(
+      new Date(datePosted ? datePosted : new Date()),
+      'MM/dd/yyyy'
+    ),
     jobDescription: jobDescription ?? '',
     adminNote: '',
   });

@@ -1,4 +1,3 @@
-import { submitLinkWithToken } from '@/utils/api';
 import {
   SlashCommand,
   CommandContext,
@@ -6,6 +5,8 @@ import {
   CommandOptionType,
 } from 'slash-create';
 import { z } from 'zod';
+
+import { submitLinkWithToken } from '@/utils/api';
 
 const urlSchema = z.string().url();
 
@@ -37,7 +38,7 @@ export class ShareLinkCommand extends SlashCommand {
 
     try {
       const response = await submitLinkWithToken('/links', {
-        url: parsed_url.data,
+        originalUrl: parsed_url.data,
       });
 
       if (response.status === 201) {
