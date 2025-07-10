@@ -16,10 +16,7 @@ export const InterviewInsightService = {
     companyName: string;
     sharedInterviews: IInterview[];
   }): Promise<InterviewInsights> => {
-    console.log('Shared Interviews:', sharedInterviews);
     const prompt = buildPrompt({ companyName, sharedInterviews });
-
-    console.log('Prompt for Interview Insights:', prompt);
 
     const response = await generateObject({
       model: google('gemini-2.5-flash'),
