@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 
 import { StatusDot } from '#vtmp/web-client/components/base/status-dot';
@@ -26,27 +24,17 @@ export const InterviewFilterContainer = ({
   interviewFilter: SharedInterviewFilter;
   setInterviewFilter: (filters: SharedInterviewFilter) => void;
 }) => {
-  const [companyInput, setCompanyInput] = useState(
-    interviewFilter?.companyName || ''
-  );
-
   return (
     <div className="flex items-center gap-2 my-3">
       <div className="w-60">
         <Input
           placeholder="Filter companies..."
-          value={companyInput}
+          value={interviewFilter.companyName}
           onChange={(event) => {
-            setCompanyInput(event.target.value);
-          }}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              event.preventDefault();
-              setInterviewFilter({
-                ...interviewFilter,
-                companyName: companyInput || undefined,
-              });
-            }
+            setInterviewFilter({
+              ...interviewFilter,
+              companyName: event.target.value || undefined,
+            });
           }}
           className="rounded-lg p-2 border border-input px-3 py-2 text-sm text-foreground shadow-sm w-full"
         />

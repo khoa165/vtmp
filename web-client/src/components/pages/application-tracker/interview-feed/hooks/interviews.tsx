@@ -37,4 +37,5 @@ export const useGetInterviewInsights = (
         schema: InterviewInsightsSchema,
         options: { includeOnlyDataField: true, requireAuth: true },
       }),
+    enabled: !!interviewFilter.companyName,
   });
