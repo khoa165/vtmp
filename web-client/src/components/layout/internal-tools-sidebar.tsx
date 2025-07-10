@@ -102,7 +102,7 @@ export const InternalToolsSidebar = () => {
                     {state === 'collapsed' ? (
                       <TreverseLogo />
                     ) : (
-                      <TreverseFullLogo />
+                      <TreverseFullLogo className="w-[106px] h-[16px]" />
                     )}
                   </Link>
                 </SidebarMenuButton>
