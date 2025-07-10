@@ -10,7 +10,7 @@ export const buildPrompt = ({
   sharedInterviews: IInterview[];
 }): string => {
   return `
-    ${sharedInterviews}
+    ${JSON.stringify(sharedInterviews, null, 2)}
     \n\n
     You are given a list of interviews of the company ${companyName} that have been shared by users. 
     Each interview contains information about the name of the company, job title, location, interview date, users' note, and other details.
