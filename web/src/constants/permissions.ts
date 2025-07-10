@@ -21,6 +21,9 @@ export const roleToPermissionMapping: Record<SystemRole, Permission[]> = {
     Permission.VIEW_VISUALIZATION,
   ],
   [SystemRole.MODERATOR]: [
+    Permission.VIEW_APPLICATION,
+    Permission.MANAGE_APPLICATION,
+
     Permission.VIEW_JOB_LINK,
     Permission.CREATE_JOB_LINK,
     Permission.MANAGE_JOB_LINK,

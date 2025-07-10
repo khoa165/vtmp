@@ -84,7 +84,11 @@ export const App = () => {
             <Route path="/interviews" element={<InterviewFeedPage />} />
             <Route
               path="/admin"
-              element={<PageWithPermission roles={[SystemRole.ADMIN]} />}
+              element={
+                <PageWithPermission
+                  roles={[SystemRole.ADMIN, SystemRole.MODERATOR]}
+                />
+              }
             >
               <Route path="invitations" element={<InvitationsPage />} />
               <Route path="links" element={<AdminLinksPage />} />
