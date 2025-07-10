@@ -202,6 +202,19 @@ export const InterviewController = {
     });
   },
 
+  getInterviewInsights: async (req: Request, res: Response) => {
+    const filters = SharedInterviewFilter.parse(req.query);
+
+    const insights = await InterviewService.getInterviewInsights({
+      filters,
+    });
+
+    res.status(200).json({
+      message: 'Interview insights retrieved successfully',
+      data: insights,
+    });
+  },
+
   updateInterviewById: async (req: Request, res: Response) => {
     const { interviewId } = InterviewIdParamsSchema.parse(req.params);
     const userId = getUserFromRequest(req).user.id;

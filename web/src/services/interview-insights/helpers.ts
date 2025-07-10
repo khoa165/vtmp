@@ -12,6 +12,7 @@ export const buildPrompt = (sharedInterviews: IInterview[]): string => {
     **General Instructions:**
     - Provide the company details, products that might be helpful to the users.
     - Provide insights about the company and interview process based on the shared interviews.
+    - In case none of the interviews provide sufficient information, you may include general knowledge about the company and its interview practices.
   `;
 };
 
