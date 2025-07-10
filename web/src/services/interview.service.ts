@@ -76,12 +76,10 @@ export const InterviewService = {
         isShared: true,
       });
 
-      if (filters.companyName) {
-        return await InterviewInsightService.getInterviewInsight({
-          companyName: filters.companyName,
-          sharedInterviews: interviews,
-        });
-      }
+      return await InterviewInsightService.getInterviewInsight({
+        companyName: filters.companyName,
+        sharedInterviews: interviews,
+      });
     }
 
     return null;
