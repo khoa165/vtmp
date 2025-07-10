@@ -1,0 +1,12 @@
+{
+  "name": "vtmp",
+  "packageManager": "yarn@4.8.1",
+  "workspaces": [
+    "web",
+    "web-client",
+    "packages/*",
+    "apps/*",
+    "discord-service",
+    "link-processing-service"
+  ]
+}
