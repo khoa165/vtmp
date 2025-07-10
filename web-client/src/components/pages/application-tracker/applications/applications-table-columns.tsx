@@ -4,7 +4,6 @@ import { Link } from 'lucide-react';
 
 import { ApplicationStatus } from '@vtmp/common/constants';
 
-import { Checkbox } from '@/components/base/checkbox';
 import { HeaderSorting } from '@/components/base/header';
 import { ApplicationInterestColumn } from '@/components/pages/application-tracker/applications/application-interest-column';
 import {
@@ -30,76 +29,89 @@ export const applicationsTableColumns = ({
   handleOpenDrawer: (id: string) => void;
 }): ColumnDef<IApplication>[] => [
   {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="ml-4"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="ml-4"
-      />
-    ),
-    enableSorting: false,
+    id: 'actions',
     enableHiding: false,
-    enableResizing: false,
+    size: 150, // in pixels
+    cell: ({ row }) => {
+      const application = row.original;
+      return (
+        <div className="flex justify-center items-center">
+          <CellActions
+            application={application}
+            deleteApplicationFn={deleteApplicationFn}
+            handleOpenDrawer={handleOpenDrawer}
+          />
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'companyName',
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Company" />;
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Company" />
+        </div>
+      );
     },
+    meta: { displayName: 'Company' },
     enableResizing: true,
   },
   {
     accessorKey: 'status',
+    size: 200, // in pixels
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Status" />;
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Status" />
+        </div>
+      );
     },
+    meta: { displayName: 'Status' },
     cell: ({ row }) => {
       const application = row.original;
       return (
-        <CellApplicationStatus
-          application={application}
-          updateApplicationStatusFn={updateApplicationStatusFn}
-        />
+        <div className="pl-2">
+          <CellApplicationStatus
+            application={application}
+            updateApplicationStatusFn={updateApplicationStatusFn}
+          />
+        </div>
       );
     },
     enableResizing: true,
   },
   {
     accessorKey: 'appliedOnDate',
+    size: 100, // in pixels
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Date Applied" />;
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Date Applied" />
+        </div>
+      );
     },
+    meta: { displayName: 'Date Applied' },
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('appliedOnDate');
       if (!isoDate) return <div>-</div>;
       const date = new Date(isoDate);
-      return <div>{format(date, MONTH_DATE_YEAR)}</div>;
+      return <div className="pl-2">{format(date, MONTH_DATE_YEAR)}</div>;
     },
     enableResizing: true,
   },
   {
     accessorKey: 'portalLink',
-    header: 'Portal Link',
+    size: 300, // in pixels
+    header: () => <div className="pl-2">Portal Link</div>,
+    meta: { displayName: 'Portal Link' },
     cell: ({ row }) => {
       return (
         <a
           href={row.original.portalLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center underline hover:text-primary"
+          className="inline-flex items-center underline hover:text-primary pl-2"
         >
           {row.original.portalLink}
           <Link className="ml-1 h-4 w-4" />
@@ -110,28 +122,31 @@ export const applicationsTableColumns = ({
   },
   {
     accessorKey: 'interest',
+    size: 100, // in pixels
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Interest" />;
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Interest" />
+        </div>
+      );
     },
+    meta: { displayName: 'Interest' },
     cell: ({ row }) => {
       return <ApplicationInterestColumn interest={row.original.interest} />;
     },
     enableResizing: true,
   },
-  { accessorKey: 'referrer', header: 'Referrer', enableResizing: true },
-  { accessorKey: 'note', header: 'Note', enableResizing: true },
   {
-    id: 'actions',
-    enableHiding: false,
-    cell: ({ row }) => {
-      const application = row.original;
-      return (
-        <CellActions
-          application={application}
-          deleteApplicationFn={deleteApplicationFn}
-          handleOpenDrawer={handleOpenDrawer}
-        />
-      );
-    },
+    accessorKey: 'referrer',
+    size: 130, // in pixels
+    header: () => <div className="pl-2">Referrer</div>,
+    meta: { displayName: 'Referrer' },
+    enableResizing: true,
+  },
+  {
+    accessorKey: 'note',
+    header: () => <div className="pl-2">Note</div>,
+    meta: { displayName: 'Note' },
+    enableResizing: true,
   },
 ];

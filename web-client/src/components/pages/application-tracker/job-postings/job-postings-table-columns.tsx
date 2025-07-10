@@ -85,9 +85,9 @@ export const jobPostingsTableColumns = ({
   {
     accessorKey: 'datePosted',
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Posting date" />;
+      return <HeaderSorting column={column} headerName="Posting Date" />;
     },
-    meta: { displayName: 'Posting date' },
+    meta: { displayName: 'Posting Date' },
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('datePosted');
       const date = new Date(isoDate);
@@ -96,7 +96,7 @@ export const jobPostingsTableColumns = ({
   },
   {
     accessorKey: 'adminNotes',
-    header: 'Admin notes',
-    meta: { displayName: 'Admin notes' },
+    header: 'Admin Notes',
+    meta: { displayName: 'Admin Notes' },
   },
 ];
