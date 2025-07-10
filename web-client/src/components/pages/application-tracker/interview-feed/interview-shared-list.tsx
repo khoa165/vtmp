@@ -7,7 +7,10 @@ import {
 } from '@/components/base/accordion';
 import { Skeleton } from '@/components/base/skeleton';
 import { SharedInterviewFilter } from '@/components/pages/application-tracker/applications/validation';
-import { useGetSharedInterviews } from '@/components/pages/application-tracker/interview-feed/hooks/interviews';
+import {
+  useGetInterviewInsights,
+  useGetSharedInterviews,
+} from '@/components/pages/application-tracker/interview-feed/hooks/interviews';
 import { InterviewCard } from '@/components/pages/application-tracker/interview-feed/interview-card';
 
 export const InterviewSharedList = ({
@@ -16,115 +19,30 @@ export const InterviewSharedList = ({
   interviewFilter: SharedInterviewFilter;
 }) => {
   const {
-    isLoading,
-    isError,
+    isLoading: isInterviewsLoading,
+    isError: isInterviewsError,
     data: sharedInterviewData,
   } = useGetSharedInterviews(interviewFilter);
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-5">
-        <div className="col-span-1 md:col-span-2">
-          <div className=" rounded-xl bg-background border border-background p-6 shadow-[0_8px_30px_rgba(0,0,0,0.35)] mb-5">
-            <div className="flex items-center gap-4 mb-3">
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-6 w-6 rounded-full" />
-                <Skeleton className="h-4 w-24" />
-              </div>
-              <Skeleton className="h-4 w-20" />
-            </div>
+  const {
+    // isLoading: isInsightsLoading,
+    // isError: isInsightsError,
+    data: interviewInsights,
+  } = useGetInterviewInsights(interviewFilter);
 
-            <div>
-              <Skeleton className="h-8 w-3/5 rounded" />
-              <div className="mt-4 flex items-center gap-3">
-                <Skeleton className="h-5 w-32 rounded" />
-                <Skeleton className="h-6 w-28 rounded-full" />
-              </div>
-            </div>
+  console.log('Interview Insights:', interviewInsights);
 
-            <div className="mt-4 space-y-1">
-              <Skeleton className="h-4 w-32" />
-              <div className="flex flex-wrap gap-2 mt-2">
-                <Skeleton className="h-6 w-20 rounded-full" />
-                <Skeleton className="h-6 w-24 rounded-full" />
-                <Skeleton className="h-6 w-16 rounded-full" />
-              </div>
-            </div>
-
-            <div className="mt-4 flex gap-6">
-              <div className="flex-1 space-y-1">
-                <Skeleton className="h-4 w-28" />
-                <Skeleton className="h-4 w-24" />
-              </div>
-              <div className="flex-1 space-y-1">
-                <Skeleton className="h-4 w-28" />
-                <Skeleton className="h-4 w-24" />
-              </div>
-            </div>
-
-            <div className="mt-4 space-y-2">
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-20 w-full rounded-lg" />
-            </div>
-          </div>
-
-          <div className=" rounded-xl bg-background border border-background p-6 shadow-[0_8px_30px_rgba(0,0,0,0.35)] mb-5">
-            <div className="flex items-center gap-4 mb-3">
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-6 w-6 rounded-full" />
-                <Skeleton className="h-4 w-24" />
-              </div>
-              <Skeleton className="h-4 w-20" />
-            </div>
-
-            <div>
-              <Skeleton className="h-8 w-3/5 rounded" />
-              <div className="mt-4 flex items-center gap-3">
-                <Skeleton className="h-5 w-32 rounded" />
-                <Skeleton className="h-6 w-28 rounded-full" />
-              </div>
-            </div>
-
-            <div className="mt-4 space-y-1">
-              <Skeleton className="h-4 w-32" />
-              <div className="flex flex-wrap gap-2 mt-2">
-                <Skeleton className="h-6 w-20 rounded-full" />
-                <Skeleton className="h-6 w-24 rounded-full" />
-                <Skeleton className="h-6 w-16 rounded-full" />
-              </div>
-            </div>
-
-            <div className="mt-4 flex gap-6">
-              <div className="flex-1 space-y-1">
-                <Skeleton className="h-4 w-28" />
-                <Skeleton className="h-4 w-24" />
-              </div>
-              <div className="flex-1 space-y-1">
-                <Skeleton className="h-4 w-28" />
-                <Skeleton className="h-4 w-24" />
-              </div>
-            </div>
-
-            <div className="mt-4 space-y-2">
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-20 w-full rounded-lg" />
-            </div>
-          </div>
-        </div>
-        <InterviewAccordion />
-      </div>
-    );
-  }
-
-  if (isError) {
+  if (isInterviewsError) {
     throw new Error('Error loading interviews.');
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 mt-5 gap-10">
       <div className="col-span-1 md:col-span-2">
-        {Array.isArray(sharedInterviewData) &&
-        sharedInterviewData.length > 0 ? (
+        {isInterviewsLoading ? (
+          <InterviewSharedListSkeleton />
+        ) : Array.isArray(sharedInterviewData) &&
+          sharedInterviewData.length > 0 ? (
           sharedInterviewData
             .sort(
               (a, b) =>
@@ -199,69 +117,54 @@ const InterviewAccordion = () => {
             results.
           </AccordionContent>
         </AccordionItem>
-
-        <AccordionItem value="tip4">
-          <AccordionTrigger className="text-left text-lg font-semibold px-0 hover:no-underline">
-            <div className="flex items-start gap-3 w-full text-start">
-              <div className="text-2xl font-bold text-background opacity-70">
-                4
-              </div>
-              <span>Should I ask questions at the end of the interview?</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="text-medium font-semibold">
-            Yes! Prepare thoughtful questions that show interest in the team or
-            role. It demonstrates engagement.
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="tip5">
-          <AccordionTrigger className="text-left text-lg font-semibold px-0 hover:no-underline">
-            <div className="flex items-start gap-3 w-full text-start">
-              <div className="text-2xl font-bold text-background opacity-70">
-                5
-              </div>
-              <span>
-                How do I handle nervousness before or during an interview?
-              </span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="text-medium font-semibold">
-            Practice helps. Take deep breaths, stay positive, and focus on the
-            conversation instead of perfection.
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="tip6">
-          <AccordionTrigger className="text-left text-lg font-semibold px-0 hover:no-underline">
-            <div className="flex items-start gap-3 w-full text-start">
-              <div className="text-2xl font-bold text-background opacity-70">
-                6
-              </div>
-              <span>How important is body language during interviews?</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="text-medium font-semibold">
-            Very important. Sit upright, make eye contact, smile when
-            appropriate, and avoid fidgeting.
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="tip7">
-          <AccordionTrigger className="text-left text-lg font-semibold px-0 hover:no-underline">
-            <div className="flex items gap-3 w-full text-start">
-              <div className="text-2xl font-bold text-background opacity-70">
-                7
-              </div>
-              <span>Should I follow up after the interview?</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="text-medium font-semibold">
-            Yes. Send a brief thank-you email within 24 hours to express
-            appreciation and reiterate interest.
-          </AccordionContent>
-        </AccordionItem>
       </Accordion>
+    </div>
+  );
+};
+
+const InterviewSharedListSkeleton = () => {
+  return (
+    <div className=" rounded-xl bg-background border border-background p-6 shadow-[0_8px_30px_rgba(0,0,0,0.35)] mb-5">
+      <div className="flex items-center gap-4 mb-3">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-6 w-6 rounded-full" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+        <Skeleton className="h-4 w-20" />
+      </div>
+
+      <div>
+        <Skeleton className="h-8 w-3/5 rounded" />
+        <div className="mt-4 flex items-center gap-3">
+          <Skeleton className="h-5 w-32 rounded" />
+          <Skeleton className="h-6 w-28 rounded-full" />
+        </div>
+      </div>
+
+      <div className="mt-4 space-y-1">
+        <Skeleton className="h-4 w-32" />
+        <div className="flex flex-wrap gap-2 mt-2">
+          <Skeleton className="h-6 w-20 rounded-full" />
+          <Skeleton className="h-6 w-24 rounded-full" />
+          <Skeleton className="h-6 w-16 rounded-full" />
+        </div>
+      </div>
+
+      <div className="mt-4 flex gap-6">
+        <div className="flex-1 space-y-1">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+        <div className="flex-1 space-y-1">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+      </div>
+
+      <div className="mt-4 space-y-2">
+        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-20 w-full rounded-lg" />
+      </div>
     </div>
   );
 };

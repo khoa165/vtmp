@@ -155,3 +155,16 @@ export interface SharedInterviewData extends InterviewData {
     lastName: string;
   };
 }
+
+export const InterviewInsightsSchema = z.object({
+  message: z.string(),
+  data: z.object({
+    companyDetails: z.string(),
+    companyProducts: z.string(),
+    interviewInsights: z.object({
+      commonQuestions: z.array(z.string()),
+      interviewProcess: z.string(),
+      tips: z.string(),
+    }),
+  }),
+});
