@@ -1,10 +1,13 @@
+import { z } from 'zod';
+
 import {
   ApplicationStatus,
   InterestLevel,
+  InterviewShareStatus,
   InterviewStatus,
   InterviewType,
+  JobPostingRegion,
 } from '@vtmp/common/constants';
-import { z } from 'zod';
 
 const ApplicationSchema = z.object({
   _id: z.string(),
@@ -67,7 +70,7 @@ export const ApplicationFormSchema = z.object({
 export type IApplications = z.infer<typeof ApplicationsResponseSchema>['data'];
 export type IApplication = z.infer<typeof ApplicationSchema>;
 
-const InterviewSchema = z.object({
+export const InterviewSchema = z.object({
   _id: z.string(),
   applicationId: z.string(),
   userId: z.string(),
@@ -82,6 +85,9 @@ const InterviewSchema = z.object({
   interviewOnDate: z.coerce.date(),
   companyName: z.string().optional(),
   note: z.string().optional(),
+  shareStatus: z.nativeEnum(InterviewShareStatus, {
+    message: 'Invalid interview share status',
+  }),
 });
 
 export const InterviewsResponseSchema = z.object({
@@ -99,6 +105,7 @@ export interface InterviewData {
   status: InterviewStatus;
   interviewOnDate: Date;
   note?: string;
+  shareStatus?: InterviewShareStatus;
 }
 
 export const InterviewFormSchema = z.object({
@@ -109,3 +116,42 @@ export const InterviewFormSchema = z.object({
 });
 
 export type IInterviews = z.infer<typeof InterviewsResponseSchema>['data'];
+
+export interface SharedInterviewFilter {
+  status?: InterviewStatus;
+  types?: InterviewType[];
+  interviewOnDate?: Date;
+  companyName?: string;
+}
+
+const SharedInterviewSchema = InterviewSchema.extend({
+  jobTitle: z.string(),
+  location: z.nativeEnum(JobPostingRegion),
+  companyName: z.string(),
+  shareStatus: z.nativeEnum(InterviewShareStatus),
+  user: z.object({
+    firstName: z.string(),
+    lastName: z.string(),
+  }),
+});
+
+export const SharedInterviewResponseSchema = z.object({
+  message: z.string(),
+  data: SharedInterviewSchema,
+});
+
+export const SharedInterviewsResponseSchema = z.object({
+  message: z.string(),
+  data: z.array(SharedInterviewSchema),
+});
+
+export interface SharedInterviewData extends InterviewData {
+  jobTitle: string;
+  location: string;
+  companyName: string;
+  shareStatus: InterviewShareStatus;
+  user: {
+    firstName: string;
+    lastName: string;
+  };
+}

@@ -1,28 +1,32 @@
+import { expect } from 'chai';
+import { addDays, differenceInSeconds, subDays } from 'date-fns';
+import jwt from 'jsonwebtoken';
+import { describe } from 'mocha';
+import { omit } from 'remeda';
+import { SinonStub } from 'sinon';
+import { ZodError } from 'zod';
+
+import assert from 'assert';
+
+import { InvitationStatus } from '@vtmp/common/constants';
+
 import { EnvConfig } from '@/config/env';
 import { IInvitation } from '@/models/invitation.model';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { InvitationService } from '@/services/invitation.service';
+import { createMockInvitation } from '@/testutils/auth.testutils';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { getEmailService } from '@/utils/email';
 import {
   DuplicateResourceError,
   ForbiddenError,
   InternalServerError,
   ResourceNotFoundError,
 } from '@/utils/errors';
-import { InvitationStatus } from '@vtmp/common/constants';
-import assert from 'assert';
-import { expect } from 'chai';
-import { addDays, differenceInSeconds, subDays } from 'date-fns';
-import jwt from 'jsonwebtoken';
-import { describe } from 'mocha';
-import { omit } from 'remeda';
-import { getEmailService } from '@/utils/email';
-import { SinonStub } from 'sinon';
-import { ZodError } from 'zod';
 
 describe('InvitationService', () => {
   useMongoDB();
@@ -93,6 +97,7 @@ describe('InvitationService', () => {
   });
 
   describe('sendInvitation', () => {
+    const mockWebUrl = 'https://google.com';
     it('should return error message when user associated with invitation receiver email already exists', async () => {
       const mockUser = {
         firstName: 'Admin',
@@ -106,7 +111,8 @@ describe('InvitationService', () => {
         InvitationService.sendInvitation(
           `${mockUser.firstName} ${mockUser.lastName}`,
           mockUser.email,
-          mockAdminId
+          mockAdminId,
+          mockWebUrl
         )
       ).eventually.rejectedWith(
         DuplicateResourceError,
@@ -124,7 +130,8 @@ describe('InvitationService', () => {
         InvitationService.sendInvitation(
           mockMenteeName,
           mockOneInvitation.receiverEmail,
-          mockAdminId
+          mockAdminId,
+          mockWebUrl
         )
       ).eventually.rejectedWith(
         InternalServerError,
@@ -138,7 +145,8 @@ describe('InvitationService', () => {
         InvitationService.sendInvitation(
           mockMenteeName,
           mockOneInvitation.receiverEmail,
-          mockAdminId
+          mockAdminId,
+          mockWebUrl
         )
       ).eventually.fulfilled;
       expect(sendEmailStub.calledOnce).to.equal(true);
@@ -153,7 +161,8 @@ describe('InvitationService', () => {
         InvitationService.sendInvitation(
           mockMenteeName,
           mockOneInvitation.receiverEmail,
-          mockAdminId
+          mockAdminId,
+          mockWebUrl
         )
       ).eventually.fulfilled;
       expect(sendEmailStub.calledOnce).to.equal(true);
@@ -169,7 +178,8 @@ describe('InvitationService', () => {
         await InvitationService.sendInvitation(
           mockMenteeName,
           mockOneInvitation.receiverEmail,
-          mockAdminId
+          mockAdminId,
+          mockWebUrl
         );
       assert(invitationWithNewExpiryDate);
       expect(invitationWithNewExpiryDate.toObject()).to.deep.include(
@@ -193,7 +203,8 @@ describe('InvitationService', () => {
         InvitationService.sendInvitation(
           mockMenteeName,
           mockOneInvitation.receiverEmail,
-          mockAdminId
+          mockAdminId,
+          mockWebUrl
         )
       ).eventually.fulfilled;
       expect(sendEmailStub.calledOnce).to.equal(true);
@@ -203,7 +214,8 @@ describe('InvitationService', () => {
       const createdInvitation = await InvitationService.sendInvitation(
         mockMenteeName,
         mockOneInvitation.receiverEmail,
-        mockAdminId
+        mockAdminId,
+        mockWebUrl
       );
 
       assert(createdInvitation);
@@ -264,18 +276,9 @@ describe('InvitationService', () => {
     let pendingInvitation: IInvitation;
 
     beforeEach(async () => {
-      const token = jwt.sign(
-        { receiverEmail: mockOneInvitation.receiverEmail },
-        EnvConfig.get().JWT_SECRET,
-        {
-          expiresIn: '7d',
-        }
+      pendingInvitation = await createMockInvitation(
+        mockOneInvitation.receiverEmail
       );
-
-      pendingInvitation = await InvitationRepository.createInvitation({
-        ...mockOneInvitation,
-        token,
-      });
     });
 
     it('should return error message for invalid token', async () => {

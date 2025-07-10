@@ -1,21 +1,22 @@
-import {
-  Environment,
-  FailedProcessedLink,
-  MetadataExtractedLink,
-  SubmittedLink,
-} from '@vtmp/server-common/constants';
+import { Environment } from '@vtmp/server-common/constants';
 import axios from 'axios';
 import cron from 'node-cron';
 
-import { LinkStatus } from '@vtmp/common/constants';
+import {
+  FailedProcessedLink,
+  MetadataExtractedLink,
+  SubmittedLink,
+  LinkStatus,
+} from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
 import { LinkRepository } from '@/repositories/link.repository';
-import { InternalServerError } from '@/utils/errors';
+import { BadRequest, InternalServerError } from '@/utils/errors';
 
 const ENABLE_LINK_PROCESSING = false;
 const MAX_LONG_RETRY_ATTEMPTS = 4;
 const MAX_DURATION_BETWEEN_RETRIES = 30; // in minutes
+export let PIPELINE_IN_PROCESS = false;
 export const CronService = {
   _getRetryFilter() {
     return {
@@ -82,13 +83,19 @@ export const CronService = {
     failedLinks: FailedProcessedLink[];
   }> {
     console.log('Cron wakes up...');
-
+    if (PIPELINE_IN_PROCESS) {
+      throw new BadRequest('Pipeline is processing', {});
+    }
+    PIPELINE_IN_PROCESS = true;
     try {
       const links = await LinkRepository.getLinks(this._getRetryFilter());
       console.log('PENDING links retrieved from database: ', links);
 
       // Return early if no links matches the getRetryFilter() filter
-      if (links.length === 0) return { successfulLinks: [], failedLinks: [] };
+      if (links.length === 0) {
+        PIPELINE_IN_PROCESS = false;
+        return { successfulLinks: [], failedLinks: [] };
+      }
 
       const linksData: SubmittedLink[] = links.map(
         ({ _id, originalUrl, attemptsCount }) => ({
@@ -101,13 +108,25 @@ export const CronService = {
 
       const response = await this._sendLinksToLambda(linksData);
       console.log('Response from Lambda: ', response);
-      const result: {
+
+      let result: {
         successfulLinks: MetadataExtractedLink[];
         failedLinks: FailedProcessedLink[];
-      } = JSON.parse(response.data);
+      };
 
+      if (
+        EnvConfig.get().NODE_ENV === Environment.STAGING ||
+        EnvConfig.get().NODE_ENV === Environment.PROD
+      ) {
+        result = response.data;
+      } else {
+        result = JSON.parse(response.data.body);
+      }
+
+      PIPELINE_IN_PROCESS = false;
       return result;
     } catch (error: unknown) {
+      PIPELINE_IN_PROCESS = false;
       console.error('Cron error: ', error);
       throw new InternalServerError('Failed to process links', { error });
     }

@@ -1,0 +1,28 @@
+name: Build link-processing-service Docker image
+description: 'Build Docker image for link-processing-service with buildx'
+
+runs:
+  using: composite
+  steps:
+    # Docker Buildx is a Docker image builder that enables multi-platform builds and caching
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # Cache Docker build layers to speed up future builds
+    - name: Cache Docker layers
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.buildx-cache # where cache is stored on the runner
+        key: ${{ runner.os }}-buildx-${{ github.sha }} # unique cache key per commit using commit hash, e.g Linux-buildx-abc123def456
+        restore-keys: ${{ runner.os }}-buildx- # fallback to previous cache if exact key is not found
+
+    - name: Build link-processing-service Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: link-processing-service/Dockerfile
+        platforms: linux/amd64
+        cache-from: type=local,src=/tmp/.buildx-cache # to resue unchanged layers, to make build faster
+        cache-to: type=local,dest=/tmp/.buildx-cache # update the cache with any changed layers
+        push: false
+        tags: ci-link-processing-service:${{ github.sha }}

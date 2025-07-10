@@ -1,4 +1,4 @@
-import { Input } from '@/components/base/input';
+import { Textarea } from '#vtmp/web-client/components/base/textarea';
 import { Label } from '@/components/base/label';
 import { JobPostingData } from '@/components/pages/admins/links/validation';
 
@@ -30,7 +30,7 @@ export const ReviewPopupInput = ({
       <Label htmlFor={id} className="text-right">
         {label}
       </Label>
-      <Input
+      <Textarea
         id={id}
         name={id}
         className="col-span-3"

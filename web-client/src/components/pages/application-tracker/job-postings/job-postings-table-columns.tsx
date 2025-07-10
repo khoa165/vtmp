@@ -1,17 +1,36 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'lucide-react';
+import ReactCountryFlag from 'react-country-flag';
 
 import { Button } from '@/components/base/button';
 import { HeaderSorting } from '@/components/base/header';
 import { IJobPosting } from '@/components/pages/application-tracker/job-postings/validations';
-import { MONTH_DATE_YEAR } from '@/utils/date';
 
 export const jobPostingsTableColumns = ({
   createApplicationFn,
 }: {
   createApplicationFn: (body: { jobPostingId: string }) => void;
 }): ColumnDef<IJobPosting>[] => [
+  {
+    id: 'actions',
+    enableHiding: false,
+    cell: ({ row }) => {
+      const jobPosting = row.original;
+      return (
+        <div className="text-center">
+          <Button
+            size="lg"
+            onClick={() =>
+              createApplicationFn({ jobPostingId: jobPosting._id })
+            }
+          >
+            Mark as applied
+          </Button>
+        </div>
+      );
+    },
+  },
   {
     accessorKey: 'companyName',
     header: ({ column }) => {
@@ -45,42 +64,39 @@ export const jobPostingsTableColumns = ({
     header: ({ column }) => {
       return <HeaderSorting column={column} headerName="Location" />;
     },
+    cell: ({ row }) => {
+      const location = row.original.location;
+      if (location !== 'US' && location !== 'CANADA') {
+        return 'Unknown';
+      }
+      const countryCode = location === 'US' ? 'US' : 'CA';
+      return (
+        <ReactCountryFlag
+          countryCode={countryCode}
+          style={{
+            fontSize: '1.5em',
+            lineHeight: '1.5em',
+          }}
+        />
+      );
+    },
     meta: { displayName: 'Location' },
   },
   {
     accessorKey: 'datePosted',
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Posting date" />;
+      return <HeaderSorting column={column} headerName="Posting Date" />;
     },
-    meta: { displayName: 'Posting date' },
+    meta: { displayName: 'Posting Date' },
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('datePosted');
       const date = new Date(isoDate);
-      return <div>{format(date, MONTH_DATE_YEAR)}</div>;
+      return <div>{formatDistanceToNow(date, { addSuffix: true })}</div>;
     },
   },
   {
     accessorKey: 'adminNotes',
-    header: 'Admin notes',
-    meta: { displayName: 'Admin notes' },
-  },
-  {
-    id: 'actions',
-    enableHiding: false,
-    cell: ({ row }) => {
-      const jobPosting = row.original;
-      return (
-        <div className="text-center">
-          <Button
-            size="lg"
-            onClick={() =>
-              createApplicationFn({ jobPostingId: jobPosting._id })
-            }
-          >
-            Mark as applied
-          </Button>
-        </div>
-      );
-    },
+    header: 'Admin Notes',
+    meta: { displayName: 'Admin Notes' },
   },
 ];

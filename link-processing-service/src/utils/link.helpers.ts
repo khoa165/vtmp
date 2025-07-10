@@ -5,9 +5,16 @@ export const formatJobDescription = (description?: {
 }): string | undefined => {
   const formatSection = (title: string, content: string) => {
     const lines = content
+      .trim()
       .replace(/\n\n/g, '\n')
       .split('\n')
-      .map((line) => `- ${line.replace('-', '').trim()}`);
+      .map((line) => {
+        const words = line.trim().split(/\s+/);
+        if (words[0] && words.length && !/^[a-zA-Z]/.test(words[0])) {
+          words.shift();
+        }
+        return `- ${words.join(' ')}`;
+      });
     return `${title}:\n${lines.join('\n')}\n`;
   };
 
@@ -16,14 +23,13 @@ export const formatJobDescription = (description?: {
     result += formatSection('Responsibilities', description.responsibility);
   }
   if (description && description.requirement) {
-    result += '\n' + formatSection('Requirements', description.requirement);
+    result += formatSection('Requirements', description.requirement);
   }
   if (description && description.preferred) {
-    result +=
-      '\n' + formatSection('Preferred Qualifications', description.preferred);
+    result += formatSection('Preferred Qualifications', description.preferred);
   }
 
-  return result.length > 0 ? '\n' + result.trim() : undefined;
+  return result.length > 0 ? result.trim() : undefined;
 };
 
 export const stringToEnumValue = <T extends Record<string, string>>({
