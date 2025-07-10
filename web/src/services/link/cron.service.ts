@@ -108,10 +108,21 @@ export const CronService = {
 
       const response = await this._sendLinksToLambda(linksData);
       console.log('Response from Lambda: ', response);
-      const result: {
+      // const result: {
+      //   successfulLinks: MetadataExtractedLink[];
+      //   failedLinks: FailedProcessedLink[];
+      // } = JSON.parse(response.data.body);
+
+      let result: {
         successfulLinks: MetadataExtractedLink[];
         failedLinks: FailedProcessedLink[];
-      } = JSON.parse(response.data.body);
+      };
+
+      if (EnvConfig.get().NODE_ENV === Environment.DEV) {
+        result = JSON.parse(response.data.body);
+      } else {
+        result = response.data;
+      }
       PIPELINE_IN_PROCESS = false;
       return result;
     } catch (error: unknown) {
