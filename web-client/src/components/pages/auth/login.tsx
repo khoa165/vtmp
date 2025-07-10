@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import LogoMint from '@/assets/images/logo-full-mint.svg?react';
+import { TreverseFullLogo } from '@/components/base/treverse-full-logo';
 import { Button } from '@/components/base/button';
 import {
   Card,
@@ -103,11 +103,11 @@ export const LoginPage = () => {
     <>
       <div className="grid grid-cols-12 gap-4 max-w-screen min-h-screen px-20 py-15 bg-background dark:bg-background">
         <div className="col-start-1 col-span-5 flex flex-col justify-start">
-          <LogoMint className="w-40 h-24 pl-6" />
+          <TreverseFullLogo className="pl-3 w-[106px] h-[16px]" />
           <Card className="bg-transparent border-0 shadow-none h-full justify-center">
             <CardHeader>
-              <CardTitle className="text-4xl font-bold">Sign In</CardTitle>
-              <CardDescription className="text-2xl">
+              <CardTitle className="text-5xl font-bold">Sign In</CardTitle>
+              <CardDescription className="text-xl">
                 Welcome back!
               </CardDescription>
             </CardHeader>

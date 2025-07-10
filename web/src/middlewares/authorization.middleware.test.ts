@@ -1,21 +1,24 @@
+import bcrypt from 'bcryptjs';
+import { expect } from 'chai';
+import request from 'supertest';
+
+import assert from 'assert';
+
+import { SystemRole } from '@vtmp/common/constants';
+
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { AuthService } from '@/services/auth.service';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import request from 'supertest';
-import bcrypt from 'bcryptjs';
+import { getNewObjectId } from '@/testutils/mongoID.testutil';
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
-import { expect } from 'chai';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import assert from 'assert';
-import { getNewObjectId } from '@/testutils/mongoID.testutil';
-import { SystemRole } from '@vtmp/common/constants';
+import { useSandbox } from '@/testutils/sandbox.testutil';
 
 describe('hasPermission', () => {
   useMongoDB();
@@ -44,7 +47,7 @@ describe('hasPermission', () => {
     await UserRepository.createUser({
       ...mockUser,
       encryptedPassword,
-      role: SystemRole.MODERATOR,
+      role: SystemRole.ADMIN,
     });
 
     const { token } = await AuthService.login({

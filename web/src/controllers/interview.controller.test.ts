@@ -1,34 +1,38 @@
-import request from 'supertest';
-import { assert, expect } from 'chai';
+import { IUser } from '@vtmp/mongo/models';
 import bcrypt from 'bcryptjs';
+import { assert, expect } from 'chai';
+import { omit } from 'remeda';
+import request from 'supertest';
 
-import app from '@/app';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import { EnvConfig } from '@/config/env';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { UserRepository } from '@/repositories/user.repository';
-import { AuthService } from '@/services/auth.service';
-import { InterviewRepository } from '@/repositories/interview.repository';
 import {
+  InterviewShareStatus,
   InterviewStatus,
   InterviewType,
   SystemRole,
 } from '@vtmp/common/constants';
-import {
-  expectErrorsArray,
-  expectSuccessfulResponse,
-} from '@/testutils/response-assertion.testutil';
-import { IInterview } from '@/models/interview.model';
+
+import app from '@/app';
+import { EnvConfig } from '@/config/env';
 import { IApplication } from '@/models/application.model';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { IInterview } from '@/models/interview.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
-import { omit } from 'remeda';
+import { InterviewRepository } from '@/repositories/interview.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { UserRepository } from '@/repositories/user.repository';
+import { AuthService } from '@/services/auth.service';
 import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
 } from '@/testutils/auth.testutils';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import {
+  expectErrorsArray,
+  expectSuccessfulResponse,
+} from '@/testutils/response-assertion.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+
 describe('InterviewController', () => {
   useMongoDB();
   const sandbox = useSandbox();
@@ -44,8 +48,8 @@ describe('InterviewController', () => {
     note?: string;
   }
 
-  let userId_A: string;
-  let userId_B: string;
+  let user_A: IUser;
+  let user_B: IUser;
 
   let metaApplication_A: IApplication;
   let googleApplication_A: IApplication;
@@ -62,32 +66,36 @@ describe('InterviewController', () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
 
     const encryptedPassword = await bcrypt.hash('test password', 10);
-    const mockUser_A = {
-      firstName: 'admin',
-      lastName: 'viettech',
-      email: 'testA@gmail.com',
-      encryptedPassword,
-      role: SystemRole.ADMIN,
-    };
-    const mockUser_B = {
-      firstName: 'admin',
-      lastName: 'viettech',
-      email: 'testB@gmail.com',
-      encryptedPassword,
-      role: SystemRole.USER,
-    };
+    const mockUsers = [
+      {
+        firstName: 'admin_A',
+        lastName: 'viettech_A',
+        email: 'testA@gmail.com',
+        encryptedPassword,
+        role: SystemRole.ADMIN,
+      },
+      {
+        firstName: 'admin_B',
+        lastName: 'viettech_B',
+        email: 'testB@gmail.com',
+        encryptedPassword,
+        role: SystemRole.USER,
+      },
+    ];
 
-    userId_A = (await UserRepository.createUser(mockUser_A)).id;
+    const createdUsers = await Promise.all(
+      mockUsers.map((data) => UserRepository.createUser({ ...data }))
+    );
+    assert(createdUsers[0] && createdUsers[1], 'Failed to create users');
+    [user_A, user_B] = createdUsers;
 
     ({ token: mockToken_A } = await AuthService.login({
-      email: mockUser_A.email,
+      email: user_A.email,
       password: 'test password',
     }));
 
-    userId_B = (await UserRepository.createUser(mockUser_B)).id;
-
     ({ token: mockToken_B } = await AuthService.login({
-      email: mockUser_B.email,
+      email: user_B.email,
       password: 'test password',
     }));
 
@@ -119,7 +127,7 @@ describe('InterviewController', () => {
     assert(metaJobPosting && googleJobPosting, 'Failed to create job postings');
 
     const nestedApplications = await Promise.all(
-      [userId_A, userId_B].map(
+      [user_A.id, user_B.id].map(
         (userId) =>
           Promise.all([
             ApplicationRepository.createApplication({
@@ -143,7 +151,7 @@ describe('InterviewController', () => {
 
     mockInterview_A0 = {
       applicationId: metaApplication_A.id,
-      userId: userId_A,
+      userId: user_A.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PASSED,
@@ -152,7 +160,7 @@ describe('InterviewController', () => {
 
     mockInterview_A1 = {
       applicationId: googleApplication_A.id,
-      userId: userId_A,
+      userId: user_A.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.FAILED,
@@ -161,7 +169,7 @@ describe('InterviewController', () => {
 
     mockInterview_A2 = {
       applicationId: metaApplication_A.id,
-      userId: userId_A,
+      userId: user_A.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-07-07'),
       note: 'Good job',
@@ -169,7 +177,7 @@ describe('InterviewController', () => {
 
     mockInterview_B0 = {
       applicationId: googleApplication_B.id,
-      userId: userId_B,
+      userId: user_B.id,
       types: [InterviewType.CODE_REVIEW],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PENDING,
@@ -177,7 +185,7 @@ describe('InterviewController', () => {
 
     mockInterview_B1 = {
       applicationId: metaApplication_B.id,
-      userId: userId_B,
+      userId: user_B.id,
       types: [InterviewType.PROJECT_WALKTHROUGH],
       interviewOnDate: new Date('2025-06-07'),
       status: InterviewStatus.PASSED,
@@ -224,24 +232,27 @@ describe('InterviewController', () => {
         });
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors).to.deep.include.members([
-        { message: 'Must select at least 1 interview type' },
+        { message: 'At least one interview type is required' },
       ]);
     });
 
-    it('should return error message with 400 status code if applicationId format is invalid', async () => {
+    it('should return error message with 400 status code if applicationId format, types, or status is invalid', async () => {
       const res = await request(app)
         .post(url)
         .set('Authorization', `Bearer ${mockToken_A}`)
         .set('Accept', 'application/json')
         .send({
           applicationId: 'not-an-valid-id',
-          types: [InterviewType.CODE_REVIEW],
+          types: ['not-a-valid-type'],
           interviewOnDate: new Date().toISOString(),
+          status: 'not-a-valid-status',
         });
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal(
-        'Invalid application ID format'
-      );
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 3 });
+      expect(res.body.errors).to.deep.include.members([
+        { message: 'Invalid application ID' },
+        { message: 'Invalid interview type' },
+        { message: 'Invalid interview status' },
+      ]);
     });
 
     it('should return interview object if an interview is created successfully', async () => {
@@ -308,7 +319,7 @@ describe('InterviewController', () => {
         .set('Authorization', `Bearer ${mockToken_A}`);
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.have.property('_id', interview.id);
-      expect(res.body.data).to.have.property('userId', userId_A);
+      expect(res.body.data).to.have.property('userId', user_A.id);
     });
   });
 
@@ -371,7 +382,7 @@ describe('InterviewController', () => {
 
       await InterviewRepository.deleteInterviewById({
         interviewId: interview_A0.id,
-        userId: userId_A,
+        userId: user_A.id,
       });
 
       const res = await request(app)
@@ -429,56 +440,159 @@ describe('InterviewController', () => {
     });
   });
 
-  describe('GET /api/interviews/by-company/:companyName', () => {
-    const endpoint = (name: string) =>
-      `/api/interviews/by-company/?companyName=${name}`;
+  describe('GET /api/interviews/share', () => {
+    const endpoint = `/api/interviews/share`;
 
-    const companyName = 'Meta';
-
-    it('should return error message with status code 400 if query.companyName missing', async () => {
-      await InterviewRepository.createInterview(mockInterview_A0);
-
+    it('should return an empty array if no shared interview match the filters', async () => {
       const res = await request(app)
-        .get('/api/interviews/by-company/')
-        .set('Authorization', `Bearer ${mockToken_A}`);
-      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
-      expect(res.body.errors[0].message).to.equal('Company Name is required');
-    });
-
-    it('should return an empty array if no interviews found', async () => {
-      const res = await request(app)
-        .get(endpoint(companyName))
-        .set('Authorization', `Bearer ${mockToken_A}`);
+        .get(endpoint)
+        .set('Authorization', `Bearer ${mockToken_A}`)
+        .query({
+          status: InterviewStatus.PASSED,
+          types: [InterviewType.CODE_REVIEW, InterviewType.PROJECT_WALKTHROUGH],
+          companyName: 'Meta',
+        });
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it('should return interviews with the given companyName', async () => {
+    it('should return error message with status code 400 if status or types is invalid', async () => {
+      await InterviewRepository.createInterview(mockInterview_A0);
+
+      const res = await request(app)
+        .get(endpoint)
+        .query({
+          status: 'not-a-valid-status',
+          'types[]': ['not-a-valid-type'],
+        })
+        .set('Authorization', `Bearer ${mockToken_A}`);
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 2 });
+      expect(res.body.errors).to.deep.include.members([
+        { message: 'Invalid interview type' },
+        { message: 'Invalid interview status' },
+      ]);
+    });
+
+    it('should return shared interviews with user firstName and lastName', async () => {
+      const interview_B1 =
+        await InterviewRepository.createInterview(mockInterview_B1);
+
+      assert(interview_B1);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_B1.id,
+        userId: user_B.id,
+        newUpdate: {
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
+        },
+      });
+
+      const res = await request(app)
+        .get(endpoint)
+        .set('Authorization', `Bearer ${mockToken_B}`)
+        .query({
+          status: InterviewStatus.PASSED,
+          'types[]': [InterviewType.PROJECT_WALKTHROUGH],
+          companyName: 'Meta',
+        });
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data[0]).to.deep.include({
+        companyName: 'Meta',
+        status: InterviewStatus.PASSED,
+        types: [InterviewType.PROJECT_WALKTHROUGH],
+        user: {
+          firstName: user_B.firstName,
+          lastName: user_B.lastName,
+        },
+      });
+    });
+
+    it('should return shared interviews with user firstName and lastName as Anonymouse User', async () => {
+      const interview_B1 =
+        await InterviewRepository.createInterview(mockInterview_B1);
+
+      assert(interview_B1);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_B1.id,
+        userId: user_B.id,
+        newUpdate: {
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
+        },
+      });
+
+      const res = await request(app)
+        .get(endpoint)
+        .set('Authorization', `Bearer ${mockToken_B}`)
+        .query({
+          status: InterviewStatus.PASSED,
+          'types[]': [InterviewType.PROJECT_WALKTHROUGH],
+          companyName: 'Meta',
+        });
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data[0]).to.deep.include({
+        companyName: 'Meta',
+        status: InterviewStatus.PASSED,
+        types: [InterviewType.PROJECT_WALKTHROUGH],
+        user: {
+          firstName: 'Anonymous',
+          lastName: 'User',
+        },
+      });
+    });
+
+    it('should return shared interviews that match the filters', async () => {
       const [interview_A0, interview_A2, interview_B1] = await Promise.all(
-        [
-          mockInterview_A0,
-          mockInterview_A2,
-          mockInterview_B1,
-          mockInterview_A1,
-          mockInterview_B0,
-        ].map((mockInterview) =>
-          InterviewRepository.createInterview(mockInterview)
+        [mockInterview_A0, mockInterview_A2, mockInterview_B1].map(
+          (mockInterview) => InterviewRepository.createInterview(mockInterview)
         )
       );
 
-      assert(
-        interview_A0 && interview_A2 && interview_B1,
-        'Failed to create interviews'
-      );
+      assert(interview_A0 && interview_A2 && interview_B1);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: user_A.id,
+        newUpdate: {
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
+        },
+      });
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A2.id,
+        userId: user_A.id,
+        newUpdate: {
+          shareStatus: InterviewShareStatus.SHARED_PUBLIC,
+        },
+      });
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_B1.id,
+        userId: user_B.id,
+        newUpdate: {
+          shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
+        },
+      });
 
       const res = await request(app)
-        .get(endpoint(companyName))
-        .set('Authorization', `Bearer ${mockToken_B}`);
+        .get(endpoint)
+        .set('Authorization', `Bearer ${mockToken_B}`)
+        .query({
+          status: InterviewStatus.PASSED,
+          'types[]': [InterviewType.CODE_REVIEW],
+          companyName: 'Meta',
+        });
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.data).to.be.an('array').that.have.lengthOf(3);
-      expect(
-        res.body.data.map((interview: IInterview) => interview._id)
-      ).to.have.members([interview_A0.id, interview_A2.id, interview_B1.id]);
+      expect(res.body.data).to.be.an('array').that.have.lengthOf(1);
+      expect(res.body.data[0]).to.deep.include({
+        companyName: 'Meta',
+        status: InterviewStatus.PASSED,
+        types: [InterviewType.CODE_REVIEW],
+        user: {
+          firstName: user_A.firstName,
+          lastName: user_A.lastName,
+        },
+      });
     });
   });
 
@@ -541,6 +655,83 @@ describe('InterviewController', () => {
     });
   });
 
+  describe('PUT /api/interviews/share/:interviewId', () => {
+    const endpoint = (id: string) => `/api/interviews/share/${id}`;
+
+    runDefaultAuthMiddlewareTests({
+      route: endpoint(getNewMongoId()),
+      method: HTTPMethod.PUT,
+    });
+
+    it('should return an error message with status code 400 if the interviewId is not valid', async () => {
+      const res = await request(app)
+        .put(endpoint('not-a-valid-id'))
+        .set('Authorization', `Bearer ${mockToken_A}`)
+        .send({ isDisclosed: false });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Invalid interview ID format'
+      );
+    });
+
+    it('should return an error message with status code 404 if the interview is not found', async () => {
+      const res = await request(app)
+        .put(endpoint(getNewMongoId()))
+        .set('Authorization', `Bearer ${mockToken_A}`)
+        .send({ shareStatus: InterviewShareStatus.SHARED_ANONYMOUS });
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Interview not found');
+    });
+
+    it('should return an error message with status code 404 if the interview does not belong to the authorized user', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      const res = await request(app)
+        .put(endpoint(interview_A0.id))
+        .set('Authorization', `Bearer ${mockToken_B}`)
+        .send({ shareStatus: InterviewShareStatus.SHARED_ANONYMOUS });
+      expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Interview not found');
+    });
+
+    it('should return an error message with status code 400 if unsharing an interview', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: user_A.id,
+        newUpdate: { shareStatus: InterviewShareStatus.SHARED_ANONYMOUS },
+      });
+
+      const res = await request(app)
+        .put(endpoint(interview_A0.id))
+        .set('Authorization', `Bearer ${mockToken_A}`)
+        .send({ shareStatus: InterviewShareStatus.UNSHARED });
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Cannot unshare an interview that is already shared'
+      );
+    });
+
+    it('should return the successfully shared interview', async () => {
+      const interview =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      const res = await request(app)
+        .put(endpoint(interview.id))
+        .set('Authorization', `Bearer ${mockToken_A}`)
+        .send({ shareStatus: InterviewShareStatus.SHARED_ANONYMOUS });
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.data).to.include({
+        _id: interview.id,
+        shareStatus: InterviewShareStatus.SHARED_ANONYMOUS,
+      });
+    });
+  });
+
   describe('DELETE /api/interviews/:interviewId', () => {
     const endpoint = (id: string) => `/api/interviews/${id}`;
 
@@ -557,9 +748,8 @@ describe('InterviewController', () => {
     });
 
     it('should return an error message with status code 404 if the interview is not found', async () => {
-      const fakeInterview = getNewMongoId();
       const res = await request(app)
-        .delete(endpoint(fakeInterview))
+        .delete(endpoint(getNewMongoId()))
         .set('Authorization', `Bearer ${mockToken_A}`);
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
     });
@@ -575,10 +765,29 @@ describe('InterviewController', () => {
       expectErrorsArray({ res, statusCode: 404, errorsCount: 1 });
     });
 
+    it('should return an error message with status code 400 if the interview is already shared', async () => {
+      const interview_A0 =
+        await InterviewRepository.createInterview(mockInterview_A0);
+
+      await InterviewRepository.updateInterviewById({
+        interviewId: interview_A0.id,
+        userId: user_A.id,
+        newUpdate: { shareStatus: InterviewShareStatus.SHARED_ANONYMOUS },
+      });
+
+      const res = await request(app)
+        .delete(endpoint(interview_A0.id))
+        .set('Authorization', `Bearer ${mockToken_A}`);
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal(
+        'Cannot delete a shared interview'
+      );
+    });
+
     it('should return the successfully deleted interview', async () => {
       const created = await InterviewRepository.createInterview({
         applicationId: getNewMongoId(),
-        userId: userId_A,
+        userId: user_A.id,
         types: [InterviewType.DEBUGGING],
         interviewOnDate: new Date(),
       });

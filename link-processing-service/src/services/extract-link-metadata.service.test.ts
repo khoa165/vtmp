@@ -8,7 +8,9 @@ import {
   LinkStatus,
 } from '@vtmp/common/constants';
 
+import { EnvConfig } from '@/config/env';
 import { ExtractLinkMetadataService } from '@/services/extract-link-metadata.service';
+import { LINK_PROCESSING_MOCK_ENV } from '@/testutils/link-processing-mock-env.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { ScrapedLink } from '@/types/link-processing.types';
 import { AIExtractionError } from '@/utils/errors';
@@ -24,16 +26,19 @@ describe('ExtractLinkMetadataService', () => {
     jobFunction: JobFunction.SOFTWARE_ENGINEER,
     jobType: JobType.INTERNSHIP,
     datePosted: '2024-05-10',
+    aiNote: 'hello',
   };
 
   let generateContentStub: sinon.SinonStub;
 
   beforeEach(() => {
+    sandbox.stub(EnvConfig, 'get').returns(LINK_PROCESSING_MOCK_ENV);
     generateContentStub = sandbox.stub(
       ExtractLinkMetadataService,
       '_generateContent'
     );
     sandbox.stub(console, 'error'); // Suppress console errors in tests
+    sandbox.stub(console, 'log');
   });
 
   describe('_generateMetadata', () => {

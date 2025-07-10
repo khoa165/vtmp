@@ -83,7 +83,10 @@ export function ResizableTable<TData, TValue>({
                     className="border-white"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="text-foreground py-4">
+                      <TableCell
+                        key={cell.id}
+                        className="text-foreground py-4 whitespace-normal"
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -96,9 +99,9 @@ export function ResizableTable<TData, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className="h-24 text-center text-white"
                   >
-                    No results.
+                    No matching entries
                   </TableCell>
                 </TableRow>
               )}
@@ -106,13 +109,12 @@ export function ResizableTable<TData, TValue>({
           </Table>
         </div>
       </section>
-      <section className="flex items-center justify-end space-x-2 py-4">
+      <section className="flex items-center justify-end space-x-2 py-4 text-white">
         <Button
           variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
-          className="text-foreground hover:text-background hover:bg-foreground"
         >
           Previous
         </Button>
@@ -121,7 +123,6 @@ export function ResizableTable<TData, TValue>({
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
-          className="text-foreground hover:text-background hover:bg-foreground"
         >
           Next
         </Button>
