@@ -1,6 +1,6 @@
 import { InvitationStatus } from '@vtmp/common/constants';
 
-import { InvitationModel , IInvitation } from '@/models/invitation.model';
+import { InvitationModel, IInvitation } from '@/models/invitation.model';
 
 export const InvitationRepository = {
   createInvitation: async (invitationData: {

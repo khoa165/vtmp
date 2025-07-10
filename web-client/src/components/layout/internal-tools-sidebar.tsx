@@ -8,7 +8,7 @@ import {
   MessageSquareQuote,
 } from 'lucide-react';
 import { useMemo } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 
 import { SystemRole } from '@vtmp/common/constants';
 
@@ -43,7 +43,7 @@ export const InternalToolsSidebar = () => {
       roles: [SystemRole.ADMIN],
     },
     {
-      title: 'Pending Links',
+      title: 'Links',
       url: '/admin/links',
       icon: Link2,
       roles: [SystemRole.ADMIN, SystemRole.MODERATOR],
@@ -61,7 +61,7 @@ export const InternalToolsSidebar = () => {
       roles: [SystemRole.USER],
     },
     {
-      title: 'Interview Feed',
+      title: 'Interviews',
       url: '/interviews',
       icon: MessageSquareQuote,
       roles: [SystemRole.USER, SystemRole.ADMIN, SystemRole.MODERATOR],
@@ -87,6 +87,9 @@ export const InternalToolsSidebar = () => {
   const { logout } = useLogout();
   const { state } = useSidebar();
 
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <Sidebar collapsible="icon" variant="sidebar">
       <SidebarContent>
@@ -99,7 +102,7 @@ export const InternalToolsSidebar = () => {
                     {state === 'collapsed' ? (
                       <TreverseLogo />
                     ) : (
-                      <TreverseFullLogo />
+                      <TreverseFullLogo className="w-[106px] h-[16px]" />
                     )}
                   </Link>
                 </SidebarMenuButton>
@@ -107,7 +110,10 @@ export const InternalToolsSidebar = () => {
 
               {visibleItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={item.url === currentPath}
+                  >
                     <Link to={item.url} aria-label={item.title}>
                       <item.icon />
                       <span>{item.title}</span>
@@ -131,8 +137,21 @@ export const InternalToolsSidebar = () => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <Avatar />
-              <SidebarTrigger />
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  className="!p-1 group-data-[collapsible=icon]:!p-1"
+                >
+                  <Link to="#">
+                    <Avatar userName={user.firstName + ' ' + user.lastName} />
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild className="flex justify-start">
+                  <SidebarTrigger />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

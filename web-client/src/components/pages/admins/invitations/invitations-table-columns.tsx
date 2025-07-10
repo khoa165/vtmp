@@ -1,9 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { capitalize } from 'remeda';
 import { toast } from 'sonner';
 
 import { InvitationStatus } from '@vtmp/common/constants';
+import { formatEnumName } from '@vtmp/common/utils';
 
 import { Button } from '@/components/base/button';
 import { HeaderSorting } from '@/components/base/header';
@@ -49,7 +49,9 @@ export const invitationsTableColumns = (
       cell: ({ row }) => {
         const invitation = row.original;
         return (
-          <div className="flex flex-start">{invitation.receiverEmail}</div>
+          <div className="flex flex-start">
+            {invitation.receiverEmail.toLowerCase()}
+          </div>
         );
       },
       enableResizing: true,
@@ -66,21 +68,12 @@ export const invitationsTableColumns = (
       cell: ({ row }) => {
         const invitation = row.original;
         return (
-          <div className="flex flex-start">
-            <Button
-              variant="ghost"
-              justify="between"
-              size="sm"
-              className="w-[170px]"
-            >
-              <div className="flex items-center gap-2  text-center">
-                <StatusDot
-                  status={invitation.status}
-                  colorMapping={InvitationStatusToColorMapping}
-                />
-                {capitalize(invitation.status)}
-              </div>
-            </Button>
+          <div className="flex items-center gap-2">
+            <StatusDot
+              status={invitation.status}
+              colorMapping={InvitationStatusToColorMapping}
+            />
+            {formatEnumName(invitation.status, { uppercase: true })}
           </div>
         );
       },

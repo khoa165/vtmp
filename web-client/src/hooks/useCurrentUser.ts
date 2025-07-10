@@ -1,5 +1,6 @@
-import { SystemRole } from '@vtmp/common/constants';
 import { z } from 'zod';
+
+import { SystemRole } from '@vtmp/common/constants';
 
 const RawUserSchema = z.object({
   _id: z.string(),
