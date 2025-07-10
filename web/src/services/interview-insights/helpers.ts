@@ -2,17 +2,23 @@ import z from 'zod';
 
 import { IInterview } from '@/models/interview.model';
 
-export const buildPrompt = (sharedInterviews: IInterview[]): string => {
+export const buildPrompt = ({
+  companyName,
+  sharedInterviews,
+}: {
+  companyName: string;
+  sharedInterviews: IInterview[];
+}): string => {
   return `
     ${sharedInterviews}
     \n\n
-    You are given a list of interviews of the same company that have been shared by users. 
+    You are given a list of interviews of the company ${companyName} that have been shared by users. 
     Each interview contains information about the name of the company, job title, location, interview date, users' note, and other details.
     
     **General Instructions:**
-    - Provide the company details, products that might be helpful to the users.
-    - Provide insights about the company and interview process based on the shared interviews.
-    - In case none of the interviews provide sufficient information, you may include general knowledge about the company and its interview practices.
+    - Search the internet to provide the company details of the given interviews, and any products that might be helpful to the users.
+    - Use the provided interviews to generate insights about the company and interview process.
+    - In case none of the interviews provide sufficient information, you may only need to search the internet to include general knowledge about the company and its interview practices.
   `;
 };
 
