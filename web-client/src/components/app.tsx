@@ -17,7 +17,7 @@ import { InvitationsPage } from '#vtmp/web-client/components/pages/admins/invita
 import { AdminLinksPage } from '#vtmp/web-client/components/pages/admins/links/admin-links-page';
 import { ApplicationsPage } from '#vtmp/web-client/components/pages/application-tracker/applications/applications-page';
 import { JobPostingsPage } from '#vtmp/web-client/components/pages/application-tracker/job-postings/job-postings-page';
-import JobtrackrLanding from '#vtmp/web-client/components/pages/application-tracker/landing/jobtrackr-landing';
+import { LandingPage } from '#vtmp/web-client/components/pages/application-tracker/landing/landing-page';
 import { LinksPage } from '#vtmp/web-client/components/pages/application-tracker/links/links-page';
 import { LoginPage } from '#vtmp/web-client/components/pages/auth/login';
 import { RequireAuth } from '#vtmp/web-client/components/pages/auth/require-auth';
@@ -69,7 +69,7 @@ export const App = () => {
             <Route path="/stats/*" element={<StatsContainer />} />
           </Route>
         </Route>
-        <Route path="/jobtrackr" element={<JobtrackrLanding />} />
+        <Route path="/treverse" element={<LandingPage />} />
         <Route element={<PageWithToast />}>
           <Route
             element={

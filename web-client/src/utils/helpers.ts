@@ -5,6 +5,7 @@ import {
   InterviewStatus,
   InterviewType,
 } from '@vtmp/common/constants';
+import { formatEnumName } from '@vtmp/common/utils';
 
 export const formatStatus = (status: ApplicationStatus) => {
   return status === ApplicationStatus.OA ? status : capitalize(status);
@@ -26,7 +27,7 @@ export const convertToInterviewType = (
 
 export const interviewTypeOptions = Object.values(InterviewType).map(
   (type) => ({
-    label: type.toString(),
+    label: formatEnumName(type),
     value: type,
   })
 );

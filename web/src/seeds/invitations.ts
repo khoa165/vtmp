@@ -11,7 +11,10 @@ export const loadInvitations = async (count: number) => {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
     const receiverName = `${firstName} ${lastName}`;
-    const receiverEmail = faker.internet.email({ firstName, lastName });
+    const receiverEmail = faker.internet.email({
+      firstName: firstName.toLowerCase(),
+      lastName: lastName.toLowerCase(),
+    });
     const sender = getNewMongoId();
     const token = JWTUtils.createTokenWithPayload(
       { receiverEmail },
