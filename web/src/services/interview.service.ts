@@ -49,35 +49,46 @@ export const InterviewService = {
   }: {
     filters: {
       userId?: string;
+      applicationId?: string;
+      companyName?: string;
       types?: InterviewType[];
       status?: InterviewStatus;
     };
     isShared?: boolean;
   }): Promise<IInterview[]> => {
-    return await InterviewRepository.getInterviews({
+    console.log(
+      'Fetching interviews with filters:',
+      filters,
+      'isShared:',
+      isShared
+    );
+    const interviews = await InterviewRepository.getInterviews({
       filters,
       isShared,
     });
+    console.log('Fetched Interviews:', interviews);
+    return interviews;
   },
 
   getInterviewInsights: async ({
     filters = {},
   }: {
     filters: {
-      userId?: string;
-      applicationId?: string;
       companyName?: string;
-      types?: InterviewType[];
-      status?: InterviewStatus;
     };
   }): Promise<InterviewInsights | null> => {
-    const interviews = await InterviewRepository.getInterviews({
-      filters,
-      isShared: true,
-    });
-
     if (filters.companyName) {
-      return await InterviewInsightService.getInterviewInsight(interviews);
+      const interviews = await InterviewRepository.getInterviews({
+        filters: { companyName: filters.companyName },
+        isShared: true,
+      });
+
+      if (filters.companyName) {
+        return await InterviewInsightService.getInterviewInsight({
+          companyName: filters.companyName,
+          sharedInterviews: interviews,
+        });
+      }
     }
 
     return null;

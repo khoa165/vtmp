@@ -9,13 +9,20 @@ import {
 } from '@/services/interview-insights/helpers';
 
 export const InterviewInsightService = {
-  getInterviewInsight: async (
-    sharedInterviews: IInterview[]
-  ): Promise<InterviewInsights> => {
-    const prompt = buildPrompt(sharedInterviews);
+  getInterviewInsight: async ({
+    companyName,
+    sharedInterviews,
+  }: {
+    companyName: string;
+    sharedInterviews: IInterview[];
+  }): Promise<InterviewInsights> => {
+    console.log('Shared Interviews:', sharedInterviews);
+    const prompt = buildPrompt({ companyName, sharedInterviews });
+
+    console.log('Prompt for Interview Insights:', prompt);
 
     const response = await generateObject({
-      model: google('gemini-2.0-flash'),
+      model: google('gemini-2.5-flash'),
       prompt,
       mode: 'json',
       schemaName: 'InterviewInsights',
