@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import {
+  InterviewInsightsFilter,
   InterviewInsightsSchema,
   SharedInterviewFilter,
   SharedInterviewsResponseSchema,
@@ -24,7 +25,7 @@ export const useGetSharedInterviews = (
   });
 
 export const useGetInterviewInsights = (
-  interviewFilter: SharedInterviewFilter
+  interviewFilter: InterviewInsightsFilter
 ) =>
   useQuery({
     queryKey: [QueryKey.GET_INTERVIEW_INSIGHTS, interviewFilter],

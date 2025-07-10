@@ -6,7 +6,10 @@ import {
   AccordionTrigger,
 } from '@/components/base/accordion';
 import { Skeleton } from '@/components/base/skeleton';
-import { SharedInterviewFilter } from '@/components/pages/application-tracker/applications/validation';
+import {
+  InterviewInsights,
+  SharedInterviewFilter,
+} from '@/components/pages/application-tracker/applications/validation';
 import {
   useGetInterviewInsights,
   useGetSharedInterviews,
@@ -25,10 +28,10 @@ export const InterviewSharedList = ({
   } = useGetSharedInterviews(interviewFilter);
 
   const {
-    // isLoading: isInsightsLoading,
+    isLoading: isInsightsLoading,
     // isError: isInsightsError,
     data: interviewInsights,
-  } = useGetInterviewInsights(interviewFilter);
+  } = useGetInterviewInsights({ companyName: interviewFilter.companyName });
 
   console.log('Interview Insights:', interviewInsights);
 
@@ -61,63 +64,96 @@ export const InterviewSharedList = ({
           </Card>
         )}
       </div>
-      <InterviewAccordion />
+      {isInsightsLoading ? (
+        <InterviewAccordionSkeleton />
+      ) : (
+        interviewInsights && (
+          <InterviewAccordion interviewInsights={interviewInsights} />
+        )
+      )}
     </div>
   );
 };
 
-const InterviewAccordion = () => {
+const InterviewAccordion = ({
+  interviewInsights,
+}: {
+  interviewInsights: InterviewInsights;
+}) => {
   return (
-    <div className="col-span-1 md:col-span-1 bg-emerald-300 p-4 rounded-xl text-background h-fit sticky top-20">
-      <h3 className="text-background font-semibold text-sm mb-3">
-        Interview Tips
-      </h3>
-      <Accordion type="single" collapsible className="w-full text-background">
-        <AccordionItem value="tip1">
-          <AccordionTrigger className="text-left text-lg font-semibold px-0 hover:no-underline">
-            <div className="flex items-center gap-3 w-full text-start">
-              <div className="text-2xl font-bold text-background opacity-70">
-                1
-              </div>
-              <span>How should I prepare for interviews?</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="text-medium font-semibold">
-            Research the company, practice common questions, and do mock
-            interviews.
-          </AccordionContent>
-        </AccordionItem>
+    <div className="col-span-1 md:col-span-1 bg-emerald-300 p-4 rounded-xl text-background h-fit sticky top-20 space-y-6">
+      <div className="px-5">
+        <h3 className="pt-2 text-background font-semibold text-lg">
+          Interview Insights
+        </h3>
 
-        <AccordionItem value="tip2">
-          <AccordionTrigger className="text-left text-lg font-semibold px-0 hover:no-underline">
-            <div className="flex items-center gap-3 w-full text-start">
-              <div className="text-2xl font-bold text-background opacity-70">
-                2
-              </div>
-              <span>What should I say if I do not know the answer?</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="text-medium font-semibold">
-            Be honest. Show your thought process, and ask for clarifications if
-            needed.
-          </AccordionContent>
-        </AccordionItem>
+        <div className="py-4 rounded-lg">
+          <h4 className="text-md font-bold mb-2">Company Details</h4>
+          <p className="text-sm font-medium">
+            {interviewInsights?.companyDetails ||
+              'No company details available.'}
+          </p>
+        </div>
 
-        <AccordionItem value="tip3">
-          <AccordionTrigger className="text-left text-lg font-semibold px-0 hover:no-underline">
-            <div className="flex items-center gap-3 w-full text-start">
-              <div className="text-2xl font-bold text-background opacity-70">
-                3
-              </div>
-              <span>How do I stand out in behavioral interviews?</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="text-medium font-semibold">
-            Use the STAR method. Be concise but specific with examples and
-            results.
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+        <div className="py-4 rounded-lg">
+          <h4 className="text-md font-bold mb-2">Company Products</h4>
+          <p className="text-sm font-medium">
+            {interviewInsights?.companyProducts ||
+              'No product details available.'}
+          </p>
+        </div>
+
+        <div className="py-4 rounded-lg">
+          <h4 className="text-lg font-bold">Interview Insights</h4>
+
+          <Accordion type="multiple" className="w-full text-background">
+            <AccordionItem value="commonQuestions">
+              <AccordionTrigger className="text-left text-base font-semibold hover:no-underline">
+                Common Questions
+              </AccordionTrigger>
+              <AccordionContent className="text-sm font-medium">
+                {interviewInsights?.interviewInsights?.commonQuestions &&
+                  (Array.isArray(
+                    interviewInsights.interviewInsights.commonQuestions
+                  ) &&
+                  interviewInsights.interviewInsights.commonQuestions.length >
+                    0 ? (
+                    <ul className="list-disc pl-5">
+                      {interviewInsights.interviewInsights.commonQuestions.map(
+                        (question, index) => (
+                          <li key={index}>{question}</li>
+                        )
+                      )}
+                    </ul>
+                  ) : (
+                    'No common questions available.'
+                  ))}
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="interviewProcess">
+              <AccordionTrigger className="text-left text-base font-semibold px-0 hover:no-underline">
+                Interview Process
+              </AccordionTrigger>
+              <AccordionContent className="text-sm font-medium">
+                {interviewInsights?.interviewInsights?.interviewProcess ||
+                  'No interview process details available.'}
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Tips */}
+            <AccordionItem value="tips">
+              <AccordionTrigger className="text-left text-base font-semibold px-0 hover:no-underline">
+                Tips
+              </AccordionTrigger>
+              <AccordionContent className="text-sm font-medium">
+                {interviewInsights?.interviewInsights?.tips ||
+                  'No tips available.'}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </div>
     </div>
   );
 };
@@ -165,6 +201,31 @@ const InterviewSharedListSkeleton = () => {
         <Skeleton className="h-4 w-16" />
         <Skeleton className="h-20 w-full rounded-lg" />
       </div>
+    </div>
+  );
+};
+
+const InterviewAccordionSkeleton = () => {
+  return (
+    <div className="col-span-1 md:col-span-1 bg-emerald-300 p-4 rounded-xl text-background h-fit sticky top-20">
+      <h3 className="text-background font-semibold text-sm mb-3">
+        Interview Insights
+      </h3>
+      <Accordion type="single" collapsible className="w-full text-background">
+        <AccordionItem value="tip1">
+          <AccordionTrigger className="text-left text-lg font-semibold px-0 hover:no-underline">
+            <div className="flex items-center gap-3 w-full text-start">
+              <Skeleton className="h-6 w-6 rounded-full" />
+              <span>
+                <Skeleton className="h-4 w-24" />
+              </span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="text-medium font-semibold">
+            <Skeleton className="h-4 w-full" />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 };

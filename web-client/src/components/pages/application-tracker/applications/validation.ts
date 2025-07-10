@@ -156,6 +156,10 @@ export interface SharedInterviewData extends InterviewData {
   };
 }
 
+export interface InterviewInsightsFilter {
+  companyName?: string;
+}
+
 export const InterviewInsightsSchema = z.object({
   message: z.string(),
   data: z.object({
@@ -168,3 +172,13 @@ export const InterviewInsightsSchema = z.object({
     }),
   }),
 });
+
+export interface InterviewInsights {
+  companyDetails: string;
+  companyProducts: string;
+  interviewInsights: {
+    commonQuestions: string[];
+    interviewProcess: string;
+    tips: string;
+  };
+}
