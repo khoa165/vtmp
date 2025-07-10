@@ -100,7 +100,7 @@ export const LoginPage = () => {
   return (
     <div className="grid grid-cols-12 gap-4 max-w-screen min-h-screen px-20 py-15 bg-background dark:bg-background">
       <div className="col-start-1 col-span-5 flex flex-col justify-start">
-        <TreverseFullLogo className="pl-6" />
+        <TreverseFullLogo className="pl-3 w-[106px] h-[16px]" />
         <Card className="bg-transparent border-0 shadow-none h-full justify-center">
           <CardHeader>
             <CardTitle className="text-5xl font-bold">Sign In</CardTitle>

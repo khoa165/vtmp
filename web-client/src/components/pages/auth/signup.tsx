@@ -223,7 +223,7 @@ export const SignUpPage = () => {
 
       <div className="col-start-7 col-span-5 flex flex-col justify-end">
         <div className="w-full flex flex-row justify-end">
-          <TreverseFullLogo className="pr-6" />
+          <TreverseFullLogo className="pr-3 w-[106px] h-[16px]" />
         </div>
 
         <Card className="bg-transparent border-0 shadow-none h-full justify-center">
