@@ -60,6 +60,11 @@ export const CronService = {
     });
 
     const NODE_ENV = EnvConfig.get().NODE_ENV;
+
+    console.log('Request headers:', api.defaults.headers);
+    console.log('Request data:', { linksData });
+    console.log(`Environment: ${NODE_ENV}`);
+
     if (NODE_ENV === Environment.DEV) {
       return api.request({
         method: 'POST',
@@ -75,6 +80,9 @@ export const CronService = {
         // prod,
         method: 'POST',
         data: { linksData },
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     }
   },
