@@ -29,18 +29,11 @@ export const InterviewFilterContainer = ({
       <div className="w-60">
         <Input
           placeholder="Filter companies..."
-          value={interviewFilter?.companyName || ''}
+          value={interviewFilter.companyName}
           onChange={(event) => {
-            if (!event.target.value) {
-              setInterviewFilter({
-                ...interviewFilter,
-                companyName: undefined,
-              });
-              return;
-            }
             setInterviewFilter({
               ...interviewFilter,
-              companyName: event.target.value,
+              companyName: event.target.value || undefined,
             });
           }}
           className="rounded-lg p-2 border border-input px-3 py-2 text-sm text-foreground shadow-sm w-full"

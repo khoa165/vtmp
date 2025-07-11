@@ -69,7 +69,8 @@ export enum QueryKey {
   GET_LINKS = '/api/links/getLinks',
   GET_LINKS_COUNT_BY_STATUS = '/api/links/count-by-status',
   GET_INTERVIEW_BY_APPLICATION_ID = '/api/interviews/by-application/:applicationId',
-  GET_SHARED_INTERVIEW = 'api/interviews/shared',
+  GET_SHARED_INTERVIEW = '/api/interviews/shared',
+  GET_INTERVIEW_INSIGHTS = '/api/interviews/share/insights',
 }
 
 export enum Method {
