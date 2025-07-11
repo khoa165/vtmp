@@ -19,24 +19,30 @@ jobs:
         with:
           ref: ${{ inputs.commit_hash }}
           fetch-depth: 0
-      - name: Print vars context
-        env:
-          VARS_CONTEXT: ${{ toJson(vars) }}
-        run: echo "$VARS_CONTEXT"
-      - name: Print env
-        env:
-          ENV_CONTEXT: ${{ toJson(env) }}
-        run: echo "$ENV_CONTEXT"
-      - name: Print secrets
-        env:
-          SECRETS_CONTEXT: ${{ toJson(secrets) }}
-        run: echo "$SECRETS_CONTEXT"
+      - name: Extract vars as environment flags
+        id: extract_vars
+        run: |
+          # Convert vars context to -e flag format
+          ENV_FLAGS=$(echo '${{ toJson(vars) }}' | jq -r 'to_entries | map("-e " + .key + "=" + (.value | tostring)) | join(" ")')
+          echo "env_flags=$ENV_FLAGS" >> $GITHUB_OUTPUT
+          echo "Environment flags: $ENV_FLAGS"
+          
+          # Export as shell variable for use in subsequent steps
+          echo "FLY_ENV_FLAGS=$ENV_FLAGS" >> $GITHUB_ENV
 
-      # - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Import secrets via stdin
+        run: |
+          # Pipe secrets directly to flyctl secrets import
+          echo '${{ toJson(secrets) }}' | jq -r 'to_entries | map(.key + "=" + .value) | .[]' | \
+          flyctl secrets import --config web/fly_PROD.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      # - run: flyctl deploy --config web/fly_PROD.toml
-        # env:
-        #   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - run: flyctl deploy --config web/fly_PROD.toml $FLY_ENV_FLAGS
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       # - name: Get commit info
       #   id: commit_info
