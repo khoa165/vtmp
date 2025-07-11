@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { Card } from '#vtmp/web-client/components/base/card';
+import { CustomError } from '#vtmp/web-client/utils/errors';
 import { Skeleton } from '@/components/base/skeleton';
 import { SharedInterviewFilter } from '@/components/pages/application-tracker/applications/validation';
 import { useGetSharedInterviews } from '@/components/pages/application-tracker/interview-feed/hooks/interviews';
@@ -13,9 +14,9 @@ export const InterviewSharedList = ({
 }) => {
   const {
     isLoading: isInterviewsLoading,
-    isError: isInterviewsError,
+    error: interviewError,
     data: sharedInterviewData,
-  } = useGetSharedInterviews(interviewFilter);
+  } = useGetSharedInterviews(interviewFilter, { placeholderData: [] });
 
   const sortedSharedInterviews = useMemo(() => {
     if (!Array.isArray(sharedInterviewData)) return [];
@@ -26,12 +27,13 @@ export const InterviewSharedList = ({
     );
   }, [sharedInterviewData]);
 
-  if (isInterviewsLoading) {
-    return <InterviewSharedListSkeleton />;
+  if (interviewError) {
+    console.error('Error loading interviews data', interviewError);
+    throw new CustomError('Error loading interviews data');
   }
 
-  if (isInterviewsError) {
-    throw new Error('Error loading interviews.');
+  if (isInterviewsLoading) {
+    return <InterviewSharedListSkeleton />;
   }
 
   return (

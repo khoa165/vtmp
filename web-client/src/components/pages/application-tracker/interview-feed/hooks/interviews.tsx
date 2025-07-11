@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   InterviewInsightsFilter,
   InterviewInsightsSchema,
+  SharedInterview,
   SharedInterviewFilter,
   SharedInterviewsResponseSchema,
 } from '@/components/pages/application-tracker/applications/validation';
@@ -10,7 +11,8 @@ import { request } from '@/utils/api';
 import { Method, QueryKey } from '@/utils/constants';
 
 export const useGetSharedInterviews = (
-  interviewFilter: SharedInterviewFilter
+  interviewFilter: SharedInterviewFilter,
+  options?: { placeholderData?: SharedInterview[] }
 ) =>
   useQuery({
     queryKey: [QueryKey.GET_SHARED_INTERVIEW, interviewFilter],
@@ -22,6 +24,7 @@ export const useGetSharedInterviews = (
         schema: SharedInterviewsResponseSchema,
         options: { includeOnlyDataField: true, requireAuth: true },
       }),
+    placeholderData: options?.placeholderData,
   });
 
 export const useGetInterviewInsights = (

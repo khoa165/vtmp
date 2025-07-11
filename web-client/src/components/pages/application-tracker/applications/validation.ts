@@ -135,6 +135,8 @@ const SharedInterviewSchema = InterviewSchema.extend({
   }),
 });
 
+export type SharedInterview = z.infer<typeof SharedInterviewSchema>;
+
 export const SharedInterviewResponseSchema = z.object({
   message: z.string(),
   data: SharedInterviewSchema,
