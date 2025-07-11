@@ -80,10 +80,6 @@ export function FilterDrawer({
     onChange(updatedFilters);
   }, [filterParams]);
 
-  useEffect(() => {
-    onChange(filters);
-  }, [filters, onChange]);
-
   const jobTypeLabels: Record<JobType, string> = {
     [JobType.INTERNSHIP]: 'Internship',
     [JobType.NEW_GRAD]: 'New Grad',
