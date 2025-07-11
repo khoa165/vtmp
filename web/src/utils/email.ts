@@ -27,11 +27,38 @@ export class EmailService {
     return {
       email,
       subject: 'Invitation to join VTMP',
-      body: `<h1>Invitation to join VTMP</h1>
-        <p>Dear ${name},</p>
-        <p>We are excited to invite you to join our VTMP community. As a member, you will have access to exclusive content, resources, and networking opportunities.</p>
-        <p>To accept this invitation, please click the link below:</p>
-        <a href=${link} target="_blank">Join the community!</a>
+      body: `
+            <div style="margin-bottom: 24px;">
+              <img src="https://comtdk.github.io/treverse-logo/primary-logo-gradient.png" alt="Treverse Logo" style="max-width: 180px; height: auto;" />
+            </div>
+            <h1>Invitation to join VTMP</h1>
+            <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; line-height: 1.6;">
+            <p style="margin-bottom: 16px;">Dear <strong>${name}</strong>,</p>
+
+            <p style="margin-bottom: 16px;">
+              We are excited to invite you to join our <strong>VTMP community</strong>. As a member, you will have access to
+              exclusive content, resources, and networking opportunities.
+            </p>
+
+            <p style="margin-bottom: 24px;">
+              To accept this invitation, please click the button below:
+            </p>
+
+            <a href="${link}" target="_blank" 
+              style="
+                display: inline-block;
+                background-color: #a3f890;
+                background-image: linear-gradient(to right, #F8FF6A, #66FFCC);
+                color: black;
+                text-decoration: none;
+                padding: 12px 24px;
+                border-radius: 5px;
+                font-weight: bold;
+                font-size: 16px;
+              ">
+              Join the community!
+            </a>
+          </div>
         `,
     };
   }
@@ -63,7 +90,7 @@ export class EmailService {
     body: string;
   }) {
     const mailOptions = {
-      from: EnvConfig.get().GMAIL_EMAIL,
+      from: `"Treverse 👋" <${EnvConfig.get().GMAIL_EMAIL}>`,
       to: email,
       subject,
       html: body,
