@@ -73,6 +73,7 @@ export const jobPostingsTableColumns = ({
       return (
         <ReactCountryFlag
           countryCode={countryCode}
+          svg
           style={{
             fontSize: '1.5em',
             lineHeight: '1.5em',
