@@ -19,14 +19,16 @@ jobs:
         with:
           ref: ${{ inputs.commit_hash }}
           fetch-depth: 0
-      - name: List all environment variables
-        run: env  
+      - name: Print vars context
+        env:
+          VARS_CONTEXT: ${{ toJson(vars) }}
+        run: echo "$VARS_CONTEXT"
 
       # - uses: superfly/flyctl-actions/setup-flyctl@master
 
       # - run: flyctl deploy --config web/fly_PROD.toml
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        # env:
+        #   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       # - name: Get commit info
       #   id: commit_info
