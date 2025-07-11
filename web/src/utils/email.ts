@@ -29,7 +29,7 @@ export class EmailService {
       subject: 'Invitation to join VTMP',
       body: `
             <div style="margin-bottom: 24px;">
-              <img src="https://comtdk.github.io/treverse-logo/primary-logo-gradient.png" alt="Treverse Logo" style="max-width: 180px; height: auto;" />
+              <img src="https://comtdk.github.io/treverse-logo/primary-logo-gradient.png" alt="Treverse Logo" style="max-width: 180px; height: auto; background-color:rgb(90, 90, 90); padding: 6px;" />
             </div>
             <h1>Invitation to join VTMP</h1>
             <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; line-height: 1.6;">
