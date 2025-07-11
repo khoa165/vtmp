@@ -133,9 +133,7 @@ describe('CronController', () => {
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.message).to.equal(
-        'Cron job has been triggered successfully.'
-      );
+      expect(res.body.message).to.equal('Cron job has finished successfully.');
       expect(res.body.data.successfulLinks).to.deep.equal([]);
       expect(res.body.data.failedLinks).to.deep.equal([]);
     });
@@ -148,9 +146,7 @@ describe('CronController', () => {
         .set('Authorization', `Bearer ${mockAdminToken}`);
 
       expectSuccessfulResponse({ res, statusCode: 200 });
-      expect(res.body.message).to.equal(
-        'Cron job has been triggered successfully.'
-      );
+      expect(res.body.message).to.equal('Cron job has finished successfully.');
       expect(res.body.data.successfulLinks).to.deep.equal([successfulLink]);
       expect(res.body.data.failedLinks).to.deep.equal([failedLinks]);
     });

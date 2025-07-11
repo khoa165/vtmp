@@ -58,9 +58,11 @@ export const SubmitLink = () => {
       <div className="col-start-1 col-span-5 flex flex-col justify-start">
         <Card className="bg-transparent border-0 h-full justify-center">
           <CardHeader>
-            <CardTitle className="text-4xl font-bold">Share a Job</CardTitle>
+            <CardTitle className="text-4xl font-bold">
+              Share a Job Link
+            </CardTitle>
             <CardDescription className="text-2xl">
-              Contribute a posting for a job board
+              Share a job posting with our community
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col space-y-4 my-3">

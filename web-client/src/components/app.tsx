@@ -8,7 +8,6 @@ import { allBlogsMetadata } from '#vtmp/web-client/blogs/metadata';
 import { Mentorship2025Apply } from '#vtmp/web-client/components/apply';
 import { BlogContainer } from '#vtmp/web-client/components/blogs';
 import { LandingContainer } from '#vtmp/web-client/components/landing';
-import { LandingPage } from '#vtmp/web-client/components/pages/application-tracker/landing/landing-page';
 import { PageWithNavigation } from '#vtmp/web-client/components/layout/page-with-navigation';
 import { PageWithPermission } from '#vtmp/web-client/components/layout/page-with-permission';
 import { PageWithSidebar } from '#vtmp/web-client/components/layout/page-with-sidebar';
@@ -18,6 +17,7 @@ import { InvitationsPage } from '#vtmp/web-client/components/pages/admins/invita
 import { AdminLinksPage } from '#vtmp/web-client/components/pages/admins/links/admin-links-page';
 import { ApplicationsPage } from '#vtmp/web-client/components/pages/application-tracker/applications/applications-page';
 import { JobPostingsPage } from '#vtmp/web-client/components/pages/application-tracker/job-postings/job-postings-page';
+import { LandingPage } from '#vtmp/web-client/components/pages/application-tracker/landing/landing-page';
 import { LinksPage } from '#vtmp/web-client/components/pages/application-tracker/links/links-page';
 import { LoginPage } from '#vtmp/web-client/components/pages/auth/login';
 import { RequireAuth } from '#vtmp/web-client/components/pages/auth/require-auth';
@@ -84,7 +84,11 @@ export const App = () => {
             <Route path="/interviews" element={<InterviewFeedPage />} />
             <Route
               path="/admin"
-              element={<PageWithPermission roles={[SystemRole.ADMIN]} />}
+              element={
+                <PageWithPermission
+                  roles={[SystemRole.ADMIN, SystemRole.MODERATOR]}
+                />
+              }
             >
               <Route path="invitations" element={<InvitationsPage />} />
               <Route path="links" element={<AdminLinksPage />} />

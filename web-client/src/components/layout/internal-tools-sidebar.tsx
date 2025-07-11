@@ -58,7 +58,7 @@ export const InternalToolsSidebar = () => {
       title: 'Applications',
       url: '/applications',
       icon: SquareCheckBig,
-      roles: [SystemRole.USER],
+      roles: [SystemRole.MODERATOR, SystemRole.USER],
     },
     {
       title: 'Interviews',

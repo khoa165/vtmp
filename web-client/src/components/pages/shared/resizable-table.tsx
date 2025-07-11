@@ -101,7 +101,7 @@ export function ResizableTable<TData, TValue>({
                     colSpan={columns.length}
                     className="h-24 text-center text-white"
                   >
-                    No invitations found.
+                    No matching entries
                   </TableCell>
                 </TableRow>
               )}
