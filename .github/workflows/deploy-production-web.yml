@@ -23,6 +23,14 @@ jobs:
         env:
           VARS_CONTEXT: ${{ toJson(vars) }}
         run: echo "$VARS_CONTEXT"
+      - name: Print env
+        env:
+          ENV_CONTEXT: ${{ toJson(env) }}
+        run: echo "$ENV_CONTEXT"
+      - name: Print secrets
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+        run: echo "$SECRETS_CONTEXT"
 
       # - uses: superfly/flyctl-actions/setup-flyctl@master
 
