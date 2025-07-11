@@ -105,9 +105,9 @@ const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>(
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0">
-          <Command className="overflow-visible">
+          <Command className="overflow-y-auto">
             <CommandInput placeholder="Search..." />
-            <CommandList className="hide-scrollbar">
+            <CommandList>
               <CommandEmpty>No item found.</CommandEmpty>
               {Object.entries(groupedOptions).map(
                 ([category, categoryOptions], index) => (
@@ -156,21 +156,3 @@ const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>(
 MultiSelect.displayName = 'MultiSelect';
 
 export { MultiSelect };
-
-const style = document.createElement('style');
-style.innerHTML = `
-    .hide-scrollbar {
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE 10+ */
-    }
-    .hide-scrollbar::-webkit-scrollbar {
-      display: none; /* Chrome/Safari/Webkit */
-    }
-  `;
-if (
-  typeof window !== 'undefined' &&
-  !document.getElementById('multi-select-hide-scrollbar')
-) {
-  style.id = 'multi-select-hide-scrollbar';
-  document.head.appendChild(style);
-}
