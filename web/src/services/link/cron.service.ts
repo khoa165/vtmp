@@ -60,8 +60,20 @@ export const CronService = {
     });
 
     const NODE_ENV = EnvConfig.get().NODE_ENV;
+    console.log(`Node Environment: ${NODE_ENV}`);
+    console.log(
+      'LINK_PROCESSING_ENDPOINT:',
+      JSON.stringify(EnvConfig.get().LINK_PROCESSING_ENDPOINT)
+    );
+    console.log('Axios instance headers:', api.defaults.headers);
 
     if (NODE_ENV === Environment.DEV || NODE_ENV === Environment.TEST) {
+      console.log('Sending to Lambda (DEV/TEST mode) with payload:', {
+        version: '2.0',
+        routeKey: 'POST /',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ linksData }),
+      });
       return api.request({
         method: 'POST',
         data: {
@@ -72,6 +84,9 @@ export const CronService = {
         },
       });
     } else {
+      console.log('Sending to Lambda (PROD/STAGING mode) with payload:', {
+        linksData,
+      });
       return api.request({
         // PROD or STAGING
         method: 'POST',
@@ -109,6 +124,11 @@ export const CronService = {
         })
       );
       console.log('linksData payload before sending: ', linksData);
+
+      console.log(
+        'LINK_PROCESSING_ENDPOINT:',
+        JSON.stringify(EnvConfig.get().LINK_PROCESSING_ENDPOINT)
+      );
 
       const response = await this._sendLinksToLambda(linksData);
       console.log('Response from Lambda: ', response);
