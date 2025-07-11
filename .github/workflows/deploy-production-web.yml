@@ -1,0 +1,51 @@
+name: Deploy to Production (web)
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_hash:
+        description: 'Commit hash to deploy'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: web-prod
+
+    steps:
+      - name: Checkout specific commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.commit_hash }}
+          fetch-depth: 0
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - run: flyctl deploy --config web/fly_PROD.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      # - name: Get commit info
+      #   id: commit_info
+      #   run: |
+      #     SHORT_HASH=$(git rev-parse --short ${{ inputs.commit_hash }})
+      #     UTC_DATE=$(date -u +"%Y%m%dT%H%M%SZ")
+      #     echo "short_hash=$SHORT_HASH" >> $GITHUB_OUTPUT
+      #     echo "utc_date=$UTC_DATE" >> $GITHUB_OUTPUT
+
+      # - name: Create and push tag
+      #   run: |
+      #     TAG_NAME="web-prod-${{ steps.commit_info.outputs.utc_date }}-${{ steps.commit_info.outputs.short_hash }}"
+      #     git tag $TAG_NAME ${{ inputs.commit_hash }}
+      #     git push origin $TAG_NAME
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Deployment summary
+      #   run: |
+      #     echo "## 🚀 Production Deployment Complete" >> $GITHUB_STEP_SUMMARY
+      #     echo "- **Service**: web" >> $GITHUB_STEP_SUMMARY
+      #     echo "- **Commit**: ${{ inputs.commit_hash }}" >> $GITHUB_STEP_SUMMARY
+      #     echo "- **Tag**: web-prod-${{ steps.commit_info.outputs.utc_date }}-${{ steps.commit_info.outputs.short_hash }}" >> $GITHUB_STEP_SUMMARY
+      #     echo "- **Environment**: production-web" >> $GITHUB_STEP_SUMMARY
