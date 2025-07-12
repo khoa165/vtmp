@@ -11,7 +11,7 @@ import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
-import UserService from './user.service';
+import { UserService } from './user.service';
 
 describe('User Service', () => {
   useMongoDB();

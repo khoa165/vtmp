@@ -45,7 +45,7 @@ runs:
     - name: Build, tag, and push Docker image to ECR
       uses: docker/build-push-action@v6
       with:
-        context: .
+        context: ./apps
         file: link-processing-service/Dockerfile
         platforms: linux/amd64
         provenance: false # disables provenance metadata, required for Lambda

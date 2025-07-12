@@ -7,7 +7,7 @@ import { SystemRole } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
 import { AllowedIssuer } from '@/constants/enums';
-import UserService from '@/services/user.service';
+import { UserService } from '@/services/user.service';
 import { ResourceNotFoundError, UnauthorizedError } from '@/utils/errors';
 
 export const DecodedJWTSchema = z.object({

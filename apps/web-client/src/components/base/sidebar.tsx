@@ -20,8 +20,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '#vtmp/web-client/components/base/tooltip';
-import { useIsMobile } from '#vtmp/web-client/hooks/use-mobile';
 import { cn } from '#vtmp/web-client/lib/utils';
+
+import { useIsMobile } from '#vtmp/web-client/hooks/useMobile';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

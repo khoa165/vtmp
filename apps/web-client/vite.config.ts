@@ -29,8 +29,8 @@ export default defineConfig({
       src: '/src',
       '#vtmp/web-client': path.resolve(__dirname, 'src'),
       '@': path.resolve(__dirname, './src'),
-      '@vtmp/common': path.resolve(__dirname, '../packages/common/src'),
-      '#vtmp/common': path.resolve(__dirname, '../packages/common/src'),
+      '@vtmp/common': path.resolve(__dirname, '../../packages/common/src'),
+      '#vtmp/common': path.resolve(__dirname, '../../packages/common/src'),
     },
   },
   server: {

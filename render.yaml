@@ -57,7 +57,7 @@ services:
     buildCommand:
       yarn install && yarn workspace @vtmp/common build && yarn workspace
       @vtmp/web-client build
-    staticPublishPath: ./web-client/dist
+    staticPublishPath: ./apps/web-client/dist
     routes:
       - type: rewrite
         source: /*
@@ -92,7 +92,7 @@ services:
     region: oregon
     healthCheckPath: /health
     dockerContext: .
-    dockerfilePath: ./discord-service/Dockerfile
+    dockerfilePath: ./apps/discord-service/Dockerfile
     autoDeployTrigger: commit
     previews:
       generation: off # Disable service previews

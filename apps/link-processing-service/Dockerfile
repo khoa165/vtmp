@@ -5,7 +5,7 @@ WORKDIR ${LAMBDA_TASK_ROOT}
 # Copy
 COPY package.json yarn.lock tsconfig.base.json ./
 COPY packages ./packages
-COPY link-processing-service ./link-processing-service
+COPY ./apps/link-processing-service ./apps/link-processing-service
 
 # Install Yarn
 RUN corepack enable
@@ -29,10 +29,10 @@ FROM public.ecr.aws/lambda/nodejs:22
 # ${LAMBDA_TASK_ROOT} is equivalent to /var/task
 WORKDIR ${LAMBDA_TASK_ROOT}
 
-COPY --from=builder ${LAMBDA_TASK_ROOT}/tsconfig.base.json ${LAMBDA_TASK_ROOT}/tsconfig.base.json
+COPY --from=builder ${LAMBDA_TASK_ROOT}/tsconfig.base.json ./tsconfig.base.json
 COPY --from=builder ${LAMBDA_TASK_ROOT}/node_modules ./node_modules
 COPY --from=builder ${LAMBDA_TASK_ROOT}/packages ./packages
-COPY --from=builder ${LAMBDA_TASK_ROOT}/link-processing-service ./link-processing-service
+COPY --from=builder ${LAMBDA_TASK_ROOT}/apps/link-processing-service ./apps/link-processing-service
 
-CMD ["link-processing-service/dist/index.handler"]
+CMD ["apps/link-processing-service/dist/index.handler"]
 

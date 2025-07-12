@@ -35,16 +35,16 @@ jobs:
         with:
           filters: |
             web:
-              - 'web/**'
+              - 'apps/web/**'
               - 'packages/**'
             web-client:
-              - 'web-client/**'
+              - 'apps/web-client/**'
               - 'packages/common/**'
             discord-service:
-              - 'discord-service/**'
+              - 'apps/discord-service/**'
               - 'packages/**'
             link-processing-service:
-              - 'link-processing-service/**'
+              - 'apps/link-processing-service/**'
               - 'packages/**'
             ci:
               - '.github/**'

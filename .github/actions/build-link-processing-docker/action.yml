@@ -19,7 +19,7 @@ runs:
     - name: Build link-processing-service Docker image
       uses: docker/build-push-action@v6
       with:
-        context: .
+        context: ./apps
         file: link-processing-service/Dockerfile
         platforms: linux/amd64
         cache-from: type=local,src=/tmp/.buildx-cache # to resue unchanged layers, to make build faster

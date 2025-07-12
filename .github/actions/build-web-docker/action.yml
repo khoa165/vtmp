@@ -19,7 +19,7 @@ runs:
     - name: Build web Docker image
       uses: docker/build-push-action@v6
       with:
-        context: .
+        context: .apps
         file: web/Dockerfile
         platforms: linux/amd64
         cache-from: type=local,src=/tmp/.buildx-cache
