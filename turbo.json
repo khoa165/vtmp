@@ -2,12 +2,12 @@
   "$schema": "https://turborepo.com/schema.json",
   "tasks": {
     "build": {
-      "inputs": ["src/**/*.ts", "src/**/*.tsx"],
+      "inputs": ["**/*.ts", "**/*.tsx"],
       "outputs": ["dist/**"],
       "dependsOn": ["^build"]
     },
     "test": {
-      "inputs": ["src/**/*.ts", "src/**/*.tsx"],
+      "inputs": ["**/*.ts", "**/*.tsx"],
       "outputs": [],
       "dependsOn": ["build"]
     },
