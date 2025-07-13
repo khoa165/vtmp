@@ -13,7 +13,11 @@
     },
     "dev": {
       "persistent": true,
-      "cache": false
+      "cache": false,
+      "dependsOn": ["build"]
+    },
+    "migrate": {
+      "dependsOn": ["@vtmp/mongo-migrations#build"]
     }
   }
 }
