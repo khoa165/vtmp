@@ -16,7 +16,7 @@ services:
     volumes:
       # This creates bind mount between local ./web/src and the container's /app/web/src
       # "./web/src" is relative to root (where the command "docker compose up" is run)
-      - ./web/src:/app/web/src
+      - ./apps/web/src:/app/apps/web/src
 
   link-processing-service:
     container_name: link-processor

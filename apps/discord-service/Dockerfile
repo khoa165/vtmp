@@ -3,21 +3,27 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 # Copy root files and workspaces (relative to build context, the '.' in docker build command, which is our current dir's root)
-COPY package.json yarn.lock tsconfig.base.json ./
-COPY packages ./packages
-COPY ./apps/discord-service ./apps/discord-service
+COPY package.json yarn.lock tsconfig.base.json turbo.json ./
+COPY .yarn/ .yarn/
+COPY .yarnrc.yml ./
+COPY packages/ ./packages/
+COPY apps/ ./apps/
+
+RUN corepack enable
 
 # Install dependencies:
 RUN yarn install --immutable
 
 # Build steps:
-RUN yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build
-RUN yarn workspace @vtmp/discord-service build
+# Leverage turborepo build cache, and only target the @vtmp/discord-service workspace (build only discord-service and its dependencies)
+RUN yarn turbo run build --filter=@vtmp/discord-service
 
 # Prune devDependencies from the final node_modules if in production only
 ARG BUILD_ENV=production
 RUN if [ "$BUILD_ENV" = "production" ]; then \
-      yarn install --production --immutable --ignore-scripts; \
+      yarn workspaces focus --production @vtmp/discord-service; \
+    else \
+      yarn workspaces focus @vtmp/discord-service; \
     fi
 
 # 2nd stage: Final runtime image
