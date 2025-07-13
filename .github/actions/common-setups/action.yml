@@ -10,10 +10,10 @@ runs:
         node-version: 22.x
         cache: 'yarn'
 
-    - name: Install dependencies
-      run: yarn install --immutable
+    - name: Set Yarn version to 4.8.1
+      run: yarn set version 4.8.1
       shell: bash
 
-    - name: Build common, server-common, mongo packages
-      run: yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build
+    - name: Install dependencies
+      run: yarn install --immutable
       shell: bash

@@ -45,8 +45,8 @@ runs:
     - name: Build, tag, and push Docker image to ECR
       uses: docker/build-push-action@v6
       with:
-        context: ./apps
-        file: link-processing-service/Dockerfile
+        context: .
+        file: apps/link-processing-service/Dockerfile
         platforms: linux/amd64
         provenance: false # disables provenance metadata, required for Lambda
         cache-from: type=local,src=/tmp/.buildx-cache
