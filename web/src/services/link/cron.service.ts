@@ -60,7 +60,8 @@ export const CronService = {
     });
 
     const NODE_ENV = EnvConfig.get().NODE_ENV;
-    if (NODE_ENV === Environment.DEV) {
+
+    if (NODE_ENV === Environment.DEV || NODE_ENV === Environment.TEST) {
       return api.request({
         method: 'POST',
         data: {
@@ -72,9 +73,12 @@ export const CronService = {
       });
     } else {
       return api.request({
-        // prod,
+        // PROD or STAGING
         method: 'POST',
         data: { linksData },
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     }
   },

@@ -34,6 +34,13 @@ export function AdminLinksTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
 
+  const defaultColumn = {
+    size: 200,
+    minSize: 50,
+    maxSize: 750,
+    cell: ({ getValue }) => <div className="pl-2">{getValue()}</div>,
+  };
+
   const table = useReactTable({
     data,
     columns,
@@ -51,6 +58,7 @@ export function AdminLinksTable<TData, TValue>({
       columnVisibility,
       rowSelection,
     },
+    defaultColumn,
   });
 
   return (

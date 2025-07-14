@@ -34,14 +34,22 @@ export const jobPostingsTableColumns = ({
   {
     accessorKey: 'companyName',
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Company" />;
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Company" />
+        </div>
+      );
     },
     meta: { displayName: 'Company' },
   },
   {
     accessorKey: 'jobTitle',
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Position" />;
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Position" />
+        </div>
+      );
     },
     meta: { displayName: 'Position' },
     cell: ({ row }) => {
@@ -51,7 +59,7 @@ export const jobPostingsTableColumns = ({
           href={row.original.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center underline hover:text-primary"
+          className="inline-flex items-center underline hover:text-primary pl-2"
         >
           {row.original.jobTitle}
           <Link className="ml-1 h-4 w-4" />
@@ -62,7 +70,11 @@ export const jobPostingsTableColumns = ({
   {
     accessorKey: 'location',
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Location" />;
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Location" />
+        </div>
+      );
     },
     cell: ({ row }) => {
       const location = row.original.location;
@@ -71,13 +83,16 @@ export const jobPostingsTableColumns = ({
       }
       const countryCode = location === 'US' ? 'US' : 'CA';
       return (
-        <ReactCountryFlag
-          countryCode={countryCode}
-          style={{
-            fontSize: '1.5em',
-            lineHeight: '1.5em',
-          }}
-        />
+        <div className="pl-2">
+          <ReactCountryFlag
+            countryCode={countryCode}
+            svg
+            style={{
+              fontSize: '1.5em',
+              lineHeight: '1.5em',
+            }}
+          />
+        </div>
       );
     },
     meta: { displayName: 'Location' },
@@ -85,18 +100,26 @@ export const jobPostingsTableColumns = ({
   {
     accessorKey: 'datePosted',
     header: ({ column }) => {
-      return <HeaderSorting column={column} headerName="Posting Date" />;
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Posting Date" />
+        </div>
+      );
     },
     meta: { displayName: 'Posting Date' },
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('datePosted');
       const date = new Date(isoDate);
-      return <div>{formatDistanceToNow(date, { addSuffix: true })}</div>;
+      return (
+        <div className="pl-2">
+          {formatDistanceToNow(date, { addSuffix: true })}
+        </div>
+      );
     },
   },
   {
     accessorKey: 'adminNotes',
-    header: 'Admin Notes',
+    header: () => <div className="pl-2">Admin Notes</div>,
     meta: { displayName: 'Admin Notes' },
   },
 ];

@@ -32,6 +32,7 @@ export const roleToPermissionMapping: Record<SystemRole, Permission[]> = {
     Permission.MANAGE_JOB_POSTING,
 
     Permission.VIEW_INTERVIEW,
+    Permission.MANAGE_INTERVIEW,
   ],
   [SystemRole.USER]: [
     Permission.VIEW_APPLICATION,

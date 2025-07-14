@@ -30,19 +30,25 @@ export const adminLinksTableColumns = ({
 }: AdminLinksTableColumnsProps): ColumnDef<ILinkResponse>[] => [
   {
     accessorKey: 'jobTitle',
-    header: 'Job Title',
+    header: () => <div className="pl-2">Job Title</div>,
     cell: ({ row }) => (
-      <div className="ml-4">
+      <div className="pl-2">
         {row.original.jobTitle ? row.original.jobTitle : 'N/A'}
       </div>
     ),
   },
   {
     accessorKey: 'companyName',
-    header: 'Company',
+    header: ({ column }) => {
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Company" />
+        </div>
+      );
+    },
     cell: ({ row }) => {
       return (
-        <div className="ml-4">
+        <div className="pl-2">
           {row.original.companyName ? row.original.companyName : 'N/A'}
         </div>
       );
@@ -50,10 +56,10 @@ export const adminLinksTableColumns = ({
   },
   {
     accessorKey: 'status',
-    header: 'Status',
+    header: () => <div className="pl-2">Status</div>,
     cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 pl-2">
           <StatusDot
             status={row.original.status}
             colorMapping={LinksColorMapping}
@@ -66,17 +72,27 @@ export const adminLinksTableColumns = ({
   {
     accessorKey: 'datePosted',
     header: ({ column }) => (
-      <HeaderSorting column={column} headerName="Submitted" />
+      <div className="pl-2">
+        <HeaderSorting column={column} headerName="Submitted" />
+      </div>
     ),
     cell: ({ row }) => {
       const isoDate = row.getValue<string>('datePosted');
-      if (!isoDate) return <div>{format(new Date(), MONTH_DATE_YEAR)}</div>;
+      if (!isoDate)
+        return (
+          <div className="pl-2">{format(new Date(), MONTH_DATE_YEAR)}</div>
+        );
       const date = new Date(isoDate);
-      return <div>{formatDistanceToNow(date, { addSuffix: true })}</div>;
+      return (
+        <div className="pl-2">
+          {formatDistanceToNow(date, { addSuffix: true })}
+        </div>
+      );
     },
   },
   {
-    header: 'Review',
+    id: 'review',
+    header: () => <div className="pl-2">Review</div>,
     cell: ({ row }) => (
       <ReviewPopupButton
         currentLink={row.original}
