@@ -11,15 +11,15 @@ packages/common/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 packages/mongo/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 packages/server-common/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 
-web/ @khoa165 @dsmai @Euclid0192 @hongantran3804
-web/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
+apps/web/ @khoa165 @dsmai @Euclid0192 @hongantran3804
+apps/web/src/ @khoa165 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 
-web-client/ @khoa165 @dsmai @Euclid0192 @hongantran3804
-web-client/src/blogs/content/ @khoa165
-web-client/src/components/base/ @khoa165 @sonmac1203 @dsmai @Euclid0192 @hongantran3804 @ComTDK
-web-client/src/components/pages/ @khoa165 @sonmac1203 @dsmai @Euclid0192 @hongantran3804 @ComTDK
+apps/web-client/ @khoa165 @dsmai @Euclid0192 @hongantran3804
+apps/web-client/src/blogs/content/ @khoa165
+apps/web-client/src/components/base/ @khoa165 @sonmac1203 @dsmai @Euclid0192 @hongantran3804 @ComTDK
+apps/web-client/src/components/pages/ @khoa165 @sonmac1203 @dsmai @Euclid0192 @hongantran3804 @ComTDK
 
-link-processing-service/ @khoa165 @dsmai @hongantran3804 @sarah-vo
+apps/link-processing-service/ @khoa165 @dsmai @hongantran3804 @sarah-vo
 apps/mongo-migrations @khoa165 @dsmai
 
 .gitattributes @khoa165 @dsmai

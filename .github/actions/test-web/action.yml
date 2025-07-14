@@ -10,7 +10,7 @@ runs:
   using: 'composite'
   steps:
     - name: Run tests and collect coverage
-      run: yarn workspace @vtmp/web coverage
+      run: yarn turbo run build --filter=@vtmp/web && yarn workspace @vtmp/web coverage
       shell: bash
 
     - name: Upload results to Codecov

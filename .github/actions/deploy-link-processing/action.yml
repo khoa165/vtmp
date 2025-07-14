@@ -46,7 +46,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        file: link-processing-service/Dockerfile
+        file: apps/link-processing-service/Dockerfile
         platforms: linux/amd64
         provenance: false # disables provenance metadata, required for Lambda
         cache-from: type=local,src=/tmp/.buildx-cache

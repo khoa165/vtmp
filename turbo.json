@@ -1,0 +1,23 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "tasks": {
+    "build": {
+      "inputs": ["**/*.ts", "**/*.tsx"],
+      "outputs": ["dist/**"],
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "inputs": ["**/*.ts", "**/*.tsx"],
+      "outputs": [],
+      "dependsOn": ["build"]
+    },
+    "dev": {
+      "persistent": true,
+      "cache": false,
+      "dependsOn": ["build"]
+    },
+    "migrate": {
+      "dependsOn": ["@vtmp/mongo-migrations#build"]
+    }
+  }
+}

@@ -17,3 +17,6 @@ dist
 
 # code coverage
 coverage
+
+# turbo outputs
+.turbo

@@ -3,33 +3,32 @@ services:
     container_name: server
     build:
       context: .
-      dockerfile: web/Dockerfile
+      dockerfile: apps/web/Dockerfile
       args:
         - BUILD_ENV=development
-    command: yarn dev # override the default 'CMD ["yarn", "start"]' in web/Dockerfile. This is for hot-reloading in dev mode
     ports:
       - '8000:8000'
     env_file:
-      - ./web/.env
+      - ./apps/web/.env
     environment:
       - LINK_PROCESSING_ENDPOINT=http://link-processing-service:8080/2015-03-31/functions/function/invocations
     volumes:
-      # This creates bind mount between local ./web/src and the container's /app/web/src
-      # "./web/src" is relative to root (where the command "docker compose up" is run)
-      - ./web/src:/app/web/src
+      # This creates bind mount between local ./apps/web/src and the container's /app/apps/web/src
+      # "./apps/web/src" is relative to root (where the command "docker compose up" is run)
+      - ./apps/web/src:/app/apps/web/src
 
   link-processing-service:
     container_name: link-processor
     build:
       context: .
-      dockerfile: link-processing-service/Dockerfile
+      dockerfile: apps/link-processing-service/Dockerfile
       args:
         - BUILD_ENV=development
     platform: linux/amd64
     ports:
       - '9000:8080'
     env_file:
-      - ./link-processing-service/.env
+      - ./apps/link-processing-service/.env
     environment:
       - API_URL=http://web:8000
     depends_on:
@@ -39,26 +38,25 @@ services:
     container_name: discord
     build:
       context: .
-      dockerfile: discord-service/Dockerfile
+      dockerfile: apps/discord-service/Dockerfile
       args:
         - BUILD_ENV=development
-    command: yarn dev
     ports:
       - '4000:4000'
     env_file:
-      - ./discord-service/.env
+      - ./apps/discord-service/.env
     environment:
       - API_URL=http://web:8000
     depends_on:
       - web
     volumes:
-      - ./discord-service/src:/app/discord-service/src
+      - ./apps/discord-service/src:/app/apps/discord-service/src
 
   ngrok:
     container_name: ngrok
     image: ngrok/ngrok:latest
     env_file:
-      - ./discord-service/.env
+      - ./apps/discord-service/.env
     command: http --domain=expert-evolving-bengal.ngrok-free.app discord-service:4000
     depends_on:
       - discord-service
@@ -67,11 +65,11 @@ services:
     container_name: client
     build:
       context: .
-      dockerfile: web-client/Dockerfile
+      dockerfile: apps/web-client/Dockerfile
     ports:
       - '3000:3000'
     env_file:
-      - ./web-client/.env
+      - ./apps/web-client/.env
     environment:
       - VITE_API_URL=http://localhost:8000 # This will override VITE_API_URL loaded from .env above
     depends_on:

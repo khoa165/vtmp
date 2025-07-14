@@ -34,10 +34,10 @@ export default tseslint.config(
             './packages/common/tsconfig.json',
             './packages/server-common/tsconfig.json',
             './packages/mongo/tsconfig.json',
-            './web/tsconfig.json',
+            './apps/web/tsconfig.json',
             './custom-eslint/tsconfig.json',
-            './discord-service/tsconfig.json',
-            './link-processing-service/tsconfig.json',
+            './apps/discord-service/tsconfig.json',
+            './apps/link-processing-service/tsconfig.json',
             './apps/mongo-migrations/tsconfig.json',
           ],
           noWarnOnMultipleProjects: true,
@@ -48,7 +48,7 @@ export default tseslint.config(
   },
   // Frontend rules - needs to figure out later why this needs separate config
   {
-    files: ['web-client/**/*.{ts,tsx}'],
+    files: ['apps/web-client/**/*.{ts,tsx}'],
     plugins: {
       'no-relative-import-paths': noRelativeImportPaths,
     },
@@ -57,7 +57,7 @@ export default tseslint.config(
         'error',
         {
           allowSameFolder: false,
-          rootDir: 'web-client/src',
+          rootDir: 'apps/web-client/src',
           prefix: '#vtmp/web-client',
         },
       ],
@@ -65,7 +65,7 @@ export default tseslint.config(
     settings: {
       'import/resolver': {
         typescript: {
-          project: './web-client/tsconfig.app.json',
+          project: './apps/web-client/tsconfig.app.json',
         },
       },
     },
@@ -138,12 +138,12 @@ export default tseslint.config(
   },
   {
     files: [
-      'web/src/app.ts',
-      'web/src/routes/index.ts',
-      'web/app.test.ts',
-      'web-client/**/*',
-      'discord-service/**/*',
-      'link-processing-service/**/*',
+      'apps/web/src/app.ts',
+      'apps/web/src/routes/index.ts',
+      'apps/web/app.test.ts',
+      'apps/web-client/**/*',
+      'apps/discord-service/**/*',
+      'apps/link-processing-service/**/*',
     ],
     rules: {
       'customEslintRules/wrapped-handlers-in-router': 'off',

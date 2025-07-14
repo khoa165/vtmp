@@ -35,16 +35,16 @@ jobs:
         with:
           filters: |
             web:
-              - 'web/**'
+              - 'apps/web/**'
               - 'packages/**'
             web-client:
-              - 'web-client/**'
+              - 'apps/web-client/**'
               - 'packages/common/**'
             discord-service:
-              - 'discord-service/**'
+              - 'apps/discord-service/**'
               - 'packages/**'
             link-processing-service:
-              - 'link-processing-service/**'
+              - 'apps/link-processing-service/**'
               - 'packages/**'
             ci:
               - '.github/**'
@@ -89,15 +89,15 @@ jobs:
 
       - name: Build web client
         if: ${{ needs.pipeline-setup.outputs.web-client == 'true' }}
-        run: yarn workspace @vtmp/web-client build
+        run: yarn turbo run build --filter=@vtmp/web-client
 
       - name: Build discord service
         if: ${{ needs.pipeline-setup.outputs.discord-service == 'true' }}
-        run: yarn workspace @vtmp/discord-service build
+        run: yarn turbo run build --filter=@vtmp/discord-service
 
       - name: Test link processing service
         if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}
-        run: yarn workspace @vtmp/link-processing-service test
+        run: yarn turbo run test --filter=@vtmp/link-processing-service
 
       - name: Build link-processing-service Docker image
         if: ${{ needs.pipeline-setup.outputs.link-processing-service == 'true' }}

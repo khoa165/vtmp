@@ -20,7 +20,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        file: link-processing-service/Dockerfile
+        file: apps/link-processing-service/Dockerfile
         platforms: linux/amd64
         cache-from: type=local,src=/tmp/.buildx-cache # to resue unchanged layers, to make build faster
         cache-to: type=local,dest=/tmp/.buildx-cache # update the cache with any changed layers
