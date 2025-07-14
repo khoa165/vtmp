@@ -14,42 +14,56 @@ jobs:
     environment: web-prod
 
     steps:
+      - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Checkout specific commit
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.commit_hash }}
           fetch-depth: 0
-      - name: Print vars context
+      - name: Extract vars as environment flags
+        id: extract_vars
+        run: |
+          # Convert vars context to -e flag format
+          ENV_FLAGS=$(echo '${{ toJson(vars) }}' | jq -r 'to_entries | map("-e " + .key + "=" + (.value | tostring)) | join(" ")')
+          echo "env_flags=$ENV_FLAGS" >> $GITHUB_OUTPUT
+          echo "Environment flags: $ENV_FLAGS"
+          
+          # Export as shell variable for use in subsequent steps
+          echo "FLY_ENV_FLAGS=$ENV_FLAGS" >> $GITHUB_ENV
+
+      - name: Import secrets via stdin
+        run: |
+          # Pipe secrets directly to flyctl secrets import
+          echo '${{ toJson(secrets) }}' | jq -r 'to_entries | map(.key + "=" + .value) | .[]' | \
+          flyctl secrets import --config web/fly_PROD.toml
         env:
-          VARS_CONTEXT: ${{ toJson(vars) }}
-        run: echo "$VARS_CONTEXT"
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      # - uses: superfly/flyctl-actions/setup-flyctl@master
 
-      # - run: flyctl deploy --config web/fly_PROD.toml
-        # env:
-        #   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      - run: flyctl deploy --config web/fly_PROD.toml $FLY_ENV_FLAGS
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      # - name: Get commit info
-      #   id: commit_info
-      #   run: |
-      #     SHORT_HASH=$(git rev-parse --short ${{ inputs.commit_hash }})
-      #     UTC_DATE=$(date -u +"%Y%m%dT%H%M%SZ")
-      #     echo "short_hash=$SHORT_HASH" >> $GITHUB_OUTPUT
-      #     echo "utc_date=$UTC_DATE" >> $GITHUB_OUTPUT
+      - name: Get commit info
+        id: commit_info
+        run: |
+          SHORT_HASH=$(git rev-parse --short ${{ inputs.commit_hash }})
+          UTC_DATE=$(date -u +"%Y%m%dT%H%M%SZ")
+          echo "short_hash=$SHORT_HASH" >> $GITHUB_OUTPUT
+          echo "utc_date=$UTC_DATE" >> $GITHUB_OUTPUT
 
-      # - name: Create and push tag
-      #   run: |
-      #     TAG_NAME="web-prod-${{ steps.commit_info.outputs.utc_date }}-${{ steps.commit_info.outputs.short_hash }}"
-      #     git tag $TAG_NAME ${{ inputs.commit_hash }}
-      #     git push origin $TAG_NAME
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create and push tag
+        run: |
+          TAG_NAME="web-prod-${{ steps.commit_info.outputs.utc_date }}-${{ steps.commit_info.outputs.short_hash }}"
+          git tag $TAG_NAME ${{ inputs.commit_hash }}
+          git push origin $TAG_NAME
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Deployment summary
-      #   run: |
-      #     echo "## 🚀 Production Deployment Complete" >> $GITHUB_STEP_SUMMARY
-      #     echo "- **Service**: web" >> $GITHUB_STEP_SUMMARY
-      #     echo "- **Commit**: ${{ inputs.commit_hash }}" >> $GITHUB_STEP_SUMMARY
-      #     echo "- **Tag**: web-prod-${{ steps.commit_info.outputs.utc_date }}-${{ steps.commit_info.outputs.short_hash }}" >> $GITHUB_STEP_SUMMARY
-      #     echo "- **Environment**: production-web" >> $GITHUB_STEP_SUMMARY
+      - name: Deployment summary
+        run: |
+          echo "## Production Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "- **Service**: web" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ inputs.commit_hash }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: web-prod-${{ steps.commit_info.outputs.utc_date }}-${{ steps.commit_info.outputs.short_hash }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: production-web" >> $GITHUB_STEP_SUMMARY
