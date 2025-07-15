@@ -1,11 +1,10 @@
-import { Button } from '@/components/base/button';
-import { MoreHorizontal, ChevronDown } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/base/dropdown-menu';
+import confetti from 'canvas-confetti';
+import { ChevronDown, Expand, Trash } from 'lucide-react';
+import { useState } from 'react';
+
+import { ApplicationStatus } from '@vtmp/common/constants';
+
+import { StatusDot } from '#vtmp/web-client/components/base/status-dot';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,15 +14,17 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/base/alert-dialog';
+import { Button } from '@/components/base/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/base/dropdown-menu';
 import { IApplication } from '@/components/pages/application-tracker/applications/validation';
-import { useState } from 'react';
-import confetti from 'canvas-confetti';
-import { ApplicationStatus } from '@vtmp/common/constants';
-import { formatStatus } from '@/utils/helpers';
-import { StatusDot } from '@/components/base/status-dot';
 import { StatusToColorMapping } from '@/utils/constants';
+import { formatStatus } from '@/utils/helpers';
 
 export const celebrateOffered = (): void => {
   const end = Date.now() + 3 * 1000; // 3 seconds
@@ -66,36 +67,33 @@ export const CellActions = ({
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger className="px-auto">
-          <Button variant="ghost" justify="center" className="h-8 w-8">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="min-w-20">
-          <DropdownMenuItem onClick={() => handleOpenDrawer(application._id)}>
-            Detail
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsDialogOpen(true)}>
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
+    <div className="flex gap-4">
+      <Expand
+        size="1.5em"
+        className="cursor-pointer"
+        onClick={() => handleOpenDrawer(application._id)}
+      />
+      <Trash
+        size="1.5em"
+        className="cursor-pointer"
+        onClick={() => setIsDialogOpen(true)}
+      />
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <AlertDialogTrigger></AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle className="text-foreground">
+              Are you absolutely sure?
+            </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete your
               application.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+            <AlertDialogCancel
+              className="text-vtmp-light-grey"
+              onClick={() => setIsDialogOpen(false)}
+            >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
@@ -109,7 +107,7 @@ export const CellActions = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </div>
   );
 };
 

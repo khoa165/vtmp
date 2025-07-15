@@ -12,4 +12,5 @@ export const MOCK_ENV = {
   SEED_ENV: Environment.DEV,
   LINK_PROCESSING_ENDPOINT: 'https://lambda-url.on.aws',
   NODE_ENV: Environment.DEV,
+  GOOGLE_GENERATIVE_AI_API_KEY: 'google-generative-ai-api-key',
 };

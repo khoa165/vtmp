@@ -1,10 +1,11 @@
+import { Filter } from 'lucide-react';
 import { useState } from 'react';
+
 import { Button } from '@/components/base/button';
 import {
   FilterDrawer,
   FilterState,
 } from '@/components/pages/application-tracker/job-postings/job-postings-drawer';
-import { Filter } from 'lucide-react';
 
 export function FilterSelectionButton({
   onApply,

@@ -1,5 +1,7 @@
-import { EnvConfig } from '@/config/env';
 import nodemailer from 'nodemailer';
+
+import { EnvConfig } from '@/config/env';
+import { EmailError } from '@/utils/errors';
 
 export class EmailService {
   private transporter: nodemailer.Transporter;
@@ -15,22 +17,58 @@ export class EmailService {
     });
   }
 
-  getInvitationEmailTemplate(name: string, email: string, token: string) {
-    const link = `${EnvConfig.get().VTMP_WEB_URL}/signup?token=${token}`;
+  getInvitationEmailTemplate(
+    name: string,
+    email: string,
+    token: string,
+    webUrl: string
+  ) {
+    const link = `${webUrl}/signup?token=${token}`;
     return {
       email,
       subject: 'Invitation to join VTMP',
-      body: `<h1>Invitation to join VTMP</h1>
-        <p>Dear ${name},</p>
-        <p>We are excited to invite you to join our VTMP community. As a member, you will have access to exclusive content, resources, and networking opportunities.</p>
-        <p>To accept this invitation, please click the link below:</p>
-        <a href=${link} target="_blank">Join the community!</a>
+      body: `
+            <div style="margin-bottom: 20px;">
+              <img src="https://comtdk.github.io/treverse-logo/primary-logo-gradient.png" alt="Treverse Logo" style="max-width: 180px; height: auto; background-color:rgb(90, 90, 90); padding: 6px; border-radius: 10px;" />
+            </div>
+            <h1>Invitation to join VTMP</h1>
+            <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; line-height: 1.6;">
+            <p style="margin-bottom: 16px;">Dear <strong>${name}</strong>,</p>
+
+            <p style="margin-bottom: 16px;">
+              We are excited to invite you to join our <strong>VTMP community</strong>. As a member, you will have access to
+              exclusive content, resources, and networking opportunities.
+            </p>
+
+            <p style="margin-bottom: 24px;">
+              To accept this invitation, please click the button below:
+            </p>
+
+            <a href="${link}" target="_blank" 
+              style="
+                display: inline-block;
+                background-color: #a3f890;
+                background-image: linear-gradient(to right, #F8FF6A, #66FFCC);
+                color: black;
+                text-decoration: none;
+                padding: 12px 24px;
+                border-radius: 5px;
+                font-weight: bold;
+                font-size: 16px;
+              ">
+              Join the community!
+            </a>
+          </div>
         `,
     };
   }
 
   getPasswordResetTemplate(name: string, email: string, token: string) {
-    const link = `${EnvConfig.get().VTMP_WEB_URL}/reset-password?token=${token}`;
+    const webUrl =
+      EnvConfig.get().NODE_ENV === 'DEV'
+        ? 'http://localhost:3000'
+        : EnvConfig.get().VTMP_WEB_URL;
+    const link = `${webUrl}/reset-password?token=${token}`;
     return {
       email,
       subject: 'Reset Your Password',
@@ -52,13 +90,17 @@ export class EmailService {
     body: string;
   }) {
     const mailOptions = {
-      from: EnvConfig.get().GMAIL_EMAIL,
+      from: `"Treverse 👋" <${EnvConfig.get().GMAIL_EMAIL}>`,
       to: email,
       subject,
       html: body,
     };
 
-    await this.transporter.sendMail(mailOptions);
+    try {
+      await this.transporter.sendMail(mailOptions);
+    } catch (error) {
+      throw new EmailError('Failed to send email', { error });
+    }
   }
 }
 

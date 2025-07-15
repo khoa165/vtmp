@@ -28,6 +28,14 @@ InterviewRoutes.get(
 );
 
 InterviewRoutes.get(
+  '/share/insights',
+  wrappedHandlers([
+    hasPermission(Permission.VIEW_INTERVIEW),
+    InterviewController.getInterviewInsights,
+  ])
+);
+
+InterviewRoutes.get(
   '/',
   wrappedHandlers([
     hasPermission(Permission.VIEW_ALL_DATA),
