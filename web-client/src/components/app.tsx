@@ -1,35 +1,37 @@
-import { useEffect, useState } from 'react';
 import AOS from 'aos';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { PeopleContainer } from '@/components/people';
-import { StatsContainer } from '@/components/stats';
-import { ProjectsContainer } from '@/components/projects';
-import { SummaryContainer } from '@/components/summary';
-import { BlogFileMapping } from '@/types';
-import { LandingContainer } from '@/components/landing';
-import { BlogContainer } from '@/components/blogs';
-import { PageWithNavigation } from '@/components/layout/page-with-navigation';
-import { TreeContainer } from '@/components/tree';
-import { Mentorship2025Apply } from '@/components/apply';
-import { Mentorship2025Proposal } from './proposal';
-import LoginPage from '@/components/pages/auth/login';
-import { PageWithSidebar } from '@/components/layout/page-with-sidebar';
-import { VTMPWrapper } from '@/components/layout/vtmp-wrapper';
-import { UserInvitationPage } from '@/components/pages/admins/users/invitation-dashboard/invitation-page';
-import { JobPostingsPage } from '@/components/pages/application-tracker/job-postings/job-postings-page';
-import { PageWithToast } from '@/components/layout/page-with-toast';
-import { LinksPage } from '@/components/pages/application-tracker/links/links-page';
-import { ApplicationsPage } from '@/components/pages/application-tracker/applications/applications-page';
-import { SendInvitationPage } from '@/components/pages/admins/invitations/send-invitation';
-import { SignUpPage } from '@/components/pages/auth/signup';
-import { AdminLinksPage } from '@/components/pages/admins/links/admin-links-page';
-import { NotFoundPage } from '@/components/pages/shared/not-found-page';
-import { PageWithPermission } from '@/components/layout/page-with-permission';
+
 import { SystemRole } from '@vtmp/common/constants';
-import { buildFileMetadata } from '@/utils/file';
-import { allBlogsMetadata } from '@/blogs/metadata';
-import { RequireAuth } from '@/components/pages/auth/require-auth';
-import JobtrackrLanding from '@/components/pages/application-tracker/landing/jobtrackr-landing';
+
+import { allBlogsMetadata } from '#vtmp/web-client/blogs/metadata';
+import { Mentorship2025Apply } from '#vtmp/web-client/components/apply';
+import { BlogContainer } from '#vtmp/web-client/components/blogs';
+import { LandingContainer } from '#vtmp/web-client/components/landing';
+import { PageWithNavigation } from '#vtmp/web-client/components/layout/page-with-navigation';
+import { PageWithPermission } from '#vtmp/web-client/components/layout/page-with-permission';
+import { PageWithSidebar } from '#vtmp/web-client/components/layout/page-with-sidebar';
+import { PageWithToast } from '#vtmp/web-client/components/layout/page-with-toast';
+import { VTMPWrapper } from '#vtmp/web-client/components/layout/vtmp-wrapper';
+import { InvitationsPage } from '#vtmp/web-client/components/pages/admins/invitations/invitations-page';
+import { AdminLinksPage } from '#vtmp/web-client/components/pages/admins/links/admin-links-page';
+import { ApplicationsPage } from '#vtmp/web-client/components/pages/application-tracker/applications/applications-page';
+import { JobPostingsPage } from '#vtmp/web-client/components/pages/application-tracker/job-postings/job-postings-page';
+import { LandingPage } from '#vtmp/web-client/components/pages/application-tracker/landing/landing-page';
+import { LinksPage } from '#vtmp/web-client/components/pages/application-tracker/links/links-page';
+import { LoginPage } from '#vtmp/web-client/components/pages/auth/login';
+import { RequireAuth } from '#vtmp/web-client/components/pages/auth/require-auth';
+import { SignUpPage } from '#vtmp/web-client/components/pages/auth/signup';
+import { NotFoundPage } from '#vtmp/web-client/components/pages/shared/not-found-page';
+import { PeopleContainer } from '#vtmp/web-client/components/people';
+import { ProjectsContainer } from '#vtmp/web-client/components/projects';
+import { Mentorship2025Proposal } from '#vtmp/web-client/components/proposal';
+import { StatsContainer } from '#vtmp/web-client/components/stats';
+import { SummaryContainer } from '#vtmp/web-client/components/summary';
+import { TreeContainer } from '#vtmp/web-client/components/tree';
+import { BlogFileMapping } from '#vtmp/web-client/types';
+import { buildFileMetadata } from '#vtmp/web-client/utils/file';
+import { InterviewFeedPage } from '@/components/pages/application-tracker/interview-feed/interview-feed-page';
 
 export const App = () => {
   useEffect(() => {
@@ -67,7 +69,7 @@ export const App = () => {
             <Route path="/stats/*" element={<StatsContainer />} />
           </Route>
         </Route>
-        <Route path="/jobtrackr" element={<JobtrackrLanding />} />
+        <Route path="/treverse" element={<LandingPage />} />
         <Route element={<PageWithToast />}>
           <Route
             element={
@@ -76,17 +78,20 @@ export const App = () => {
               </RequireAuth>
             }
           >
-            <Route path="/link-sharing" element={<LinksPage />} />
-            <Route path="/job-postings" element={<JobPostingsPage />} />
-            <Route path="application-tracker" element={<ApplicationsPage />} />
-
+            <Route path="/links" element={<LinksPage />} />
+            <Route path="/jobs" element={<JobPostingsPage />} />
+            <Route path="/applications" element={<ApplicationsPage />} />
+            <Route path="/interviews" element={<InterviewFeedPage />} />
             <Route
               path="/admin"
-              element={<PageWithPermission roles={[SystemRole.ADMIN]} />}
+              element={
+                <PageWithPermission
+                  roles={[SystemRole.ADMIN, SystemRole.MODERATOR]}
+                />
+              }
             >
-              <Route path="invitations" element={<UserInvitationPage />} />
+              <Route path="invitations" element={<InvitationsPage />} />
               <Route path="links" element={<AdminLinksPage />} />
-              <Route path="send-invitation" element={<SendInvitationPage />} />
             </Route>
           </Route>
           <Route path="/login" element={<LoginPage />} />

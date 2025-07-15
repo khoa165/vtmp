@@ -8,22 +8,17 @@ import {
   ExtractionLinkMetaDataType,
   LinkMetaDataType,
 } from '@/types/link.types';
-import {
-  DuplicateResourceError,
-  LinkProcessingBadRequest,
-  ResourceNotFoundError,
-} from '@/utils/errors';
+import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
 export const LinkService = {
   submitLink: async (linkMetaData: LinkMetaDataType) => {
-    try {
-      return await LinkRepository.createLink(linkMetaData);
-    } catch (error: unknown) {
-      if (error instanceof Error && 'code' in error && error.code === 11000) {
-        throw new DuplicateResourceError('Duplicate url', linkMetaData);
-      }
-      throw error;
+    const foundLink = await LinkRepository.getLinkByUrl(
+      linkMetaData.originalUrl
+    );
+    if (foundLink) {
+      throw new DuplicateResourceError('Duplicate link found', linkMetaData);
     }
+    return await LinkRepository.createLink(linkMetaData);
   },
 
   approveLinkAndCreateJobPosting: async (
@@ -34,11 +29,15 @@ export const LinkService = {
     session.startTransaction();
     let jobPosting;
     try {
-      const updatedLink = await LinkRepository.updateLinkStatus({
-        id: linkId,
-        status: LinkStatus.ADMIN_APPROVED,
-        session,
-      });
+      const updatedLink = await LinkRepository.updateLinkMetaData(
+        linkId,
+        {
+          ...jobPostingData,
+          status: LinkStatus.ADMIN_APPROVED,
+          failureStage: null,
+        },
+        session
+      );
       if (!updatedLink) {
         throw new ResourceNotFoundError('Link not found', {
           linkId,
@@ -69,17 +68,6 @@ export const LinkService = {
     linkId: string,
     linkMetaData: ExtractionLinkMetaDataType
   ) => {
-    const { status } = linkMetaData;
-    if (
-      status === LinkStatus.ADMIN_APPROVED ||
-      status === LinkStatus.ADMIN_REJECTED
-    ) {
-      throw new LinkProcessingBadRequest(
-        'Link status cannot be ADMIN_APPROVED or ADMIN_REJECTED when updating metadata',
-        { linkMetaData, linkId }
-      );
-    }
-
     const updatedLink = await LinkRepository.updateLinkMetaData(
       linkId,
       linkMetaData
@@ -92,9 +80,9 @@ export const LinkService = {
   },
 
   rejectLink: async (linkId: string) => {
-    const updatedLink = await LinkRepository.updateLinkStatus({
-      id: linkId,
+    const updatedLink = await LinkRepository.updateLinkMetaData(linkId, {
       status: LinkStatus.ADMIN_REJECTED,
+      failureStage: null,
     });
     if (!updatedLink) {
       throw new ResourceNotFoundError('Link not found', {

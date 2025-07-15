@@ -1,7 +1,8 @@
-import { EnvConfig } from '@/config/env';
 import { AuthType } from '@vtmp/server-common/constants';
-import axios from 'axios';
 import { JWTUtils } from '@vtmp/server-common/utils';
+import axios from 'axios';
+
+import { EnvConfig } from '@/config/env';
 
 const api = axios.create({
   baseURL: `${EnvConfig.get().API_URL}/api`,
@@ -12,7 +13,7 @@ const api = axios.create({
 
 export const submitLinkWithToken = async (
   url: string,
-  data: { url: string }
+  data: { originalUrl: string }
 ) => {
   const token = JWTUtils.createTokenWithPayload(
     {

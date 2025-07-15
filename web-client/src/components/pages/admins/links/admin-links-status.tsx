@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { LinkStatus } from '@vtmp/common/constants';
+import { formatEnumName } from '@vtmp/common/utils';
 
 import { Card } from '@/components/base/card';
 import { Skeleton } from '@/components/base/skeleton';
@@ -52,7 +53,7 @@ export const AdminLinksStatusCards = ({
   }
 
   return (
-    <div className="grid grid-cols-4 gap-4 w-full max-md:grid-rows-6">
+    <div className="grid grid-cols-4 gap-4 w-full max-md:grid-rows-6 pb-4">
       {allStatuses.map((status) => {
         const isSelected = selectedStatus === status;
         const cardStyle = isSelected
@@ -73,7 +74,7 @@ export const AdminLinksStatusCards = ({
               <div className="flex items-center gap-2">
                 <StatusDot status={status} colorMapping={LinksColorMapping} />
                 <span className="font-bold text-wrap max-lg:text-[0.7rem]">
-                  {status}
+                  {formatEnumName(status, { uppercase: true })}
                 </span>
               </div>
             </section>

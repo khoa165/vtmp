@@ -1,3 +1,13 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { EyeOff, Eye } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Navigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
+
+import { SystemRole } from '@vtmp/common/constants';
+
+import { TreverseFullLogo } from '#vtmp/web-client/components/base/treverse-full-logo';
 import { Button } from '@/components/base/button';
 import {
   Card,
@@ -10,22 +20,15 @@ import {
 import { Checkbox } from '@/components/base/checkbox';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-import React, { useEffect, useState } from 'react';
-import LogoMint from '@/assets/images/logo-full-mint.svg?react';
-import { EyeOff, Eye } from 'lucide-react';
-import { request } from '@/utils/api';
-import axios from 'axios';
-import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
-import { Method } from '@/utils/constants';
-import { useMutation } from '@tanstack/react-query';
 import { AuthResponseSchema } from '@/components/pages/auth/validation';
-import { toast } from 'sonner';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
+import { request } from '@/utils/api';
+import { Method } from '@/utils/constants';
 
-const LoginPage = () => {
+export const LoginPage = () => {
   const token = localStorage.getItem('token');
   if (token) {
-    return <Navigate to="/job-postings" />;
+    return <Navigate to="/jobs" />;
   }
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -57,7 +60,11 @@ const LoginPage = () => {
       console.log('Login successfully: ', res);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
-      navigate('/job-postings');
+      if (res.data.user.role === SystemRole.ADMIN) {
+        navigate('/admin/invitations');
+      } else {
+        navigate('/jobs');
+      }
     },
     onError: (error) => {
       console.log('Error in useMutation login', error);
@@ -99,13 +106,11 @@ const LoginPage = () => {
   return (
     <div className="grid grid-cols-12 gap-4 max-w-screen min-h-screen px-20 py-15 bg-background dark:bg-background">
       <div className="col-start-1 col-span-5 flex flex-col justify-start">
-        <LogoMint className="w-40 h-24 pl-6" />
+        <TreverseFullLogo className="pl-3 w-[106px] h-[16px]" />
         <Card className="bg-transparent border-0 shadow-none h-full justify-center">
           <CardHeader>
-            <CardTitle className="text-4xl font-bold">Sign In</CardTitle>
-            <CardDescription className="text-2xl">
-              Welcome back!
-            </CardDescription>
+            <CardTitle className="text-5xl font-bold">Sign In</CardTitle>
+            <CardDescription className="text-xl">Welcome back!</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col space-y-4 my-3">
             <form onSubmit={(e) => e.preventDefault()}>
@@ -168,9 +173,7 @@ const LoginPage = () => {
             <Button className="text-black w-full" onClick={handleLogin}>
               Sign in
             </Button>
-            <Button variant="link" className="font-bold">
-              Forgot your password?
-            </Button>
+            <Button variant="link">Forgot your password?</Button>
           </CardFooter>
         </Card>
       </div>
@@ -187,5 +190,3 @@ const LoginPage = () => {
     </div>
   );
 };
-
-export default LoginPage;

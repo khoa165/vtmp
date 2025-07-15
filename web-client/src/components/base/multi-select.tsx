@@ -1,10 +1,10 @@
 'use client';
 
-import * as React from 'react';
 import { Check, ChevronsUpDown, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/base/button';
-import { Badge } from '@/components/base/badge';
+import * as React from 'react';
+
+import { Badge } from '#vtmp/web-client/components/base/badge';
+import { Button } from '#vtmp/web-client/components/base/button';
 import {
   Command,
   CommandEmpty,
@@ -13,12 +13,13 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '@/components/base/command';
+} from '#vtmp/web-client/components/base/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/base/popover';
+} from '#vtmp/web-client/components/base/popover';
+import { cn } from '#vtmp/web-client/lib/utils';
 
 export interface Option {
   label: string;
@@ -66,7 +67,7 @@ const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>(
             aria-expanded={open}
             className="w-full justify-between"
           >
-            <div className="flex gap-1 flex-wrap overflow-x-auto max-h-[2.5rem] items-center">
+            <div className="flex gap-1 flex-wrap overflow-x-auto max-h-[2rem] hide-scrollbar">
               {selected.length > 0 ? (
                 selected.map((option) => (
                   <Badge
@@ -100,11 +101,11 @@ const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>(
                 <span className="text-muted-foreground">{placeholder}</span>
               )}
             </div>
-            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 bg-forground" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0">
-          <Command className="overflow-visible">
+          <Command className="overflow-y-auto">
             <CommandInput placeholder="Search..." />
             <CommandList>
               <CommandEmpty>No item found.</CommandEmpty>

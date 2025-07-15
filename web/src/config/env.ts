@@ -1,9 +1,8 @@
+import { Environment } from '@vtmp/server-common/constants';
 import dotenv from 'dotenv';
 import { z } from 'zod';
 
 import { parseEnvConfig } from '@vtmp/common/utils';
-
-import { Environment } from '@/constants/enums';
 
 dotenv.config();
 
@@ -19,6 +18,7 @@ const webConfigSchema = z.object({
   SEED_ENV: z.nativeEnum(Environment).default(Environment.DEV),
   LINK_PROCESSING_ENDPOINT: z.string(),
   NODE_ENV: z.nativeEnum(Environment),
+  GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
 });
 
 export const EnvConfig = {

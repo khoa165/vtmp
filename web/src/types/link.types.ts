@@ -36,7 +36,7 @@ export const LinkMetaDataSchema = z.object({
 
 export type LinkMetaDataType = z.infer<typeof LinkMetaDataSchema>;
 export const ExtractionLinkMetaDataSchema = z.object({
-  url: z.string(),
+  url: z.string().optional(),
   status: z.nativeEnum(LinkStatus, {
     message: 'Invalid link status',
   }),
@@ -70,13 +70,17 @@ export const ExtractionLinkMetaDataSchema = z.object({
     })
     .optional(),
   jobDescription: z.string().optional(),
-  attemptsCount: z.number({ required_error: 'attemptsCount is required' }),
+  attemptsCount: z
+    .number({ required_error: 'attemptsCount is required' })
+    .optional(),
   lastProcessedAt: z
     .string({ required_error: 'lastProcessedAt is required' })
     .transform((str) => new Date(str))
     .refine((date) => !isNaN(date.getTime()), {
       message: 'lastProcessedAt must be a valid ISO date string',
-    }),
+    })
+    .optional(),
+  aiNote: z.string().optional(),
 });
 
 export type ExtractionLinkMetaDataType = z.infer<

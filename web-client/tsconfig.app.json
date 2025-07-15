@@ -16,9 +16,10 @@
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "jsx": "react-jsx",
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["./src/*"]
+      "#vtmp/web-client/*": ["*"],
+      "@/*": ["*"]
     },
     "types": ["vite/client", "vite-plugin-svgr/client"]
   },

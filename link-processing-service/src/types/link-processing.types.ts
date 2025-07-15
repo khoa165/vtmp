@@ -1,12 +1,6 @@
 import { z } from 'zod';
 
-import {
-  LinkRegion,
-  JobFunction,
-  JobType,
-  LinkStatus,
-  LinkProcessingFailureStage,
-} from '@vtmp/common/constants';
+import { SubmittedLinkSchema, SubmittedLink } from '@vtmp/common/constants';
 
 /**
  * These schema are specifically for zod validation at AI metadata extraction stage
@@ -28,54 +22,13 @@ export const RawAIResponseSchema = z
     jobType: z.string().optional(),
     datePosted: z.string().optional(),
     jobDescription: JobDescriptionSchema.optional(),
+    aiNote: z.string(),
   })
   .strict();
 
-export const ExtractedLinkMetadataSchema = z
-  .object({
-    jobTitle: z.string().optional(),
-    companyName: z.string().optional(),
-    location: z
-      .nativeEnum(LinkRegion, {
-        message: 'Invalid AI generated location',
-      })
-      .optional(),
-    jobFunction: z
-      .nativeEnum(JobFunction, {
-        message: 'Invalid AI generated job title',
-      })
-      .optional(),
-    jobType: z
-      .nativeEnum(JobType, {
-        message: 'Invalid AI generated job type',
-      })
-      .optional(),
-    datePosted: z.string().optional(),
-    jobDescription: z.string().optional(),
-  })
-  .strict()
-  .transform((data) =>
-    Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== undefined)
-    )
-  );
-
-export type ExtractedLinkMetadata = z.infer<typeof ExtractedLinkMetadataSchema>;
-
-/**
- * These schemas and types are to check link object that was sent to Lambda
- * SubmittedLink[] is type of input param into LinkProcessorService.processLink()
- * SubmittedLink[] is also the type of input param into LinkValidatorService.validateLinks()
- */
-const SubmittedLinkSchema = z.object({
-  _id: z.string(),
-  originalUrl: z.string().url(),
-  attemptsCount: z.number(),
-});
 export const EventBodySchema = z.object({
   linksData: z.array(SubmittedLinkSchema).min(1),
 });
-export type SubmittedLink = z.infer<typeof SubmittedLinkSchema>;
 
 /**
  * Output from link validator service are 2 arrays: `validatedLinks[]` and `failedLinks[]`
@@ -109,45 +62,4 @@ export interface ScrapedLink {
   originalRequest: SubmittedLink;
   url: string;
   scrapedText: string;
-}
-
-/**
- * ExtractLinkMetadataService.extractMetadata receive and array named scrapedLinks:` ScrapedLink[]`
- *
- * ExtractLinkMetadataService.extractMetadata returns an object of 2 fields:
- * - metadataExtractedLinks: MetadataExtractedLink[]
- * - failedMetadataExtractionLinks: FailedProcessedLink[]
- */
-
-export interface MetadataExtractedLink {
-  originalRequest: SubmittedLink;
-  url: string;
-  scrapedText: string;
-  extractedMetadata: ExtractedLinkMetadata;
-  status: LinkStatus;
-  failureStage: null;
-}
-
-export interface FailedProcessedLink {
-  originalRequest: SubmittedLink;
-  url?: string;
-  scrapedText?: string;
-  status: LinkStatus;
-  failureStage: LinkProcessingFailureStage;
-  error: unknown;
-}
-
-export interface UpdateLinkPayload {
-  attemptsCount: number;
-  lastProcessedAt: string;
-  url?: string;
-  status: LinkStatus;
-  failureStage?: LinkProcessingFailureStage | null;
-  jobTitle?: string | undefined;
-  companyName?: string | undefined;
-  location?: LinkRegion | undefined;
-  jobFunction?: JobFunction | undefined;
-  jobType?: JobType | undefined;
-  datePosted?: string | undefined;
-  jobDescription?: string | undefined;
 }

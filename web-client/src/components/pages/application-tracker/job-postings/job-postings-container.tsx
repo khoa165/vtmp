@@ -1,20 +1,67 @@
-import { JobPostingsTable } from '@/components/pages/application-tracker/job-postings/job-postings-table';
-import { jobPostingsTableColumns } from '@/components/pages/application-tracker/job-postings/job-postings-table-columns';
+import {
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+
+import { JobFunction, JobType } from '@vtmp/common/constants';
+
+import type { FilterState } from '#vtmp/web-client/components/pages/application-tracker/job-postings/job-postings-drawer';
+import { Input } from '@/components/base/input';
+import { Skeleton } from '@/components/base/skeleton';
 import {
   useCreateApplication,
   useGetJobPostings,
 } from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
-import { useMemo, useState } from 'react';
-import { SortingState } from '@tanstack/react-table';
-import { Skeleton } from '@/components/base/skeleton';
+import { FilterSelectionButton } from '@/components/pages/application-tracker/job-postings/job-postings-filter';
+import { jobPostingsTableColumns } from '@/components/pages/application-tracker/job-postings/job-postings-table-columns';
+import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
+import { ResizableTable } from '@/components/pages/shared/resizable-table';
+import { CustomError } from '@/utils/errors';
 
 export const JobPostingsContainer = (): React.JSX.Element | null => {
+  const [searchParams] = useSearchParams();
+  const isJobFunction = (val: any): val is JobFunction =>
+    Object.values(JobFunction).includes(val as JobFunction);
+
+  const isJobType = (val: any): val is JobType =>
+    Object.values(JobType).includes(val as JobType);
+
+  const filtersFromParams = useMemo(() => {
+    const jobFunctionParam = searchParams.get('jobFunction');
+    const jobTypeParam = searchParams.get('jobType');
+
+    return {
+      jobTitle: searchParams.get('jobTitle') ?? undefined,
+      location: searchParams.get('location') ?? undefined,
+      jobFunction: isJobFunction(jobFunctionParam)
+        ? jobFunctionParam
+        : undefined,
+      jobType: isJobType(jobTypeParam) ? jobTypeParam : undefined,
+      postingDateRangeStart: searchParams.get('startDate')
+        ? new Date(searchParams.get('startDate')!)
+        : undefined,
+      postingDateRangeEnd: searchParams.get('endDate')
+        ? new Date(searchParams.get('endDate')!)
+        : undefined,
+    };
+  }, [searchParams]);
+
+  const [filters, setFilters] = useState<FilterState>(filtersFromParams);
+
   const {
     isLoading,
     isError,
     error,
     data: jobPostingsData,
-  } = useGetJobPostings();
+  } = useGetJobPostings(filters);
   const { mutate: createApplicationFn } = useCreateApplication();
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -23,6 +70,37 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
     () => jobPostingsTableColumns({ createApplicationFn }),
     [createApplicationFn]
   );
+
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+
+  const defaultColumn = {
+    size: 200,
+    minSize: 50,
+    maxSize: 750,
+    cell: ({ getValue }) => <div className="pl-2">{getValue()}</div>,
+  };
+
+  const table = useReactTable({
+    data: jobPostingsData ?? [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
+    defaultColumn,
+  });
 
   if (isLoading) {
     return (
@@ -39,7 +117,7 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
   if (isError) {
     // TODO-(QuangMinhNguyen27405): Remove this console log and add a toast error message
     console.error('Error fetching job postings data:', error);
-    return null;
+    throw new CustomError('Error fetching job postings data');
   }
 
   if (!jobPostingsData || jobPostingsData.length === 0) {
@@ -48,11 +126,23 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
   }
 
   return (
-    <JobPostingsTable
-      columns={columns}
-      data={jobPostingsData}
-      sorting={sorting}
-      setSorting={setSorting}
-    />
+    <>
+      <section className="flex items-center justify-between py-4">
+        <div className="flex gap-4 w-100">
+          <Input
+            placeholder="Filter companies..."
+            value={table.getColumn('companyName')?.getFilterValue() as string}
+            onChange={(event) =>
+              table.getColumn('companyName')?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm flex-grow text-white"
+          />
+          <FilterSelectionButton onApply={setFilters} />
+        </div>
+
+        <ColumnVisibilityConfiguration table={table} />
+      </section>
+      <ResizableTable table={table} columns={columns} />
+    </>
   );
 };

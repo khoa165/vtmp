@@ -1,8 +1,13 @@
 import middy from '@middy/core';
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { ZodError } from 'zod';
-import { LinkValidationErrorType } from '@/utils/errors-enum';
+
 import { LinkProcessingFailureStage } from '@vtmp/common/constants';
+
+import {
+  LinkValidationErrorType,
+  MaliciousLinkErrorType,
+} from '@/utils/errors-enum';
 
 export abstract class ServiceSpecificError extends Error {
   public metadata: { url: string };
@@ -20,6 +25,44 @@ export abstract class ServiceSpecificError extends Error {
     if (options?.cause) {
       this.cause = options.cause;
     }
+  }
+}
+
+export class LinkAccessError extends ServiceSpecificError {
+  public statusCode?: number;
+
+  constructor(
+    message: string,
+    metadata: { url: string },
+    options?: {
+      cause?: unknown;
+      statusCode?: number;
+    }
+  ) {
+    super(
+      message,
+      metadata,
+      LinkProcessingFailureStage.VALIDATION_FAILED,
+      options
+    );
+    if (options?.statusCode) {
+      this.statusCode = options?.statusCode;
+    }
+  }
+}
+
+export class MaliciousLinkError extends ServiceSpecificError {
+  public errorType: MaliciousLinkErrorType;
+  constructor(
+    message: string,
+    metadata: { url: string },
+    errorType: MaliciousLinkErrorType,
+    options?: {
+      cause?: unknown;
+    }
+  ) {
+    super(message, metadata, LinkProcessingFailureStage.VIRUS_FAILED, options);
+    this.errorType = errorType;
   }
 }
 

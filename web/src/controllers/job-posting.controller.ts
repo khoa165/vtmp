@@ -1,10 +1,12 @@
-import { Request, Response } from 'express';
-import { z } from 'zod';
-import { JobPostingService } from '@/services/job-posting.service';
-import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
-import { getUserFromRequest } from '@/middlewares/utils';
 import { parse } from 'date-fns';
+import { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import { z } from 'zod';
+
+import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
+
+import { getUserFromRequest } from '@/middlewares/utils';
+import { JobPostingService } from '@/services/job-posting.service';
 
 const JobPostingUpdateSchema = z
   .object({

@@ -1,3 +1,4 @@
+import { Environment } from '@vtmp/server-common/constants';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
@@ -5,7 +6,6 @@ import { exit } from 'process';
 
 import { connectDB } from '@/config/database';
 import { EnvConfig } from '@/config/env';
-import { Environment } from '@/constants/enums';
 import { loadApplications } from '@/seeds/applications';
 import { loadInterviews } from '@/seeds/interviews';
 import { loadInvitations } from '@/seeds/invitations';
@@ -43,6 +43,8 @@ const allConfigurations: Partial<Record<Environment, SeedCountConfiguration>> =
     },
   };
 
+const LINKS_WITHOUT_APPLICATIONS_RATIO = 0.5;
+
 const runSeeds = async () => {
   await mongoose.connection.dropDatabase();
   console.log('Successfully clear database before seeding.');
@@ -56,13 +58,19 @@ const runSeeds = async () => {
   } = allConfigurations[EnvConfig.get().SEED_ENV] ?? defaultConfiguration;
 
   const users = await loadUsers(usersCount);
-  const numLinksWithoutApplications = Math.floor(linksCount / 2);
+
+  const numLinksWithoutApplications = Math.floor(
+    linksCount * LINKS_WITHOUT_APPLICATIONS_RATIO
+  );
   const numLinksWithApplications = linksCount - numLinksWithoutApplications;
 
-  // const linksWithoutApplications = await loadLinks(numLinksWithoutApplications);
+  const linksWithoutApplications = await loadLinks(
+    numLinksWithoutApplications,
+    { seedRealLinks: true }
+  );
   const linksWithApplications = await loadLinks(numLinksWithApplications);
 
-  // await loadJobPostings(linksWithoutApplications);
+  await loadJobPostings(linksWithoutApplications);
   const jobPostings = await loadJobPostings(linksWithApplications);
 
   const applications = await loadApplications({

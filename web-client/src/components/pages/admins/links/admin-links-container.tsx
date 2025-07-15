@@ -1,14 +1,18 @@
+import { useMemo } from 'react';
+
+import { LinkStatus } from '@vtmp/common/constants';
+
+import { Skeleton } from '@/components/base/skeleton';
 import { AdminLinksTable } from '@/components/pages/admins/links/admin-links-table';
 import { adminLinksTableColumns } from '@/components/pages/admins/links/admin-links-table-columns';
 import {
   useApproveLink,
   useGetLinks,
   useRejectLink,
+  useTriggerCron,
 } from '@/components/pages/admins/links/hooks/admin-links';
-import { Skeleton } from '@/components/base/skeleton';
-import { useMemo } from 'react';
-import { LinkStatus } from '@vtmp/common/constants';
 import { CustomError } from '@/utils/errors';
+
 interface AdminLinksContainerProps {
   linksFilter?: { status?: LinkStatus };
 }
@@ -20,6 +24,7 @@ export const AdminLinksContainer = ({
 
   const { mutate: approveLinkFn } = useApproveLink();
   const { mutate: rejectLinkFn } = useRejectLink();
+  const { mutate: triggerCronFn } = useTriggerCron();
 
   const columns = useMemo(
     () =>
@@ -27,7 +32,7 @@ export const AdminLinksContainer = ({
         approveLinkFn,
         rejectLinkFn,
       }),
-    [linksData, approveLinkFn, rejectLinkFn]
+    [linksData, approveLinkFn, rejectLinkFn, triggerCronFn]
   );
 
   if (isLoading) {
@@ -52,5 +57,11 @@ export const AdminLinksContainer = ({
     );
   }
 
-  return <AdminLinksTable columns={columns} data={linksData} />;
+  return (
+    <AdminLinksTable
+      columns={columns}
+      data={linksData}
+      triggerCronFn={triggerCronFn}
+    />
+  );
 };
