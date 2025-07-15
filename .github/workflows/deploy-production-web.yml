@@ -41,12 +41,10 @@ jobs:
         id: extract_vars
         run: |
           echo 'Processing environment variable: '
-          echo '${{ toJson(vars) }}' | jq -r 'keys[]' | while read -r key; do
-            echo "\t$key"
-          done
+          echo '${{ toJson(vars) }}' | jq -r 'keys[]'
 
-          # Generate flags without logging values
-          ENV_FLAGS=$(echo '${{ toJson(vars) }}' | jq -r 'to_entries | map("-e " + .key + "=" + (.value | tostring)) | join(" ")')
+          # Generate flags by adding -e
+          ENV_FLAGS=$(echo '::add-mask::${{ toJson(vars) }}' | jq -r 'to_entries | map("-e " + .key + "=" + (.value | tostring)) | join(" ")')
           echo "env_flags=$ENV_FLAGS" >> $GITHUB_OUTPUT
 
           # Export as shell variable for use in subsequent steps
@@ -62,7 +60,7 @@ jobs:
           done
 
           # Pipe secrets directly to flyctl secrets import
-          echo '${{ toJson(secrets) }}' | jq -r 'to_entries | map(.key + "=" + .value) | .[]' | \
+          echo '::add-mask::${{ toJson(secrets) }}' | jq -r 'to_entries | map(.key + "=" + .value) | .[]' | \
           flyctl secrets import --config web/fly_PROD.toml
 
           echo "Imported $(echo '${{ toJson(secrets) }}' | jq -r 'keys | length') secrets"
