@@ -1,16 +1,20 @@
-import { EnvConfig } from '@/config/env';
-import { InvitationModel } from '@/models/invitation.model';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { faker } from '@faker-js/faker';
 import { JWTUtils } from '@vtmp/server-common/utils';
 import { addDays } from 'date-fns';
+
+import { EnvConfig } from '@/config/env';
+import { InvitationModel } from '@/models/invitation.model';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 
 export const loadInvitations = async (count: number) => {
   const invitationsData = Array.from({ length: count }, () => {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
     const receiverName = `${firstName} ${lastName}`;
-    const receiverEmail = faker.internet.email({ firstName, lastName });
+    const receiverEmail = faker.internet.email({
+      firstName: firstName.toLowerCase(),
+      lastName: lastName.toLowerCase(),
+    });
     const sender = getNewMongoId();
     const token = JWTUtils.createTokenWithPayload(
       { receiverEmail },

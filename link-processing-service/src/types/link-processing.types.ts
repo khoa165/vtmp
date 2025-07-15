@@ -22,6 +22,7 @@ export const RawAIResponseSchema = z
     jobType: z.string().optional(),
     datePosted: z.string().optional(),
     jobDescription: JobDescriptionSchema.optional(),
+    aiNote: z.string(),
   })
   .strict();
 

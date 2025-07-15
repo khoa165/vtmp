@@ -102,6 +102,17 @@ const SharedInterviewFilter = z
     )
   );
 
+const InterviewInsightsFilter = z
+  .object({
+    companyName: z.string().optional(),
+  })
+  .strict()
+  .transform((data) =>
+    Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    )
+  );
+
 const AdminInterviewFilter = z
   .object({
     applicationId: z
@@ -199,6 +210,19 @@ export const InterviewController = {
     res.status(200).json({
       message: 'Interviews retrieved successfully',
       data: interviews,
+    });
+  },
+
+  getInterviewInsights: async (req: Request, res: Response) => {
+    const filters = InterviewInsightsFilter.parse(req.query);
+
+    const insights = await InterviewService.getInterviewInsights({
+      filters,
+    });
+
+    res.status(200).json({
+      message: 'Interview insights retrieved successfully',
+      data: insights,
     });
   },
 

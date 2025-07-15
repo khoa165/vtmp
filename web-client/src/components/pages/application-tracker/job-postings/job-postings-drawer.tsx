@@ -1,20 +1,21 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { Calendar } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Drawer, DrawerContent } from '@/components/base/drawer';
-import { ScrollArea } from '@/components/base/scroll-area';
-import { Input } from '@/components/base/input';
+
+import { JobFunction, JobType } from '@vtmp/common/constants';
+
 import { Button } from '@/components/base/button';
+import { Drawer, DrawerContent } from '@/components/base/drawer';
+import { Input } from '@/components/base/input';
+import { ScrollArea } from '@/components/base/scroll-area';
 import {
   Select,
   SelectTrigger,
   SelectContent,
   SelectItem,
 } from '@/components/base/select';
-import { JobFunction, JobType } from '@vtmp/common/constants';
-
-import { useQueryClient } from '@tanstack/react-query';
 import { QueryKey } from '@/utils/constants';
-import { Calendar } from 'lucide-react';
 
 export interface FilterState {
   jobTitle?: string;
@@ -78,10 +79,6 @@ export function FilterDrawer({
     setFilters(updatedFilters);
     onChange(updatedFilters);
   }, [filterParams]);
-
-  useEffect(() => {
-    onChange(filters);
-  }, [filters, onChange]);
 
   const jobTypeLabels: Record<JobType, string> = {
     [JobType.INTERNSHIP]: 'Internship',
@@ -269,7 +266,7 @@ export function FilterDrawer({
                   value={postingStartInput}
                   onChange={(e) => {
                     const input = e.target.value;
-                    setPostingStartInput(input); 
+                    setPostingStartInput(input);
 
                     const parsed = new Date(input);
                     if (!isNaN(parsed.getTime())) {

@@ -67,7 +67,7 @@ const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>(
             aria-expanded={open}
             className="w-full justify-between"
           >
-            <div className="flex gap-1 flex-wrap overflow-x-auto max-h-[2.5rem] items-center">
+            <div className="flex gap-1 flex-wrap overflow-x-auto max-h-[2rem] hide-scrollbar">
               {selected.length > 0 ? (
                 selected.map((option) => (
                   <Badge
@@ -101,11 +101,11 @@ const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>(
                 <span className="text-muted-foreground">{placeholder}</span>
               )}
             </div>
-            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 bg-forground" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0">
-          <Command className="overflow-visible">
+          <Command className="overflow-y-auto">
             <CommandInput placeholder="Search..." />
             <CommandList>
               <CommandEmpty>No item found.</CommandEmpty>

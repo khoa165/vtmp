@@ -1,7 +1,5 @@
 import { Types, ClientSession, FilterQuery } from 'mongoose';
 
-import { LinkStatus } from '@vtmp/common/constants';
-
 import { LinkModel, ILink } from '@/models/link.model';
 import {
   LinkMetaDataType,
@@ -17,30 +15,15 @@ export const LinkRepository = {
     return LinkModel.findById(id).lean();
   },
 
-  updateLinkStatus: async ({
-    id,
-    status,
-    session,
-  }: {
-    id: string;
-    status: LinkStatus.ADMIN_APPROVED | LinkStatus.ADMIN_REJECTED;
-    session?: ClientSession;
-  }): Promise<ILink | null> => {
-    return LinkModel.findByIdAndUpdate(
-      new Types.ObjectId(id),
-      { $set: { status } },
-      { new: true, session: session ?? null }
-    ).lean();
-  },
-
   updateLinkMetaData: async (
     id: string,
-    linkMetaData: ExtractionLinkMetaDataType
+    linkMetaData: ExtractionLinkMetaDataType,
+    session?: ClientSession
   ): Promise<ILink | null> => {
     return LinkModel.findOneAndUpdate(
       { _id: new Types.ObjectId(id) },
       { $set: linkMetaData },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true, session: session ?? null }
     ).lean();
   },
 
@@ -67,6 +50,6 @@ export const LinkRepository = {
   },
 
   getLinkByUrl: async (url: string): Promise<ILink | null> => {
-    return LinkModel.findOne({ url }).lean();
+    return LinkModel.findOne({ $or: [{ originalUrl: url }, { url }] }).lean();
   },
 };

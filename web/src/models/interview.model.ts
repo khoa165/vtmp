@@ -94,3 +94,13 @@ export const InterviewModel = mongoose.model<IInterview>(
   'Interview',
   InterviewSchema
 );
+
+export interface InterviewInsights {
+  companyDetails: string;
+  companyProducts: string;
+  interviewInsights: {
+    commonQuestions: string[];
+    interviewProcess: string;
+    tips: string;
+  };
+}
