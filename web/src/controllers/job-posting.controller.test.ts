@@ -567,7 +567,7 @@ describe('JobPostingController', () => {
 
       await runPaginationTest({
         mockUserToken,
-        filters,
+        ...(filters !== undefined && { filters }),
         allJobPostings: allJobPostingsSorted,
       });
     };
