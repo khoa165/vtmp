@@ -140,7 +140,7 @@ describe('JobPostingRepository', () => {
     });
   });
 
-  describe.only('getJobPostingsUserHasNotAppliedTo', () => {
+  describe('getJobPostingsUserHasNotAppliedTo', () => {
     const userIdA = getNewMongoId();
     const userIdB = getNewMongoId();
     let jobPostings: (IJobPosting | undefined)[];
@@ -216,7 +216,7 @@ describe('JobPostingRepository', () => {
             filters: {
               ...filters,
               limit,
-              cursor,
+              ...(cursor !== undefined && { cursor }),
             },
           });
         jobsNotAppliedByUser = paginationResult.data;
@@ -235,7 +235,12 @@ describe('JobPostingRepository', () => {
         ).to.deep.equal(
           allJobPostings
             .slice((page - 1) * limit, page * limit)
-            .map((jobPosting) => jobPosting?._id.toString())
+            .map((jobPosting) => jobPosting?._id.toString()),
+          `${jobsNotAppliedByUser.map((job) => job.url?.toString())}\n${JSON.stringify(
+            allJobPostings
+              .slice((page - 1) * limit, page * limit)
+              .map((jobPosting) => jobPosting?.url.toString())
+          )}`
         );
 
         page += 1;
@@ -582,7 +587,7 @@ describe('JobPostingRepository', () => {
 
         await runPaginationTest({
           userId: userId,
-          filters,
+          ...(filters !== undefined && { filters }),
           allJobPostings: allJobPostingsSorted,
         });
       };
@@ -641,7 +646,7 @@ describe('JobPostingRepository', () => {
           });
         });
 
-        it(`should return pages with correct sorting on ${sortField} after deleting some job postings and user creats some applications`, async () => {
+        it(`should return pages with correct sorting on ${sortField} after deleting some job postings and user creates some applications`, async () => {
           await randomRemoveJobPostings();
           await randomRemoveJobPostings();
           jobPostings = await randomCreateApplications({
@@ -660,7 +665,7 @@ describe('JobPostingRepository', () => {
           });
         });
 
-        it(`should return pages with correct sorting on ${sortField} after user creats some applications without excluding other users' applications`, async () => {
+        it(`should return pages with correct sorting on ${sortField} after user creates some applications without excluding other users' applications`, async () => {
           await randomRemoveJobPostings();
           await randomRemoveJobPostings();
           const jobPostingsA = await randomCreateApplications({
