@@ -5,7 +5,7 @@ import {
   handleError,
   UnauthorizedError,
 } from '@/utils/errors';
-import { logger } from '@vtmp/observability';
+import { getServerLogger } from '@vtmp/observability/server';
 import * as Sentry from '@sentry/node';
 
 interface AuthenticatedRequest extends Request {
@@ -62,7 +62,7 @@ export const routeErrorHandler = (
         },
       });
 
-      logger.error(err.message, {
+      getServerLogger().error(err.message, {
         ...extra,
         tags: {
           statusCode: err.statusCode,

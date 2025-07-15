@@ -7,7 +7,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    "./client": "./src/client/index.ts",
+    "./server": "./src/server/index.ts"
   },
   "scripts": {
     "build": "tsc --build tsconfig.json && tsc-alias -p tsconfig.json"
@@ -15,6 +16,9 @@
   "dependencies": {
     "@sentry/integrations": "^7.114.0",
     "@sentry/node": "^9.32.0",
+    "@sentry/react": "^9.32.0",
+    "@vtmp/common": "1.0.0",
+    "@vtmp/server-common": "1.0.0",
     "winston": "^3.17.0",
     "winston-transport": "^4.9.0",
     "winston-transport-sentry-node": "^3.0.0",
