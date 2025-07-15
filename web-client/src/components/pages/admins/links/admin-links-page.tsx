@@ -14,7 +14,7 @@ export const AdminLinksPage = () => {
   const [linksFilter, setLinksFilter] = useState<LinksFilter>({});
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="mx-[2rem] py-10">
       <h1 className="text-3xl font-bold text-foreground mb-4">
         Review Link Board
       </h1>

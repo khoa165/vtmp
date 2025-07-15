@@ -70,13 +70,17 @@ export const ExtractionLinkMetaDataSchema = z.object({
     })
     .optional(),
   jobDescription: z.string().optional(),
-  attemptsCount: z.number({ required_error: 'attemptsCount is required' }),
+  attemptsCount: z
+    .number({ required_error: 'attemptsCount is required' })
+    .optional(),
   lastProcessedAt: z
     .string({ required_error: 'lastProcessedAt is required' })
     .transform((str) => new Date(str))
     .refine((date) => !isNaN(date.getTime()), {
       message: 'lastProcessedAt must be a valid ISO date string',
-    }),
+    })
+    .optional(),
+  aiNote: z.string().optional(),
 });
 
 export type ExtractionLinkMetaDataType = z.infer<
