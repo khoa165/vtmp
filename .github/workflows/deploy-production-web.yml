@@ -41,9 +41,7 @@ jobs:
         id: extract_vars
         run: |
           echo 'Processing environment variable: '
-          echo '${{ toJson(vars) }}' | jq -r 'keys[]' | while read -r key; do
-            echo "\t$key"
-          done
+          echo '${{ toJson(vars) }}' | jq -r 'keys[]'
 
           # Generate flags without logging values
           ENV_FLAGS=$(echo '${{ toJson(vars) }}' | jq -r 'to_entries | map("-e " + .key + "=" + (.value | tostring)) | join(" ")')
@@ -57,9 +55,7 @@ jobs:
       - name: Import secrets via stdin
         run: |
           echo 'Processing secret:'
-          echo '${{ toJson(secrets) }}' | jq -r 'keys[]' | while read -r key; do
-            echo "\t$key"
-          done
+          echo '${{ toJson(secrets) }}' | jq -r 'keys[]'
 
           # Pipe secrets directly to flyctl secrets import
           echo '${{ toJson(secrets) }}' | jq -r 'to_entries | map(.key + "=" + .value) | .[]' | \
