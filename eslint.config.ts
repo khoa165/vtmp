@@ -1,20 +1,22 @@
 // @ts-check
+import boundaries from 'eslint-plugin-boundaries';
 import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import globals from 'globals';
+import { customEslintRules } from './custom-eslint';
 import stylistic from '@stylistic/eslint-plugin';
 import checkFile from 'eslint-plugin-check-file';
 import importPlugin from 'eslint-plugin-import';
+import typescriptSortKeys from 'eslint-plugin-typescript-sort-keys';
 import noRelativeImportPaths from 'eslint-plugin-no-relative-import-paths';
 import sortExports from 'eslint-plugin-sort-exports';
-import globals from 'globals';
-import tseslint from 'typescript-eslint';
-
-import { customEslintRules } from './custom-eslint';
 
 export default tseslint.config(
-  eslint.configs.recommended, /// recommended Eslint rules
-  ...tseslint.configs.recommended, /// recommended rules for TypeScript
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
   tseslint.configs.strict,
   tseslint.configs.stylistic,
+
   {
     languageOptions: {
       globals: { ...globals.node, ...globals.browser },
@@ -26,6 +28,8 @@ export default tseslint.config(
       export: sortExports,
       stylistic,
       checkFile,
+      boundaries,
+      typescriptSortKeys,
     },
     settings: {
       'import/resolver': {
@@ -44,9 +48,43 @@ export default tseslint.config(
         },
         node: true,
       },
+      react: {
+        version: 'detect',
+      },
+      'boundaries/elements': [
+        {
+          type: 'routes',
+          pattern: 'routes/*.ts',
+          mode: 'file',
+          capture: ['elementName'],
+        },
+        {
+          type: 'controllers',
+          pattern: 'controllers/*.ts',
+          mode: 'file',
+          capture: ['elementName'],
+        },
+        {
+          type: 'services',
+          pattern: 'services/*.ts',
+          mode: 'file',
+          capture: ['elementName'],
+        },
+        {
+          type: 'repositories',
+          pattern: 'repositories/*.ts',
+          mode: 'file',
+          capture: ['elementName'],
+        },
+        {
+          type: 'models',
+          pattern: 'models/*.ts',
+          mode: 'file',
+          capture: ['elementName'],
+        },
+      ],
     },
   },
-  // Frontend rules - needs to figure out later why this needs separate config
   {
     files: ['web-client/**/*.{ts,tsx}'],
     plugins: {
@@ -123,6 +161,34 @@ export default tseslint.config(
         },
         {
           ignoreMiddleExtensions: true,
+        },
+      ],
+      '@typescript-eslint/no-var-requires': 'error',
+      'customEslintRules/no-try-in-controller-or-middleware': 'error',
+      'customEslintRules/enforce-uppercase-enum-values': 'error',
+      'typescriptSortKeys/string-enum': 'error',
+      'boundaries/element-types': [
+        'error',
+        {
+          default: 'disallow',
+          rules: [
+            {
+              from: 'repositories',
+              allow: ['models'],
+            },
+            {
+              from: 'services',
+              allow: ['repositories'],
+            },
+            {
+              from: 'controllers',
+              allow: ['services'],
+            },
+            {
+              from: 'routes',
+              allow: ['controllers'],
+            },
+          ],
         },
       ],
       'export/sort-exports': [

@@ -75,6 +75,13 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
+  const defaultColumn = {
+    size: 200,
+    minSize: 50,
+    maxSize: 750,
+    cell: ({ getValue }) => <div className="pl-2">{getValue()}</div>,
+  };
+
   const table = useReactTable({
     data: jobPostingsData ?? [],
     columns,
@@ -92,6 +99,7 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
       columnVisibility,
       rowSelection,
     },
+    defaultColumn,
   });
 
   if (isLoading) {

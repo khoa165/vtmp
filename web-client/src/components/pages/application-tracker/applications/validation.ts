@@ -135,6 +135,8 @@ const SharedInterviewSchema = InterviewSchema.extend({
   }),
 });
 
+export type SharedInterview = z.infer<typeof SharedInterviewSchema>;
+
 export const SharedInterviewResponseSchema = z.object({
   message: z.string(),
   data: SharedInterviewSchema,
@@ -153,5 +155,32 @@ export interface SharedInterviewData extends InterviewData {
   user: {
     firstName: string;
     lastName: string;
+  };
+}
+
+export interface InterviewInsightsFilter {
+  companyName?: string;
+}
+
+export const InterviewInsightsSchema = z.object({
+  message: z.string(),
+  data: z.object({
+    companyDetails: z.string(),
+    companyProducts: z.string(),
+    interviewInsights: z.object({
+      commonQuestions: z.array(z.string()),
+      interviewProcess: z.string(),
+      tips: z.string(),
+    }),
+  }),
+});
+
+export interface InterviewInsights {
+  companyDetails: string;
+  companyProducts: string;
+  interviewInsights: {
+    commonQuestions: string[];
+    interviewProcess: string;
+    tips: string;
   };
 }

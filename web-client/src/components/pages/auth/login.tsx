@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
+import { SystemRole } from '@vtmp/common/constants';
+
 import { TreverseFullLogo } from '#vtmp/web-client/components/base/treverse-full-logo';
 import { Button } from '@/components/base/button';
 import {
@@ -58,7 +60,11 @@ export const LoginPage = () => {
       console.log('Login successfully: ', res);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
-      navigate('/jobs');
+      if (res.data.user.role === SystemRole.ADMIN) {
+        navigate('/admin/invitations');
+      } else {
+        navigate('/jobs');
+      }
     },
     onError: (error) => {
       console.log('Error in useMutation login', error);

@@ -4,8 +4,9 @@ import {
   InterviewType,
 } from '@vtmp/common/constants';
 
-import { IInterview } from '@/models/interview.model';
+import { IInterview, InterviewInsights } from '@/models/interview.model';
 import { InterviewRepository } from '@/repositories/interview.repository';
+import { InterviewInsightService } from '@/services/interview-insights/interview-insight.service';
 import { BadRequest, ResourceNotFoundError } from '@/utils/errors';
 
 export const InterviewService = {
@@ -59,6 +60,28 @@ export const InterviewService = {
       filters,
       isShared,
     });
+  },
+
+  getInterviewInsights: async ({
+    filters = {},
+  }: {
+    filters: {
+      companyName?: string;
+    };
+  }): Promise<InterviewInsights | null> => {
+    if (filters.companyName) {
+      const interviews = await InterviewRepository.getInterviews({
+        filters: { companyName: filters.companyName },
+        isShared: true,
+      });
+
+      return await InterviewInsightService.getInterviewInsight({
+        companyName: filters.companyName,
+        sharedInterviews: interviews,
+      });
+    }
+
+    return null;
   },
 
   updateInterviewById: async ({
