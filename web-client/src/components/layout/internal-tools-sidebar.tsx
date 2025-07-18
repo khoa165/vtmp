@@ -58,7 +58,7 @@ export const InternalToolsSidebar = () => {
       title: 'Applications',
       url: '/applications',
       icon: SquareCheckBig,
-      roles: [SystemRole.USER],
+      roles: [SystemRole.MODERATOR, SystemRole.USER],
     },
     {
       title: 'Interviews',
@@ -102,7 +102,7 @@ export const InternalToolsSidebar = () => {
                     {state === 'collapsed' ? (
                       <TreverseLogo />
                     ) : (
-                      <TreverseFullLogo />
+                      <TreverseFullLogo className="w-[106px] h-[16px]" />
                     )}
                   </Link>
                 </SidebarMenuButton>

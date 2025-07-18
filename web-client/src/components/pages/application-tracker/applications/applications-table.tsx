@@ -1,5 +1,3 @@
-import { Input } from '@/components/base/input';
-import { useState } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,9 +11,12 @@ import {
   OnChangeFn,
   ColumnSizingState,
 } from '@tanstack/react-table';
+import { useState } from 'react';
+
+import { Input } from '@/components/base/input';
+import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
 import { ResizableTable } from '@/components/pages/shared/resizable-table';
-import { IApplication } from '@/components/pages/application-tracker/applications/validation';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -36,6 +37,13 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
   const [rowSelection, setRowSelection] = useState({});
+
+  const defaultColumn = {
+    size: 200,
+    minSize: 50,
+    maxSize: 750,
+    cell: ({ getValue }) => <div className="pl-2">{getValue()}</div>,
+  };
 
   const table = useReactTable({
     data,
@@ -58,11 +66,7 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
       columnSizing,
       rowSelection,
     },
-    defaultColumn: {
-      size: 200,
-      minSize: 50,
-      maxSize: 750,
-    },
+    defaultColumn,
   });
 
   return (
@@ -74,7 +78,7 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
           onChange={(event) =>
             table.getColumn('companyName')?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm text-white"
         />
         <ColumnVisibilityConfiguration table={table} />
       </section>

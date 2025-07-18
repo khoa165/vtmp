@@ -1,25 +1,26 @@
-name: Deploy web, web-client, discord-service to staging. Deploy link-processing-service to AWS Lambda
+# Deploy web, web-client, discord-service to staging. Deploy link-processing-service to AWS Lambda
+name: Deploy
 
 on:
   workflow_dispatch:
     inputs:
       deploy-web:
-        description: 'Deploy web to staging on Render ?'
+        description: 'Deploy web to staging Render'
         required: false
         default: true
         type: boolean
       deploy-web-client:
-        description: 'Deploy web-client to staging on Render ?'
+        description: 'Deploy web-client to staging Render'
         required: false
         default: true
         type: boolean
       deploy-discord-service:
-        description: 'Deploy discord-service to Render ?'
+        description: 'Deploy discord-service to Render'
         required: false
         default: true
         type: boolean
       deploy-link-processing-service:
-        description: 'Deploy link-processing-service to AWS Lambda ?'
+        description: 'Deploy link-processing-service to AWS Lambda'
         required: false
         default: true
         type: boolean
@@ -28,23 +29,26 @@ permissions:
   contents: read
 
 jobs:
-  deploy-staging:
+  deploy-services:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Deploy web to staging
-        if: ${{ inputs.deploy-web == 'true' }}
+        if: ${{ inputs.deploy-web == true }}
         run: curl ${{ secrets.RENDER_STAGING_BACKEND_DEPLOY_HOOK }}
 
       - name: Deploy web-client to staging
-        if: ${{ inputs.deploy-web-client == 'true' }}
+        if: ${{ inputs.deploy-web-client == true }}
         run: curl ${{ secrets.RENDER_STAGING_FRONTEND_DEPLOY_HOOK }}
 
       - name: Deploy discord-service
-        if: ${{ inputs.deploy-discord-service == 'true' }}
+        if: ${{ inputs.deploy-discord-service == true }}
         run: curl ${{ secrets.RENDER_DISCORD_DEPLOY_HOOK }}
 
       - name: Deploy link-processing-service to AWS Lambda
-        if: ${{ inputs.deploy-link-processing-service == 'true' }}
+        if: ${{ inputs.deploy-link-processing-service == true }}
         uses: ./.github/actions/deploy-link-processing
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}

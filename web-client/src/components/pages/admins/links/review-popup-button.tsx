@@ -15,7 +15,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/base/dialog';
-import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
 import { Textarea } from '@/components/base/textarea';
 import { ReviewPopupInput } from '@/components/pages/admins/links/review-popup-input';
@@ -97,7 +96,7 @@ export const ReviewPopupButton = ({
 
         <div className="flex flex-col items-start gap-2 w-full">
           <Label htmlFor="link">URL</Label>
-          <Input id="link" defaultValue={url} readOnly />
+          <Textarea id="link" defaultValue={url} readOnly />
         </div>
         <div className="flex flex-col items-start gap-2 w-full">
           <Label htmlFor="aiNote" className="flex items-center">

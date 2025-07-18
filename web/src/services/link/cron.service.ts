@@ -60,7 +60,8 @@ export const CronService = {
     });
 
     const NODE_ENV = EnvConfig.get().NODE_ENV;
-    if (NODE_ENV === Environment.DEV) {
+
+    if (NODE_ENV === Environment.DEV || NODE_ENV === Environment.TEST) {
       return api.request({
         method: 'POST',
         data: {
@@ -72,9 +73,12 @@ export const CronService = {
       });
     } else {
       return api.request({
-        // prod,
+        // PROD or STAGING
         method: 'POST',
         data: { linksData },
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     }
   },
@@ -108,10 +112,21 @@ export const CronService = {
 
       const response = await this._sendLinksToLambda(linksData);
       console.log('Response from Lambda: ', response);
-      const result: {
+
+      let result: {
         successfulLinks: MetadataExtractedLink[];
         failedLinks: FailedProcessedLink[];
-      } = JSON.parse(response.data.body);
+      };
+
+      if (
+        EnvConfig.get().NODE_ENV === Environment.STAGING ||
+        EnvConfig.get().NODE_ENV === Environment.PROD
+      ) {
+        result = response.data;
+      } else {
+        result = JSON.parse(response.data.body);
+      }
+
       PIPELINE_IN_PROCESS = false;
       return result;
     } catch (error: unknown) {
