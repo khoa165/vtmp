@@ -255,4 +255,96 @@ export const JobPostingRepository = {
 
     return response;
   },
+
+  getJobPostingsUserNotAppliedToCount: async ({
+    userId,
+    filters = {},
+  }: {
+    userId: string;
+    filters: JobPostingFilter;
+  }): Promise<number> => {
+    const {
+      jobTitle,
+      companyName,
+      location,
+      jobFunction,
+      jobType,
+      postingDateRangeStart,
+      postingDateRangeEnd,
+    } = filters;
+
+    const dynamicMatch: Record<string, unknown> = {};
+
+    if (jobTitle) {
+      dynamicMatch.jobTitle = {
+        $regex: escapeStringRegexp(jobTitle),
+        $options: 'i',
+      };
+    }
+    if (companyName) {
+      dynamicMatch.companyName = {
+        $regex: escapeStringRegexp(companyName),
+        $options: 'i',
+      };
+    }
+    if (location) dynamicMatch.location = location;
+    if (jobFunction) dynamicMatch.jobFunction = jobFunction;
+    if (jobType) dynamicMatch.jobType = jobType;
+    if (postingDateRangeStart || postingDateRangeEnd) {
+      const datePostedFilter: Record<string, Date> = {};
+
+      if (postingDateRangeStart) {
+        datePostedFilter.$gte = postingDateRangeStart;
+      }
+      if (postingDateRangeEnd) {
+        datePostedFilter.$lte = postingDateRangeEnd;
+      }
+
+      dynamicMatch.datePosted = datePostedFilter;
+    }
+
+    const result = await JobPostingModel.aggregate([
+      {
+        $match: {
+          ...dynamicMatch,
+          deletedAt: null,
+        },
+      },
+      {
+        $lookup: {
+          from: 'applications',
+          let: { jobId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$jobPostingId', '$$jobId'] },
+                    { $eq: ['$userId', toMongoId(userId)] },
+                    { $eq: ['$deletedAt', null] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: 'userApplication',
+        },
+      },
+      {
+        $match: {
+          userApplication: { $size: 0 },
+        },
+      },
+      {
+        $project: {
+          userApplication: 0,
+        },
+      },
+      {
+        $count: 'totalCount',
+      },
+    ]);
+
+    return result.length > 0 ? result[0].totalCount : 0;
+  },
 };
