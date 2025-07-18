@@ -130,7 +130,20 @@ export const migratePeople = async () => {
               cohortMap.set(cohort.year, cohort._id as ObjectId);
             }
 
-            // Create involvement docs for each person/term
+            // Build lookup for (trackingKey, year) -> profileId
+            const profileIdByTrackingKeyYear = new Map<string, ObjectId>();
+            profiles.forEach((profile, idx) => {
+              const person = people[idx];
+              if (!person) return;
+              person.terms.forEach((term) => {
+                profileIdByTrackingKeyYear.set(
+                  `${person.trackingKey}-${term.year}`,
+                  profile._id as ObjectId
+                );
+              });
+            });
+
+            // Create involvement docs for each person/term, with mentors/mentees
             const involvementBatch: {
               programProfileId: ObjectId;
               programCohortId: ObjectId;
@@ -146,14 +159,43 @@ export const migratePeople = async () => {
               person.terms.forEach((term: MentorshipTerm) => {
                 const cohortId = cohortMap.get(term.year);
                 if (!cohortId) return;
+                const programProfileId = profile._id as ObjectId;
+
+                // Mentors: look up by trackingKey and year
+                const mentors = (term.mentors ?? [])
+                  .map((mentorKey) =>
+                    profileIdByTrackingKeyYear.get(`${mentorKey}-${term.year}`)
+                  )
+                  .filter(Boolean) as ObjectId[];
+
+                // Mentees: find all people who have this person as a mentor in the same year
+                const mentees: ObjectId[] = [];
+                people.forEach((otherPerson) => {
+                  if (otherPerson.trackingKey === person.trackingKey) return;
+                  const otherTerm = otherPerson.terms.find(
+                    (t) => t.year === term.year
+                  );
+                  if (
+                    otherTerm &&
+                    (otherTerm.mentors ?? [])
+                      .map((m) => m as string)
+                      .includes(person.trackingKey as string)
+                  ) {
+                    const menteeProfileId = profileIdByTrackingKeyYear.get(
+                      `${otherPerson.trackingKey}-${term.year}`
+                    );
+                    if (menteeProfileId) mentees.push(menteeProfileId);
+                  }
+                });
+
                 involvementBatch.push({
-                  programProfileId: profile._id as ObjectId,
+                  programProfileId,
                   programCohortId: cohortId,
                   professionalTitle: term.title || person.professionalTitle,
                   roles: term.roles,
                   projects: [],
-                  mentees: [],
-                  mentors: [],
+                  mentors,
+                  mentees,
                 });
               });
             });
