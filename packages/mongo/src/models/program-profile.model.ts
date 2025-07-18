@@ -1,6 +1,9 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
+import { PeopleName } from '@vtmp/common/people';
+
 interface IProgramProfile extends Document {
+  trackingKey: PeopleName;
   programName: string;
   userId: Types.ObjectId;
   yearJoined: number;
@@ -18,6 +21,11 @@ interface IProgramProfile extends Document {
 }
 
 const ProgramProfileSchema = new mongoose.Schema<IProgramProfile>({
+  trackingKey: {
+    type: String,
+    enum: Object.values(PeopleName),
+    required: true,
+  },
   programName: {
     type: String,
     required: true,
