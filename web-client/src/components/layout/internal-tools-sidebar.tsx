@@ -1,12 +1,18 @@
-import { useMemo } from 'react';
 import {
-  ShieldUser,
-  ExternalLink,
   LayoutDashboard,
-  BriefcaseBusiness,
-  UserRoundPlus,
+  LogOut,
+  MailPlus,
+  Link2,
+  SquareCheckBig,
+  Share2,
+  MessageSquareQuote,
 } from 'lucide-react';
+import { useMemo } from 'react';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 
+import { SystemRole } from '@vtmp/common/constants';
+
+import { Avatar } from '#vtmp/web-client/components/base/avatar';
 import {
   Sidebar,
   SidebarContent,
@@ -16,13 +22,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
-} from '@/components/base/sidebar';
-import { VTMPLogo } from '@/components/base/vtmp-logo';
-import { Avatar } from '@/components/base/avatar';
-import { JobTrackrLogo } from '@/components/base/jobtrackr-logo';
-import { SystemRole } from '@vtmp/common/constants';
-import { Link, Navigate } from 'react-router-dom';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
+  useSidebar,
+} from '#vtmp/web-client/components/base/sidebar';
+import { TreverseFullLogo } from '#vtmp/web-client/components/base/treverse-full-logo';
+import { TreverseLogo } from '#vtmp/web-client/components/base/treverse-logo';
+import { useCurrentUser } from '#vtmp/web-client/hooks/useCurrentUser';
+import { useLogout } from '#vtmp/web-client/hooks/useLogout';
 
 export const InternalToolsSidebar = () => {
   const user = useCurrentUser();
@@ -32,39 +37,39 @@ export const InternalToolsSidebar = () => {
 
   const items = [
     {
-      title: 'Users',
+      title: 'Invitations',
       url: '/admin/invitations',
-      icon: ShieldUser,
+      icon: MailPlus,
       roles: [SystemRole.ADMIN],
     },
     {
-      title: 'Invitations Sending',
-      url: '/admin/send-invitation',
-      icon: UserRoundPlus,
-      roles: [SystemRole.ADMIN],
-    },
-    {
-      title: 'Pending Links',
+      title: 'Links',
       url: '/admin/links',
-      icon: BriefcaseBusiness,
+      icon: Link2,
       roles: [SystemRole.ADMIN, SystemRole.MODERATOR],
     },
     {
       title: 'Jobs',
-      url: '/job-postings',
+      url: '/jobs',
       icon: LayoutDashboard,
       roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
     },
     {
       title: 'Applications',
-      url: '/application-tracker',
-      icon: BriefcaseBusiness,
-      roles: [SystemRole.USER],
+      url: '/applications',
+      icon: SquareCheckBig,
+      roles: [SystemRole.MODERATOR, SystemRole.USER],
+    },
+    {
+      title: 'Interviews',
+      url: '/interviews',
+      icon: MessageSquareQuote,
+      roles: [SystemRole.USER, SystemRole.ADMIN, SystemRole.MODERATOR],
     },
     {
       title: 'Share Link',
-      url: '/link-sharing',
-      icon: ExternalLink,
+      url: '/links',
+      icon: Share2,
       roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
     },
   ];
@@ -79,6 +84,12 @@ export const InternalToolsSidebar = () => {
     [user, items]
   );
 
+  const { logout } = useLogout();
+  const { state } = useSidebar();
+
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <Sidebar collapsible="icon" variant="sidebar">
       <SidebarContent>
@@ -87,16 +98,22 @@ export const InternalToolsSidebar = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/job-postings" className="w-full" aria-label="Home">
-                    <VTMPLogo />
-                    <JobTrackrLogo />
+                  <Link to="/jobs" className="w-full" aria-label="Home">
+                    {state === 'collapsed' ? (
+                      <TreverseLogo />
+                    ) : (
+                      <TreverseFullLogo className="w-[106px] h-[16px]" />
+                    )}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
               {visibleItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={item.url === currentPath}
+                  >
                     <Link to={item.url} aria-label={item.title}>
                       <item.icon />
                       <span>{item.title}</span>
@@ -104,14 +121,37 @@ export const InternalToolsSidebar = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {state !== 'collapsed' && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link to="/login" aria-label="Log out" onClick={logout}>
+                      <LogOut />
+                      <span>Log out</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <Avatar />
-              <SidebarTrigger />
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  className="!p-1 group-data-[collapsible=icon]:!p-1"
+                >
+                  <Link to="#">
+                    <Avatar userName={user.firstName + ' ' + user.lastName} />
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild className="flex justify-start">
+                  <SidebarTrigger />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -1,8 +1,9 @@
+import { Navigate } from 'react-router-dom';
+
 import { ErrorBoundaryWrapper } from '@/components/base/error-boundary';
 import { JobPostingsContainer } from '@/components/pages/application-tracker/job-postings/job-postings-container';
 import { JobPostingStatusCards } from '@/components/pages/application-tracker/job-postings/job-postings-status';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { Navigate } from 'react-router-dom';
 
 export const JobPostingsPage = () => {
   const user = useCurrentUser();
@@ -11,9 +12,9 @@ export const JobPostingsPage = () => {
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="container p-10">
       <h1 className="text-3xl font-bold text-foreground">
-        Welcome back, {`${user.firstName} ${user.lastName}`}.
+        Welcome back, {`${user.firstName} ${user.lastName}`}
       </h1>
       <ErrorBoundaryWrapper customText="Job Postings Status Cards">
         <JobPostingStatusCards />

@@ -1,8 +1,9 @@
 import { useRef } from 'react';
-import { PrgramValues } from './program-values';
-import { mentorshipProgramValues } from '@/utils/values';
-import { VisualStack } from './visual-stack';
-import { BannerPage } from './banner-page';
+
+import { BannerPage } from '#vtmp/web-client/components/landing/banner-page';
+import { PrgramValues } from '#vtmp/web-client/components/landing/program-values';
+import { VisualStack } from '#vtmp/web-client/components/landing/visual-stack';
+import { mentorshipProgramValues } from '#vtmp/web-client/utils/values';
 
 export const LandingContainer = () => {
   const contentRef = useRef<HTMLDivElement>(null);

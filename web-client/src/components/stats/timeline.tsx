@@ -10,9 +10,10 @@ import {
   Tooltip,
   ReferenceLine,
 } from 'recharts';
-import { MergedDateWithCount } from '@/types';
-import { MentorshipYear } from '@/utils/constants';
-import { getDatesWithCountOffers } from '@/utils/parse';
+
+import { MergedDateWithCount } from '#vtmp/web-client/types';
+import { MentorshipYear } from '#vtmp/web-client/utils/constants';
+import { getDatesWithCountOffers } from '#vtmp/web-client/utils/parse';
 
 interface TimelineProps {
   datesWithCount: MergedDateWithCount[];

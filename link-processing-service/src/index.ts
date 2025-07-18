@@ -2,13 +2,14 @@ import middy from '@middy/core';
 import httpJsonBodyParser from '@middy/http-json-body-parser';
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 
-import { LinkProcessorService } from '@/services/link-processor.service';
 import {
-  EventBodySchema,
   FailedProcessedLink,
   MetadataExtractedLink,
   UpdateLinkPayload,
-} from '@/types/link-processing.types';
+} from '@vtmp/common/constants';
+
+import { LinkProcessorService } from '@/services/link-processor.service';
+import { EventBodySchema } from '@/types/link-processing.types';
 import { updateLink } from '@/utils/api';
 import { handleErrorMiddleware } from '@/utils/errors';
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import { EnvConfig } from '@/config/env';
-import { Method } from '@/utils/constants';
+import { EnvConfig } from '#vtmp/web-client/config/env';
+import { Method } from '#vtmp/web-client/utils/constants';
 
 const api = axios.create({
   baseURL: `${EnvConfig.get().VITE_API_URL}/api`,
@@ -33,6 +33,21 @@ interface IRequest {
     }
   ): Promise<T>;
 }
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      const status = error.response.status;
+
+      if (status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export const request: IRequest = async <T extends { data: object }>({
   method,

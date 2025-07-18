@@ -1,3 +1,9 @@
+import { addDays, isBefore } from 'date-fns';
+import jwt from 'jsonwebtoken';
+import { z } from 'zod';
+
+import { InvitationStatus } from '@vtmp/common/constants';
+
 import { EnvConfig } from '@/config/env';
 import { IInvitation } from '@/models/invitation.model';
 import { InvitationRepository } from '@/repositories/invitation.repository';
@@ -9,10 +15,6 @@ import {
   InternalServerError,
   ResourceNotFoundError,
 } from '@/utils/errors';
-import { InvitationStatus } from '@vtmp/common/constants';
-import { addDays, isBefore } from 'date-fns';
-import jwt from 'jsonwebtoken';
-import { z } from 'zod';
 
 const DecodedJWTSchema = z.object({
   receiverEmail: z.string().email(),
@@ -26,10 +28,11 @@ export const InvitationService = {
   sendInvitation: async (
     receiverName: string,
     receiverEmail: string,
-    senderId: string
+    senderId: string,
+    webUrl: string
   ): Promise<IInvitation | null> => {
     const foundUser = await UserRepository.getUserByEmail(receiverEmail);
-    if (foundUser) {
+    if (foundUser && foundUser.activated) {
       throw new DuplicateResourceError(
         'User associated with this email already has an account',
         { receiverEmail }
@@ -89,10 +92,24 @@ export const InvitationService = {
     const emailTemplate = getEmailService().getInvitationEmailTemplate(
       receiverName,
       receiverEmail,
-      token
+      token,
+      webUrl
     );
     await getEmailService().sendEmail(emailTemplate);
     return newInvitation || latestPendingInvitation;
+  },
+
+  updateInvitation: async (
+    invitationId: string,
+    updateInvitationInfo: {
+      status?: InvitationStatus;
+      expiryDate?: Date;
+    }
+  ): Promise<IInvitation | null> => {
+    return InvitationRepository.updateInvitationById(
+      invitationId,
+      updateInvitationInfo
+    );
   },
 
   revokeInvitation: async (

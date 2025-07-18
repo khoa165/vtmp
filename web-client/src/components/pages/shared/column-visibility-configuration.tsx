@@ -1,13 +1,14 @@
+import type { Table } from '@tanstack/react-table';
+import { ChevronDown } from 'lucide-react';
 import { useMemo } from 'react';
+
+import { Button } from '@/components/base/button';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/base/dropdown-menu';
-import { Button } from '@/components/base/button';
-import { ChevronDown } from 'lucide-react';
-import type { Table } from '@tanstack/react-table';
 
 interface ColumnVisibilityConfigurationProps<TData> {
   table: Table<TData>;
@@ -37,15 +38,36 @@ export function ColumnVisibilityConfiguration<TData>({
         style={{ width: '100%' }}
       >
         {columns.map((column) => {
+          // Determine display name
+          let displayName: string = column.id;
+          if (typeof column.columnDef.header === 'string') {
+            displayName = column.columnDef.header;
+          } else if (
+            column.columnDef.meta &&
+            hasDisplayName(column.columnDef.meta)
+          ) {
+            displayName = column.columnDef.meta.displayName;
+          }
+
+          function hasDisplayName(
+            meta: unknown
+          ): meta is { displayName: string } {
+            return (
+              typeof meta === 'object' &&
+              meta !== null &&
+              'displayName' in meta &&
+              typeof meta.displayName === 'string'
+            );
+          }
+
           return (
             <DropdownMenuCheckboxItem
               key={column.id}
-              className="capitalize"
               checked={column.getIsVisible()}
               onCheckedChange={(value) => column.toggleVisibility(!!value)}
               data-testid={`row-config-${column.id}`}
             >
-              {column.id}
+              {displayName}
             </DropdownMenuCheckboxItem>
           );
         })}

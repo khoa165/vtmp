@@ -1,6 +1,6 @@
-import React from 'react';
-import { InterestLevel } from '@vtmp/common/constants';
 import { ChevronsUp, ChevronsDown, ChevronUp } from 'lucide-react';
+
+import { InterestLevel } from '@vtmp/common/constants';
 
 interface ApplicationInterestColumnProps {
   interest: InterestLevel;

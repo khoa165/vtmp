@@ -1,4 +1,8 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import { useState } from 'react';
+import { toast } from 'sonner';
+
 import { Button } from '@/components/base/button';
 import {
   Card,
@@ -10,19 +14,16 @@ import {
 } from '@/components/base/card';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-import axios from 'axios';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { Method } from '@/utils/constants';
-import { request } from '@/utils/api';
 import { SubmitLinkResponseSchema } from '@/components/pages/application-tracker/links/validation';
+import { request } from '@/utils/api';
+import { Method } from '@/utils/constants';
 
 export const SubmitLink = () => {
   const [linkInput, setLinkInput] = useState('');
   const [submitLinkError, setSubmitLinkError] = useState([]);
 
   const { mutate: submitLinkFn } = useMutation({
-    mutationFn: (body: { url: string }) =>
+    mutationFn: (body: { originalUrl: string }) =>
       request({
         method: Method.POST,
         url: '/links',
@@ -49,7 +50,7 @@ export const SubmitLink = () => {
   });
 
   const handleSubmit = async () => {
-    submitLinkFn({ url: linkInput });
+    submitLinkFn({ originalUrl: linkInput });
   };
 
   return (
@@ -57,9 +58,11 @@ export const SubmitLink = () => {
       <div className="col-start-1 col-span-5 flex flex-col justify-start">
         <Card className="bg-transparent border-0 h-full justify-center">
           <CardHeader>
-            <CardTitle className="text-4xl font-bold">Share a Job</CardTitle>
+            <CardTitle className="text-4xl font-bold">
+              Share a Job Link
+            </CardTitle>
             <CardDescription className="text-2xl">
-              Contribute a posting for a job board
+              Share a job posting with our community
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col space-y-4 my-3">

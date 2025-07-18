@@ -1,8 +1,8 @@
-import * as React from 'react';
 import * as DrawerPrimitive from '@radix-ui/react-dialog';
 import { XIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn } from '#vtmp/web-client/lib/utils';
 
 const Drawer = DrawerPrimitive.Root;
 

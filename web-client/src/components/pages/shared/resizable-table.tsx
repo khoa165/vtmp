@@ -1,3 +1,10 @@
+import {
+  ColumnDef,
+  flexRender,
+  Header,
+  Table as TanstackTable,
+} from '@tanstack/react-table';
+
 import { Button } from '@/components/base/button';
 import {
   Table,
@@ -7,12 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/base/table';
-import {
-  ColumnDef,
-  flexRender,
-  Header,
-  Table as TanstackTable,
-} from '@tanstack/react-table';
 
 const ColumnResizer = <TData, TValue>({
   header,
@@ -50,7 +51,7 @@ export function ResizableTable<TData, TValue>({
   return (
     <>
       <section className="rounded-md border border-foreground">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto rounded-md">
           <Table>
             <TableHeader className="bg-foreground">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -95,7 +96,7 @@ export function ResizableTable<TData, TValue>({
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
-                        className="text-foreground py-4"
+                        className="text-foreground py-4 whitespace-normal"
                         data-testid={
                           testIdPrefix
                             ? `${testIdPrefix}-cell-${cell.column.id}`
@@ -114,9 +115,9 @@ export function ResizableTable<TData, TValue>({
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className="h-24 text-center text-white"
                   >
-                    No results.
+                    No matching entries
                   </TableCell>
                 </TableRow>
               )}
@@ -124,13 +125,12 @@ export function ResizableTable<TData, TValue>({
           </Table>
         </div>
       </section>
-      <section className="flex items-center justify-end space-x-2 py-4">
+      <section className="flex items-center justify-end space-x-2 py-4 text-white">
         <Button
           variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
-          className="text-foreground hover:text-background hover:bg-foreground"
         >
           Previous
         </Button>
@@ -139,7 +139,6 @@ export function ResizableTable<TData, TValue>({
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
-          className="text-foreground hover:text-background hover:bg-foreground"
         >
           Next
         </Button>

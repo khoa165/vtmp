@@ -1,35 +1,35 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+import { EyeOff, Eye, TriangleAlert, Check } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { omit } from 'remeda';
+import { toast } from 'sonner';
+import { z } from 'zod';
+
+import { TreverseFullLogo } from '#vtmp/web-client/components/base/treverse-full-logo';
 import { Button } from '@/components/base/button';
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/base/card';
 import { Input } from '@/components/base/input';
 import { Label } from '@/components/base/label';
-import { useEffect, useState } from 'react';
-import LogoMint from '@/assets/images/logo-full-mint.svg?react';
-import { EyeOff, Eye, TriangleAlert } from 'lucide-react';
-import { Check } from 'lucide-react';
-import axios from 'axios';
-import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
-import { useMutation } from '@tanstack/react-query';
-import { request } from '@/utils/api';
+import { useValidateInvitation } from '@/components/pages/auth/hooks/validate-invitation-hook';
+import { InvitationErrorPage } from '@/components/pages/auth/invitation-error';
 import { AuthResponseSchema } from '@/components/pages/auth/validation';
+import { cn } from '@/lib/utils';
+import { request } from '@/utils/api';
 import {
   MAX_PASSWORD_LENGTH,
   Method,
   MIN_PASSWORD_LENGTH,
 } from '@/utils/constants';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
-import { useSearchParams } from 'react-router-dom';
-import { omit } from 'remeda';
-import { useValidateInvitation } from '@/components/pages/auth/hooks/validate-invitation-hook';
-import { jwtDecode } from 'jwt-decode';
-import { z } from 'zod';
-import { InvitationErrorPage } from '@/components/pages/auth/invitation-error';
 
 const passwordMessage = [
   '1. Password length is in range 8-20',
@@ -83,7 +83,7 @@ export const SignUpPage = () => {
 
   try {
     decodedToken = JWTDecodeSchema.parse(jwtDecode(token));
-  } catch (err) {
+  } catch (_err) {
     return <InvitationErrorPage message="Your invitation is invalid!" />;
   }
   const emailInput = decodedToken.receiverEmail;
@@ -110,7 +110,7 @@ export const SignUpPage = () => {
     firstNameErrors: [],
     lastNameErrors: [],
   });
-  const navigate = useNavigatePreserveQueryParams();
+  const navigate = useNavigate();
 
   const resetState = () => {
     setUserInput({
@@ -131,23 +131,24 @@ export const SignUpPage = () => {
     mutationFn: (body: {
       firstName: string;
       lastName: string;
-      email: string;
       password: string;
+      invitationToken: string;
     }) =>
       request({
         method: Method.POST,
-        url: `/auth/signup?token=${token}`,
-        data: { ...body, token },
+        url: `/auth/signup`,
+        data: body,
         schema: AuthResponseSchema,
       }),
     onSuccess: (res) => {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       resetState();
-      navigate('/job-postings');
+      navigate('/jobs');
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response) {
+        toast.error(error.response.data.errors[0].message);
         error.response.data.errors.forEach((err: { message: string }) => {
           if (
             err.message.toLocaleLowerCase().includes('email') ||
@@ -193,7 +194,7 @@ export const SignUpPage = () => {
 
     signUpFn({
       ...omit(userInput, ['confirmPassword']),
-      email: emailInput,
+      invitationToken: token,
     });
   };
 
@@ -222,7 +223,7 @@ export const SignUpPage = () => {
 
       <div className="col-start-7 col-span-5 flex flex-col justify-end">
         <div className="w-full flex flex-row justify-end">
-          <LogoMint className="w-40 h-16 pr-6" />
+          <TreverseFullLogo className="pr-3 w-[106px] h-[16px]" />
         </div>
 
         <Card className="bg-transparent border-0 shadow-none h-full justify-center">
@@ -230,6 +231,9 @@ export const SignUpPage = () => {
             <CardTitle className="text-4xl font-bold">
               Create an Account
             </CardTitle>
+            <CardDescription className="text-lg">
+              Job postings access. Applications tracking. Community insights.
+            </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col space-y-4 my-3">
             <form onSubmit={(e) => e.preventDefault()}>
@@ -392,7 +396,7 @@ export const SignUpPage = () => {
               Register
             </Button>
 
-            <div className="flex flex-row items-center gap-1 mt-2">
+            <div className="flex flex-row items-center gap-1 mt-2 text-vtmp-light-grey">
               <span>Already have an account?</span>
               <Button
                 onClick={() => {

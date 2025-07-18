@@ -29,11 +29,9 @@ services:
       - key: NODE_ENV
         sync: false
     region: oregon
-    buildCommand:
-      yarn install && yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace
-      @vtmp/web build
+    buildCommand: yarn install && yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build && yarn workspace @vtmp/web build
     startCommand: yarn workspace @vtmp/web start
-    autoDeployTrigger: off
+    autoDeployTrigger: commit
     previews:
       generation: off # Disable service previews
     healthCheckPath: /health
@@ -64,7 +62,7 @@ services:
       - type: rewrite
         source: /*
         destination: /index.html
-    autoDeployTrigger: off
+    autoDeployTrigger: commit
     previews:
       generation: off # Disable service previews
 
@@ -75,10 +73,6 @@ services:
     branch: main
     plan: free
     envVars:
-      - key: LOGIN_PASSWORD
-        sync: false
-      - key: LOGIN_EMAIL
-        sync: false
       - key: DISCORD_PUBLIC_KEY
         sync: false
       - key: DISCORD_BOT_TOKEN
@@ -89,11 +83,17 @@ services:
         sync: false
       - key: API_URL
         sync: false
+      - key: SERVICE_JWT_SECRET
+        sync: false
+      - key: SERVICE_NAME
+        sync: false
+      - key: AUDIENCE_SERVICE_NAME
+        sync: false
     region: oregon
     healthCheckPath: /health
     dockerContext: .
     dockerfilePath: ./discord-service/Dockerfile
-    autoDeployTrigger: off
+    autoDeployTrigger: commit
     previews:
       generation: off # Disable service previews
     rootDir: .

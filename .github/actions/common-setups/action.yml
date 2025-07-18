@@ -1,4 +1,5 @@
-name: Common setup
+name: Common setups
+description: 'Sets up Node.js, Yarn, installs dependencies, and builds shared packages (common, server-common, mongo)'
 
 runs:
   using: 'composite'
@@ -9,14 +10,10 @@ runs:
         node-version: 22.x
         cache: 'yarn'
 
-    - name: Use latest yarn version
-      run: yarn set version stable
-      shell: bash
-
     - name: Install dependencies
       run: yarn install --immutable
       shell: bash
 
-    - name: Build common and server-common packages
-      run: yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build
+    - name: Build common, server-common, mongo packages
+      run: yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build
       shell: bash

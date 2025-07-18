@@ -1,7 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { request } from '@/utils/api';
-import { Method, QueryKey } from '@/utils/constants';
+import axios from 'axios';
 import { toast } from 'sonner';
+
+import {
+  ApplicationStatus,
+  InterestLevel,
+  InterviewShareStatus,
+} from '@vtmp/common/constants';
+
 import {
   ApplicationsResponseSchema,
   ApplicationResponseSchema,
@@ -9,8 +15,8 @@ import {
   InterviewsResponseSchema,
   InterviewResponseSchema,
 } from '@/components/pages/application-tracker/applications/validation';
-import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
-import axios from 'axios';
+import { request } from '@/utils/api';
+import { Method, QueryKey } from '@/utils/constants';
 
 const STALE_TIME = 1000 * 20;
 
@@ -275,6 +281,10 @@ export const useUpdateInterview = () => {
           res.data.applicationId,
         ],
       });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_SHARED_INTERVIEW],
+        exact: false,
+      });
       toast.success(res.message);
     },
     onError: (error: unknown) => {
@@ -285,6 +295,54 @@ export const useUpdateInterview = () => {
         toast.error(errorMessages.join('\n'));
       } else {
         toast.error('Unexpected error');
+      }
+    },
+  });
+};
+
+export const useShareInterview = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      interviewId,
+      body,
+    }: {
+      interviewId: string;
+      body: {
+        shareStatus: InterviewShareStatus;
+      };
+    }) =>
+      request({
+        method: Method.PUT,
+        url: `/interviews/share/${interviewId}`,
+        data: body,
+        schema: InterviewResponseSchema,
+        options: { requireAuth: true },
+      }),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          QueryKey.GET_INTERVIEW_BY_APPLICATION_ID,
+          res.data.applicationId,
+        ],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QueryKey.GET_SHARED_INTERVIEW],
+        exact: false,
+      });
+      toast.success(res.message);
+    },
+    onError: (error: unknown) => {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessages = error.response.data.errors.map(
+          (err) => err.message
+        );
+        toast.error(errorMessages.join('\n'));
+      } else {
+        toast.error(
+          error instanceof Error ? error.message : 'Unexpected error'
+        );
       }
     },
   });

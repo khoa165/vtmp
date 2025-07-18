@@ -1,17 +1,22 @@
-import { InterviewRepository } from '@/repositories/interview.repository';
-import { IInterview } from '@/models/interview.model';
+import {
+  InterviewShareStatus,
+  InterviewStatus,
+  InterviewType,
+} from '@vtmp/common/constants';
 
-import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
-import { ResourceNotFoundError } from '@/utils/errors';
+import { IInterview, InterviewInsights } from '@/models/interview.model';
+import { InterviewRepository } from '@/repositories/interview.repository';
+import { InterviewInsightService } from '@/services/interview-insights/interview-insight.service';
+import { BadRequest, ResourceNotFoundError } from '@/utils/errors';
 
 export const InterviewService = {
   createInterview: async (interviewData: {
     applicationId: string;
     userId: string;
     types: InterviewType[];
-    status?: InterviewStatus;
+    status?: InterviewStatus | undefined;
     interviewOnDate: Date;
-    note?: string;
+    note?: string | undefined;
   }): Promise<IInterview> => {
     return InterviewRepository.createInterview(interviewData);
   },
@@ -40,25 +45,53 @@ export const InterviewService = {
 
   getInterviews: async ({
     filters = {},
+    isShared = false,
   }: {
     filters: {
       userId?: string;
       applicationId?: string;
+      companyName?: string;
+      types?: InterviewType[];
       status?: InterviewStatus;
+    };
+    isShared?: boolean;
+  }): Promise<IInterview[]> => {
+    return InterviewRepository.getInterviews({
+      filters,
+      isShared,
+    });
+  },
+
+  getInterviewInsights: async ({
+    filters = {},
+  }: {
+    filters: {
       companyName?: string;
     };
-  }): Promise<IInterview[]> => {
-    return InterviewRepository.getInterviews({ filters });
+  }): Promise<InterviewInsights | null> => {
+    if (filters.companyName) {
+      const interviews = await InterviewRepository.getInterviews({
+        filters: { companyName: filters.companyName },
+        isShared: true,
+      });
+
+      return await InterviewInsightService.getInterviewInsight({
+        companyName: filters.companyName,
+        sharedInterviews: interviews,
+      });
+    }
+
+    return null;
   },
 
   updateInterviewById: async ({
     interviewId,
     userId,
-    updatedMetadata,
+    newUpdate,
   }: {
     interviewId: string;
     userId: string;
-    updatedMetadata: {
+    newUpdate: {
       types?: InterviewType[];
       status?: InterviewStatus;
       interviewOnDate?: Date;
@@ -68,7 +101,7 @@ export const InterviewService = {
     const updatedInterview = await InterviewRepository.updateInterviewById({
       interviewId,
       userId,
-      updatedMetadata,
+      newUpdate: newUpdate,
     });
 
     if (!updatedInterview) {
@@ -81,6 +114,47 @@ export const InterviewService = {
     return updatedInterview;
   },
 
+  updateInterviewShareStatus: async ({
+    interviewId,
+    userId,
+    shareStatus,
+  }: {
+    interviewId: string;
+    userId: string;
+    shareStatus: InterviewShareStatus;
+  }): Promise<IInterview | null> => {
+    const interview = await InterviewRepository.getInterviewById({
+      interviewId,
+      userId,
+    });
+
+    if (!interview) {
+      throw new ResourceNotFoundError('Interview not found', {
+        interviewId,
+        userId,
+      });
+    }
+
+    if (
+      interview.shareStatus !== InterviewShareStatus.UNSHARED &&
+      shareStatus === InterviewShareStatus.UNSHARED
+    ) {
+      throw new BadRequest(
+        'Cannot unshare an interview that is already shared',
+        {
+          interviewId,
+          userId,
+        }
+      );
+    }
+
+    return await InterviewRepository.updateInterviewById({
+      interviewId,
+      userId,
+      newUpdate: { shareStatus },
+    });
+  },
+
   deleteInterviewById: async ({
     interviewId,
     userId,
@@ -88,17 +162,29 @@ export const InterviewService = {
     interviewId: string;
     userId: string;
   }): Promise<IInterview | null> => {
-    const deletedInterview = await InterviewRepository.deleteInterviewById({
+    const interview = await InterviewRepository.getInterviewById({
       interviewId,
       userId,
     });
 
-    if (!deletedInterview) {
+    if (!interview) {
       throw new ResourceNotFoundError('Interview not found', {
         interviewId,
         userId,
       });
     }
+
+    if (interview.shareStatus !== InterviewShareStatus.UNSHARED) {
+      throw new BadRequest('Cannot delete a shared interview', {
+        interviewId,
+        userId,
+      });
+    }
+
+    const deletedInterview = await InterviewRepository.deleteInterviewById({
+      interviewId,
+      userId,
+    });
 
     return deletedInterview;
   },

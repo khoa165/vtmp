@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -10,6 +9,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { useState } from 'react';
+
+import { Button } from '@/components/base/button';
 import { Input } from '@/components/base/input';
 import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
 import { ResizableTable } from '@/components/pages/shared/resizable-table';
@@ -17,11 +19,13 @@ import { ResizableTable } from '@/components/pages/shared/resizable-table';
 interface AdminLinksTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  triggerCronFn: () => void;
 }
 
 export function AdminLinksTable<TData, TValue>({
   columns,
   data,
+  triggerCronFn,
 }: AdminLinksTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([
     { id: 'datePosted', desc: true },
@@ -29,6 +33,13 @@ export function AdminLinksTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+
+  const defaultColumn = {
+    size: 200,
+    minSize: 50,
+    maxSize: 750,
+    cell: ({ getValue }) => <div className="pl-2">{getValue()}</div>,
+  };
 
   const table = useReactTable({
     data,
@@ -47,11 +58,12 @@ export function AdminLinksTable<TData, TValue>({
       columnVisibility,
       rowSelection,
     },
+    defaultColumn,
   });
 
   return (
     <>
-      <section className="flex items-center justify-between py-4">
+      <section className="flex items-center justify-between py-4 text-white">
         <Input
           placeholder="Filter companies..."
           value={table.getColumn('companyName')?.getFilterValue() as string}
@@ -60,7 +72,12 @@ export function AdminLinksTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <ColumnVisibilityConfiguration table={table} />
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={triggerCronFn}>
+            Trigger Pipeline
+          </Button>
+          <ColumnVisibilityConfiguration table={table} />
+        </div>
       </section>
       <ResizableTable table={table} columns={columns} />
     </>
