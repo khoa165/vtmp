@@ -1,0 +1,96 @@
+name: Deploy to Production (web)
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_hash:
+        description: 'Commit hash to deploy (leave empty for latest)'
+        required: false
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: web-prod
+
+    steps:
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.commit_hash || 'main' }}
+          fetch-depth: 0
+
+      - name: Get deployed commit hash
+        id: commit
+        run: |
+          HASH=$(git rev-parse HEAD)
+          SHORT_HASH=$(git rev-parse --short HEAD)
+          echo "hash=$HASH" >> $GITHUB_OUTPUT
+          echo "short_hash=$SHORT_HASH" >> $GITHUB_OUTPUT
+          if [ -z "${{ inputs.commit_hash }}" ]; then
+            echo "source=Latest from main" >> $GITHUB_OUTPUT
+            echo "Deploying latest commit from main: $HASH"
+          else
+            echo "source=Specific commit" >> $GITHUB_OUTPUT
+            echo "Deploying specific commit: $HASH"
+          fi
+
+      - name: Extract vars as environment flags
+        id: extract_vars
+        run: |
+          echo 'Processing environment variable: '
+          echo '${{ toJson(vars) }}' | jq -r 'keys[]'
+
+          # Generate flags without logging values
+          ENV_FLAGS=$(echo '${{ toJson(vars) }}' | jq -r 'to_entries | map("-e " + .key + "=" + (.value | tostring)) | join(" ")')
+          echo "env_flags=$ENV_FLAGS" >> $GITHUB_OUTPUT
+
+          # Export as shell variable for use in subsequent steps
+          echo "FLY_ENV_FLAGS=$ENV_FLAGS" >> $GITHUB_ENV
+
+          echo "Generated environment flags for $(echo '${{ toJson(vars) }}' | jq -r 'keys | length') variables"
+
+      - name: Import secrets via stdin
+        run: |
+          echo 'Processing secret:'
+          echo '${{ toJson(secrets) }}' | jq -r 'keys[]'
+
+          # Pipe secrets directly to flyctl secrets import
+          echo '${{ toJson(secrets) }}' | jq -r 'to_entries | map(.key + "=" + .value) | .[]' | \
+          flyctl secrets import --config web/fly_PROD.toml
+
+          echo "Imported $(echo '${{ toJson(secrets) }}' | jq -r 'keys | length') secrets"
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - run: flyctl deploy --config web/fly_PROD.toml $FLY_ENV_FLAGS
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Get commit info
+        id: commit_info
+        run: |
+          SHORT_HASH=$(git rev-parse --short ${{ steps.commit.outputs.hash }})
+          UTC_DATE=$(date -u +"%Y%m%dT%H%M%SZ")
+          echo "short_hash=$SHORT_HASH" >> $GITHUB_OUTPUT
+          echo "utc_date=$UTC_DATE" >> $GITHUB_OUTPUT
+
+      - name: Create and push tag
+        run: |
+          RELEASE_DATE=$(date --rfc-3339=date)
+          TAG_NAME="web-prod/$RELEASE_DATE/${{ steps.commit_info.outputs.short_hash }}"
+          git tag $TAG_NAME ${{ steps.commit.outputs.hash }}
+          git push origin $TAG_NAME
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deployment summary
+        run: |
+          echo "## Production Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "- **Service**: web" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ steps.commit.outputs.hash }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Source**: ${{ steps.commit.outputs.source }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: web-prod-$(date --rfc-3339=date)-${{ steps.commit_info.outputs.short_hash }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: production-web" >> $GITHUB_STEP_SUMMARY
