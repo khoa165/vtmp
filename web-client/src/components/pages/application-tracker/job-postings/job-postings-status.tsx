@@ -7,7 +7,7 @@ import { Card } from '@/components/base/card';
 //   useGetJobPostingsInADay,
 // } from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
-// import { CustomError } from '@/utils/errors';
+import { CustomError } from '@/utils/errors';
 
 export const JobPostingStatusCards = (): React.JSX.Element | null => {
   const navigate = useNavigatePreserveQueryParams();
@@ -70,7 +70,7 @@ export const JobPostingStatusCards = (): React.JSX.Element | null => {
           <div className="flex flex-row items-center gap-2">
             <span
               className="max-lg:text-[0.7rem] text-wrap underline cursor-pointer inline-flex items-center gap-1"
-              onClick={() => navigate('/link-sharing')}
+              onClick={() => navigate('/links')}
             >
               Share a Job Link <ExternalLink className="w-4 h-4" />
             </span>

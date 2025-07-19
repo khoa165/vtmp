@@ -33,10 +33,13 @@ describe('CronService', () => {
     stubSendLinkToLambda = sandbox
       .stub(CronService, '_sendLinksToLambda')
       .resolves({
-        data: JSON.stringify({
-          successfulLinks: [successfulLink],
-          failedLinks: [failedLinks],
-        }),
+        data: {
+          message: 'hello',
+          body: JSON.stringify({
+            successfulLinks: [successfulLink],
+            failedLinks: [failedLinks],
+          }),
+        },
         status: 200,
         statusText: 'OK',
         headers: {},
@@ -121,7 +124,6 @@ describe('CronService', () => {
 
     it('should return successfulLinks and failedLinks successfully', async () => {
       await createFilteredLinks();
-
       const result = await CronService.trigger();
       expect(result.successfulLinks).to.deep.include(successfulLink);
       expect(result.failedLinks).to.deep.include(failedLinks);

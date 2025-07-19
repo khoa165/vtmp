@@ -8,11 +8,12 @@ import { omit } from 'remeda';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import LogoMint from '@/assets/images/logo-full-mint.svg?react';
+import { TreverseFullLogo } from '#vtmp/web-client/components/base/treverse-full-logo';
 import { Button } from '@/components/base/button';
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -222,7 +223,7 @@ export const SignUpPage = () => {
 
       <div className="col-start-7 col-span-5 flex flex-col justify-end">
         <div className="w-full flex flex-row justify-end">
-          <LogoMint className="w-40 h-16 pr-6" />
+          <TreverseFullLogo className="pr-3 w-[106px] h-[16px]" />
         </div>
 
         <Card className="bg-transparent border-0 shadow-none h-full justify-center">
@@ -230,6 +231,9 @@ export const SignUpPage = () => {
             <CardTitle className="text-4xl font-bold">
               Create an Account
             </CardTitle>
+            <CardDescription className="text-lg">
+              Job postings access. Applications tracking. Community insights.
+            </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col space-y-4 my-3">
             <form onSubmit={(e) => e.preventDefault()}>
@@ -392,7 +396,7 @@ export const SignUpPage = () => {
               Register
             </Button>
 
-            <div className="flex flex-row items-center gap-1 mt-2">
+            <div className="flex flex-row items-center gap-1 mt-2 text-vtmp-light-grey">
               <span>Already have an account?</span>
               <Button
                 onClick={() => {

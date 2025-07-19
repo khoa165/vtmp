@@ -17,7 +17,7 @@ import { InvitationsPage } from '#vtmp/web-client/components/pages/admins/invita
 import { AdminLinksPage } from '#vtmp/web-client/components/pages/admins/links/admin-links-page';
 import { ApplicationsPage } from '#vtmp/web-client/components/pages/application-tracker/applications/applications-page';
 import { JobPostingsPage } from '#vtmp/web-client/components/pages/application-tracker/job-postings/job-postings-page';
-import JobtrackrLanding from '#vtmp/web-client/components/pages/application-tracker/landing/jobtrackr-landing';
+import { LandingPage } from '#vtmp/web-client/components/pages/application-tracker/landing/landing-page';
 import { LinksPage } from '#vtmp/web-client/components/pages/application-tracker/links/links-page';
 import { LoginPage } from '#vtmp/web-client/components/pages/auth/login';
 import { RequireAuth } from '#vtmp/web-client/components/pages/auth/require-auth';
@@ -31,6 +31,7 @@ import { SummaryContainer } from '#vtmp/web-client/components/summary';
 import { TreeContainer } from '#vtmp/web-client/components/tree';
 import { BlogFileMapping } from '#vtmp/web-client/types';
 import { buildFileMetadata } from '#vtmp/web-client/utils/file';
+import { InterviewFeedPage } from '@/components/pages/application-tracker/interview-feed/interview-feed-page';
 
 export const App = () => {
   useEffect(() => {
@@ -68,7 +69,7 @@ export const App = () => {
             <Route path="/stats/*" element={<StatsContainer />} />
           </Route>
         </Route>
-        <Route path="/jobtrackr" element={<JobtrackrLanding />} />
+        <Route path="/treverse" element={<LandingPage />} />
         <Route element={<PageWithToast />}>
           <Route
             element={
@@ -80,10 +81,14 @@ export const App = () => {
             <Route path="/links" element={<LinksPage />} />
             <Route path="/jobs" element={<JobPostingsPage />} />
             <Route path="/applications" element={<ApplicationsPage />} />
-
+            <Route path="/interviews" element={<InterviewFeedPage />} />
             <Route
               path="/admin"
-              element={<PageWithPermission roles={[SystemRole.ADMIN]} />}
+              element={
+                <PageWithPermission
+                  roles={[SystemRole.ADMIN, SystemRole.MODERATOR]}
+                />
+              }
             >
               <Route path="invitations" element={<InvitationsPage />} />
               <Route path="links" element={<AdminLinksPage />} />

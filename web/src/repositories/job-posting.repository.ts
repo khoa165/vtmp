@@ -116,87 +116,124 @@ export const JobPostingRepository = {
 
     const orderKey = sortOrder === SortOrder.ASC ? '$gt' : '$lt';
     const sortDirection = sortOrder === SortOrder.ASC ? 1 : -1;
+    const getPaginationMatch = (cursor?: string): Record<string, unknown> => {
+      let paginationMatch: Record<string, unknown> = {};
+      if (cursor) {
+        const [cursorIdString, cursorValueString] = cursor.split('_');
+        const cursorId = new ObjectId(cursorIdString);
 
-    let paginationMatch: Record<string, unknown> = {};
-    if (cursor) {
-      const [cursorIdString, cursorValueString] = cursor.split('_');
-      const cursorId = new ObjectId(cursorIdString);
+        if (cursorValueString) {
+          const cursorValue =
+            sortField === JobPostingSortField.DATE_POSTED
+              ? new Date(cursorValueString)
+              : cursorValueString;
 
-      if (cursorValueString) {
-        const cursorValue =
-          sortField === JobPostingSortField.DATE_POSTED
-            ? new Date(cursorValueString)
-            : cursorValueString;
-
-        paginationMatch = {
-          $or: [
-            { [sortField]: { [orderKey]: cursorValue } },
-            {
-              [sortField]: cursorValue,
-              _id: { [orderKey]: cursorId },
-            },
-          ],
-        };
-      } else {
-        paginationMatch = {
-          _id: { [orderKey]: cursorId },
-        };
+          paginationMatch = {
+            $or: [
+              { [sortField]: { [orderKey]: cursorValue } },
+              {
+                [sortField]: cursorValue,
+                _id: { [orderKey]: cursorId },
+              },
+            ],
+          };
+        } else {
+          paginationMatch = {
+            _id: { [orderKey]: cursorId },
+          };
+        }
       }
-    }
 
-    const data: IJobPosting[] = await JobPostingModel.aggregate([
-      {
-        $match: {
-          ...dynamicMatch,
-          deletedAt: null,
+      return paginationMatch;
+    };
+
+    let data: IJobPosting[] = [];
+    let hasNextPage = true;
+    let cursorNext = cursor;
+    let paginationMatchNext: Record<string, unknown> =
+      getPaginationMatch(cursor);
+
+    while (data.length < limit && hasNextPage) {
+      const jobPostings = await JobPostingModel.aggregate([
+        {
+          $match: {
+            ...dynamicMatch,
+            deletedAt: null,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'applications',
-          let: { jobId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$jobPostingId', '$$jobId'] },
-                    { $eq: ['$userId', toMongoId(userId)] },
-                    { $eq: ['$deletedAt', null] },
-                  ],
+        ...(cursorNext ? [{ $match: paginationMatchNext }] : []),
+        {
+          $sort: {
+            [sortField]: sortDirection,
+            _id: sortDirection,
+          },
+        },
+        { $limit: limit + 1 },
+      ]);
+
+      if (jobPostings.length < limit) {
+        hasNextPage = false;
+      }
+
+      const jobIds = jobPostings.map((job) => job._id);
+      const last = jobPostings[jobPostings.length - 1];
+      if (last) {
+        const lastCursorValue =
+          sortField === JobPostingSortField.DATE_POSTED
+            ? last[sortField]?.toISOString()
+            : last[sortField];
+        cursorNext = `${last._id.toString()}_${lastCursorValue}`;
+      }
+
+      paginationMatchNext = getPaginationMatch(cursorNext);
+
+      const temp_data = await JobPostingModel.aggregate([
+        {
+          $match: {
+            _id: { $in: jobIds },
+          },
+        },
+        {
+          $lookup: {
+            from: 'applications',
+            let: { jobId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$jobPostingId', '$$jobId'] },
+                      { $eq: ['$userId', toMongoId(userId)] },
+                      { $eq: ['$deletedAt', null] },
+                    ],
+                  },
                 },
               },
-            },
-          ],
-          as: 'userApplication',
+            ],
+            as: 'userApplication',
+          },
         },
-      },
-      {
-        $match: {
-          userApplication: { $size: 0 },
+        {
+          $match: {
+            userApplication: { $size: 0 },
+          },
         },
-      },
-      {
-        $project: {
-          userApplication: 0,
+        {
+          $project: {
+            userApplication: 0,
+          },
         },
-      },
-      ...(cursor ? [{ $match: paginationMatch }] : []),
-      {
-        $sort: {
-          [sortField]: sortDirection,
-          _id: sortDirection,
+        {
+          $sort: {
+            [sortField]: sortDirection,
+            _id: sortDirection,
+          },
         },
-      },
-      { $limit: limit + 1 },
-    ]);
-
-    let hasNextPage = false;
-    let results = data;
-    if (data.length > limit) {
-      hasNextPage = true;
-      results = data.slice(0, limit);
+      ]);
+      data = [...data, ...temp_data];
     }
+
+    let results = data.slice(0, limit);
 
     const response: {
       data: IJobPosting[];

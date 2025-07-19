@@ -118,7 +118,7 @@ describe('JobPostingService', () => {
     const userIdB = getNewMongoId();
     let jobPostings: (IJobPosting | undefined)[];
     const limit = 6;
-    const totalJobPostings = 15;
+    const totalJobPostings = 153;
 
     const mockMultipleJobPostings = Array.from(
       { length: totalJobPostings },
@@ -185,7 +185,11 @@ describe('JobPostingService', () => {
         jobsNotAppliedByUser =
           await JobPostingService.getJobPostingsUserHasNotAppliedTo({
             userId,
-            filters: { ...filters, limit, cursor },
+            filters: {
+              ...filters,
+              limit,
+              ...(cursor !== undefined && { cursor }),
+            },
           });
 
         assert(jobsNotAppliedByUser);
@@ -550,7 +554,7 @@ describe('JobPostingService', () => {
 
         await runPaginationTest({
           userId: userId,
-          filters,
+          ...(filters !== undefined && { filters }),
           allJobPostings: allJobPostingsSorted,
         });
       };

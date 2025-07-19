@@ -17,7 +17,7 @@ export const ApplicationsPage = () => {
   return (
     <div className="container p-10">
       <h1 className="text-3xl font-bold text-foreground mb-4">
-        Applications Overview
+        My Applications Overview
       </h1>
       <ErrorBoundaryWrapper customText="Application Status Cards">
         <ApplicationStatusContainer

@@ -10,10 +10,6 @@ runs:
         node-version: 22.x
         cache: 'yarn'
 
-    - name: Use latest yarn version
-      run: yarn set version stable
-      shell: bash
-
     - name: Install dependencies
       run: yarn install --immutable
       shell: bash

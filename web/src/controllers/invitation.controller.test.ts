@@ -1,31 +1,33 @@
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { beforeEach, describe } from 'mocha';
-import { UserRepository } from '@/repositories/user.repository';
-import app from '@/app';
-import request from 'supertest';
 import { expect } from 'chai';
-import { useSandbox } from '@/testutils/sandbox.testutil';
-import { EnvConfig } from '@/config/env';
-import { MOCK_ENV } from '@/testutils/mock-data.testutil';
-import {
-  expectErrorsArray,
-  expectSuccessfulResponse,
-} from '@/testutils/response-assertion.testutil';
-import { InvitationStatus } from '@vtmp/common/constants';
 import { addDays, subDays } from 'date-fns';
-import { InvitationRepository } from '@/repositories/invitation.repository';
-import jwt from 'jsonwebtoken';
-import { IInvitation } from '@/models/invitation.model';
-import { omit } from 'remeda';
 import { differenceInSeconds } from 'date-fns/fp/differenceInSeconds';
-import { getEmailService } from '@/utils/email';
+import jwt from 'jsonwebtoken';
+import { beforeEach, describe } from 'mocha';
+import { omit } from 'remeda';
 import { SinonStub } from 'sinon';
+import request from 'supertest';
+
+import { InvitationStatus } from '@vtmp/common/constants';
+
+import app from '@/app';
+import { EnvConfig } from '@/config/env';
+import { IInvitation } from '@/models/invitation.model';
+import { InvitationRepository } from '@/repositories/invitation.repository';
+import { UserRepository } from '@/repositories/user.repository';
 import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,
   runUserLogin,
 } from '@/testutils/auth.testutils';
+import { MOCK_ENV } from '@/testutils/mock-data.testutil';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import {
+  expectErrorsArray,
+  expectSuccessfulResponse,
+} from '@/testutils/response-assertion.testutil';
+import { useSandbox } from '@/testutils/sandbox.testutil';
+import { getEmailService } from '@/utils/email';
 
 describe('InvitationController', () => {
   useMongoDB();
@@ -138,6 +140,7 @@ describe('InvitationController', () => {
   });
 
   describe('POST /invitations', () => {
+    const mockWebUrl = 'https://google.com';
     runDefaultAuthMiddlewareTests({
       route: '/api/invitations',
       method: HTTPMethod.POST,
@@ -145,6 +148,7 @@ describe('InvitationController', () => {
         receiverName: mockMenteeName,
         receiverEmail: mockOneInvitation.receiverEmail,
         senderId: mockAdminId,
+        webUrl: mockWebUrl,
       },
     });
 
@@ -156,6 +160,7 @@ describe('InvitationController', () => {
             receiverName: mockMenteeName,
             receiverEmail: mockOneInvitation.receiverEmail,
             senderId: mockAdminId,
+            webUrl: mockWebUrl,
           })
           .set('Accept', 'application/json')
           .set('Authorization', `Bearer ${token}`);
@@ -171,10 +176,11 @@ describe('InvitationController', () => {
         .send({
           receiverEmail: mockOneInvitation.receiverEmail,
           senderId: mockAdminId,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
-        
+
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('Receiver Name is required');
     });
@@ -185,6 +191,7 @@ describe('InvitationController', () => {
         .send({
           receiverName: mockMenteeName,
           senderId: mockAdminId,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
@@ -193,17 +200,48 @@ describe('InvitationController', () => {
       expect(res.body.errors[0].message).to.equal('Receiver Email is required');
     });
 
+    it('should return error for invalid receiverEmail', async () => {
+      const res = await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverName: mockMenteeName,
+          receiverEmail: 'invalid-email',
+          senderId: mockAdminId,
+          webUrl: mockWebUrl,
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`);
+
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('Invalid email address');
+    });
+
     it('should return error for missing senderId', async () => {
       const res = await request(app)
         .post('/api/invitations')
         .send({
           receiverName: mockMenteeName,
           receiverEmail: mockOneInvitation.receiverEmail,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
       expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
       expect(res.body.errors[0].message).to.equal('SenderId is required');
+    });
+
+    it('should return error for missing webUrl', async () => {
+      const res = await request(app)
+        .post('/api/invitations')
+        .send({
+          receiverName: mockMenteeName,
+          receiverEmail: mockOneInvitation.receiverEmail,
+          senderId: mockAdminId,
+        })
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`);
+      expectErrorsArray({ res, statusCode: 400, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.equal('WebUrl is required');
     });
 
     it('should return error message when user associated with invitation receiver email already exists', async () => {
@@ -221,6 +259,7 @@ describe('InvitationController', () => {
           receiverName: `${mockUser.firstName} ${mockUser.lastName}`,
           receiverEmail: mockUser.email,
           senderId: mockAdminId,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
@@ -243,6 +282,7 @@ describe('InvitationController', () => {
           receiverName: mockMenteeName,
           receiverEmail: mockOneInvitation.receiverEmail,
           senderId: mockAdminId,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
@@ -266,6 +306,7 @@ describe('InvitationController', () => {
           receiverName: mockMenteeName,
           receiverEmail: mockOneInvitation.receiverEmail,
           senderId: mockAdminId,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);
@@ -291,6 +332,7 @@ describe('InvitationController', () => {
           receiverName: mockMenteeName,
           receiverEmail: mockOneInvitation.receiverEmail,
           senderId: mockAdminId,
+          webUrl: mockWebUrl,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockAdminToken}`);

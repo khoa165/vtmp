@@ -6,8 +6,11 @@ import { InvitationService } from '@/services/invitation.service';
 
 const InvitationSendEmailSchema = z.object({
   receiverName: z.string({ required_error: 'Receiver Name is required' }),
-  receiverEmail: z.string({ required_error: 'Receiver Email is required' }),
+  receiverEmail: z
+    .string({ required_error: 'Receiver Email is required' })
+    .email({ message: 'Invalid email address' }),
   senderId: z.string({ required_error: 'SenderId is required' }),
+  webUrl: z.string({ required_error: 'WebUrl is required' }),
 });
 
 const InvitationIdSchema = z.object({
@@ -28,12 +31,13 @@ export const InvitationController = {
   },
 
   sendInvitation: async (req: Request, res: Response) => {
-    const { receiverName, receiverEmail, senderId } =
+    const { receiverName, receiverEmail, senderId, webUrl } =
       InvitationSendEmailSchema.parse(req.body);
     const invitation = await InvitationService.sendInvitation(
       receiverName,
       receiverEmail,
-      senderId
+      senderId,
+      webUrl
     );
     res.status(200).json({ data: invitation });
   },

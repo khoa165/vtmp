@@ -7,9 +7,16 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-import { JobPostingSortField, SortOrder } from '@vtmp/common/constants';
+import { 
+    JobFunction, 
+    JobType,
+    JobPostingSortField, 
+    SortOrder
+ } from '@vtmp/common/constants';
 
+import type { FilterState } from '#vtmp/web-client/components/pages/application-tracker/job-postings/job-postings-drawer';
 import { Input } from '@/components/base/input';
 import { Skeleton } from '@/components/base/skeleton';
 import {
@@ -24,6 +31,7 @@ import {
 } from '@/components/pages/application-tracker/job-postings/validations';
 import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
 import { ResizableTable } from '@/components/pages/shared/resizable-table';
+import { CustomError } from '@/utils/errors';
 
 export const JobPostingsContainer = (): React.JSX.Element | null => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -110,6 +118,13 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
     }));
   }, [jobPostingsData]);
 
+  const defaultColumn = {
+    size: 200,
+    minSize: 50,
+    maxSize: 750,
+    cell: ({ getValue }) => <div className="pl-2">{getValue()}</div>,
+  };
+
   const table = useReactTable({
     data: jobPostingsData?.data ?? [],
     columns,
@@ -128,6 +143,7 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
       columnFilters,
       columnVisibility,
     },
+    defaultColumn,
   });
 
   // const table = useReactTable({
@@ -179,7 +195,7 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
             onChange={(event) =>
               table.getColumn('companyName')?.setFilterValue(event.target.value)
             }
-            className="max-w-sm flex-grow"
+            className="max-w-sm flex-grow text-white"
           />
           <FilterSelectionButton filters={filters} setFilters={setFilters} />
         </div>
