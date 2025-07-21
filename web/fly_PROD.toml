@@ -3,8 +3,8 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'vtmp-web'
-primary_region = 'sea'
+app = 'treverse-web'
+primary_region = 'iad'
 
 [build]
   dockerfile = '../web/Dockerfile'
