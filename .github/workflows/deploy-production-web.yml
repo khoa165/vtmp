@@ -79,8 +79,8 @@ jobs:
 
       - name: Create and push tag
         run: |
-          RELEASE_DATE=$(date --rfc-3339=date)
-          TAG_NAME="web-prod/$RELEASE_DATE/${{ steps.commit_info.outputs.short_hash }}"
+          RELEASE_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          TAG_NAME="web-prod/${{ steps.commit_info.outputs.short_hash }}/$RELEASE_DATE"
           git tag $TAG_NAME ${{ steps.commit.outputs.hash }}
           git push origin $TAG_NAME
         env:
