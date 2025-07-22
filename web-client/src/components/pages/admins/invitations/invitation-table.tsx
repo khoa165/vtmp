@@ -76,14 +76,24 @@ export function InvitationTable<TData extends IInvitationSchema, TValue>({
     <>
       <section className="flex items-center justify-between py-4">
         <SendInvitation />
-        <Input
-          placeholder="Search"
-          value={globalFilter}
-          onChange={(event) => setGlobalFilter(event.target.value)}
-          className="max-w-sm text-white"
-        />
+        {data.length > 0 && (
+          <Input
+            placeholder="Search"
+            value={globalFilter}
+            onChange={(event) => setGlobalFilter(event.target.value)}
+            className="max-w-sm text-white"
+          />
+        )}
       </section>
-      <ResizableTable table={table} columns={columns} />
+      {data.length > 0 ? (
+        <ResizableTable table={table} columns={columns} />
+      ) : (
+        <div className="flex items-center justify-start">
+          <p className="text-lg text-muted-foreground">
+            No existing invitations found. Start inviting now!
+          </p>
+        </div>
+      )}
     </>
   );
 }
