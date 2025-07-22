@@ -10,6 +10,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { JobPostingSortField, SortOrder } from '@vtmp/common/constants';
 
+import { Button } from '#vtmp/web-client/components/base/button';
+import { JobPostingsTable } from '#vtmp/web-client/components/pages/application-tracker/job-postings/job-postings-table';
 import { Input } from '@/components/base/input';
 import {
   useCreateApplication,
@@ -22,16 +24,18 @@ import {
   JobPostingFilters,
 } from '@/components/pages/application-tracker/job-postings/validations';
 import { ColumnVisibilityConfiguration } from '@/components/pages/shared/column-visibility-configuration';
-import { ResizableTable } from '@/components/pages/shared/resizable-table';
 
 export const JobPostingsContainer = (): React.JSX.Element | null => {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
+  const [prevCursors, setPrevCursors] = useState<string[]>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: JobPostingSortField.DATE_POSTED,
+      desc: true,
+    },
+  ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
 
   const defaultColumn = {
     size: 200,
@@ -41,7 +45,7 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
   };
 
   const [filters, setFilters] = useState<JobPostingFilters>({
-    limit: pagination.pageSize,
+    limit: 10,
     cursor: undefined,
     sortField: JobPostingSortField.DATE_POSTED,
     sortOrder: SortOrder.DESC,
@@ -68,6 +72,9 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
   useEffect(() => {
     if (jobPostingsData) {
       setTableData(jobPostingsData.data);
+      if (jobPostingsData.cursor !== undefined) {
+        setNextCursor(jobPostingsData.cursor);
+      }
     }
   }, [jobPostingsData]);
 
@@ -78,13 +85,11 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
     manualSorting: true,
     manualFiltering: true,
     autoResetPageIndex: true,
-    onPaginationChange: setPagination,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     state: {
-      pagination,
       sorting,
       columnFilters,
       columnVisibility,
@@ -93,8 +98,6 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
   });
 
   useEffect(() => {
-    console.log('Filters updated:', filters);
-
     if (sorting.length > 0) {
       const { id, desc } = sorting[0];
 
@@ -103,6 +106,13 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
         sortOrder: desc ? SortOrder.DESC : SortOrder.ASC,
         sortField: id as JobPostingSortField,
       });
+
+      setNextCursor(undefined);
+      setPrevCursors([]);
+      setFilters((prev) => ({
+        ...prev,
+        cursor: undefined,
+      }));
     }
   }, [sorting]);
 
@@ -126,7 +136,48 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
 
         <ColumnVisibilityConfiguration table={table} />
       </section>
-      <ResizableTable table={table} columns={columns} />
+      <JobPostingsTable table={table} columns={columns} />
+      <section className="flex items-center justify-end space-x-2 py-4 text-white">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            if (prevCursors.length > 0) {
+              const updatedPrev = [...prevCursors];
+              const lastCursor = updatedPrev.pop();
+
+              setPrevCursors(updatedPrev);
+              setFilters((prev) => ({
+                ...prev,
+                cursor: lastCursor,
+              }));
+              setNextCursor(undefined);
+            }
+          }}
+          disabled={prevCursors.length === 0}
+        >
+          Previous
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            if (nextCursor) {
+              setPrevCursors((prev) => [...prev, filters.cursor || '']);
+
+              setFilters((prev) => ({
+                ...prev,
+                cursor: nextCursor,
+              }));
+              setNextCursor(undefined);
+            }
+          }}
+          disabled={!nextCursor}
+        >
+          Next
+        </Button>
+      </section>
     </>
   );
 };
