@@ -36,7 +36,7 @@ const ColumnResizer = <TData, TValue>({
   );
 };
 
-interface ResizableTableProps<TData, TValue> {
+interface JobPostingsTableProps<TData, TValue> {
   table: TanstackTable<TData>;
   columns: ColumnDef<TData, TValue>[];
 }
@@ -44,7 +44,7 @@ interface ResizableTableProps<TData, TValue> {
 export function JobPostingsTable<TData, TValue>({
   table,
   columns,
-}: ResizableTableProps<TData, TValue>) {
+}: JobPostingsTableProps<TData, TValue>) {
   return (
     <section className="rounded-md border border-foreground">
       <div className="overflow-x-auto rounded-md">
