@@ -3,7 +3,7 @@
 services:
   - type: web
     name: vtmp-backend-staging
-    runtime: node
+    runtime: docker
     repo: https://github.com/khoa165/vtmp
     branch: main
     plan: free
@@ -29,12 +29,13 @@ services:
       - key: NODE_ENV
         sync: false
     region: oregon
-    buildCommand: yarn install && yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build && yarn workspace @vtmp/web build
-    startCommand: yarn workspace @vtmp/web start
-    autoDeployTrigger: commit
+    dockerContext: .
+    dockerfilePath: ./discord-service/Dockerfile
     previews:
       generation: off # Disable service previews
     healthCheckPath: /health
+    autoDeployTrigger: commit
+    rootDir: .
 
   - type: web
     name: vtmp-frontend-staging
@@ -42,11 +43,41 @@ services:
     repo: https://github.com/khoa165/vtmp
     branch: main
     envVars:
+      - key: SKIP_INSTALL_DEPS
+        value: true
+      - key: NODE_ENV
+        value: staging
       - key: VITE_API_URL
         sync: false
-      - key: SKIP_INSTALL_DEPS
+      - key: VITE_VTMP_2023_INTERVIEWS_CSV
         sync: false
+      - key: VITE_VTMP_2024_INTERVIEWS_CSV
+        sync: false
+      - key: VITE_STATSIG_CLIENT_SDK_KEY
+        sync: false
+    buildCommand:
+      yarn install && yarn workspace @vtmp/common build && yarn workspace
+      @vtmp/web-client build
+    staticPublishPath: ./web-client/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    autoDeployTrigger: commit
+    previews:
+      generation: off
+
+  - type: web
+    name: vtmp-frontend-prod
+    runtime: static
+    repo: https://github.com/khoa165/vtmp
+    branch: main
+    envVars:
+      - key: SKIP_INSTALL_DEPS
+        value: true
       - key: NODE_ENV
+        value: production
+      - key: VITE_API_URL
         sync: false
       - key: VITE_VTMP_2023_INTERVIEWS_CSV
         sync: false

@@ -81,8 +81,8 @@ jobs:
         run: |
           RELEASE_DATE=$(date --rfc-3339=date)
           TAG_NAME="web-prod/$RELEASE_DATE/${{ steps.commit_info.outputs.short_hash }}"
-          git tag $TAG_NAME ${{ steps.commit.outputs.hash }}
-          git push origin $TAG_NAME
+          git tag -f $TAG_NAME ${{ steps.commit.outputs.hash }}
+          git push -f origin $TAG_NAME
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
