@@ -80,7 +80,7 @@ describe('LinkController', () => {
       },
     });
 
-    it('should return error message for submitting link with not exist url', async () => {
+    it('should return error message for missing url', async () => {
       const res = await request(app)
         .post('/api/links')
         .set('Accept', 'application/json')

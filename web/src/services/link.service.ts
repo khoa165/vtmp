@@ -4,6 +4,7 @@ import { LinkStatus } from '@vtmp/common/constants';
 
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { LinkRepository } from '@/repositories/link.repository';
+import { LinkNormalizerService } from '@/services/link/link-normalizer.service';
 import {
   ExtractionLinkMetaDataType,
   LinkMetaDataType,
@@ -12,13 +13,17 @@ import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
 export const LinkService = {
   submitLink: async (submittedBy: string, linkMetaData: LinkMetaDataType) => {
-    const foundLink = await LinkRepository.getLinkByUrl(
+    const normalizedLink = LinkNormalizerService.normalizeLink(
       linkMetaData.originalUrl
     );
+    const foundLink = await LinkRepository.getLinkByUrl(normalizedLink);
     if (foundLink) {
       throw new DuplicateResourceError('Duplicate link found', linkMetaData);
     }
-    return await LinkRepository.createLink(submittedBy, linkMetaData);
+    return LinkRepository.createLink(submittedBy, {
+      ...linkMetaData,
+      url: normalizedLink,
+    });
   },
 
   approveLinkAndCreateJobPosting: async (
