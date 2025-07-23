@@ -1,5 +1,5 @@
 import { useMongoDB } from '@vtmp/mongo/utils';
-// import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 import { exit } from 'process';
 
@@ -9,7 +9,7 @@ import { migratePeople } from '@vtmp/mongo-migrations/migrate-people';
 
 const runScripts = async () => {
   await useMongoDB(EnvConfig.get().MONGO_URI);
-  // await mongoose.connection.dropDatabase();
+  await mongoose.connection.dropDatabase();
   await migratePeople();
   await createAdmins();
 };
