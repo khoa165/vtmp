@@ -32,7 +32,7 @@ export const applicationsTableColumns = ({
   {
     id: 'actions',
     enableHiding: false,
-    size: 150, // in pixels
+    size: 120, // in pixels
     cell: ({ row }) => {
       const application = row.original;
       return (
@@ -57,6 +57,33 @@ export const applicationsTableColumns = ({
     },
     meta: { displayName: 'Company' },
     enableResizing: true,
+  },
+  {
+    accessorKey: 'jobTitle',
+    size: 300,
+    header: ({ column }) => {
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Job Title" />
+        </div>
+      );
+    },
+    meta: { displayName: 'Job Title' },
+    cell: ({ row }) => {
+      return (
+        <a
+          href={row.original.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 hover:text-primary pl-2"
+        >
+          <Link className="h-4 w-4 flex-shrink-0" />
+          <span className="underline line-clamp-2">
+            {row.original.jobTitle}
+          </span>
+        </a>
+      );
+    },
   },
   {
     accessorKey: 'location',
@@ -132,26 +159,25 @@ export const applicationsTableColumns = ({
     },
     enableResizing: true,
   },
-  {
-    accessorKey: 'portalLink',
-    size: 300, // in pixels
-    header: () => <div className="pl-2">Portal Link</div>,
-    meta: { displayName: 'Portal Link' },
-    cell: ({ row }) => {
-      return (
-        <a
-          href={row.original.portalLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center underline hover:text-primary pl-2"
-        >
-          {row.original.portalLink}
-          <Link className="ml-1 h-4 w-4" />
-        </a>
-      );
-    },
-    enableResizing: true,
-  },
+  // {
+  //   accessorKey: 'portalLink',
+  //   size: 200, // in pixels
+  //   header: () => <div className="pl-2">Portal Link</div>,
+  //   meta: { displayName: 'Portal Link' },
+  //   cell: ({ row }) =>
+  //     row.original.portalLink ? (
+  //       <a
+  //         href={row.original.portalLink}
+  //         target="_blank"
+  //         rel="noopener noreferrer"
+  //         className="inline-flex items-center gap-2 hover:text-primary pl-2"
+  //       >
+  //         <Link className="h-4 w-4 flex-shrink-0" />
+  //         <span className="underline">{row.original.portalLink}</span>
+  //       </a>
+  //     ) : null,
+  //   enableResizing: true,
+  // },
   {
     accessorKey: 'interest',
     size: 100, // in pixels
