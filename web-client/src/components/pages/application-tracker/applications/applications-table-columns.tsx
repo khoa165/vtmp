@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { Link } from 'lucide-react';
+import ReactCountryFlag from 'react-country-flag';
 
 import { ApplicationStatus } from '@vtmp/common/constants';
 
@@ -56,6 +57,37 @@ export const applicationsTableColumns = ({
     },
     meta: { displayName: 'Company' },
     enableResizing: true,
+  },
+  {
+    accessorKey: 'location',
+    size: 100,
+    header: ({ column }) => {
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Location" />
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      const location = row.original.location;
+      if (location !== 'US' && location !== 'CANADA') {
+        return 'Unknown';
+      }
+      const countryCode = location === 'US' ? 'US' : 'CA';
+      return (
+        <div className="pl-2">
+          <ReactCountryFlag
+            countryCode={countryCode}
+            svg
+            style={{
+              fontSize: '1.5em',
+              lineHeight: '1.5em',
+            }}
+          />
+        </div>
+      );
+    },
+    meta: { displayName: 'Location' },
   },
   {
     accessorKey: 'status',

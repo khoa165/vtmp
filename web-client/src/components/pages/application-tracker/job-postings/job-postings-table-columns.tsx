@@ -69,6 +69,7 @@ export const jobPostingsTableColumns = ({
   },
   {
     accessorKey: 'location',
+    size: 100,
     header: ({ column }) => {
       return (
         <div className="pl-2">
