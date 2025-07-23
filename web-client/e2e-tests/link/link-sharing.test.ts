@@ -3,7 +3,7 @@ import { login } from '../utils/helper';
 
 test.beforeEach(async ({ page }) => {
   await login(page);
-  await page.goto('/link-sharing');
+  await page.goto('/links');
 });
 
 test.describe('Submit link page', () => {

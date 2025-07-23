@@ -19,7 +19,7 @@ test.describe('Job Posting Card', () => {
     const button = secondCard.locator('span', { hasText: 'Share a Job Link' });
     await expect(button).toBeVisible();
     await button.click();
-    await expect(page).toHaveURL(/\/link-sharing$/);
+    await expect(page).toHaveURL(/\/links$/);
   });
 });
 
@@ -40,7 +40,7 @@ test.describe('Job posting Table', () => {
       }
     }
 
-    expect(headersCount).toEqual(7);
+    expect(headersCount).toEqual(6);
   });
 
   test('should filter jobs by company name', async ({ page }) => {
@@ -59,7 +59,7 @@ test.describe('Job posting Table', () => {
   });
 
   test('should sort job posting by date posted', async ({ page }) => {
-    const dateHeader = page.getByRole('columnheader', { name: 'Date Posted' });
+    const dateHeader = page.getByRole('columnheader', { name: 'Posting Date' });
     const sortButton = dateHeader.locator('button');
     await sortButton.click();
 

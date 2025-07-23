@@ -3,7 +3,7 @@ import { login } from '../utils/helper';
 
 test.beforeEach(async ({ page }) => {
   await login(page);
-  await page.goto('/application-tracker');
+  await page.goto('/applications');
 });
 
 test.describe('Application Status Card', () => {
@@ -13,6 +13,7 @@ test.describe('Application Status Card', () => {
     const targetStatus = 'INTERVIEWING';
     // Adjust this to the status you want to test 'Interviewing'
     const card = page.getByTestId(`status-card-${targetStatus}`);
+
     await expect(card).toBeVisible();
     await card.click();
 
@@ -59,7 +60,7 @@ test.describe('Application Table', () => {
 
   test('should filter applications by company name', async ({ page }) => {
     const input = page.getByPlaceholder('Filter companies...');
-    await input.fill('Go');
+    await input.fill('Goldm');
     await page.waitForTimeout(300);
 
     const rows = page.getByTestId('application-table-row');
@@ -97,8 +98,6 @@ test.describe('Application Table', () => {
   test('should update status via dropdown in status column', async ({
     page,
   }) => {
-    await page.goto('/application-tracker');
-
     const firstRow = page.getByTestId('application-table-row').first();
     await firstRow
       .getByTestId('application-cell-status')
