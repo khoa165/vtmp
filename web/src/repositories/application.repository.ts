@@ -153,7 +153,7 @@ export const ApplicationRepository = {
           pipeline: [
             {
               $match: {
-                role: 'USER',
+                role: { $in: ['ADMIN', 'MODERATOR', 'USER'] },
               },
             },
           ],

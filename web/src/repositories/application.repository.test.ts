@@ -734,7 +734,7 @@ describe('ApplicationRepository', () => {
       ]);
     });
 
-    it('should exclude admins and moderator from the applications count', async () => {
+    it('should include admins and moderator from the applications count', async () => {
       const mockMultipleUsers = [
         {
           firstName: 'admin',
@@ -785,12 +785,20 @@ describe('ApplicationRepository', () => {
       assert(result);
       expect(result.map(({ count, name }) => ({ count, name }))).to.deep.equal([
         {
+          count: 1,
+          name: 'admin viettech',
+        },
+        {
           count: 4,
           name: 'user2 viettech',
         },
         {
           count: 6,
           name: 'user1 viettech',
+        },
+        {
+          count: 12,
+          name: 'moderator viettech',
         },
       ]);
     });
