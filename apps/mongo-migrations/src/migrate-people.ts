@@ -1,6 +1,11 @@
-import { ProgramProfileModel, UserModel } from '@vtmp/mongo/models';
+import {
+  ProgramCohortModel,
+  ProgramProfileModel,
+  UserModel,
+  ProgramInvolvementModel,
+} from '@vtmp/mongo/models';
 import { splitFirstAndLastName } from '@vtmp/server-common/utils';
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import { hasAtLeast, values } from 'remeda';
 
 import { MentorshipRole, SystemRole } from '@vtmp/common/constants';
@@ -8,6 +13,14 @@ import { mentorshipPeople } from '@vtmp/common/people';
 import type { MentorshipTerm } from '@vtmp/common/people';
 
 export const migratePeople = async () => {
+  await Promise.all(
+    [2023, 2024, 2025].map((year) =>
+      ProgramCohortModel.create({
+        year,
+      })
+    )
+  );
+
   // Start a session for transactions
   const session = await mongoose.startSession();
 
@@ -55,6 +68,7 @@ export const migratePeople = async () => {
           ) ?? [];
 
         programProfileBatch.push({
+          trackingKey: person.trackingKey,
           programName: person.name,
           // userId will be set after user creation
           yearJoined: person.terms[0].year,
@@ -98,6 +112,95 @@ export const migratePeople = async () => {
             { session, ordered: true }
           );
           console.log(`Created ${profiles.length} program profiles in batch`);
+
+          // Map year to cohortId for quick lookup
+          const cohorts = await ProgramCohortModel.find({
+            year: { $in: [2023, 2024, 2025] },
+          });
+          const cohortMap = new Map<number, ObjectId>();
+          for (const cohort of cohorts) {
+            cohortMap.set(cohort.year, cohort._id as ObjectId);
+          }
+
+          // Build lookup for (trackingKey, year) -> profileId
+          const profileIdByTrackingKeyYear = new Map<string, ObjectId>();
+          profiles.forEach((profile, idx) => {
+            const person = people[idx];
+            if (!person) return;
+            person.terms.forEach((term) => {
+              profileIdByTrackingKeyYear.set(
+                `${person.trackingKey}-${term.year}`,
+                profile._id as ObjectId
+              );
+            });
+          });
+
+          // Create involvement docs for each person/term, with mentors/mentees
+          const involvementBatch: {
+            programProfileId: ObjectId;
+            programCohortId: ObjectId;
+            professionalTitle: string;
+            roles: MentorshipRole[];
+            projects: ObjectId[];
+            mentors: ObjectId[];
+            mentees: ObjectId[];
+          }[] = [];
+          profiles.forEach((profile, idx) => {
+            const person = people[idx];
+            if (!person) return;
+            person.terms.forEach((term: MentorshipTerm) => {
+              const cohortId = cohortMap.get(term.year);
+              if (!cohortId) return;
+              const programProfileId = profile._id as ObjectId;
+
+              // Mentors: look up by trackingKey and year
+              const mentors = (term.mentors ?? [])
+                .map((mentorKey) =>
+                  profileIdByTrackingKeyYear.get(`${mentorKey}-${term.year}`)
+                )
+                .filter(Boolean) as ObjectId[];
+
+              // Mentees: find all people who have this person as a mentor in the same year
+              const mentees: ObjectId[] = [];
+              people.forEach((otherPerson) => {
+                if (otherPerson.trackingKey === person.trackingKey) return;
+                const otherTerm = otherPerson.terms.find(
+                  (t) => t.year === term.year
+                );
+                if (
+                  otherTerm &&
+                  (otherTerm.mentors ?? [])
+                    .map((m) => m as string)
+                    .includes(person.trackingKey as string)
+                ) {
+                  const menteeProfileId = profileIdByTrackingKeyYear.get(
+                    `${otherPerson.trackingKey}-${term.year}`
+                  );
+                  if (menteeProfileId) mentees.push(menteeProfileId);
+                }
+              });
+
+              involvementBatch.push({
+                programProfileId,
+                programCohortId: cohortId,
+                professionalTitle: term.title || person.professionalTitle,
+                roles: term.roles,
+                projects: [],
+                mentors,
+                mentees,
+              });
+            });
+          });
+          if (involvementBatch.length > 0) {
+            await ProgramInvolvementModel.create(involvementBatch, {
+              session,
+              ordered: true,
+            });
+            console.log(
+              `Created ${involvementBatch.length} program involvement documents in batch`
+            );
+          }
+
           console.log(
             `Successfully migrated ${profiles.length} people in a single transaction!`
           );
