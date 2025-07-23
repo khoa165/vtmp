@@ -4,8 +4,6 @@ const BASE_PERMISSIONS: Permission[] = [
   Permission.VIEW_APPLICATION,
   Permission.MANAGE_APPLICATION,
 
-  Permission.CREATE_JOB_LINK,
-
   Permission.VIEW_JOB_POSTING,
 
   Permission.VIEW_INTERVIEW,
@@ -14,6 +12,7 @@ const BASE_PERMISSIONS: Permission[] = [
 
 const ADDITIONAL_MODERATOR_PERMISSIONS: Permission[] = [
   Permission.VIEW_JOB_LINK,
+  Permission.CREATE_JOB_LINK,
   Permission.MANAGE_JOB_LINK,
   Permission.MANAGE_JOB_POSTING,
 ];
