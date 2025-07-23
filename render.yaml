@@ -30,7 +30,7 @@ services:
         sync: false
     region: oregon
     dockerContext: .
-    dockerfilePath: ./discord-service/Dockerfile
+    dockerfilePath: ./web/Dockerfile
     previews:
       generation: off # Disable service previews
     healthCheckPath: /health
