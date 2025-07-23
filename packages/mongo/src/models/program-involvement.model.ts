@@ -1,13 +1,12 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
-import { Department, ProgramRole } from '@vtmp/common/constants';
+import { MentorshipRole } from '@vtmp/common/constants';
 
-interface IProgramInvolvement extends Document {
+export interface IProgramInvolvement extends Document {
   programProfileId: Types.ObjectId;
   programCohortId: Types.ObjectId;
   professionalTitle: string;
-  department: Department;
-  roles: ProgramRole[];
+  roles: MentorshipRole[];
   projects: Types.ObjectId[];
   mentees: Types.ObjectId[];
   mentors: Types.ObjectId[];
@@ -28,16 +27,11 @@ const ProgramInvolvementSchema = new mongoose.Schema<IProgramInvolvement>({
     type: String,
     required: true,
   },
-  department: {
-    type: String,
-    enum: Object.values(Department),
-    required: true,
-  },
   roles: {
     type: [
       {
         type: String,
-        enum: Object.values(ProgramRole),
+        enum: Object.values(MentorshipRole),
         required: true,
       },
     ],
