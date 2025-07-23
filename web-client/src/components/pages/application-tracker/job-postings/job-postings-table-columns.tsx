@@ -3,6 +3,13 @@ import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'lucide-react';
 import ReactCountryFlag from 'react-country-flag';
 
+import { formatEnumName } from '@vtmp/common/utils';
+
+import { StatusDot } from '#vtmp/web-client/components/base/status-dot';
+import {
+  JobFunctionColorMapping,
+  JobTypeColorMapping,
+} from '#vtmp/web-client/utils/constants';
 import { Button } from '@/components/base/button';
 import { HeaderSorting } from '@/components/base/header';
 import { IJobPosting } from '@/components/pages/application-tracker/job-postings/validations';
@@ -43,6 +50,28 @@ export const jobPostingsTableColumns = ({
     meta: { displayName: 'Company' },
   },
   {
+    accessorKey: 'jobFunction',
+    header: ({ column }) => {
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Function" />
+        </div>
+      );
+    },
+    meta: { displayName: 'Function' },
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-2 pl-2">
+          <StatusDot
+            status={row.original.jobFunction}
+            colorMapping={JobFunctionColorMapping}
+          />
+          {formatEnumName(row.original.jobFunction)}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'jobTitle',
     header: ({ column }) => {
       return (
@@ -64,6 +93,28 @@ export const jobPostingsTableColumns = ({
           {row.original.jobTitle}
           <Link className="ml-1 h-4 w-4" />
         </a>
+      );
+    },
+  },
+  {
+    accessorKey: 'jobType',
+    header: ({ column }) => {
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Type" />
+        </div>
+      );
+    },
+    meta: { displayName: 'Type' },
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-2 pl-2">
+          <StatusDot
+            status={row.original.jobType}
+            colorMapping={JobTypeColorMapping}
+          />
+          {formatEnumName(row.original.jobType)}
+        </div>
       );
     },
   },

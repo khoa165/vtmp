@@ -28,15 +28,17 @@ import { CustomError } from '@/utils/errors';
 
 export const JobPostingsContainer = (): React.JSX.Element | null => {
   const [searchParams] = useSearchParams();
-  const isJobFunction = (val: any): val is JobFunction =>
+  const isJobFunction = (val: string | null): val is JobFunction =>
     Object.values(JobFunction).includes(val as JobFunction);
 
-  const isJobType = (val: any): val is JobType =>
+  const isJobType = (val: string | null): val is JobType =>
     Object.values(JobType).includes(val as JobType);
 
   const filtersFromParams = useMemo(() => {
     const jobFunctionParam = searchParams.get('jobFunction');
     const jobTypeParam = searchParams.get('jobType');
+    const startDate = searchParams.get('startDate');
+    const endDate = searchParams.get('endDate');
 
     return {
       jobTitle: searchParams.get('jobTitle') ?? undefined,
@@ -45,12 +47,8 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
         ? jobFunctionParam
         : undefined,
       jobType: isJobType(jobTypeParam) ? jobTypeParam : undefined,
-      postingDateRangeStart: searchParams.get('startDate')
-        ? new Date(searchParams.get('startDate')!)
-        : undefined,
-      postingDateRangeEnd: searchParams.get('endDate')
-        ? new Date(searchParams.get('endDate')!)
-        : undefined,
+      postingDateRangeStart: startDate ? new Date(startDate) : undefined,
+      postingDateRangeEnd: endDate ? new Date(endDate) : undefined,
     };
   }, [searchParams]);
 
@@ -118,11 +116,6 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
     // TODO-(QuangMinhNguyen27405): Remove this console log and add a toast error message
     console.error('Error fetching job postings data:', error);
     throw new CustomError('Error fetching job postings data');
-  }
-
-  if (!jobPostingsData || jobPostingsData.length === 0) {
-    // TODO-(QuangMinhNguyen27405): Replace `return null` with an empty state message or component
-    return null;
   }
 
   return (

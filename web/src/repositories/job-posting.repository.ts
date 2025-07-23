@@ -78,6 +78,7 @@ export const JobPostingRepository = {
         $options: 'i',
       };
     }
+    if (filters?.jobFunction) dynamicMatch.jobFunction = filters.jobFunction;
     if (filters?.location) dynamicMatch.location = filters.location;
     if (filters?.postingDateRangeStart || filters?.postingDateRangeEnd) {
       const datePostedFilter: Record<string, Date> = {};
