@@ -12,22 +12,28 @@ import {
 } from '@vtmp/common/constants';
 
 import { ILink } from '@/models/link.model';
+// eslint-disable-next-line boundaries/element-types
 import { LinkRepository } from '@/repositories/link.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 
 describe('LinkRepository', () => {
   useMongoDB();
+
+  const submittedBy = getNewObjectId();
   const mockLinkData = {
     originalUrl: 'https://google.com',
     jobTitle: 'Software Engineer',
     companyName: 'Example Company',
-    submittedBy: getNewObjectId(),
+    submittedBy,
   };
 
   let googleLink: ILink;
   beforeEach(async () => {
-    googleLink = await LinkRepository.createLink(mockLinkData);
+    googleLink = await LinkRepository.createLink(
+      submittedBy.toHexString(),
+      mockLinkData
+    );
   });
 
   describe('getLinkById', () => {
@@ -118,7 +124,9 @@ describe('LinkRepository', () => {
         },
       ];
       await Promise.all(
-        mockMultipleLinks.map((link) => LinkRepository.createLink(link))
+        mockMultipleLinks.map((link) =>
+          LinkRepository.createLink(getNewMongoId(), link)
+        )
       );
     });
 
@@ -162,7 +170,9 @@ describe('LinkRepository', () => {
     ];
     beforeEach(async () => {
       await Promise.all(
-        mockMultipleLinks.map((link) => LinkRepository.createLink(link))
+        mockMultipleLinks.map((link) =>
+          LinkRepository.createLink(getNewMongoId(), link)
+        )
       );
     });
     describe('when no filter is provided', () => {
