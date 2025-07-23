@@ -40,11 +40,13 @@ const ColumnResizer = <TData, TValue>({
 interface ResizableTableProps<TData, TValue> {
   table: TanstackTable<TData>;
   columns: ColumnDef<TData, TValue>[];
+  emptyStateText?: string;
 }
 
 export function ResizableTable<TData, TValue>({
   table,
   columns,
+  emptyStateText,
 }: ResizableTableProps<TData, TValue>) {
   return (
     <>
@@ -101,7 +103,7 @@ export function ResizableTable<TData, TValue>({
                     colSpan={columns.length}
                     className="h-24 text-center text-white"
                   >
-                    No matching entries
+                    {emptyStateText ?? 'No matching entries'}
                   </TableCell>
                 </TableRow>
               )}

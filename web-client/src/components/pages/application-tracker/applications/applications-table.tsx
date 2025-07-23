@@ -82,7 +82,11 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
         />
         <ColumnVisibilityConfiguration table={table} />
       </section>
-      <ResizableTable table={table} columns={columns} />
+      <ResizableTable
+        table={table}
+        columns={columns}
+        emptyStateText="No applications found! Go hurry and apply!"
+      />
     </div>
   );
 }
