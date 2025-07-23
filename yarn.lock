@@ -6054,6 +6054,7 @@ __metadata:
     "@vtmp/common": "npm:1.0.0"
     "@vtmp/mongo": "npm:1.0.0"
     "@vtmp/server-common": "npm:1.0.0"
+    bcryptjs: "npm:^3.0.2"
     dotenv: "npm:^17.0.1"
     remeda: "npm:^2.24.0"
     ts-node: "npm:^10.9.2"
