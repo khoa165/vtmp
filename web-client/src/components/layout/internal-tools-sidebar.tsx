@@ -121,22 +121,22 @@ export const InternalToolsSidebar = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              {state !== 'collapsed' && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link to="/login" aria-label="Log out" onClick={logout}>
-                      <LogOut />
-                      <span>Log out</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+              {state !== 'collapsed' && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link to="/login" aria-label="Log out" onClick={logout}>
+                      <LogOut />
+                      <span className="ml-1">Log out</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
