@@ -159,25 +159,6 @@ export const applicationsTableColumns = ({
     },
     enableResizing: true,
   },
-  // {
-  //   accessorKey: 'portalLink',
-  //   size: 200, // in pixels
-  //   header: () => <div className="pl-2">Portal Link</div>,
-  //   meta: { displayName: 'Portal Link' },
-  //   cell: ({ row }) =>
-  //     row.original.portalLink ? (
-  //       <a
-  //         href={row.original.portalLink}
-  //         target="_blank"
-  //         rel="noopener noreferrer"
-  //         className="inline-flex items-center gap-2 hover:text-primary pl-2"
-  //       >
-  //         <Link className="h-4 w-4 flex-shrink-0" />
-  //         <span className="underline">{row.original.portalLink}</span>
-  //       </a>
-  //     ) : null,
-  //   enableResizing: true,
-  // },
   {
     accessorKey: 'interest',
     size: 100, // in pixels
