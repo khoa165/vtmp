@@ -206,6 +206,8 @@ export const backfillInvolvements = async () => {
     });
 
     console.log('Finished backfilling involvements!');
+  } catch (err) {
+    console.log(err);
   } finally {
     await session.endSession();
   }
