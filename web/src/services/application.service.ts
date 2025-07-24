@@ -13,7 +13,7 @@ import {
   ResourceNotFoundError,
 } from '@/utils/errors';
 import mongoose, { ClientSession } from 'mongoose';
-import { IApplication } from '@/models/application.model';
+import { IApplication } from '@/types/entities';
 
 export const ApplicationService = {
   createApplication: async ({

@@ -30,10 +30,10 @@ describe('LinkRepository', () => {
 
   let googleLink: ILink;
   beforeEach(async () => {
-    googleLink = await LinkRepository.createLink(
-      submittedBy.toHexString(),
-      mockLinkData
-    );
+    googleLink = await LinkRepository.createLink({
+      submittedBy: submittedBy.toHexString(),
+      linkMetaData: mockLinkData,
+    });
   });
 
   describe('getLinkById', () => {
@@ -125,7 +125,10 @@ describe('LinkRepository', () => {
       ];
       await Promise.all(
         mockMultipleLinks.map((link) =>
-          LinkRepository.createLink(getNewMongoId(), link)
+          LinkRepository.createLink({
+            submittedBy: getNewMongoId(),
+            linkMetaData: link,
+          })
         )
       );
     });
@@ -171,7 +174,10 @@ describe('LinkRepository', () => {
     beforeEach(async () => {
       await Promise.all(
         mockMultipleLinks.map((link) =>
-          LinkRepository.createLink(getNewMongoId(), link)
+          LinkRepository.createLink({
+            submittedBy: getNewMongoId(),
+            linkMetaData: link,
+          })
         )
       );
     });
