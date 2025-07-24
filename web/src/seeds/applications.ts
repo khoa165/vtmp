@@ -3,8 +3,9 @@ import { IUser } from '@vtmp/mongo/models';
 
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 
-import { ApplicationModel, IApplication } from '@/models/application.model';
+import { ApplicationModel } from '@/models/application.model';
 import { IJobPosting } from '@/models/job-posting.model';
+import { IApplication } from '@/types/entities';
 
 export const loadApplications = async ({
   users,

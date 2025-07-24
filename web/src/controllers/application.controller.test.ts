@@ -13,7 +13,7 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
-import { IApplication } from '@/models/application.model';
+import { IApplication } from '@/types/entities';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import {
   ApplicationStatus,
