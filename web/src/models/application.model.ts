@@ -17,6 +17,7 @@ export interface IApplication extends Document {
   location?: JobPostingRegion;
   userId: Types.ObjectId;
   hasApplied: boolean;
+  hasOA: boolean;
   status: ApplicationStatus;
   appliedOnDate: Date;
   note?: string;
@@ -53,6 +54,10 @@ const ApplicationSchema = new mongoose.Schema<IApplication>(
     hasApplied: {
       type: Boolean,
       default: true,
+    },
+    hasOA: {
+      type: Boolean,
+      default: false,
     },
     status: {
       type: String,

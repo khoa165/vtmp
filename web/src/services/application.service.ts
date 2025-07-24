@@ -104,6 +104,7 @@ export const ApplicationService = {
       portalLink?: string;
       interest?: InterestLevel;
       status?: ApplicationStatus;
+      hasOA?: boolean;
     };
   }): Promise<IApplication | null> => {
     if (updatedMetadata.status === ApplicationStatus.REJECTED) {

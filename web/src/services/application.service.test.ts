@@ -355,6 +355,7 @@ describe('ApplicationService', () => {
             portalLink: 'abc.com',
             interest: InterestLevel.HIGH,
             status: ApplicationStatus.OFFERED,
+            hasOA: true,
           },
         }
       );
@@ -366,6 +367,7 @@ describe('ApplicationService', () => {
         portalLink: 'abc.com',
         interest: InterestLevel.HIGH,
         status: ApplicationStatus.OFFERED,
+        hasOA: true,
       });
     });
   });

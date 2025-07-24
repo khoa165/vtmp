@@ -75,6 +75,7 @@ export const ApplicationRepository = {
       portalLink?: string;
       interest?: InterestLevel;
       deletedAt?: Date | null;
+      hasOA?: boolean;
     };
     options?: {
       includeDeletedDoc?: boolean;
