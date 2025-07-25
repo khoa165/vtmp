@@ -106,6 +106,7 @@ describe('ApplicationRepository', () => {
       expect(newApplication.status).to.equal(ApplicationStatus.SUBMITTED);
       expect(newApplication.location).to.equal(jobPosting_0.location);
       expect(newApplication.location).to.equal(jobPosting_0.location);
+      expect(newApplication.hasOA).to.equal(false);
       expect(timeDiff).to.lessThan(3);
     });
   });
@@ -370,6 +371,19 @@ describe('ApplicationRepository', () => {
         });
 
       assert(!updatedApplication);
+    });
+
+    it('should update hasOA field if provided in updatedMetadata', async () => {
+      const application =
+        await ApplicationRepository.createApplication(mockApplication_A0);
+      const updatedApplication =
+        await ApplicationRepository.updateApplicationById({
+          userId: userId_A,
+          applicationId: application.id,
+          updatedMetadata: { hasOA: true },
+        });
+      assert(updatedApplication);
+      expect(updatedApplication.hasOA).to.equal(true);
     });
   });
 
