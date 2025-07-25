@@ -98,6 +98,7 @@ export const JobPostingRepository = {
         $options: 'i',
       };
     }
+
     if (location) dynamicMatch.location = location;
     if (jobFunction) dynamicMatch.jobFunction = jobFunction;
     if (jobType) dynamicMatch.jobType = jobType;
