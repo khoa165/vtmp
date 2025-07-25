@@ -1,19 +1,22 @@
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { InterviewRepository } from '@/repositories/interview.repository';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import mongoose, { ClientSession } from 'mongoose';
+import { string } from 'zod';
+
 import {
   ApplicationStatus,
   InterestLevel,
   InterviewStatus,
 } from '@vtmp/common/constants';
+
+import { IApplication } from '@/models/application.model';
+import { ApplicationRepository } from '@/repositories/application.repository';
+import { InterviewRepository } from '@/repositories/interview.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import {
   DuplicateResourceError,
   ForbiddenError,
   InternalServerError,
   ResourceNotFoundError,
 } from '@/utils/errors';
-import mongoose, { ClientSession } from 'mongoose';
-import { IApplication } from '@/models/application.model';
 
 export const ApplicationService = {
   createApplication: async ({
@@ -185,6 +188,33 @@ export const ApplicationService = {
     } finally {
       session.endSession();
     }
+  },
+
+  markApplicationHasOA: async ({
+    userId,
+    applicationId,
+  }: {
+    userId: string;
+    applicationId: string;
+  }): Promise<IApplication | null> => {
+    const application = await ApplicationRepository.getApplicationById({
+      applicationId,
+      userId,
+    });
+    if (!application) {
+      throw new ResourceNotFoundError('Application not found', {
+        applicationId,
+        userId,
+      });
+    }
+
+    const updatedApplication =
+      await ApplicationRepository.updateApplicationById({
+        userId,
+        applicationId,
+        updatedMetadata: { hasOA: true },
+      });
+    return updatedApplication;
   },
 
   deleteApplicationById: async ({

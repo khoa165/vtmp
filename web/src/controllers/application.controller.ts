@@ -126,6 +126,12 @@ export const ApplicationController = {
         applicationId,
         userId,
       });
+    }
+    else if (updatedStatus === ApplicationStatus.OA){
+      updatedApplication = await ApplicationService.markApplicationHasOA({
+        applicationId,
+        userId,
+      });
     } else {
       updatedApplication = await ApplicationService.updateApplicationById({
         applicationId,
