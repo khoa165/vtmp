@@ -174,19 +174,19 @@ export default tseslint.config(
           rules: [
             {
               from: 'repositories',
-              allow: ['models'],
+              allow: ['models', 'repositories'],
             },
             {
               from: 'services',
-              allow: ['repositories'],
+              allow: ['repositories', 'services'],
             },
             {
               from: 'controllers',
-              allow: ['services'],
+              allow: ['services', 'controllers'],
             },
             {
               from: 'routes',
-              allow: ['controllers'],
+              allow: ['controllers', 'routes'],
             },
           ],
         },
@@ -231,6 +231,12 @@ export default tseslint.config(
     files: ['**/mongoDB.testutil.ts', '**/mongoID.testutil.ts'],
     rules: {
       'checkFile/filename-naming-convention': 'off',
+    },
+  },
+  {
+    files: ['**/*.test.ts', '**/*.test.tsx'],
+    rules: {
+      'boundaries/element-types': 'off',
     },
   },
   { ignores: ['cookiecutter/', 'scripts/', '**/*.{js,d.ts,d.tsx}'] }
