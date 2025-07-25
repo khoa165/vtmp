@@ -77,7 +77,9 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
     size: 200,
     minSize: 50,
     maxSize: 750,
-    cell: ({ getValue }) => <div className="pl-2">{getValue()}</div>,
+    cell: ({ getValue }) => (
+      <div className="pl-2 min-h-10 flex items-center">{getValue()}</div>
+    ),
   };
 
   const table = useReactTable({

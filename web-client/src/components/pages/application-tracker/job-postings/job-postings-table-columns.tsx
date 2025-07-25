@@ -51,14 +51,15 @@ export const jobPostingsTableColumns = ({
   },
   {
     accessorKey: 'jobFunction',
+    size: 180,
     header: ({ column }) => {
       return (
         <div className="pl-2">
-          <HeaderSorting column={column} headerName="Function" />
+          <HeaderSorting column={column} headerName="Position" />
         </div>
       );
     },
-    meta: { displayName: 'Function' },
+    meta: { displayName: 'Position' },
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-2 pl-2">
@@ -73,31 +74,34 @@ export const jobPostingsTableColumns = ({
   },
   {
     accessorKey: 'jobTitle',
+    size: 300,
     header: ({ column }) => {
       return (
         <div className="pl-2">
-          <HeaderSorting column={column} headerName="Position" />
+          <HeaderSorting column={column} headerName="Job Title" />
         </div>
       );
     },
-    meta: { displayName: 'Position' },
+    meta: { displayName: 'Job Title' },
     cell: ({ row }) => {
-      // // TODO-(QuangMinhNguyen27405): Modify column width for better visibility
       return (
         <a
           href={row.original.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center underline hover:text-primary pl-2"
+          className="inline-flex items-center gap-2 hover:text-primary pl-2"
         >
-          {row.original.jobTitle}
-          <Link className="ml-1 h-4 w-4" />
+          <Link className="h-4 w-4 flex-shrink-0" />
+          <span className="underline line-clamp-2">
+            {row.original.jobTitle}
+          </span>
         </a>
       );
     },
   },
   {
     accessorKey: 'jobType',
+    size: 120,
     header: ({ column }) => {
       return (
         <div className="pl-2">
@@ -151,6 +155,7 @@ export const jobPostingsTableColumns = ({
   },
   {
     accessorKey: 'datePosted',
+    size: 160,
     header: ({ column }) => {
       return (
         <div className="pl-2">

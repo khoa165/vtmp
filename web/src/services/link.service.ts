@@ -12,7 +12,13 @@ import {
 import { DuplicateResourceError, ResourceNotFoundError } from '@/utils/errors';
 
 export const LinkService = {
-  submitLink: async (submittedBy: string, linkMetaData: LinkMetaDataType) => {
+  submitLink: async ({
+    submittedBy,
+    linkMetaData,
+  }: {
+    submittedBy: string | undefined;
+    linkMetaData: LinkMetaDataType;
+  }) => {
     const normalizedLink = LinkNormalizerService.normalizeLink(
       linkMetaData.originalUrl
     );
@@ -20,9 +26,12 @@ export const LinkService = {
     if (foundLink) {
       throw new DuplicateResourceError('Duplicate link found', linkMetaData);
     }
-    return LinkRepository.createLink(submittedBy, {
-      ...linkMetaData,
-      url: normalizedLink,
+    return LinkRepository.createLink({
+      submittedBy,
+      linkMetaData: {
+        originalUrl: normalizedLink,
+        url: normalizedLink,
+      },
     });
   },
 

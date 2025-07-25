@@ -7,10 +7,13 @@ import {
 } from '@/types/link.types';
 
 export const LinkRepository = {
-  createLink: async (
-    submittedBy: string,
-    linkMetaData: LinkMetaDataType & { url?: string }
-  ): Promise<ILink> => {
+  createLink: async ({
+    submittedBy,
+    linkMetaData,
+  }: {
+    submittedBy: string | undefined;
+    linkMetaData: LinkMetaDataType & { url?: string };
+  }): Promise<ILink> => {
     return LinkModel.create({
       ...linkMetaData,
       submittedBy,

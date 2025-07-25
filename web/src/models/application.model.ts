@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 import {
   ApplicationStatus,
@@ -8,24 +8,7 @@ import {
 
 // eslint-disable-next-line boundaries/element-types
 import { JobPostingModel } from '@/models/job-posting.model';
-
-export interface IApplication extends Document {
-  _id: Types.ObjectId;
-  jobPostingId: Types.ObjectId;
-  companyName?: string;
-  jobTitle?: string;
-  location?: JobPostingRegion;
-  userId: Types.ObjectId;
-  hasApplied: boolean;
-  status: ApplicationStatus;
-  appliedOnDate: Date;
-  note?: string;
-  deletedAt?: Date;
-  referrer?: string;
-  portalLink?: string;
-  url?: string;
-  interest: InterestLevel;
-}
+import { IApplication } from '@/types/entities';
 
 const ApplicationSchema = new mongoose.Schema<IApplication>(
   {

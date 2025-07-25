@@ -2,7 +2,8 @@ import mongoose, { ClientSession } from 'mongoose';
 
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 
-import { ApplicationModel, IApplication } from '@/models/application.model';
+import { ApplicationModel } from '@/models/application.model';
+import { IApplication } from '@/types/entities';
 
 export const ApplicationRepository = {
   createApplication: async ({
