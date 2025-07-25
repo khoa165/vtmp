@@ -568,7 +568,6 @@ describe('ApplicationController', () => {
         referrer: 'Khoa',
         portalLink: 'http://abc.com',
         interest: 'HIGH',
-        hasOA: true,
       };
 
       const res = await request(app)
@@ -578,7 +577,6 @@ describe('ApplicationController', () => {
           referrer: 'Khoa',
           portalLink: 'http://abc.com',
           interest: 'HIGH',
-          hasOA: true,
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockUserToken}`);

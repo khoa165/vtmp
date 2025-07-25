@@ -110,19 +110,16 @@ export const ApplicationService = {
       hasOA?: boolean;
     };
   }): Promise<IApplication | null> => {
-    if (updatedMetadata.status === ApplicationStatus.REJECTED || updatedMetadata.status === ApplicationStatus.OA) {
-      throw new InternalServerError('Calling updateApplicationById with invalid status', {
-        applicationId,
-        userId,
-        status: updatedMetadata.status,
-      });
-    }
-
     const updatedApplication =
       await ApplicationRepository.updateApplicationById({
         userId,
         applicationId,
-        updatedMetadata,
+        updatedMetadata: {
+          ...updatedMetadata,
+          ...(updatedMetadata.status === ApplicationStatus.OA
+            ? { hasOA: true }
+            : {}),
+        },
       });
 
     if (!updatedApplication) {
@@ -189,33 +186,6 @@ export const ApplicationService = {
     } finally {
       session.endSession();
     }
-  },
-
-  markApplicationHasOA: async ({
-    userId,
-    applicationId,
-  }: {
-    userId: string;
-    applicationId: string;
-  }): Promise<IApplication | null> => {
-    const application = await ApplicationRepository.getApplicationById({
-      applicationId,
-      userId,
-    });
-    if (!application) {
-      throw new ResourceNotFoundError('Application not found', {
-        applicationId,
-        userId,
-      });
-    }
-
-    const updatedApplication =
-      await ApplicationRepository.updateApplicationById({
-        userId,
-        applicationId,
-        updatedMetadata: { hasOA: true },
-      });
-    return updatedApplication;
   },
 
   deleteApplicationById: async ({
