@@ -110,10 +110,11 @@ export const ApplicationService = {
       hasOA?: boolean;
     };
   }): Promise<IApplication | null> => {
-    if (updatedMetadata.status === ApplicationStatus.REJECTED) {
-      throw new InternalServerError('Rejecting an application is not allowed', {
+    if (updatedMetadata.status === ApplicationStatus.REJECTED || updatedMetadata.status === ApplicationStatus.OA) {
+      throw new InternalServerError('Calling updateApplicationById with invalid status', {
         applicationId,
         userId,
+        status: updatedMetadata.status,
       });
     }
 
