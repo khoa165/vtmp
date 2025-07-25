@@ -79,8 +79,14 @@ describe('CronController', () => {
   const createFilteredLinks = async () => {
     assert(filteredLinks[0]);
     assert(filteredLinks[1]);
-    await LinkRepository.createLink(getNewMongoId(), filteredLinks[0]);
-    await LinkRepository.createLink(getNewMongoId(), filteredLinks[1]);
+    await LinkRepository.createLink({
+      submittedBy: getNewMongoId(),
+      linkMetaData: filteredLinks[0],
+    });
+    await LinkRepository.createLink({
+      submittedBy: getNewMongoId(),
+      linkMetaData: filteredLinks[1],
+    });
   };
   const createUnFilteredLinks = async () => {
     const unFilteredLinks = [
@@ -99,8 +105,14 @@ describe('CronController', () => {
     ];
     assert(unFilteredLinks[0]);
     assert(unFilteredLinks[1]);
-    await LinkRepository.createLink(getNewMongoId(), unFilteredLinks[0]);
-    await LinkRepository.createLink(getNewMongoId(), unFilteredLinks[1]);
+    await LinkRepository.createLink({
+      submittedBy: getNewMongoId(),
+      linkMetaData: unFilteredLinks[0],
+    });
+    await LinkRepository.createLink({
+      submittedBy: getNewMongoId(),
+      linkMetaData: unFilteredLinks[1],
+    });
   };
   describe('POST /cron/trigger', () => {
     runDefaultAuthMiddlewareTests({

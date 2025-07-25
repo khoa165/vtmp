@@ -5,8 +5,8 @@ import { z } from 'zod';
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 
 import { getUserFromRequest } from '@/middlewares/utils';
-import { IApplication } from '@/models/application.model';
 import { ApplicationService } from '@/services/application.service';
+import { IApplication } from '@/types/entities';
 
 const JobPostingIdParamSchema = z.object({
   jobPostingId: z
@@ -72,7 +72,7 @@ export const ApplicationController = {
   createApplication: async (req: Request, res: Response) => {
     const { jobPostingId } = JobPostingIdParamSchema.parse(req.body);
 
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
 
     const newApplication = await ApplicationService.createApplication({
       jobPostingId,
@@ -86,7 +86,7 @@ export const ApplicationController = {
   },
 
   getApplications: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
 
     const filters = ApplicationFilterSchema.parse(req.query);
     const applications = await ApplicationService.getApplications({
@@ -102,7 +102,7 @@ export const ApplicationController = {
 
   getApplicationById: async (req: Request, res: Response) => {
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
 
     const application = await ApplicationService.getApplicationById({
       applicationId,
@@ -116,7 +116,7 @@ export const ApplicationController = {
   },
 
   updateApplicationStatus: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
     const { updatedStatus } = ApplicationStatusUpdateSchema.parse(req.body);
 
@@ -126,8 +126,7 @@ export const ApplicationController = {
         applicationId,
         userId,
       });
-    }
-    else if (updatedStatus === ApplicationStatus.OA){
+    } else if (updatedStatus === ApplicationStatus.OA) {
       updatedApplication = await ApplicationService.markApplicationHasOA({
         applicationId,
         userId,
@@ -147,7 +146,7 @@ export const ApplicationController = {
   },
 
   updateApplicationMetadata: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
     const updatedMetadata = ApplicationMetadataUpdateSchema.parse(req.body);
 
@@ -164,7 +163,7 @@ export const ApplicationController = {
   },
 
   deleteApplication: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
     const { applicationId } = ApplicationIdParamsSchema.parse(req.params);
 
     const deletedApplication = await ApplicationService.deleteApplicationById({
@@ -179,7 +178,7 @@ export const ApplicationController = {
   },
 
   getApplicationsCountByStatus: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
 
     const applicationsCountByStatus =
       await ApplicationService.getApplicationsCountByStatus(userId);

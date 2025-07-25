@@ -14,7 +14,6 @@ import {
 
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
-import { IApplication } from '@/models/application.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -32,6 +31,7 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { IApplication } from '@/types/entities';
 
 describe('ApplicationController', () => {
   useMongoDB();
@@ -582,6 +582,7 @@ describe('ApplicationController', () => {
         })
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${mockUserToken}`);
+
       expectSuccessfulResponse({ res, statusCode: 200 });
       expect(res.body.data).to.containSubset(updateApplicationMetadata);
     });

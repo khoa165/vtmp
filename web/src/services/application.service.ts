@@ -7,10 +7,10 @@ import {
   InterviewStatus,
 } from '@vtmp/common/constants';
 
-import { IApplication } from '@/models/application.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { IApplication } from '@/types/entities';
 import {
   DuplicateResourceError,
   ForbiddenError,

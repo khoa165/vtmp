@@ -55,15 +55,21 @@ describe('LinkService', () => {
 
   let googleLink: ILink;
   beforeEach(async () => {
-    googleLink = await LinkRepository.createLink(getNewMongoId(), mockLinkData);
+    googleLink = await LinkRepository.createLink({
+      submittedBy: getNewMongoId(),
+      linkMetaData: mockLinkData,
+    });
   });
 
   describe('submitLink', () => {
     it('should throw error when link with same url already exists', async () => {
       console.log(googleLink);
       await expect(
-        LinkService.submitLink(getNewMongoId(), {
-          originalUrl: 'https://google.com',
+        LinkService.submitLink({
+          submittedBy: getNewMongoId(),
+          linkMetaData: {
+            originalUrl: 'https://google.com',
+          },
         })
       ).eventually.rejectedWith(DuplicateResourceError);
     });
@@ -75,7 +81,10 @@ describe('LinkService', () => {
       };
 
       await expect(
-        LinkService.submitLink(getNewMongoId(), invalidEnumData)
+        LinkService.submitLink({
+          submittedBy: getNewMongoId(),
+          linkMetaData: invalidEnumData,
+        })
       ).eventually.rejectedWith(Error);
     });
 
@@ -266,7 +275,10 @@ describe('LinkService', () => {
     beforeEach(async () => {
       await Promise.all(
         mockMultipleLinks.map((link) =>
-          LinkRepository.createLink(getNewMongoId(), link)
+          LinkRepository.createLink({
+            submittedBy: getNewMongoId(),
+            linkMetaData: link,
+          })
         )
       );
     });
@@ -308,7 +320,10 @@ describe('LinkService', () => {
     beforeEach(async () => {
       await Promise.all(
         mockMultipleLinks.map((link) =>
-          LinkRepository.createLink(getNewMongoId(), link)
+          LinkRepository.createLink({
+            submittedBy: getNewMongoId(),
+            linkMetaData: link,
+          })
         )
       );
     });

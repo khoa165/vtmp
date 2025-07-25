@@ -66,7 +66,10 @@ describe('LinkController', () => {
     ({ mockUserToken, mockAdminToken } = await runUserLogin());
 
     originalUrl = 'https://google.com';
-    googleLink = await LinkRepository.createLink(getNewMongoId(), mockLinkData);
+    googleLink = await LinkRepository.createLink({
+      submittedBy: getNewMongoId(),
+      linkMetaData: mockLinkData,
+    });
 
     linkId = googleLink.id;
   });
@@ -352,7 +355,10 @@ describe('LinkController', () => {
     it('should return correct link counts for multiple statuses when multiple links exist', async () => {
       await Promise.all(
         mockMultipleLinks.map((link) =>
-          LinkRepository.createLink(getNewMongoId(), link)
+          LinkRepository.createLink({
+            submittedBy: getNewMongoId(),
+            linkMetaData: link,
+          })
         )
       );
 
@@ -460,7 +466,10 @@ describe('LinkController', () => {
     it('should return all links when no filter is given', async () => {
       await Promise.all(
         mockMultipleLinks.map((link) =>
-          LinkRepository.createLink(getNewMongoId(), link)
+          LinkRepository.createLink({
+            submittedBy: getNewMongoId(),
+            linkMetaData: link,
+          })
         )
       );
 
