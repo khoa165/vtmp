@@ -152,13 +152,6 @@ export const ApplicationRepository = {
           from: 'users',
           localField: '_id',
           foreignField: '_id',
-          pipeline: [
-            {
-              $match: {
-                role: 'USER',
-              },
-            },
-          ],
           as: 'user',
         },
       },
