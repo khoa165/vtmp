@@ -1,5 +1,4 @@
 import mongoose, { ClientSession } from 'mongoose';
-import { string } from 'zod';
 
 import {
   ApplicationStatus,
@@ -14,7 +13,6 @@ import { IApplication } from '@/types/entities';
 import {
   DuplicateResourceError,
   ForbiddenError,
-  InternalServerError,
   ResourceNotFoundError,
 } from '@/utils/errors';
 
