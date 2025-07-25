@@ -48,6 +48,7 @@ import {
   SelectTrigger,
 } from '@/components/base/select';
 import { Skeleton } from '@/components/base/skeleton';
+import { Switch } from '@/components/base/switch';
 import { Textarea } from '@/components/base/textarea';
 import { ApplicationInterestDropDown } from '@/components/pages/application-tracker/applications/application-interest-column';
 import { DrawerStatusDropDown } from '@/components/pages/application-tracker/applications/drawer-status-dropdown';
@@ -88,6 +89,7 @@ export const ApplicationForm = ({
       referrer: '',
       portalLink: '',
       interest: InterestLevel.MEDIUM,
+      hasOA: false,
     },
   });
 
@@ -164,6 +166,18 @@ export const ApplicationForm = ({
                     updateApplicationStatusFn={updateApplicationStatusFn}
                   />
                 )}
+              </span>
+              <span className="flex items-center rounded-full border border-foreground text-foreground px-3 py-1 text-sm font-medium hover:bg-muted/20 hover:text-primary hover:border-primary transition">
+                <Switch
+                  checked={applicationData?.hasOA}
+                  onCheckedChange={() => {
+                    updateApplicationMetadataFn({
+                      applicationId: applicationId,
+                      body: { hasOA: !applicationData?.hasOA },
+                    });
+                  }}
+                />
+                <label className="ml-3">Online Assessment (OA)</label>
               </span>
             </div>
           </div>
