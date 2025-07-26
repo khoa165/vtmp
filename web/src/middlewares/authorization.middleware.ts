@@ -1,8 +1,10 @@
-import { Permission } from '@vtmp/common/constants';
 import { Request, Response, NextFunction } from 'express';
-import { ForbiddenError } from '@/utils/errors';
+
+import { Permission } from '@vtmp/common/constants';
+
 import { roleToPermissionMapping } from '@/constants/permissions';
 import { getServiceFromRequest, getUserFromRequest } from '@/middlewares/utils';
+import { ForbiddenError } from '@/utils/errors';
 
 export const hasPermission = (permission: Permission) => {
   return async (
@@ -11,7 +13,7 @@ export const hasPermission = (permission: Permission) => {
     next: NextFunction
   ): Promise<void> => {
     if (req.user) {
-      const user = getUserFromRequest(req).user;
+      const user = getUserFromRequest(req);
 
       if (!roleToPermissionMapping[user.role].includes(permission)) {
         throw new ForbiddenError('Forbidden', { user, permission });
