@@ -27,6 +27,7 @@ describe('ExtractLinkMetadataService', () => {
     jobType: JobType.INTERNSHIP,
     datePosted: '2024-05-10',
     aiNote: 'hello',
+    aiScore: 50,
   };
 
   let generateContentStub: sinon.SinonStub;
