@@ -7,6 +7,7 @@ import { SystemRole } from '@vtmp/common/constants';
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
 import { ApplicationRepository } from '@/repositories/application.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import {
   HTTPMethod,
@@ -15,7 +16,7 @@ import {
 } from '@/testutils/auth.testutils';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import {
   expectErrorsArray,
   expectSuccessfulResponse,
@@ -51,7 +52,7 @@ describe('VisualizationController', () => {
       });
     });
 
-    it('should return number of applcations in sorted order', async () => {
+    it('should return number of applcations in sorted order and return multiple weeks with correct counts for postings in different weeks', async () => {
       const mockMultipleUsers = [
         {
           firstName: 'admin',
@@ -99,6 +100,41 @@ describe('VisualizationController', () => {
           )
           .flatMap((a) => a)
       );
+
+      const mockJobPostings = [
+        {
+          linkId: getNewObjectId(),
+          url: 'http://example.com/job-posting',
+          jobTitle: 'Software Engineer',
+          companyName: 'Example Company',
+          submittedBy: getNewObjectId(),
+          datePosted: new Date('2025-07-07T12:00:00Z'),
+        },
+        {
+          linkId: getNewObjectId(),
+          url: 'http://example.com/job-posting',
+          jobTitle: 'Software Engineer',
+          companyName: 'Example Company',
+          submittedBy: getNewObjectId(),
+          datePosted: new Date('2025-07-14T12:00:00Z'),
+        },
+        {
+          linkId: getNewObjectId(),
+          url: 'http://example.com/job-posting',
+          jobTitle: 'Software Engineer',
+          companyName: 'Example Company',
+          submittedBy: getNewObjectId(),
+          datePosted: new Date('2025-07-17T12:00:00Z'),
+        },
+      ];
+      await Promise.all(
+        mockJobPostings.map((mockJobPosting) =>
+          JobPostingRepository.createJobPosting({
+            jobPostingData: mockJobPosting,
+          })
+        )
+      );
+
       const res = await request(app)
         .get('/api/visualization')
         .set('Accept', 'application/json')

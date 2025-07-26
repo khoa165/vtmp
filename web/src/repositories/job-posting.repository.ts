@@ -134,13 +134,6 @@ export const JobPostingRepository = {
     ]);
   },
 
-  getJobPostingsTrend: async () => {
-    return JobPostingModel.aggregate([
-      { $match: { deletedAt: null } },
-      { $group: { _id: '$location', count: { $sum: 1 } } },
-    ]);
-  },
-
   getJobPostingsTrendByWeek: async () => {
     return JobPostingModel.aggregate([
       {
