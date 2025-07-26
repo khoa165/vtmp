@@ -50,6 +50,7 @@ export const ReviewPopupButton = ({
     datePosted,
     jobDescription,
     aiNote,
+    aiScore,
   } = currentLink;
 
   const [reviewForm, setReviewForm] = useState<JobPostingData>({
@@ -98,16 +99,29 @@ export const ReviewPopupButton = ({
           <Label htmlFor="link">URL</Label>
           <Textarea id="link" defaultValue={url} readOnly />
         </div>
-        <div className="flex flex-col items-start gap-2 w-full">
-          <Label htmlFor="aiNote" className="flex items-center">
-            AI Insight <Sparkles className="text-yellow-500" />
-          </Label>
-          <Textarea
-            id="aiNote"
-            defaultValue={aiNote ?? ''}
-            style={{ resize: 'vertical' }}
-            readOnly
-          />
+        <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-col items-start gap-2 w-full">
+            <Label htmlFor="aiNote" className="flex items-center">
+              Is Job Posting
+            </Label>
+            <Textarea
+              id="aiNote"
+              defaultValue={`${aiScore}%`}
+              style={{ resize: 'vertical' }}
+              readOnly
+            />
+          </div>
+          <div className="flex flex-col items-start gap-2 w-full">
+            <Label htmlFor="aiNote" className="flex items-center">
+              AI Insight <Sparkles className="text-yellow-500" />
+            </Label>
+            <Textarea
+              id="aiNote"
+              defaultValue={aiNote ?? ''}
+              style={{ resize: 'vertical' }}
+              readOnly
+            />
+          </div>
         </div>
         <div className="grid grid-cols-3 gap-2">
           <ReviewPopupInput

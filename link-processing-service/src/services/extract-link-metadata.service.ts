@@ -18,7 +18,7 @@ import {
   RawAIResponseSchema,
   ScrapedLink,
 } from '@/types/link-processing.types';
-import { AIExtractionError, logError } from '@/utils/errors';
+import { AIExtractionError, logError , LinkProcessingBadRequest } from '@/utils/errors';
 import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
 import { buildPrompt } from '@/utils/prompts';
 
@@ -55,8 +55,18 @@ export const ExtractLinkMetadataService = {
       datePosted,
       jobDescription,
       aiNote,
+      aiScore,
     } = RawAIResponseSchema.parse(JSON.parse(rawAIResponse));
 
+    if (aiScore < 25) {
+      throw new LinkProcessingBadRequest(
+        'The link is not a job posting',
+        {
+          url,
+        },
+        LinkProcessingFailureStage.EXTRACTION_FAILED
+      );
+    }
     // Convert from string to Typescript enum, had to use a separate helper stringToEnumValue
     const formattedLinkMetadata = {
       jobTitle,
@@ -76,6 +86,7 @@ export const ExtractLinkMetadataService = {
       datePosted,
       jobDescription: formatJobDescription(jobDescription),
       aiNote,
+      aiScore,
     };
     return ExtractedLinkMetadataSchema.parse(formattedLinkMetadata);
   },
@@ -125,10 +136,13 @@ export const ExtractLinkMetadataService = {
           logError(error);
           failedMetadataExtractionLinks.push({
             ...link,
-            status: this._determineProcessStatus(
-              link.originalRequest,
-              MAX_LONG_RETRY
-            ),
+            status:
+              error instanceof LinkProcessingBadRequest
+                ? LinkStatus.PIPELINE_REJECTED
+                : this._determineProcessStatus(
+                    link.originalRequest,
+                    MAX_LONG_RETRY
+                  ),
             failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
             error: new AIExtractionError(
               'Failed to extract metadata with AI',

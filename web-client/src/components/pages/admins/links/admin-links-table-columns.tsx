@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { format, formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 
 import { formatEnumName } from '@vtmp/common/utils';
 
@@ -11,7 +11,6 @@ import {
   JobPostingData,
 } from '@/components/pages/admins/links/validation';
 import { LinksColorMapping } from '@/utils/constants';
-import { MONTH_DATE_YEAR } from '@/utils/date';
 
 interface AdminLinksTableColumnsProps {
   approveLinkFn: ({
@@ -35,7 +34,7 @@ export const adminLinksTableColumns = ({
       if (!row.original.jobTitle) {
         return <span className="pl-2">N/A</span>;
       }
-      return (
+      return row.original.aiScore >= 50 ? (
         <a
           href={row.original.url}
           target="_blank"
@@ -46,6 +45,10 @@ export const adminLinksTableColumns = ({
             {row.original.jobTitle}
           </span>
         </a>
+      ) : (
+        <div className="inline-flex items-center hover:text-primary pl-2">
+          <span className="line-clamp-2">{row.original.jobTitle}</span>
+        </div>
       );
     },
   },
@@ -64,6 +67,19 @@ export const adminLinksTableColumns = ({
           {row.original.companyName ? row.original.companyName : 'N/A'}
         </div>
       );
+    },
+  },
+  {
+    accessorKey: 'aiScore',
+    header: ({ column }) => {
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="isJobPosting" />
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      return <div className="pl-2">{row.original.aiScore}%</div>;
     },
   },
   {
