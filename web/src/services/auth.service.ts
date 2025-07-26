@@ -8,10 +8,10 @@ import { InvitationStatus } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
-import { IInvitation } from '@/models/invitation.model';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { InvitationService } from '@/services/invitation.service';
+import { IInvitation } from '@/types/entities';
 import { getEmailService } from '@/utils/email';
 import {
   DuplicateResourceError,

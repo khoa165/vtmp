@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Types, UpdateQuery } from 'mongoose';
+import mongoose, { Schema, UpdateQuery } from 'mongoose';
 
 import {
   JobFunction,
@@ -8,28 +8,8 @@ import {
   LinkRegion,
 } from '@vtmp/common/constants';
 
+import { ILink } from '@/types/entities';
 import { LinkProcessingBadRequest } from '@/utils/errors';
-
-export interface ILink extends Document {
-  _id: Types.ObjectId;
-  url: string;
-  originalUrl: string;
-  status: LinkStatus;
-  failureStage?: LinkProcessingFailureStage;
-  submittedOn: Date;
-  jobTitle?: string;
-  companyName?: string;
-  location?: LinkRegion;
-  jobFunction?: JobFunction;
-  jobType?: JobType;
-  datePosted?: Date;
-  jobDescription?: string;
-  aiNote?: string;
-  attemptsCount: number;
-  lastProcessedAt?: Date;
-  submittedBy?: Types.ObjectId;
-  deletedAt?: Date;
-}
 
 const LinkSchema = new mongoose.Schema<ILink>(
   {

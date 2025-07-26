@@ -7,8 +7,9 @@ import {
   InterviewType,
 } from '@vtmp/common/constants';
 
-import { InterviewModel, IInterview } from '@/models/interview.model';
+import { InterviewModel } from '@/models/interview.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
+import { IInterview } from '@/types/entities';
 
 export const InterviewRepository = {
   createInterview: async ({

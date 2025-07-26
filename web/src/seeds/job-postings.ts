@@ -7,8 +7,8 @@ import {
 } from '@vtmp/common/constants';
 import { formatEnumName } from '@vtmp/common/utils';
 
-import { IJobPosting, JobPostingModel } from '@/models/job-posting.model';
-import { ILink } from '@/models/link.model';
+import { JobPostingModel } from '@/models/job-posting.model';
+import { ILink, IJobPosting } from '@/types/entities';
 
 export const loadJobPostings = async (
   links: ILink[]

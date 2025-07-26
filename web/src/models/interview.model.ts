@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 import {
   InterviewStatus,
@@ -7,23 +7,8 @@ import {
   InterviewShareStatus,
 } from '@vtmp/common/constants';
 
-// eslint-disable-next-line boundaries/element-types
 import { ApplicationModel } from '@/models/application.model';
-
-export interface IInterview extends Document {
-  _id: Types.ObjectId;
-  applicationId: Types.ObjectId;
-  userId: Types.ObjectId;
-  types: InterviewType[];
-  status: InterviewStatus;
-  interviewOnDate: Date;
-  companyName?: string;
-  jobTitle?: string;
-  location?: JobPostingRegion;
-  note?: string;
-  shareStatus?: string;
-  deletedAt?: Date;
-}
+import { IInterview } from '@/types/entities';
 
 const InterviewSchema = new mongoose.Schema<IInterview>(
   {
@@ -98,13 +83,3 @@ export const InterviewModel = mongoose.model<IInterview>(
   'Interview',
   InterviewSchema
 );
-
-export interface InterviewInsights {
-  companyDetails: string;
-  companyProducts: string;
-  interviewInsights: {
-    commonQuestions: string[];
-    interviewProcess: string;
-    tips: string;
-  };
-}

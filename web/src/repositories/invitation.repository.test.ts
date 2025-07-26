@@ -6,11 +6,11 @@ import assert from 'assert';
 
 import { InvitationStatus } from '@vtmp/common/constants';
 
-import { IInvitation } from '@/models/invitation.model';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
+import { IInvitation } from '@/types/entities';
 
 describe('InvitationRepository', () => {
   useMongoDB();

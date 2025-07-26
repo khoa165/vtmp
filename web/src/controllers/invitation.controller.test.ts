@@ -11,7 +11,6 @@ import { InvitationStatus } from '@vtmp/common/constants';
 
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
-import { IInvitation } from '@/models/invitation.model';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import {
@@ -27,6 +26,7 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { IInvitation } from '@/types/entities';
 import { getEmailService } from '@/utils/email';
 
 describe('InvitationController', () => {

@@ -11,11 +11,10 @@ import {
   LinkProcessingFailureStage,
 } from '@vtmp/common/constants';
 
-import { ILink } from '@/models/link.model';
-// eslint-disable-next-line boundaries/element-types
 import { LinkRepository } from '@/repositories/link.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import { ILink } from '@/types/entities';
 
 describe('LinkRepository', () => {
   useMongoDB();
