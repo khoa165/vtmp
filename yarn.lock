@@ -5961,6 +5961,7 @@ __metadata:
   resolution: "@vtmp/mongo@workspace:packages/mongo"
   dependencies:
     "@types/mongoose": "npm:^5.11.97"
+    "@vtmp/common": "npm:1.0.0"
     mongodb: "npm:^6.17.0"
     mongoose: "npm:8.16.1"
     mongoose-lean-virtuals: "npm:^2.0.0"
