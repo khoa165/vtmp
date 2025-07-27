@@ -11,6 +11,7 @@ import { LinkRepository } from '@/repositories/link.repository';
 import { CronService } from '@/services/link/cron.service';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { InternalServerError } from '@/utils/errors';
 
@@ -63,8 +64,14 @@ describe('CronService', () => {
   const createFilteredLinks = async () => {
     assert(filteredLinks[0]);
     assert(filteredLinks[1]);
-    await LinkRepository.createLink(filteredLinks[0]);
-    await LinkRepository.createLink(filteredLinks[1]);
+    await LinkRepository.createLink({
+      submittedBy: getNewMongoId(),
+      linkMetaData: filteredLinks[0],
+    });
+    await LinkRepository.createLink({
+      submittedBy: getNewMongoId(),
+      linkMetaData: filteredLinks[1],
+    });
   };
   const createUnFilteredLinks = async () => {
     const unFilteredLinks = [
@@ -84,8 +91,14 @@ describe('CronService', () => {
 
     assert(unFilteredLinks[0]);
     assert(unFilteredLinks[1]);
-    await LinkRepository.createLink(unFilteredLinks[0]);
-    await LinkRepository.createLink(unFilteredLinks[1]);
+    await LinkRepository.createLink({
+      submittedBy: getNewMongoId(),
+      linkMetaData: unFilteredLinks[0],
+    });
+    await LinkRepository.createLink({
+      submittedBy: getNewMongoId(),
+      linkMetaData: unFilteredLinks[1],
+    });
   };
   describe('_getRetryFilter', () => {
     it('should return empty links', async () => {

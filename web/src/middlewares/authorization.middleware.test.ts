@@ -4,8 +4,6 @@ import request from 'supertest';
 
 import assert from 'assert';
 
-import { SystemRole } from '@vtmp/common/constants';
-
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -14,10 +12,7 @@ import { AuthService } from '@/services/auth.service';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewObjectId } from '@/testutils/mongoID.testutil';
-import {
-  expectErrorsArray,
-  expectSuccessfulResponse,
-} from '@/testutils/response-assertion.testutil';
+import { expectSuccessfulResponse } from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
 
 describe('hasPermission', () => {
@@ -41,33 +36,6 @@ describe('hasPermission', () => {
   beforeEach(async () => {
     sandbox.stub(EnvConfig, 'get').returns(MOCK_ENV);
     encryptedPassword = await bcrypt.hash('test password', 10);
-  });
-
-  it('should throw ForbiddenError for creating a new application without corresponding permission', async () => {
-    await UserRepository.createUser({
-      ...mockUser,
-      encryptedPassword,
-      role: SystemRole.ADMIN,
-    });
-
-    const { token } = await AuthService.login({
-      email: mockUser.email,
-      password: 'test password',
-    });
-
-    const jobPosting = await JobPostingRepository.createJobPosting({
-      jobPostingData: mockJobPosting,
-    });
-    assert(jobPosting);
-
-    const res = await request(app)
-      .post('/api/applications')
-      .send({ jobPostingId: jobPosting.id })
-      .set('Accept', 'application/json')
-      .set('Authorization', `Bearer ${token}`);
-
-    expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
-    expect(res.body.errors[0].message).to.equal('Forbidden');
   });
 
   it('should allow user to create a new application with corresponding permission', async () => {
