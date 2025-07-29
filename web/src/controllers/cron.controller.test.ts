@@ -165,4 +165,67 @@ describe('CronController', () => {
       expect(res.body.data.failedLinks).to.deep.equal([failedLinks]);
     });
   });
+
+  describe('POST /cron/:linkId/process', () => {
+    let linkId: string;
+    beforeEach(async () => {
+      await createUnFilteredLinks();
+      const result = await LinkRepository.getLinks();
+      assert(result[0]);
+      linkId = result[0]._id.toString();
+    });
+
+    runDefaultAuthMiddlewareTests({
+      route: `/api/cron/:linkId/process`,
+      method: HTTPMethod.POST,
+    });
+
+    it('should throw forbidden error', async () => {
+      const res = await request(app)
+        .post(`/api/cron/${getNewMongoId()}/process`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockUserToken}`);
+      expectErrorsArray({ res, statusCode: 403, errorsCount: 1 });
+      expect(res.body.errors[0].message).to.eq('Forbidden');
+    });
+
+    it('should throw error when _sendLinksToLambda fails', async () => {
+      await createFilteredLinks();
+      stubSendLinkToLambda.throws();
+      const res = await request(app)
+        .post(`/api/cron/${linkId}/process`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`);
+
+      expectErrorsArray({ res, statusCode: 500, errorsCount: 1 });
+    });
+
+    it('should return empty successfulLinks and empty failedLinks successfully', async () => {
+      const res = await request(app)
+        .post(`/api/cron/${getNewMongoId()}/process`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`);
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.message).to.equal(
+        'Retry Link Processing has finished successfully'
+      );
+      expect(res.body.data.successfulLinks).to.deep.equal([]);
+      expect(res.body.data.failedLinks).to.deep.equal([]);
+    });
+
+    it('should return successfulLinks and failedLinks correctly', async () => {
+      await createFilteredLinks();
+      const res = await request(app)
+        .post(`/api/cron/${linkId}/process`)
+        .set('Accept', 'application/json')
+        .set('Authorization', `Bearer ${mockAdminToken}`);
+
+      expectSuccessfulResponse({ res, statusCode: 200 });
+      expect(res.body.message).to.equal(
+        'Retry Link Processing has finished successfully'
+      );
+      expect(res.body.data.successfulLinks).to.deep.equal([successfulLink]);
+      expect(res.body.data.failedLinks).to.deep.equal([failedLinks]);
+    });
+  });
 });

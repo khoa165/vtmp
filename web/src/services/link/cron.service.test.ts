@@ -7,7 +7,6 @@ import assert from 'assert';
 import { LinkStatus } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
-import { ILink } from '@/models/link.model';
 import { LinkRepository } from '@/repositories/link.repository';
 import { CronService } from '@/services/link/cron.service';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
@@ -144,50 +143,30 @@ describe('CronService', () => {
     });
   });
 
-  describe('requestTriggerOneLink', () => {
-    const links = [
-      {
-        originalUrl: 'https://example.edu',
-        status: LinkStatus.PENDING_RETRY,
-        attemptsCount: 5,
-        lastProcessedAt: new Date(),
-      },
-    ];
-
+  describe('requestTriggerLinks', () => {
+    let linkId: string;
     beforeEach(async () => {
-      assert(links[0]);
-
-      await LinkRepository.createLink({
-        submittedBy: getNewMongoId(),
-        linkMetaData: links[0],
-      });
+      await createUnFilteredLinks();
+      const result = await LinkRepository.getLinks();
+      assert(result[0]);
+      linkId = result[0]._id.toString();
     });
 
     it('should throw error when _sendLinksToLambda fails', async () => {
-      assert(links[0]);
-      const createdLink: ILink | null = await LinkRepository.getLinkByUrl(
-        links[0].originalUrl
-      );
       stubSendLinkToLambda.throws();
-      assert(createdLink);
       await expect(
-        CronService.requestTriggerOneLink([createdLink])
+        CronService.requestTriggerLinks(linkId)
       ).eventually.rejectedWith(InternalServerError);
     });
 
     it('should return empty successfulLinks and empty failedLinks successfully', async () => {
-      const result = await CronService.requestTriggerOneLink([]);
+      const result = await CronService.requestTriggerLinks(getNewMongoId());
       expect(result.successfulLinks).to.be.an('array').to.deep.equal([]);
       expect(result.failedLinks).to.be.an('array').to.deep.equal([]);
     });
 
     it('should return successfulLinks and failedLinks successfully', async () => {
-      assert(links[0]);
-      const createdLink: ILink | null = await LinkRepository.getLinkByUrl(
-        links[0].originalUrl
-      );
-      assert(createdLink);
-      const result = await CronService.requestTriggerOneLink([createdLink]);
+      const result = await CronService.requestTriggerLinks(linkId);
       expect(result.successfulLinks).to.deep.include(successfulLink);
       expect(result.failedLinks).to.deep.include(failedLinks);
     });

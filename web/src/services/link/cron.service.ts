@@ -10,7 +10,6 @@ import {
 } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
-import { ILink } from '@/models/link.model';
 import { LinkRepository } from '@/repositories/link.repository';
 import { BadRequest, InternalServerError } from '@/utils/errors';
 
@@ -137,7 +136,7 @@ export const CronService = {
     }
   },
 
-  async requestTriggerOneLink(links: ILink[]): Promise<{
+  async requestTriggerLinks(linkId: string): Promise<{
     successfulLinks: MetadataExtractedLink[];
     failedLinks: FailedProcessedLink[];
   }> {
@@ -146,7 +145,18 @@ export const CronService = {
       throw new BadRequest('Pipeline is processing', {});
     }
     PIPELINE_IN_PROCESS = true;
+
     try {
+      const links = await LinkRepository.getLinks({
+        attemptsCount: { $lt: MAX_LONG_RETRY_ATTEMPTS },
+        _id: linkId,
+      });
+
+      if (links.length === 0) {
+        PIPELINE_IN_PROCESS = false;
+        return { successfulLinks: [], failedLinks: [] };
+      }
+
       const linksData: SubmittedLink[] = links.map(
         ({ _id, originalUrl, attemptsCount }) => ({
           _id: _id.toString(),
@@ -154,11 +164,6 @@ export const CronService = {
           attemptsCount,
         })
       );
-
-      if (links.length === 0) {
-        PIPELINE_IN_PROCESS = false;
-        return { successfulLinks: [], failedLinks: [] };
-      }
 
       const response = await this._sendLinksToLambda(linksData);
       let result: {
