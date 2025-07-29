@@ -1,4 +1,4 @@
-import { VISUALIZATION_STAT } from '@vtmp/server-common/constants';
+import { VISUALIZATION_STAT } from '@vtmp/common/constants';
 
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
