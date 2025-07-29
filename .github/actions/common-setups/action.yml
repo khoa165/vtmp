@@ -18,14 +18,10 @@ runs:
         node-version: 22.x
         cache: 'yarn'
 
-    - name: Set yarn version
-      run: yarn set version 4.8.1
-      shell: bash
-
     - name: Install dependencies
       run: yarn install --immutable
       shell: bash
 
     - name: Build common, server-common, mongo packages
-      run: yyarn bp
+      run: yarn bp
       shell: bash
