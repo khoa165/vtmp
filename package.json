@@ -6,17 +6,18 @@
   "license": "MIT",
   "private": true,
   "type": "module",
+  "packageManager": "yarn@4.8.1",
   "scripts": {
-    "frontend": "yarn workspace @vtmp/common build && yarn workspace @vtmp/web-client dev",
-    "backend": "yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build && yarn workspace @vtmp/web dev",
+    "frontend": "yarn turbo run dev --filter=@vtmp/web-client",
+    "backend": "yarn turbo run dev --filter=@vtmp/web",
     "fa": "yarn workspace @vtmp/web-client add",
     "fr": "yarn workspace @vtmp/web-client remove",
     "ba": "yarn workspace @vtmp/web add",
     "br": "yarn workspace @vtmp/web remove",
-    "dev": "concurrently \"yarn workspace @vtmp/web-client dev\" \"yarn workspace @vtmp/web dev\" \"yarn workspace @vtmp/common dev\" \"yarn workspace @vtmp/server-common dev\" \"yarn workspace @vtmp/mongo dev\"",
+    "dev": "turbo dev --filter=@vtmp/web --filter=@vtmp/web-client",
     "cc": "cookiecutter -c=cookiecutter/cookiecutter.config.js",
-    "bp": "yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build",
-    "bw": "yarn workspace @vtmp/web build && yarn workspace @vtmp/web-client build && yarn workspace @vtmp/link-processing-service build && yarn workspace @vtmp/discord-service build",
+    "bp": "turbo build --filter=\"./packages/*\"",
+    "bw": "turbo build --filter=\"./apps/*\" --filter=@vtmp/web-client --filter=@vtmp/web",
     "pp": "yarn install --immutable && yarn bp",
     "seed": "yarn workspace @vtmp/web seed",
     "migrate": "yarn bp && yarn workspace @vtmp/mongo-migrations migrate",
@@ -37,14 +38,12 @@
     "check": "yarn install --immutable && yarn test && yarn bw"
   },
   "workspaces": [
-    "packages/common",
-    "packages/server-common",
-    "packages/mongo",
+    "packages/*",
+    "apps/*",
     "web-client",
     "web",
     "discord-service",
-    "link-processing-service",
-    "apps/mongo-migrations"
+    "link-processing-service"
   ],
   "devDependencies": {
     "@eslint/js": "^9.22.0",
@@ -69,6 +68,7 @@
     "prettier": "^3.5.3",
     "syncpack": "^13.0.4",
     "tsx": "^4.19.3",
+    "turbo": "^2.5.5",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.26.0"
   },
