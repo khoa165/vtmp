@@ -33,11 +33,13 @@ interface ReviewPopupButtonProps {
     newUpdate: JobPostingData;
   }) => void;
   rejectLinkFn: ({ linkId }: { linkId: string }) => void;
+  reProcessLinkFn: ({ linkId }: { linkId: string }) => void;
 }
 export const ReviewPopupButton = ({
   currentLink,
   approveLinkFn,
   rejectLinkFn,
+  reProcessLinkFn,
 }: ReviewPopupButtonProps) => {
   const {
     _id: linkId,
@@ -65,6 +67,7 @@ export const ReviewPopupButton = ({
     jobDescription: jobDescription ?? '',
     adminNote: '',
   });
+
   const handleApprove = () => {
     approveLinkFn({
       linkId,
@@ -78,6 +81,10 @@ export const ReviewPopupButton = ({
       return;
     }
     rejectLinkFn({ linkId });
+  };
+
+  const handleReProcessLink = () => {
+    reProcessLinkFn({ linkId });
   };
 
   return (
@@ -99,9 +106,18 @@ export const ReviewPopupButton = ({
           <Textarea id="link" defaultValue={url} readOnly />
         </div>
         <div className="flex flex-col items-start gap-2 w-full">
-          <Label htmlFor="aiNote" className="flex items-center">
-            AI Insight <Sparkles className="text-yellow-500" />
-          </Label>
+          <div className="flex flex-row justify-between w-full">
+            <Label htmlFor="aiNote" className="flex items-center">
+              AI Insight <Sparkles className="text-yellow-500" />
+            </Label>
+            <Button
+              variant="outline"
+              onClick={handleReProcessLink}
+              className="text-vtmp-blue"
+            >
+              Re-Process Link
+            </Button>
+          </div>
           <Textarea
             id="aiNote"
             defaultValue={aiNote ?? ''}

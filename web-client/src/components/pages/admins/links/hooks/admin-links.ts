@@ -123,3 +123,22 @@ export const useTriggerCron = () => {
     onError: handleLinkMutationError,
   });
 };
+
+export const useReProcessLink = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ linkId }: { linkId: string }) =>
+      request({
+        method: Method.POST,
+        url: API_ENDPOINTS.RE_PROCESS_LINK(linkId),
+        schema: CronJobResponseSchema,
+        options: { requireAuth: true },
+      }),
+    onSuccess: (res) => {
+      invalidateLinkQueries(queryClient);
+      toast.success(res.message);
+    },
+    onError: handleLinkMutationError,
+  });
+};
