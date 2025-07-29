@@ -1,19 +1,20 @@
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { InterviewRepository } from '@/repositories/interview.repository';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import mongoose, { ClientSession } from 'mongoose';
+
 import {
   ApplicationStatus,
   InterestLevel,
   InterviewStatus,
 } from '@vtmp/common/constants';
+
+import { ApplicationRepository } from '@/repositories/application.repository';
+import { InterviewRepository } from '@/repositories/interview.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+import { IApplication } from '@/types/entities';
 import {
   DuplicateResourceError,
   ForbiddenError,
-  InternalServerError,
   ResourceNotFoundError,
 } from '@/utils/errors';
-import mongoose, { ClientSession } from 'mongoose';
-import { IApplication } from '@/types/entities';
 
 export const ApplicationService = {
   createApplication: async ({
@@ -104,20 +105,19 @@ export const ApplicationService = {
       portalLink?: string;
       interest?: InterestLevel;
       status?: ApplicationStatus;
+      hasOA?: boolean;
     };
   }): Promise<IApplication | null> => {
-    if (updatedMetadata.status === ApplicationStatus.REJECTED) {
-      throw new InternalServerError('Rejecting an application is not allowed', {
-        applicationId,
-        userId,
-      });
-    }
-
     const updatedApplication =
       await ApplicationRepository.updateApplicationById({
         userId,
         applicationId,
-        updatedMetadata,
+        updatedMetadata: {
+          ...updatedMetadata,
+          ...(updatedMetadata.status === ApplicationStatus.OA
+            ? { hasOA: true }
+            : {}),
+        },
       });
 
     if (!updatedApplication) {
