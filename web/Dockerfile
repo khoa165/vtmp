@@ -6,8 +6,8 @@ WORKDIR /app
 COPY package.json yarn.lock tsconfig.base.json turbo.json ./
 COPY .yarn/ .yarn/
 COPY .yarnrc.yml ./
-COPY packages ./packages
-COPY web ./web
+COPY packages/ ./packages/
+COPY web/ ./web/
 
 RUN corepack enable
 
