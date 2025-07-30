@@ -49,7 +49,7 @@ export const ApplicationsContainer = ({
     [deleteApplicationFn, updateApplicationStatusFn, handleOpenDrawer]
   );
 
-  if (isLoading) {
+  if (isLoading || !applicationsData) {
     return (
       <>
         <div className="flex items-center justify-between py-4">
@@ -64,12 +64,6 @@ export const ApplicationsContainer = ({
   if (error) {
     console.error('Error fetching applications data:', error);
     throw new CustomError('Error fetching applications data');
-  }
-
-  if (!applicationsData || applicationsData.length === 0) {
-    // TODO-(QuangMinhNguyen27405/dsmai): Replace `return null` with an empty state message or component
-    // we shouldn't just return null when mentee has no application yet
-    return null;
   }
 
   return (

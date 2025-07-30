@@ -38,6 +38,7 @@ export const LinkNormalizerService = {
         'dclid',
         '_ga',
         '_gl',
+        'gh_src',
       ],
     });
   },

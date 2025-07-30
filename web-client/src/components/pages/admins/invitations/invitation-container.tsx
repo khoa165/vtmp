@@ -40,18 +40,10 @@ export const InvitationContainer = (): React.JSX.Element | null => {
     throw new CustomError('Error fetching invitations data');
   }
 
-  if (!invitations || invitations.length === 0) {
-    return (
-      <div className="flex h-[32rem] items-center justify-center">
-        <p className="text-lg text-gray-500">No invitations found</p>
-      </div>
-    );
-  }
-
   return (
     <InvitationTable
       columns={columns}
-      data={invitations}
+      data={invitations || []}
       sorting={sorting}
       setSorting={setSorting}
     />

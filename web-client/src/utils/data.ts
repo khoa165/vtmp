@@ -15,10 +15,11 @@ import {
   roleDisplayName,
 } from '#vtmp/web-client/utils/display-name';
 
-export const getName = (alias: string): string => mentorshipPeople[alias].name;
+export const getName = (trackingKey: string): string =>
+  mentorshipPeople[trackingKey].name;
 
-export const getAvatar = (alias: string): string =>
-  mentorshipPeople[alias].avatar;
+export const getAvatar = (trackingKey: string): string =>
+  mentorshipPeople[trackingKey].avatar;
 
 export const getRoleDisplayName = (role: MentorshipRole): string =>
   roleDisplayName[role];

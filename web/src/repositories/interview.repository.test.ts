@@ -11,13 +11,13 @@ import {
   InterviewShareStatus,
 } from '@vtmp/common/constants';
 
-import { IApplication } from '@/models/application.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
+import { IApplication } from '@/types/entities';
 
 describe('Interview Repository', () => {
   useMongoDB();
