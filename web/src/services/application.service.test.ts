@@ -1,17 +1,9 @@
 import { expect } from 'chai';
-import assert from 'assert';
 import { differenceInSeconds } from 'date-fns';
 import { times, zip } from 'remeda';
 
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { JobPostingRepository } from '@/repositories/job-posting.repository';
-import { ApplicationService } from '@/services/application.service';
-import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import {
-  ResourceNotFoundError,
-  DuplicateResourceError,
-  ForbiddenError,
-} from '@/utils/errors';
+import assert from 'assert';
+
 import {
   ApplicationStatus,
   InterestLevel,
@@ -19,11 +11,23 @@ import {
   InterviewType,
   JobPostingRegion,
 } from '@vtmp/common/constants';
-import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
-import { InterviewRepository } from '@/repositories/interview.repository';
-import { IApplication } from '@/models/application.model';
+
+// eslint-disable-next-line boundaries/element-types
 import { IJobPosting } from '@/models/job-posting.model';
+import { ApplicationRepository } from '@/repositories/application.repository';
+import { InterviewRepository } from '@/repositories/interview.repository';
+import { JobPostingRepository } from '@/repositories/job-posting.repository';
+// eslint-disable-next-line boundaries/element-types
+import { ApplicationService } from '@/services/application.service';
+import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { IApplication } from '@/types/entities';
+import {
+  ResourceNotFoundError,
+  DuplicateResourceError,
+  ForbiddenError,
+} from '@/utils/errors';
 
 describe('ApplicationService', () => {
   useMongoDB();
@@ -367,6 +371,42 @@ describe('ApplicationService', () => {
         interest: InterestLevel.HIGH,
         status: ApplicationStatus.OFFERED,
       });
+    });
+
+    it('should successfully mark application as having OA and update status to OA', async () => {
+      const updatedApplication = await ApplicationService.updateApplicationById(
+        {
+          applicationId: application_A0.id,
+          userId: userId_A,
+          updatedMetadata: { status: ApplicationStatus.OA },
+        }
+      );
+
+      assert(updatedApplication);
+      expect(updatedApplication.hasOA).to.equal(true);
+      expect(updatedApplication.status).to.equal(ApplicationStatus.OA);
+    });
+
+    it('should not update the value of hasOA even if status become INTERVIEWING', async () => {
+      await ApplicationService.updateApplicationById({
+        applicationId: application_A0.id,
+        userId: userId_A,
+        updatedMetadata: { status: ApplicationStatus.OA },
+      });
+
+      const updatedApplication = await ApplicationService.updateApplicationById(
+        {
+          applicationId: application_A0.id,
+          userId: userId_A,
+          updatedMetadata: { status: ApplicationStatus.INTERVIEWING },
+        }
+      );
+
+      assert(updatedApplication);
+      expect(updatedApplication.hasOA).to.equal(true);
+      expect(updatedApplication.status).to.equal(
+        ApplicationStatus.INTERVIEWING
+      );
     });
   });
 

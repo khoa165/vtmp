@@ -51,7 +51,7 @@ describe('VisualizationController', () => {
       });
     });
 
-    it('should return number of applcations in sorted order, exclude admins and moderator', async () => {
+    it('should return number of applcations in sorted order', async () => {
       const mockMultipleUsers = [
         {
           firstName: 'admin',

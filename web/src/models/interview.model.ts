@@ -7,6 +7,7 @@ import {
   InterviewShareStatus,
 } from '@vtmp/common/constants';
 
+// eslint-disable-next-line boundaries/element-types
 import { ApplicationModel } from '@/models/application.model';
 
 export interface IInterview extends Document {
@@ -24,53 +25,56 @@ export interface IInterview extends Document {
   deletedAt?: Date;
 }
 
-const InterviewSchema = new mongoose.Schema<IInterview>({
-  applicationId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Application',
+const InterviewSchema = new mongoose.Schema<IInterview>(
+  {
+    applicationId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Application',
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    types: {
+      type: [String],
+      enum: Object.values(InterviewType),
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: Object.values(InterviewStatus),
+      default: InterviewStatus.PENDING,
+    },
+    interviewOnDate: {
+      type: Date,
+      required: true,
+    },
+    companyName: {
+      type: String,
+    },
+    jobTitle: {
+      type: String,
+    },
+    location: {
+      type: String,
+      enum: Object.values(JobPostingRegion),
+      default: JobPostingRegion.US,
+    },
+    note: {
+      type: String,
+    },
+    shareStatus: {
+      type: String,
+      enum: Object.values(InterviewShareStatus),
+      default: InterviewShareStatus.UNSHARED,
+    },
+    deletedAt: {
+      type: Date,
+    },
   },
-  userId: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  types: {
-    type: [String],
-    enum: Object.values(InterviewType),
-    required: true,
-  },
-  status: {
-    type: String,
-    enum: Object.values(InterviewStatus),
-    default: InterviewStatus.PENDING,
-  },
-  interviewOnDate: {
-    type: Date,
-    required: true,
-  },
-  companyName: {
-    type: String,
-  },
-  jobTitle: {
-    type: String,
-  },
-  location: {
-    type: String,
-    enum: Object.values(JobPostingRegion),
-    default: JobPostingRegion.US,
-  },
-  note: {
-    type: String,
-  },
-  shareStatus: {
-    type: String,
-    enum: Object.values(InterviewShareStatus),
-    default: InterviewShareStatus.UNSHARED,
-  },
-  deletedAt: {
-    type: Date,
-  },
-});
+  { timestamps: true }
+);
 
 InterviewSchema.pre('save', async function () {
   const application = await ApplicationModel.findOne({
