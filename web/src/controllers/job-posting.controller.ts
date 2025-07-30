@@ -123,4 +123,23 @@ export const JobPostingController = {
       data: jobPostings,
     });
   },
+
+  getJobPostingsUserHasNotAppliedToCount: async (
+    req: Request,
+    res: Response
+  ) => {
+    const userId = getUserFromRequest(req).id;
+    const filterData = FilterSchema.parse(req.query);
+
+    const jobPostings =
+      await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
+        userId: userId,
+        filters: filterData,
+      });
+
+    res.status(200).json({
+      message: 'Job postings count retrieved successfully',
+      data: jobPostings,
+    });
+  },
 };

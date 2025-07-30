@@ -717,7 +717,7 @@ describe('JobPostingService', () => {
       });
     });
 
-    describe('getJobPostingsUserNotAppliedToCount', () => {
+    describe('getJobPostingsUserHasNotAppliedToCount', () => {
       beforeEach(async () => {
         jobPostings = await Promise.all(
           mockMultipleJobPostings.map((jobPosting) =>
@@ -730,7 +730,7 @@ describe('JobPostingService', () => {
 
       it('should return 0 if there is no job postings that match the filters', async () => {
         const count =
-          await JobPostingService.getJobPostingsUserNotAppliedToCount({
+          await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
             userId: userIdA,
             filters: { companyName: 'Nonexistent Company' },
           });
@@ -749,7 +749,7 @@ describe('JobPostingService', () => {
         );
 
         const count =
-          await JobPostingService.getJobPostingsUserNotAppliedToCount({
+          await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
             userId: userIdA,
             filters: {},
           });
@@ -770,7 +770,7 @@ describe('JobPostingService', () => {
         assert(jobPostings[0]);
 
         const count =
-          await JobPostingService.getJobPostingsUserNotAppliedToCount({
+          await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
             userId: userIdA,
             filters: { companyName: jobPostings[0].companyName },
           });
@@ -778,7 +778,7 @@ describe('JobPostingService', () => {
         expect(count).to.equal(0);
       });
 
-      it('should return count of job postings if user has not applied to any', async () => {
+      it('should return count of job postings user has not applied to', async () => {
         const appliedApplications = 3;
 
         await randomCreateApplications({
@@ -787,7 +787,7 @@ describe('JobPostingService', () => {
         });
 
         const count =
-          await JobPostingService.getJobPostingsUserNotAppliedToCount({
+          await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
             userId: userIdA,
             filters: {},
           });
@@ -813,7 +813,7 @@ describe('JobPostingService', () => {
         );
 
         const count =
-          await JobPostingService.getJobPostingsUserNotAppliedToCount({
+          await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
             userId: userIdA,
             filters: {
               postingDateRangeStart: start,

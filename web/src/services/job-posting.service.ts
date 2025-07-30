@@ -94,7 +94,7 @@ export const JobPostingService = {
     };
   },
 
-  getJobPostingsUserNotAppliedToCount: async ({
+  getJobPostingsUserHasNotAppliedToCount: async ({
     userId,
     filters = {},
   }: {
