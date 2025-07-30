@@ -46,31 +46,31 @@ export const InternalToolsSidebar = () => {
       title: 'Links',
       url: '/admin/links',
       icon: Link2,
-      roles: [SystemRole.ADMIN, SystemRole.MODERATOR],
+      roles: [SystemRole.MODERATOR, SystemRole.ADMIN],
     },
     {
       title: 'Jobs',
       url: '/jobs',
       icon: LayoutDashboard,
-      roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
+      roles: [SystemRole.USER, SystemRole.MODERATOR, SystemRole.ADMIN],
     },
     {
       title: 'Applications',
       url: '/applications',
       icon: SquareCheckBig,
-      roles: [SystemRole.MODERATOR, SystemRole.USER],
+      roles: [SystemRole.USER, SystemRole.MODERATOR, SystemRole.ADMIN],
     },
     {
       title: 'Interviews',
       url: '/interviews',
       icon: MessageSquareQuote,
-      roles: [SystemRole.USER, SystemRole.ADMIN, SystemRole.MODERATOR],
+      roles: [SystemRole.USER, SystemRole.MODERATOR, SystemRole.ADMIN],
     },
     {
       title: 'Share Link',
       url: '/links',
       icon: Share2,
-      roles: [SystemRole.ADMIN, SystemRole.MODERATOR, SystemRole.USER],
+      roles: [SystemRole.USER, SystemRole.MODERATOR, SystemRole.ADMIN],
     },
   ];
 
@@ -121,22 +121,22 @@ export const InternalToolsSidebar = () => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              {state !== 'collapsed' && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link to="/login" aria-label="Log out" onClick={logout}>
-                      <LogOut />
-                      <span>Log out</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+              {state !== 'collapsed' && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link to="/login" aria-label="Log out" onClick={logout}>
+                      <LogOut />
+                      <span className="ml-1">Log out</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
