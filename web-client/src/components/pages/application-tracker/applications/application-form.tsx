@@ -134,7 +134,11 @@ export const ApplicationForm = ({
     <>
       <DrawerHeader>
         <DrawerTitle className="mb-3 text-4xl font-bold">
-          <Link to={applicationData?.url || '#'} className="flex items-center">
+          <Link
+            to={applicationData?.url || '#'}
+            className="flex items-center"
+            target="_blank"
+          >
             {applicationData?.jobTitle}
             <ExternalLink className="ml-1 mt-1 h-8 w-8" />
           </Link>
