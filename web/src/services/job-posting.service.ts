@@ -63,14 +63,16 @@ export const JobPostingService = {
     filters?: JobPostingFilter;
   }) => {
     if (filters?.cursor) {
+      const parsedCursor = filters?.cursor
+        ? JWTUtils.peekAndParseToken(
+            filters?.cursor,
+            z.object({ cursor: z.string() })
+          ).cursor
+        : undefined;
+
       filters = {
         ...filters,
-        cursor: filters?.cursor
-          ? JWTUtils.peekAndParseToken(
-              filters?.cursor,
-              z.object({ cursor: z.string() })
-            ).cursor
-          : undefined,
+        ...(parsedCursor !== undefined ? { cursor: parsedCursor } : {}),
       };
     }
 
@@ -90,5 +92,18 @@ export const JobPostingService = {
             )
           : undefined,
     };
+  },
+
+  getJobPostingsUserHasNotAppliedToCount: async ({
+    userId,
+    filters = {},
+  }: {
+    userId: string;
+    filters?: JobPostingFilter;
+  }) => {
+    return JobPostingRepository.getJobPostingsUserNotAppliedToCount({
+      userId,
+      filters,
+    });
   },
 };

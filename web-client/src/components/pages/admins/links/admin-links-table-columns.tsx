@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { format, formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 
 import { formatEnumName } from '@vtmp/common/utils';
 
@@ -11,7 +11,6 @@ import {
   JobPostingData,
 } from '@/components/pages/admins/links/validation';
 import { LinksColorMapping } from '@/utils/constants';
-import { MONTH_DATE_YEAR } from '@/utils/date';
 
 interface AdminLinksTableColumnsProps {
   approveLinkFn: ({
@@ -31,11 +30,23 @@ export const adminLinksTableColumns = ({
   {
     accessorKey: 'jobTitle',
     header: () => <div className="pl-2">Job Title</div>,
-    cell: ({ row }) => (
-      <div className="pl-2">
-        {row.original.jobTitle ? row.original.jobTitle : 'N/A'}
-      </div>
-    ),
+    cell: ({ row }) => {
+      if (!row.original.jobTitle) {
+        return <span className="pl-2">N/A</span>;
+      }
+      return (
+        <a
+          href={row.original.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center hover:text-primary pl-2"
+        >
+          <span className="underline line-clamp-2">
+            {row.original.jobTitle}
+          </span>
+        </a>
+      );
+    },
   },
   {
     accessorKey: 'companyName',
@@ -80,7 +91,9 @@ export const adminLinksTableColumns = ({
       const isoDate = row.getValue<string>('datePosted');
       if (!isoDate)
         return (
-          <div className="pl-2">{format(new Date(), MONTH_DATE_YEAR)}</div>
+          <div className="pl-2">
+            {formatDistanceToNow(new Date(), { addSuffix: true })}
+          </div>
         );
       const date = new Date(isoDate);
       return (

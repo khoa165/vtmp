@@ -27,7 +27,7 @@ export const invitationsTableColumns = (
       header: ({ column }) => {
         return (
           <div className="flex flex-start">
-            <HeaderSorting column={column} headerName="Receiver Name" />
+            <HeaderSorting column={column} headerName="Name" />
           </div>
         );
       },

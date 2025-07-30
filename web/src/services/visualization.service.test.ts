@@ -15,7 +15,7 @@ describe('VisualizationService', () => {
   useMongoDB();
 
   describe('getApplicationsByUser', () => {
-    it('should return number of applcations in sorted order, exclude admins and moderator', async () => {
+    it('should return number of applcations in sorted order', async () => {
       const mockMultipleUsers = [
         {
           firstName: 'admin',
@@ -67,12 +67,20 @@ describe('VisualizationService', () => {
       assert(result);
       expect(result.map(({ count, name }) => ({ count, name }))).to.deep.equal([
         {
+          count: 1,
+          name: 'admin viettech',
+        },
+        {
           count: 4,
           name: 'user2 viettech',
         },
         {
           count: 6,
           name: 'user1 viettech',
+        },
+        {
+          count: 12,
+          name: 'moderator viettech',
         },
       ]);
     });

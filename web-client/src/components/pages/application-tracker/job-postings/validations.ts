@@ -1,11 +1,18 @@
 import { z } from 'zod';
 
-import { JobPostingSortField, SortOrder } from '@vtmp/common/constants';
+import {
+  JobFunction,
+  JobType,
+  JobPostingSortField,
+  SortOrder,
+} from '@vtmp/common/constants';
 
 const JobPostingSchema = z.object({
   _id: z.string(),
   url: z.string(),
   jobTitle: z.string(),
+  jobFunction: z.nativeEnum(JobFunction),
+  jobType: z.nativeEnum(JobType),
   companyName: z.string(),
   location: z.string(),
   datePosted: z.string().optional(),

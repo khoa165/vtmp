@@ -145,7 +145,7 @@ const ShareInterviewSchema = z
 
 export const InterviewController = {
   createInterview: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
     const interviewData = InterviewCreateSchema.parse(req.body);
 
     const newInterview = await InterviewService.createInterview({
@@ -161,7 +161,7 @@ export const InterviewController = {
 
   getInterviewById: async (req: Request, res: Response) => {
     const { interviewId } = InterviewIdParamsSchema.parse(req.params);
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
 
     const interview = await InterviewService.getInterviewById({
       interviewId,
@@ -176,7 +176,7 @@ export const InterviewController = {
 
   getInterviewsByApplicationId: async (req: Request, res: Response) => {
     const filters = InterviewApplicationFilter.parse(req.params);
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
 
     const interviews = await InterviewService.getInterviews({
       filters: { ...filters, userId },
@@ -228,7 +228,7 @@ export const InterviewController = {
 
   updateInterviewById: async (req: Request, res: Response) => {
     const { interviewId } = InterviewIdParamsSchema.parse(req.params);
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
     const newUpdate = InterviewUpdateSchema.parse(req.body);
 
     const updatedInterview = await InterviewService.updateInterviewById({
@@ -245,7 +245,7 @@ export const InterviewController = {
 
   deleteInterviewById: async (req: Request, res: Response) => {
     const { interviewId } = InterviewIdParamsSchema.parse(req.params);
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
 
     const deletedInterview = await InterviewService.deleteInterviewById({
       interviewId,
@@ -261,7 +261,7 @@ export const InterviewController = {
   shareInterview: async (req: Request, res: Response) => {
     const { interviewId } = InterviewIdParamsSchema.parse(req.params);
     const { shareStatus } = ShareInterviewSchema.parse(req.body);
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
 
     const sharedInterview = await InterviewService.updateInterviewShareStatus({
       interviewId,

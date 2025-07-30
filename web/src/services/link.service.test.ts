@@ -11,9 +11,11 @@ import {
   LinkProcessingFailureStage,
 } from '@vtmp/common/constants';
 
+// eslint-disable-next-line boundaries/element-types
 import { ILink } from '@/models/link.model';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { LinkRepository } from '@/repositories/link.repository';
+// eslint-disable-next-line boundaries/element-types
 import { LinkService } from '@/services/link.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
@@ -53,14 +55,22 @@ describe('LinkService', () => {
 
   let googleLink: ILink;
   beforeEach(async () => {
-    googleLink = await LinkRepository.createLink(mockLinkData);
+    googleLink = await LinkRepository.createLink({
+      submittedBy: getNewMongoId(),
+      linkMetaData: mockLinkData,
+    });
   });
 
   describe('submitLink', () => {
     it('should throw error when link with same url already exists', async () => {
       console.log(googleLink);
       await expect(
-        LinkService.submitLink({ originalUrl: 'https://google.com' })
+        LinkService.submitLink({
+          submittedBy: getNewMongoId(),
+          linkMetaData: {
+            originalUrl: 'https://google.com',
+          },
+        })
       ).eventually.rejectedWith(DuplicateResourceError);
     });
 
@@ -71,7 +81,10 @@ describe('LinkService', () => {
       };
 
       await expect(
-        LinkService.submitLink(invalidEnumData)
+        LinkService.submitLink({
+          submittedBy: getNewMongoId(),
+          linkMetaData: invalidEnumData,
+        })
       ).eventually.rejectedWith(Error);
     });
 
@@ -261,7 +274,12 @@ describe('LinkService', () => {
   describe('getLinkCountByStatus', () => {
     beforeEach(async () => {
       await Promise.all(
-        mockMultipleLinks.map((link) => LinkRepository.createLink(link))
+        mockMultipleLinks.map((link) =>
+          LinkRepository.createLink({
+            submittedBy: getNewMongoId(),
+            linkMetaData: link,
+          })
+        )
       );
     });
 
@@ -301,7 +319,12 @@ describe('LinkService', () => {
   describe('getLinks', () => {
     beforeEach(async () => {
       await Promise.all(
-        mockMultipleLinks.map((link) => LinkRepository.createLink(link))
+        mockMultipleLinks.map((link) =>
+          LinkRepository.createLink({
+            submittedBy: getNewMongoId(),
+            linkMetaData: link,
+          })
+        )
       );
     });
     describe('when no filter is provided', () => {

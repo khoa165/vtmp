@@ -3,6 +3,13 @@ import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'lucide-react';
 import ReactCountryFlag from 'react-country-flag';
 
+import { formatEnumName } from '@vtmp/common/utils';
+
+import { StatusDot } from '#vtmp/web-client/components/base/status-dot';
+import {
+  JobFunctionColorMapping,
+  JobTypeColorMapping,
+} from '#vtmp/web-client/utils/constants';
 import { Button } from '@/components/base/button';
 import { HeaderSorting } from '@/components/base/header';
 import { IJobPosting } from '@/components/pages/application-tracker/job-postings/validations';
@@ -43,7 +50,8 @@ export const jobPostingsTableColumns = ({
     meta: { displayName: 'Company' },
   },
   {
-    accessorKey: 'jobTitle',
+    accessorKey: 'jobFunction',
+    size: 180,
     header: ({ column }) => {
       return (
         <div className="pl-2">
@@ -53,22 +61,70 @@ export const jobPostingsTableColumns = ({
     },
     meta: { displayName: 'Position' },
     cell: ({ row }) => {
-      // TODO-(QuangMinhNguyen27405): Modify column width for better visibility
+      return (
+        <div className="flex items-center gap-2 pl-2">
+          <StatusDot
+            status={row.original.jobFunction}
+            colorMapping={JobFunctionColorMapping}
+          />
+          {formatEnumName(row.original.jobFunction)}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'jobTitle',
+    size: 300,
+    header: ({ column }) => {
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Job Title" />
+        </div>
+      );
+    },
+    meta: { displayName: 'Job Title' },
+    cell: ({ row }) => {
       return (
         <a
           href={row.original.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center underline hover:text-primary pl-2"
+          className="inline-flex items-center gap-2 hover:text-primary pl-2"
         >
-          {row.original.jobTitle}
-          <Link className="ml-1 h-4 w-4" />
+          <Link className="h-4 w-4 flex-shrink-0" />
+          <span className="underline line-clamp-2">
+            {row.original.jobTitle}
+          </span>
         </a>
       );
     },
   },
   {
+    accessorKey: 'jobType',
+    size: 120,
+    header: ({ column }) => {
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Type" />
+        </div>
+      );
+    },
+    meta: { displayName: 'Type' },
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-2 pl-2">
+          <StatusDot
+            status={row.original.jobType}
+            colorMapping={JobTypeColorMapping}
+          />
+          {formatEnumName(row.original.jobType)}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'location',
+    size: 100,
     header: ({ column }) => {
       return (
         <div className="pl-2">
@@ -99,6 +155,7 @@ export const jobPostingsTableColumns = ({
   },
   {
     accessorKey: 'datePosted',
+    size: 160,
     header: ({ column }) => {
       return (
         <div className="pl-2">

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 
+import { safelyGetUserFromRequest } from '@/middlewares/utils';
 import { LinkService } from '@/services/link.service';
 import {
   LinkFilterSchema,
@@ -11,8 +12,12 @@ import {
 
 export const LinkController = {
   submitLink: async (req: Request, res: Response) => {
+    const userId = safelyGetUserFromRequest(req)?.id;
     const parsedLink = LinkMetaDataSchema.parse(req.body);
-    const submitLink = await LinkService.submitLink(parsedLink);
+    const submitLink = await LinkService.submitLink({
+      submittedBy: userId,
+      linkMetaData: parsedLink,
+    });
     res.status(201).json({
       message: 'Link has been submitted successfully.',
       data: submitLink,

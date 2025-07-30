@@ -85,6 +85,15 @@ const FilterSchema = z
   );
 
 export const JobPostingController = {
+  getJobPostingById: async (req: Request, res: Response) => {
+    const { jobPostingId } = JobPostingIdParamSchema.parse(req.params);
+    const jobPosting = await JobPostingService.getJobPostingById(jobPostingId);
+
+    res.status(200).json({
+      data: jobPosting,
+    });
+  },
+
   updateJobPosting: async (req: Request, res: Response) => {
     const { jobPostingId } = JobPostingIdParamSchema.parse(req.params);
     const jobPostingData = JobPostingUpdateSchema.parse(req.body);
@@ -109,7 +118,7 @@ export const JobPostingController = {
   },
 
   getJobPostingsUserHasNotAppliedTo: async (req: Request, res: Response) => {
-    const userId = getUserFromRequest(req).user.id;
+    const userId = getUserFromRequest(req).id;
     const filterData = FilterSchema.parse(req.query);
 
     const jobPostings =
@@ -120,6 +129,25 @@ export const JobPostingController = {
 
     res.status(200).json({
       message: 'Job postings retrieved successfully',
+      data: jobPostings,
+    });
+  },
+
+  getJobPostingsUserHasNotAppliedToCount: async (
+    req: Request,
+    res: Response
+  ) => {
+    const userId = getUserFromRequest(req).id;
+    const filterData = FilterSchema.parse(req.query);
+
+    const jobPostings =
+      await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
+        userId: userId,
+        filters: filterData,
+      });
+
+    res.status(200).json({
+      message: 'Job postings count retrieved successfully',
       data: jobPostings,
     });
   },

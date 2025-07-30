@@ -127,9 +127,7 @@ export function FilterDrawer({
                 setFilters({ ...filters, jobFunction: undefined })
               }
             >
-              <label className="block mb-1 text-sm font-medium">
-                Job Function
-              </label>
+              <label className="block mb-1 text-sm font-medium">Position</label>
               <Select
                 value={filters.jobFunction ?? ''}
                 onValueChange={(val) =>
@@ -147,7 +145,7 @@ export function FilterDrawer({
                     <span>{jobFunctionLabels[filters.jobFunction]}</span>
                   ) : (
                     <span className="text-muted-foreground">
-                      Select function
+                      Select job position
                     </span>
                   )}
                 </SelectTrigger>

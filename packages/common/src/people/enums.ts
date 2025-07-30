@@ -1,3 +1,4 @@
+/* eslint-disable typescriptSortKeys/string-enum */
 export enum PeopleName {
   KHOA_LE = 'KHOA_LE',
   HUY_ANH = 'HUY_ANH',
