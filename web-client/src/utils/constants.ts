@@ -5,6 +5,8 @@ import {
   InvitationStatus,
   LinkStatus,
   InterviewStatus,
+  JobFunction,
+  JobType,
 } from '@vtmp/common/constants';
 
 export const rolePriority: Record<MentorshipRole, number> = {
@@ -32,10 +34,10 @@ export enum MentorshipYear {
 }
 
 export enum StatsType {
-  OFFERS = 'offers',
-  INTERVIEWS = 'interviews',
-  TIMELINE = 'timeline',
-  LOGOS = 'logos',
+  INTERVIEWS = 'INTERVIEWS',
+  LOGOS = 'LOGOS',
+  OFFERS = 'OFFERS',
+  TIMELINE = 'TIMELINE',
 }
 
 export const interviewTypeAbbreviation: Record<InterviewType, string> = {
@@ -59,25 +61,25 @@ export enum PeopleSortColumn {
 }
 
 export enum QueryKey {
-  SUBMIT_LINK = '/api/links',
-  GET_APPLICATIONS = '/api/applications',
-  GET_INVITATIONS = '/api/admin/invitations',
-  GET_JOB_POSTINGS = '/api/job-postings/not-applied',
-  GET_JOB_POSTINGS_IN_ADAY = '/api/job-postings/not-applied-last-24h',
-  GET_APPLICATIONS_COUNT_BY_STATUS = '/api/applications/countByStatus',
-  GET_APPLICATION_BY_ID = '/api/applications/:id',
-  GET_LINKS = '/api/links/getLinks',
-  GET_LINKS_COUNT_BY_STATUS = '/api/links/count-by-status',
-  GET_INTERVIEW_BY_APPLICATION_ID = '/api/interviews/by-application/:applicationId',
-  GET_SHARED_INTERVIEW = '/api/interviews/shared',
-  GET_INTERVIEW_INSIGHTS = '/api/interviews/share/insights',
+  GET_APPLICATIONS = 'GET_APPLICATIONS',
+  GET_APPLICATIONS_COUNT_BY_STATUS = 'GET_APPLICATIONS_COUNT_BY_STATUS',
+  GET_APPLICATION_BY_ID = 'GET_APPLICATION_BY_ID',
+  GET_INTERVIEW_BY_APPLICATION_ID = 'GET_INTERVIEW_BY_APPLICATION_ID',
+  GET_INTERVIEW_INSIGHTS = 'GET_INTERVIEW_INSIGHTS',
+  GET_INVITATIONS = 'GET_INVITATIONS',
+  GET_JOB_POSTINGS = 'GET_JOB_POSTINGS',
+  GET_JOB_POSTINGS_IN_ADAY = 'GET_JOB_POSTINGS_IN_ADAY',
+  GET_LINKS = 'GET_LINKS',
+  GET_LINKS_COUNT_BY_STATUS = 'GET_LINKS_COUNT_BY_STATUS',
+  GET_SHARED_INTERVIEW = 'GET_SHARED_INTERVIEW',
+  SUBMIT_LINK = 'SUBMIT_LINK',
 }
 
 export enum Method {
+  DELETE = 'DELETE',
   GET = 'GET',
   POST = 'POST',
   PUT = 'PUT',
-  DELETE = 'DELETE',
 }
 
 export const StatusToColorMapping: Record<ApplicationStatus, string> = {
@@ -97,6 +99,21 @@ export const LinksColorMapping: Record<LinkStatus, string> = {
   [LinkStatus.PENDING_RETRY]: 'bg-[#F8FF6A]',
   [LinkStatus.PIPELINE_FAILED]: 'bg-[#A2BFF0]',
   [LinkStatus.PIPELINE_REJECTED]: 'bg-[#CAAB94]',
+};
+
+export const JobFunctionColorMapping: Record<JobFunction, string> = {
+  [JobFunction.SOFTWARE_ENGINEER]: 'bg-[#F49DFF]',
+  [JobFunction.DATA_ENGINEER]: 'bg-[#A3F890]',
+  [JobFunction.DATA_SCIENTIST]: 'bg-[#FEB584]',
+  [JobFunction.PRODUCT_DESIGNER]: 'bg-[#66FFCC]',
+  [JobFunction.UNKNOWN]: 'bg-[#F8FF6A]',
+};
+
+export const JobTypeColorMapping: Record<JobType, string> = {
+  [JobType.INTERNSHIP]: 'bg-[#A2BFF0]',
+  [JobType.NEW_GRAD]: 'bg-[#CAAB94]',
+  [JobType.INDUSTRY]: 'bg-(--vtmp-yellow)',
+  [JobType.UNKNOWN]: 'bg-(--vtmp-green)',
 };
 
 export const InvitationStatusToColorMapping: Record<InvitationStatus, string> =

@@ -27,6 +27,7 @@ const ApplicationSchema = z.object({
   interest: z.nativeEnum(InterestLevel, {
     message: 'Invalid interest level',
   }),
+  hasOA: z.boolean().optional(),
 });
 
 export const ApplicationsResponseSchema = z.object({
@@ -65,6 +66,7 @@ export const ApplicationFormSchema = z.object({
   referrer: z.string().optional(),
   portalLink: z.string().optional(),
   interest: z.nativeEnum(InterestLevel).optional(),
+  hasOA: z.boolean().optional(),
 });
 
 export type IApplications = z.infer<typeof ApplicationsResponseSchema>['data'];

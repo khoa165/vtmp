@@ -79,7 +79,7 @@ export interface MentorshipOffer {
 export interface MentorshipPerson {
   name: string;
   firstLast: string;
-  alias: string;
+  trackingKey: string;
   trackingName: string;
   professionalTitle: string;
   hobbies: string;
