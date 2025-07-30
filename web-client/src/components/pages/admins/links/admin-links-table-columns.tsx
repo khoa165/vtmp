@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { format, formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 
 import { formatEnumName } from '@vtmp/common/utils';
 
@@ -11,7 +11,6 @@ import {
   JobPostingData,
 } from '@/components/pages/admins/links/validation';
 import { LinksColorMapping } from '@/utils/constants';
-import { MONTH_DATE_YEAR } from '@/utils/date';
 
 interface AdminLinksTableColumnsProps {
   approveLinkFn: ({
@@ -22,11 +21,13 @@ interface AdminLinksTableColumnsProps {
     newUpdate: JobPostingData;
   }) => void;
   rejectLinkFn: ({ linkId }: { linkId: string }) => void;
+  reProcessLinkFn: ({ linkId }: { linkId: string }) => void;
 }
 
 export const adminLinksTableColumns = ({
   approveLinkFn,
   rejectLinkFn,
+  reProcessLinkFn,
 }: AdminLinksTableColumnsProps): ColumnDef<ILinkResponse>[] => [
   {
     accessorKey: 'jobTitle',
@@ -112,6 +113,7 @@ export const adminLinksTableColumns = ({
         currentLink={row.original}
         approveLinkFn={approveLinkFn}
         rejectLinkFn={rejectLinkFn}
+        reProcessLinkFn={reProcessLinkFn}
       />
     ),
   },
