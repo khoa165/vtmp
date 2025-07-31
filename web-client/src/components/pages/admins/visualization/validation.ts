@@ -13,8 +13,8 @@ export const JobPostingsTrendByWeekSchema = z.array(
   z.object({
     count: z.number(),
     year: z.number(),
-    startDate: z.date(),
-    endDate: z.date(),
+    startDate: z.string(),
+    endDate: z.string(),
   })
 );
 

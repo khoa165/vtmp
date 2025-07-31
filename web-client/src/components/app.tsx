@@ -15,6 +15,7 @@ import { PageWithToast } from '#vtmp/web-client/components/layout/page-with-toas
 import { VTMPWrapper } from '#vtmp/web-client/components/layout/vtmp-wrapper';
 import { InvitationsPage } from '#vtmp/web-client/components/pages/admins/invitations/invitations-page';
 import { AdminLinksPage } from '#vtmp/web-client/components/pages/admins/links/admin-links-page';
+import { VisualizationPage } from '#vtmp/web-client/components/pages/admins/visualization/visualization-page';
 import { ApplicationsPage } from '#vtmp/web-client/components/pages/application-tracker/applications/applications-page';
 import { JobPostingsPage } from '#vtmp/web-client/components/pages/application-tracker/job-postings/job-postings-page';
 import { LandingPage } from '#vtmp/web-client/components/pages/application-tracker/landing/landing-page';
@@ -92,6 +93,7 @@ export const App = () => {
             >
               <Route path="invitations" element={<InvitationsPage />} />
               <Route path="links" element={<AdminLinksPage />} />
+              <Route path="visualization" element={<VisualizationPage />} />
             </Route>
           </Route>
           <Route path="/login" element={<LoginPage />} />
