@@ -114,12 +114,11 @@ export const WebScrapingService = {
         // The limiter ensures that only CONCURRENCY_LIMIT promises are running at anytime
         // When one batch finishes, the next queued tasks batch starts
         limit(async () => {
-          const { userAgent, timeout } = this.config.scrapingConfig;
+          const { timeout } = this.config.scrapingConfig;
           // Open a new Chromium tab
           const page = await browser.newPage();
-          page.setUserAgent(userAgent);
-          page.setDefaultNavigationTimeout(timeout);
           try {
+            page.setDefaultNavigationTimeout(timeout);
             const { bodyText, finalUrl } = await this.accessWebPage(
               page,
               submittedLink.originalUrl
@@ -175,7 +174,10 @@ export const WebScrapingService = {
  * @throws {LinkAccessError} If the HTTP response status code is outside the 200–399 range.
  */
 async function _navigateToUrl(page: Page, url: string) {
-  const response = await page.goto(url, { waitUntil: 'networkidle2' }); // Make sure the page is fully loaded before proceeding
+  const response = await page.goto(url, {
+    waitUntil: 'domcontentloaded',
+    timeout: 10000,
+  }); // Make sure the page is fully loaded before proceeding
   if (
     response?.status() &&
     (response?.status() < 200 || response?.status() > 399)
