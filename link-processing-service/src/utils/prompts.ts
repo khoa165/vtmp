@@ -23,7 +23,7 @@ export const buildPrompt = (extractedText: string): string => {
   return `
 ${extractedText}
 \n\n
-First, evaluate a score from 0 to 100 indicating your confidence that the text is a job posting.
+Evaluate the input text and assign an "aiScore" from 0 to 100, representing how likely the text is a job posting (0 = definitely not, 100 = definitely a job post).
 
 if score < 25, return JSON object with only "aiScore" field set to the score
 

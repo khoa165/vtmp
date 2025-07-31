@@ -102,7 +102,7 @@ export const ReviewPopupButton = ({
         <div className="grid grid-cols-2 gap-2">
           <div className="flex flex-col items-start gap-2 w-full">
             <Label htmlFor="aiNote" className="flex items-center">
-              Is Job Posting
+              Confidence Score
             </Label>
             <Textarea
               id="aiNote"

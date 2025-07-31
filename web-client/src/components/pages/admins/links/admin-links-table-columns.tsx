@@ -22,7 +22,7 @@ interface AdminLinksTableColumnsProps {
   }) => void;
   rejectLinkFn: ({ linkId }: { linkId: string }) => void;
 }
-
+const GOOD_SCORE = 50;
 export const adminLinksTableColumns = ({
   approveLinkFn,
   rejectLinkFn,
@@ -34,7 +34,7 @@ export const adminLinksTableColumns = ({
       if (!row.original.jobTitle) {
         return <span className="pl-2">N/A</span>;
       }
-      return row.original.aiScore >= 50 ? (
+      return row.original.aiScore >= GOOD_SCORE ? (
         <a
           href={row.original.url}
           target="_blank"

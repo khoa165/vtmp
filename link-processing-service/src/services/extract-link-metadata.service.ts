@@ -21,6 +21,7 @@ import {
 import { AIExtractionError, logError , LinkProcessingBadRequest } from '@/utils/errors';
 import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
 import { buildPrompt } from '@/utils/prompts';
+import { CONFIDENCE_THRESHOLD } from '@/utils/constants';
 
 const MAX_LONG_RETRY = 4;
 export const ExtractLinkMetadataService = {
@@ -58,7 +59,7 @@ export const ExtractLinkMetadataService = {
       aiScore,
     } = RawAIResponseSchema.parse(JSON.parse(rawAIResponse));
 
-    if (aiScore < 25) {
+    if (aiScore < CONFIDENCE_THRESHOLD) {
       throw new LinkProcessingBadRequest(
         'The link is not a job posting',
         {
