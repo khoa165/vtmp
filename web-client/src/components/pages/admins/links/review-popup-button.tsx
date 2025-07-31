@@ -115,7 +115,7 @@ export const ReviewPopupButton = ({
               onClick={handleReProcessLink}
               className="text-vtmp-blue"
             >
-              Re-Process Link
+              Re-Process
             </Button>
           </div>
           <Textarea
