@@ -6,11 +6,6 @@ import {
   useGetJobPostingsCountInADay,
 } from '#vtmp/web-client/components/pages/application-tracker/job-postings/hooks/job-postings';
 import { Card } from '@/components/base/card';
-// import { Skeleton } from '@/components/base/skeleton';
-// import {
-//   useGetJobPostings,
-//   useGetJobPostingsInADay,
-// } from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { CustomError } from '@/utils/errors';
 
