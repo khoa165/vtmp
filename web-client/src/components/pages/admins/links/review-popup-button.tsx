@@ -106,18 +106,9 @@ export const ReviewPopupButton = ({
           <Textarea id="link" defaultValue={url} readOnly />
         </div>
         <div className="flex flex-col items-start gap-2 w-full">
-          <div className="flex flex-row justify-between w-full">
-            <Label htmlFor="aiNote" className="flex items-center">
-              AI Insight <Sparkles className="text-yellow-500" />
-            </Label>
-            <Button
-              variant="outline"
-              onClick={handleReProcessLink}
-              className="text-vtmp-blue"
-            >
-              Re-Process
-            </Button>
-          </div>
+          <Label htmlFor="aiNote" className="flex items-center">
+            AI Insight <Sparkles className="text-yellow-500" />
+          </Label>
           <Textarea
             id="aiNote"
             defaultValue={aiNote ?? ''}
@@ -226,6 +217,13 @@ export const ReviewPopupButton = ({
             className="cursor-pointer text-vtmp-orange"
           >
             Reject
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleReProcessLink}
+            className="text-vtmp-blue"
+          >
+            Re-Process
           </Button>
         </DialogFooter>
       </DialogContent>
