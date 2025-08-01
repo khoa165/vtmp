@@ -4,28 +4,47 @@ import { sub } from 'date-fns';
 import { toast } from 'sonner';
 
 import { ApplicationResponseSchema } from '@/components/pages/application-tracker/applications/validation';
-import { FilterState } from '@/components/pages/application-tracker/job-postings/job-postings-drawer';
-import { JobPostingsResponseSchema } from '@/components/pages/application-tracker/job-postings/validations';
+import {
+  JobPostingFilters,
+  JobPostingsCountResponseSchema,
+  JobPostingsResponseSchema,
+} from '@/components/pages/application-tracker/job-postings/validations';
 import { request } from '@/utils/api';
 import { Method, QueryKey } from '@/utils/constants';
 
-export const useGetJobPostings = (filters?: FilterState) => {
+export const useGetJobPostings = (jobPostingsFilters: JobPostingFilters) => {
   return useQuery({
-    queryKey: [QueryKey.GET_JOB_POSTINGS, filters],
+    queryKey: [QueryKey.GET_JOB_POSTINGS, jobPostingsFilters],
     queryFn: () =>
       request({
         method: Method.GET,
         url: '/job-postings/not-applied',
-        data: filters ?? {},
+        data: jobPostingsFilters,
         schema: JobPostingsResponseSchema,
         options: { includeOnlyDataField: true, requireAuth: true },
       }),
   });
 };
 
-export const useGetJobPostingsInADay = () => {
+export const useGetJobPostingsCount = () => {
   return useQuery({
-    queryKey: [QueryKey.GET_JOB_POSTINGS_IN_ADAY],
+    queryKey: [QueryKey.GET_JOB_POSTINGS_COUNT],
+    queryFn: () =>
+      request({
+        method: Method.GET,
+        url: '/job-postings/not-applied-count',
+        schema: JobPostingsCountResponseSchema,
+        options: {
+          includeOnlyDataField: true,
+          requireAuth: true,
+        },
+      }),
+  });
+};
+
+export const useGetJobPostingsCountInADay = () => {
+  return useQuery({
+    queryKey: [QueryKey.GET_JOB_POSTINGS_COUNT_IN_A_DAY],
     queryFn: () =>
       request({
         method: Method.GET,
@@ -33,8 +52,8 @@ export const useGetJobPostingsInADay = () => {
           postingDateRangeStart: sub(Date.now(), { days: 1 }),
           postingDateRangeEnd: new Date(),
         },
-        url: '/job-postings/not-applied',
-        schema: JobPostingsResponseSchema,
+        url: '/job-postings/not-applied-count',
+        schema: JobPostingsCountResponseSchema,
         options: {
           includeOnlyDataField: true,
           requireAuth: true,
@@ -58,6 +77,7 @@ export const useCreateApplication = () => {
     onSuccess: (res) => {
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_JOB_POSTINGS],
+        exact: false,
       });
       queryClient.invalidateQueries({
         queryKey: [QueryKey.GET_APPLICATIONS],

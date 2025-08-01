@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { format, formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 
 import { formatEnumName } from '@vtmp/common/utils';
 
@@ -11,7 +11,6 @@ import {
   JobPostingData,
 } from '@/components/pages/admins/links/validation';
 import { LinksColorMapping } from '@/utils/constants';
-import { MONTH_DATE_YEAR } from '@/utils/date';
 
 interface AdminLinksTableColumnsProps {
   approveLinkFn: ({

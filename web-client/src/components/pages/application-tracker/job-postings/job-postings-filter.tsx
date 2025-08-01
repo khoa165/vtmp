@@ -1,19 +1,18 @@
 import { Filter } from 'lucide-react';
 import { useState } from 'react';
 
+import { JobPostingFilters } from '#vtmp/web-client/components/pages/application-tracker/job-postings/validations';
 import { Button } from '@/components/base/button';
-import {
-  FilterDrawer,
-  FilterState,
-} from '@/components/pages/application-tracker/job-postings/job-postings-drawer';
+import { FilterDrawer } from '@/components/pages/application-tracker/job-postings/job-postings-drawer';
 
 export function FilterSelectionButton({
-  onApply,
+  filters,
+  setFilters,
 }: {
-  onApply: (filters: FilterState) => void;
+  filters: JobPostingFilters;
+  setFilters: (filters: JobPostingFilters) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [filters, setFilters] = useState({});
   return (
     <>
       <Button
@@ -27,8 +26,8 @@ export function FilterSelectionButton({
         open={open}
         onOpenChange={setOpen}
         value={filters}
-        onChange={setFilters}
-        onApply={onApply}
+        // onChange={setFilters}
+        onApply={setFilters}
       />
     </>
   );

@@ -1,10 +1,9 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { Calendar } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 
 import { JobFunction, JobType } from '@vtmp/common/constants';
 
+import { JobPostingFilters } from '#vtmp/web-client/components/pages/application-tracker/job-postings/validations';
 import { Button } from '@/components/base/button';
 import { Drawer, DrawerContent } from '@/components/base/drawer';
 import { Input } from '@/components/base/input';
@@ -15,23 +14,12 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/base/select';
-import { QueryKey } from '@/utils/constants';
-
-export interface FilterState {
-  jobTitle?: string;
-  location?: string;
-  jobFunction?: JobFunction;
-  jobType?: JobType;
-  postingDateRangeStart?: Date;
-  postingDateRangeEnd?: Date;
-}
 
 interface FilterDrawerProps {
   open: boolean;
-  value: FilterState;
+  value: JobPostingFilters;
   onOpenChange: (open: boolean) => void;
-  onApply?: (filters: FilterState) => void;
-  onChange: (filters: FilterState) => void;
+  onApply?: (filters: JobPostingFilters) => void;
 }
 
 export function FilterDrawer({
@@ -39,46 +27,12 @@ export function FilterDrawer({
   value,
   onOpenChange,
   onApply,
-  onChange,
 }: FilterDrawerProps) {
-  const [filterParams, setFilterParams] = useSearchParams();
-  const queryClient = useQueryClient();
-
-  const initialFilters: FilterState = {
-    jobTitle: filterParams.get('jobTitle') ?? undefined,
-    location: filterParams.get('location') ?? undefined,
-    jobFunction: filterParams.get('jobFunction') as JobFunction | undefined,
-    jobType: filterParams.get('jobType') as JobType | undefined,
-    postingDateRangeStart: filterParams.get('startDate')
-      ? new Date(filterParams.get('startDate')!)
-      : undefined,
-    postingDateRangeEnd: filterParams.get('endDate')
-      ? new Date(filterParams.get('endDate')!)
-      : undefined,
-  };
-
-  const [filters, setFilters] = useState<FilterState>(initialFilters);
+  const [filters, setFilters] = useState<JobPostingFilters>(value);
 
   useEffect(() => {
     setFilters(value);
   }, [value]);
-
-  useEffect(() => {
-    const updatedFilters: FilterState = {
-      jobTitle: filterParams.get('jobTitle') ?? undefined,
-      location: filterParams.get('location') ?? undefined,
-      jobFunction: filterParams.get('jobFunction') as JobFunction | undefined,
-      jobType: filterParams.get('jobType') as JobType | undefined,
-      postingDateRangeStart: filterParams.get('startDate')
-        ? new Date(filterParams.get('startDate')!)
-        : undefined,
-      postingDateRangeEnd: filterParams.get('endDate')
-        ? new Date(filterParams.get('endDate')!)
-        : undefined,
-    };
-    setFilters(updatedFilters);
-    onChange(updatedFilters);
-  }, [filterParams]);
 
   const jobTypeLabels: Record<JobType, string> = {
     [JobType.INTERNSHIP]: 'Internship',
@@ -286,13 +240,13 @@ export function FilterDrawer({
                   Posted Before
                 </label>
                 <Input
-                  type="text"
+                  type="date"
                   placeholder="YYYY-MM-DD"
-                  className="pr-10"
+                  className="pr-10 appearance-none"
                   value={postingEndInput}
                   onChange={(e) => {
                     const input = e.target.value;
-                    setPostingEndInput(input); // ✅ allow user to type freely
+                    setPostingEndInput(input);
 
                     const parsed = new Date(input);
                     if (!isNaN(parsed.getTime())) {
@@ -311,40 +265,31 @@ export function FilterDrawer({
 
             {/* Buttons */}
             <div className="flex justify-between pt-4">
-              <Button variant="ghost" onClick={() => setFilters({})}>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  if (onApply) {
+                    onApply({
+                      limit: 10,
+                      jobTitle: undefined,
+                      location: undefined,
+                      jobFunction: undefined,
+                      jobType: undefined,
+                      postingDateRangeStart: undefined,
+                      postingDateRangeEnd: undefined,
+                    });
+                  }
+                }}
+              >
                 Clear All
               </Button>
               <Button
                 variant="default"
                 onClick={() => {
-                  const newParams = new URLSearchParams();
-
-                  if (filters.jobTitle)
-                    newParams.set('jobTitle', filters.jobTitle);
-                  if (filters.location)
-                    newParams.set('location', filters.location);
-                  if (filters.jobFunction)
-                    newParams.set('jobFunction', filters.jobFunction);
-                  if (filters.jobType)
-                    newParams.set('jobType', filters.jobType);
-                  if (filters.postingDateRangeStart)
-                    newParams.set(
-                      'startDate',
-                      filters.postingDateRangeStart.toISOString().split('T')[0]
-                    );
-                  if (filters.postingDateRangeEnd)
-                    newParams.set(
-                      'endDate',
-                      filters.postingDateRangeEnd.toISOString().split('T')[0]
-                    );
-
-                  setFilterParams(newParams);
-
-                  onApply?.(filters);
+                  if (onApply) {
+                    onApply(filters);
+                  }
                   onOpenChange(false);
-                  queryClient.invalidateQueries({
-                    queryKey: [QueryKey.GET_JOB_POSTINGS, filters],
-                  });
                 }}
               >
                 Apply Filters

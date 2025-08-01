@@ -1,11 +1,11 @@
 import { ExternalLink } from 'lucide-react';
 
-import { Card } from '@/components/base/card';
-import { Skeleton } from '@/components/base/skeleton';
+import { Skeleton } from '#vtmp/web-client/components/base/skeleton';
 import {
-  useGetJobPostings,
-  useGetJobPostingsInADay,
-} from '@/components/pages/application-tracker/job-postings/hooks/job-postings';
+  useGetJobPostingsCount,
+  useGetJobPostingsCountInADay,
+} from '#vtmp/web-client/components/pages/application-tracker/job-postings/hooks/job-postings';
+import { Card } from '@/components/base/card';
 import { useNavigatePreserveQueryParams } from '@/hooks/useNavigatePreserveQueryParams';
 import { CustomError } from '@/utils/errors';
 
@@ -16,13 +16,13 @@ export const JobPostingStatusCards = (): React.JSX.Element | null => {
     isLoading: isLoadingInADay,
     error: errorInADay,
     data: jobPostingsInADay,
-  } = useGetJobPostingsInADay();
+  } = useGetJobPostingsCountInADay();
 
   const {
     isLoading: isLoadingNotApplied,
     error: errorNotApplied,
     data: jobPostingsNotApplied,
-  } = useGetJobPostings();
+  } = useGetJobPostingsCount();
 
   if (isLoadingInADay || isLoadingNotApplied) {
     return (
@@ -34,7 +34,7 @@ export const JobPostingStatusCards = (): React.JSX.Element | null => {
   }
 
   if (errorInADay || errorNotApplied) {
-    throw new CustomError('Error fetching job postings data');
+    throw new CustomError('Error fetching job postings count data');
   }
 
   return (
@@ -47,7 +47,7 @@ export const JobPostingStatusCards = (): React.JSX.Element | null => {
             </span>
           </div>
           <div className="text-[2rem] max-lg:text-[1rem] font-bold">
-            {jobPostingsInADay?.length ?? 0}
+            {jobPostingsInADay?.totalCount ?? 0}
           </div>
           <div className="flex flex-row items-center gap-2">
             <span className="max-lg:text-[0.7rem] text-wrap">
@@ -65,7 +65,7 @@ export const JobPostingStatusCards = (): React.JSX.Element | null => {
             </span>
           </div>
           <div className="text-[2rem] max-lg:text-[1rem] font-bold">
-            {jobPostingsNotApplied?.length ?? 0}
+            {jobPostingsNotApplied?.totalCount ?? 0}
           </div>
           <div className="flex flex-row items-center gap-2">
             <span
