@@ -28,6 +28,13 @@ export const JobPostingsResponseSchema = z.object({
   }),
 });
 
+export const JobPostingsCountResponseSchema = z.object({
+  message: z.string(),
+  data: z.object({
+    totalCount: z.number(),
+  }),
+});
+
 export type IJobPostings = z.infer<
   typeof JobPostingsResponseSchema
 >['data']['data'];

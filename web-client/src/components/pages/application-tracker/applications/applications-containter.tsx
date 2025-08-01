@@ -28,7 +28,12 @@ export const ApplicationsContainer = ({
   const { mutate: deleteApplicationFn } = useDeleteApplication();
   const { mutate: updateApplicationStatusFn } = useUpdateApplicationStatus();
 
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: 'appliedOnDate',
+      desc: true,
+    },
+  ]);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
 
   const [selectedApplicationId, setSelectedApplicationId] =

@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { ApplicationResponseSchema } from '@/components/pages/application-tracker/applications/validation';
 import {
   JobPostingFilters,
+  JobPostingsCountResponseSchema,
   JobPostingsResponseSchema,
 } from '@/components/pages/application-tracker/job-postings/validations';
 import { request } from '@/utils/api';
@@ -25,9 +26,25 @@ export const useGetJobPostings = (jobPostingsFilters: JobPostingFilters) => {
   });
 };
 
-export const useGetJobPostingsInADay = () => {
+export const useGetJobPostingsCount = () => {
   return useQuery({
-    queryKey: [QueryKey.GET_JOB_POSTINGS_IN_ADAY],
+    queryKey: [QueryKey.GET_JOB_POSTINGS_COUNT],
+    queryFn: () =>
+      request({
+        method: Method.GET,
+        url: '/job-postings/not-applied-count',
+        schema: JobPostingsCountResponseSchema,
+        options: {
+          includeOnlyDataField: true,
+          requireAuth: true,
+        },
+      }),
+  });
+};
+
+export const useGetJobPostingsCountInADay = () => {
+  return useQuery({
+    queryKey: [QueryKey.GET_JOB_POSTINGS_COUNT_IN_A_DAY],
     queryFn: () =>
       request({
         method: Method.GET,
@@ -35,8 +52,8 @@ export const useGetJobPostingsInADay = () => {
           postingDateRangeStart: sub(Date.now(), { days: 1 }),
           postingDateRangeEnd: new Date(),
         },
-        url: '/job-postings/not-applied',
-        schema: JobPostingsResponseSchema,
+        url: '/job-postings/not-applied-count',
+        schema: JobPostingsCountResponseSchema,
         options: {
           includeOnlyDataField: true,
           requireAuth: true,

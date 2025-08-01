@@ -6,12 +6,22 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { ChevronLeft, ChevronRight, ChevronsLeft } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { JobPostingSortField, SortOrder } from '@vtmp/common/constants';
 
 import { Button } from '#vtmp/web-client/components/base/button';
+import { Label } from '#vtmp/web-client/components/base/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '#vtmp/web-client/components/base/select';
 import { JobPostingsTable } from '#vtmp/web-client/components/pages/application-tracker/job-postings/job-postings-table';
+import { CustomError } from '#vtmp/web-client/utils/errors';
 import { Input } from '@/components/base/input';
 import {
   useCreateApplication,
@@ -34,6 +44,10 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
       desc: true,
     },
   ]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
@@ -47,7 +61,7 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
   };
 
   const [filters, setFilters] = useState<JobPostingFilters>({
-    limit: 10,
+    limit: pagination.pageSize,
     cursor: undefined,
     sortField: JobPostingSortField.DATE_POSTED,
     sortOrder: SortOrder.DESC,
@@ -67,7 +81,7 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
     [createApplicationFn]
   ) as ColumnDef<IJobPosting, unknown>[];
 
-  const { data: jobPostingsData } = useGetJobPostings(filters);
+  const { isError, data: jobPostingsData } = useGetJobPostings(filters);
 
   const [tableData, setTableData] = useState<IJobPosting[]>([]);
 
@@ -76,6 +90,8 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
       setTableData(jobPostingsData.data);
       if (jobPostingsData.cursor !== undefined) {
         setNextCursor(jobPostingsData.cursor);
+      } else {
+        setNextCursor(undefined);
       }
     }
   }, [jobPostingsData]);
@@ -86,18 +102,29 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
-    autoResetPageIndex: true,
     onSortingChange: setSorting,
+    onPaginationChange: setPagination,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     state: {
       sorting,
+      pagination,
       columnFilters,
       columnVisibility,
     },
     defaultColumn,
   });
+
+  const handleResetPage = () => {
+    setNextCursor(undefined);
+    setPrevCursors([]);
+    setFilters((prev) => ({
+      ...prev,
+      limit: pagination.pageSize,
+      cursor: undefined,
+    }));
+  };
 
   useEffect(() => {
     if (sorting.length > 0) {
@@ -109,14 +136,13 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
         sortField: id as JobPostingSortField,
       });
 
-      setNextCursor(undefined);
-      setPrevCursors([]);
-      setFilters((prev) => ({
-        ...prev,
-        cursor: undefined,
-      }));
+      handleResetPage();
     }
-  }, [sorting]);
+  }, [sorting, pagination.pageSize]);
+
+  if (isError) {
+    throw new CustomError('Error fetching job postings data');
+  }
 
   return (
     <>
@@ -139,46 +165,80 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
         <ColumnVisibilityConfiguration table={table} />
       </section>
       <JobPostingsTable table={table} columns={columns} />
-      <section className="flex items-center justify-end space-x-2 py-4 text-white">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            if (prevCursors.length > 0) {
-              const updatedPrev = [...prevCursors];
-              const lastCursor = updatedPrev.pop();
+      <section className="flex items-center justify-end space-x-2 py-4 text-white pr-3">
+        <div className="flex gap-2 items-center mr-20">
+          <Label htmlFor="rows-per-page" className="text-sm font-medium">
+            Rows per page
+          </Label>
+          <Select
+            value={`${table.getState().pagination.pageSize}`}
+            onValueChange={(value) => {
+              table.setPageSize(Number(value));
+            }}
+          >
+            <SelectTrigger size="sm" className="w-20" id="rows-per-page">
+              <SelectValue placeholder={`${pagination.pageSize}`} />
+            </SelectTrigger>
+            <SelectContent side="top">
+              {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+                <SelectItem key={pageSize} value={`${pageSize}`}>
+                  {pageSize}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="ml-auto flex items-center gap-2 lg:ml-0">
+          <Button
+            variant="outline"
+            className="hidden h-8 w-8 p-0 lg:flex"
+            onClick={() => handleResetPage()}
+            disabled={prevCursors.length === 0}
+          >
+            <span className="sr-only">Go to first page</span>
+            <ChevronsLeft />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              if (prevCursors.length > 0) {
+                const updatedPrev = [...prevCursors];
+                const lastCursor = updatedPrev.pop();
 
-              setPrevCursors(updatedPrev);
-              setFilters((prev) => ({
-                ...prev,
-                cursor: lastCursor,
-              }));
-              setNextCursor(undefined);
-            }
-          }}
-          disabled={prevCursors.length === 0}
-        >
-          Previous
-        </Button>
+                setPrevCursors(updatedPrev);
+                setFilters((prev) => ({
+                  ...prev,
+                  cursor: lastCursor,
+                }));
+                setNextCursor(undefined);
+              }
+            }}
+            disabled={prevCursors.length === 0}
+          >
+            <span className="sr-only">Go to previous page</span>
+            <ChevronLeft />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              if (nextCursor) {
+                setPrevCursors((prev) => [...prev, filters.cursor || '']);
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            if (nextCursor) {
-              setPrevCursors((prev) => [...prev, filters.cursor || '']);
-
-              setFilters((prev) => ({
-                ...prev,
-                cursor: nextCursor,
-              }));
-              setNextCursor(undefined);
-            }
-          }}
-          disabled={!nextCursor}
-        >
-          Next
-        </Button>
+                setFilters((prev) => ({
+                  ...prev,
+                  cursor: nextCursor,
+                }));
+                setNextCursor(undefined);
+              }
+            }}
+            disabled={!nextCursor}
+          >
+            <span className="sr-only">Go to next page</span>
+            <ChevronRight />
+          </Button>
+        </div>
       </section>
     </>
   );
