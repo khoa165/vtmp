@@ -1,10 +1,14 @@
-// import * as Sentry from '@sentry/node';
-// import { getServerLogger } from '@vtmp/observability/server';
 import { NextFunction, Request, Response } from 'express';
 
 import { SystemRole } from '@vtmp/common/constants';
 
-import { handleError, UnauthorizedError } from '@/utils/errors';
+import { EnvConfig } from '@/config/env';
+import { Logger } from '@/config/logger';
+import {
+  ApplicationSpecificError,
+  handleError,
+  UnauthorizedError,
+} from '@/utils/errors';
 
 interface AuthenticatedRequest extends Request {
   user: {
@@ -50,32 +54,25 @@ export const routeErrorHandler = (
 
   _next: NextFunction
 ) => {
-  // // Capture error in Sentry (only in non-test environments)
-  // if (process.env.NODE_ENV !== 'test') {
-  //   const extra = {
-  //     url: req.url,
-  //     method: req.method,
-  //     headers: req.headers,
-  //     body: req.body,
-  //   };
+  const extra = {
+    url: req.url,
+    method: req.method,
+    headers: req.headers,
+    body: req.body,
+    environment: EnvConfig.get().NODE_ENV,
+  };
 
-  //   if (err instanceof ApplicationSpecificError) {
-  //     console.log('should log here');
-  //     Sentry.captureException(err.message, {
-  //       extra,
-  //       tags: {
-  //         statusCode: err.statusCode,
-  //       },
-  //     });
+  if (err instanceof ApplicationSpecificError) {
+    console.log('should log here in utils.ts error handler');
+    Logger.error(err.message, {
+      ...extra,
+      statusCode: err.statusCode,
+      metadata: err.metadata,
+      userId: 123,
+      treverseId: 456,
+    });
+  }
 
-  //     getServerLogger().error(err.message, {
-  //       ...extra,
-  //       tags: {
-  //         statusCode: err.statusCode,
-  //       },
-  //     });
-  //   }
-  // }
   const { statusCode, errors } = handleError(err);
   res.status(statusCode).json({ errors });
   return;

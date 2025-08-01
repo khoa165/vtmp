@@ -6643,6 +6643,8 @@ __metadata:
     "@sentry/react": "npm:^9.32.0"
     "@vtmp/common": "npm:1.0.0"
     "@vtmp/server-common": "npm:1.0.0"
+    dotenv: "npm:^16.4.7"
+    tsc-alias: "npm:^1.8.16"
     winston: "npm:^3.17.0"
     winston-transport: "npm:^4.9.0"
     winston-transport-sentry-node: "npm:^3.0.0"
