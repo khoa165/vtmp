@@ -74,7 +74,7 @@ export const adminLinksTableColumns = ({
     header: ({ column }) => {
       return (
         <div className="pl-2">
-          <HeaderSorting column={column} headerName="isJobPosting" />
+          <HeaderSorting column={column} headerName="Confidence Score" />
         </div>
       );
     },

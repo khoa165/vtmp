@@ -23,7 +23,7 @@ export const RawAIResponseSchema = z
     datePosted: z.string().optional(),
     jobDescription: JobDescriptionSchema.optional(),
     aiNote: z.string().optional(),
-    aiScore: z.number(),
+    aiScore: z.number().min(0).max(100),
   })
   .strict();
 

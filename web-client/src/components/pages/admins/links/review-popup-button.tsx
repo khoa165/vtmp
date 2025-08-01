@@ -101,11 +101,11 @@ export const ReviewPopupButton = ({
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div className="flex flex-col items-start gap-2 w-full">
-            <Label htmlFor="aiNote" className="flex items-center">
+            <Label htmlFor="aiScore" className="flex items-center">
               Confidence Score
             </Label>
             <Textarea
-              id="aiNote"
+              id="aiScore"
               defaultValue={`${aiScore}%`}
               style={{ resize: 'vertical' }}
               readOnly
