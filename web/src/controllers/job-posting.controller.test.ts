@@ -719,7 +719,7 @@ describe('JobPostingController', () => {
           .query({ companyName: 'Nonexistent Company' });
 
         expectSuccessfulResponse({ res, statusCode: 200 });
-        expect(res.body.data).to.equal(0);
+        expect(res.body.data.totalCount).to.equal(0);
       });
 
       it('should return 0 count if user has applied to all avaialble job postings in the system', async () => {
@@ -738,7 +738,7 @@ describe('JobPostingController', () => {
           .set('Authorization', `Bearer ${mockUserToken}`);
 
         expectSuccessfulResponse({ res, statusCode: 200 });
-        expect(res.body.data).to.equal(0);
+        expect(res.body.data.totalCount).to.equal(0);
       });
 
       it('should return 0 count if user has applied to all avaialble job postings in the system with filter', async () => {
@@ -759,7 +759,7 @@ describe('JobPostingController', () => {
           .set('Accept', 'application/json')
           .query({ companyName: jobPostings[0].companyName });
 
-        expect(res.body.data).to.equal(0);
+        expect(res.body.data.totalCount).to.equal(0);
       });
 
       it('should return count of job postings user has not applied to', async () => {
@@ -775,7 +775,7 @@ describe('JobPostingController', () => {
           .set('Authorization', `Bearer ${mockUserToken}`)
           .set('Accept', 'application/json');
 
-        expect(res.body.data).to.equal(
+        expect(res.body.data.totalCount).to.equal(
           jobPostings.length - appliedApplications
         );
       });
@@ -806,7 +806,7 @@ describe('JobPostingController', () => {
             postingDateRangeEnd: end,
           });
 
-        expect(res.body.data).to.equal(
+        expect(res.body.data.totalCount).to.equal(
           jobPostings.length - appliedApplications.length
         );
       });
