@@ -263,7 +263,7 @@ export const JobPostingRepository = {
   }: {
     userId: string;
     filters: JobPostingFilter;
-  }): Promise<number> => {
+  }) => {
     const {
       jobTitle,
       companyName,
@@ -346,6 +346,6 @@ export const JobPostingRepository = {
       },
     ]);
 
-    return result.length > 0 ? result[0].totalCount : 0;
+    return result.length > 0 ? result[0] : { totalCount: 0 };
   },
 };

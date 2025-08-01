@@ -729,16 +729,16 @@ describe('JobPostingService', () => {
       });
 
       it('should return 0 if there is no job postings that match the filters', async () => {
-        const count =
+        const { totalCount } =
           await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
             userId: userIdA,
             filters: { companyName: 'Nonexistent Company' },
           });
 
-        expect(count).to.equal(0);
+        expect(totalCount).to.equal(0);
       });
 
-      it('should return 0 count if user has applied to all avaialble job postings in the system', async () => {
+      it('should return 0 totalCount if user has applied to all avaialble job postings in the system', async () => {
         await Promise.all(
           jobPostings.map((jobPosting) =>
             ApplicationRepository.createApplication({
@@ -748,16 +748,16 @@ describe('JobPostingService', () => {
           )
         );
 
-        const count =
+        const { totalCount } =
           await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
             userId: userIdA,
             filters: {},
           });
 
-        expect(count).to.equal(0);
+        expect(totalCount).to.equal(0);
       });
 
-      it('should return 0 count if user has applied to all avaialble job postings in the system with filter', async () => {
+      it('should return 0 totalCount if user has applied to all avaialble job postings in the system with filter', async () => {
         await Promise.all(
           jobPostings.map((jobPosting) =>
             ApplicationRepository.createApplication({
@@ -769,16 +769,16 @@ describe('JobPostingService', () => {
 
         assert(jobPostings[0]);
 
-        const count =
+        const { totalCount } =
           await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
             userId: userIdA,
             filters: { companyName: jobPostings[0].companyName },
           });
 
-        expect(count).to.equal(0);
+        expect(totalCount).to.equal(0);
       });
 
-      it('should return count of job postings user has not applied to', async () => {
+      it('should return totalCount of job postings user has not applied to', async () => {
         const appliedApplications = 3;
 
         await randomCreateApplications({
@@ -786,16 +786,16 @@ describe('JobPostingService', () => {
           numApplications: appliedApplications,
         });
 
-        const count =
+        const { totalCount } =
           await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
             userId: userIdA,
             filters: {},
           });
 
-        expect(count).to.equal(jobPostings.length - appliedApplications);
+        expect(totalCount).to.equal(jobPostings.length - appliedApplications);
       });
 
-      it('should return count of job postings user has not applied to with filters', async () => {
+      it('should return totalCount of job postings user has not applied to with filters', async () => {
         const end = new Date();
         const start = new Date(end.getTime() - 1000 * 60 * 60 * 24 * 30);
 
@@ -812,7 +812,7 @@ describe('JobPostingService', () => {
           })
         );
 
-        const count =
+        const { totalCount } =
           await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
             userId: userIdA,
             filters: {
@@ -821,7 +821,9 @@ describe('JobPostingService', () => {
             },
           });
 
-        expect(count).to.equal(jobPostings.length - appliedApplications.length);
+        expect(totalCount).to.equal(
+          jobPostings.length - appliedApplications.length
+        );
       });
     });
   });
