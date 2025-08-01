@@ -147,17 +147,17 @@ export const CronService = {
     PIPELINE_IN_PROCESS = true;
 
     try {
-      const links = await LinkRepository.getLinks({
+      const link = await LinkRepository.getLinks({
         attemptsCount: { $lt: MAX_LONG_RETRY_ATTEMPTS },
         _id: linkId,
       });
 
-      if (links.length === 0) {
+      if (link.length === 0) {
         PIPELINE_IN_PROCESS = false;
         return { successfulLinks: [], failedLinks: [] };
       }
 
-      const linksData: SubmittedLink[] = links.map(
+      const linkData: SubmittedLink[] = link.map(
         ({ _id, originalUrl, attemptsCount }) => ({
           _id: _id.toString(),
           originalUrl,
@@ -165,7 +165,7 @@ export const CronService = {
         })
       );
 
-      const response = await this._sendLinksToLambda(linksData);
+      const response = await this._sendLinksToLambda(linkData);
       let result: {
         successfulLinks: MetadataExtractedLink[];
         failedLinks: FailedProcessedLink[];
@@ -185,7 +185,7 @@ export const CronService = {
     } catch (error: unknown) {
       PIPELINE_IN_PROCESS = false;
       console.error('Cron error: ', error);
-      throw new InternalServerError('Failed to process links', { error });
+      throw new InternalServerError('Failed to process link', { error });
     }
   },
 
