@@ -76,6 +76,7 @@ export const ApplicationRepository = {
       portalLink?: string;
       interest?: InterestLevel;
       deletedAt?: Date | null;
+      hasOA?: boolean;
     };
     options?: {
       includeDeletedDoc?: boolean;
@@ -151,13 +152,6 @@ export const ApplicationRepository = {
           from: 'users',
           localField: '_id',
           foreignField: '_id',
-          pipeline: [
-            {
-              $match: {
-                role: 'USER',
-              },
-            },
-          ],
           as: 'user',
         },
       },

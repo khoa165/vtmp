@@ -36,6 +36,10 @@ const ApplicationSchema = new mongoose.Schema<IApplication>(
       type: Boolean,
       default: true,
     },
+    hasOA: {
+      type: Boolean,
+      default: false,
+    },
     status: {
       type: String,
       enum: Object.values(ApplicationStatus),

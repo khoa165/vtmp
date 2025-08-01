@@ -157,6 +157,7 @@ export const useUpdateApplicationMetadata = () => {
         portalLink?: string;
         referrer?: string;
         note?: string;
+        hasOA?: boolean;
       };
     }) =>
       request({
