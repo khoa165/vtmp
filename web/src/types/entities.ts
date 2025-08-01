@@ -22,6 +22,7 @@ export interface IApplication extends Document {
   location?: JobPostingRegion;
   userId: Types.ObjectId;
   hasApplied: boolean;
+  hasOA: boolean;
   status: ApplicationStatus;
   appliedOnDate: Date;
   note?: string;

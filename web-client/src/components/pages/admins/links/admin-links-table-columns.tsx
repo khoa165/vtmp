@@ -92,7 +92,9 @@ export const adminLinksTableColumns = ({
       const isoDate = row.getValue<string>('datePosted');
       if (!isoDate)
         return (
-          <div className="pl-2">{format(new Date(), MONTH_DATE_YEAR)}</div>
+          <div className="pl-2">
+            {formatDistanceToNow(new Date(), { addSuffix: true })}
+          </div>
         );
       const date = new Date(isoDate);
       return (

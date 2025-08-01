@@ -369,6 +369,42 @@ describe('ApplicationService', () => {
         status: ApplicationStatus.OFFERED,
       });
     });
+
+    it('should successfully mark application as having OA and update status to OA', async () => {
+      const updatedApplication = await ApplicationService.updateApplicationById(
+        {
+          applicationId: application_A0.id,
+          userId: userId_A,
+          updatedMetadata: { status: ApplicationStatus.OA },
+        }
+      );
+
+      assert(updatedApplication);
+      expect(updatedApplication.hasOA).to.equal(true);
+      expect(updatedApplication.status).to.equal(ApplicationStatus.OA);
+    });
+
+    it('should not update the value of hasOA even if status become INTERVIEWING', async () => {
+      await ApplicationService.updateApplicationById({
+        applicationId: application_A0.id,
+        userId: userId_A,
+        updatedMetadata: { status: ApplicationStatus.OA },
+      });
+
+      const updatedApplication = await ApplicationService.updateApplicationById(
+        {
+          applicationId: application_A0.id,
+          userId: userId_A,
+          updatedMetadata: { status: ApplicationStatus.INTERVIEWING },
+        }
+      );
+
+      assert(updatedApplication);
+      expect(updatedApplication.hasOA).to.equal(true);
+      expect(updatedApplication.status).to.equal(
+        ApplicationStatus.INTERVIEWING
+      );
+    });
   });
 
   describe('markApplicationAsRejected', () => {
