@@ -3,12 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { SystemRole } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
-import { Logger } from '@/config/logger';
-import {
-  ApplicationSpecificError,
-  handleError,
-  UnauthorizedError,
-} from '@/utils/errors';
+import { handleError, logErrors, UnauthorizedError } from '@/utils/errors';
 
 interface AuthenticatedRequest extends Request {
   user: {
@@ -51,29 +46,18 @@ export const routeErrorHandler = (
   err: unknown,
   req: Request,
   res: Response,
-
   _next: NextFunction
 ) => {
-  const extra = {
+  const { statusCode, errors } = handleError(err);
+
+  logErrors(statusCode, errors, {
     url: req.url,
     method: req.method,
     headers: req.headers,
     body: req.body,
     environment: EnvConfig.get().NODE_ENV,
-  };
+  });
 
-  if (err instanceof ApplicationSpecificError) {
-    console.log('should log here in utils.ts error handler');
-    Logger.error(err.message, {
-      ...extra,
-      statusCode: err.statusCode,
-      metadata: err.metadata,
-      userId: 123,
-      treverseId: 456,
-    });
-  }
-
-  const { statusCode, errors } = handleError(err);
   res.status(statusCode).json({ errors });
   return;
 };

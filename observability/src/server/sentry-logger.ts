@@ -3,11 +3,14 @@ import dotenv from 'dotenv';
 import winston from 'winston';
 import Transport from 'winston-transport';
 
+import { SystemRole } from '@vtmp/common/constants';
+
 import { BaseLogger } from '@/base/base-logger';
 
 dotenv.config();
 Sentry.init({
   dsn: process.env.SENTRY_DSN || '',
+  environment: process.env.NODE_ENV || 'PROD',
   sendDefaultPii: true,
   tracesSampleRate: 1.0,
   _experiments: { enableLogs: true },
@@ -60,6 +63,14 @@ export class SentryLogger implements BaseLogger {
     });
     this.winstonLogger.error(message, {
       ...meta,
+    });
+  }
+
+  public setUser(user: { id: string; email: string; role: SystemRole }): void {
+    Sentry.setUser({
+      id: user.id,
+      email: user.email,
+      role: user.role,
     });
   }
 }

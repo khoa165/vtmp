@@ -1,5 +1,7 @@
 import winston from 'winston';
 
+import { SystemRole } from '@vtmp/common/constants';
+
 import { BaseLogger } from '@/base/base-logger';
 
 const consoleStructuredFormat = winston.format.combine(
@@ -42,6 +44,10 @@ export class ConsoleLogger implements BaseLogger {
 
   public error(message: string, meta?: Record<string, unknown>): void {
     this.winstonLogger.error(message, meta);
+  }
+
+  public setUser(_user: { id: string; email: string; role: SystemRole }): void {
+    return;
   }
 }
 
