@@ -1,7 +1,10 @@
-import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
-
+import z from 'zod';
+import { EnvConfig } from '@/config/env';
+import { JobPostingFilter } from '@/models/job-posting.model';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { ResourceNotFoundError } from '@/utils/errors';
+import { JobPostingRegion } from '@vtmp/common/constants';
+import { JWTUtils } from '@vtmp/server-common/utils';
 
 export const JobPostingService = {
   getJobPostingById: async (jobId: string) => {
@@ -57,19 +60,37 @@ export const JobPostingService = {
     filters,
   }: {
     userId: string;
-    filters?: {
-      jobTitle?: string;
-      companyName?: string;
-      location?: string;
-      jobFunction?: JobFunction;
-      jobType?: JobType;
-      postingDateRangeStart?: Date;
-      postingDateRangeEnd?: Date;
-    };
+    filters?: JobPostingFilter;
   }) => {
-    return JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
-      userId: userId,
-      filters: filters ?? {},
-    });
+    if (filters?.cursor) {
+      const parsedCursor = filters?.cursor
+        ? JWTUtils.peekAndParseToken(
+            filters?.cursor,
+            z.object({ cursor: z.string() })
+          ).cursor
+        : undefined;
+
+      filters = {
+        ...filters,
+        ...(parsedCursor !== undefined ? { cursor: parsedCursor } : {}),
+      };
+    }
+
+    const jobPostings =
+      await JobPostingRepository.getJobPostingsUserHasNotAppliedTo({
+        userId,
+        filters: filters || {},
+      });
+
+    return {
+      data: jobPostings.data,
+      cursor:
+        jobPostings.data.length === filters?.limit
+          ? JWTUtils.createTokenWithPayload(
+              { cursor: jobPostings.cursor },
+              EnvConfig.get().JWT_SECRET
+            )
+          : undefined,
+    };
   },
 };
