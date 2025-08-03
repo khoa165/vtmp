@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
+
 import { SystemRole } from '@vtmp/common/constants';
+
 import { handleError, UnauthorizedError } from '@/utils/errors';
 
 interface AuthenticatedRequest extends Request {
@@ -15,11 +17,19 @@ interface AuthenticatedServiceRequest extends Request {
   };
 }
 
-export const getUserFromRequest = (req: Request): AuthenticatedRequest => {
+export const getUserFromRequest = (
+  req: Request
+): AuthenticatedRequest['user'] => {
   if (!req.user) {
     throw new UnauthorizedError('User is not authenticated', {});
   }
-  return req as AuthenticatedRequest;
+  return (req as AuthenticatedRequest).user;
+};
+
+export const safelyGetUserFromRequest = (
+  req: Request
+): AuthenticatedRequest['user'] | null => {
+  return req.user ?? null;
 };
 
 export const getServiceFromRequest = (
@@ -35,7 +45,7 @@ export const routeErrorHandler = (
   err: unknown,
   _req: Request,
   res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   _next: NextFunction
 ) => {
   const { statusCode, errors } = handleError(err);

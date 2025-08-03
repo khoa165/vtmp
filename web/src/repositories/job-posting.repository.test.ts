@@ -16,6 +16,7 @@ import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import { sample } from 'remeda';
 
 describe('JobPostingRepository', () => {
   useMongoDB();
@@ -145,7 +146,7 @@ describe('JobPostingRepository', () => {
     const userIdB = getNewMongoId();
     let jobPostings: (IJobPosting | undefined)[];
     const limit = 10;
-    const totalJobPostings = 153;
+    const totalJobPostings = 160;
 
     const mockMultipleJobPostings = Array.from(
       { length: totalJobPostings },
@@ -176,15 +177,16 @@ describe('JobPostingRepository', () => {
       userId: string;
       numApplications: number;
     }) => {
-      const shuffled = [...jobPostings].sort(() => 0.5 - Math.random());
-      const selected = shuffled.slice(0, numApplications);
+      const selected = sample(jobPostings, numApplications) ?? [];
 
-      for (const job of selected) {
-        await ApplicationRepository.createApplication({
-          jobPostingId: job ? job._id.toString() : '',
-          userId,
-        });
-      }
+      await Promise.all(
+        selected.map((job) =>
+          ApplicationRepository.createApplication({
+            jobPostingId: job ? job._id.toString() : '',
+            userId,
+          })
+        )
+      );
 
       const selectedIds = new Set(selected.map((job) => job?._id.toString()));
 
@@ -220,12 +222,16 @@ describe('JobPostingRepository', () => {
             },
           });
         jobsNotAppliedByUser = paginationResult.data;
+        let prev_cursor = cursor;
         cursor = paginationResult.cursor;
 
         expect(jobsNotAppliedByUser)
           .to.be.an('array')
           .that.has.length(
-            Math.min(allJobPostings.length - limit * (page - 1), limit)
+            Math.min(allJobPostings.length - limit * (page - 1), limit),
+            `${page} ${prev_cursor} \n ${jobsNotAppliedByUser.map((job) => job.companyName + ' ' + job.url + '\n')}, \n ${allJobPostings
+              .slice((page - 1) * limit, page * limit)
+              .map((job) => job?.companyName + ' ' + job?.url + '\n')}`
           );
         jobsNotAppliedByUser.forEach((job) => {
           assert(job);
@@ -235,12 +241,7 @@ describe('JobPostingRepository', () => {
         ).to.deep.equal(
           allJobPostings
             .slice((page - 1) * limit, page * limit)
-            .map((jobPosting) => jobPosting?._id.toString()),
-          `${jobsNotAppliedByUser.map((job) => job.url?.toString())}\n${JSON.stringify(
-            allJobPostings
-              .slice((page - 1) * limit, page * limit)
-              .map((jobPosting) => jobPosting?.url.toString())
-          )}`
+            .map((jobPosting) => jobPosting?._id.toString())
         );
 
         page += 1;
@@ -331,7 +332,7 @@ describe('JobPostingRepository', () => {
 
         const jobPostingsA = await randomCreateApplications({
           userId: userIdA,
-          numApplications: 600,
+          numApplications: 60,
         });
 
         const jobPostingsB = await randomCreateApplications({

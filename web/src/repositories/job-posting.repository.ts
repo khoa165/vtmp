@@ -77,9 +77,6 @@ export const JobPostingRepository = {
       sortField = JobPostingSortField.DATE_POSTED,
       jobTitle,
       companyName,
-      location,
-      jobFunction,
-      jobType,
       postingDateRangeStart,
       postingDateRangeEnd,
     } = filters;
@@ -98,10 +95,10 @@ export const JobPostingRepository = {
         $options: 'i',
       };
     }
-    if (location) dynamicMatch.location = location;
-    if (jobFunction) dynamicMatch.jobFunction = jobFunction;
-    if (jobType) dynamicMatch.jobType = jobType;
-    if (postingDateRangeStart || postingDateRangeEnd) {
+    if (filters?.jobFunction) dynamicMatch.jobFunction = filters.jobFunction;
+    if (filters?.location) dynamicMatch.location = filters.location;
+    if (filters?.jobType) dynamicMatch.jobType = filters.jobType;
+    if (filters?.postingDateRangeStart || filters?.postingDateRangeEnd) {
       const datePostedFilter: Record<string, Date> = {};
 
       if (postingDateRangeStart) {
@@ -154,24 +151,24 @@ export const JobPostingRepository = {
       getPaginationMatch(cursor);
 
     while (data.length < limit && hasNextPage) {
-      const jobPostings = await JobPostingModel.aggregate([
+      let jobPostings = await JobPostingModel.aggregate([
         {
           $match: {
             ...dynamicMatch,
             deletedAt: null,
           },
         },
-        ...(cursorNext ? [{ $match: paginationMatchNext }] : []),
         {
           $sort: {
             [sortField]: sortDirection,
             _id: sortDirection,
           },
         },
+        { $match: paginationMatchNext },
         { $limit: limit + 1 },
       ]);
 
-      if (jobPostings.length < limit) {
+      if (jobPostings.length <= limit) {
         hasNextPage = false;
       }
 
@@ -179,7 +176,7 @@ export const JobPostingRepository = {
       const last = jobPostings[jobPostings.length - 1];
       if (last) {
         const lastCursorValue =
-          sortField === JobPostingSortField.DATE_POSTED
+          last[sortField] instanceof Date
             ? last[sortField]?.toISOString()
             : last[sortField];
         cursorNext = `${last._id.toString()}_${lastCursorValue}`;
@@ -214,6 +211,12 @@ export const JobPostingRepository = {
           },
         },
         {
+          $sort: {
+            [sortField]: sortDirection,
+            _id: sortDirection,
+          },
+        },
+        {
           $match: {
             userApplication: { $size: 0 },
           },
@@ -221,12 +224,6 @@ export const JobPostingRepository = {
         {
           $project: {
             userApplication: 0,
-          },
-        },
-        {
-          $sort: {
-            [sortField]: sortDirection,
-            _id: sortDirection,
           },
         },
       ]);
@@ -242,11 +239,11 @@ export const JobPostingRepository = {
       data: results,
     };
 
-    if (hasNextPage) {
+    if (results.length > 0) {
       const last = results[results.length - 1];
       if (last) {
         const lastCursorValue =
-          sortField === JobPostingSortField.DATE_POSTED
+          last[sortField] instanceof Date
             ? last[sortField]?.toISOString()
             : last[sortField];
         response.cursor = `${last._id.toString()}_${lastCursorValue}`;

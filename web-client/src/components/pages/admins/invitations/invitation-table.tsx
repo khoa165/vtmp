@@ -83,7 +83,11 @@ export function InvitationTable<TData extends IInvitationSchema, TValue>({
           className="max-w-sm text-white"
         />
       </section>
-      <ResizableTable table={table} columns={columns} />
+      <ResizableTable
+        table={table}
+        columns={columns}
+        emptyStateText="No invitations found! Let's invite others to use Treverse!"
+      />
     </>
   );
 }
