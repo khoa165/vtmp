@@ -7,6 +7,7 @@ dotenv.config();
 
 const migrationConfigSchema = z.object({
   MONGO_URI: z.string(),
+  DEFAULT_ADMIN_PASSWORD: z.string(),
 });
 
 export const EnvConfig = {

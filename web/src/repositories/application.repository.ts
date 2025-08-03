@@ -2,7 +2,8 @@ import mongoose, { ClientSession } from 'mongoose';
 
 import { ApplicationStatus, InterestLevel } from '@vtmp/common/constants';
 
-import { ApplicationModel, IApplication } from '@/models/application.model';
+import { ApplicationModel } from '@/models/application.model';
+import { IApplication } from '@/types/entities';
 
 export const ApplicationRepository = {
   createApplication: async ({
@@ -75,6 +76,7 @@ export const ApplicationRepository = {
       portalLink?: string;
       interest?: InterestLevel;
       deletedAt?: Date | null;
+      hasOA?: boolean;
     };
     options?: {
       includeDeletedDoc?: boolean;
@@ -150,13 +152,6 @@ export const ApplicationRepository = {
           from: 'users',
           localField: '_id',
           foreignField: '_id',
-          pipeline: [
-            {
-              $match: {
-                role: 'USER',
-              },
-            },
-          ],
           as: 'user',
         },
       },

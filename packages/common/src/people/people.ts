@@ -11,7 +11,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.KHOA_LE]: {
     name: 'Khoa Le',
     firstLast: 'Khoa Le',
-    alias: PeopleName.KHOA_LE,
+    trackingKey: PeopleName.KHOA_LE,
     trackingName: 'Khoa',
     school: 'University of Wisconsin-Madison',
     linkedin: 'https://www.linkedin.com/in/khoalethien',
@@ -56,7 +56,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.HUY_ANH]: {
     name: 'Huy Anh',
     firstLast: 'Anh Nguyen',
-    alias: PeopleName.HUY_ANH,
+    trackingKey: PeopleName.HUY_ANH,
     trackingName: 'Huy Anh',
     school: 'Texas A&M University',
     linkedin: 'https://www.linkedin.com/in/anh-henry-ng',
@@ -95,7 +95,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.CHAN_LE]: {
     name: 'Chan Le',
     firstLast: 'Chan Le',
-    alias: PeopleName.CHAN_LE,
+    trackingKey: PeopleName.CHAN_LE,
     trackingName: 'Chân',
     school: 'Georgia Tech',
     linkedin: 'https://www.linkedin.com/in/chanlvh',
@@ -120,7 +120,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.NGUYEN_VU]: {
     name: 'Nguyen Vu',
     firstLast: 'Nguyen Vu',
-    alias: PeopleName.NGUYEN_VU,
+    trackingKey: PeopleName.NGUYEN_VU,
     trackingName: 'Nguyên',
     school: 'University of Waterloo',
     linkedin: 'https://www.linkedin.com/in/zoeyvu',
@@ -150,7 +150,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.THU_ANH]: {
     name: 'Thu Anh',
     firstLast: 'Anh Pham',
-    alias: PeopleName.THU_ANH,
+    trackingKey: PeopleName.THU_ANH,
     trackingName: 'Thu Anh',
     school: 'Fairleigh Dickinson University',
     linkedin: 'https://www.linkedin.com/in/anhpham604',
@@ -180,7 +180,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.KEVIN_LUU]: {
     name: 'Kevin Luu',
     firstLast: 'Kevin Luu',
-    alias: PeopleName.KEVIN_LUU,
+    trackingKey: PeopleName.KEVIN_LUU,
     trackingName: 'Kevin',
     school: 'University of California, Berkeley',
     linkedin: 'https://www.linkedin.com/in/khluu',
@@ -210,7 +210,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.JENNY_QUACH]: {
     name: 'Jenny Quach',
     firstLast: 'Jenny Quach',
-    alias: PeopleName.JENNY_QUACH,
+    trackingKey: PeopleName.JENNY_QUACH,
     trackingName: 'Jenny',
     school: 'University of California, San Diego',
     linkedin: 'https://www.linkedin.com/in/jennyquach11',
@@ -294,7 +294,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.THIEN_SON]: {
     name: 'Thien Son',
     firstLast: 'Son Mac',
-    alias: PeopleName.THIEN_SON,
+    trackingKey: PeopleName.THIEN_SON,
     trackingName: 'Thiên Sơn',
     school: 'University of Arizona',
     linkedin: 'https://www.linkedin.com/in/sonmac1203/',
@@ -320,7 +320,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.NICK_DOAN]: {
     name: 'Nick Doan',
     firstLast: 'Nick Doan',
-    alias: PeopleName.NICK_DOAN,
+    trackingKey: PeopleName.NICK_DOAN,
     trackingName: 'Nick',
     school: 'Tufts University',
     linkedin: 'https://www.linkedin.com/in/nick-huy-doan',
@@ -346,7 +346,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.SARAH_VO]: {
     name: 'Sarah Vo',
     firstLast: 'Sarah Vo',
-    alias: PeopleName.SARAH_VO,
+    trackingKey: PeopleName.SARAH_VO,
     trackingName: 'Sarah',
     school: 'Simon Fraser University',
     linkedin: 'https://www.linkedin.com/in/sarahvo604',
@@ -367,7 +367,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.HUU_DANG]: {
     name: 'Huu Dang',
     firstLast: 'Dang Pham',
-    alias: PeopleName.HUU_DANG,
+    trackingKey: PeopleName.HUU_DANG,
     trackingName: 'Đăng',
     school: 'University of South Florida',
     linkedin: 'https://www.linkedin.com/in/dangdei',
@@ -433,7 +433,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.ROBIN_HOANG]: {
     name: 'Robin Hoang',
     firstLast: 'Robin Hoang',
-    alias: PeopleName.ROBIN_HOANG,
+    trackingKey: PeopleName.ROBIN_HOANG,
     trackingName: 'Robin',
     school: 'Colby College',
     linkedin: 'https://www.linkedin.com/in/tlhoang',
@@ -499,7 +499,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.PHUOC_ONG]: {
     name: 'Phuoc Ong',
     firstLast: 'Phuoc Ong',
-    alias: PeopleName.PHUOC_ONG,
+    trackingKey: PeopleName.PHUOC_ONG,
     trackingName: 'Phước',
     school: 'DePauw University',
     linkedin: 'https://www.linkedin.com/in/peterong208/',
@@ -595,7 +595,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.KHUE_TANG]: {
     name: 'Khue Tang',
     firstLast: 'Khue Tang',
-    alias: PeopleName.KHUE_TANG,
+    trackingKey: PeopleName.KHUE_TANG,
     trackingName: 'Khuê',
     school: 'Providence College',
     linkedin: 'https://www.linkedin.com/in/khuetang',
@@ -655,7 +655,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.PHUONG_CAO]: {
     name: 'Phuong Cao',
     firstLast: 'Phuong Cao',
-    alias: PeopleName.PHUONG_CAO,
+    trackingKey: PeopleName.PHUONG_CAO,
     trackingName: 'Phương',
     school: 'Bucknell University',
     linkedin: 'https://www.linkedin.com/in/phuong-cao-pc',
@@ -727,7 +727,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.NGOC_DOAN]: {
     name: 'Ngoc Doan',
     firstLast: 'Ngoc Doan',
-    alias: PeopleName.NGOC_DOAN,
+    trackingKey: PeopleName.NGOC_DOAN,
     trackingName: 'Ngọc',
     school: 'Soka University of America',
     linkedin: 'https://www.linkedin.com/in/pn-ngocdoan',
@@ -787,7 +787,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.CUONG_NGUYEN]: {
     name: 'Cuong Nguyen',
     firstLast: 'Cuong Nguyen',
-    alias: PeopleName.CUONG_NGUYEN,
+    trackingKey: PeopleName.CUONG_NGUYEN,
     trackingName: 'Cường',
     school: 'Amherst College',
     linkedin: 'https://www.linkedin.com/in/vnguyen24',
@@ -865,7 +865,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.MINH_QUAN]: {
     name: 'Minh Quan',
     firstLast: 'Quan Le',
-    alias: PeopleName.MINH_QUAN,
+    trackingKey: PeopleName.MINH_QUAN,
     trackingName: 'Minh Quân',
     school: 'University of Cincinnati',
     linkedin: 'https://www.linkedin.com/in/lennmquan',
@@ -931,7 +931,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.TRANG_VU]: {
     name: 'Thuy Trang',
     firstLast: 'Trang Vu',
-    alias: PeopleName.TRANG_VU,
+    trackingKey: PeopleName.TRANG_VU,
     trackingName: 'Trang Vũ',
     school: 'York University',
     linkedin: 'https://www.linkedin.com/in/tranguv',
@@ -990,7 +990,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.HIEU_VUONG]: {
     name: 'Hieu Vuong',
     firstLast: 'Hieu Vuong',
-    alias: PeopleName.HIEU_VUONG,
+    trackingKey: PeopleName.HIEU_VUONG,
     trackingName: 'Hiếu',
     school: 'University of Toronto',
     linkedin: 'https://www.linkedin.com/in/lucas-vuong-495b54199',
@@ -1036,7 +1036,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.THANH_NGUYEN]: {
     name: 'Thanh Nguyen',
     firstLast: 'Thanh Nguyen',
-    alias: PeopleName.THANH_NGUYEN,
+    trackingKey: PeopleName.THANH_NGUYEN,
     trackingName: 'Thành',
     school: 'University of British Columbia',
     linkedin: 'https://www.linkedin.com/in/gsthanhnguyen',
@@ -1092,7 +1092,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.HUNG_NGO]: {
     name: 'Hung Ngo',
     firstLast: 'Hung Ngo',
-    alias: PeopleName.HUNG_NGO,
+    trackingKey: PeopleName.HUNG_NGO,
     trackingName: 'Hưng',
     school: 'University of Massachusetts Amherst',
     linkedin: 'https://www.linkedin.com/in/hungngo1607',
@@ -1146,7 +1146,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.NGOC_ANH_TRAN]: {
     name: 'Ngoc Anh Tran',
     firstLast: 'Anh Tran',
-    alias: PeopleName.NGOC_ANH_TRAN,
+    trackingKey: PeopleName.NGOC_ANH_TRAN,
     trackingName: 'Ngọc Anh',
     school: 'Mount Holyoke College',
     linkedin: 'https://www.linkedin.com/in/anhngtran',
@@ -1212,7 +1212,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.VY_NGUYEN]: {
     name: 'Vy Nguyen',
     firstLast: 'Vy Nguyen',
-    alias: PeopleName.VY_NGUYEN,
+    trackingKey: PeopleName.VY_NGUYEN,
     trackingName: 'Thuý Vy',
     school: 'Catholic University of America',
     linkedin: 'https://www.linkedin.com/in/vy-nguyen-7275b2157',
@@ -1261,7 +1261,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.VIEN_NGUYEN]: {
     name: 'Vien Nguyen',
     firstLast: 'Vien Nguyen',
-    alias: PeopleName.VIEN_NGUYEN,
+    trackingKey: PeopleName.VIEN_NGUYEN,
     trackingName: 'Viên',
     school: 'University of South Florida',
     linkedin: 'https://www.linkedin.com/in/vienng',
@@ -1312,7 +1312,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.THUC_ANH]: {
     name: 'Thuc Anh',
     firstLast: 'Anh Hoang',
-    alias: PeopleName.THUC_ANH,
+    trackingKey: PeopleName.THUC_ANH,
     trackingName: 'Thục Anh',
     school: 'Lehigh University',
     linkedin: 'https://www.linkedin.com/in/ally-hoang-4b4562223',
@@ -1377,7 +1377,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.GIANG_PHAM]: {
     name: 'Giang Pham',
     firstLast: 'Giang Pham',
-    alias: PeopleName.GIANG_PHAM,
+    trackingKey: PeopleName.GIANG_PHAM,
     trackingName: 'Giang',
     school: 'Colby College',
     linkedin: 'https://www.linkedin.com/in/giang-pham-17925222b',
@@ -1422,7 +1422,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.PHAN_ANH]: {
     name: 'Phan Anh',
     firstLast: 'Anh Nguyen',
-    alias: PeopleName.PHAN_ANH,
+    trackingKey: PeopleName.PHAN_ANH,
     trackingName: 'Phan Anh',
     school: 'DePauw University',
     linkedin: 'https://www.linkedin.com/in/phanng',
@@ -1469,7 +1469,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.QUY_NGUYEN]: {
     name: 'Quy Nguyen',
     firstLast: 'Quy Nguyen',
-    alias: PeopleName.QUY_NGUYEN,
+    trackingKey: PeopleName.QUY_NGUYEN,
     trackingName: 'Quý',
     school: 'University of Windsor',
     linkedin: 'https://www.linkedin.com/in/quy-nguyen-b658aa243',
@@ -1511,7 +1511,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.THANG_NGUYEN]: {
     name: 'Thang Nguyen',
     firstLast: 'Thang Nguyen',
-    alias: PeopleName.THANG_NGUYEN,
+    trackingKey: PeopleName.THANG_NGUYEN,
     trackingName: 'Thắng',
     school: 'Toronto Metropolitan University',
     linkedin: 'https://www.linkedin.com/in/thang-nguyen98',
@@ -1544,7 +1544,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.QUYNH_TRAN]: {
     name: 'Quynh Tran',
     firstLast: 'Quynh Tran',
-    alias: PeopleName.QUYNH_TRAN,
+    trackingKey: PeopleName.QUYNH_TRAN,
     trackingName: 'Quỳnh',
     school: 'DePauw University',
     linkedin: 'https://www.linkedin.com/in/quynhtran158',
@@ -1603,7 +1603,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.PHUONG_LE]: {
     name: 'Phuong Le',
     firstLast: 'Phuong Le',
-    alias: PeopleName.PHUONG_LE,
+    trackingKey: PeopleName.PHUONG_LE,
     trackingName: 'Phượng',
     school: 'Denison University',
     linkedin: 'https://www.linkedin.com/in/phuong-le-p2',
@@ -1650,7 +1650,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.BA_QUAN]: {
     name: 'Ba Quan',
     firstLast: 'Quan Nguyen',
-    alias: PeopleName.BA_QUAN,
+    trackingKey: PeopleName.BA_QUAN,
     trackingName: 'Bá Quân',
     school: 'University of South Florida',
     linkedin: 'https://www.linkedin.com/in/quanmichaelnguyen',
@@ -1691,7 +1691,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.VY_TRAN]: {
     name: 'Vy Tran',
     firstLast: 'Vy Tran',
-    alias: PeopleName.VY_TRAN,
+    trackingKey: PeopleName.VY_TRAN,
     trackingName: 'Vy Trần',
     school: 'Bucknell University',
     linkedin: 'https://www.linkedin.com/in/vytran1203',
@@ -1750,7 +1750,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.TRANG_LINH]: {
     name: 'Trang Linh',
     firstLast: 'Linh Tran',
-    alias: PeopleName.TRANG_LINH,
+    trackingKey: PeopleName.TRANG_LINH,
     trackingName: 'Trang Linh',
     school: 'Hobart & William Smith Colleges',
     linkedin: 'https://www.linkedin.com/in/linh-trant',
@@ -1797,7 +1797,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.PHUC_KHANG]: {
     name: 'Phuc Khang',
     firstLast: 'Khang Nguyen',
-    alias: PeopleName.PHUC_KHANG,
+    trackingKey: PeopleName.PHUC_KHANG,
     trackingName: 'Phúc Khang',
     school: 'York University',
     linkedin: 'https://www.linkedin.com/in/jimmynguyen152',
@@ -1838,7 +1838,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.LONG_DAU]: {
     name: 'Long Dau',
     firstLast: 'Long Dau',
-    alias: PeopleName.LONG_DAU,
+    trackingKey: PeopleName.LONG_DAU,
     trackingName: 'Long',
     school: 'Texas Christian University',
     linkedin: 'https://www.linkedin.com/in/long-dau-722399238/',
@@ -1894,7 +1894,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.HOANG_NGUYEN]: {
     name: 'Hoang Nguyen',
     firstLast: 'Hoang Nguyen',
-    alias: PeopleName.HOANG_NGUYEN,
+    trackingKey: PeopleName.HOANG_NGUYEN,
     trackingName: 'Hoàng',
     school: 'University of Alberta',
     linkedin: 'https://www.linkedin.com/in/hoanglui1010',
@@ -1950,7 +1950,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.HA_LINH]: {
     name: 'Ha Linh',
     firstLast: 'Linh Nguyen',
-    alias: PeopleName.HA_LINH,
+    trackingKey: PeopleName.HA_LINH,
     trackingName: 'Hà Linh',
     school: 'Tufts University',
     linkedin: 'https://www.linkedin.com/in/linh-nguyen-b07788215',
@@ -1994,7 +1994,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.KHANH_LINH]: {
     name: 'Khanh Linh',
     firstLast: 'Linh Hoang',
-    alias: PeopleName.KHANH_LINH,
+    trackingKey: PeopleName.KHANH_LINH,
     trackingName: 'Khánh Linh',
     school: 'Dickinson College',
     linkedin: 'https://www.linkedin.com/in/linhhoang04',
@@ -2047,7 +2047,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.HUU_KHANG]: {
     name: 'Huu Khang',
     firstLast: 'Khang Nguyen',
-    alias: PeopleName.HUU_KHANG,
+    trackingKey: PeopleName.HUU_KHANG,
     trackingName: 'Hữu Khang',
     school: 'University of Massachusetts Amherst',
     linkedin: 'https://www.linkedin.com/in/ken107',
@@ -2100,7 +2100,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.TRANG_DO]: {
     name: 'Lien Trang',
     firstLast: 'Trang Do',
-    alias: PeopleName.TRANG_DO,
+    trackingKey: PeopleName.TRANG_DO,
     trackingName: 'Trang Đỗ',
     school: 'Northeastern University',
     linkedin: 'https://www.linkedin.com/in/trang-jenny-do',
@@ -2159,7 +2159,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.HAI_ANH]: {
     name: 'Hai Anh',
     firstLast: 'Anh Nguyen',
-    alias: PeopleName.HAI_ANH,
+    trackingKey: PeopleName.HAI_ANH,
     trackingName: 'Hải Anh',
     school: 'Fordham University',
     linkedin: 'https://www.linkedin.com/in/hennessy-nguyen',
@@ -2209,7 +2209,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.NAM_NGUYEN]: {
     name: 'Nam Nguyen',
     firstLast: 'Nam Nguyen',
-    alias: PeopleName.NAM_NGUYEN,
+    trackingKey: PeopleName.NAM_NGUYEN,
     trackingName: 'Nam',
     school: 'Michigan State University',
     linkedin: 'https://www.linkedin.com/in/namnguyen0192',
@@ -2261,7 +2261,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.TRI_HOANG]: {
     name: 'Tri Hoang',
     firstLast: 'Tri Hoang',
-    alias: PeopleName.TRI_HOANG,
+    trackingKey: PeopleName.TRI_HOANG,
     trackingName: 'Trí',
     school: 'Rice University',
     linkedin: 'https://www.linkedin.com/in/minhtrihoang/',
@@ -2350,7 +2350,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.VAN_NGUYEN]: {
     name: 'Van Nguyen',
     firstLast: 'Van Nguyen',
-    alias: PeopleName.VAN_NGUYEN,
+    trackingKey: PeopleName.VAN_NGUYEN,
     trackingName: 'Vân',
     school: 'University of Toronto',
     linkedin: 'https://www.linkedin.com/in/vannguyen22',
@@ -2457,7 +2457,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.KHA_TRAN]: {
     name: 'Kha Tran',
     firstLast: 'Kha Tran',
-    alias: PeopleName.KHA_TRAN,
+    trackingKey: PeopleName.KHA_TRAN,
     trackingName: 'Kha',
     school: 'University of Manitoba',
     linkedin: 'https://www.linkedin.com/in/duy-kha-tran-b53a43279',
@@ -2502,7 +2502,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.HUE_QUAN]: {
     name: 'Hue Quan',
     firstLast: 'Quan Vu',
-    alias: PeopleName.HUE_QUAN,
+    trackingKey: PeopleName.HUE_QUAN,
     trackingName: 'Huệ Quân',
     school: 'School of the Art Institute of Chicago',
     linkedin: 'https://www.linkedin.com/in/jackie-vu-669282212/',
@@ -2521,7 +2521,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.TRAN_VO]: {
     name: 'Tran Vo',
     firstLast: 'Tran Vo',
-    alias: PeopleName.TRAN_VO,
+    trackingKey: PeopleName.TRAN_VO,
     trackingName: 'Trân',
     school: 'Drexel University',
     linkedin: 'https://www.linkedin.com/in/tran-cheryl-vo',
@@ -2540,7 +2540,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.DIEP_NGUYEN]: {
     name: 'Diep Nguyen',
     firstLast: 'Diep Nguyen',
-    alias: PeopleName.DIEP_NGUYEN,
+    trackingKey: PeopleName.DIEP_NGUYEN,
     trackingName: 'Diệp',
     school: 'Drexel University',
     linkedin: 'https://www.linkedin.com/in/kaylie-diep-nguyen',
@@ -2559,7 +2559,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.MONICA_HUYNH]: {
     name: 'Monica Huynh',
     firstLast: 'Monica Huynh',
-    alias: PeopleName.MONICA_HUYNH,
+    trackingKey: PeopleName.MONICA_HUYNH,
     trackingName: 'Monica',
     school: 'University of British Columbia',
     linkedin: 'https://www.linkedin.com/in/monicachauhuynh',
@@ -2590,7 +2590,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.PHUC_TRUONG]: {
     name: 'Phuc Truong',
     firstLast: 'Phuc Truong',
-    alias: PeopleName.PHUC_TRUONG,
+    trackingKey: PeopleName.PHUC_TRUONG,
     trackingName: 'Jun',
     school: 'University of South Florida',
     linkedin: 'https://www.linkedin.com/in/phuctruong105',
@@ -2621,7 +2621,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.AN_TRAN]: {
     name: 'An Tran',
     firstLast: 'An Tran',
-    alias: PeopleName.AN_TRAN,
+    trackingKey: PeopleName.AN_TRAN,
     trackingName: 'Ân',
     school: 'California State Polytechnic University, Pomona',
     linkedin: 'https://www.linkedin.com/in/hong-an-tran-4846b6255',
@@ -2652,7 +2652,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.QUANG_MINH]: {
     name: 'Quang Minh',
     firstLast: 'Minh Nguyen',
-    alias: PeopleName.QUANG_MINH,
+    trackingKey: PeopleName.QUANG_MINH,
     trackingName: 'Quang Minh',
     school: 'Florida State University',
     linkedin: 'https://www.linkedin.com/in/minh-nguyen-a4a8ab28b',
@@ -2683,7 +2683,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.DANG_SON]: {
     name: 'Dang Son',
     firstLast: 'Son Mai',
-    alias: PeopleName.DANG_SON,
+    trackingKey: PeopleName.DANG_SON,
     trackingName: 'Đăng Sơn',
     school: 'Western Governors University',
     linkedin: 'https://www.linkedin.com/in/dsmai',
@@ -2714,7 +2714,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.NGOC_LINH]: {
     name: 'Ngoc Linh',
     firstLast: 'Linh Le',
-    alias: PeopleName.NGOC_LINH,
+    trackingKey: PeopleName.NGOC_LINH,
     trackingName: 'Ngọc Linh',
     school: 'Mount Holyoke College',
     linkedin: 'https://www.linkedin.com/in/ngoclinhle15',
@@ -2742,7 +2742,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.DUC_NGUYEN]: {
     name: 'Duc Nguyen',
     firstLast: 'Duc Nguyen',
-    alias: PeopleName.DUC_NGUYEN,
+    trackingKey: PeopleName.DUC_NGUYEN,
     trackingName: 'Đức',
     school: 'George Mason University',
     linkedin: 'https://www.linkedin.com/in/minhduc29',
@@ -2770,7 +2770,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.XUAN_ANH]: {
     name: 'Xuan Anh',
     firstLast: 'Anh Tran',
-    alias: PeopleName.XUAN_ANH,
+    trackingKey: PeopleName.XUAN_ANH,
     trackingName: 'Xuân Anh',
     school: 'Soka University of America',
     linkedin: 'https://www.linkedin.com/in/xuan-anh-tran-450368332',
@@ -2798,7 +2798,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.DAT_VU]: {
     name: 'Dat Vu',
     firstLast: 'Dat Vu',
-    alias: PeopleName.DAT_VU,
+    trackingKey: PeopleName.DAT_VU,
     trackingName: 'Đạt',
     school: 'California State University San Marcos',
     linkedin: 'https://www.linkedin.com/in/thanhdatvu111',
@@ -2826,7 +2826,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.CHAU_TRAN]: {
     name: 'Chau Tran',
     firstLast: 'Chau Tran',
-    alias: PeopleName.CHAU_TRAN,
+    trackingKey: PeopleName.CHAU_TRAN,
     trackingName: 'Châu Trần',
     school: 'University of Massachusetts Amherst',
     linkedin: 'https://www.linkedin.com/in/chau-tran-hoangminh',
@@ -2854,7 +2854,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.TUAN_ANH]: {
     name: 'Tuan Anh',
     firstLast: 'Anh Ngo',
-    alias: PeopleName.TUAN_ANH,
+    trackingKey: PeopleName.TUAN_ANH,
     trackingName: 'Tuấn Anh',
     school: 'Colby College',
     linkedin: 'https://www.linkedin.com/in/ngo-tuananh',
@@ -2882,7 +2882,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.QUYEN_DOAN]: {
     name: 'Quyen Doan',
     firstLast: 'Quyen Doan',
-    alias: PeopleName.QUYEN_DOAN,
+    trackingKey: PeopleName.QUYEN_DOAN,
     trackingName: 'Quyên',
     school: 'Augustana College',
     linkedin: 'https://www.linkedin.com/in/quyendoan51',
@@ -2910,7 +2910,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.NHAT_LE]: {
     name: 'Nhat Le',
     firstLast: 'Nhat Le',
-    alias: PeopleName.NHAT_LE,
+    trackingKey: PeopleName.NHAT_LE,
     trackingName: 'Nhật',
     school: 'Iowa State University',
     linkedin: 'https://www.linkedin.com/in/nhat-le05',
@@ -2938,7 +2938,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.DAN_NGUYEN]: {
     name: 'Dan Nguyen',
     firstLast: 'Dan Nguyen',
-    alias: PeopleName.DAN_NGUYEN,
+    trackingKey: PeopleName.DAN_NGUYEN,
     trackingName: 'Đan',
     school: 'George Mason University',
     linkedin: 'https://www.linkedin.com/in/dannguyen24',
@@ -2966,7 +2966,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.TAM_NGUYEN]: {
     name: 'Tam Nguyen',
     firstLast: 'Tam Nguyen',
-    alias: PeopleName.TAM_NGUYEN,
+    trackingKey: PeopleName.TAM_NGUYEN,
     trackingName: 'Tâm Nguyễn',
     school: 'Minerva University',
     linkedin: 'https://www.linkedin.com/in/tam-nguyen-m',
@@ -2994,7 +2994,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.UYEN_HOANG]: {
     name: 'Uyen Hoang',
     firstLast: 'Uyen Hoang',
-    alias: PeopleName.UYEN_HOANG,
+    trackingKey: PeopleName.UYEN_HOANG,
     trackingName: 'Uyên',
     school: 'Cornell University',
     linkedin: 'https://www.linkedin.com/in/uyenhoang2903',
@@ -3023,7 +3023,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.THAI_DANG]: {
     name: 'Thai Dang',
     firstLast: 'Dang Nguyen',
-    alias: PeopleName.THAI_DANG,
+    trackingKey: PeopleName.THAI_DANG,
     trackingName: 'Thái Đăng',
     school: 'University of Massachusetts Amherst',
     linkedin: 'https://www.linkedin.com/in/dang-nguyen-49132527a',
@@ -3052,7 +3052,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.NGOC_MINH]: {
     name: 'Ngoc Minh',
     firstLast: 'Minh Le',
-    alias: PeopleName.NGOC_MINH,
+    trackingKey: PeopleName.NGOC_MINH,
     trackingName: 'Ngọc Minh',
     school: 'Dickinson College',
     linkedin: 'https://www.linkedin.com/in/minhnnle',
@@ -3081,7 +3081,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.TRI_NGUYEN]: {
     name: 'Tri Nguyen',
     firstLast: 'Tri Nguyen',
-    alias: PeopleName.TRI_NGUYEN,
+    trackingKey: PeopleName.TRI_NGUYEN,
     trackingName: 'Trí Nguyễn',
     school: 'Minerva University',
     linkedin: 'https://www.linkedin.com/in/tri-nguyen52',
@@ -3110,7 +3110,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.TAM_DANG]: {
     name: 'Tam Dang',
     firstLast: 'Tam Dang',
-    alias: PeopleName.TAM_DANG,
+    trackingKey: PeopleName.TAM_DANG,
     trackingName: 'Tâm Đặng',
     school: 'University of South Florida',
     linkedin: 'https://www.linkedin.com/in/dahomita',
@@ -3139,7 +3139,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.NGOC_ANH_HOANG]: {
     name: 'Ngoc Anh Hoang',
     firstLast: 'Anh Hoang',
-    alias: PeopleName.NGOC_ANH_HOANG,
+    trackingKey: PeopleName.NGOC_ANH_HOANG,
     trackingName: 'Ngọc Anh Hoàng',
     school: 'Tufts University',
     linkedin: 'https://www.linkedin.com/in/ahoang04',
@@ -3168,7 +3168,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.KEVIN_DOAN]: {
     name: 'Kevin Doan',
     firstLast: 'Kevin Doan',
-    alias: PeopleName.KEVIN_DOAN,
+    trackingKey: PeopleName.KEVIN_DOAN,
     trackingName: 'Kevin Đoàn',
     school: 'Texas Christian University',
     linkedin: 'https://www.linkedin.com/in/kevin-doan-tcu',
@@ -3197,7 +3197,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.THUY_LINH]: {
     name: 'Thuy Linh',
     firstLast: 'Linh Nguyen',
-    alias: PeopleName.THUY_LINH,
+    trackingKey: PeopleName.THUY_LINH,
     trackingName: 'Thùy Linh',
     school: 'Florida State University',
     linkedin: 'https://www.linkedin.com/in/linh--nguyen',
@@ -3226,7 +3226,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.KIEN_TRAN]: {
     name: 'Kien Tran',
     firstLast: 'Kien Tran',
-    alias: PeopleName.KIEN_TRAN,
+    trackingKey: PeopleName.KIEN_TRAN,
     trackingName: 'Kiên Trần',
     school: 'Lehigh University',
     linkedin: 'https://www.linkedin.com/in/kientran2912',
@@ -3255,7 +3255,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
   [PeopleName.HA_NGUYEN]: {
     name: 'Ha Nguyen',
     firstLast: 'Ha Nguyen',
-    alias: PeopleName.HA_NGUYEN,
+    trackingKey: PeopleName.HA_NGUYEN,
     trackingName: 'Hà Nguyễn',
     school: 'Tufts University',
     linkedin: 'https://www.linkedin.com/in/hanguyen1125',
