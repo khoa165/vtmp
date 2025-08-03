@@ -3,7 +3,13 @@ import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { z } from 'zod';
 
-import { JobFunction, JobPostingRegion, JobType } from '@vtmp/common/constants';
+import {
+  JobFunction,
+  JobPostingRegion,
+  JobPostingSortField,
+  JobType,
+  SortOrder,
+} from '@vtmp/common/constants';
 
 import { getUserFromRequest } from '@/middlewares/utils';
 import { JobPostingService } from '@/services/job-posting.service';
@@ -59,6 +65,10 @@ const JobPostingIdParamSchema = z.object({
 
 const FilterSchema = z
   .object({
+    limit: z.coerce.number().int().default(10),
+    cursor: z.string().optional(),
+    sortField: z.nativeEnum(JobPostingSortField).optional(),
+    sortOrder: z.nativeEnum(SortOrder).optional(),
     jobTitle: z.string().optional(),
     companyName: z.string().optional(),
     location: z.nativeEnum(JobPostingRegion).optional(),
@@ -83,6 +93,7 @@ export const JobPostingController = {
       data: jobPosting,
     });
   },
+
   updateJobPosting: async (req: Request, res: Response) => {
     const { jobPostingId } = JobPostingIdParamSchema.parse(req.params);
     const jobPostingData = JobPostingUpdateSchema.parse(req.body);
