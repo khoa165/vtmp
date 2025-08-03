@@ -4,6 +4,7 @@ import {
   OfferChannel,
   OfferType,
 } from '#vtmp/common/constants/enums';
+import { PeopleName } from '#vtmp/common/people/enums';
 
 export interface CompanyMetadata {
   displayName: string;
@@ -21,7 +22,7 @@ export interface MentorshipOffer {
 export interface MentorshipPerson {
   name: string;
   firstLast: string;
-  alias: string;
+  trackingKey: string;
   trackingName: string;
   professionalTitle: string;
   hobbies: string;
@@ -41,7 +42,7 @@ export interface MentorshipTerm {
   offers?: MentorshipOffer[];
   teamName?: string;
   teamNumber?: number;
-  teammates?: string[];
-  mentors?: string[];
-  projectAdvisors?: string[];
+  teammates?: PeopleName[];
+  mentors?: PeopleName[];
+  projectAdvisors?: PeopleName[];
 }

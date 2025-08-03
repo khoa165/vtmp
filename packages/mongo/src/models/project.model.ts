@@ -12,43 +12,46 @@ interface IProject extends Document {
   activities: IProjectActivity[];
 }
 
-const ProjectSchema = new mongoose.Schema<IProject>({
-  teamName: {
-    type: String,
-    required: true,
-  },
-  teamNumber: {
-    type: Number,
-  },
-  activities: {
-    type: [
-      {
-        year: {
-          type: Number,
-          required: true,
+const ProjectSchema = new mongoose.Schema<IProject>(
+  {
+    teamName: {
+      type: String,
+      required: true,
+    },
+    teamNumber: {
+      type: Number,
+    },
+    activities: {
+      type: [
+        {
+          year: {
+            type: Number,
+            required: true,
+          },
+          teamMembers: {
+            type: [
+              {
+                type: Schema.Types.ObjectId,
+                ref: 'ProgramProfile',
+              },
+            ],
+            default: [],
+          },
+          projectAdvisors: {
+            type: [
+              {
+                type: Schema.Types.ObjectId,
+                ref: 'ProgramProfile',
+              },
+            ],
+            default: [],
+          },
         },
-        teamMembers: {
-          type: [
-            {
-              type: Schema.Types.ObjectId,
-              ref: 'ProgramProfile',
-            },
-          ],
-          default: [],
-        },
-        projectAdvisors: {
-          type: [
-            {
-              type: Schema.Types.ObjectId,
-              ref: 'ProgramProfile',
-            },
-          ],
-          default: [],
-        },
-      },
-    ],
-    default: [],
+      ],
+      default: [],
+    },
   },
-});
+  { timestamps: true }
+);
 
 export const ProjectModel = mongoose.model<IProject>('Project', ProjectSchema);

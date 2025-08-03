@@ -13,7 +13,9 @@ import {
 
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
+// eslint-disable-next-line boundaries/element-types
 import { ILink } from '@/models/link.model';
+// eslint-disable-next-line boundaries/element-types
 import { LinkRepository } from '@/repositories/link.repository';
 import {
   HTTPMethod,
@@ -64,7 +66,10 @@ describe('LinkController', () => {
     ({ mockUserToken, mockAdminToken } = await runUserLogin());
 
     originalUrl = 'https://google.com';
-    googleLink = await LinkRepository.createLink(mockLinkData);
+    googleLink = await LinkRepository.createLink({
+      submittedBy: getNewMongoId(),
+      linkMetaData: mockLinkData,
+    });
 
     linkId = googleLink.id;
   });
@@ -78,7 +83,7 @@ describe('LinkController', () => {
       },
     });
 
-    it('should return error message for submitting link with not exist url', async () => {
+    it('should return error message for missing url', async () => {
       const res = await request(app)
         .post('/api/links')
         .set('Accept', 'application/json')
@@ -349,7 +354,12 @@ describe('LinkController', () => {
 
     it('should return correct link counts for multiple statuses when multiple links exist', async () => {
       await Promise.all(
-        mockMultipleLinks.map((link) => LinkRepository.createLink(link))
+        mockMultipleLinks.map((link) =>
+          LinkRepository.createLink({
+            submittedBy: getNewMongoId(),
+            linkMetaData: link,
+          })
+        )
       );
 
       await LinkRepository.updateLinkMetaData(linkId, {
@@ -455,7 +465,12 @@ describe('LinkController', () => {
 
     it('should return all links when no filter is given', async () => {
       await Promise.all(
-        mockMultipleLinks.map((link) => LinkRepository.createLink(link))
+        mockMultipleLinks.map((link) =>
+          LinkRepository.createLink({
+            submittedBy: getNewMongoId(),
+            linkMetaData: link,
+          })
+        )
       );
 
       await LinkRepository.updateLinkMetaData(linkId, {

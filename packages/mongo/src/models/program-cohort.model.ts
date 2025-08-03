@@ -21,56 +21,59 @@ interface IProgramCohort extends Document {
   programLeetcodeContests: number;
 }
 
-const ProgramCohortSchema = new mongoose.Schema<IProgramCohort>({
-  year: {
-    type: Number,
-    required: true,
+const ProgramCohortSchema = new mongoose.Schema<IProgramCohort>(
+  {
+    year: {
+      type: Number,
+      required: true,
+    },
+    menteeCount: {
+      type: Number,
+      default: -1,
+    },
+    mentorCount: {
+      type: Number,
+      default: -1,
+    },
+    candidateApplications: {
+      type: Number,
+      default: -1,
+    },
+    candidateInterviews: {
+      type: Number,
+      default: -1,
+    },
+    jobApplications: {
+      type: Number,
+      default: -1,
+    },
+    jobInterviews: {
+      type: Number,
+      default: -1,
+    },
+    jobOffers: {
+      type: Number,
+      default: -1,
+    },
+    programWorkshops: {
+      type: Number,
+      default: -1,
+    },
+    programAMAs: {
+      type: Number,
+      default: -1,
+    },
+    programGroupProjects: {
+      type: Number,
+      default: -1,
+    },
+    programLeetcodeContests: {
+      type: Number,
+      default: -1,
+    },
   },
-  menteeCount: {
-    type: Number,
-    default: -1,
-  },
-  mentorCount: {
-    type: Number,
-    default: -1,
-  },
-  candidateApplications: {
-    type: Number,
-    default: -1,
-  },
-  candidateInterviews: {
-    type: Number,
-    default: -1,
-  },
-  jobApplications: {
-    type: Number,
-    default: -1,
-  },
-  jobInterviews: {
-    type: Number,
-    default: -1,
-  },
-  jobOffers: {
-    type: Number,
-    default: -1,
-  },
-  programWorkshops: {
-    type: Number,
-    default: -1,
-  },
-  programAMAs: {
-    type: Number,
-    default: -1,
-  },
-  programGroupProjects: {
-    type: Number,
-    default: -1,
-  },
-  programLeetcodeContests: {
-    type: Number,
-    default: -1,
-  },
-});
+  { timestamps: true }
+);
 
 export const ProgramCohortModel = mongoose.model<IProgramCohort>(
   'ProgramCohort',

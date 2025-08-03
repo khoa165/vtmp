@@ -32,7 +32,7 @@ export const PeopleGrid: React.FC<PeopleGridProps> = ({
   return (
     <div className="mt-3 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y-4 lg:gap-y-0">
       {people.map((person) => (
-        <div key={person.alias}>
+        <div key={person.trackingKey}>
           <PeopleCard
             year={year}
             person={person}

@@ -13,7 +13,7 @@ import {
 
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
-import { IApplication } from '@/models/application.model';
+import { IApplication } from '@/types/entities';
 import { IInterview } from '@/models/interview.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
