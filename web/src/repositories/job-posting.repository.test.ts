@@ -1,13 +1,15 @@
 import { expect } from 'chai';
+import { differenceInSeconds } from 'date-fns';
+
 import assert from 'assert';
+
+import { JobPostingRegion, JobFunction, JobType } from '@vtmp/common/constants';
+
+import { IJobPosting } from '@/models/job-posting.model';
+import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
-import { getNewObjectId } from '@/testutils/mongoID.testutil';
-import { differenceInSeconds } from 'date-fns';
-import { ApplicationRepository } from '@/repositories/application.repository';
-import { getNewMongoId } from '@/testutils/mongoID.testutil';
-import { IJobPosting } from '@/models/job-posting.model';
-import { JobPostingRegion, JobFunction, JobType } from '@vtmp/common/constants';
+import { getNewObjectId, getNewMongoId } from '@/testutils/mongoID.testutil';
 
 describe('JobPostingRepository', () => {
   useMongoDB();
@@ -519,6 +521,101 @@ describe('JobPostingRepository', () => {
       );
 
       expect(jobs).to.be.an('array').with.lengthOf(4);
+    });
+  });
+
+  describe('getJobPostingsTrendByWeek', () => {
+    it('should return an empty array when there are no job postings', async () => {
+      const result = await JobPostingRepository.getJobPostingsTrendByWeek();
+      expect(result).to.be.an('array').that.have.lengthOf(0);
+    });
+
+    it('should return a single week with correct count when all postings are in one week', async () => {
+      const mockJobPostings = [
+        {
+          linkId: getNewObjectId(),
+          url: 'http://example.com/job-posting',
+          jobTitle: 'Software Engineer',
+          companyName: 'Example Company',
+          submittedBy: getNewObjectId(),
+          datePosted: new Date('2025-07-16T12:00:00Z'),
+        },
+        {
+          linkId: getNewObjectId(),
+          url: 'http://example.com/job-posting',
+          jobTitle: 'Software Engineer',
+          companyName: 'Example Company',
+          submittedBy: getNewObjectId(),
+          datePosted: new Date('2025-07-18T12:00:00Z'),
+        },
+      ];
+      await Promise.all(
+        mockJobPostings.map((mockJobPosting) =>
+          JobPostingRepository.createJobPosting({
+            jobPostingData: mockJobPosting,
+          })
+        )
+      );
+      const result = await JobPostingRepository.getJobPostingsTrendByWeek();
+      expect(result).to.deep.equal([
+        {
+          count: 2,
+          year: 2025,
+          startDate: new Date('2025-07-14T00:00:00.000Z'),
+          endDate: new Date('2025-07-20T00:00:00.000Z'),
+        },
+      ]);
+    });
+
+    it('should return multiple weeks with correct counts for postings in different weeks', async () => {
+      const mockJobPostings = [
+        {
+          linkId: getNewObjectId(),
+          url: 'http://example.com/job-posting',
+          jobTitle: 'Software Engineer',
+          companyName: 'Example Company',
+          submittedBy: getNewObjectId(),
+          datePosted: new Date('2025-07-07T12:00:00Z'),
+        },
+        {
+          linkId: getNewObjectId(),
+          url: 'http://example.com/job-posting',
+          jobTitle: 'Software Engineer',
+          companyName: 'Example Company',
+          submittedBy: getNewObjectId(),
+          datePosted: new Date('2025-07-14T12:00:00Z'),
+        },
+        {
+          linkId: getNewObjectId(),
+          url: 'http://example.com/job-posting',
+          jobTitle: 'Software Engineer',
+          companyName: 'Example Company',
+          submittedBy: getNewObjectId(),
+          datePosted: new Date('2025-07-17T12:00:00Z'),
+        },
+      ];
+      await Promise.all(
+        mockJobPostings.map((mockJobPosting) =>
+          JobPostingRepository.createJobPosting({
+            jobPostingData: mockJobPosting,
+          })
+        )
+      );
+      const result = await JobPostingRepository.getJobPostingsTrendByWeek();
+      expect(result).to.deep.equal([
+        {
+          count: 1,
+          year: 2025,
+          startDate: new Date('2025-07-07T00:00:00.000Z'),
+          endDate: new Date('2025-07-13T00:00:00.000Z'),
+        },
+        {
+          count: 2,
+          year: 2025,
+          startDate: new Date('2025-07-14T00:00:00.000Z'),
+          endDate: new Date('2025-07-20T00:00:00.000Z'),
+        },
+      ]);
     });
   });
 });
