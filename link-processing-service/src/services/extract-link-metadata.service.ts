@@ -18,10 +18,14 @@ import {
   RawAIResponseSchema,
   ScrapedLink,
 } from '@/types/link-processing.types';
-import { AIExtractionError, logError , LinkProcessingBadRequest } from '@/utils/errors';
+import { CONFIDENCE_THRESHOLD } from '@/utils/constants';
+import {
+  AIExtractionError,
+  logError,
+  LinkProcessingBadRequest,
+} from '@/utils/errors';
 import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
 import { buildPrompt } from '@/utils/prompts';
-import { CONFIDENCE_THRESHOLD } from '@/utils/constants';
 
 const MAX_LONG_RETRY = 4;
 export const ExtractLinkMetadataService = {
@@ -137,13 +141,10 @@ export const ExtractLinkMetadataService = {
           logError(error);
           failedMetadataExtractionLinks.push({
             ...link,
-            status:
-              error instanceof LinkProcessingBadRequest
-                ? LinkStatus.PIPELINE_REJECTED
-                : this._determineProcessStatus(
-                    link.originalRequest,
-                    MAX_LONG_RETRY
-                  ),
+            status: this._determineProcessStatus(
+              link.originalRequest,
+              MAX_LONG_RETRY
+            ),
             failureStage: LinkProcessingFailureStage.EXTRACTION_FAILED,
             error: new AIExtractionError(
               'Failed to extract metadata with AI',
