@@ -707,5 +707,109 @@ describe('JobPostingController', () => {
         });
       });
     });
+
+    describe('getJobPostingsUserHasNotAppliedToCount', () => {
+      const url = '/api/job-postings/not-applied-count';
+
+      it('should return 0 if there is no job postings that match the filters', async () => {
+        const res = await request(app)
+          .get(url)
+          .set('Authorization', `Bearer ${mockUserToken}`)
+          .set('Accept', 'application/json')
+          .query({ companyName: 'Nonexistent Company' });
+
+        expectSuccessfulResponse({ res, statusCode: 200 });
+        expect(res.body.data.totalCount).to.equal(0);
+      });
+
+      it('should return 0 count if user has applied to all avaialble job postings in the system', async () => {
+        await Promise.all(
+          jobPostings.map((jobPosting) =>
+            ApplicationRepository.createApplication({
+              jobPostingId: jobPosting?.id,
+              userId: mockUserId,
+            })
+          )
+        );
+
+        const res = await request(app)
+          .get(url)
+          .set('Accept', 'application/json')
+          .set('Authorization', `Bearer ${mockUserToken}`);
+
+        expectSuccessfulResponse({ res, statusCode: 200 });
+        expect(res.body.data.totalCount).to.equal(0);
+      });
+
+      it('should return 0 count if user has applied to all avaialble job postings in the system with filter', async () => {
+        await Promise.all(
+          jobPostings.map((jobPosting) =>
+            ApplicationRepository.createApplication({
+              jobPostingId: jobPosting?.id,
+              userId: mockUserId,
+            })
+          )
+        );
+
+        assert(jobPostings[0]);
+
+        const res = await request(app)
+          .get(url)
+          .set('Authorization', `Bearer ${mockUserToken}`)
+          .set('Accept', 'application/json')
+          .query({ companyName: jobPostings[0].companyName });
+
+        expect(res.body.data.totalCount).to.equal(0);
+      });
+
+      it('should return count of job postings user has not applied to', async () => {
+        const appliedApplications = 3;
+
+        await randomCreateApplications({
+          userId: mockUserId,
+          numApplications: appliedApplications,
+        });
+
+        const res = await request(app)
+          .get(url)
+          .set('Authorization', `Bearer ${mockUserToken}`)
+          .set('Accept', 'application/json');
+
+        expect(res.body.data.totalCount).to.equal(
+          jobPostings.length - appliedApplications
+        );
+      });
+
+      it('should return count of job postings user has not applied to with filters', async () => {
+        const end = new Date();
+        const start = new Date(end.getTime() - 1000 * 60 * 60 * 24 * 30);
+
+        const appliedApplications = await Promise.all(
+          jobPostings.map((jobPosting) => {
+            assert(jobPosting && jobPosting.datePosted);
+            const date = new Date(jobPosting.datePosted);
+            if (date >= start && date <= end) {
+              ApplicationRepository.createApplication({
+                jobPostingId: jobPosting?.id,
+                userId: mockUserId,
+              });
+            }
+          })
+        );
+
+        const res = await request(app)
+          .get(url)
+          .set('Authorization', `Bearer ${mockUserToken}`)
+          .set('Accept', 'application/json')
+          .query({
+            postingDateRangeStart: start,
+            postingDateRangeEnd: end,
+          });
+
+        expect(res.body.data.totalCount).to.equal(
+          jobPostings.length - appliedApplications.length
+        );
+      });
+    });
   });
 });

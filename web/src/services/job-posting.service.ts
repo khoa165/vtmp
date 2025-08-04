@@ -93,4 +93,17 @@ export const JobPostingService = {
           : undefined,
     };
   },
+
+  getJobPostingsUserHasNotAppliedToCount: async ({
+    userId,
+    filters = {},
+  }: {
+    userId: string;
+    filters?: JobPostingFilter;
+  }) => {
+    return JobPostingRepository.getJobPostingsUserNotAppliedToCount({
+      userId,
+      filters,
+    });
+  },
 };

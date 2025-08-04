@@ -716,5 +716,115 @@ describe('JobPostingService', () => {
         });
       });
     });
+
+    describe('getJobPostingsUserHasNotAppliedToCount', () => {
+      beforeEach(async () => {
+        jobPostings = await Promise.all(
+          mockMultipleJobPostings.map((jobPosting) =>
+            JobPostingRepository.createJobPosting({
+              jobPostingData: jobPosting,
+            })
+          )
+        );
+      });
+
+      it('should return 0 if there is no job postings that match the filters', async () => {
+        const { totalCount } =
+          await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
+            userId: userIdA,
+            filters: { companyName: 'Nonexistent Company' },
+          });
+
+        expect(totalCount).to.equal(0);
+      });
+
+      it('should return 0 totalCount if user has applied to all avaialble job postings in the system', async () => {
+        await Promise.all(
+          jobPostings.map((jobPosting) =>
+            ApplicationRepository.createApplication({
+              jobPostingId: jobPosting?.id,
+              userId: userIdA,
+            })
+          )
+        );
+
+        const { totalCount } =
+          await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
+            userId: userIdA,
+            filters: {},
+          });
+
+        expect(totalCount).to.equal(0);
+      });
+
+      it('should return 0 totalCount if user has applied to all avaialble job postings in the system with filter', async () => {
+        await Promise.all(
+          jobPostings.map((jobPosting) =>
+            ApplicationRepository.createApplication({
+              jobPostingId: jobPosting?.id,
+              userId: userIdA,
+            })
+          )
+        );
+
+        assert(jobPostings[0]);
+
+        const { totalCount } =
+          await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
+            userId: userIdA,
+            filters: { companyName: jobPostings[0].companyName },
+          });
+
+        expect(totalCount).to.equal(0);
+      });
+
+      it('should return totalCount of job postings user has not applied to', async () => {
+        const appliedApplications = 3;
+
+        await randomCreateApplications({
+          userId: userIdA,
+          numApplications: appliedApplications,
+        });
+
+        const { totalCount } =
+          await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
+            userId: userIdA,
+            filters: {},
+          });
+
+        expect(totalCount).to.equal(jobPostings.length - appliedApplications);
+      });
+
+      it('should return totalCount of job postings user has not applied to with filters', async () => {
+        const end = new Date();
+        const start = new Date(end.getTime() - 1000 * 60 * 60 * 24 * 30);
+
+        const appliedApplications = await Promise.all(
+          jobPostings.map((jobPosting) => {
+            assert(jobPosting && jobPosting.datePosted);
+            const date = new Date(jobPosting.datePosted);
+            if (date >= start && date <= end) {
+              ApplicationRepository.createApplication({
+                jobPostingId: jobPosting?.id,
+                userId: userIdA,
+              });
+            }
+          })
+        );
+
+        const { totalCount } =
+          await JobPostingService.getJobPostingsUserHasNotAppliedToCount({
+            userId: userIdA,
+            filters: {
+              postingDateRangeStart: start,
+              postingDateRangeEnd: end,
+            },
+          });
+
+        expect(totalCount).to.equal(
+          jobPostings.length - appliedApplications.length
+        );
+      });
+    });
   });
 });

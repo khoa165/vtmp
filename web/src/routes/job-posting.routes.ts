@@ -20,12 +20,21 @@ JobPostingRoutes.get(
 );
 
 JobPostingRoutes.get(
+  '/not-applied-count',
+  wrappedHandlers([
+    hasPermission(Permission.VIEW_JOB_POSTING),
+    JobPostingController.getJobPostingsUserHasNotAppliedToCount,
+  ])
+);
+
+JobPostingRoutes.get(
   '/:jobPostingId',
   wrappedHandlers([
     hasPermission(Permission.VIEW_JOB_POSTING),
     JobPostingController.getJobPostingById,
   ])
 );
+
 JobPostingRoutes.put(
   '/:jobPostingId',
   wrappedHandlers([
