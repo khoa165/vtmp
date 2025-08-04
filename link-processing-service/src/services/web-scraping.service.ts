@@ -175,8 +175,8 @@ export const WebScrapingService = {
  */
 async function _navigateToUrl(page: Page, url: string) {
   const response = await page.goto(url, {
-    waitUntil: 'domcontentloaded',
-    timeout: 10000,
+    waitUntil: 'networkidle0',
+    timeout: 30000,
   }); // Make sure the page is fully loaded before proceeding
   if (
     response?.status() &&

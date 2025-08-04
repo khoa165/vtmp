@@ -62,6 +62,10 @@ export const ExtractLinkMetadataService = {
       aiNote,
       aiScore,
     } = RawAIResponseSchema.parse(JSON.parse(rawAIResponse));
+    // log for debugging purposes
+    console.log('\n\nURL: ', url, +'\n');
+    console.log('Body text: ', text, '\n');
+    console.log('RawAIResponse: ', rawAIResponse, '\n\n');
 
     if (aiScore < CONFIDENCE_THRESHOLD) {
       throw new LinkProcessingBadRequest(
