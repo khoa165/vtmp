@@ -7,7 +7,9 @@ export const VisualizationPage = () => {
   return (
     <div className="w-full h-full p-10">
       <div className="flex flex-col mb-4">
-        <p className="text-3xl font-bold text-foreground mb-4">Visualization</p>
+        <p className="text-3xl font-bold text-foreground mb-4">
+          Cohort Progress
+        </p>
       </div>
       <ErrorBoundaryWrapper customText="Invitations Table">
         <VisualizationContainer />

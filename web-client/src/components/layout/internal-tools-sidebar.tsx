@@ -6,6 +6,7 @@ import {
   SquareCheckBig,
   Share2,
   MessageSquareQuote,
+  TrendingUp,
 } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
@@ -47,6 +48,12 @@ export const InternalToolsSidebar = () => {
       url: '/admin/links',
       icon: Link2,
       roles: [SystemRole.MODERATOR, SystemRole.ADMIN],
+    },
+    {
+      title: 'Visualization',
+      url: '/admin/visualization',
+      icon: TrendingUp,
+      roles: [SystemRole.ADMIN],
     },
     {
       title: 'Jobs',

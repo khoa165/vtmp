@@ -25,3 +25,7 @@ export const VisualizationSchema = z.object({
     [VISUALIZATION_STAT.JOB_POSTINGS_TREND]: JobPostingsTrendByWeekSchema,
   }),
 });
+
+export type JobPostingsTrendByWeek = z.infer<
+  typeof JobPostingsTrendByWeekSchema
+>;
