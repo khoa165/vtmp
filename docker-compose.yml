@@ -53,6 +53,8 @@ services:
       - web
     volumes:
       - ./discord-service/src:/app/discord-service/src
+    profiles:
+      - discord
 
   ngrok:
     container_name: ngrok
@@ -62,6 +64,8 @@ services:
     command: http --domain=expert-evolving-bengal.ngrok-free.app discord-service:4000
     depends_on:
       - discord-service
+    profiles:
+      - discord
 
   web-client:
     container_name: client
