@@ -2,6 +2,7 @@ import escapeStringRegexp from 'escape-string-regexp';
 import { ClientSession, PipelineStage, UpdateResult } from 'mongoose';
 
 import {
+  InterviewInsight,
   InterviewShareStatus,
   InterviewStatus,
   InterviewType,
@@ -9,6 +10,7 @@ import {
 
 import { InterviewModel, IInterview } from '@/models/interview.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
+import redisClient from '@/config/cache';
 
 export const InterviewRepository = {
   createInterview: async ({
@@ -36,6 +38,20 @@ export const InterviewRepository = {
     });
   },
 
+  createInterviewInsight: async ({
+    interviewInsight,
+  }: {
+    interviewInsight: InterviewInsight;
+  }): Promise<InterviewInsight> => {
+    await redisClient.json.set(
+      `interview_insight:${interviewInsight.companyName}`,
+      '$',
+      interviewInsight
+    );
+
+    return interviewInsight;
+  },
+
   getInterviewById: async ({
     interviewId,
     userId,
@@ -55,7 +71,7 @@ export const InterviewRepository = {
     isShared = false,
     session,
   }: {
-    filters: {
+    filters?: {
       userId?: string;
       applicationId?: string;
       companyName?: string;
@@ -144,6 +160,38 @@ export const InterviewRepository = {
       return await InterviewModel.aggregate(pipeline).session(session);
     }
     return await InterviewModel.aggregate(pipeline);
+  },
+
+  getInterviewInsight: async ({
+    filters = {},
+  }: {
+    filters: {
+      companyName?: string;
+    };
+  }): Promise<InterviewInsight | null> => {
+    if (!filters.companyName) return null;
+
+    const result = await redisClient.ft.search(
+      'idx:companies',
+      `@companyName:"${filters.companyName}"`
+    );
+
+    // Ensure result has documents property before mapping
+    const insights =
+      typeof result === 'object' &&
+      result !== null &&
+      'documents' in result &&
+      Array.isArray(result.documents)
+        ? (result.documents
+            .map((doc) =>
+              doc && typeof doc === 'object' && 'value' in doc
+                ? (doc as { value: InterviewInsight }).value
+                : null
+            )
+            .filter(Boolean) as InterviewInsight[])
+        : [];
+
+    return insights[0] ?? null;
   },
 
   updateInterviewById: async ({

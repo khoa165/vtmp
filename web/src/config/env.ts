@@ -20,7 +20,8 @@ const webConfigSchema = z.object({
   NODE_ENV: z.nativeEnum(Environment),
   GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
   REDIS_URL: z.string(),
-  REDIS_TOKEN: z.string(),
+  INTERVIEW_INSIGHTS_ENDPOINT: z.string(),
+  // REDIS_TOKEN: z.string(),
 });
 
 export const EnvConfig = {

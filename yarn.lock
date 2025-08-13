@@ -5947,6 +5947,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@vtmp/interview-insight-service@workspace:interview-insight-service":
+  version: 0.0.0-use.local
+  resolution: "@vtmp/interview-insight-service@workspace:interview-insight-service"
+  dependencies:
+    "@google/genai": "npm:^1.4.0"
+    "@middy/core": "npm:^6.3.1"
+    "@middy/http-json-body-parser": "npm:^6.3.1"
+    "@types/aws-lambda": "npm:^8.10.149"
+    "@types/node": "npm:^22.14.1"
+    "@vtmp/common": "npm:1.0.0"
+    "@vtmp/server-common": "npm:1.0.0"
+    axios: "npm:^1.9.0"
+    dotenv: "npm:^16.5.0"
+    tsx: "npm:^4.19.4"
+    typescript: "npm:^5.8.3"
+    zod: "npm:^3.25.51"
+  languageName: unknown
+  linkType: soft
+
 "@vtmp/link-processing-service@workspace:link-processing-service":
   version: 0.0.0-use.local
   resolution: "@vtmp/link-processing-service@workspace:link-processing-service"

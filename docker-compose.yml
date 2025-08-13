@@ -18,50 +18,65 @@ services:
       # "./web/src" is relative to root (where the command "docker compose up" is run)
       - ./web/src:/app/web/src
 
-  link-processing-service:
-    container_name: link-processor
+  # link-processing-service:
+  #   container_name: link-processor
+  #   build:
+  #     context: .
+  #     dockerfile: link-processing-service/Dockerfile
+  #     args:
+  #       - BUILD_ENV=development
+  #   platform: linux/amd64
+  #   ports:
+  #     - '9000:8080'
+  #   env_file:
+  #     - ./link-processing-service/.env
+  #   environment:
+  #     - API_URL=http://web:8000
+  #   depends_on:
+  #     - web
+
+  # discord-service:
+  #   container_name: discord
+  #   build:
+  #     context: .
+  #     dockerfile: discord-service/Dockerfile
+  #     args:
+  #       - BUILD_ENV=development
+  #   command: yarn dev
+  #   ports:
+  #     - '4000:4000'
+  #   env_file:
+  #     - ./discord-service/.env
+  #   environment:
+  #     - API_URL=http://web:8000
+  #   depends_on:
+  #     - web
+  #   volumes:
+  #     - ./discord-service/src:/app/discord-service/src
+
+  interview-insight-service:
+    container_name: interview-insight
     build:
       context: .
-      dockerfile: link-processing-service/Dockerfile
+      dockerfile: interview-insight-service/Dockerfile
       args:
         - BUILD_ENV=development
     platform: linux/amd64
     ports:
-      - '9000:8080'
+      - '9090:9090'
     env_file:
-      - ./link-processing-service/.env
-    environment:
-      - API_URL=http://web:8000
+      - ./interview-insight-service/.env
     depends_on:
       - web
 
-  discord-service:
-    container_name: discord
-    build:
-      context: .
-      dockerfile: discord-service/Dockerfile
-      args:
-        - BUILD_ENV=development
-    command: yarn dev
-    ports:
-      - '4000:4000'
-    env_file:
-      - ./discord-service/.env
-    environment:
-      - API_URL=http://web:8000
-    depends_on:
-      - web
-    volumes:
-      - ./discord-service/src:/app/discord-service/src
-
-  ngrok:
-    container_name: ngrok
-    image: ngrok/ngrok:latest
-    env_file:
-      - ./discord-service/.env
-    command: http --domain=expert-evolving-bengal.ngrok-free.app discord-service:4000
-    depends_on:
-      - discord-service
+  # ngrok:
+  #   container_name: ngrok
+  #   image: ngrok/ngrok:latest
+  #   env_file:
+  #     - ./discord-service/.env
+  #   command: http --domain=expert-evolving-bengal.ngrok-free.app discord-service:4000
+  #   depends_on:
+  #     - discord-service
 
   web-client:
     container_name: client
@@ -106,6 +121,14 @@ services:
       - mongo_data:/data/db
     profiles:
       - local_mongo
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - '6379:6379'
+    profiles:
+      - local_redis
 
 volumes:
   mongo_data:

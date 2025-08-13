@@ -8,7 +8,6 @@ import {
   ApplicationStatus,
   InterestLevel,
   JobPostingRegion,
-  SystemRole,
 } from '@vtmp/common/constants';
 
 import { IJobPosting } from '@/models/job-posting.model';

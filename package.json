@@ -44,6 +44,7 @@
     "web",
     "discord-service",
     "link-processing-service",
+    "interview-insight-service",
     "apps/mongo-migrations"
   ],
   "devDependencies": {
