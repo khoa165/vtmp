@@ -21,7 +21,6 @@ const webConfigSchema = z.object({
   GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
   REDIS_URL: z.string(),
   INTERVIEW_INSIGHTS_ENDPOINT: z.string(),
-  // REDIS_TOKEN: z.string(),
 });
 
 export const EnvConfig = {
