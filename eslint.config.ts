@@ -1,15 +1,16 @@
 // @ts-check
-import boundaries from 'eslint-plugin-boundaries';
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import globals from 'globals';
-import { customEslintRules } from './custom-eslint';
 import stylistic from '@stylistic/eslint-plugin';
+import boundaries from 'eslint-plugin-boundaries';
 import checkFile from 'eslint-plugin-check-file';
 import importPlugin from 'eslint-plugin-import';
-import typescriptSortKeys from 'eslint-plugin-typescript-sort-keys';
 import noRelativeImportPaths from 'eslint-plugin-no-relative-import-paths';
 import sortExports from 'eslint-plugin-sort-exports';
+import typescriptSortKeys from 'eslint-plugin-typescript-sort-keys';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+
+import { customEslintRules } from './custom-eslint';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -43,6 +44,7 @@ export default tseslint.config(
             './discord-service/tsconfig.json',
             './link-processing-service/tsconfig.json',
             './apps/mongo-migrations/tsconfig.json',
+            './interview-insights-service/tsconfig.json',
           ],
           noWarnOnMultipleProjects: true,
         },
@@ -210,6 +212,7 @@ export default tseslint.config(
       'web-client/**/*',
       'discord-service/**/*',
       'link-processing-service/**/*',
+      'interview-insights-service/**/*',
     ],
     rules: {
       'customEslintRules/wrapped-handlers-in-router': 'off',
