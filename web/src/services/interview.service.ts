@@ -21,6 +21,10 @@ export const InterviewService = {
     return InterviewRepository.createInterview(interviewData);
   },
 
+  createInterviewInsights: async (interviewInsights: InterviewInsight[]) => {
+    return InterviewRepository.createInterviewInsight(interviewInsights);
+  },
+
   getInterviewById: async ({
     interviewId,
     userId,

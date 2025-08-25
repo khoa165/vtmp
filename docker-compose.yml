@@ -13,70 +13,71 @@ services:
       - ./web/.env
     environment:
       - LINK_PROCESSING_ENDPOINT=http://link-processing-service:8080/2015-03-31/functions/function/invocations
+      - INTERVIEW_INSIGHTS_ENDPOINT=http://interview-insights-service:8080/2015-03-31/functions/function/invocations
     volumes:
       # This creates bind mount between local ./web/src and the container's /app/web/src
       # "./web/src" is relative to root (where the command "docker compose up" is run)
       - ./web/src:/app/web/src
 
-  # link-processing-service:
-  #   container_name: link-processor
-  #   build:
-  #     context: .
-  #     dockerfile: link-processing-service/Dockerfile
-  #     args:
-  #       - BUILD_ENV=development
-  #   platform: linux/amd64
-  #   ports:
-  #     - '9000:8080'
-  #   env_file:
-  #     - ./link-processing-service/.env
-  #   environment:
-  #     - API_URL=http://web:8000
-  #   depends_on:
-  #     - web
-
-  # discord-service:
-  #   container_name: discord
-  #   build:
-  #     context: .
-  #     dockerfile: discord-service/Dockerfile
-  #     args:
-  #       - BUILD_ENV=development
-  #   command: yarn dev
-  #   ports:
-  #     - '4000:4000'
-  #   env_file:
-  #     - ./discord-service/.env
-  #   environment:
-  #     - API_URL=http://web:8000
-  #   depends_on:
-  #     - web
-  #   volumes:
-  #     - ./discord-service/src:/app/discord-service/src
-
-  interview-insight-service:
-    container_name: interview-insight
+  link-processing-service:
+    container_name: link-processor
     build:
       context: .
-      dockerfile: interview-insight-service/Dockerfile
+      dockerfile: link-processing-service/Dockerfile
       args:
         - BUILD_ENV=development
     platform: linux/amd64
     ports:
-      - '9090:9090'
+      - '9000:8080'
     env_file:
-      - ./interview-insight-service/.env
+      - ./link-processing-service/.env
+    environment:
+      - API_URL=http://web:8000
     depends_on:
       - web
 
-  # ngrok:
-  #   container_name: ngrok
-  #   image: ngrok/ngrok:latest
-  #   env_file:
-  #     - ./discord-service/.env
-  #   command: http --domain=expert-evolving-bengal.ngrok-free.app discord-service:4000
-  #   depends_on:
-  #     - discord-service
+  discord-service:
+    container_name: discord
+    build:
+      context: .
+      dockerfile: discord-service/Dockerfile
+      args:
+        - BUILD_ENV=development
+    command: yarn dev
+    ports:
+      - '4000:4000'
+    env_file:
+      - ./discord-service/.env
+    environment:
+      - API_URL=http://web:8000
+    depends_on:
+      - web
+    volumes:
+      - ./discord-service/src:/app/discord-service/src
+
+  interview-insights-service:
+    container_name: interview-insights
+    build:
+      context: .
+      dockerfile: interview-insights-service/Dockerfile
+      args:
+        - BUILD_ENV=development
+    platform: linux/amd64
+    ports:
+      - '9090:8080'
+    env_file:
+      - ./interview-insights-service/.env
+    depends_on:
+      - web
+
+  ngrok:
+    container_name: ngrok
+    image: ngrok/ngrok:latest
+    env_file:
+      - ./discord-service/.env
+    command: http --domain=expert-evolving-bengal.ngrok-free.app discord-service:4000
+    depends_on:
+      - discord-service
 
   web-client:
     container_name: client

@@ -59,6 +59,11 @@ InterviewRoutes.post(
   ])
 );
 
+InterviewRoutes.post(
+  '/insights',
+  wrappedHandlers([InterviewController.createInterviewInsights])
+);
+
 InterviewRoutes.put(
   '/:interviewId',
   wrappedHandlers([

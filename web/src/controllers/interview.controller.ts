@@ -143,6 +143,19 @@ const ShareInterviewSchema = z
   })
   .strict();
 
+const InterviewInsightsSchema = z.array(
+  z.object({
+    companyName: z.string(),
+    companyDetails: z.string(),
+    companyProducts: z.string(),
+    interviewInsights: z.object({
+      commonQuestions: z.array(z.string()),
+      interviewProcess: z.string(),
+      tips: z.string(),
+    }),
+  })
+);
+
 export const InterviewController = {
   createInterview: async (req: Request, res: Response) => {
     const userId = getUserFromRequest(req).id;
@@ -156,6 +169,18 @@ export const InterviewController = {
     res.status(201).json({
       message: 'Interview created successfully',
       data: newInterview,
+    });
+  },
+
+  createInterviewInsights: async (req: Request, res: Response) => {
+    const interviewInsights = InterviewInsightsSchema.parse(req.body);
+
+    const newInterviewInsights =
+      InterviewService.createInterviewInsights(interviewInsights);
+
+    res.status(201).json({
+      message: 'Interview Insights created successfully',
+      data: newInterviewInsights,
     });
   },
 

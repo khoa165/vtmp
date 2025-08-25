@@ -10,7 +10,7 @@ import {
 
 import { InterviewModel, IInterview } from '@/models/interview.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
-import redisClient from '@/config/cache';
+import { redisClient } from '@/config/cache';
 
 export const InterviewRepository = {
   createInterview: async ({
@@ -38,18 +38,18 @@ export const InterviewRepository = {
     });
   },
 
-  createInterviewInsight: async ({
-    interviewInsight,
-  }: {
-    interviewInsight: InterviewInsight;
-  }): Promise<InterviewInsight> => {
-    await redisClient.json.set(
-      `interview_insight:${interviewInsight.companyName}`,
-      '$',
-      interviewInsight
+  createInterviewInsight: async (
+    interviewInsights: InterviewInsight[]
+  ): Promise<InterviewInsight[]> => {
+    await Promise.all(
+      interviewInsights.map((interviewInsight) =>
+        redisClient.set(
+          `interview_insight:${interviewInsight.companyName}`,
+          JSON.stringify(interviewInsight)
+        )
+      )
     );
-
-    return interviewInsight;
+    return interviewInsights;
   },
 
   getInterviewById: async ({
