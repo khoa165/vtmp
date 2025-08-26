@@ -12,18 +12,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ai-sdk/gateway@npm:1.0.6":
-  version: 1.0.6
-  resolution: "@ai-sdk/gateway@npm:1.0.6"
-  dependencies:
-    "@ai-sdk/provider": "npm:2.0.0"
-    "@ai-sdk/provider-utils": "npm:3.0.3"
-  peerDependencies:
-    zod: ^3.25.76 || ^4
-  checksum: 10c0/15118723b226cbb722bfd1c3bf530056a5e0b8373122d94ae33f6efe7af6ffe2a9d6aa54d5f40ba347147f36eb7d4b752fa1d87825dd6672be8229c018c3a8ee
-  languageName: node
-  linkType: hard
-
 "@ai-sdk/google@npm:^1.2.22":
   version: 1.2.22
   resolution: "@ai-sdk/google@npm:1.2.22"
@@ -33,18 +21,6 @@ __metadata:
   peerDependencies:
     zod: ^3.0.0
   checksum: 10c0/662005cb4d972e4048d496e9713cd0ff2828f8363c9f1449e5a8580523c34f9ab57126ad3129e4d535561aa1bac0ae0d68bb471c379be80f5a23d455eea49987
-  languageName: node
-  linkType: hard
-
-"@ai-sdk/google@npm:^2.0.6":
-  version: 2.0.6
-  resolution: "@ai-sdk/google@npm:2.0.6"
-  dependencies:
-    "@ai-sdk/provider": "npm:2.0.0"
-    "@ai-sdk/provider-utils": "npm:3.0.3"
-  peerDependencies:
-    zod: ^3.25.76 || ^4
-  checksum: 10c0/ad54dd4168df62851646bec3ac2e5cf9e39f3def3e9017579aef5c8e8ecdf57c150c67a80cad4d092c3df69cd8539bc1792adb6c311ed095f8261673b7812e98
   languageName: node
   linkType: hard
 
@@ -61,35 +37,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ai-sdk/provider-utils@npm:3.0.3":
-  version: 3.0.3
-  resolution: "@ai-sdk/provider-utils@npm:3.0.3"
-  dependencies:
-    "@ai-sdk/provider": "npm:2.0.0"
-    "@standard-schema/spec": "npm:^1.0.0"
-    eventsource-parser: "npm:^3.0.3"
-    zod-to-json-schema: "npm:^3.24.1"
-  peerDependencies:
-    zod: ^3.25.76 || ^4
-  checksum: 10c0/f02e26a6b85ef728862505b150475ef2e52d60130ca64b23316ff7b952f1817b01f959b9e48819dad64d82a96ba4ad538610d69dbbfe5be4b4b38469c16a6ccf
-  languageName: node
-  linkType: hard
-
 "@ai-sdk/provider@npm:1.1.3":
   version: 1.1.3
   resolution: "@ai-sdk/provider@npm:1.1.3"
   dependencies:
     json-schema: "npm:^0.4.0"
   checksum: 10c0/40e080e223328e7c89829865e9c48f4ce8442a6a59f7ed5dfbdb4f63e8d859a76641e2d31e91970dd389bddb910f32ec7c3dbb0ce583c119e5a1e614ea7b8bc4
-  languageName: node
-  linkType: hard
-
-"@ai-sdk/provider@npm:2.0.0":
-  version: 2.0.0
-  resolution: "@ai-sdk/provider@npm:2.0.0"
-  dependencies:
-    json-schema: "npm:^0.4.0"
-  checksum: 10c0/e50e520016c9fc0a8b5009cadd47dae2f1c81ec05c1792b9e312d7d15479f024ca8039525813a33425c884e3449019fed21043b1bfabd6a2626152ca9a388199
   languageName: node
   linkType: hard
 
@@ -5994,28 +5947,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vtmp/interview-insights-service@workspace:interview-insights-service":
-  version: 0.0.0-use.local
-  resolution: "@vtmp/interview-insights-service@workspace:interview-insights-service"
-  dependencies:
-    "@ai-sdk/google": "npm:^2.0.6"
-    "@google/genai": "npm:^1.4.0"
-    "@middy/core": "npm:^6.3.1"
-    "@middy/http-json-body-parser": "npm:^6.3.1"
-    "@types/aws-lambda": "npm:^8.10.149"
-    "@types/node": "npm:^22.14.1"
-    "@vtmp/common": "npm:1.0.0"
-    "@vtmp/server-common": "npm:1.0.0"
-    ai: "npm:^5.0.12"
-    axios: "npm:^1.9.0"
-    dotenv: "npm:^17.2.1"
-    tsc-alias: "npm:^1.8.16"
-    tsx: "npm:^4.19.4"
-    typescript: "npm:^5.8.3"
-    zod: "npm:^3.25.51"
-  languageName: unknown
-  linkType: soft
-
 "@vtmp/link-processing-service@workspace:link-processing-service":
   version: 0.0.0-use.local
   resolution: "@vtmp/link-processing-service@workspace:link-processing-service"
@@ -6344,20 +6275,6 @@ __metadata:
     react:
       optional: true
   checksum: 10c0/bbabef9456b95cb5c810c04c89fb01dc73176b7e8843c0760e21323213be6a186cd2fca422e52dfdcd7ab04966a8164b3f5d842a2e32acde670125ca3a463fad
-  languageName: node
-  linkType: hard
-
-"ai@npm:^5.0.12":
-  version: 5.0.12
-  resolution: "ai@npm:5.0.12"
-  dependencies:
-    "@ai-sdk/gateway": "npm:1.0.6"
-    "@ai-sdk/provider": "npm:2.0.0"
-    "@ai-sdk/provider-utils": "npm:3.0.3"
-    "@opentelemetry/api": "npm:1.9.0"
-  peerDependencies:
-    zod: ^3.25.76 || ^4
-  checksum: 10c0/25eef25fbce93005e013e2245d2739bfb43f74241f98c64deba8344cfcfe28a757d65e096e076ca02bda366e595217adc69e5702ac8292a8c7477557ed6943c1
   languageName: node
   linkType: hard
 
@@ -8465,13 +8382,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^17.2.1":
-  version: 17.2.1
-  resolution: "dotenv@npm:17.2.1"
-  checksum: 10c0/918dd2f9d8b8f86b0afabad9534793d51de3718c437f9e7b6525628cf68c1d4ae768cc37a5afff38c066f58a8ecf549f4ac6cd5617485bd328e826112cc2650a
-  languageName: node
-  linkType: hard
-
 "dunder-proto@npm:^1.0.0, dunder-proto@npm:^1.0.1":
   version: 1.0.1
   resolution: "dunder-proto@npm:1.0.1"
@@ -9349,7 +9259,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventsource-parser@npm:^3.0.0, eventsource-parser@npm:^3.0.1, eventsource-parser@npm:^3.0.3":
+"eventsource-parser@npm:^3.0.0, eventsource-parser@npm:^3.0.1":
   version: 3.0.3
   resolution: "eventsource-parser@npm:3.0.3"
   checksum: 10c0/2594011630efba56cafafc8ed6bd9a50db8f6d5dd62089b0950346e7961828c16efe07a588bdea3ba79e568fd9246c8163824a2ffaade767e1fdb2270c1fae0b
