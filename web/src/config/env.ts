@@ -18,9 +18,7 @@ const webConfigSchema = z.object({
   SEED_ENV: z.nativeEnum(Environment).default(Environment.DEV),
   LINK_PROCESSING_ENDPOINT: z.string(),
   NODE_ENV: z.nativeEnum(Environment),
-  GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
   REDIS_URL: z.string(),
-  INTERVIEW_INSIGHTS_ENDPOINT: z.string(),
 });
 
 export const EnvConfig = {
