@@ -12,5 +12,6 @@ export const MOCK_ENV = {
   SEED_ENV: Environment.DEV,
   LINK_PROCESSING_ENDPOINT: 'https://lambda-url.on.aws',
   NODE_ENV: Environment.DEV,
+  INTERVIEW_INSIGHTS_ENDPOINT: 'https://lambda-url.on.aws',
   REDIS_URL: 'redis://localhost:6379',
 };
