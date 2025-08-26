@@ -12,15 +12,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ai-sdk/gateway@npm:1.0.6":
-  version: 1.0.6
-  resolution: "@ai-sdk/gateway@npm:1.0.6"
+"@ai-sdk/gateway@npm:1.0.13":
+  version: 1.0.13
+  resolution: "@ai-sdk/gateway@npm:1.0.13"
   dependencies:
     "@ai-sdk/provider": "npm:2.0.0"
-    "@ai-sdk/provider-utils": "npm:3.0.3"
+    "@ai-sdk/provider-utils": "npm:3.0.6"
   peerDependencies:
     zod: ^3.25.76 || ^4
-  checksum: 10c0/15118723b226cbb722bfd1c3bf530056a5e0b8373122d94ae33f6efe7af6ffe2a9d6aa54d5f40ba347147f36eb7d4b752fa1d87825dd6672be8229c018c3a8ee
+  checksum: 10c0/cfd655440d68e1e99204cdf3a4c30fcd9d9dd21d2b6851932584fc228617e9f844b0419c5b74e8e8ee9c00256b64e34c9346369cebe43f9c76e6f31203ca4b8c
   languageName: node
   linkType: hard
 
@@ -37,14 +37,14 @@ __metadata:
   linkType: hard
 
 "@ai-sdk/google@npm:^2.0.6":
-  version: 2.0.6
-  resolution: "@ai-sdk/google@npm:2.0.6"
+  version: 2.0.9
+  resolution: "@ai-sdk/google@npm:2.0.9"
   dependencies:
     "@ai-sdk/provider": "npm:2.0.0"
-    "@ai-sdk/provider-utils": "npm:3.0.3"
+    "@ai-sdk/provider-utils": "npm:3.0.6"
   peerDependencies:
     zod: ^3.25.76 || ^4
-  checksum: 10c0/ad54dd4168df62851646bec3ac2e5cf9e39f3def3e9017579aef5c8e8ecdf57c150c67a80cad4d092c3df69cd8539bc1792adb6c311ed095f8261673b7812e98
+  checksum: 10c0/6f7801515c6d5ca3361fe294236ff20417e6b404dda4c7e9fb5fdf0346a4f6bdd0c66a02e97fb981884204e9def537c3cfa6afe0604350fbac36133e2a59908a
   languageName: node
   linkType: hard
 
@@ -61,17 +61,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ai-sdk/provider-utils@npm:3.0.3":
-  version: 3.0.3
-  resolution: "@ai-sdk/provider-utils@npm:3.0.3"
+"@ai-sdk/provider-utils@npm:3.0.6":
+  version: 3.0.6
+  resolution: "@ai-sdk/provider-utils@npm:3.0.6"
   dependencies:
     "@ai-sdk/provider": "npm:2.0.0"
     "@standard-schema/spec": "npm:^1.0.0"
     eventsource-parser: "npm:^3.0.3"
-    zod-to-json-schema: "npm:^3.24.1"
   peerDependencies:
     zod: ^3.25.76 || ^4
-  checksum: 10c0/f02e26a6b85ef728862505b150475ef2e52d60130ca64b23316ff7b952f1817b01f959b9e48819dad64d82a96ba4ad538610d69dbbfe5be4b4b38469c16a6ccf
+  checksum: 10c0/00f8d5a4e76f66aad6ebde97d3512b8295c144c6802465ec0d7b38c6eaa0fc97fbcaeb51284f66bb7e42bcf38a92ed0edba95c1ccddf50af3040d2b64227352a
   languageName: node
   linkType: hard
 
@@ -4570,15 +4569,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.3.0":
-  version: 24.3.0
-  resolution: "@types/node@npm:24.3.0"
-  dependencies:
-    undici-types: "npm:~7.10.0"
-  checksum: 10c0/96bdeca01f690338957c2dcc92cb9f76c262c10398f8d91860865464412b0f9d309c24d9b03d0bdd26dd47fa7ee3f8227893d5c89bc2009d919a525a22512030
-  languageName: node
-  linkType: hard
-
 "@types/nodemailer@npm:^6":
   version: 6.4.17
   resolution: "@types/nodemailer@npm:6.4.17"
@@ -6012,7 +6002,7 @@ __metadata:
     "@middy/core": "npm:^6.3.1"
     "@middy/http-json-body-parser": "npm:^6.3.1"
     "@types/aws-lambda": "npm:^8.10.149"
-    "@types/node": "npm:^24.3.0"
+    "@types/node": "npm:^22.14.1"
     "@vtmp/common": "npm:1.0.0"
     "@vtmp/server-common": "npm:1.0.0"
     ai: "npm:^5.0.12"
@@ -6358,16 +6348,16 @@ __metadata:
   linkType: hard
 
 "ai@npm:^5.0.12":
-  version: 5.0.12
-  resolution: "ai@npm:5.0.12"
+  version: 5.0.24
+  resolution: "ai@npm:5.0.24"
   dependencies:
-    "@ai-sdk/gateway": "npm:1.0.6"
+    "@ai-sdk/gateway": "npm:1.0.13"
     "@ai-sdk/provider": "npm:2.0.0"
-    "@ai-sdk/provider-utils": "npm:3.0.3"
+    "@ai-sdk/provider-utils": "npm:3.0.6"
     "@opentelemetry/api": "npm:1.9.0"
   peerDependencies:
     zod: ^3.25.76 || ^4
-  checksum: 10c0/25eef25fbce93005e013e2245d2739bfb43f74241f98c64deba8344cfcfe28a757d65e096e076ca02bda366e595217adc69e5702ac8292a8c7477557ed6943c1
+  checksum: 10c0/a5735ee935a9499f1b87fa99d0d2aa87732db0e01dfdfd38ffa233c9e7242572f4442c15fe3f6e441b1ca62491a72ca603ca782f3f0ed7bf42c57fa7d6f2e891
   languageName: node
   linkType: hard
 
@@ -9359,10 +9349,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventsource-parser@npm:^3.0.0, eventsource-parser@npm:^3.0.1, eventsource-parser@npm:^3.0.3":
+"eventsource-parser@npm:^3.0.0, eventsource-parser@npm:^3.0.1":
   version: 3.0.3
   resolution: "eventsource-parser@npm:3.0.3"
   checksum: 10c0/2594011630efba56cafafc8ed6bd9a50db8f6d5dd62089b0950346e7961828c16efe07a588bdea3ba79e568fd9246c8163824a2ffaade767e1fdb2270c1fae0b
+  languageName: node
+  linkType: hard
+
+"eventsource-parser@npm:^3.0.3":
+  version: 3.0.5
+  resolution: "eventsource-parser@npm:3.0.5"
+  checksum: 10c0/5cb75e3f84ff1cfa1cee6199d4fd430c4544855ab03e953ddbe5927e7b31bc2af3933ab8aba6440ba160ed2c48972b6c317f27b8a1d0764c7b12e34e249de631
   languageName: node
   linkType: hard
 
@@ -16780,13 +16777,6 @@ __metadata:
   version: 6.21.0
   resolution: "undici-types@npm:6.21.0"
   checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~7.10.0":
-  version: 7.10.0
-  resolution: "undici-types@npm:7.10.0"
-  checksum: 10c0/8b00ce50e235fe3cc601307f148b5e8fb427092ee3b23e8118ec0a5d7f68eca8cee468c8fc9f15cbb2cf2a3797945ebceb1cbd9732306a1d00e0a9b6afa0f635
   languageName: node
   linkType: hard
 
