@@ -7,7 +7,6 @@ import {
   InterviewShareStatus,
 } from '@vtmp/common/constants';
 
-// eslint-disable-next-line boundaries/element-types
 import { ApplicationModel } from '@/models/application.model';
 
 export interface IInterview extends Document {
@@ -98,13 +97,3 @@ export const InterviewModel = mongoose.model<IInterview>(
   'Interview',
   InterviewSchema
 );
-
-export interface InterviewInsights {
-  companyDetails: string;
-  companyProducts: string;
-  interviewInsights: {
-    commonQuestions: string[];
-    interviewProcess: string;
-    tips: string;
-  };
-}

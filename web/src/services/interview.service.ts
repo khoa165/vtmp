@@ -1,12 +1,12 @@
 import {
+  InterviewInsight,
   InterviewShareStatus,
   InterviewStatus,
   InterviewType,
 } from '@vtmp/common/constants';
 
-import { IInterview, InterviewInsights } from '@/models/interview.model';
+import { IInterview } from '@/models/interview.model';
 import { InterviewRepository } from '@/repositories/interview.repository';
-import { InterviewInsightService } from '@/services/interview-insights/interview-insight.service';
 import { BadRequest, ResourceNotFoundError } from '@/utils/errors';
 
 export const InterviewService = {
@@ -19,6 +19,10 @@ export const InterviewService = {
     note?: string | undefined;
   }): Promise<IInterview> => {
     return InterviewRepository.createInterview(interviewData);
+  },
+
+  createInterviewInsights: async (interviewInsights: InterviewInsight[]) => {
+    return InterviewRepository.createInterviewInsights(interviewInsights);
   },
 
   getInterviewById: async ({
@@ -68,20 +72,24 @@ export const InterviewService = {
     filters: {
       companyName?: string;
     };
-  }): Promise<InterviewInsights | null> => {
-    if (filters.companyName) {
-      const interviews = await InterviewRepository.getInterviews({
-        filters: { companyName: filters.companyName },
-        isShared: true,
-      });
-
-      return await InterviewInsightService.getInterviewInsight({
+  }): Promise<InterviewInsight | null> => {
+    if (!filters.companyName) {
+      throw new BadRequest('Company name not provided', {
         companyName: filters.companyName,
-        sharedInterviews: interviews,
       });
     }
 
-    return null;
+    const interviewInsight = await InterviewRepository.getInterviewInsight({
+      filters,
+    });
+
+    if (!interviewInsight) {
+      throw new ResourceNotFoundError('Interview insights not found', {
+        companyName: filters.companyName,
+      });
+    }
+
+    return interviewInsight;
   },
 
   updateInterviewById: async ({

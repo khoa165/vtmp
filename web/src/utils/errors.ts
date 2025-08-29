@@ -51,6 +51,8 @@ export class BadRequest extends ApplicationSpecificError {
 
 export class LinkProcessingBadRequest extends BadRequest {}
 
+export class InterviewInsightBadRequest extends BadRequest {}
+
 export class EmailError extends ApplicationSpecificError {
   constructor(message: string, metadata: object) {
     super(message, metadata, 500);

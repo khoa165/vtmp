@@ -13,6 +13,7 @@ services:
       - ./web/.env
     environment:
       - LINK_PROCESSING_ENDPOINT=http://link-processing-service:8080/2015-03-31/functions/function/invocations
+      - INTERVIEW_INSIGHTS_ENDPOINT=http://interview-insights-service:8080/2015-03-31/functions/function/invocations
     volumes:
       # This creates bind mount between local ./web/src and the container's /app/web/src
       # "./web/src" is relative to root (where the command "docker compose up" is run)
@@ -53,6 +54,21 @@ services:
       - web
     volumes:
       - ./discord-service/src:/app/discord-service/src
+
+  interview-insights-service:
+    container_name: interview-insights
+    build:
+      context: .
+      dockerfile: interview-insights-service/Dockerfile
+      args:
+        - BUILD_ENV=development
+    platform: linux/amd64
+    ports:
+      - '9090:8080'
+    env_file:
+      - ./interview-insights-service/.env
+    depends_on:
+      - web
 
   ngrok:
     container_name: ngrok

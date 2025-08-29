@@ -2,6 +2,7 @@ import escapeStringRegexp from 'escape-string-regexp';
 import { ClientSession, PipelineStage, UpdateResult } from 'mongoose';
 
 import {
+  InterviewInsight,
   InterviewShareStatus,
   InterviewStatus,
   InterviewType,
@@ -9,6 +10,19 @@ import {
 
 import { InterviewModel, IInterview } from '@/models/interview.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
+import { redisClient } from '@/config/cache';
+import z from 'zod';
+
+const InterviewInsightSchema = z.object({
+  companyName: z.string(),
+  companyDetails: z.string(),
+  companyProducts: z.string(),
+  interviewInsights: z.object({
+    commonQuestions: z.array(z.string()),
+    interviewProcess: z.string(),
+    tips: z.string(),
+  }),
+});
 
 export const InterviewRepository = {
   createInterview: async ({
@@ -36,6 +50,20 @@ export const InterviewRepository = {
     });
   },
 
+  createInterviewInsights: async (
+    interviewInsights: InterviewInsight[]
+  ): Promise<InterviewInsight[]> => {
+    await Promise.all(
+      interviewInsights.map((interviewInsight) =>
+        redisClient.set(
+          `interview_insight:${interviewInsight.companyName}`,
+          JSON.stringify(interviewInsight)
+        )
+      )
+    );
+    return interviewInsights;
+  },
+
   getInterviewById: async ({
     interviewId,
     userId,
@@ -55,7 +83,7 @@ export const InterviewRepository = {
     isShared = false,
     session,
   }: {
-    filters: {
+    filters?: {
       userId?: string;
       applicationId?: string;
       companyName?: string;
@@ -144,6 +172,22 @@ export const InterviewRepository = {
       return await InterviewModel.aggregate(pipeline).session(session);
     }
     return await InterviewModel.aggregate(pipeline);
+  },
+
+  getInterviewInsight: async ({
+    filters = {},
+  }: {
+    filters: {
+      companyName?: string;
+    };
+  }): Promise<InterviewInsight | null> => {
+    if (!filters.companyName) return null;
+
+    const cachedInsight = await redisClient.get(
+      `interview_insight:${filters.companyName}`
+    );
+
+    return InterviewInsightSchema.parse(cachedInsight);
   },
 
   updateInterviewById: async ({
