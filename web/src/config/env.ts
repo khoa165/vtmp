@@ -19,6 +19,7 @@ const webConfigSchema = z.object({
   LINK_PROCESSING_ENDPOINT: z.string(),
   NODE_ENV: z.nativeEnum(Environment),
   REDIS_URL: z.string(),
+  INTERVIEW_INSIGHTS_ENDPOINT: z.string().url(),
 });
 
 export const EnvConfig = {
