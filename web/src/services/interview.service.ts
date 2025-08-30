@@ -22,7 +22,7 @@ export const InterviewService = {
   },
 
   createInterviewInsights: async (interviewInsights: InterviewInsight[]) => {
-    return InterviewRepository.createInterviewInsight(interviewInsights);
+    return InterviewRepository.createInterviewInsights(interviewInsights);
   },
 
   getInterviewById: async ({

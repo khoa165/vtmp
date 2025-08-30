@@ -55,21 +55,6 @@ services:
     volumes:
       - ./discord-service/src:/app/discord-service/src
 
-  interview-insights-service:
-    container_name: interview-insights
-    build:
-      context: .
-      dockerfile: interview-insights-service/Dockerfile
-      args:
-        - BUILD_ENV=development
-    platform: linux/amd64
-    ports:
-      - '9090:8080'
-    env_file:
-      - ./interview-insights-service/.env
-    depends_on:
-      - web
-
   ngrok:
     container_name: ngrok
     image: ngrok/ngrok:latest

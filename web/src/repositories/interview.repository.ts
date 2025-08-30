@@ -11,6 +11,18 @@ import {
 import { InterviewModel, IInterview } from '@/models/interview.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
 import { redisClient } from '@/config/cache';
+import z from 'zod';
+
+const InterviewInsightSchema = z.object({
+  companyName: z.string(),
+  companyDetails: z.string(),
+  companyProducts: z.string(),
+  interviewInsights: z.object({
+    commonQuestions: z.array(z.string()),
+    interviewProcess: z.string(),
+    tips: z.string(),
+  }),
+});
 
 export const InterviewRepository = {
   createInterview: async ({
@@ -38,7 +50,7 @@ export const InterviewRepository = {
     });
   },
 
-  createInterviewInsight: async (
+  createInterviewInsights: async (
     interviewInsights: InterviewInsight[]
   ): Promise<InterviewInsight[]> => {
     await Promise.all(
@@ -171,27 +183,11 @@ export const InterviewRepository = {
   }): Promise<InterviewInsight | null> => {
     if (!filters.companyName) return null;
 
-    const result = await redisClient.ft.search(
-      'idx:companies',
-      `@companyName:"${filters.companyName}"`
+    const cachedInsight = await redisClient.get(
+      `interview_insight:${filters.companyName}`
     );
 
-    // Ensure result has documents property before mapping
-    const insights =
-      typeof result === 'object' &&
-      result !== null &&
-      'documents' in result &&
-      Array.isArray(result.documents)
-        ? (result.documents
-            .map((doc) =>
-              doc && typeof doc === 'object' && 'value' in doc
-                ? (doc as { value: InterviewInsight }).value
-                : null
-            )
-            .filter(Boolean) as InterviewInsight[])
-        : [];
-
-    return insights[0] ?? null;
+    return InterviewInsightSchema.parse(cachedInsight);
   },
 
   updateInterviewById: async ({

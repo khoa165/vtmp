@@ -16,11 +16,13 @@ import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
+import { useRedis } from '@/testutils/redis.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 import { IApplication } from '@/types/entities';
 
 describe('Interview Repository', () => {
   useMongoDB();
+  useRedis();
 
   interface MockInterview {
     applicationId: string;
@@ -168,6 +170,35 @@ describe('Interview Repository', () => {
         jobTitle: 'Software Engineer',
         location: JobPostingRegion.US,
         status: InterviewStatus.PENDING,
+      });
+    });
+  });
+
+  describe.only('createInterviewInsights', async () => {
+    it('should create interview insights successfully', async () => {
+      const insights = await InterviewRepository.createInterviewInsights([
+        {
+          companyName: 'Meta',
+          companyDetails: '',
+          companyProducts: '',
+          interviewInsights: {
+            commonQuestions: [],
+            interviewProcess: '',
+            tips: '',
+          },
+        },
+      ]);
+
+      assert(insights);
+      expect(insights).to.be.an('array').that.have.lengthOf(1);
+      expect(insights[0]).to.deep.include({
+        companyDetails: '',
+        companyProducts: '',
+        interviewInsights: {
+          commonQuestions: [],
+          interviewProcess: '',
+          tips: '',
+        },
       });
     });
   });
