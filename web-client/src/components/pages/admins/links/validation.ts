@@ -36,6 +36,7 @@ export const LinkResponseSchema = z.object({
   datePosted: z.string().optional(),
   jobDescription: z.string().optional(),
   aiNote: z.string().optional(),
+  aiScore: z.number().min(0).max(100),
 });
 
 export type LinkResponseType = z.infer<typeof LinkResponseSchema>;

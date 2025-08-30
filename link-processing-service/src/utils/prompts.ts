@@ -16,21 +16,24 @@ export const buildPrompt = (extractedText: string): string => {
     "preferred": string
   }
   "aiNote": string,
+  "aiScore": number,
 }
 \`\`\`
 `;
   return `
 ${extractedText}
 \n\n
-You are given a raw text of a job posting. Extract the following structured fields from it:
+Evaluate the input text and assign an "aiScore" from 0 to 100, representing how likely the text is a job posting (0 = definitely not, 100 = definitely a job post).
+
+if score < 25, return JSON object with only "aiScore" field set to the score
+
+otherwise, please follow the step below
 
 **General Instructions:**
 - Extract the following fields if available. If a field is not present in the text, omit it entirely from the output JSON.
 - Do not explain your answer.
 - Output only a single, minified JSON object. Do not include markdown, comments, or extra text.
 - Field names must match exactly as shown below.
-- For each job posting, if it is an opportunity that students pursuing Software Engineering (SWE) or Product Design (PD) should consider, include the following:
-  aiNote: A brief explanation of what the opportunity is and why it’s suitable for SWE or PD students. If it is not suitable, provide only the reason why, and do not include any other fields or metadata.
 
 **Field definitions:**
 - jobTitle: The title of the job, usually near the top above or near the "Apply" section.
@@ -48,6 +51,8 @@ You are given a raw text of a job posting. Extract the following structured fiel
   - preferred: This field shows any additional qualifications or skills that are preferred but not strictly required.
   For "jobDescription", if at least one of these subfields is present, include the "jobDescription" field and only the present subfields. If none are present, omit the "jobDescription" field entirely.
 - aiNote: A brief explanation of what the opportunity is and why it’s suitable for SWE or PD students. 
+- aiScore: the score you evaluated earlier
+
 
 **Strategy:**
 - First, find the main body of the job posting.

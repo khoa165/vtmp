@@ -18,7 +18,12 @@ import {
   RawAIResponseSchema,
   ScrapedLink,
 } from '@/types/link-processing.types';
-import { AIExtractionError, logError } from '@/utils/errors';
+import { CONFIDENCE_THRESHOLD } from '@/utils/constants';
+import {
+  AIExtractionError,
+  logError,
+  LinkProcessingBadRequest,
+} from '@/utils/errors';
 import { formatJobDescription, stringToEnumValue } from '@/utils/link.helpers';
 import { buildPrompt } from '@/utils/prompts';
 
@@ -55,8 +60,22 @@ export const ExtractLinkMetadataService = {
       datePosted,
       jobDescription,
       aiNote,
+      aiScore,
     } = RawAIResponseSchema.parse(JSON.parse(rawAIResponse));
+    // log for debugging purposes
+    console.log('\n\nURL: ', url, +'\n');
+    console.log('Body text: ', text, '\n');
+    console.log('RawAIResponse: ', rawAIResponse, '\n\n');
 
+    if (aiScore < CONFIDENCE_THRESHOLD) {
+      throw new LinkProcessingBadRequest(
+        'The link is not a job posting',
+        {
+          url,
+        },
+        LinkProcessingFailureStage.EXTRACTION_FAILED
+      );
+    }
     // Convert from string to Typescript enum, had to use a separate helper stringToEnumValue
     const formattedLinkMetadata = {
       jobTitle,
@@ -76,6 +95,7 @@ export const ExtractLinkMetadataService = {
       datePosted,
       jobDescription: formatJobDescription(jobDescription),
       aiNote,
+      aiScore,
     };
     return ExtractedLinkMetadataSchema.parse(formattedLinkMetadata);
   },
