@@ -32,6 +32,7 @@ export const InvitationRepository = {
     updateInvitationInfo: {
       status?: InvitationStatus;
       expiryDate?: Date;
+      token?: string;
     }
   ): Promise<IInvitation | null> => {
     return InvitationModel.findOneAndUpdate(
