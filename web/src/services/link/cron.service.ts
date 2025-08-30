@@ -75,7 +75,7 @@ export const CronService = {
       return api.request({
         // PROD or STAGING
         method: 'POST',
-        data: { linksData },
+        data: JSON.stringify({ linksData }),
         headers: {
           'Content-Type': 'application/json',
         },
