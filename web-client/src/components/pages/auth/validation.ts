@@ -24,9 +24,7 @@ export const InvitationResponseSchema = z.object({
 });
 
 export const RequestPasswordResetResponseSchema = z.object({
-  data: z.object({
-    reqPasswordReset: z.boolean(),
-  }),
+  data: z.object({}),
   message: z.string(),
 });
 

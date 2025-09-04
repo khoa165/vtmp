@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 
 import { AuthService } from '@/services/auth.service';
+import { ResourceNotFoundError } from '@/utils/errors';
 
 const PasswordSchema = z
   .string({ required_error: 'Password is required' })
@@ -95,10 +96,15 @@ export const AuthController = {
 
   requestPasswordReset: async (req: Request, res: Response) => {
     const validatedBody = RequestPasswordResetSchema.parse(req.body);
-    const reqPasswordReset =
+    try {
       await AuthService.requestPasswordReset(validatedBody);
+    } catch (error) {
+      if (!(error instanceof ResourceNotFoundError)) {
+        throw error;
+      }
+    }
     res.status(200).json({
-      data: { reqPasswordReset },
+      data: {},
       message:
         'If the account exists with this email, you will receive a password reset link via email',
     });
@@ -106,9 +112,9 @@ export const AuthController = {
 
   resetPassword: async (req: Request, res: Response) => {
     const { token, newPassword } = ResetPasswordSchema.parse(req.body);
-    const reset = await AuthService.resetPassword({ token, newPassword });
+    await AuthService.resetPassword({ token, newPassword });
     res.status(200).json({
-      data: { reset },
+      data: {},
       message: 'Password has been reset successfully',
     });
   },
