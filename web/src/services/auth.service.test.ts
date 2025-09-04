@@ -281,11 +281,10 @@ describe('AuthService', () => {
     });
 
     it('should reset password successfully', async () => {
-      const updatedUser = await AuthService.resetPassword({
+      await AuthService.resetPassword({
         token: resetToken,
         newPassword: 'newpassword',
       });
-      expect(updatedUser).to.have.property('email', 'testreset@gmail.com');
 
       const userFromDB = await UserRepository.getUserById(userId, {
         includePasswordField: true,

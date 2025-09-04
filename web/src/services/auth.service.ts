@@ -206,13 +206,8 @@ export const AuthService = {
     const saltRounds = 10;
     const encryptedPassword = await bcrypt.hash(newPassword, saltRounds);
 
-    const updatedUser = await UserRepository.updateUserById(
-      user._id.toString(),
-      {
-        encryptedPassword,
-      }
-    );
-
-    return updatedUser;
+    await UserRepository.updateUserById(user._id.toString(), {
+      encryptedPassword,
+    });
   },
 };
