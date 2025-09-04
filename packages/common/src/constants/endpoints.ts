@@ -4,4 +4,5 @@ export const API_ENDPOINTS = {
   APPROVE_LINK: (id: string) => `/links/${id}/approve`,
   REJECT_LINK: (id: string) => `/links/${id}/reject`,
   TRIGGER_CRON: '/cron/trigger',
+  PROCESS_INDIVIDUAL_LINK: (id: string) => `/cron/process-link/${id}`,
 };
