@@ -69,6 +69,9 @@ export class EmailService {
         ? 'http://localhost:3000'
         : EnvConfig.get().VTMP_WEB_URL;
     const link = `${webUrl}/reset-password?token=${token}`;
+    if (EnvConfig.get().NODE_ENV === 'DEV') {
+      console.log('Password reset link: ', link);
+    }
     return {
       email,
       subject: 'Reset Your Password',
