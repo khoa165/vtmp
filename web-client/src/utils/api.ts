@@ -10,7 +10,7 @@ const api = axios.create({
   },
 });
 interface RequestBaseArgs<T> {
-  method: Method.GET | Method.POST | Method.DELETE | Method.PUT;
+  method: Method.GET | Method.POST | Method.DELETE | Method.PUT | Method.PATCH;
   url: string;
   data?: object;
   schema: { parse: (data: object) => T };
@@ -56,7 +56,7 @@ export const request: IRequest = async <T extends { data: object }>({
   schema,
   options = {},
 }: {
-  method: Method.GET | Method.POST | Method.DELETE | Method.PUT;
+  method: Method.GET | Method.POST | Method.DELETE | Method.PUT | Method.PATCH;
   url: string;
   data?: object;
   schema: { parse: (data: object) => T };

@@ -20,6 +20,8 @@ import { JobPostingsPage } from '#vtmp/web-client/components/pages/application-t
 import { LandingPage } from '#vtmp/web-client/components/pages/application-tracker/landing/landing-page';
 import { LinksPage } from '#vtmp/web-client/components/pages/application-tracker/links/links-page';
 import { LoginPage } from '#vtmp/web-client/components/pages/auth/login';
+import { PasswordResetPage } from '#vtmp/web-client/components/pages/auth/password-reset';
+import { RequestPasswordResetPage } from '#vtmp/web-client/components/pages/auth/request-password-reset';
 import { RequireAuth } from '#vtmp/web-client/components/pages/auth/require-auth';
 import { SignUpPage } from '#vtmp/web-client/components/pages/auth/signup';
 import { NotFoundPage } from '#vtmp/web-client/components/pages/shared/not-found-page';
@@ -96,6 +98,11 @@ export const App = () => {
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route
+            path="/request-password-reset"
+            element={<RequestPasswordResetPage />}
+          />
+          <Route path="/reset-password" element={<PasswordResetPage />} />
           <Route path="/*" element={<NotFoundPage />} />
         </Route>
       </Routes>

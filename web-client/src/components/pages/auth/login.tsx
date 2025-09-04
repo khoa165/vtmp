@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { EyeOff, Eye } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { SystemRole } from '@vtmp/common/constants';
@@ -173,7 +173,9 @@ export const LoginPage = () => {
             <Button className="text-black w-full" onClick={handleLogin}>
               Sign in
             </Button>
-            <Button variant="link">Forgot your password?</Button>
+            <Button variant="link" asChild>
+              <Link to="/request-password-reset">Forgot your password?</Link>
+            </Button>
           </CardFooter>
         </Card>
       </div>

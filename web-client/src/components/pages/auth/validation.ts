@@ -1,5 +1,6 @@
-import { SystemRole } from '@vtmp/common/constants';
 import { z } from 'zod';
+
+import { SystemRole } from '@vtmp/common/constants';
 
 export const AuthResponseSchema = z.object({
   data: z.object({
@@ -20,4 +21,23 @@ export const InvitationResponseSchema = z.object({
     sender: z.string(),
     token: z.string(),
   }),
+});
+
+export const RequestPasswordResetResponseSchema = z.object({
+  data: z.object({
+    reqPasswordReset: z.boolean(),
+  }),
+  message: z.string(),
+});
+
+export const ResetPasswordResponseSchema = z.object({
+  data: z.object({
+    reset: z.object({
+      _id: z.string(),
+      email: z.string(),
+      firstName: z.string(),
+      lastName: z.string(),
+    }),
+  }),
+  message: z.string(),
 });
