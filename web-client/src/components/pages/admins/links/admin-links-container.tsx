@@ -10,6 +10,7 @@ import {
   useGetLinks,
   useRejectLink,
   useTriggerCron,
+  useProcessIndividualLink,
 } from '@/components/pages/admins/links/hooks/admin-links';
 import { CustomError } from '@/utils/errors';
 
@@ -25,14 +26,22 @@ export const AdminLinksContainer = ({
   const { mutate: approveLinkFn } = useApproveLink();
   const { mutate: rejectLinkFn } = useRejectLink();
   const { mutate: triggerCronFn } = useTriggerCron();
+  const { mutate: processIndividualLinkFn } = useProcessIndividualLink();
 
   const columns = useMemo(
     () =>
       adminLinksTableColumns({
         approveLinkFn,
         rejectLinkFn,
+        processIndividualLinkFn,
       }),
-    [linksData, approveLinkFn, rejectLinkFn, triggerCronFn]
+    [
+      linksData,
+      approveLinkFn,
+      rejectLinkFn,
+      triggerCronFn,
+      processIndividualLinkFn,
+    ]
   );
 
   if (isLoading) {

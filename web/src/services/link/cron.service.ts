@@ -11,7 +11,11 @@ import {
 
 import { EnvConfig } from '@/config/env';
 import { LinkRepository } from '@/repositories/link.repository';
-import { BadRequest, InternalServerError } from '@/utils/errors';
+import {
+  BadRequest,
+  InternalServerError,
+  ResourceNotFoundError,
+} from '@/utils/errors';
 
 const ENABLE_LINK_PROCESSING = false;
 const MAX_LONG_RETRY_ATTEMPTS = 4;
@@ -134,6 +138,34 @@ export const CronService = {
       console.error('Cron error: ', error);
       throw new InternalServerError('Failed to process links', { error });
     }
+  },
+
+  async processIndividualLink(linkId: string): Promise<void> {
+    const link = await LinkRepository.getLinkById(linkId);
+    if (!link) {
+      throw new ResourceNotFoundError('Link not found', { linkId });
+    }
+
+    // Check if link is in a processable state
+    if (
+      link.status !== LinkStatus.PENDING_PROCESSING &&
+      link.status !== LinkStatus.PENDING_RETRY
+    ) {
+      throw new BadRequest('Link is not in a processable state', {
+        linkId,
+        currentStatus: link.status,
+      });
+    }
+
+    const linksData: SubmittedLink[] = [
+      {
+        _id: link._id.toString(),
+        originalUrl: link.originalUrl,
+        attemptsCount: link.attemptsCount,
+      },
+    ];
+
+    await this._sendLinksToLambda(linksData);
   },
 
   scheduleCronjob() {
