@@ -177,7 +177,9 @@ describe('JobPostingService', () => {
           userId: userIdA,
         });
 
-      expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(0);
+      expect(jobsNotAppliedByUserA.data)
+        .to.be.an('array')
+        .that.have.lengthOf(0);
     });
 
     it('should return an exact array of job postings that matches all available job postings in the system if user has no applied to any posting', async () => {
@@ -186,11 +188,11 @@ describe('JobPostingService', () => {
           userId: userIdA,
         });
 
-      expect(jobsNotAppliedByUserA)
+      expect(jobsNotAppliedByUserA.data)
         .to.be.an('array')
         .that.has.length(mockMultipleJobPostings.length);
       expect(
-        jobsNotAppliedByUserA.map((job) => job._id?.toString())
+        jobsNotAppliedByUserA.data.map((job) => job._id?.toString())
       ).to.have.members(jobPostings.map((jobPosting) => jobPosting?.id));
     });
 
@@ -211,9 +213,11 @@ describe('JobPostingService', () => {
           userId: userIdA,
         });
 
-      expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
-      assert(jobsNotAppliedByUserA[0]);
-      expect(jobsNotAppliedByUserA[0]._id?.toString()).to.equal(
+      expect(jobsNotAppliedByUserA.data)
+        .to.be.an('array')
+        .that.have.lengthOf(1);
+      assert(jobsNotAppliedByUserA.data[0]);
+      expect(jobsNotAppliedByUserA.data[0]._id?.toString()).to.equal(
         jobPosting4?.id
       );
     });
@@ -236,9 +240,11 @@ describe('JobPostingService', () => {
           userId: userIdA,
         });
 
-      expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(1);
-      assert(jobsNotAppliedByUserA[0]);
-      expect(jobsNotAppliedByUserA[0]._id?.toString()).to.equal(
+      expect(jobsNotAppliedByUserA.data)
+        .to.be.an('array')
+        .that.have.lengthOf(1);
+      assert(jobsNotAppliedByUserA.data[0]);
+      expect(jobsNotAppliedByUserA.data[0]._id?.toString()).to.equal(
         jobPostings[0]?.id
       );
     });
@@ -262,9 +268,11 @@ describe('JobPostingService', () => {
           userId: userIdA,
         });
 
-      expect(jobsNotAppliedByUserA).to.be.an('array').that.have.lengthOf(2);
+      expect(jobsNotAppliedByUserA.data)
+        .to.be.an('array')
+        .that.have.lengthOf(2);
       expect(
-        jobsNotAppliedByUserA.map((job) => job._id?.toString())
+        jobsNotAppliedByUserA.data.map((job) => job._id?.toString())
       ).to.have.members([jobPosting3?.id, jobPosting4?.id]);
     });
   });
@@ -337,7 +345,7 @@ describe('JobPostingService', () => {
         },
       });
 
-      expect(jobs).to.be.an('array').that.has.lengthOf(0);
+      expect(jobs.data).to.be.an('array').that.has.lengthOf(0);
     });
 
     it('should return only the job postings not applied by the user and matching the company name filters', async () => {
@@ -349,8 +357,8 @@ describe('JobPostingService', () => {
         },
       });
 
-      expect(jobs).to.be.an('array').that.has.lengthOf(2);
-      expect(jobs.map((job) => job._id?.toString())).to.have.members([
+      expect(jobs.data).to.be.an('array').that.has.lengthOf(2);
+      expect(jobs.data.map((job) => job._id?.toString())).to.have.members([
         jobPosting1?.id,
         jobPosting2?.id,
       ]);
@@ -370,9 +378,9 @@ describe('JobPostingService', () => {
         },
       });
 
-      expect(jobs).to.be.an('array').that.has.lengthOf(1);
-      assert(jobs[0]);
-      expect(jobs[0]._id.toString()).to.equal(jobPosting2?.id);
+      expect(jobs.data).to.be.an('array').that.has.lengthOf(1);
+      assert(jobs.data[0]);
+      expect(jobs.data[0]._id.toString()).to.equal(jobPosting2?.id);
     });
 
     it('should return job postings matching the date filters', async () => {
@@ -385,8 +393,8 @@ describe('JobPostingService', () => {
         },
       });
 
-      expect(jobs).to.be.an('array').that.has.lengthOf(1);
-      expect(jobs[0]?._id.toString()).to.equal(jobPosting3?.id);
+      expect(jobs.data).to.be.an('array').that.has.lengthOf(1);
+      expect(jobs.data[0]?._id.toString()).to.equal(jobPosting3?.id);
     });
 
     it('should return an empty array when filters by field with no matching postings', async () => {
@@ -397,7 +405,7 @@ describe('JobPostingService', () => {
         },
       });
 
-      expect(jobs).to.be.an('array').that.has.lengthOf(0);
+      expect(jobs.data).to.be.an('array').that.has.lengthOf(0);
     });
 
     it('should not exclude job postings applied by another user', async () => {
@@ -418,8 +426,8 @@ describe('JobPostingService', () => {
         },
       });
 
-      expect(jobs).to.be.an('array').that.has.lengthOf(1);
-      expect(jobs[0]?._id.toString()).to.equal(jobPosting1?.id);
+      expect(jobs.data).to.be.an('array').that.has.lengthOf(1);
+      expect(jobs.data[0]?._id.toString()).to.equal(jobPosting1?.id);
     });
 
     it('should return job postings matching jobTitle, companyName, and location', async () => {
@@ -433,8 +441,8 @@ describe('JobPostingService', () => {
         },
       });
 
-      expect(jobs).to.be.an('array').that.has.lengthOf(1);
-      expect(jobs[0]?._id.toString()).to.equal(jobPosting2?.id);
+      expect(jobs.data).to.be.an('array').that.has.lengthOf(1);
+      expect(jobs.data[0]?._id.toString()).to.equal(jobPosting2?.id);
     });
 
     it('should return job posting if user deleted the application', async () => {
@@ -461,8 +469,8 @@ describe('JobPostingService', () => {
         },
       });
 
-      expect(jobs).to.be.an('array').that.has.lengthOf(1);
-      expect(jobs[0]?._id.toString()).to.equal(jobPosting2?.id);
+      expect(jobs.data).to.be.an('array').that.has.lengthOf(1);
+      expect(jobs.data[0]?._id.toString()).to.equal(jobPosting2?.id);
     });
   });
 });

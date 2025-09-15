@@ -1,12 +1,18 @@
 import escapeStringRegexp from 'escape-string-regexp';
+import { ObjectId } from 'mongodb';
 import { ClientSession } from 'mongoose';
 
-import { JobPostingRegion } from '@vtmp/common/constants';
+import {
+  JobPostingRegion,
+  JobPostingSortField,
+  SortOrder,
+} from '@vtmp/common/constants';
 
 import {
-  JobPostingModel,
   IJobPosting,
-  JobFilter,
+  JobPostingFilter,
+  JobPostingModel,
+  JobPostingPagination,
 } from '@/models/job-posting.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
 
@@ -62,19 +68,30 @@ export const JobPostingRepository = {
     filters,
   }: {
     userId: string;
-    filters?: JobFilter;
-  }): Promise<IJobPosting[]> => {
+    filters: JobPostingFilter;
+  }): Promise<JobPostingPagination> => {
+    const {
+      limit = 10,
+      cursor,
+      sortOrder = SortOrder.ASC,
+      sortField = JobPostingSortField.DATE_POSTED,
+      jobTitle,
+      companyName,
+      postingDateRangeStart,
+      postingDateRangeEnd,
+    } = filters;
+
     const dynamicMatch: Record<string, unknown> = {};
 
-    if (filters?.jobTitle) {
+    if (jobTitle) {
       dynamicMatch.jobTitle = {
-        $regex: escapeStringRegexp(filters.jobTitle),
+        $regex: escapeStringRegexp(jobTitle),
         $options: 'i',
       };
     }
-    if (filters?.companyName) {
+    if (companyName) {
       dynamicMatch.companyName = {
-        $regex: escapeStringRegexp(filters.companyName),
+        $regex: escapeStringRegexp(companyName),
         $options: 'i',
       };
     }
@@ -84,53 +101,155 @@ export const JobPostingRepository = {
     if (filters?.postingDateRangeStart || filters?.postingDateRangeEnd) {
       const datePostedFilter: Record<string, Date> = {};
 
-      if (filters.postingDateRangeStart) {
-        datePostedFilter.$gte = filters.postingDateRangeStart;
+      if (postingDateRangeStart) {
+        datePostedFilter.$gte = postingDateRangeStart;
       }
-      if (filters.postingDateRangeEnd) {
-        datePostedFilter.$lte = filters.postingDateRangeEnd;
+      if (postingDateRangeEnd) {
+        datePostedFilter.$lte = postingDateRangeEnd;
       }
 
       dynamicMatch.datePosted = datePostedFilter;
     }
 
-    return JobPostingModel.aggregate([
-      {
-        $match: {
-          ...dynamicMatch,
-          deletedAt: null,
+    const orderKey = sortOrder === SortOrder.ASC ? '$gt' : '$lt';
+    const sortDirection = sortOrder === SortOrder.ASC ? 1 : -1;
+    const getPaginationMatch = (cursor?: string): Record<string, unknown> => {
+      let paginationMatch: Record<string, unknown> = {};
+      if (cursor) {
+        const [cursorIdString, cursorValueString] = cursor.split('_');
+        const cursorId = new ObjectId(cursorIdString);
+
+        if (cursorValueString) {
+          const cursorValue =
+            sortField === JobPostingSortField.DATE_POSTED
+              ? new Date(cursorValueString)
+              : cursorValueString;
+
+          paginationMatch = {
+            $or: [
+              { [sortField]: { [orderKey]: cursorValue } },
+              {
+                [sortField]: cursorValue,
+                _id: { [orderKey]: cursorId },
+              },
+            ],
+          };
+        } else {
+          paginationMatch = {
+            _id: { [orderKey]: cursorId },
+          };
+        }
+      }
+
+      return paginationMatch;
+    };
+
+    let data: IJobPosting[] = [];
+    let hasNextPage = true;
+    let cursorNext = cursor;
+    let paginationMatchNext: Record<string, unknown> =
+      getPaginationMatch(cursor);
+
+    while (data.length < limit && hasNextPage) {
+      let jobPostings = await JobPostingModel.aggregate([
+        {
+          $match: {
+            ...dynamicMatch,
+            deletedAt: null,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'applications',
-          let: { jobId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$jobPostingId', '$$jobId'] },
-                    { $eq: ['$userId', toMongoId(userId)] },
-                    { $eq: ['$deletedAt', null] },
-                  ],
+        {
+          $sort: {
+            [sortField]: sortDirection,
+            _id: sortDirection,
+          },
+        },
+        { $match: paginationMatchNext },
+        { $limit: limit + 1 },
+      ]);
+
+      if (jobPostings.length <= limit) {
+        hasNextPage = false;
+      }
+
+      const jobIds = jobPostings.map((job) => job._id);
+      const last = jobPostings[jobPostings.length - 1];
+      if (last) {
+        const lastCursorValue =
+          last[sortField] instanceof Date
+            ? last[sortField]?.toISOString()
+            : last[sortField];
+        cursorNext = `${last._id.toString()}_${lastCursorValue}`;
+      }
+
+      paginationMatchNext = getPaginationMatch(cursorNext);
+
+      const temp_data = await JobPostingModel.aggregate([
+        {
+          $match: {
+            _id: { $in: jobIds },
+          },
+        },
+        {
+          $lookup: {
+            from: 'applications',
+            let: { jobId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$jobPostingId', '$$jobId'] },
+                      { $eq: ['$userId', toMongoId(userId)] },
+                      { $eq: ['$deletedAt', null] },
+                    ],
+                  },
                 },
               },
-            },
-          ],
-          as: 'userApplication',
+            ],
+            as: 'userApplication',
+          },
         },
-      },
-      {
-        $match: {
-          userApplication: { $size: 0 },
+        {
+          $sort: {
+            [sortField]: sortDirection,
+            _id: sortDirection,
+          },
         },
-      },
-      {
-        $project: {
-          userApplication: 0,
+        {
+          $match: {
+            userApplication: { $size: 0 },
+          },
         },
-      },
-    ]);
+        {
+          $project: {
+            userApplication: 0,
+          },
+        },
+      ]);
+      data = [...data, ...temp_data];
+    }
+
+    let results = data.slice(0, limit);
+
+    const response: {
+      data: IJobPosting[];
+      cursor?: string;
+    } = {
+      data: results,
+    };
+
+    if (results.length > 0) {
+      const last = results[results.length - 1];
+      if (last) {
+        const lastCursorValue =
+          last[sortField] instanceof Date
+            ? last[sortField]?.toISOString()
+            : last[sortField];
+        response.cursor = `${last._id.toString()}_${lastCursorValue}`;
+      }
+    }
+
+    return response;
   },
 };

@@ -87,6 +87,19 @@ export enum InterestLevel {
   MEDIUM = 'MEDIUM',
 }
 
+export enum SortOrder {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
+export enum JobPostingSortField {
+  DATE_POSTED = 'datePosted',
+  LOCATION = 'location',
+  COMPANY_NAME = 'companyName',
+  JOB_TYPE = 'jobType',
+  JOB_TITLE = 'jobTitle',
+}
+
 export enum CompanyName {
   ADOBE = 'ADOBE',
   AMAZON = 'AMAZON',
