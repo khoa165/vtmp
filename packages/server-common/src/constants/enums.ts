@@ -5,7 +5,7 @@ export enum AuthType {
 
 export enum Environment {
   DEV = 'DEV',
-  STAGING = 'STAGING',
   PROD = 'PROD',
+  STAGING = 'STAGING',
   TEST = 'TEST',
 }
