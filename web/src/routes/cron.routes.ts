@@ -17,3 +17,10 @@ CronRoutes.post(
     CronController.trigger,
   ])
 );
+CronRoutes.post(
+  '/process-link/:linkId',
+  wrappedHandlers([
+    hasPermission(Permission.MANAGE_JOB_LINK),
+    CronController.processIndividualLink,
+  ])
+);

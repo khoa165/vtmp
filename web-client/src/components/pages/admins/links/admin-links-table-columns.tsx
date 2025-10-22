@@ -1,8 +1,10 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { format, formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 
+import { LinkStatus } from '@vtmp/common/constants';
 import { formatEnumName } from '@vtmp/common/utils';
 
+import { Button } from '@/components/base/button';
 import { HeaderSorting } from '@/components/base/header';
 import { StatusDot } from '@/components/base/status-dot';
 import { ReviewPopupButton } from '@/components/pages/admins/links/review-popup-button';
@@ -11,7 +13,6 @@ import {
   JobPostingData,
 } from '@/components/pages/admins/links/validation';
 import { LinksColorMapping } from '@/utils/constants';
-import { MONTH_DATE_YEAR } from '@/utils/date';
 
 interface AdminLinksTableColumnsProps {
   approveLinkFn: ({
@@ -22,11 +23,13 @@ interface AdminLinksTableColumnsProps {
     newUpdate: JobPostingData;
   }) => void;
   rejectLinkFn: ({ linkId }: { linkId: string }) => void;
+  processIndividualLinkFn: ({ linkId }: { linkId: string }) => void;
 }
 
 export const adminLinksTableColumns = ({
   approveLinkFn,
   rejectLinkFn,
+  processIndividualLinkFn,
 }: AdminLinksTableColumnsProps): ColumnDef<ILinkResponse>[] => [
   {
     accessorKey: 'jobTitle',
@@ -105,14 +108,34 @@ export const adminLinksTableColumns = ({
     },
   },
   {
-    id: 'review',
-    header: () => <div className="pl-2">Review</div>,
-    cell: ({ row }) => (
-      <ReviewPopupButton
-        currentLink={row.original}
-        approveLinkFn={approveLinkFn}
-        rejectLinkFn={rejectLinkFn}
-      />
-    ),
+    id: 'actions',
+    header: () => <div className="pl-2"></div>,
+    cell: ({ row }) => {
+      const canProcess =
+        row.original.status === LinkStatus.PENDING_PROCESSING ||
+        row.original.status === LinkStatus.PENDING_RETRY;
+
+      return (
+        <div className="pl-2 flex gap-2">
+          <ReviewPopupButton
+            currentLink={row.original}
+            approveLinkFn={approveLinkFn}
+            rejectLinkFn={rejectLinkFn}
+          />
+          {canProcess && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                processIndividualLinkFn({ linkId: row.original._id })
+              }
+              className="h-8 px-3"
+            >
+              Process Link
+            </Button>
+          )}
+        </div>
+      );
+    },
   },
 ];

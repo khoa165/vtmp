@@ -314,7 +314,7 @@ describe('InvitationController', () => {
       expectSuccessfulResponse({ res, statusCode: 200 });
 
       expect(res.body.data).to.deep.include(
-        omit(mockOneInvitation, ['expiryDate', 'sender'])
+        omit(mockOneInvitation, ['expiryDate', 'sender', 'token'])
       );
       expect(String(res.body.data.sender)).to.equal(mockAdminId);
 

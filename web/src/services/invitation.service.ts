@@ -76,17 +76,20 @@ export const InvitationService = {
       });
     } else {
       if (isBefore(latestPendingInvitation.expiryDate, Date.now())) {
+        token = jwt.sign({ receiverEmail }, EnvConfig.get().JWT_SECRET, {
+          expiresIn: '7d',
+        });
         const updatedInvitation =
           await InvitationRepository.updateInvitationById(
             latestPendingInvitation.id,
-            { expiryDate: addDays(Date.now(), 7) }
+            { expiryDate: addDays(Date.now(), 7), token }
           );
         if (updatedInvitation) {
           latestPendingInvitation = updatedInvitation;
         }
+      } else {
+        token = latestPendingInvitation.token;
       }
-
-      token = latestPendingInvitation.token;
     }
 
     const emailTemplate = getEmailService().getInvitationEmailTemplate(

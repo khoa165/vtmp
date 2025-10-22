@@ -182,9 +182,11 @@ describe('InvitationService', () => {
           mockWebUrl
         );
       assert(invitationWithNewExpiryDate);
+      console.log(invitationWithNewExpiryDate);
       expect(invitationWithNewExpiryDate.toObject()).to.deep.include(
         omit({ ...mockOneInvitation, sender: toMongoId(mockAdminId) }, [
           'expiryDate',
+          'token',
         ])
       );
 
