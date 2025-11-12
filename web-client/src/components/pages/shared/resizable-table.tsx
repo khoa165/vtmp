@@ -54,12 +54,14 @@ const ColumnResizer = <TData, TValue>({
 interface ResizableTableProps<TData, TValue> {
   table: TanstackTable<TData>;
   columns: ColumnDef<TData, TValue>[];
+  testIdPrefix?: string;
   emptyStateText?: string;
 }
 
 export function ResizableTable<TData, TValue>({
   table,
   columns,
+  testIdPrefix,
   emptyStateText,
 }: ResizableTableProps<TData, TValue>) {
   const isLastPage =
@@ -81,7 +83,13 @@ export function ResizableTable<TData, TValue>({
                       <TableHead
                         key={header.id}
                         className="text-background"
+                        role="columnheader"
                         style={{ width: header.getSize() }}
+                        data-testid={
+                          testIdPrefix
+                            ? `${testIdPrefix}-header-${header.column.id}`
+                            : undefined
+                        }
                       >
                         {header.isPlaceholder
                           ? null
@@ -103,11 +111,19 @@ export function ResizableTable<TData, TValue>({
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
                     className="border-white"
+                    data-testid={
+                      testIdPrefix ? `${testIdPrefix}-table-row` : undefined
+                    }
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
                         className="text-foreground py-4 whitespace-normal"
+                        data-testid={
+                          testIdPrefix
+                            ? `${testIdPrefix}-cell-${cell.column.id}`
+                            : undefined
+                        }
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
