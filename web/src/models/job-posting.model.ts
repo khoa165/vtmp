@@ -1,33 +1,8 @@
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 import { JobPostingRegion, JobFunction, JobType } from '@vtmp/common/constants';
 
-export interface IJobPosting extends Document {
-  _id: Types.ObjectId;
-  linkId: Types.ObjectId;
-  externalPostingId?: string;
-  url: string;
-  jobTitle: string;
-  companyName: string;
-  location: JobPostingRegion;
-  datePosted?: Date;
-  jobDescription?: string;
-  adminNote?: string;
-  submittedBy?: Types.ObjectId;
-  deletedAt?: Date;
-  jobFunction: JobFunction;
-  jobType: JobType;
-}
-
-export interface JobFilter {
-  jobTitle?: string;
-  companyName?: string;
-  location?: string;
-  jobFunction?: JobFunction;
-  jobType?: JobType;
-  postingDateRangeStart?: Date;
-  postingDateRangeEnd?: Date;
-}
+import { IJobPosting } from '@/types/entities';
 
 const JobPostingSchema = new mongoose.Schema<IJobPosting>(
   {

@@ -1,6 +1,6 @@
 import z from 'zod';
 
-import { IInterview } from '@/models/interview.model';
+import { IInterview } from '@/types/entities';
 
 export const buildPrompt = ({
   companyName,

@@ -6,7 +6,6 @@ import {
   JobPostingRegion,
 } from '@vtmp/common/constants';
 
-// eslint-disable-next-line boundaries/element-types
 import { JobPostingModel } from '@/models/job-posting.model';
 import { IApplication } from '@/types/entities';
 

@@ -5,9 +5,9 @@ import { z } from 'zod';
 import { InvitationStatus } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
-import { IInvitation } from '@/models/invitation.model';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
+import { IInvitation } from '@/types/entities';
 import { getEmailService } from '@/utils/email';
 import {
   DuplicateResourceError,

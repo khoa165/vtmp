@@ -13,7 +13,6 @@ import { SystemRole } from '@vtmp/common/constants';
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
-import { IInvitation } from '@/models/invitation.model';
 import { UserRepository } from '@/repositories/user.repository';
 import { createMockInvitation } from '@/testutils/auth.testutils';
 import { MOCK_ENV } from '@/testutils/mock-data.testutil';
@@ -23,6 +22,7 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { IInvitation } from '@/types/entities';
 
 describe('AuthController', () => {
   useMongoDB();

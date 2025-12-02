@@ -9,7 +9,8 @@ import {
 } from '@vtmp/common/constants';
 import { formatEnumName } from '@vtmp/common/utils';
 
-import { ILink, LinkModel } from '@/models/link.model';
+import { LinkModel } from '@/models/link.model';
+import { ILink } from '@/types/entities';
 
 import realLinksJson from './real-links.json';
 

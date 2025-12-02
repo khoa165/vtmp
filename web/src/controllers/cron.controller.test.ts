@@ -9,7 +9,6 @@ import { LinkStatus } from '@vtmp/common/constants';
 
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
-// eslint-disable-next-line boundaries/element-types
 import { LinkRepository } from '@/repositories/link.repository';
 import { CronService } from '@/services/link/cron.service';
 import {

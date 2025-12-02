@@ -8,15 +8,14 @@ import {
   ApplicationStatus,
   InterestLevel,
   JobPostingRegion,
-  SystemRole,
 } from '@vtmp/common/constants';
 
-import { IJobPosting } from '@/models/job-posting.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
+import { IJobPosting } from '@/types/entities';
 
 describe('ApplicationRepository', () => {
   useMongoDB();

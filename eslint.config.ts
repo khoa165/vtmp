@@ -1,15 +1,16 @@
 // @ts-check
-import boundaries from 'eslint-plugin-boundaries';
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import globals from 'globals';
-import { customEslintRules } from './custom-eslint';
 import stylistic from '@stylistic/eslint-plugin';
+import boundaries from 'eslint-plugin-boundaries';
 import checkFile from 'eslint-plugin-check-file';
 import importPlugin from 'eslint-plugin-import';
-import typescriptSortKeys from 'eslint-plugin-typescript-sort-keys';
 import noRelativeImportPaths from 'eslint-plugin-no-relative-import-paths';
 import sortExports from 'eslint-plugin-sort-exports';
+import typescriptSortKeys from 'eslint-plugin-typescript-sort-keys';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+
+import { customEslintRules } from './custom-eslint';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -173,20 +174,24 @@ export default tseslint.config(
           default: 'disallow',
           rules: [
             {
-              from: 'repositories',
+              from: 'models',
               allow: ['models'],
             },
             {
+              from: 'repositories',
+              allow: ['models', 'repositories'],
+            },
+            {
               from: 'services',
-              allow: ['repositories'],
+              allow: ['repositories', 'services'],
             },
             {
               from: 'controllers',
-              allow: ['services'],
+              allow: ['services', 'controllers'],
             },
             {
               from: 'routes',
-              allow: ['controllers'],
+              allow: ['controllers', 'routes'],
             },
           ],
         },
@@ -231,6 +236,12 @@ export default tseslint.config(
     files: ['**/mongoDB.testutil.ts', '**/mongoID.testutil.ts'],
     rules: {
       'checkFile/filename-naming-convention': 'off',
+    },
+  },
+  {
+    files: ['**/*.test.ts'],
+    rules: {
+      'boundaries/element-types': 'off',
     },
   },
   { ignores: ['cookiecutter/', 'scripts/', '**/*.{js,d.ts,d.tsx}'] }

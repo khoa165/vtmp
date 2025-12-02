@@ -11,15 +11,13 @@ import {
   LinkProcessingFailureStage,
 } from '@vtmp/common/constants';
 
-// eslint-disable-next-line boundaries/element-types
-import { ILink } from '@/models/link.model';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { LinkRepository } from '@/repositories/link.repository';
-// eslint-disable-next-line boundaries/element-types
 import { LinkService } from '@/services/link.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { ILink } from '@/types/entities';
 import {
   DuplicateResourceError,
   LinkProcessingBadRequest,
