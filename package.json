@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "frontend": "yarn workspace @vtmp/common build && yarn workspace @vtmp/web-client dev",
-    "backend": "yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build && yarn workspace @vtmp/web dev",
+    "backend": "yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build && yarn workspace @vtmp/observability build && yarn workspace @vtmp/web dev",
     "fa": "yarn workspace @vtmp/web-client add",
     "fr": "yarn workspace @vtmp/web-client remove",
     "ba": "yarn workspace @vtmp/web add",
@@ -43,6 +43,7 @@
     "web-client",
     "web",
     "discord-service",
+    "observability",
     "link-processing-service",
     "apps/mongo-migrations"
   ],

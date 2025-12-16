@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { SystemRole } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
+import { Logger } from '@/config/logger';
 import { AllowedIssuer } from '@/constants/enums';
 import UserService from '@/services/user.service';
 import { ResourceNotFoundError, UnauthorizedError } from '@/utils/errors';
@@ -63,6 +64,12 @@ export const authenticate = async (
     try {
       const user = await UserService.getUserById(parsed.id);
       req.user = { id: String(user._id), role: user.role };
+      /// Persist user throughout the request
+      Logger.setUser({
+        id: String(user._id),
+        email: user.email,
+        role: user.role,
+      });
     } catch (error) {
       if (error instanceof ResourceNotFoundError)
         throw new UnauthorizedError('User not found', {});
