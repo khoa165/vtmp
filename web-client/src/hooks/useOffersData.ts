@@ -4,6 +4,9 @@ import { mentorshipPeople, offerCompanies } from '@vtmp/common/people';
 
 import { CompanyMetadataWithOffers } from '#vtmp/web-client/types';
 
+const placeholderLogoUrl =
+  'https://1000logos.net/wp-content/uploads/2021/05/Stripe-logo.png';
+
 export const useOffersData = () => {
   return useMemo(() => {
     const data: Record<string, CompanyMetadataWithOffers> = {};
@@ -11,8 +14,9 @@ export const useOffersData = () => {
       data[company] = {
         ...offerCompanies[company],
         logoUrl:
-          'https://res.cloudinary.com/khoa165/image/upload/c_fit,h_200,w_200/v1745294204/viettech/logos/vtmp-' +
-          offerCompanies[company].logoFilename,
+          placeholderLogoUrl ||
+          'https://res.cloudinary.com/khoa165/image/upload/c_fit,h_200,w_200/v1767336061/viettech/logos/vtmp-' +
+            offerCompanies[company].logoFilename,
         offersCountTotal: 0,
         offersCountByYear: {
           2023: 0,

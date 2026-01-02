@@ -296,7 +296,7 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   },
   [CompanyName.SALESFORCE]: {
     displayName: 'Salesforce',
-    logoFilename: 'salesforce .png',
+    logoFilename: 'salesforce.png',
     maxLogoSize: 100,
   },
   [CompanyName.RIPPLING]: {
