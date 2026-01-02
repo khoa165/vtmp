@@ -382,7 +382,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
-            name: CompanyName.SERVICE_NOW,
+            name: CompanyName.SERVICENOW,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
             date: '2024-01-18',
@@ -416,7 +416,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-12-02',
           },
           {
-            name: CompanyName.SERVICE_NOW,
+            name: CompanyName.SERVICENOW,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.RETURN_OFFER,
             date: '2024-08-16',
@@ -427,6 +427,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Meta',
         roles: [MentorshipRole.COMMUNITY_MEMBER],
+        offers: [
+          {
+            name: CompanyName.ARISTA,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
       },
     ],
   },
@@ -526,7 +533,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-01-24',
           },
           {
-            name: CompanyName.SERVICE_NOW,
+            name: CompanyName.SERVICENOW,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
             date: '2024-01-22',
@@ -886,7 +893,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2024-02-27',
           },
           {
-            name: CompanyName.SERVICE_NOW,
+            name: CompanyName.SERVICENOW,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
             date: '2024-02-27',
@@ -984,6 +991,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Shopify',
         roles: [MentorshipRole.SWE_EXMENTEE_LOGISTICS_SUPPORT],
+        offers: [
+          {
+            name: CompanyName.SHOPIFY,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+        ],
       },
     ],
   },
@@ -1131,6 +1145,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ PlayStation',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.RIPPLING,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.CODE_BUDDY,
         teammates: [
           PeopleName.HAI_ANH,
@@ -1197,6 +1218,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Robinhood',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.ROBINHOOD,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+        ],
         teamName: ProjectName.CODE_BUDDY,
         teammates: [
           PeopleName.HAI_ANH,
@@ -1282,7 +1310,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             date: '2025-02-18',
           },
           {
-            name: CompanyName.SERVICE_NOW,
+            name: CompanyName.SERVICENOW,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
             date: '2024-12-02',
@@ -1371,6 +1399,33 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Palantir',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.SALESFORCE,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.RIPPLING,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.STRIPE,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.DUOLINGO,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.BLOOMBERG,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
       },
     ],
   },
@@ -1463,6 +1518,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Robinhood',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.TESLA,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.MICROSOFT,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
       },
     ],
   },
@@ -1644,6 +1711,23 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ TBD',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.NVIDIA,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+          {
+            name: CompanyName.VALON,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.TWO_SIGMA,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
       },
     ],
   },
@@ -1685,6 +1769,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Ryco.io',
         roles: [MentorshipRole.SWE_EXMENTEE_LOGISTICS_SUPPORT],
+        offers: [
+          {
+            name: CompanyName.HUBSPOT,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
       },
     ],
   },
@@ -1744,6 +1835,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Data Engineer Intern @ Meta',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.META,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+        ],
       },
     ],
   },
@@ -1832,6 +1930,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Shopify',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.PLAID,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
       },
     ],
   },
@@ -1853,7 +1958,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
-            name: CompanyName.SERVICE_NOW,
+            name: CompanyName.SERVICENOW,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
             date: '2024-10-25',
@@ -1879,6 +1984,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ ServiceNow',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.SERVICENOW,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+        ],
         teamName: ProjectName.CODE_BUDDY,
         teammates: [
           PeopleName.HAI_ANH,
@@ -1943,6 +2055,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [
           MentorshipRole.SWE_RISING_LEAD,
           MentorshipRole.SWE_EXMENTEE_MENTOR,
+        ],
+        offers: [
+          {
+            name: CompanyName.DATABRICKS,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
         ],
       },
     ],
@@ -2094,6 +2213,23 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Amazon',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.META,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.MICROSOFT,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.AMAZON,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+        ],
       },
     ],
   },
@@ -2153,6 +2289,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Asana',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.BLOOMBERG,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
       },
     ],
   },
@@ -2194,6 +2337,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Slack',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.SLACK,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+        ],
         teamName: ProjectName.CODE_BUDDY,
         teammates: [
           PeopleName.HUNG_NGO,
@@ -2244,6 +2394,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Health Enhancement Systems',
         roles: [MentorshipRole.SWE_EXMENTEE_LOGISTICS_SUPPORT],
+        offers: [
+          {
+            name: CompanyName.FLEXCAR,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.APPLICATION_TRACKER,
         teammates: [
           PeopleName.AN_TRAN,
@@ -2344,6 +2501,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Meta',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.META,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+          {
+            name: CompanyName.DATABRICKS,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
       },
     ],
   },
@@ -2441,6 +2610,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [
           MentorshipRole.SWE_RISING_LEAD,
           MentorshipRole.SWE_EXMENTEE_MENTOR,
+        ],
+        offers: [
+          {
+            name: CompanyName.MICROSOFT,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+          {
+            name: CompanyName.RIPPLING,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
         ],
         teamName: ProjectName.CODE_BUDDY,
         teammates: [
@@ -2634,6 +2815,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ Pomona',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.MICROSOFT,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.APPLICATION_TRACKER,
         teammates: [
           PeopleName.DANG_SON,
@@ -2696,6 +2884,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ Western Governors',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.AUTODESK,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.INTACT,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.APPLICATION_TRACKER,
         teammates: [
           PeopleName.AN_TRAN,
@@ -2755,6 +2955,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ George Mason',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.ZIPRECRUITER,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.SHOPIFY,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.SUBLEAZY,
         teamNumber: 1,
         teammates: [
@@ -2811,6 +3023,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ CSUSM',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.VIASAT,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.ZERO_KM,
         teamNumber: 2,
         teammates: [
@@ -2867,6 +3086,23 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ Colby',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.SEMGREP,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.BLOCK,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.LINKEDIN,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.ZERO_KM,
         teamNumber: 2,
         teammates: [
@@ -2895,6 +3131,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ Augustana',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.PONDER,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.ZERO_KM,
         teamNumber: 2,
         teammates: [
@@ -2923,6 +3166,28 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ Iowa State',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.TIKTOK,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.KINGLAND,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.GRACE_TECHNOLOGIES,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.SYNOPSYS,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.LOCAL_TASTE,
         teamNumber: 3,
         teammates: [
@@ -2951,6 +3216,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ George Mason',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.PARSONS,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.COSTAR,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.LOCAL_TASTE,
         teamNumber: 3,
         teammates: [
@@ -2979,6 +3256,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ Minerva',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.SHOPIFY,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.WAYFAIR,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.LOCAL_TASTE,
         teamNumber: 3,
         teammates: [
@@ -3007,6 +3296,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ Cornell',
         roles: [MentorshipRole.PD_MENTEE],
+        offers: [
+          {
+            name: CompanyName.LOVEPOP,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.CARE_BEAR,
         teamNumber: 4,
         teammates: [
@@ -3065,6 +3361,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ Dickinson',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.WAYFAIR,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.BNY_MELLON,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.CARE_BEAR,
         teamNumber: 4,
         teammates: [
@@ -3123,6 +3431,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ USF',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.RIPPLING,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.LINKEDIN,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.CARE_BEAR,
         teamNumber: 4,
         teammates: [
@@ -3181,6 +3501,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ TCU',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.CAPITAL_ONE,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.FAIR_SHARE,
         teamNumber: 5,
         teammates: [
@@ -3210,6 +3537,18 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ FSU',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.PLAID,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.FLEXCAR,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.FAIR_SHARE,
         teamNumber: 5,
         teammates: [
@@ -3268,6 +3607,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ Tufts',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.ROBINHOOD,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.FAIR_SHARE,
         teamNumber: 5,
         teammates: [

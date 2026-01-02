@@ -18,7 +18,7 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
     logoFilename: 'wayfair.png',
     maxLogoSize: 100,
   },
-  [CompanyName.SERVICE_NOW]: {
+  [CompanyName.SERVICENOW]: {
     displayName: 'ServiceNow',
     logoFilename: 'servicenow.png',
     maxLogoSize: 100,
@@ -278,5 +278,130 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
     displayName: 'G-Research',
     logoFilename: 'gresearch.png',
     maxLogoSize: 80,
+  },
+  [CompanyName.LOVEPOP]: {
+    displayName: 'LovePop',
+    logoFilename: 'lovepop.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.ZIPRECRUITER]: {
+    displayName: 'ZipRecruiter',
+    logoFilename: 'ziprecruiter.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.SALESFORCE]: {
+    displayName: 'Salesforce',
+    logoFilename: 'salesforce .png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.RIPPLING]: {
+    displayName: 'Rippling',
+    logoFilename: 'rippling.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.VIASAT]: {
+    displayName: 'Viasat',
+    logoFilename: 'viasat.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.PONDER]: {
+    displayName: 'Ponder',
+    logoFilename: 'ponder.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.SEMGREP]: {
+    displayName: 'Semgrep',
+    logoFilename: 'semgrep.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.BLOCK]: {
+    displayName: 'Block',
+    logoFilename: 'block.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.TIKTOK]: {
+    displayName: 'TikTok',
+    logoFilename: 'tiktok.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.KINGLAND]: {
+    displayName: 'Kingland',
+    logoFilename: 'kingland.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.GRACE_TECHNOLOGIES]: {
+    displayName: 'Grace Technologies',
+    logoFilename: 'gracetechnologies.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.PARSONS]: {
+    displayName: 'Parsons',
+    logoFilename: 'parsons.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.COSTAR]: {
+    displayName: 'CoStar',
+    logoFilename: 'costar.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.ARISTA]: {
+    displayName: 'Arista',
+    logoFilename: 'arista.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.CAPITAL_ONE]: {
+    displayName: 'Capital One',
+    logoFilename: 'capitalone.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.FLEXCAR]: {
+    displayName: 'Flexcar',
+    logoFilename: 'flexcar.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.AUTODESK]: {
+    displayName: 'Autodesk',
+    logoFilename: 'autodesk.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.INTACT]: {
+    displayName: 'Intact',
+    logoFilename: 'intact.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.STRIPE]: {
+    displayName: 'Stripe',
+    logoFilename: 'stripe.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.TESLA]: {
+    displayName: 'Tesla',
+    logoFilename: 'tesla.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.DATABRICKS]: {
+    displayName: 'Databricks',
+    logoFilename: 'databricks.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.VALON]: {
+    displayName: 'Valon',
+    logoFilename: 'valon.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.TWO_SIGMA]: {
+    displayName: 'Two Sigma',
+    logoFilename: 'twosigma.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.SYNOPSYS]: {
+    displayName: 'Synopsys',
+    logoFilename: 'synopsys.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.DUOLINGO]: {
+    displayName: 'Duolingo',
+    logoFilename: 'duolingo.png',
+    maxLogoSize: 100,
   },
 };

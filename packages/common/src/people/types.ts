@@ -16,7 +16,7 @@ export interface MentorshipOffer {
   name: CompanyName;
   type: OfferType;
   channel: OfferChannel;
-  date: string;
+  date?: string;
 }
 
 export interface MentorshipPerson {

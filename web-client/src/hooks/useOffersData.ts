@@ -17,6 +17,7 @@ export const useOffersData = () => {
         offersCountByYear: {
           2023: 0,
           2024: 0,
+          2025: 0,
         },
       };
     });
