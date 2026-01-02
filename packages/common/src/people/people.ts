@@ -728,6 +728,23 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ NVIDIA',
         roles: [MentorshipRole.COMMUNITY_MEMBER],
+        offers: [
+          {
+            name: CompanyName.NVIDIA,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+          {
+            name: CompanyName.VALON,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.TWO_SIGMA,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
       },
     ],
   },
@@ -1717,21 +1734,6 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'SWE Intern @ TBD',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
-          {
-            name: CompanyName.NVIDIA,
-            type: OfferType.NEW_GRAD,
-            channel: OfferChannel.RETURN_OFFER,
-          },
-          {
-            name: CompanyName.VALON,
-            type: OfferType.NEW_GRAD,
-            channel: OfferChannel.EXTERNAL,
-          },
-          {
-            name: CompanyName.TWO_SIGMA,
-            type: OfferType.NEW_GRAD,
-            channel: OfferChannel.EXTERNAL,
-          },
           {
             name: CompanyName.GOOGLE,
             type: OfferType.INTERNSHIP,
