@@ -4,8 +4,7 @@ import { mentorshipPeople, offerCompanies } from '@vtmp/common/people';
 
 import { CompanyMetadataWithOffers } from '#vtmp/web-client/types';
 
-const placeholderLogoUrl =
-  'https://1000logos.net/wp-content/uploads/2021/05/Stripe-logo.png';
+const placeholderLogoUrl = '';
 
 export const useOffersData = () => {
   return useMemo(() => {
