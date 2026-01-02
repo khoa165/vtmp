@@ -85,6 +85,13 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
     [isLoading, showIndividualOffers, offers, isOrWasMentee, sortColumn, params]
   );
 
+  const title = useMemo(() => {
+    if (year === 'all') {
+      return professionalTitle;
+    }
+    return currentTerm?.title ?? professionalTitle;
+  }, [year, currentTerm, professionalTitle]);
+
   return (
     <div className="mentorship-people-card">
       {showOffers && (
@@ -175,7 +182,7 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
           </p>
         )}
         <hr className="my-3" />
-        <div className="text-sm people-title">{professionalTitle}</div>
+        <div className="text-sm people-title">{title}</div>
       </div>
     </div>
   );
