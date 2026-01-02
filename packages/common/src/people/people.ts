@@ -1529,6 +1529,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             type: OfferType.NEW_GRAD,
             channel: OfferChannel.EXTERNAL,
           },
+          {
+            name: CompanyName.BLOOMBERG,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
         ],
       },
     ],
@@ -1725,6 +1730,21 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           {
             name: CompanyName.TWO_SIGMA,
             type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.GOOGLE,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.WAYFAIR,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+          {
+            name: CompanyName.MORGAN_STANLEY,
+            type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
           },
         ],
@@ -2062,6 +2082,16 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
           },
+          {
+            name: CompanyName.AMAZON,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+          {
+            name: CompanyName.WEALTHSIMPLE,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
         ],
       },
     ],
@@ -2106,6 +2136,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [
           MentorshipRole.SWE_RISING_LEAD,
           MentorshipRole.SWE_EXMENTEE_MENTOR,
+        ],
+        offers: [
+          {
+            name: CompanyName.ADOBE,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.RETURN_OFFER,
+          },
         ],
       },
     ],
@@ -2292,6 +2329,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         offers: [
           {
             name: CompanyName.BLOOMBERG,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.MICROSOFT,
             type: OfferType.NEW_GRAD,
             channel: OfferChannel.EXTERNAL,
           },
@@ -3029,6 +3071,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
           },
+          {
+            name: CompanyName.MICROSOFT,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
         ],
         teamName: ProjectName.ZERO_KM,
         teamNumber: 2,
@@ -3372,6 +3419,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
           },
+          {
+            name: CompanyName.GUSTO,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
         ],
         teamName: ProjectName.CARE_BEAR,
         teamNumber: 4,
@@ -3545,6 +3597,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           },
           {
             name: CompanyName.FLEXCAR,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.GOOGLE,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
           },

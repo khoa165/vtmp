@@ -234,6 +234,11 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
     logoFilename: 'google.png',
     maxLogoSize: 100,
   },
+  [CompanyName.GUSTO]: {
+    displayName: 'Gusto',
+    logoFilename: 'gusto.png',
+    maxLogoSize: 100,
+  },
   [CompanyName.UKG]: {
     displayName: 'UKG',
     logoFilename: 'ukg.png',
@@ -387,6 +392,11 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   [CompanyName.VALON]: {
     displayName: 'Valon',
     logoFilename: 'valon.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.WEALTHSIMPLE]: {
+    displayName: 'Wealthsimple',
+    logoFilename: 'wealthsimple.png',
     maxLogoSize: 100,
   },
   [CompanyName.TWO_SIGMA]: {
