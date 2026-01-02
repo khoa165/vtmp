@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+// import { OfferChannel } from '@vtmp/common/constants';
 import { mentorshipPeople, offerCompanies } from '@vtmp/common/people';
 
 import { CompanyMetadataWithOffers } from '#vtmp/web-client/types';
@@ -14,7 +15,7 @@ export const useOffersData = () => {
         ...offerCompanies[company],
         logoUrl:
           placeholderLogoUrl ||
-          'https://res.cloudinary.com/khoa165/image/upload/c_fit,h_200,w_200/v1767336061/viettech/logos/vtmp-' +
+          'https://res.cloudinary.com/khoa165/image/upload/c_fit,h_200,w_200/v1767340326/viettech/logos/vtmp-' +
             offerCompanies[company].logoFilename,
         offersCountTotal: 0,
         offersCountByYear: {
@@ -27,6 +28,9 @@ export const useOffersData = () => {
     Object.values(mentorshipPeople).forEach((person) => {
       person.terms?.forEach((term) => {
         term.offers?.forEach((offer) => {
+          // if (offer.channel === OfferChannel.RETURN_OFFER) {
+          //   return;
+          // }
           if (offer.name in data) {
             data[offer.name].offersCountByYear[term.year] += 1;
             data[offer.name].offersCountTotal += 1;

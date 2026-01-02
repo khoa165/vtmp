@@ -2,6 +2,7 @@ import { Tabs, Tab, Box } from '@mui/material';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// import { OfferChannel } from '@vtmp/common/constants';
 import { mentorshipPeople } from '@vtmp/common/people';
 
 import { InterviewsBarChart } from '#vtmp/web-client/components/stats/interviews-bar-chart';
@@ -30,6 +31,9 @@ export const StatsPage: React.FC<StatsPageProps> = ({ type }) => {
     people.forEach((person) => {
       person.terms.forEach((t) => {
         t?.offers?.forEach((o) => {
+          // if (o.channel === OfferChannel.RETURN_OFFER) {
+          //   return;
+          // }
           totalCount += 1;
           if (o.name in offers) {
             if (t.year in offers[o.name]) {
@@ -53,6 +57,7 @@ export const StatsPage: React.FC<StatsPageProps> = ({ type }) => {
             company: c,
             count2023: offers[c][2023] ?? 0,
             count2024: offers[c][2024] ?? 0,
+            count2025: offers[c][2025] ?? 0,
           };
         }),
     };

@@ -97,6 +97,10 @@
             background-color: variables.$brand-stats-background-color;
             color: variables.$mentorship-tertiary-pink;
             font-weight: bold;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
         }
       }

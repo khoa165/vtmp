@@ -192,7 +192,7 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   [CompanyName.MCDONALDS]: {
     displayName: 'McDonalds',
     logoFilename: 'mcdonalds.png',
-    maxLogoSize: 80,
+    maxLogoSize: 60,
   },
   [CompanyName.BUBBLE_IO]: {
     displayName: 'Bubble.io',
@@ -252,7 +252,7 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   [CompanyName.PLAYSTATION]: {
     displayName: 'PlayStation',
     logoFilename: 'playstation.png',
-    maxLogoSize: 80,
+    maxLogoSize: 60,
   },
   [CompanyName.RYCO]: {
     displayName: 'Ryco',
@@ -282,7 +282,7 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   [CompanyName.G_RESEARCH]: {
     displayName: 'G-Research',
     logoFilename: 'gresearch.png',
-    maxLogoSize: 80,
+    maxLogoSize: 60,
   },
   [CompanyName.LOVEPOP]: {
     displayName: 'LovePop',
@@ -327,7 +327,7 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   [CompanyName.TIKTOK]: {
     displayName: 'TikTok',
     logoFilename: 'tiktok.png',
-    maxLogoSize: 100,
+    maxLogoSize: 60,
   },
   [CompanyName.KINGLAND]: {
     displayName: 'Kingland',
@@ -382,7 +382,7 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   [CompanyName.TESLA]: {
     displayName: 'Tesla',
     logoFilename: 'tesla.png',
-    maxLogoSize: 100,
+    maxLogoSize: 60,
   },
   [CompanyName.DATABRICKS]: {
     displayName: 'Databricks',
