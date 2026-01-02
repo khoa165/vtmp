@@ -1380,7 +1380,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     trackingName: 'Thục Anh',
     school: 'Lehigh University',
     linkedin: 'https://www.linkedin.com/in/ally-hoang-4b4562223',
-    professionalTitle: 'SWE @ Stripe',
+    professionalTitle: 'Software Engineer @ Stripe',
     hobbies: 'cooking, embroidery, travel',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thucanh.jpg',
@@ -2112,7 +2112,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           },
           {
             name: CompanyName.AMAZON,
-            type: OfferType.INTERNSHIP,
+            type: OfferType.NEW_GRAD,
             channel: OfferChannel.RETURN_OFFER,
           },
           {
