@@ -1328,6 +1328,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
+            name: CompanyName.NVIDIA,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
             name: CompanyName.AMAZON,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
@@ -1359,11 +1364,6 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'SWE Intern @ ServiceNow + NVIDIA',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
-          {
-            name: CompanyName.NVIDIA,
-            type: OfferType.INTERNSHIP,
-            channel: OfferChannel.RETURN_OFFER,
-          },
           {
             name: CompanyName.SERVICENOW,
             type: OfferType.INTERNSHIP,
@@ -2119,6 +2119,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             name: CompanyName.WEALTHSIMPLE,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.SHOPIFY,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.RETURN_OFFER,
           },
         ],
       },

@@ -4,6 +4,8 @@ import { RiTeamFill } from 'react-icons/ri';
 import { useSearchParams } from 'react-router-dom';
 import { useGate } from 'statsig-react';
 
+import { ProjectName } from '@vtmp/common/people';
+
 import {
   Tooltip,
   TooltipContent,
@@ -142,27 +144,30 @@ export const PeopleCard: React.FC<PeopleCardProps> = ({
             </div>
           )}
 
-          {teamName && teammates && teammates.length > 0 && (
-            <div className="flex gap-x-2 mt-2">
-              <div className="flex flex-col gap-y-2">
-                <MiniPeopleList peopleList={teammates} />
+          {teamName &&
+            teammates &&
+            teammates.length > 0 &&
+            teamName !== ProjectName.CODE_BUDDY && (
+              <div className="flex gap-x-2 mt-2">
+                <div className="flex flex-col gap-y-2">
+                  <MiniPeopleList peopleList={teammates} />
+                </div>
+                <div className="mt-1">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <RiTeamFill />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        Teammates / {projectDisplayName[teamName]}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
               </div>
-              <div className="mt-1">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div>
-                        <RiTeamFill />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      Teammates / {projectDisplayName[teamName]}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            </div>
-          )}
+            )}
         </div>
       )}
       <Avatar url={avatar} />
