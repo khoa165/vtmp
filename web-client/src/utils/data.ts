@@ -1,7 +1,6 @@
 import { map, first } from 'remeda';
 
 import {
-  MentorshipGroup,
   MentorshipRole,
   OfferChannel,
   OfferType,
@@ -10,10 +9,7 @@ import { mentorshipPeople } from '@vtmp/common/people';
 
 import { MentorshipOffer, MentorshipPerson } from '#vtmp/web-client/types';
 import { rolePriority } from '#vtmp/web-client/utils/constants';
-import {
-  groupDisplayName,
-  roleDisplayName,
-} from '#vtmp/web-client/utils/display-name';
+import { roleDisplayName } from '#vtmp/web-client/utils/display-name';
 
 export const getName = (trackingKey: string): string =>
   mentorshipPeople[trackingKey].name;
@@ -28,7 +24,8 @@ export const getRolePriority = (role: MentorshipRole): number =>
   rolePriority[role];
 
 export const isMenteeRole = (roles: MentorshipRole[]): boolean =>
-  roles.includes(MentorshipRole.SWE_MENTEE);
+  roles.includes(MentorshipRole.SWE_MENTEE) ||
+  roles.includes(MentorshipRole.PD_MENTEE);
 
 export const isOrganizerRole = (roles: MentorshipRole[]): boolean =>
   !roles.includes(MentorshipRole.SWE_MENTEE);
@@ -40,22 +37,6 @@ export const isHiddenRole = (
   role === MentorshipRole.PROGRAM_FOUNDER ||
   (role === MentorshipRole.SWE_PROGRAM_LEAD &&
     roles.includes(MentorshipRole.PROGRAM_LEAD));
-
-export const getGroupDisplayName = (group: MentorshipGroup): string =>
-  groupDisplayName[group];
-
-export const isParticipantGroup = (group: MentorshipGroup): boolean =>
-  group === MentorshipGroup.PARTICIPANT;
-
-export const isOrganizerGroup = (group: MentorshipGroup): boolean =>
-  group === MentorshipGroup.ORGANIZER;
-
-export const isPersonInCorrectGroup = (
-  roles: MentorshipRole[],
-  group: MentorshipGroup
-) =>
-  (isMenteeRole(roles) && isParticipantGroup(group)) ||
-  (isOrganizerRole(roles) && isOrganizerGroup(group));
 
 export const getTerm = (person: MentorshipPerson, year: number) =>
   person.terms.find((t) => t.year === year);
@@ -130,4 +111,5 @@ export const DEFAULT_ROLES = [
   MentorshipRole.SWE_MENTEE,
   MentorshipRole.PD_MENTOR,
   MentorshipRole.PD_MENTEE,
+  MentorshipRole.COMMUNITY_MEMBER,
 ];

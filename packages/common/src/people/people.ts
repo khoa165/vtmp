@@ -3412,6 +3412,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ UMass. Amherst',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.ARISTA,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.CARE_BEAR,
         teamNumber: 4,
         teammates: [

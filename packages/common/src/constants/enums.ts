@@ -200,11 +200,6 @@ export enum MentorshipRole {
   SWE_RISING_LEAD = 'SWE_RISING_LEAD',
 }
 
-export enum MentorshipGroup {
-  ORGANIZER = 'ORGANIZER',
-  PARTICIPANT = 'PARTICIPANT',
-}
-
 export enum StatsType {
   INTERVIEWS = 'INTERVIEWS',
   LOGOS = 'LOGOS',
