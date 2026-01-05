@@ -8,7 +8,7 @@ import { mentorshipPeople } from '@vtmp/common/people';
 import { InterviewsBarChart } from '#vtmp/web-client/components/stats/interviews-bar-chart';
 import { OffersBarChart } from '#vtmp/web-client/components/stats/offers-bar-chart';
 import { OfferLogos } from '#vtmp/web-client/components/stats/offers-logos';
-import { Timeline } from '#vtmp/web-client/components/stats/timeline';
+// import { Timeline } from '#vtmp/web-client/components/stats/timeline';
 import { useInterviewData } from '#vtmp/web-client/hooks/useInterviewData';
 import { StatsType } from '#vtmp/web-client/utils/constants';
 
@@ -68,7 +68,7 @@ export const StatsPage: React.FC<StatsPageProps> = ({ type }) => {
       <div className="container mx-auto px-4">
         <Tabs value={type} onChange={onChangeTab}>
           <Tab label="Logos" value={StatsType.LOGOS} />
-          <Tab label="Timeline" value={StatsType.TIMELINE} />
+          {/* <Tab label="Timeline" value={StatsType.TIMELINE} /> */}
           <Tab label="Offers" value={StatsType.OFFERS} />
           <Tab label="Interviews" value={StatsType.INTERVIEWS} />
         </Tabs>
@@ -78,11 +78,11 @@ export const StatsPage: React.FC<StatsPageProps> = ({ type }) => {
         <TabPanel value={type} type={StatsType.LOGOS}>
           <OfferLogos />
         </TabPanel>
-        <TabPanel value={type} type={StatsType.TIMELINE}>
+        {/* <TabPanel value={type} type={StatsType.TIMELINE}>
           <div className="flex justify-center">
             <Timeline datesWithCount={interviewData.datesWithCount} />
           </div>
-        </TabPanel>
+        </TabPanel> */}
         <TabPanel value={type} type={StatsType.OFFERS}>
           <div className="flex justify-center">
             <OffersBarChart count={count} data={data} />
