@@ -15,7 +15,7 @@ export const useOffersData = () => {
         ...offerCompanies[company],
         logoUrl:
           placeholderLogoUrl ||
-          'https://res.cloudinary.com/khoa165/image/upload/c_fit,h_200,w_200/v1767340326/viettech/logos/vtmp-' +
+          'https://res.cloudinary.com/khoa165/image/upload/c_fit,h_200,w_200/v1767590613/viettech/logos/vtmp-' +
             offerCompanies[company].logoFilename,
         offersCountTotal: 0,
         offersCountByYear: {

@@ -1715,7 +1715,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     trackingName: 'Phượng',
     school: 'Denison University',
     linkedin: 'https://www.linkedin.com/in/phuong-le-p2',
-    professionalTitle: 'Software Engineer @ Google',
+    professionalTitle: 'SWE Intern @ Google',
     hobbies: 'films, novels, pop ballad',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/phuongle.jpg',
@@ -3092,7 +3092,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     professionalTitle: 'SWE Intern @ Microsoft',
     hobbies: '',
     avatar:
-      'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/datvu.jpg',
+      'https://res.cloudinary.com/khoa165/image/upload/v1767589874/viettech/people/datvu.jpg',
     terms: [
       {
         year: 2025,

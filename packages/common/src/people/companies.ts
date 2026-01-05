@@ -312,7 +312,7 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
   [CompanyName.PONDER]: {
     displayName: 'Ponder',
     logoFilename: 'ponder.png',
-    maxLogoSize: 100,
+    maxLogoSize: 60,
   },
   [CompanyName.SEMGREP]: {
     displayName: 'Semgrep',
