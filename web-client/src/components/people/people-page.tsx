@@ -112,7 +112,7 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
   return (
     <div id="people-page" className="px-[10vw] py-5">
       <div className="flex flex-wrap items-center justify-between gap-4 md:gap-1 mb-8">
-        <div className="w-full lg:flex-1">
+        <div className="w-full lg:flex-1 mr-4">
           <Autocomplete
             className="role-control"
             multiple
@@ -152,7 +152,7 @@ export const PeoplePage: React.FC<PeoplePageProps> = ({ year }) => {
           />
           <Autocomplete
             className="sort-control flex-1 lg:flex-none"
-            sx={{ width: { lg: 140 } }}
+            sx={{ width: { lg: 160 } }}
             options={Object.keys(PeopleSortColumn)}
             getOptionLabel={(option) => peopleSortColumnDisplayName[option]}
             renderInput={(params) => <TextField {...params} label="Sort" />}
