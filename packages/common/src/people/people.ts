@@ -1567,7 +1567,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           },
           {
             name: CompanyName.PARAFIN,
-            type: OfferType.INTERNSHIP,
+            type: OfferType.NEW_GRAD,
             channel: OfferChannel.EXTERNAL,
           },
           {
