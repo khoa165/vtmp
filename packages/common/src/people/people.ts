@@ -1171,6 +1171,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
+            name: CompanyName.TESLA,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
             name: CompanyName.GOOGLE,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
@@ -3364,6 +3369,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Student @ Minerva',
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
+          {
+            name: CompanyName.LINKEDIN,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
           {
             name: CompanyName.SHOPIFY,
             type: OfferType.INTERNSHIP,
