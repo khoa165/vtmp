@@ -90,6 +90,7 @@ export enum InterestLevel {
 export enum CompanyName {
   ADOBE = 'ADOBE',
   AMAZON = 'AMAZON',
+  APPLE = 'APPLE',
   ARISTA = 'ARISTA',
   ASANA = 'ASANA',
   AUTODESK = 'AUTODESK',
@@ -139,6 +140,7 @@ export enum CompanyName {
   NVIDIA = 'NVIDIA',
   ORACLE = 'ORACLE',
   PALANTIR = 'PALANTIR',
+  PARAFIN = 'PARAFIN',
   PARSONS = 'PARSONS',
   PAYPAL = 'PAYPAL',
   PLAID = 'PLAID',
@@ -162,6 +164,7 @@ export enum CompanyName {
   TESLA = 'TESLA',
   TIKTOK = 'TIKTOK',
   TWO_SIGMA = 'TWO_SIGMA',
+  UI_PATH = 'UI_PATH',
   UKG = 'UKG',
   VALON = 'VALON',
   VERISK = 'VERISK',

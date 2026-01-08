@@ -414,4 +414,19 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
     logoFilename: 'duolingo.png',
     maxLogoSize: 100,
   },
+  [CompanyName.PARAFIN]: {
+    displayName: 'Parafin',
+    logoFilename: 'parafin.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.UI_PATH]: {
+    displayName: 'UiPath',
+    logoFilename: 'uipath.png',
+    maxLogoSize: 100,
+  },
+  [CompanyName.APPLE]: {
+    displayName: 'Apple',
+    logoFilename: 'apple.png',
+    maxLogoSize: 60,
+  },
 };

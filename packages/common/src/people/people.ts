@@ -1171,6 +1171,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
+            name: CompanyName.GOOGLE,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
             name: CompanyName.RIPPLING,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
@@ -1556,17 +1561,27 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
           {
+            name: CompanyName.APPLE,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.PARAFIN,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
             name: CompanyName.TESLA,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
           },
           {
-            name: CompanyName.MICROSOFT,
+            name: CompanyName.BLOOMBERG,
             type: OfferType.NEW_GRAD,
             channel: OfferChannel.EXTERNAL,
           },
           {
-            name: CompanyName.BLOOMBERG,
+            name: CompanyName.MICROSOFT,
             type: OfferType.NEW_GRAD,
             channel: OfferChannel.EXTERNAL,
           },
@@ -1877,6 +1892,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Data Engineer Intern @ Meta',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
         offers: [
+          {
+            name: CompanyName.BLOOMBERG,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
           {
             name: CompanyName.META,
             type: OfferType.NEW_GRAD,
@@ -3138,6 +3158,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ UMass. Amherst',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.UI_PATH,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.ZERO_KM,
         teamNumber: 2,
         teammates: [
