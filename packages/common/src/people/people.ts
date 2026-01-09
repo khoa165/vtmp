@@ -3046,7 +3046,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     trackingName: 'Đức',
     school: 'George Mason University',
     linkedin: 'https://www.linkedin.com/in/minhduc29',
-    professionalTitle: 'SWE Intern @ ?',
+    professionalTitle: 'SWE Intern @ ZipRecruiter',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ducnguyen.jpg',
@@ -3359,7 +3359,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     trackingName: 'Tâm Nguyễn',
     school: 'Minerva University',
     linkedin: 'https://www.linkedin.com/in/tam-nguyen-m',
-    professionalTitle: 'SWE Intern @ ?',
+    professionalTitle: 'SWE Intern @ LinkedIn',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/tamnguyen.jpg',
@@ -3440,7 +3440,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     trackingName: 'Thái Đăng',
     school: 'University of Massachusetts Amherst',
     linkedin: 'https://www.linkedin.com/in/dang-nguyen-49132527a',
-    professionalTitle: 'SWE Intern @ ?',
+    professionalTitle: 'SWE Intern @ Arista Networks',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/thaidang.jpg',
@@ -3476,7 +3476,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     trackingName: 'Ngọc Minh',
     school: 'Dickinson College',
     linkedin: 'https://www.linkedin.com/in/minhnnle',
-    professionalTitle: 'SWE Intern @ ?',
+    professionalTitle: 'SWE Intern @ Gusto',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ngocminh.jpg',
