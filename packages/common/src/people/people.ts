@@ -3169,6 +3169,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
           },
+          {
+            name: CompanyName.INTUIT,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
         ],
         teamName: ProjectName.ZERO_KM,
         teamNumber: 2,

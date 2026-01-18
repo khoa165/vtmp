@@ -429,4 +429,9 @@ export const offerCompanies: Record<CompanyName, CompanyMetadata> = {
     logoFilename: 'apple.png',
     maxLogoSize: 60,
   },
+  [CompanyName.INTUIT]: {
+    displayName: 'Intuit',
+    logoFilename: 'intuit.png',
+    maxLogoSize: 100,
+  },
 };
