@@ -3380,6 +3380,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
           {
+            name: CompanyName.INTUIT,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
             name: CompanyName.LINKEDIN,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
