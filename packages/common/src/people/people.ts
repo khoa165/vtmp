@@ -3491,7 +3491,7 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
     trackingName: 'Ngọc Minh',
     school: 'Dickinson College',
     linkedin: 'https://www.linkedin.com/in/minhnnle',
-    professionalTitle: 'SWE Intern @ ?',
+    professionalTitle: 'SWE Intern @ Rippling',
     hobbies: '',
     avatar:
       'https://res.cloudinary.com/khoa165/image/upload/v1711084156/viettech/people/ngocminh.jpg',
@@ -3581,6 +3581,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Student @ USF',
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
+          {
+            name: CompanyName.INTUIT,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
           {
             name: CompanyName.RIPPLING,
             type: OfferType.INTERNSHIP,
