@@ -2255,6 +2255,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'SWE Intern @ Amazon',
         roles: [MentorshipRole.SWE_EXMENTEE_MENTOR],
+        offers: [
+          {
+            name: CompanyName.AMAZON,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.RETURN_OFFER,
+          },
+        ],
       },
     ],
   },
@@ -2884,6 +2891,13 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         year: 2025,
         title: 'Student @ USF',
         roles: [MentorshipRole.SWE_MENTEE],
+        offers: [
+          {
+            name: CompanyName.HUBSPOT,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+        ],
         teamName: ProjectName.APPLICATION_TRACKER,
         teammates: [
           PeopleName.AN_TRAN,
@@ -3767,6 +3781,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
         title: 'Student @ Tufts',
         roles: [MentorshipRole.SWE_MENTEE],
         offers: [
+          {
+            name: CompanyName.HUBSPOT,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
           {
             name: CompanyName.ROBINHOOD,
             type: OfferType.INTERNSHIP,
