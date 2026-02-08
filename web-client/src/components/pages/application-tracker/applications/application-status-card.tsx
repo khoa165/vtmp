@@ -17,6 +17,7 @@ export const ApplicationStatusCard = ({
 }) => {
   return (
     <Card
+      data-testid={`status-card-${status}`}
       className={`active:bg-gray-300 bg-transparent h-fit cursor-pointer transition-colors duration-200 ${
         isSelected
           ? 'bg-[#FEFEFE] text-[#333333]'

@@ -137,7 +137,7 @@ export const JobPostingsContainer = (): React.JSX.Element | null => {
 
         <ColumnVisibilityConfiguration table={table} />
       </section>
-      <ResizableTable table={table} columns={columns} />
+      <ResizableTable table={table} columns={columns} testIdPrefix="job"/>
     </>
   );
 };

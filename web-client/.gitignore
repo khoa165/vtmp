@@ -25,3 +25,9 @@ yarn-error.log*
 
 src/styles/css
 *storybook.log
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

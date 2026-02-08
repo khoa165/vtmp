@@ -87,6 +87,7 @@ export function ApplicationsTable<TData extends IApplication, TValue>({
       <ResizableTable
         table={table}
         columns={columns}
+        testIdPrefix="application"
         emptyStateText="No applications found! Go hurry and apply!"
       />
     </div>
