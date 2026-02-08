@@ -17,7 +17,6 @@ import { EnvConfig } from '@/config/env';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
-
 import {
   HTTPMethod,
   runDefaultAuthMiddlewareTests,

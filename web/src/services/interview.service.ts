@@ -4,9 +4,9 @@ import {
   InterviewType,
 } from '@vtmp/common/constants';
 
-import { IInterview, InterviewInsights } from '@/models/interview.model';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { InterviewInsightService } from '@/services/interview-insights/interview-insight.service';
+import { IInterview, InterviewInsights } from '@/types/entities';
 import { BadRequest, ResourceNotFoundError } from '@/utils/errors';
 
 export const InterviewService = {

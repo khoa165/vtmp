@@ -11,7 +11,6 @@ import assert from 'assert';
 import { InvitationStatus } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
-import { IInvitation } from '@/models/invitation.model';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { InvitationService } from '@/services/invitation.service';
@@ -20,6 +19,7 @@ import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { IInvitation } from '@/types/entities';
 import { getEmailService } from '@/utils/email';
 import {
   DuplicateResourceError,

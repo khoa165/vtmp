@@ -3,8 +3,8 @@ import { IUser } from '@vtmp/mongo/models';
 
 import { InterviewStatus, InterviewType } from '@vtmp/common/constants';
 
-import { IApplication } from '@/types/entities';
-import { IInterview, InterviewModel } from '@/models/interview.model';
+import { InterviewModel } from '@/models/interview.model';
+import { IApplication, IInterview } from '@/types/entities';
 
 export const loadInterviews = async (
   users: IUser[],

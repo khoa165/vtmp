@@ -1,12 +1,12 @@
 import { google } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 
-import { IInterview, InterviewInsights } from '@/models/interview.model';
 import {
   buildPrompt,
   InterviewInsightsResponseSchema,
   schemaDescription,
 } from '@/services/interview-insights/helpers';
+import { IInterview, InterviewInsights } from '@/types/entities';
 
 export const InterviewInsightService = {
   getInterviewInsight: async ({

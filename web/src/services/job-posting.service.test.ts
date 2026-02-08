@@ -5,12 +5,12 @@ import assert from 'assert';
 
 import { JobPostingRegion } from '@vtmp/common/constants';
 
-import { IJobPosting } from '@/models/job-posting.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import { JobPostingService } from '@/services/job-posting.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, getNewObjectId } from '@/testutils/mongoID.testutil';
+import { IJobPosting } from '@/types/entities';
 import { ResourceNotFoundError } from '@/utils/errors';
 
 describe('JobPostingService', () => {

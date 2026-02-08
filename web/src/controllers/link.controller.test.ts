@@ -13,9 +13,6 @@ import {
 
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
-// eslint-disable-next-line boundaries/element-types
-import { ILink } from '@/models/link.model';
-// eslint-disable-next-line boundaries/element-types
 import { LinkRepository } from '@/repositories/link.repository';
 import {
   HTTPMethod,
@@ -30,6 +27,7 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { ILink } from '@/types/entities';
 
 describe('LinkController', () => {
   useMongoDB();

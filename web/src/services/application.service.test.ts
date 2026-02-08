@@ -12,17 +12,14 @@ import {
   JobPostingRegion,
 } from '@vtmp/common/constants';
 
-// eslint-disable-next-line boundaries/element-types
-import { IJobPosting } from '@/models/job-posting.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
-// eslint-disable-next-line boundaries/element-types
 import { ApplicationService } from '@/services/application.service';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId, toMongoId } from '@/testutils/mongoID.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
-import { IApplication } from '@/types/entities';
+import { IJobPosting, IApplication } from '@/types/entities';
 import {
   ResourceNotFoundError,
   DuplicateResourceError,

@@ -13,8 +13,6 @@ import {
 
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
-import { IApplication } from '@/types/entities';
-import { IInterview } from '@/models/interview.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { InterviewRepository } from '@/repositories/interview.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
@@ -32,6 +30,7 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { IApplication, IInterview } from '@/types/entities';
 
 describe('InterviewController', () => {
   useMongoDB();

@@ -1,16 +1,8 @@
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 import { InvitationStatus } from '@vtmp/common/constants';
 
-export interface IInvitation extends Document {
-  _id: Types.ObjectId;
-  receiverEmail: string;
-  receiverName: string;
-  sender: Types.ObjectId;
-  token: string;
-  expiryDate: Date;
-  status: InvitationStatus;
-}
+import { IInvitation } from '@/types/entities';
 
 const InvitationSchema = new mongoose.Schema<IInvitation>(
   {

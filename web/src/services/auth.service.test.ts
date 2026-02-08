@@ -12,7 +12,6 @@ import { InvitationStatus, SystemRole } from '@vtmp/common/constants';
 
 import { EnvConfig } from '@/config/env';
 import { JWT_TOKEN_TYPE } from '@/constants/enums';
-import { IInvitation } from '@/models/invitation.model';
 import { InvitationRepository } from '@/repositories/invitation.repository';
 import { UserRepository } from '@/repositories/user.repository';
 import { AuthService } from '@/services/auth.service';
@@ -21,6 +20,7 @@ import { MOCK_ENV } from '@/testutils/mock-data.testutil';
 import { useMongoDB } from '@/testutils/mongoDB.testutil';
 import { getNewMongoId } from '@/testutils/mongoID.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { IInvitation } from '@/types/entities';
 import { EmailService } from '@/utils/email';
 import {
   DuplicateResourceError,

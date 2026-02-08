@@ -1,6 +1,7 @@
 import { Types, ClientSession, FilterQuery } from 'mongoose';
 
-import { LinkModel, ILink } from '@/models/link.model';
+import { LinkModel } from '@/models/link.model';
+import { ILink } from '@/types/entities';
 import {
   LinkMetaDataType,
   ExtractionLinkMetaDataType,

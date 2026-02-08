@@ -8,7 +8,6 @@ import { JobPostingRegion } from '@vtmp/common/constants';
 
 import app from '@/app';
 import { EnvConfig } from '@/config/env';
-import { IJobPosting } from '@/models/job-posting.model';
 import { ApplicationRepository } from '@/repositories/application.repository';
 import { JobPostingRepository } from '@/repositories/job-posting.repository';
 import {
@@ -24,6 +23,7 @@ import {
   expectSuccessfulResponse,
 } from '@/testutils/response-assertion.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
+import { IJobPosting } from '@/types/entities';
 
 describe('JobPostingController', () => {
   useMongoDB();

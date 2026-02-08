@@ -3,12 +3,9 @@ import { ClientSession } from 'mongoose';
 
 import { JobPostingRegion } from '@vtmp/common/constants';
 
-import {
-  JobPostingModel,
-  IJobPosting,
-  JobFilter,
-} from '@/models/job-posting.model';
+import { JobPostingModel } from '@/models/job-posting.model';
 import { toMongoId } from '@/testutils/mongoID.testutil';
+import { IJobPosting, JobFilter } from '@/types/entities';
 
 export const JobPostingRepository = {
   createJobPosting: async ({
