@@ -133,4 +133,62 @@ export const JobPostingRepository = {
       },
     ]);
   },
+
+  getJobPostingsTrendByWeek: async () => {
+    return JobPostingModel.aggregate([
+      {
+        $group: {
+          _id: {
+            year: {
+              $isoWeekYear: '$datePosted',
+            },
+            week: {
+              $isoWeek: '$datePosted',
+            },
+          },
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          year: '$_id.year',
+          week: '$_id.week',
+          count: 1,
+        },
+      },
+      {
+        $addFields: {
+          startDate: {
+            $dateFromParts: {
+              isoWeekYear: '$year',
+              isoWeek: '$week',
+              isoDayOfWeek: 1,
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          endDate: {
+            $dateAdd: {
+              startDate: '$startDate',
+              unit: 'day',
+              amount: 6,
+            },
+          },
+        },
+      },
+      {
+        $unset: 'week',
+      },
+      {
+        $sort: {
+          startDate: 1,
+        },
+      },
+    ]);
+  },
 };
