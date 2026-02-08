@@ -127,6 +127,8 @@ export class AIResponseEmptyError extends ServiceSpecificError {
   }
 }
 
+export class LinkProcessingBadRequest extends ServiceSpecificError {}
+
 export function logError(error: unknown): void {
   if (error instanceof ServiceSpecificError) {
     console.error('ServiceSpecificError:', error);

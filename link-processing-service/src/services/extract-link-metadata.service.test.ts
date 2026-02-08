@@ -14,6 +14,7 @@ import { LINK_PROCESSING_MOCK_ENV } from '@/testutils/link-processing-mock-env.t
 import { useSandbox } from '@/testutils/sandbox.testutil';
 import { ScrapedLink } from '@/types/link-processing.types';
 import { AIExtractionError } from '@/utils/errors';
+import { CONFIDENCE_THRESHOLD } from '@/utils/constants';
 
 describe('ExtractLinkMetadataService', () => {
   const sandbox = useSandbox();
@@ -27,6 +28,7 @@ describe('ExtractLinkMetadataService', () => {
     jobType: JobType.INTERNSHIP,
     datePosted: '2024-05-10',
     aiNote: 'hello',
+    aiScore: CONFIDENCE_THRESHOLD,
   };
 
   let generateContentStub: sinon.SinonStub;

@@ -25,6 +25,7 @@ export interface ILink extends Document {
   datePosted?: Date;
   jobDescription?: string;
   aiNote?: string;
+  aiScore?: number;
   attemptsCount: number;
   lastProcessedAt?: Date;
   submittedBy?: Types.ObjectId;
@@ -88,6 +89,10 @@ const LinkSchema = new mongoose.Schema<ILink>(
     },
     aiNote: {
       type: String,
+    },
+    aiScore: {
+      type: Number,
+      default: 0,
     },
     attemptsCount: {
       type: Number,

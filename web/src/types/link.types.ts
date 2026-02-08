@@ -81,6 +81,7 @@ export const ExtractionLinkMetaDataSchema = z.object({
     })
     .optional(),
   aiNote: z.string().optional(),
+  aiScore: z.number().optional(),
 });
 
 export type ExtractionLinkMetaDataType = z.infer<

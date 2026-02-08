@@ -25,7 +25,7 @@ interface AdminLinksTableColumnsProps {
   rejectLinkFn: ({ linkId }: { linkId: string }) => void;
   processIndividualLinkFn: ({ linkId }: { linkId: string }) => void;
 }
-
+const GOOD_SCORE = 50;
 export const adminLinksTableColumns = ({
   approveLinkFn,
   rejectLinkFn,
@@ -38,7 +38,7 @@ export const adminLinksTableColumns = ({
       if (!row.original.jobTitle) {
         return <span className="pl-2">N/A</span>;
       }
-      return (
+      return row.original.aiScore >= GOOD_SCORE ? (
         <a
           href={row.original.url}
           target="_blank"
@@ -49,6 +49,10 @@ export const adminLinksTableColumns = ({
             {row.original.jobTitle}
           </span>
         </a>
+      ) : (
+        <div className="inline-flex items-center hover:text-primary pl-2">
+          <span className="line-clamp-2">{row.original.jobTitle}</span>
+        </div>
       );
     },
   },
@@ -67,6 +71,19 @@ export const adminLinksTableColumns = ({
           {row.original.companyName ? row.original.companyName : 'N/A'}
         </div>
       );
+    },
+  },
+  {
+    accessorKey: 'aiScore',
+    header: ({ column }) => {
+      return (
+        <div className="pl-2">
+          <HeaderSorting column={column} headerName="Confidence Score" />
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      return <div className="pl-2">{row.original.aiScore}%</div>;
     },
   },
   {

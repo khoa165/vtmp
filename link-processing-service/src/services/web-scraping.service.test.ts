@@ -8,8 +8,8 @@ import { EnvConfig } from '@/config/env';
 import { WebScrapingService } from '@/services/web-scraping.service';
 import { LINK_PROCESSING_MOCK_ENV } from '@/testutils/link-processing-mock-env.testutil';
 import { useSandbox } from '@/testutils/sandbox.testutil';
-import { SubmittedLink } from '@/types/link-processing.types';
 import { LinkAccessError, ScrapingError } from '@/utils/errors';
+import { SubmittedLink } from '@vtmp/common/constants';
 
 describe('WebScrapingService', () => {
   const sandbox = useSandbox();
