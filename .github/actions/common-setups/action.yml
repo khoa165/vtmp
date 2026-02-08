@@ -4,6 +4,14 @@ description: 'Sets up Node.js, Yarn, installs dependencies, and builds shared pa
 runs:
   using: 'composite'
   steps:
+    - name: Install corepack
+      run: npm install -g corepack
+      shell: bash
+
+    - name: Enable corepack
+      run: corepack enable
+      shell: bash
+
     - name: Use Node.js 22.x
       uses: actions/setup-node@v4
       with:
@@ -15,5 +23,5 @@ runs:
       shell: bash
 
     - name: Build common, server-common, mongo packages
-      run: yarn workspace @vtmp/common build && yarn workspace @vtmp/server-common build && yarn workspace @vtmp/mongo build
+      run: yarn bp
       shell: bash
