@@ -1,6 +1,12 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
-import { JobPostingRegion, JobFunction, JobType } from '@vtmp/common/constants';
+import {
+  JobFunction,
+  JobPostingRegion,
+  JobPostingSortField,
+  JobType,
+  SortOrder,
+} from '@vtmp/common/constants';
 
 export interface IJobPosting extends Document {
   _id: Types.ObjectId;
@@ -19,7 +25,12 @@ export interface IJobPosting extends Document {
   jobType: JobType;
 }
 
-export interface JobFilter {
+export interface JobPostingFilter {
+  limit?: number;
+  cursor?: string;
+  sortField?: JobPostingSortField;
+  sortOrder?: SortOrder;
+
   jobTitle?: string;
   companyName?: string;
   location?: string;
@@ -27,6 +38,11 @@ export interface JobFilter {
   jobType?: JobType;
   postingDateRangeStart?: Date;
   postingDateRangeEnd?: Date;
+}
+
+export interface JobPostingPagination {
+  data: IJobPosting[];
+  cursor?: string;
 }
 
 const JobPostingSchema = new mongoose.Schema<IJobPosting>(
@@ -90,3 +106,8 @@ export const JobPostingModel = mongoose.model<IJobPosting>(
   'JobPosting',
   JobPostingSchema
 );
+
+JobPostingSchema.index({
+  _id: 1,
+  datePosted: -1,
+});
