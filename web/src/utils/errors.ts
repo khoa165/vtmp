@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { ZodError } from 'zod';
 
+import { Logger } from '@/config/logger';
+
 export abstract class ApplicationSpecificError extends Error {
   public metadata: object;
   public statusCode: number;
@@ -83,4 +85,18 @@ export const handleError = (error: unknown) => {
   } else {
     return { statusCode: 500, errors: [{ message: 'Unknown server error' }] };
   }
+};
+
+export const logErrors = (
+  statusCode: number,
+  errors: { message: string; metadata?: object }[],
+  extra: Record<string, unknown>
+) => {
+  errors.forEach((error) => {
+    Logger.error(error.message, {
+      ...extra,
+      statusCode,
+      metadata: error.metadata || {},
+    });
+  });
 };

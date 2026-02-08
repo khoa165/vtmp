@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 
 import { SystemRole } from '@vtmp/common/constants';
 
-import { handleError, UnauthorizedError } from '@/utils/errors';
+import { EnvConfig } from '@/config/env';
+import { handleError, logErrors, UnauthorizedError } from '@/utils/errors';
 
 interface AuthenticatedRequest extends Request {
   user: {
@@ -43,12 +44,20 @@ export const getServiceFromRequest = (
 
 export const routeErrorHandler = (
   err: unknown,
-  _req: Request,
+  req: Request,
   res: Response,
-
   _next: NextFunction
 ) => {
   const { statusCode, errors } = handleError(err);
+
+  logErrors(statusCode, errors, {
+    url: req.url,
+    method: req.method,
+    headers: req.headers,
+    body: req.body,
+    environment: EnvConfig.get().NODE_ENV,
+  });
+
   res.status(statusCode).json({ errors });
   return;
 };
