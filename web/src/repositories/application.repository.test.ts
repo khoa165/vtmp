@@ -564,7 +564,6 @@ describe('ApplicationRepository', () => {
       expect(result).to.deep.equal([
         {
           count: 2,
-          userId: user._id,
           name: 'Test Nguyen',
         },
       ]);
@@ -675,7 +674,6 @@ describe('ApplicationRepository', () => {
       expect(result).to.deep.equal([
         {
           count: 5,
-          userId: user._id,
           name: 'Test Nguyen',
         },
       ]);

@@ -171,6 +171,9 @@ export const ApplicationRepository = {
         },
       },
       {
+        $unset: 'userId',
+      },
+      {
         $sort: {
           count: 1,
         },
