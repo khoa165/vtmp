@@ -3148,6 +3148,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
           },
+          {
+            name: CompanyName.ROBINHOOD,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
         ],
         teamName: ProjectName.ZERO_KM,
         teamNumber: 2,
@@ -3185,6 +3190,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           },
           {
             name: CompanyName.INTUIT,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.WAYFAIR,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
           },
@@ -3607,6 +3617,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
           },
           {
             name: CompanyName.LINKEDIN,
+            type: OfferType.INTERNSHIP,
+            channel: OfferChannel.EXTERNAL,
+          },
+          {
+            name: CompanyName.AMAZON,
             type: OfferType.INTERNSHIP,
             channel: OfferChannel.EXTERNAL,
           },
