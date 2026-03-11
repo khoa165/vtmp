@@ -2450,6 +2450,11 @@ export const mentorshipPeople: Record<string, MentorshipPerson> = {
             type: OfferType.NEW_GRAD,
             channel: OfferChannel.RETURN_OFFER,
           },
+          {
+            name: CompanyName.APPLE,
+            type: OfferType.NEW_GRAD,
+            channel: OfferChannel.EXTERNAL,
+          },
         ],
         teamName: ProjectName.CODE_BUDDY,
         teammates: [
